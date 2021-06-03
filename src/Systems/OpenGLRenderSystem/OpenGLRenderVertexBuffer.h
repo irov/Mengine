@@ -40,8 +40,8 @@ namespace Mengine
         bool draw( const void * _buffer, uint32_t _offset, uint32_t _size ) override;
 
     public:
-        void enable() override;
-        void disable() override;
+        void enable();
+        void disable();
 
     public:
         void release();

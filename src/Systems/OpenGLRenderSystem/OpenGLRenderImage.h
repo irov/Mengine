@@ -57,9 +57,6 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
-        UnknownPointer getRenderImageExtention() override;
-
-    public:
         GLuint getUID() const override;
 
     public:

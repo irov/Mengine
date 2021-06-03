@@ -134,11 +134,6 @@ namespace Mengine
         return HWMipmaps;
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer OpenGLRenderImageTarget::getRenderImageExtention()
-    {
-        return this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderImageTarget::getUID() const
     {
         GLuint uid = m_renderTarget->getUID();

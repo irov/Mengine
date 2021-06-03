@@ -7,6 +7,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "Kernel/RenderContext.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Assertion.h"
 
@@ -382,7 +383,7 @@ namespace Mengine
 
             if( m_selectedTab == "scene" )
             {
-                if( m_selectedNode && m_selectedNode->dirty )
+                if( m_selectedNode != nullptr && m_selectedNode->dirty == true )
                 {
                     this->SendChangedNode( *m_selectedNode );
                     m_selectedNode->dirty = false;
@@ -2167,6 +2168,40 @@ namespace Mengine
             ImGui::PopItemFlag();
         };
 
+        auto uiReadOnlyVec1I8 = [_node]( const char * _caption, int8_t _prop )
+        {
+            int8_t testValue = _prop;
+
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::DragScalarN( _caption, ImGuiDataType_S8, &testValue, 1, 1.f );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+
+        auto uiReadOnlyVec1I = [_node]( const char * _caption, int32_t _prop )
+        {
+            int32_t testValue = _prop;
+
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::DragScalarN( _caption, ImGuiDataType_S32, &testValue, 1, 1.f );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+
+        auto uiEditorVec1I8 = [_node]( const char * _caption, int8_t & _prop )
+        {
+            int8_t testValue = _prop;
+            bool input = ImGui::DragScalarN( _caption, ImGuiDataType_S8, &testValue, 1, 1.f );
+
+            if( input && testValue != _prop )
+            {
+                _prop = testValue;
+                _node->dirty = true;
+            }
+        };
+
         auto uiEditorVec1I = [_node]( const char * _caption, int32_t & _prop )
         {
             int32_t testValue = _prop;
@@ -2214,9 +2249,10 @@ namespace Mengine
             }
         };
 
-        auto uiReadOnlyVec1f = [_node]( const char * _caption, const float & _prop )
+        auto uiReadOnlyVec1f = [_node]( const char * _caption, float _prop )
         {
             float testValue = _prop;
+
             ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::DragFloat( _caption, &testValue );
@@ -2239,6 +2275,7 @@ namespace Mengine
         auto uiReadOnlyVec2f = [_node]( const char * _caption, const mt::vec2f & _prop )
         {
             mt::vec2f testValue = _prop;
+
             ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::DragFloat2( _caption, testValue.buff() );
@@ -2261,6 +2298,7 @@ namespace Mengine
         auto uiReadOnlyVec3f = [_node]( const char * _caption, const mt::vec3f & _prop )
         {
             mt::vec3f testValue = _prop;
+
             ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::DragFloat3( _caption, testValue.buff() );
@@ -2294,6 +2332,7 @@ namespace Mengine
         auto uiReadOnlyColor = [_node]( const Char * _caption, const Color & _prop )
         {
             Color testValue = _prop;
+
             ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::ColorEdit4( _caption, testValue.buff() );
@@ -2429,8 +2468,24 @@ namespace Mengine
             uiReadOnlyBool( "Enable", _node->render.enable );
             uiEditorBool( "Hide", _node->render.hide );
             ImGui::Spacing();
+
+            if( ImGui::Button( "Z Group Reset" ) == true )
+            {
+                _node->render.z_group = MENGINE_RENDER_ZGROUP_DEFAULT;
+                _node->dirty = true;
+            }
+
+            uiEditorVec1I( "Z Order", _node->render.z_group );
+
+            if( ImGui::Button( "Z Index Reset" ) == true )
+            {
+                _node->render.z_index = MENGINE_RENDER_ZINDEX_DEFAULT;
+                _node->dirty = true;
+            }
+
             uiEditorVec1I( "Z Index", _node->render.z_index );
-            uiEditorVec1I( "Z Order", _node->render.z_order );
+            uiReadOnlyVec1I( "Total Z Group", _node->render.total_z_group == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _node->render.total_z_group );
+            uiReadOnlyVec1I( "Total Z Index", _node->render.total_z_index == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _node->render.total_z_index );
             ImGui::Spacing();
             uiEditorColor( "Local Color", _node->render.local_color );
             uiEditorColor( "Personal Color", _node->render.personal_color );

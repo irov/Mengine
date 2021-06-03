@@ -751,6 +751,10 @@ namespace Mengine
         Detail::serializeNodeProp( _render->isHide(), "hide", xmlRender );
         Detail::serializeNodeProp( _render->getLocalColor(), "local_color", xmlRender );
         Detail::serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlRender );
+        Detail::serializeNodeProp( _render->getZGroup(), "z_group", xmlRender );
+        Detail::serializeNodeProp( _render->getZIndex(), "z_index", xmlRender );
+        Detail::serializeNodeProp( Helper::getRenderZGroupInheritance( _render ), "total_z_group", xmlRender );
+        Detail::serializeNodeProp( Helper::getRenderZIndexInheritance( _render ), "total_z_index", xmlRender );
 
         RenderInterface * relationRender = _render->getExtraRelationRender();
 
@@ -903,13 +907,16 @@ namespace Mengine
             Detail::serializeNodeProp( fmt, "Text", xmlNode );
         }
 
-        Detail::serializeNodeProp( _textField->calcFont()->getName(), "TotalFontName", xmlNode );
-        Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
-        Detail::serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
-        Detail::serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
-        Detail::serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
-        Detail::serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
-        Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
+        if( _textField->isCompile() == true )
+        {
+            Detail::serializeNodeProp( _textField->calcFont()->getName(), "TotalFontName", xmlNode );
+            Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
+            Detail::serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
+            Detail::serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
+            Detail::serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
+            Detail::serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
+            Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
+        }
 
         const TextFontInterfacePtr & defaultFont = FONT_SERVICE()
             ->getDefaultFont();
@@ -1719,7 +1726,7 @@ namespace Mengine
 
         if( node != nullptr )
         {
-            Detail::deserializeNodeProp<bool>( "enable", _xmlNode, [node]( bool _value )
+            this->deserializeNodeProp<bool>( "enable", _xmlNode, [node]( bool _value )
             {
                 if( _value == node->isEnable() )
                 {
@@ -1740,27 +1747,27 @@ namespace Mengine
 
             TransformationInterface * transformation = node->getTransformation();
 
-            Detail::deserializeNodeProp<mt::vec3f>( "position", transformationNode, [transformation]( const mt::vec3f & _value )
+            this->deserializeNodeProp<mt::vec3f>( "position", transformationNode, [transformation]( const mt::vec3f & _value )
             {
                 transformation->setLocalPosition( _value );
             } );
 
-            Detail::deserializeNodeProp<mt::vec3f>( "origin", transformationNode, [transformation]( const mt::vec3f & _value )
+            this->deserializeNodeProp<mt::vec3f>( "origin", transformationNode, [transformation]( const mt::vec3f & _value )
             {
                 transformation->setLocalOrigin( _value );
             } );
 
-            Detail::deserializeNodeProp<mt::vec2f>( "skew", transformationNode, [transformation]( const mt::vec2f & _value )
+            this->deserializeNodeProp<mt::vec2f>( "skew", transformationNode, [transformation]( const mt::vec2f & _value )
             {
                 transformation->setLocalSkew( _value );
             } );
 
-            Detail::deserializeNodeProp<mt::vec3f>( "scale", transformationNode, [transformation]( const mt::vec3f & _value )
+            this->deserializeNodeProp<mt::vec3f>( "scale", transformationNode, [transformation]( const mt::vec3f & _value )
             {
                 transformation->setLocalScale( _value );
             } );
 
-            Detail::deserializeNodeProp<mt::vec3f>( "orientation", transformationNode, [transformation]( const mt::vec3f & _value )
+            this->deserializeNodeProp<mt::vec3f>( "orientation", transformationNode, [transformation]( const mt::vec3f & _value )
             {
                 transformation->setLocalOrientation( _value );
             } );
@@ -1771,19 +1778,29 @@ namespace Mengine
             {
                 RenderInterface * render = node->getRender();
 
-                Detail::deserializeNodeProp<bool>( "hide", renderNode, [render]( bool _value )
+                this->deserializeNodeProp<bool>( "hide", renderNode, [render]( bool _value )
                 {
                     render->setHide( _value );
                 } );
 
-                Detail::deserializeNodeProp<Color>( "local_color", renderNode, [render]( const Color & _value )
+                this->deserializeNodeProp<Color>( "local_color", renderNode, [render]( const Color & _value )
                 {
                     render->setLocalColor( _value );
                 } );
 
-                Detail::deserializeNodeProp<Color>( "personal_color", renderNode, [render]( const Color & _value )
+                this->deserializeNodeProp<Color>( "personal_color", renderNode, [render]( const Color & _value )
                 {
                     render->setPersonalColor( _value );
+                } );
+
+                this->deserializeNodeProp<ZGroupType>( "z_group", renderNode, [render]( ZGroupType _value )
+                {
+                    render->setZGroup( _value );
+                } );
+
+                this->deserializeNodeProp<ZIndexType>( "z_index", renderNode, [render]( ZIndexType _value )
+                {
+                    render->setZIndex( _value );
                 } );
             }
 
@@ -1793,12 +1810,12 @@ namespace Mengine
             {
                 AnimationInterface * animation = node->getAnimation();
 
-                Detail::deserializeNodeProp<bool>( "loop", animationNode, [animation]( bool _value )
+                this->deserializeNodeProp<bool>( "loop", animationNode, [animation]( bool _value )
                 {
                     animation->setLoop( _value );
                 } );
 
-                Detail::deserializeNodeProp<bool>( "time", animationNode, [animation]( float _value )
+                this->deserializeNodeProp<bool>( "time", animationNode, [animation]( float _value )
                 {
                     if( _value < 0.f )
                     {
@@ -1819,47 +1836,47 @@ namespace Mengine
             {
                 TextFieldPtr textField = stdex::intrusive_static_cast<TextFieldPtr>(node);
 
-                Detail::deserializeNodeProp<float>( "MaxLength", typeNodeTextField, [textField]( float _value )
+                this->deserializeNodeProp<float>( "MaxLength", typeNodeTextField, [textField]( float _value )
                 {
                     textField->setMaxLength( _value );
                 } );
 
-                Detail::deserializeNodeProp<bool>( "Wrap", typeNodeTextField, [textField]( bool _value )
+                this->deserializeNodeProp<bool>( "Wrap", typeNodeTextField, [textField]( bool _value )
                 {
                     textField->setWrap( _value );
                 } );
 
-                Detail::deserializeNodeProp<bool>( "AutoScale", typeNodeTextField, [textField]( bool _value )
+                this->deserializeNodeProp<bool>( "AutoScale", typeNodeTextField, [textField]( bool _value )
                 {
                     textField->setAutoScale( _value );
                 } );
 
-                Detail::deserializeNodeProp<mt::vec2f>( "AnchorPercent", typeNodeTextField, [textField]( const mt::vec2f & _value )
+                this->deserializeNodeProp<mt::vec2f>( "AnchorPercent", typeNodeTextField, [textField]( const mt::vec2f & _value )
                 {
                     textField->setAnchorPercent( _value );
                 } );
 
-                Detail::deserializeNodeProp<bool>( "AnchorHorizontalAlign", typeNodeTextField, [textField]( bool _value )
+                this->deserializeNodeProp<bool>( "AnchorHorizontalAlign", typeNodeTextField, [textField]( bool _value )
                 {
                     textField->setAnchorHorizontalAlign( _value );
                 } );
 
-                Detail::deserializeNodeProp<bool>( "AnchorVerticalAlign", typeNodeTextField, [textField]( bool _value )
+                this->deserializeNodeProp<bool>( "AnchorVerticalAlign", typeNodeTextField, [textField]( bool _value )
                 {
                     textField->setAnchorVerticalAlign( _value );
                 } );
 
-                Detail::deserializeNodeProp<ConstString>( "TextID", typeNodeTextField, [textField]( const ConstString & _value )
+                this->deserializeNodeProp<ConstString>( "TextID", typeNodeTextField, [textField]( const ConstString & _value )
                 {
                     textField->setTextId( _value );
                 } );
 
-                Detail::deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeNodeTextField, [textField]( const ConstString & _value )
+                this->deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeNodeTextField, [textField]( const ConstString & _value )
                 {
                     textField->setTextAliasEnvironment( _value );
                 } );
 
-                Detail::deserializeNodeProp<ConstString>( "FontName", typeNodeTextField, [textField]( const ConstString & _value )
+                this->deserializeNodeProp<ConstString>( "FontName", typeNodeTextField, [textField]( const ConstString & _value )
                 {
                     TextFontInterfacePtr font;
 
@@ -1873,14 +1890,14 @@ namespace Mengine
                 } );
 
                 bool HasFontColor = false;
-                Detail::deserializeNodeProp<bool>( "HasFontColor", typeNodeTextField, [&HasFontColor]( bool _value )
+                this->deserializeNodeProp<bool>( "HasFontColor", typeNodeTextField, [&HasFontColor]( bool _value )
                 {
                     HasFontColor = _value;
                 } );
 
                 if( HasFontColor == true )
                 {
-                    Detail::deserializeNodeProp<Color>( "FontColor", typeNodeTextField, [textField]( const Color & _value )
+                    this->deserializeNodeProp<Color>( "FontColor", typeNodeTextField, [textField]( const Color & _value )
                     {
                         textField->setFontColor( _value );
                     } );
@@ -1891,14 +1908,14 @@ namespace Mengine
                 }
 
                 bool HasLineOffset = false;
-                Detail::deserializeNodeProp<bool>( "HasLineOffset", typeNodeTextField, [&HasLineOffset]( bool _value )
+                this->deserializeNodeProp<bool>( "HasLineOffset", typeNodeTextField, [&HasLineOffset]( bool _value )
                 {
                     HasLineOffset = _value;
                 } );
 
                 if( HasLineOffset == true )
                 {
-                    Detail::deserializeNodeProp<float>( "LineOffset", typeNodeTextField, [textField]( float _value )
+                    this->deserializeNodeProp<float>( "LineOffset", typeNodeTextField, [textField]( float _value )
                     {
                         textField->setLineOffset( _value );
                     } );
@@ -1909,14 +1926,14 @@ namespace Mengine
                 }
 
                 bool HasCharOffset = false;
-                Detail::deserializeNodeProp<bool>( "HasCharOffset", typeNodeTextField, [&HasCharOffset]( bool _value )
+                this->deserializeNodeProp<bool>( "HasCharOffset", typeNodeTextField, [&HasCharOffset]( bool _value )
                 {
                     HasCharOffset = _value;
                 } );
 
                 if( HasCharOffset == true )
                 {
-                    Detail::deserializeNodeProp<float>( "CharOffset", typeNodeTextField, [textField]( float _value )
+                    this->deserializeNodeProp<float>( "CharOffset", typeNodeTextField, [textField]( float _value )
                     {
                         textField->setCharOffset( _value );
                     } );
@@ -1927,14 +1944,14 @@ namespace Mengine
                 }
 
                 bool HasCharScale = false;
-                Detail::deserializeNodeProp<bool>( "HasCharScale", typeNodeTextField, [&HasCharScale]( bool _value )
+                this->deserializeNodeProp<bool>( "HasCharScale", typeNodeTextField, [&HasCharScale]( bool _value )
                 {
                     HasCharScale = _value;
                 } );
 
                 if( HasCharScale == true )
                 {
-                    Detail::deserializeNodeProp<float>( "CharScale", typeNodeTextField, [textField]( float _value )
+                    this->deserializeNodeProp<float>( "CharScale", typeNodeTextField, [textField]( float _value )
                     {
                         textField->setCharScale( _value );
                     } );
@@ -1944,22 +1961,22 @@ namespace Mengine
                     textField->removeCharScale();
                 }
 
-                Detail::deserializeNodeProp<uint32_t>( "HorizontAlign", typeNodeTextField, [textField]( uint32_t _value )
+                this->deserializeNodeProp<uint32_t>( "HorizontAlign", typeNodeTextField, [textField]( uint32_t _value )
                 {
                     textField->setHorizontAlign( (ETextHorizontAlign)_value );
                 } );
 
-                Detail::deserializeNodeProp<uint32_t>( "VerticalAlign", typeNodeTextField, [textField]( uint32_t _value )
+                this->deserializeNodeProp<uint32_t>( "VerticalAlign", typeNodeTextField, [textField]( uint32_t _value )
                 {
                     textField->setVerticalAlign( (ETextVerticalAlign)_value );
                 } );
 
-                Detail::deserializeNodeProp<uint32_t>( "MaxCharCount", typeNodeTextField, [textField]( uint32_t _value )
+                this->deserializeNodeProp<uint32_t>( "MaxCharCount", typeNodeTextField, [textField]( uint32_t _value )
                 {
                     textField->setMaxCharCount( _value );
                 } );
 
-                Detail::deserializeNodeProp<bool>( "Pixelsnap", typeNodeTextField, [textField]( bool _value )
+                this->deserializeNodeProp<bool>( "Pixelsnap", typeNodeTextField, [textField]( bool _value )
                 {
                     textField->setPixelsnap( _value );
                 } );
@@ -1971,7 +1988,7 @@ namespace Mengine
             {
                 UnknownMovie2Interface * unknownMovie2 = node->getUnknown();
 
-                Detail::deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeNodeMovie2, [unknownMovie2]( const ConstString & _value )
+                this->deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeNodeMovie2, [unknownMovie2]( const ConstString & _value )
                 {
                     unknownMovie2->setTextAliasEnvironment( _value );
                 } );
@@ -1986,7 +2003,7 @@ namespace Mengine
 
                         const Movie2SubCompositionInterfacePtr & subComposition = unknownMovie2->getSubComposition( Helper::stringizeString( SubCompositionName ) );
 
-                        Detail::deserializeNodeProp<bool>( "SubCompositionEnable", xmlElement, [subComposition]( bool _value )
+                        this->deserializeNodeProp<bool>( "SubCompositionEnable", xmlElement, [subComposition]( bool _value )
                         {
                             subComposition->setSubCompositionEnable( _value );
                         } );
@@ -2330,7 +2347,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _boundingBox ) const
+    void NodeDebuggerModule::getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _bb ) const
     {
         mt::box2f boundingBox;
         this->getWorldBoundingBox( _node, _imageDesc, &boundingBox );
@@ -2349,10 +2366,10 @@ namespace Mengine
         mt::box2f bb_screen;
         Helper::worldToScreenBox( &context, contentResolution, boundingBox, &bb_screen );
 
-        *_boundingBox = bb_screen;
+        *_bb = bb_screen;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * _bb ) const
+    void NodeDebuggerModule::getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _bb ) const
     {
         TransformationInterface * currentNodeTransformation = _node->getTransformation();
         const mt::mat4f & worldMatrix = currentNodeTransformation->getWorldMatrix();

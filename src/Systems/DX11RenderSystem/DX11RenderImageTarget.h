@@ -49,6 +49,9 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
+        bool getUpscalePow2() const override;
+
+    public:
         RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
         bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
 

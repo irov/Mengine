@@ -138,6 +138,11 @@ namespace Mengine
         return HWHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderImageTarget::getUpscalePow2() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImageTarget::getHWMipmaps() const
     {
         return 1U;

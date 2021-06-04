@@ -47,12 +47,6 @@ namespace Mengine
         uint32_t hwChannels = Helper::getPixelFormatChannels( m_hwPixelFormat );
         uint32_t hwDepth = Helper::getPixelFormatDepth( m_hwPixelFormat );
 
-        if( (_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0 )
-        {
-            _width = Helper::getTexturePow2( _width );
-            _height = Helper::getTexturePow2( _height );
-        }
-
         m_hwMipmaps = _mipmaps;
         m_hwWidth = _width;
         m_hwHeight = _height;
@@ -250,6 +244,11 @@ namespace Mengine
     float DX11RenderImage::getHWHeightInv() const
     {
         return m_hwHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderImage::getUpscalePow2() const
+    {
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImage::getHWMipmaps() const

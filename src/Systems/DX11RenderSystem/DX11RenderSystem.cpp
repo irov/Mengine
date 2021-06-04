@@ -585,7 +585,7 @@ namespace Mengine
         return renderImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX11RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr DX11RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -595,7 +595,7 @@ namespace Mengine
 
         renderTargetTexture->setDirect3D11Device( m_pD3DDevice );
 
-        if( renderTargetTexture->initialize( _width, _height, _channels, _format ) == false )
+        if( renderTargetTexture->initialize( _width, _height, _format ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u"
                 , _width
@@ -629,10 +629,8 @@ namespace Mengine
         return renderTargetTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX11RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr DX11RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
-        MENGINE_UNUSED( _channels );
-
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         DX11RenderTargetOffscreenPtr renderTargetOffscreen = m_factoryRenderTargetOffscreen->createObject( _doc );
@@ -795,10 +793,13 @@ namespace Mengine
     void DX11RenderSystem::setScissor( const Viewport & _viewport )
     {
         MENGINE_UNUSED( _viewport );
+
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::removeScissor()
     {
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setViewport( const Viewport & _viewport )

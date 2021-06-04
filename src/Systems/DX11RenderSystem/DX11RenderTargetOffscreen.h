@@ -28,8 +28,12 @@ namespace Mengine
         uint32_t getHWHeight() const override;
         EPixelFormat getHWPixelFormat() const override;
 
+    public:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
+
+    public:
+        bool getUpscalePow2() const override;
 
     public:
         bool begin() const override;
@@ -51,6 +55,9 @@ namespace Mengine
 
         ID3D11Texture2DPtr m_pD3DTextureSource;
         DX11RenderTargetTexturePtr m_renderTargetTexture;
+
+        float m_hwWidthInv;
+        float m_hwHeightInv;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderTargetOffscreen, RenderTargetInterface> DX11RenderTargetOffscreenPtr;

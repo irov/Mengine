@@ -8,7 +8,6 @@ namespace Mengine
     MockupRenderTargetTexture::MockupRenderTargetTexture()
         : m_width( 0 )
         , m_height( 0 )
-        , m_hwChannels( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
@@ -22,7 +21,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
+    bool MockupRenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _format )
     {
         m_width = _width;
         m_height = _height;
@@ -32,7 +31,6 @@ namespace Mengine
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
 
-        m_hwChannels = _channels;
         m_hwPixelFormat = _format;
 
         if( this->_initialize() == false )

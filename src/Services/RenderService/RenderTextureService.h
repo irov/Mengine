@@ -57,10 +57,5 @@ namespace Mengine
         FactoryPtr m_factoryRenderTexture;
         FactoryPtr m_factoryDecoderRenderImageProvider;
         FactoryPtr m_factoryDecoderRenderImageLoader;
-
-        bool m_supportA8;
-        bool m_supportL8;
-        bool m_supportR8G8B8;
-        bool m_supportNonPow2;
     };
 }

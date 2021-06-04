@@ -11,10 +11,9 @@ namespace Mengine
     DX9RenderTargetTexture::DX9RenderTargetTexture()
         : m_width( 0 )
         , m_height( 0 )
-        , m_channels( 0 )
-        , m_format( PF_UNKNOWN )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
+        , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
         , m_pD3DTexture( nullptr )
@@ -29,17 +28,15 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
+    bool DX9RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _format )
     {
         m_width = _width;
         m_height = _height;
-        m_channels = _channels;
-        m_format = _format;
 
-        D3DFORMAT d3dformat = Helper::toD3DFormat( m_format );
+        D3DFORMAT d3dFormat = Helper::toD3DFormat( _format );
 
         IDirect3DTexture9 * pD3DTexture;
-        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &pD3DTexture, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (_width, _height, 1, D3DUSAGE_RENDERTARGET, d3dFormat, D3DPOOL_DEFAULT, &pD3DTexture, NULL) )
         {
             return false;
         }
@@ -54,6 +51,7 @@ namespace Mengine
 
         m_hwWidth = texDesc.Width;
         m_hwHeight = texDesc.Height;
+        m_hwPixelFormat = Helper::fromD3DFormat( texDesc.Format );
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
@@ -93,7 +91,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EPixelFormat DX9RenderTargetTexture::getHWPixelFormat() const
     {
-        return m_format;
+        return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderTargetTexture::getHWMipmaps() const
@@ -197,10 +195,10 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
 
-        D3DFORMAT D3DFormat = Helper::toD3DFormat( m_format );
+        D3DFORMAT D3DFormat = Helper::toD3DFormat( m_hwPixelFormat );
 
         IDirect3DTexture9 * pD3DTexture;
-        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, D3DFormat, D3DPOOL_DEFAULT, &pD3DTexture, nullptr) )
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_hwWidth, m_hwHeight, 1, D3DUSAGE_RENDERTARGET, D3DFormat, D3DPOOL_DEFAULT, &pD3DTexture, nullptr) )
         {
             return false;
         }

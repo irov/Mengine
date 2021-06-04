@@ -33,10 +33,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     RenderTextureService::RenderTextureService()
-        : m_supportA8( false )
-        , m_supportL8( false )
-        , m_supportR8G8B8( false )
-        , m_supportNonPow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -46,18 +42,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::_initializeService()
     {
-        m_supportA8 = RENDER_SYSTEM()
-            ->supportTextureFormat( PF_A8 );
-
-        m_supportL8 = RENDER_SYSTEM()
-            ->supportTextureFormat( PF_L8 );
-
-        m_supportR8G8B8 = RENDER_SYSTEM()
-            ->supportTextureFormat( PF_R8G8B8 );
-
-        m_supportNonPow2 = RENDER_SYSTEM()
-            ->supportTextureNonPow2();
-
         m_factoryRenderTexture = Helper::makeFactoryPoolWithListener<RenderTexture, 128>( this, &RenderTextureService::onRenderTextureDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>( MENGINE_DOCUMENT_FACTORABLE );

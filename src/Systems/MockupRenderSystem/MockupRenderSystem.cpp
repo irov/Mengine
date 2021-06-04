@@ -195,13 +195,13 @@ namespace Mengine
         return dxTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MockupRenderTargetTexturePtr target = m_factoryRenderTargetTexture->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( target );
 
-        if( target->initialize( _width, _height, _channels, _format ) == false )
+        if( target->initialize( _width, _height, _format ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target [%ux%u] format [%u]"
                 , _width
@@ -221,13 +221,13 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MockupRenderTargetOffscreenPtr target = m_factoryRenderTargetOffscreen->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( target );
 
-        if( target->initialize( _width, _height, _channels, _format ) == false )
+        if( target->initialize( _width, _height, _format ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target [%ux%u] format [%u]"
                 , _width

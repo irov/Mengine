@@ -23,7 +23,7 @@ namespace Mengine
         ~DX11RenderTargetTexture() override;
 
     public:
-        bool initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format );
+        bool initialize( uint32_t _width, uint32_t _height, EPixelFormat _format );
         void finalize();
 
     public:
@@ -35,6 +35,9 @@ namespace Mengine
     public:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
+
+    public:
+        bool getUpscalePow2() const override;
 
     public:
         void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
@@ -69,8 +72,6 @@ namespace Mengine
         D3D11_TEXTURE2D_DESC m_textureDesc;
 
         EPixelFormat m_hwPixelFormat;
-
-        uint32_t m_hwChannels;
 
         float m_hwWidthInv;
         float m_hwHeightInv;

@@ -33,7 +33,7 @@ namespace Mengine
         void bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage ) override;
         void unbind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage ) override;
 
-    protected:
+    public:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
 
@@ -44,9 +44,12 @@ namespace Mengine
 
         EPixelFormat getHWPixelFormat() const override;
 
-    protected:
+    public:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
+
+    public:
+        bool getUpscalePow2() const override;
 
     public:
         RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;

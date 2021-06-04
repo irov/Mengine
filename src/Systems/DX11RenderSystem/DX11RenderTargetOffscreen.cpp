@@ -11,6 +11,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetOffscreen::DX11RenderTargetOffscreen()
+        : m_hwWidthInv( 0.f )
+        , m_hwHeightInv( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,8 +23,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::initialize( ID3D11Texture2D * _textureSource )
     {
+        m_pD3DTextureSource.Attach( _textureSource );
+
         D3D11_TEXTURE2D_DESC textureDesc;
-        _textureSource->GetDesc( &textureDesc );
+        m_pD3DTextureSource->GetDesc( &textureDesc );
 
         textureDesc.Usage = D3D11_USAGE_STAGING;
         textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
@@ -37,9 +41,10 @@ namespace Mengine
 
         m_pD3DTexture.Attach( pD3DTexture );
 
-        m_pD3DTextureSource.Attach( _textureSource );
-
         m_textureDesc = textureDesc;
+
+        m_hwWidthInv = 1.f / m_textureDesc.Width;
+        m_hwHeightInv = 1.f / m_textureDesc.Height;
 
         return true;
     }
@@ -81,18 +86,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float DX11RenderTargetOffscreen::getHWWidthInv() const
     {
-        return 1.0f / m_textureDesc.Width;
+        return m_hwWidthInv;
     }
     //////////////////////////////////////////////////////////////////////////
     float DX11RenderTargetOffscreen::getHWHeightInv() const
     {
-        return  1.0f / m_textureDesc.Height;
+        return  m_hwHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderTargetOffscreen::getUpscalePow2() const
+    {
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetOffscreen::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
     {
-        float uv_width = _size.x * getHWWidthInv();
-        float uv_height = _size.y * getHWHeightInv();
+        float uv_width = _size.x * m_hwWidthInv;
+        float uv_height = _size.y * m_hwHeightInv;
 
         _viewport->begin = mt::vec2f( 0.f, 0.f );
         _viewport->end = mt::vec2f( uv_width, uv_height );
@@ -115,7 +125,11 @@ namespace Mengine
         pImmediateContext->Map( m_pD3DTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource );
 
         if( mappedResource.RowPitch != _pitch )
+        {
+            pImmediateContext->Unmap( m_pD3DTexture.Get(), 0 );
+
             return false;
+        }
 
         stdex::memorycopy( _buffer, 0, mappedResource.pData, _pitch );
 
@@ -132,4 +146,5 @@ namespace Mengine
     {
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

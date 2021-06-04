@@ -10,7 +10,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetTexture::DX11RenderTargetTexture()
         : m_hwPixelFormat( PF_UNKNOWN )
-        , m_hwChannels( 0 )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
     {
@@ -23,7 +22,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pRenderTargetView == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
+    bool DX11RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _format )
     {
         DXGI_FORMAT D3DFormat = Helper::toD3DFormat( _format );
 
@@ -40,7 +39,6 @@ namespace Mengine
         m_textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
         m_textureDesc.Usage = D3D11_USAGE_DEFAULT;
 
-        m_hwChannels = _channels;
         m_hwPixelFormat = _format;
 
         m_hwWidthInv = 1.f / (float)m_textureDesc.Width;
@@ -92,6 +90,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetTexture::finalize()
     {
+        MENGINE_ASSERTION_FATAL( m_pRenderTargetViewOld == nullptr, "invalid release render target view" );
+        MENGINE_ASSERTION_FATAL( m_pDepthStencilMainOld == nullptr, "invalid release depth stencil main" );
+
         m_pD3DTexture = nullptr;
         m_pD3DResourceView = nullptr;
         m_pRenderTargetView = nullptr;
@@ -125,6 +126,11 @@ namespace Mengine
     float DX11RenderTargetTexture::getHWHeightInv() const
     {
         return m_hwHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderTargetTexture::getUpscalePow2() const
+    {
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
@@ -161,6 +167,9 @@ namespace Mengine
         ID3D11RenderTargetView * pRenderTargetViewOld = m_pRenderTargetViewOld.Get();
 
         pImmediateContext->OMSetRenderTargets( 1, &pRenderTargetViewOld, m_pDepthStencilMainOld.Get() );
+
+        m_pRenderTargetViewOld = nullptr;
+        m_pDepthStencilMainOld = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const

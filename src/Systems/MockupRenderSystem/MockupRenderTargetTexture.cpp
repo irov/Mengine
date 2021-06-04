@@ -14,6 +14,7 @@ namespace Mengine
         , m_hwHeight( 0 )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
+        , m_upscalePow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,6 +39,8 @@ namespace Mengine
         {
             return false;
         }
+
+        m_upscalePow2 = m_hwWidth != _width || m_hwHeight != _height;
 
         return true;
     }
@@ -85,6 +88,11 @@ namespace Mengine
     float MockupRenderTargetTexture::getHWHeightInv() const
     {
         return m_hwHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MockupRenderTargetTexture::getUpscalePow2() const
+    {
+        return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const

@@ -36,6 +36,9 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
+        bool getUpscalePow2() const override;
+
+    public:
         void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
 
     public:
@@ -56,6 +59,8 @@ namespace Mengine
 
         float m_hwWidthInv;
         float m_hwHeightInv;
+
+        bool m_upscalePow2;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MockupRenderTargetTexture> MockupRenderTargetTexturePtr;

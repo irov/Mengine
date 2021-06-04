@@ -20,6 +20,9 @@ namespace Mengine
 
     public:
         bool getData( void * const _buffer, size_t _pitch ) const override;
+
+    public:
+        bool getUpscalePow2() const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MockupRenderTargetOffscreen> MockupRenderTargetOffscreenPtr;

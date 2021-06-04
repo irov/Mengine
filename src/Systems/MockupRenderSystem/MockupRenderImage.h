@@ -18,7 +18,7 @@ namespace Mengine
         ~MockupRenderImage() override;
 
     public:
-        void initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat );
+        void initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat );
         void finalize();
 
     protected:
@@ -32,9 +32,12 @@ namespace Mengine
 
         EPixelFormat getHWPixelFormat() const override;
 
-    protected:
+    public:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
+
+    public:
+        bool getUpscalePow2() const override;
 
     public:
         RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
@@ -53,6 +56,8 @@ namespace Mengine
 
         float m_hwWidthInv;
         float m_hwHeightInv;
+
+        bool m_upscalePow2;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MockupRenderImage> MockupRenderImagePtr;

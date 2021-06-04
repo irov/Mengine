@@ -143,6 +143,53 @@ namespace Mengine
             return D3DFMT_UNKNOWN;
         }
         //////////////////////////////////////////////////////////////////////////
+        MENGINE_INLINE EPixelFormat fromD3DFormat( D3DFORMAT _format )
+        {
+            switch( _format )
+            {
+            case D3DFMT_L8:
+                return PF_L8;
+            case D3DFMT_A8:
+                return PF_A8;
+            case D3DFMT_A4L4:
+                return PF_A4L4;
+            case D3DFMT_A8L8:
+                return PF_BYTE_LA; // Assume little endian here
+            case D3DFMT_R3G3B2:
+                return PF_R3G3B2;
+            case D3DFMT_A1R5G5B5:
+                return PF_A1R5G5B5;
+            case D3DFMT_R5G6B5:
+                return PF_R5G6B5;
+            case D3DFMT_A4R4G4B4:
+                return PF_A4R4G4B4;
+            case D3DFMT_R8G8B8:
+                return PF_R8G8B8;
+            case D3DFMT_A8R8G8B8:
+                return PF_A8R8G8B8;
+            case D3DFMT_X8R8G8B8:
+                return PF_X8R8G8B8;
+            case D3DFMT_G16R16:
+                return PF_SHORT_GR;
+            case D3DFMT_DXT1:
+                return PF_DXT1;
+            case D3DFMT_DXT2:
+                return PF_DXT2;
+            case D3DFMT_DXT3:
+                return PF_DXT3;
+            case D3DFMT_DXT4:
+                return PF_DXT4;
+            case D3DFMT_DXT5:
+                return PF_DXT5;
+            case D3DFMT_UNKNOWN:
+                return PF_UNKNOWN;
+            default:
+                break;
+            }
+
+            return PF_UNKNOWN;
+        }
+        //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE DWORD toD3DBlendFactor( EBlendFactor _blend )
         {
             switch( _blend )
@@ -406,8 +453,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE bool lessD3DFormats( D3DFORMAT _format1, D3DFORMAT _format2 )
         {
-            uint32_t format_id1 = getD3DFormatRange( _format1 );
-            uint32_t format_id2 = getD3DFormatRange( _format2 );
+            uint32_t format_id1 = Helper::getD3DFormatRange( _format1 );
+            uint32_t format_id2 = Helper::getD3DFormatRange( _format2 );
 
             return format_id1 < format_id2;
         }

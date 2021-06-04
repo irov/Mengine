@@ -19,6 +19,7 @@ namespace Mengine
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
+        , m_upscalePow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -54,10 +55,12 @@ namespace Mengine
         m_hwWidth = texDesc.Width;
         m_hwHeight = texDesc.Height;
 
-        m_hwPixelFormat = _pixelFormat;
+        m_hwPixelFormat = Helper::fromD3DFormat( texDesc.Format );
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
+
+        m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
         return true;
     }
@@ -168,6 +171,11 @@ namespace Mengine
     EPixelFormat DX9RenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderImage::getUpscalePow2() const
+    {
+        return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
     float DX9RenderImage::getHWWidthInv() const

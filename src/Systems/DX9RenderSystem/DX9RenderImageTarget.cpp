@@ -126,6 +126,13 @@ namespace Mengine
         return HWHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderImageTarget::getUpscalePow2() const
+    {
+        bool upscalePow2 = m_target->getUpscalePow2();
+
+        return upscalePow2;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderImageTarget::getHWMipmaps() const
     {
         return 1U;

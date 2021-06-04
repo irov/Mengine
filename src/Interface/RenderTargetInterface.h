@@ -25,6 +25,9 @@ namespace Mengine
         virtual float getHWHeightInv() const = 0;
 
     public:
+        virtual bool getUpscalePow2() const = 0;
+
+    public:
         virtual void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const = 0;
 
     public:

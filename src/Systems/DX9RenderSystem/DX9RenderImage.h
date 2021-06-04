@@ -44,6 +44,9 @@ namespace Mengine
 
         EPixelFormat getHWPixelFormat() const override;
 
+    public:
+        bool getUpscalePow2() const override;
+
     protected:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
@@ -73,6 +76,8 @@ namespace Mengine
 
         float m_hwWidthInv;
         float m_hwHeightInv;
+
+        bool m_upscalePow2;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderImage, RenderImageInterface> DX9RenderImagePtr;

@@ -14,6 +14,7 @@ namespace Mengine
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
+        , m_upscalePow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,17 +22,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImage::initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat )
+    void MockupRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat )
     {
         m_hwMipmaps = _mipmaps;
-        m_hwWidth = _hwWidth;
-        m_hwHeight = _hwHeight;
+        m_hwWidth = _width;
+        m_hwHeight = _height;
         m_hwChannels = 4;
         m_hwDepth = 1;
-        m_hwPixelFormat = _hwPixelFormat;
+        m_hwPixelFormat = _pixelFormat;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
+
+        m_upscalePow2 = false;
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderImage::finalize()
@@ -80,6 +83,12 @@ namespace Mengine
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t MockupRenderImage::getHWMipmaps() const
+    {
+        return m_hwMipmaps;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
     EPixelFormat MockupRenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
@@ -95,9 +104,9 @@ namespace Mengine
         return m_hwHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderImage::getHWMipmaps() const
+    bool MockupRenderImage::getUpscalePow2() const
     {
-        return m_hwMipmaps;
+        return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
 }

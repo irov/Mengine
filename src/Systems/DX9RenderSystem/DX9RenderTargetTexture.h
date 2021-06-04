@@ -42,6 +42,9 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
+        bool getUpscalePow2() const override;
+
+    public:
         void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
 
     public:
@@ -75,6 +78,8 @@ namespace Mengine
         
         mutable IDirect3DSurface9 * m_pD3DSurface;
         mutable IDirect3DSurface9 * m_pD3DSurfaceOld;
+
+        bool m_upscalePow2;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderTargetTexture, RenderTargetInterface> DX9RenderTargetTexturePtr;

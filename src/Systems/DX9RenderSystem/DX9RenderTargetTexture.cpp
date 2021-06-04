@@ -20,6 +20,7 @@ namespace Mengine
         , m_pD3DTexture( nullptr )
         , m_pD3DSurface( nullptr )
         , m_pD3DSurfaceOld( nullptr )
+        , m_upscalePow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -65,6 +66,8 @@ namespace Mengine
         }
 
         m_pD3DTexture = pD3DTexture;
+
+        m_upscalePow2 = m_hwWidth != _width || m_hwHeight != _height;
 
         return true;
     }
@@ -116,6 +119,11 @@ namespace Mengine
     float DX9RenderTargetTexture::getHWHeightInv() const
     {
         return m_hwHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderTargetTexture::getUpscalePow2() const
+    {
+        return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const

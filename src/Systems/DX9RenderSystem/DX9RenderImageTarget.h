@@ -43,9 +43,12 @@ namespace Mengine
 
         EPixelFormat getHWPixelFormat() const override;
 
-    protected:
+    public:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
+
+    public:
+        bool getUpscalePow2() const override;
 
     public:
         RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;

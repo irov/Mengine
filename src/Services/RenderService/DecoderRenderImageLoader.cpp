@@ -75,14 +75,7 @@ namespace Mengine
         uint32_t image_width = _image->getHWWidth();
         uint32_t image_height = _image->getHWHeight();
 
-        uint32_t HWWidth = Helper::getTexturePow2( image_width );
-        uint32_t HWHeight = Helper::getTexturePow2( image_height );
-
-        //ToDo
         uint32_t mipmap = 0;
-
-        uint32_t mipmap_width = HWWidth >> mipmap;
-        uint32_t mipmap_height = HWHeight >> mipmap;
 
         Rect rect;
         rect.left = 0;
@@ -103,7 +96,7 @@ namespace Mengine
             , rect.bottom
         );
 
-        size_t mipmap_size = pitch * mipmap_height;
+        size_t mipmap_size = pitch * image_height;
 
         EPixelFormat pixelFormat = _image->getHWPixelFormat();
 
@@ -124,28 +117,37 @@ namespace Mengine
             return false;
         }
 
-        const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
-
-        // copy pixels on the edge for better image quality
-        if( dataInfo->width != mipmap_width )
+        if( _image->getUpscalePow2() == true )
         {
-            uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
-            size_t pixel_size = pitch / HWWidth;
+            uint32_t HWWidth = Helper::getTexturePow2( image_width );
+            uint32_t HWHeight = Helper::getTexturePow2( image_height );
 
-            for( uint32_t j = 0; j != dataInfo->height; ++j )
+            uint32_t mipmap_width = HWWidth >> mipmap;
+            uint32_t mipmap_height = HWHeight >> mipmap;
+
+            const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
+
+            // copy pixels on the edge for better image quality
+            if( dataInfo->width != mipmap_width )
             {
-                stdex::memorycopy( image_data, dataInfo->width * pixel_size, image_data + (dataInfo->width - 1) * pixel_size, pixel_size );
+                uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
+                uint32_t pixel_size = Helper::getPixelFormatChannels( dataInfo->format );
 
-                image_data += pitch;
+                for( uint32_t j = 0; j != dataInfo->height; ++j )
+                {
+                    stdex::memorycopy( image_data, dataInfo->width * pixel_size, image_data + (dataInfo->width - 1) * pixel_size, pixel_size );
+
+                    image_data += pitch;
+                }
             }
-        }
 
-        if( dataInfo->height != mipmap_height )
-        {
-            uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
-            size_t pixel_size = pitch / HWWidth;
+            if( dataInfo->height != mipmap_height )
+            {
+                uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
+                uint32_t pixel_size = Helper::getPixelFormatChannels( dataInfo->format );
 
-            stdex::memorycopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
+                stdex::memorycopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
+            }
         }
 
         _image->unlock( locked, 0, true );

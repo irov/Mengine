@@ -38,6 +38,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Error.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/TextureHelper.h"
 
 #include "Config/StdString.h"
 
@@ -537,6 +538,12 @@ namespace Mengine
 
         renderImage->setDirect3D11Device( m_pD3DDevice );
 
+        if( ((_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
+        {
+            _width = Helper::getTexturePow2( _width );
+            _height = Helper::getTexturePow2( _height );
+        }
+
         if( renderImage->initialize( _mipmaps, _width, _height, _format ) == false )
         {
             LOGGER_ERROR( "can't initialize image %ux%u channels %u depth %u format %u"
@@ -594,6 +601,12 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture );
 
         renderTargetTexture->setDirect3D11Device( m_pD3DDevice );
+
+        if( ((_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
+        {
+            _width = Helper::getTexturePow2( _width );
+            _height = Helper::getTexturePow2( _height );
+        }
 
         if( renderTargetTexture->initialize( _width, _height, _format ) == false )
         {

@@ -4,6 +4,7 @@
 #include "DX9ErrorHelper.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/memorycopy.h"
 
@@ -42,22 +43,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
-        if( m_pD3DSurfacePlain == nullptr )
-        {
-            return false;
-        }
-
-        if( m_pD3DSurface == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DSurfacePlain, "not set d3d surface plain" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DSurface, "not set d3d surface" );
 
         DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurface, m_pD3DSurfacePlain) );
 
         D3DLOCKED_RECT LockedRect;
-        DXCALL( m_pD3DSurfacePlain, LockRect, (&LockedRect, NULL, 0) );
-
-        if( LockedRect.pBits == NULL || LockedRect.Pitch == 0 )
+        IF_DXCALL( m_pD3DSurfacePlain, LockRect, (&LockedRect, NULL, 0) )
         {
             return false;
         }

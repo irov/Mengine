@@ -231,7 +231,7 @@ namespace Mengine
         uint32_t height = (uint32_t)m_size.y;
 
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
-            ->createRenderTargetTexture( width, height, 3, PF_A8R8G8B8, MENGINE_DOCUMENT_FACTORABLE );
+            ->createRenderTargetTexture( width, height, PF_A8R8G8B8, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, "invalid create render target texture [%u, %u]"
             , width

@@ -37,6 +37,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Error.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/TextureHelper.h"
 
 #include "Config/StdString.h"
 
@@ -76,6 +77,10 @@ namespace Mengine
         , m_indexBufferCount( 0 )
         , m_waitForVSync( false )
         , m_lostDevice( false )
+        , m_supportA8( false )
+        , m_supportL8( false )
+        , m_supportR8G8B8( false )
+        , m_supportNonPow2( false )
     {
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
@@ -200,6 +205,11 @@ namespace Mengine
             return false;
         }
 
+        m_supportA8 = this->supportTextureFormat( PF_A8 );
+        m_supportL8 = this->supportTextureFormat( PF_L8 );
+        m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
+        m_supportNonPow2 = this->supportTextureNonPow2();
+
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
 
         m_factoryRenderVertexAttribute = Helper::makeFactoryPoolWithListener<DX9RenderVertexAttribute, 8>( this, &DX9RenderSystem::onDestroyDX9VertexAttribute_, MENGINE_DOCUMENT_FACTORABLE );
@@ -236,7 +246,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_indexBufferCount == 0 );
 
         m_d3d9Library = nullptr;
-        
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
@@ -635,6 +645,49 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::updateImageParams_( uint32_t * const _width, uint32_t * const _height, EPixelFormat * const _format ) const
+    {
+        uint32_t width = *_width;
+        uint32_t height = *_height;
+
+        if( ((width & (width - 1)) != 0 || (height & (height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
+        {
+            *_width = Helper::getTexturePow2( width );
+            *_height = Helper::getTexturePow2( height );
+        }
+
+        EPixelFormat format = *_format;
+
+        switch( format )
+        {
+        case PF_A8:
+            {
+                if( m_supportA8 == true )
+                {
+                    *_format = PF_A8;
+                }
+                else
+                {
+                    *_format = PF_A8R8G8B8;
+                }
+            }break;
+        case PF_R8G8B8:
+            {
+                if( m_supportR8G8B8 == true )
+                {
+                    *_format = PF_R8G8B8;
+                }
+                else
+                {
+                    *_format = PF_X8R8G8B8;
+                }
+            }break;
+        default:
+            {
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
@@ -645,21 +698,28 @@ namespace Mengine
 
         renderImage->setDirect3DDevice9( m_pD3DDevice );
 
-        if( renderImage->initialize( _mipmaps, _width, _height, _format ) == false )
+        uint32_t fix_width = _width;
+        uint32_t fix_height = _height;
+        EPixelFormat fix_format = _format;
+        this->updateImageParams_( &fix_width, &fix_height, &fix_format );
+
+        if( renderImage->initialize( _mipmaps, fix_width, fix_height, fix_format ) == false )
         {
-            LOGGER_ERROR( "can't initialize image [%ux%u] format [%u]"
-                , _width
-                , _height
-                , _format
+            LOGGER_ERROR( "can't initialize image [%ux%u] format [%u] (doc %s)"
+                , renderImage->getHWWidth()
+                , renderImage->getHWHeight()
+                , renderImage->getHWPixelFormat()
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
         }
 
-        LOGGER_INFO( "render", "texture normal created [%ux%u] format [%u]"
+        LOGGER_INFO( "render", "texture normal created [%ux%u] format [%u] (doc %s)"
             , renderImage->getHWWidth()
             , renderImage->getHWHeight()
             , renderImage->getHWPixelFormat()
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         m_renderResourceHandlers.push_back( renderImage.get() );
@@ -693,7 +753,7 @@ namespace Mengine
         return renderImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -703,12 +763,18 @@ namespace Mengine
 
         renderTargetTexture->setDirect3DDevice9( m_pD3DDevice );
 
-        if( renderTargetTexture->initialize( _width, _height, _channels, _format ) == false )
+        uint32_t fix_width = _width;
+        uint32_t fix_height = _height;
+        EPixelFormat fix_format = _format;
+        this->updateImageParams_( &fix_width, &fix_height, &fix_format );
+
+        if( renderTargetTexture->initialize( fix_width, fix_height, fix_format ) == false )
         {
-            LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u"
-                , _width
-                , _height
-                , _format
+            LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u (doc %s)"
+                , renderTargetTexture->getHWWidth()
+                , renderTargetTexture->getHWHeight()
+                , renderTargetTexture->getHWPixelFormat()
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -716,10 +782,11 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( renderTargetTexture.get() );
 
-        LOGGER_INFO( "render", "offscreen target created %ux%u format %u"
-            , _width
-            , _height
-            , _format
+        LOGGER_INFO( "render", "offscreen target created %ux%u format %u (doc %s)"
+            , renderTargetTexture->getHWWidth()
+            , renderTargetTexture->getHWHeight()
+            , renderTargetTexture->getHWPixelFormat()
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
 #ifdef MENGINE_DEBUG
@@ -737,7 +804,7 @@ namespace Mengine
         return renderTargetTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -747,21 +814,28 @@ namespace Mengine
 
         renderTargetOffscreen->setDirect3DDevice9( m_pD3DDevice );
 
-        if( renderTargetOffscreen->initialize( _width, _height, _channels, _format ) == false )
+        uint32_t fix_width = _width;
+        uint32_t fix_height = _height;
+        EPixelFormat fix_format = _format;
+        this->updateImageParams_( &fix_width, &fix_height, &fix_format );
+
+        if( renderTargetOffscreen->initialize( fix_width, fix_height, fix_format ) == false )
         {
-            LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u"
-                , _width
-                , _height
-                , _format
+            LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u (doc %s)"
+                , renderTargetOffscreen->getHWWidth()
+                , renderTargetOffscreen->getHWHeight()
+                , renderTargetOffscreen->getHWPixelFormat()
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
         }
 
-        LOGGER_INFO( "render", "offscreen target created %ux%u format %u"
-            , _width
-            , _height
-            , _format
+        LOGGER_INFO( "render", "offscreen target created %ux%u format %u (doc %s)"
+            , renderTargetOffscreen->getHWWidth()
+            , renderTargetOffscreen->getHWHeight()
+            , renderTargetOffscreen->getHWPixelFormat()
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
 #ifdef MENGINE_DEBUG

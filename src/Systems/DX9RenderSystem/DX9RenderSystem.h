@@ -94,8 +94,8 @@ namespace Mengine
 
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc ) override;
 
-        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc ) override;
-        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc ) override;
+        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc ) override;
+        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc ) override;
 
         RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
 
@@ -142,7 +142,7 @@ namespace Mengine
         void updateViewport_( const Viewport & _viewport );
 
     protected:
-        void fixNPOTSupport_( uint32_t * const _width, uint32_t * const _height ) const;
+        void updateImageParams_( uint32_t * const _width, uint32_t * const _height, EPixelFormat * const _format ) const;
 
     protected:
         ConstString m_renderSystemName;
@@ -237,5 +237,10 @@ namespace Mengine
 
         bool m_waitForVSync;
         bool m_lostDevice;
+
+        bool m_supportA8;
+        bool m_supportL8;
+        bool m_supportR8G8B8;
+        bool m_supportNonPow2;
     };
 }

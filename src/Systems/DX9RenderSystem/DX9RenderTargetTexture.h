@@ -23,7 +23,7 @@ namespace Mengine
         ~DX9RenderTargetTexture() override;
 
     public:
-        bool initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format );
+        bool initialize( uint32_t _width, uint32_t _height, EPixelFormat _format );
         void finalize();
 
     protected:
@@ -65,11 +65,10 @@ namespace Mengine
     protected:
         uint32_t m_width;
         uint32_t m_height;
-        uint32_t m_channels;
-        EPixelFormat m_format;
 
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
+        EPixelFormat m_hwPixelFormat;
 
         float m_hwWidthInv;
         float m_hwHeightInv;

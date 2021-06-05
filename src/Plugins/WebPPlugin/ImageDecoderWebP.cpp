@@ -79,14 +79,13 @@ namespace Mengine
             return false;
         }
 
-        uint32_t channels;
         if( features.has_alpha == 0 )
         {
-            channels = 3;
+            m_dataInfo.format = PF_R8G8B8;
         }
         else
         {
-            channels = 4;
+            m_dataInfo.format = PF_A8R8G8B8;
         }
 
         //fill ImageCodecDataInfo strucuture

@@ -882,7 +882,7 @@ namespace Mengine
         if( OSXOpenUrlInDefaultBrowser( _url ) == -1 )
         {
             LOGGER_ERROR( "error set desktop wallpaper '%s'"
-                , path_file
+                , _url
             );
         }
 

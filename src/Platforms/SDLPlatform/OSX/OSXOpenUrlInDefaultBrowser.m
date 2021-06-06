@@ -6,7 +6,7 @@
 int OSXOpenUrlInDefaultBrowser( const char * _url )
 {
     NSURL* url = [[NSURL alloc] initWithString: @(_url)];
-    if (![[UIApplication sharedApplication] openURL: url])
+    if (![[NSWorkspace sharedWorkspace] openURL: url])
     {
         return -1;
     }

@@ -18,6 +18,7 @@
 #if defined(MENGINE_PLATFORM_OSX)
 extern "C" {
 #   include "OSX/OSXSetDesktopWallpaper.h"
+#   include "OSX/OSXOpenUrlInDefaultBrowser.h"
 }
 #endif
 
@@ -877,7 +878,18 @@ namespace Mengine
     {
         MENGINE_UNUSED( _url );
 
+#if defined(MENGINE_PLATFORM_OSX)
+        if( OSXOpenUrlInDefaultBrowser( _url ) == -1 )
+        {
+            LOGGER_ERROR( "error set desktop wallpaper '%s'"
+                , path_file
+            );
+        }
+
+        return true;
+#else
         return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::stopPlatform()

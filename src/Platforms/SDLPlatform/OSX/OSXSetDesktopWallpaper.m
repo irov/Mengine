@@ -21,7 +21,7 @@ int OSXSetDesktopWallpaper( const char * _url )
                                                    forScreen:currentScreen
                                                      options:screenOptions
                                                        error:&error]) {
-        return (int)[error code];
+        return -1;
     }
 
     return 0;

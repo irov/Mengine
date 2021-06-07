@@ -13,6 +13,8 @@
 
 #include "ToolUtils/ToolUtils.h"
 
+#include "Config/Config.h"
+
 #include <Shlwapi.h>
 #include <shellapi.h>
 
@@ -54,9 +56,9 @@ const unsigned int PVRTEX_V1_HEADER_SIZE = 44; // old header size was 44 for ide
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
 
     int cmd_num;
     LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
@@ -81,7 +83,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in.empty() == true )
     {
-        message_error( "not found 'in' param\n"
+        message_error( "not found 'in' param"
         );
 
         return 1;
@@ -89,7 +91,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( out.empty() == true )
     {
-        message_error( "not found 'out' param\n"
+        message_error( "not found 'out' param"
         );
 
         return 1;

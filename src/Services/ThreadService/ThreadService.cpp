@@ -42,7 +42,7 @@ namespace Mengine
 
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
-                        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ namespace Mengine
 
             td.identity->removeTask();
             td.identity->join();
-            
+
             m_threads.erase( it );
 
             return true;

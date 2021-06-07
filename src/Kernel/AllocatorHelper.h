@@ -62,7 +62,7 @@ namespace Mengine
             _ptr->~T();
 
             Helper::deallocateMemory( _ptr, _doc );
-        }        
+        }
         //////////////////////////////////////////////////////////////////////////
     }
 }

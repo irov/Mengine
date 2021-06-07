@@ -132,7 +132,7 @@ namespace Mengine
         void * p = ::malloc( _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu'"
-            , _size 
+            , _size
         );
 
         Detail::setMemoryOverrideCorruptionTrap( p, _size );
@@ -339,7 +339,7 @@ namespace Mengine
 
         return r.count;
 #else
-        *_doc = "";
+        * _doc = "";
 
         return 0;
 #endif

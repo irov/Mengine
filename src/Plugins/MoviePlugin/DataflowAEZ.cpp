@@ -39,7 +39,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
         {
-            Movie2Data * data = static_cast<Movie2Data *>( _ud );
+            Movie2Data * data = static_cast<Movie2Data *>(_ud);
 
             aeMovieResourceTypeEnum resource_type = _resource->type;
 

@@ -42,7 +42,7 @@ namespace Mengine
         uint64_t milliseconds_minute64 = minute64 * 1000ULL * 60ULL;
         uint64_t milliseconds_second64 = second64 * 1000ULL;
 
-        uint64_t total = milliseconds 
+        uint64_t total = milliseconds
             + milliseconds_second64
             + milliseconds_minute64
             + milliseconds_hour64
@@ -56,7 +56,7 @@ namespace Mengine
     int32_t Win32DateTimeProvider::getTimeZoneOffset() const
     {
         TIME_ZONE_INFORMATION TimeZoneInformation;
-        
+
         DWORD zoneId = ::GetTimeZoneInformation( &TimeZoneInformation );
 
         switch( zoneId )

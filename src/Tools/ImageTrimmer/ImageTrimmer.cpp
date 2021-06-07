@@ -1,12 +1,3 @@
-#include <Windows.h>
-
-#include <shellapi.h>
-
-#include <stdio.h>
-
-#include <string>
-#include <vector>
-
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/ServiceInterface.h"
@@ -29,9 +20,12 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "ToolUtils/ToolUtils.h"
 #include "ToolUtils/ToolLogger.h"
+
+#include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
@@ -61,7 +55,7 @@ SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     static bool initializeEngine()
     {
@@ -144,7 +138,7 @@ namespace Mengine
             return false;
         }
 
-        const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
+        const ImageCodecDataInfo * decode_dataInfo = imageDecoder->getCodecDataInfo();
 
         if( decode_dataInfo->width == 0 ||
             decode_dataInfo->height == 0 )
@@ -152,16 +146,11 @@ namespace Mengine
             return false;
         }
 
-        ImageCodecOptions decode_options;
-
-        decode_options.channels = decode_dataInfo->channels;
-        decode_options.pitch = decode_dataInfo->width * decode_dataInfo->channels;
-
-        imageDecoder->setOptions( &decode_options );
-
         uint32_t width = decode_dataInfo->width;
         uint32_t height = decode_dataInfo->height;
-        uint32_t channels = decode_dataInfo->channels;
+        EPixelFormat format = decode_dataInfo->format;
+
+        uint32_t channels = Helper::getPixelFormatChannels( format );
 
         size_t bufferSize = width * height * channels;
 
@@ -173,14 +162,20 @@ namespace Mengine
             return false;
         }
 
-        unsigned char * texture_buffer = memory_texture->newBuffer( bufferSize );
+        uint8_t * texture_buffer = memory_texture->newBuffer( bufferSize );
 
         if( texture_buffer == nullptr )
         {
             return false;
         }
 
-        if( imageDecoder->decode( texture_buffer, bufferSize ) == 0U )
+        ImageDecoderData data;
+        data.buffer = texture_buffer;
+        data.size = bufferSize;
+        data.pitch = width * channels;
+        data.format = format;
+
+        if( imageDecoder->decode( &data ) == 0U )
         {
             return false;
         }
@@ -208,7 +203,7 @@ namespace Mengine
                 for( uint32_t j = 0; j != height; ++j )
                 {
                     uint32_t index = i + j * width;
-                    unsigned char alpha = texture_buffer[index * 4 + 3];
+                    uint8_t alpha = texture_buffer[index * 4 + 3];
 
                     if( alpha == 0 )
                     {
@@ -522,7 +517,7 @@ namespace Mengine
             Helper::unicodeToUtf8( out_path, &utf8_out );
 
             FilePath c_out = Helper::stringizeFilePath( utf8_out );
-            
+
             OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( fileGroup, c_out, MENGINE_DOCUMENT_FUNCTION );
 
             if( output_stream == nullptr )
@@ -543,22 +538,18 @@ namespace Mengine
                 return false;
             }
 
-            ImageCodecOptions encode_options;
-
-            encode_options.pitch = new_width * decode_dataInfo->channels;
-            encode_options.channels = decode_dataInfo->channels;
-
-            imageEncoder->setOptions( &encode_options );
+            ImageEncoderData encode_data;
+            encode_data.buffer = new_textureBuffer;
+            encode_data.size = new_bufferSize;
+            encode_data.pitch = new_width * channels;
 
             ImageCodecDataInfo encode_dataInfo;
-            //dataInfo.format = _image->getHWPixelFormat();
+            encode_dataInfo.mipmaps = 1;
             encode_dataInfo.width = new_width;
             encode_dataInfo.height = new_height;
-            encode_dataInfo.channels = decode_dataInfo->channels;
-            encode_dataInfo.depth = 1;
-            encode_dataInfo.mipmaps = 1;
+            encode_dataInfo.format = decode_dataInfo->format;
 
-            if( imageEncoder->encode( new_textureBuffer, new_bufferSize, &encode_dataInfo ) == 0 )
+            if( imageEncoder->encode( &encode_data, &encode_dataInfo ) == 0 )
             {
                 return false;
             }
@@ -575,7 +566,7 @@ namespace Mengine
 
             if( err != 0 )
             {
-                message_error( "invalid _wfopen %ls err %d\n"
+                message_error( "invalid _wfopen %ls err %d"
                     , infoCanonicalizeQuote
                     , err
                 );
@@ -613,9 +604,9 @@ static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
 
     {
         Mengine::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Mengine::WString() );
@@ -627,8 +618,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         if( in_path.empty() == true )
         {
-            message_error( "not found 'in' param"
-            );
+            message_error( "not found 'in' param" );
 
             return EXIT_FAILURE;
         }

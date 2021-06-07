@@ -269,7 +269,7 @@ namespace Mengine
 
             mt::mul_v2_v2_m4( renderViewportWM.begin, m_orthogonalViewport.begin, wm );
             mt::mul_v2_v2_m4( renderViewportWM.end, m_orthogonalViewport.end, wm );
-            
+
             if( m_clampViewport == true )
             {
                 float gameViewportAspect;

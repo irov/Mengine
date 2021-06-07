@@ -115,9 +115,9 @@ static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
 
     {
         Mengine::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Mengine::WString() );
@@ -128,7 +128,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         {
             message_error( "not found 'in' param" );
 
-            return 0;
+            return EXIT_FAILURE;
         }
 
         try
@@ -137,7 +137,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             {
                 message_error( "ImageTrimmer invalid initialize" );
 
-                return 0;
+                return EXIT_FAILURE;
             }
         }
         catch( const std::exception & se )
@@ -146,7 +146,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
                 , se.what()
             );
 
-            return 0;
+            return EXIT_FAILURE;
         }
 
         Mengine::FilePath fp_protocol = Mengine::Helper::unicodeToFilePath( protocol );
@@ -156,7 +156,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         if( PLUGIN_SERVICE()
             ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
         {
-            return 0;
+            return EXIT_FAILURE;
         }
 
         using namespace Mengine::Literals;
@@ -170,7 +170,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
                 , fp_in.c_str()
             );
 
-            return 0;
+            return EXIT_FAILURE;
         }
 
         if( decoder->prepareData( nullptr ) == false )
@@ -179,38 +179,32 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
                 , fp_in.c_str()
             );
 
-            return 0;
+            return EXIT_FAILURE;
         }
 
-        Mengine::XmlCodecOptions options;
-        options.pathProtocol = fp_protocol;
+        Mengine::XmlDecoderData data;
+        data.pathProtocol = fp_protocol;
 
         Mengine::FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( Mengine::ConstString::none() );
 
         if( fileGroup == nullptr )
         {
-            LOGGER_ERROR( "LoaderEngine::makeBin_ invalid get file group"
-            );
+            LOGGER_ERROR( "LoaderEngine::makeBin_ invalid get file group" );
 
-            return 0;
+            return EXIT_FAILURE;
         }
 
         const Mengine::FilePath & path = fileGroup->getRelationPath();
 
-        options.pathXml = Mengine::Helper::concatenationFilePath( path, fp_in );
-        options.pathBin = Mengine::Helper::concatenationFilePath( path, fp_out );
+        data.pathXml = Mengine::Helper::concatenationFilePath( path, fp_in );
+        data.pathBin = Mengine::Helper::concatenationFilePath( path, fp_out );
 
-        if( decoder->setOptions( &options ) == false )
+        if( decoder->decode( &data ) == 0 )
         {
-            return 0;
-        }
-
-        if( decoder->decode( 0, 0 ) == 0 )
-        {
-            return 0;
+            return EXIT_FAILURE;
         }
     }
-        
-    return 0;
+
+    return EXIT_SUCCESS;
 }

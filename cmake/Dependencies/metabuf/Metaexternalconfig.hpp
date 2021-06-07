@@ -11,6 +11,10 @@
 extern void * _metabuf_malloc( size_t _size );
 extern void _metabuf_free( void * _ptr );
 
+#ifndef METABUF_UNUSED
+#define METABUF_UNUSED(X) (void)X
+#endif
+
 #ifndef METABUF_MALLOC
 #define METABUF_MALLOC(S) (_metabuf_malloc(S))
 #endif
@@ -36,13 +40,15 @@ namespace Metabuf
         {
             std::size_t element_size = sizeof( T );
             std::size_t total_size = element_size * n;
-            void * p = _metabuf_malloc( total_size );
+            void * p = METABUF_MALLOC( total_size );
             return static_cast<T *>(p);
         }
 
-        void deallocate( T * p, std::size_t )
+        void deallocate( T * p, std::size_t s )
         {
-            _metabuf_free( p );
+            MENGINE_UNUSED( s );
+
+            METABUF_FREE( p, s );
         }
     };
 

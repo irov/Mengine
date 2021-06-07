@@ -230,9 +230,9 @@ namespace Mengine
                 );
 
                 return false;
-            }break;            
+            }break;
         }
-        
+
 
         return true;
     }

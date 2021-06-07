@@ -41,7 +41,7 @@ namespace Mengine
             duration += delay;
 
             MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( resourceName, ResourceImagePtr, false, "resource '%s' type does not match 'ResourceImage'"
-                , resourceName.c_str() 
+                , resourceName.c_str()
             );
 
             const ResourceImagePtr & resourceImage = resourceBank->getResource( groupName, resourceName );

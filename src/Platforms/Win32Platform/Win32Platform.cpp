@@ -3384,16 +3384,21 @@ namespace Mengine
             DWORD cbNeeded;
             if( (*pEnumProcessModules)(hProcess, hMods, sizeof( hMods ), &cbNeeded) == FALSE )
             {
-                LOGGER_ERROR( "invalid enum process modules psapi.dll" );
+                DWORD le = ::GetLastError();
+
+                LOGGER_ERROR( "invalid enum process modules psapi.dll [%lu]"
+                    , le
+                );
 
                 ::FreeLibrary( hPsapi );
 
                 return FALSE;
             }
 
-            if( cbNeeded > 1024 )
+            //cppcheck-suppress uninitvar
+            if( cbNeeded > 2048 )
             {
-                LOGGER_ERROR( "invalid needed > 1024 psapi.dll" );
+                LOGGER_ERROR( "invalid needed > 2048 psapi.dll" );
 
                 ::FreeLibrary( hPsapi );
 
@@ -4130,7 +4135,7 @@ namespace Mengine
     bool Win32Platform::getDesktopResolution( Resolution * const _resolution ) const
     {
         int32_t cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
-        
+
         if( cxscreen == 0 )
         {
             LOGGER_ERROR( "GetSystemMetrics SM_CXSCREEN invalid %s"

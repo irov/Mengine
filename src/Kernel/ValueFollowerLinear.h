@@ -3,7 +3,7 @@
 #include "Kernel/ValueFollower.h"
 
 namespace Mengine
-{    
+{
     template <typename T>
     class ValueFollowerLinear
         : public ValueFollower<T>

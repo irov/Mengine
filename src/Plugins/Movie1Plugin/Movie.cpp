@@ -83,7 +83,7 @@ namespace Mengine
             {
                 return false;
             }
-             
+
             if( this->createLayers_() == false )
             {
                 LOGGER_ERROR( "'%s' resource '%s' can't create layers"

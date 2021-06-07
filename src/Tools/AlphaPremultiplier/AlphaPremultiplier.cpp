@@ -21,14 +21,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in_path.empty() == true )
     {
-        message_error( "not found 'in' param\n" );
+        message_error( "not found 'in' param" );
 
         return EXIT_FAILURE;
     }
 
     if( out_path.empty() == true )
     {
-        message_error( "not found 'out' param\n" );
+        message_error( "not found 'out' param" );
 
         return EXIT_FAILURE;
     }
@@ -37,7 +37,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( f_in == NULL )
     {
-        message_error( "invalid _wfopen %ls\n"
+        message_error( "invalid _wfopen %ls"
             , in_path.c_str()
         );
 
@@ -52,7 +52,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     {
         fclose( f_in );
 
-        message_error( "invalid size %ls\n"
+        message_error( "invalid size %ls"
             , in_path.c_str()
         );
 
@@ -91,10 +91,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     int len_out;
     unsigned char * data_out = stbi_write_png_to_mem( data_in, width * bpp, width, height, bpp, &len_out );
-    
+
     if( data_out == NULL )
     {
-        message_error( "invalid write png to mem\n" );
+        message_error( "invalid write png to mem" );
 
         return EXIT_FAILURE;
     }
@@ -103,7 +103,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( f_out == NULL )
     {
-        message_error( "invalid _wfopen %ls\n"
+        message_error( "invalid _wfopen %ls"
             , out_path.c_str()
         );
 

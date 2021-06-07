@@ -96,7 +96,7 @@ namespace Mengine
         const mt::vec2f & anchor = m_surface->getAnchor();
 
         mt::vec2f total_offset = offset - anchor * maxSize;
-      
+
         mt::vec2f minimal( total_offset.x, total_offset.y );
         mt::vec2f maximal( total_offset.x + size.x, total_offset.y + size.y );
 

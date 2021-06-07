@@ -119,7 +119,7 @@ namespace Mengine
         SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( SecureService, MENGINE_DOCUMENT_FUNCTION );        
+        SERVICE_CREATE( SecureService, MENGINE_DOCUMENT_FUNCTION );
 
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
@@ -207,6 +207,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     outputStream->write( memoryBuffer, memorySize );
 
     message_error( "successful ravinggen" );
-        
+
     return EXIT_SUCCESS;
 }

@@ -1,5 +1,7 @@
 #include "ToolUtils/ToolUtils.h"
 
+#include "Config/Config.h"
+
 #include "pugixml.hpp"
 
 #include <vector>
@@ -9,9 +11,9 @@
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
 
     std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
     std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
@@ -24,16 +26,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( texturepacker_path.empty() == true )
     {
-        message_error( "not found 'texturepacker' param\n"
-        );
+        message_error( "not found 'texturepacker' param" );
 
         return 0;
     }
 
     if( in_path.empty() == true )
     {
-        message_error( "not found 'image' param\n"
-        );
+        message_error( "not found 'image' param" );
 
         return 0;
     }
@@ -100,7 +100,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         , &lpStartupInfo
         , &lpProcessInformation ) == FALSE )
     {
-        message_error( "invalid CreateProcess %ls %ls\n"
+        message_error( "invalid CreateProcess %ls %ls"
             , TexturePathCanonicalizeQuote
             , lpCommandLine
         );
@@ -119,7 +119,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( exit_code != 0 )
     {
-        message_error( "invalid Process %ls exit_code %d\n"
+        message_error( "invalid Process %ls exit_code %d"
             , TexturePathCanonicalizeQuote
             , exit_code
         );
@@ -131,7 +131,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( f == NULL )
     {
-        message_error( "invalid _wfopen %ls\n"
+        message_error( "invalid _wfopen %ls"
             , outCanonicalize
         );
 
@@ -172,8 +172,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     uint32_t oH = xml_sprite_oH.as_uint();
 
     //TODO
-    (void)oW;
-    (void)oH;
+    MENGINE_UNUSED( oW );
+    MENGINE_UNUSED( oH );
 
     pugi::xml_node xml_vertices = doc.first_element_by_path( "TextureAtlas/sprite/vertices" );
 
@@ -281,7 +281,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( err != 0 )
     {
-        message_error( "invalid _wfopen %ls err %d\n"
+        message_error( "invalid _wfopen %ls err %d"
             , infoCanonicalizeQuote
             , err
         );

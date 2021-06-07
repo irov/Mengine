@@ -7,12 +7,13 @@ void message_error( const char * _format, ... )
 
     va_start( argList, _format );
 
-    char str[2048];
+    char str[2048] = {'\0'};
     vsnprintf( str, 2048 - 1, _format, argList );
 
     va_end( argList );
 
     printf( str );
+    printf( "\n" );
 }
 //////////////////////////////////////////////////////////////////////////
 void unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, size_t _size )
@@ -127,7 +128,7 @@ void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 int ForceRemoveDirectory( LPCTSTR dir )
 {
     size_t len = wcslen( dir ) + 2; // required to set 2 nulls at end of argument to SHFileOperation.
-    wchar_t * tempdir = (wchar_t*)malloc( len * sizeof( wchar_t ) );
+    wchar_t * tempdir = (wchar_t *)malloc( len * sizeof( wchar_t ) );
     memset( tempdir, 0, len * sizeof( wchar_t ) );
     wcscpy( tempdir, dir );
 
@@ -141,7 +142,7 @@ int ForceRemoveDirectory( LPCTSTR dir )
         FOF_SILENT,
         false,
         0,
-        L"" };
+        L""};
 
     int ret = SHFileOperation( &file_op );
 

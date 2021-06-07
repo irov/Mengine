@@ -856,7 +856,8 @@ namespace Mengine
                 return false;
             }
 
-            node->removeChildren( []( const NodePtr & ) {} );
+            node->removeChildren( []( const NodePtr & )
+            {} );
 
             return true;
         }

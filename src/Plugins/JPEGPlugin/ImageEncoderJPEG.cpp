@@ -164,7 +164,7 @@ namespace Mengine
 #endif
 #endif
 
-        struct jpeg_compress_struct cinfo = { 0 };
+        struct jpeg_compress_struct cinfo = {0};
         cinfo.err = jpeg_std_error( &errorMgr.pub );
         cinfo.client_data = nullptr;
 

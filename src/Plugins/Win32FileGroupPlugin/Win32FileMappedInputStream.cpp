@@ -65,7 +65,7 @@ namespace Mengine
         }
 
         m_memoryGranularity = NULL;
-        
+
         m_size = 0;
 
         m_base = nullptr;

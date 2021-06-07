@@ -102,14 +102,14 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         bool base64_decode( const Char * _base64, size_t _base64size, uint8_t * const _data, size_t _capacity, size_t * const _outsize )
-        {               
+        {
             size_t totalsize = base64_decode_size( _base64, _base64size );
 
             if( totalsize > _capacity )
             {
                 return false;
             }
-            
+
             for( uint32_t i = 0, j = 0; i != _base64size;)
             {
                 uint32_t sextet_a = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];

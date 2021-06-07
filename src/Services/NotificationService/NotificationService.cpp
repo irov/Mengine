@@ -74,7 +74,7 @@ namespace Mengine
                 return _desc.dead == false;
             } ) == observers.end(), "finalized notification '%u' has observers"
                 , index
-            );
+                );
 
             observers.clear();
 

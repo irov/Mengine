@@ -83,7 +83,7 @@ namespace Mengine
         }
         else
         {
-            mt::uv4_quad_point_rotate( *_out, m_uvTextureImage, _in );            
+            mt::uv4_quad_point_rotate( *_out, m_uvTextureImage, _in );
         }
     }
     //////////////////////////////////////////////////////////////////////////

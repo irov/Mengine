@@ -136,7 +136,7 @@ namespace Mengine
     protected:
         void addSurface_( const SurfacePtr & _surface, bool _compile );
         void removeSurface_( const SurfacePtr & _surface );
-    
+
     protected:
         void addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite );
         const ShapeQuadFixedPtr & getSprite_( uint32_t _index ) const;
@@ -144,7 +144,7 @@ namespace Mengine
     public:
         const ShapeQuadFixedPtr & findSprite( const ConstString & _name ) const;
         bool hasSprite( const ConstString & _name ) const;
-            
+
     protected:
         void addParticle_( uint32_t _index, const NodePtr & _particleEmitter );
         const NodePtr & getParticle_( uint32_t _index ) const;
@@ -171,10 +171,10 @@ namespace Mengine
 
     public:
         const HotSpotPolygonPtr & findSocket( const ConstString & _name ) const;
-        bool hasSocket( const ConstString & _name ) const;                
+        bool hasSocket( const ConstString & _name ) const;
         void foreachSockets( const LambdaNodes & _lambda );
 
-    
+
     protected:
         void addText_( uint32_t _index, const TextFieldPtr & _text );
         const TextFieldPtr & getText_( uint32_t _index ) const;

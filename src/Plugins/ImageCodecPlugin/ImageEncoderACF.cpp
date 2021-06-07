@@ -44,7 +44,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid write magic header" );
 
             return 0;
-        }        
+        }
 
         uint32_t width = dataInfo->width;
         m_stream->write( &width, sizeof( width ) );

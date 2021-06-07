@@ -109,7 +109,7 @@ namespace Mengine
     GlyphCode FontBase::getMetricSymbol() const
     {
         return m_metricsSymbol;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void FontBase::setHeight( uint32_t _height )
     {
@@ -275,7 +275,7 @@ namespace Mengine
                 LOGGER_ERROR( "text '%.*s' invalid utf8 [%u]"
                     , (int32_t)_size
                     , _text
-                    , err 
+                    , err
                 );
 
                 return false;

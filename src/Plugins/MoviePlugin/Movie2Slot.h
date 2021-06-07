@@ -7,7 +7,7 @@
 #include "Kernel/Floats.h"
 
 namespace Mengine
-{    
+{
     class Movie2Slot
         : public Node
         , protected DummyRender

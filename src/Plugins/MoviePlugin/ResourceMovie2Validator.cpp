@@ -166,7 +166,7 @@ namespace Mengine
             ResourceMovie2Ptr resource;
             bool successful;
         };
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
     {

@@ -695,7 +695,7 @@ namespace Mengine
         for( const HashtableSprites::value_type & value : m_sprites )
         {
             const ShapeQuadFixedPtr & sprite = value.element;
-            
+
             sprite->dispose();
         }
 

@@ -36,7 +36,7 @@ namespace Mengine
         MENGINE_VA_LIST_END( args );
 
         Char exception_msg[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
-        
+
         MENGINE_STRCAT( exception_msg, "message: " );
         MENGINE_STRCAT( exception_msg, foramt_msg );
         MENGINE_STRCAT( exception_msg, "\n" );
@@ -51,7 +51,7 @@ namespace Mengine
         MENGINE_STRCAT( exception_msg, "line: " );
         MENGINE_STRCAT( exception_msg, format_line );
         MENGINE_STRCAT( exception_msg, "\n" );
-                
+
 #ifdef MENGINE_PLATFORM_WINDOWS
         if( SERVICE_EXIST( PlatformInterface ) == true )
         {

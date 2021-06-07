@@ -51,7 +51,7 @@ namespace Mengine
                 , Detail::jpeg_get_debug_filepath( _cinfo ).c_str()
                 , buffer
             );
-        
+
             if( _cinfo->err->msg_parm.i[0] != 13 )
             {
                 jpeg_destroy( _cinfo );

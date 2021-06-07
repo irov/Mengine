@@ -20,7 +20,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
-        
+
     public:
         bool hasModule( const ConstString & _name ) const override;
         bool runModule( const ConstString & _name, const DocumentPtr & _doc ) override;

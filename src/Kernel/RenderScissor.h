@@ -14,7 +14,7 @@ namespace Mengine
     class RenderScissor
         : public Node
         , public Observable
-        , public RenderScissorInterface        
+        , public RenderScissorInterface
         , protected BaseTransformation
     {
         DECLARE_FACTORABLE( RenderScissor );

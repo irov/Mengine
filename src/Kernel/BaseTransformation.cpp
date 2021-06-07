@@ -383,7 +383,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::getTransformationData( uint8_t * const _transformationFlag, mt::vec3f * const _position, mt::vec3f * const _origin, mt::vec3f * const _scale, mt::vec2f * const _skew, mt::vec3f * const _orientation ) const
-    {   
+    {
         *_transformationFlag = m_transformationFlag;
         *_position = m_position;
         *_origin = m_origin;

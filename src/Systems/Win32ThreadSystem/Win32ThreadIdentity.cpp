@@ -36,7 +36,7 @@ namespace Mengine
 #pragma warning(disable: 6320 6322)  
             __try
             {
-                ::RaiseException( MS_VC_EXCEPTION, 0, sizeof( info ) / sizeof( ULONG_PTR ), (ULONG_PTR *)& info );
+                ::RaiseException( MS_VC_EXCEPTION, 0, sizeof( info ) / sizeof( ULONG_PTR ), (ULONG_PTR *)&info );
             }
             __except( EXCEPTION_EXECUTE_HANDLER )
             {

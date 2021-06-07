@@ -44,6 +44,6 @@ namespace Mengine
 
         bool m_available;
         bool m_initialize;
-        bool m_running;        
+        bool m_running;
     };
 }

@@ -5,7 +5,7 @@
 #include "Kernel/Factorable.h"
 
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     class ThreadMutexDummy
         : public ThreadMutexInterface

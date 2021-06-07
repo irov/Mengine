@@ -41,7 +41,7 @@ namespace Mengine
 
     protected:
         LPVOID m_memoryGranularity;
-        
+
         size_t m_size;
 
         uint8_t * m_base;

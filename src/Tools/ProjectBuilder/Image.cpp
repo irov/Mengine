@@ -9,6 +9,8 @@
 
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/PixelFormatHelper.h"
+#include "Kernel/ImageCodecHelper.h"
 #include "Kernel/Document.h"
 
 namespace Mengine
@@ -25,7 +27,7 @@ namespace Mengine
     {
         const FactoryPtr & factory = getFactoryImage();
 
-		ImagePtr image = factory->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ImagePtr image = factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         return image;
     }
@@ -33,7 +35,7 @@ namespace Mengine
     Image::Image()
         : m_width( 0 )
         , m_height( 0 )
-        , m_channels( 0 )
+        , m_format( PF_UNKNOWN )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -75,7 +77,7 @@ namespace Mengine
 
         m_width = dataInfo->width;
         m_height = dataInfo->height;
-        m_channels = dataInfo->channels;
+        m_format = dataInfo->format;
 
         m_memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
@@ -85,25 +87,24 @@ namespace Mengine
             return false;
         }
 
-        void * memory = m_memory->newBuffer( m_width * m_height * m_channels );
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
 
-        if( memory == nullptr )
+        void * memory_buffer = m_memory->newBuffer( m_width * m_height * channels );
+
+        if( memory_buffer == nullptr )
         {
             return false;
         }
 
-        ImageCodecOptions options;
-        options.channels = m_channels;
-        options.pitch = m_width * m_channels;
+        uint32_t texture_size = Helper::getImageCodecDataSize( dataInfo );
 
-        if( imageDecoder->setOptions( &options ) == false )
-        {
-            return false;
-        }
+        ImageDecoderData data;
+        data.buffer = memory_buffer;
+        data.size = texture_size;
+        data.format = m_format;
+        data.pitch = m_width * channels;
 
-        size_t texture_size = dataInfo->getSize();
-
-        if( imageDecoder->decode( memory, texture_size ) == 0 )
+        if( imageDecoder->decode( &data ) == 0 )
         {
             return false;
         }
@@ -139,35 +140,51 @@ namespace Mengine
             return false;
         }
 
-        ImageCodecOptions encode_options;
-
-        encode_options.pitch = m_width * m_channels;
-        encode_options.channels = m_channels;
-
-        encoder->setOptions( &encode_options );
-
-        ImageCodecDataInfo di;
-
-        di.mipmaps = 0;
-        di.width = m_width;
-        di.height = m_height;
-        di.channels = m_channels;
-        di.depth = 1;
-        di.quality = 100;
+        ImageCodecDataInfo info;
+        info.mipmaps = 0;
+        info.width = m_width;
+        info.height = m_height;
+        info.format = m_format;
+        info.quality = 100;
 
         void * memory_buffer = m_memory->getBuffer();
         size_t memory_size = m_memory->getSize();
 
-        encoder->encode( memory_buffer, memory_size, &di );
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
+        ImageEncoderData data;
+        data.buffer = memory_buffer;
+        data.size = memory_size;
+        data.pitch = m_width * channels;
+
+        if( encoder->encode( &data, &info ) == 0 )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Image::create( uint32_t _width, uint32_t _height, uint32_t _channel )
+    bool Image::create( uint32_t _width, uint32_t _height, uint32_t _channels )
     {
         m_width = _width;
         m_height = _height;
-        m_channels = _channel;
+
+        switch( _channels )
+        {
+        case 1:
+            {
+                m_format = PF_L8;
+            }break;
+        case 3:
+            {
+                m_format = PF_R8G8B8;
+            }break;
+        case 4:
+            {
+                m_format = PF_A8R8G8B8;
+            }break;
+        }
 
         m_memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
@@ -177,7 +194,7 @@ namespace Mengine
             return false;
         }
 
-        void * memory_buffer = m_memory->newBuffer( m_width * m_height * m_channels );
+        void * memory_buffer = m_memory->newBuffer( m_width * m_height * _channels );
 
         if( memory_buffer == nullptr )
         {
@@ -189,22 +206,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Image::fill( const Color & _colour )
     {
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
         uint8_t * memory = this->getMemory();
 
         for( uint32_t j = 0; j != m_height; ++j )
         {
             for( uint32_t i = 0; i != m_width; ++i )
             {
-                uint32_t index = (i + (j * m_width)) * m_channels;
+                uint32_t index = (i + (j * m_width)) * channels;
 
-                if( m_channels == 4 )
+                if( channels == 4 )
                 {
                     memory[index + 0] = static_cast<uint8_t>(_colour.getR() * 255.f);
                     memory[index + 1] = static_cast<uint8_t>(_colour.getG() * 255.f);
                     memory[index + 2] = static_cast<uint8_t>(_colour.getB() * 255.f);
                     memory[index + 3] = static_cast<uint8_t>(_colour.getA() * 255.f);
                 }
-                else if( m_channels == 3 )
+                else if( channels == 3 )
                 {
                     memory[index + 0] = static_cast<uint8_t>(_colour.getR() * 255.f);
                     memory[index + 1] = static_cast<uint8_t>(_colour.getG() * 255.f);
@@ -228,6 +247,8 @@ namespace Mengine
             return false;
         }
 
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
         uint8_t * this_memory = this->getMemory();
         uint8_t * paste_memory = _image->getMemory();
 
@@ -237,7 +258,7 @@ namespace Mengine
             {
                 uint32_t paste_index = (i + (j * paste_width)) * paste_channels;
 
-                uint32_t to_index = ((i + _x) + ((j + _y) * m_width)) * m_channels;
+                uint32_t to_index = ((i + _x) + ((j + _y) * m_width)) * channels;
 
                 this_memory[to_index + 0] = paste_memory[paste_index + 0];
                 this_memory[to_index + 1] = paste_memory[paste_index + 1];
@@ -247,7 +268,7 @@ namespace Mengine
                 {
                     this_memory[to_index + 3] = paste_memory[paste_index + 3];
                 }
-                else if( m_channels == 4 )
+                else if( channels == 4 )
                 {
                     this_memory[to_index + 3] = 255;
                 }
@@ -274,11 +295,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Image::getChannels() const
     {
-        return m_channels;
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
+        return channels;
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::list Image::getdata() const
     {
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
         uint8_t * memory = this->getMemory();
 
         pybind::kernel_interface * kernel = pybind::get_kernel();
@@ -290,11 +315,11 @@ namespace Mengine
             for( uint32_t i = 0; i != m_width; ++i )
             {
                 uint32_t pixel_index = i + (j * m_width);
-                uint32_t index = pixel_index * m_channels;
+                uint32_t index = pixel_index * channels;
 
-                pybind::list pixel( kernel, m_channels );
+                pybind::list pixel( kernel, channels );
 
-                for( uint32_t k = 0; k != m_channels; ++k )
+                for( uint32_t k = 0; k != channels; ++k )
                 {
                     uint8_t color = memory[index + k];
 
@@ -310,6 +335,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Image::putdata( const pybind::list & _data )
     {
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
         uint8_t * memory = this->getMemory();
 
         for( uint32_t j = 0; j != m_height; ++j )
@@ -317,11 +344,11 @@ namespace Mengine
             for( uint32_t i = 0; i != m_width; ++i )
             {
                 uint32_t pixel_index = i + (j * m_width);
-                uint32_t index = pixel_index * m_channels;
+                uint32_t index = pixel_index * channels;
 
                 pybind::list pixel = _data[pixel_index];
 
-                for( uint32_t k = 0; k != m_channels; ++k )
+                for( uint32_t k = 0; k != channels; ++k )
                 {
                     uint8_t color = pixel[k];
 
@@ -335,11 +362,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ImagePtr Image::rotate( float _angle )
     {
-        (void)_angle;
+        MENGINE_UNUSED( _angle );
+
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
 
         ImagePtr image = newImage();
 
-        image->create( m_height, m_width, m_channels );
+        image->create( m_height, m_width, channels );
 
         uint8_t * this_memory = this->getMemory();
         uint8_t * rotate_memory = image->getMemory();
@@ -348,10 +377,10 @@ namespace Mengine
         {
             for( uint32_t i = 0; i != m_width; ++i )
             {
-                uint32_t index = (i + (j * m_width)) * m_channels;
-                uint32_t rotate_index = ((m_height - j - 1) + (i * m_height)) * m_channels;
+                uint32_t index = (i + (j * m_width)) * channels;
+                uint32_t rotate_index = ((m_height - j - 1) + (i * m_height)) * channels;
 
-                for( uint32_t k = 0; k != m_channels; ++k )
+                for( uint32_t k = 0; k != channels; ++k )
                 {
                     rotate_memory[rotate_index + k] = this_memory[index + k];
                 }
@@ -363,10 +392,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     pybind::list Image::getextrema() const
     {
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
         uint8_t min_color[4];
         uint8_t max_color[4];
 
-        for( uint32_t k = 0; k != m_channels; ++k )
+        for( uint32_t k = 0; k != channels; ++k )
         {
             min_color[k] = 255;
             max_color[k] = 0;
@@ -378,9 +409,9 @@ namespace Mengine
         {
             for( uint32_t i = 0; i != m_width; ++i )
             {
-                uint32_t index = (i + (j * m_width)) * m_channels;
+                uint32_t index = (i + (j * m_width)) * channels;
 
-                for( uint32_t k = 0; k != m_channels; ++k )
+                for( uint32_t k = 0; k != channels; ++k )
                 {
                     uint8_t color = memory_buffer[index + k];
 
@@ -399,9 +430,9 @@ namespace Mengine
 
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::list py_extrema( kernel, m_channels );
+        pybind::list py_extrema( kernel, channels );
 
-        for( uint32_t k = 0; k != m_channels; ++k )
+        for( uint32_t k = 0; k != channels; ++k )
         {
             py_extrema[k] = pybind::make_tuple_t( kernel, min_color[k], max_color[k] );
         }
@@ -411,7 +442,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Image::uselessalpha() const
     {
-        if( m_channels != 4 )
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
+        if( channels != 4 )
         {
             return true;
         }
@@ -445,6 +478,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     pybind::tuple Image::split() const
     {
+        uint32_t channels = Helper::getPixelFormatChannels( m_format );
+
         ImagePtr imageRGB = newImage();
         imageRGB->create( m_width, m_height, 3 );
 
@@ -459,7 +494,7 @@ namespace Mengine
         {
             for( uint32_t i = 0; i != m_width; ++i )
             {
-                uint32_t index = (i + (j * m_width)) * m_channels;
+                uint32_t index = (i + (j * m_width)) * channels;
                 uint32_t index_rgb = (i + (j * m_width)) * 3;
                 uint32_t index_a = (i + (j * m_width)) * 1;
 

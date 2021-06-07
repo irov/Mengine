@@ -26,7 +26,7 @@ namespace Mengine
     uint8_t ShapeCircle::getQuality() const
     {
         return m_quality;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void ShapeCircle::updateVerticesLocal() const
     {
@@ -36,7 +36,7 @@ namespace Mengine
         m_indices.resize( indexSize );
         m_positions.resize( vertexSize );
         m_verticesWM.resize( vertexSize );
-        
+
 
         uint32_t indexIterator = 0;
         uint16_t vertexIterator = 0;
@@ -69,7 +69,7 @@ namespace Mengine
 
             m_positions[vertexIterator].x = x;
             m_positions[vertexIterator].y = y;
-            
+
             vertexIterator += 1;
 
             t += dt;

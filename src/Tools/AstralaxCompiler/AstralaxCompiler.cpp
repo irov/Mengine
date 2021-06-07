@@ -2,6 +2,10 @@
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
+#include "Kernel/Magic.h"
+#include "Kernel/Logger.h"
+#include "ToolUtils/ToolUtils.h"
+
 #include "magic.h"
 
 #include "lz4.h"
@@ -10,10 +14,6 @@
 #include <vector>
 #include <string>
 #include <sstream>
-
-#include "Kernel/Magic.h"
-#include "Kernel/Logger.h"
-#include "ToolUtils/ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
@@ -42,62 +42,60 @@ extern "C"
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-	(void)hInstance;
-	(void)hPrevInstance;
-	(void)nShowCmd;
-    
-	std::wstring astralax_path = parse_kwds( lpCmdLine, L"--astralax_path", std::wstring() );
-	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
-	std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
-	std::wstring csa_path = parse_kwds( lpCmdLine, L"--csa_path", std::wstring() );
-	std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
+
+    std::wstring astralax_path = parse_kwds( lpCmdLine, L"--astralax_path", std::wstring() );
+    std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
+    std::wstring csa_path = parse_kwds( lpCmdLine, L"--csa_path", std::wstring() );
+    std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
     std::wstring convert = parse_kwds( lpCmdLine, L"--convert", std::wstring() );
-    
-	if( in_path.empty() == true )
-	{
-		message_error("not found 'in' param\n"
-			);
 
-		return EXIT_FAILURE;
-	}
+    if( in_path.empty() == true )
+    {
+        message_error( "not found 'in' param" );
 
-	if( csa_path.empty() == true )
-	{
-		message_error("not found 'csa' param\n"
-			);
+        return EXIT_FAILURE;
+    }
 
-		return EXIT_FAILURE;
-	}
-	
-	WCHAR szBuffer[MAX_PATH];
-	if( astralax_path.empty() == true )
-	{
-		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D Path";
+    if( csa_path.empty() == true )
+    {
+        message_error( "not found 'csa' param" );
 
-		HKEY openedKey;
-		if( ::RegOpenKeyEx( HKEY_CURRENT_USER, regPath, 0, KEY_READ, &openedKey ) != ERROR_SUCCESS )
-		{
-			message_error("invalid RegOpenKeyEx %ls\n"
-				, regPath
-				);
+        return EXIT_FAILURE;
+    }
 
-			return EXIT_SUCCESS;
-		}
+    WCHAR szBuffer[MAX_PATH];
+    if( astralax_path.empty() == true )
+    {
+        const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D Path";
 
-		DWORD dwBufferSize = sizeof(szBuffer);
-		if( RegQueryValueEx( openedKey, NULL, 0, NULL, (LPBYTE)szBuffer, &dwBufferSize) != ERROR_SUCCESS )
-		{
-			message_error("invalid RegQueryValueEx %ls\n"
-				, regPath
-				);
+        HKEY openedKey;
+        if( ::RegOpenKeyEx( HKEY_CURRENT_USER, regPath, 0, KEY_READ, &openedKey ) != ERROR_SUCCESS )
+        {
+            message_error( "invalid RegOpenKeyEx '%ls'"
+                , regPath
+            );
 
-			return EXIT_FAILURE;
-		}
-	}
-	else
-	{
-		wcscpy_s( szBuffer, astralax_path.c_str() );
-	}
+            return EXIT_SUCCESS;
+        }
+
+        DWORD dwBufferSize = sizeof( szBuffer );
+        if( RegQueryValueEx( openedKey, NULL, 0, NULL, (LPBYTE)szBuffer, &dwBufferSize ) != ERROR_SUCCESS )
+        {
+            message_error( "invalid RegQueryValueEx '%ls'"
+                , regPath
+            );
+
+            return EXIT_FAILURE;
+        }
+    }
+    else
+    {
+        wcscpy_s( szBuffer, astralax_path.c_str() );
+    }
 
     if( out_path.empty() == true )
     {
@@ -112,76 +110,76 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         convert.clear();
     }
-	
-	std::wstring system_cmd;
 
-	system_cmd += L" /c ";
+    std::wstring system_cmd;
 
-	WCHAR inCanonicalizeQuote[MAX_PATH];	
-	ForcePathQuoteSpaces( inCanonicalizeQuote, in_path );
+    system_cmd += L" /c ";
 
-	system_cmd += L" ";
-	system_cmd += inCanonicalizeQuote;
-        
-	WCHAR outCanonicalizeQuote[MAX_PATH];
+    WCHAR inCanonicalizeQuote[MAX_PATH];
+    ForcePathQuoteSpaces( inCanonicalizeQuote, in_path );
+
+    system_cmd += L" ";
+    system_cmd += inCanonicalizeQuote;
+
+    WCHAR outCanonicalizeQuote[MAX_PATH];
     ForcePathQuoteSpaces( outCanonicalizeQuote, out_path );
-	
-	system_cmd += L" ";
-	system_cmd += outCanonicalizeQuote;
-	
-	WCHAR csaCanonicalizeQuote[MAX_PATH];
-	ForcePathQuoteSpaces( csaCanonicalizeQuote, csa_path );
 
-	system_cmd += L" ";
-	system_cmd += csaCanonicalizeQuote;
+    system_cmd += L" ";
+    system_cmd += outCanonicalizeQuote;
 
-	STARTUPINFO lpStartupInfo;
-	ZeroMemory( &lpStartupInfo, sizeof(STARTUPINFOW) );
-	lpStartupInfo.cb = sizeof(lpStartupInfo);
+    WCHAR csaCanonicalizeQuote[MAX_PATH];
+    ForcePathQuoteSpaces( csaCanonicalizeQuote, csa_path );
 
-	PROCESS_INFORMATION lpProcessInformation;
-	ZeroMemory( &lpProcessInformation, sizeof(PROCESS_INFORMATION) );
+    system_cmd += L" ";
+    system_cmd += csaCanonicalizeQuote;
 
-	WCHAR lpCommandLine[32768];
-	wcscpy_s( lpCommandLine, system_cmd.c_str() );
-    
-	if( CreateProcess( szBuffer
-		, lpCommandLine
-		, NULL
-		, NULL
-		, FALSE
-		, CREATE_NO_WINDOW
-		, NULL
-		, NULL
-		, &lpStartupInfo
-		, &lpProcessInformation ) == FALSE )
-	{
-		message_error("invalid CreateProcess %ls %ls\n"
-			, szBuffer
-			, lpCommandLine
-			);
+    STARTUPINFO lpStartupInfo;
+    ZeroMemory( &lpStartupInfo, sizeof( STARTUPINFOW ) );
+    lpStartupInfo.cb = sizeof( lpStartupInfo );
 
-		return EXIT_FAILURE;
-	}
+    PROCESS_INFORMATION lpProcessInformation;
+    ZeroMemory( &lpProcessInformation, sizeof( PROCESS_INFORMATION ) );
 
-	CloseHandle( lpProcessInformation.hThread );
+    WCHAR lpCommandLine[32768];
+    wcscpy_s( lpCommandLine, system_cmd.c_str() );
 
-	WaitForSingleObject( lpProcessInformation.hProcess, INFINITE );
+    if( CreateProcess( szBuffer
+        , lpCommandLine
+        , NULL
+        , NULL
+        , FALSE
+        , CREATE_NO_WINDOW
+        , NULL
+        , NULL
+        , &lpStartupInfo
+        , &lpProcessInformation ) == FALSE )
+    {
+        message_error( "invalid CreateProcess [%ls] command [%ls]"
+            , szBuffer
+            , lpCommandLine
+        );
 
-	DWORD exit_code;
-	GetExitCodeProcess( lpProcessInformation.hProcess, &exit_code );
+        return EXIT_FAILURE;
+    }
 
-	CloseHandle( lpProcessInformation.hProcess );
+    CloseHandle( lpProcessInformation.hThread );
 
-	if( exit_code != 0 )
-	{
-		message_error("invalid Process %ls exit_code %d\n"
-			, szBuffer
-			, exit_code
-			);
+    WaitForSingleObject( lpProcessInformation.hProcess, INFINITE );
 
-		return EXIT_FAILURE;
-	}
+    DWORD exit_code;
+    GetExitCodeProcess( lpProcessInformation.hProcess, &exit_code );
+
+    CloseHandle( lpProcessInformation.hProcess );
+
+    if( exit_code != 0 )
+    {
+        message_error( "invalid Process '%ls' exit_code [%u]"
+            , szBuffer
+            , exit_code
+        );
+
+        return EXIT_FAILURE;
+    }
 
     WCHAR outCanonicalize[MAX_PATH];
     PathCanonicalize( outCanonicalize, out_path.c_str() );
@@ -191,7 +189,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( f == NULL )
     {
-        message_error( "invalid _wfopen %ls\n"
+        message_error( "invalid _wfopen %ls"
             , outCanonicalize
         );
 
@@ -206,7 +204,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     {
         fclose( f );
 
-        message_error( "invalid size %ls\n"
+        message_error( "invalid size %ls"
             , outCanonicalize
         );
 
@@ -223,7 +221,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( mf == MAGIC_ERROR )
     {
-        message_error( "invalid mf %ls MAGIC_ERROR\n"
+        message_error( "invalid mf %ls MAGIC_ERROR"
             , outCanonicalize
         );
 
@@ -232,7 +230,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( mf == MAGIC_UNKNOWN )
     {
-        message_error( "invalid mf %ls MAGIC_UNKNOWN\n"
+        message_error( "invalid mf %ls MAGIC_UNKNOWN"
             , outCanonicalize
         );
 
@@ -269,8 +267,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     Magic_CloseFile( mf );
 
-	if( result_path.empty() == false )
-	{
+    if( result_path.empty() == false )
+    {
         WCHAR infoCanonicalizeQuote[MAX_PATH];
         ForcePathQuoteSpaces( infoCanonicalizeQuote, result_path.c_str() );
         PathUnquoteSpaces( infoCanonicalizeQuote );
@@ -280,7 +278,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         if( err != 0 )
         {
-            message_error( "invalid _wfopen %ls err %d\n"
+            message_error( "invalid _wfopen %ls err %d"
                 , infoCanonicalizeQuote
                 , err
             );
@@ -289,25 +287,25 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         }
 
 
- 		fprintf_s( f_result, "%d\n", atlasCount );
+        fprintf_s( f_result, "%d\n", atlasCount );
 
-		for( TVectorAtlas::const_iterator
-			it = atlas.begin(),
-			it_end = atlas.end();
-		it != it_end;
-		++it )
-		{
-			const AtlasDesc & desc = *it;
+        for( TVectorAtlas::const_iterator
+            it = atlas.begin(),
+            it_end = atlas.end();
+            it != it_end;
+            ++it )
+        {
+            const AtlasDesc & desc = *it;
 
-			fprintf_s( f_result, "%s\n", desc.path.c_str() );
+            fprintf_s( f_result, "%s\n", desc.path.c_str() );
             fprintf_s( f_result, "%d\n", 0 );
             fprintf_s( f_result, "%d\n", 0 );
-			fprintf_s( f_result, "%d\n", desc.width );
-			fprintf_s( f_result, "%d\n", desc.height );
-		}
-		
-		fclose( f_result );
-	}
+            fprintf_s( f_result, "%d\n", desc.width );
+            fprintf_s( f_result, "%d\n", desc.height );
+        }
+
+        fclose( f_result );
+    }
 
     if( convert.empty() == false )
     {
@@ -323,7 +321,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         if( fz == NULL )
         {
-            message_error( "invalid _wfopen %ls\n"
+            message_error( "invalid _wfopen %ls"
                 , outzCanonicalize
             );
 
@@ -346,7 +344,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         std::vector<char> lz4_buffer( lz_size );
         char * lz4_memory = &lz4_buffer[0];
-        
+
         char * dst_buffer = (char *)lz4_memory;
         const char * src_buffer = (const char *)mf_buffer;
 
@@ -354,7 +352,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         if( compressSize < 0 )
         {
-            message_error( "invalid compress %ls\n"
+            message_error( "invalid compress %ls"
                 , outCanonicalize
             );
 
@@ -370,5 +368,5 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         _wremove( outCanonicalize );
     }
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

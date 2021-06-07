@@ -6,7 +6,7 @@
 namespace Mengine
 {
     namespace Helper
-    {        
+    {
         bool findBestAspectViewport( const MapAspectRatioViewports & _aspectRatioViewports, float _aspect, float * const _bestAspect, Viewport * const _viewport );
     }
 }

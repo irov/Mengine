@@ -19,7 +19,7 @@ namespace Mengine
     {
     public:
         FrameworkFactory()
-        {            
+        {
         }
 
         ~FrameworkFactory() override

@@ -37,7 +37,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleService::_finalizeService()
-    {        
+    {
 #ifdef MENGINE_DEBUG
         for( const ModuleInterfacePtr & module : m_modules )
         {

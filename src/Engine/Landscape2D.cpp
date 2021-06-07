@@ -230,8 +230,8 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        const uint32_t coeff_x[4] = { 0, 1, 1, 0 };
-        const uint32_t coeff_y[4] = { 0, 0, 1, 1 };
+        const uint32_t coeff_x[4] = {0, 1, 1, 0};
+        const uint32_t coeff_y[4] = {0, 0, 1, 1};
 
         uint32_t vertex_offset = 0;
 

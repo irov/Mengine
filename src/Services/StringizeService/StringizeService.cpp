@@ -271,7 +271,7 @@ namespace Mengine
         return holder;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstStringHolder * StringizeService::testHolder_( const ConstStringHolder::value_type *_str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash ) const
+    const ConstStringHolder * StringizeService::testHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash ) const
     {
         const IntrusiveListConstStringHolder & list = this->getList_( _hash );
 

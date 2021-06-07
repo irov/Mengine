@@ -49,8 +49,6 @@ namespace Mengine
         uint32_t m_hwMipmaps;
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
-        uint32_t m_hwChannels;
-        uint32_t m_hwDepth;
 
         EPixelFormat m_hwPixelFormat;
 

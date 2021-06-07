@@ -333,7 +333,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == tru
 
     dependencies {
         implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-        implementation 'com.google.android.gms:play-services-ads:19.7.0'
+        implementation 'com.google.android.gms:play-services-ads:19.7.0' // issue https://github.com/irov/Mengine/issues/89
         implementation 'com.google.android.gms:play-services-basement:17.6.0'
     }
 }

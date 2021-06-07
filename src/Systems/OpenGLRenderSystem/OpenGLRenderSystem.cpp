@@ -829,43 +829,25 @@ namespace Mengine
         tStage.magFilter = Helper::toMagFilter( _magnification );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat * const _hwFormat, uint32_t * const _hwChannels ) const
+    void OpenGLRenderSystem::findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const
     {
         switch( _format )
         {
-        case PF_UNKNOWN:
+        case PF_R8G8B8:
             {
-                if( _channels == 1 )
-                {
-                    *_hwFormat = PF_A8;
-                    *_hwChannels = 1;
-                }
-                else if( _channels == 3 )
-                {
-                    *_hwFormat = PF_X8R8G8B8;    //original
-                    *_hwChannels = 4;            // original
-                }
-                else if( _channels == 4 )
-                {
-                    *_hwFormat = PF_A8R8G8B8; //original
-                    *_hwChannels = 4;
-                }
+                *_hwFormat = PF_X8R8G8B8;
             }break;
         default:
             {
                 *_hwFormat = _format;
-                *_hwChannels = _channels;
             }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
-        MENGINE_UNUSED( _depth );
-
-        uint32_t hwChannels = 0;
         EPixelFormat hwFormat = PF_UNKNOWN;
-        this->findFormatFromChannels_( _format, _channels, &hwFormat, &hwChannels );
+        this->findFormatFromChannels_( _format, &hwFormat );
 
         GLint textureInternalFormat = Helper::toGLInternalFormat( hwFormat );
 
@@ -892,7 +874,6 @@ namespace Mengine
         if( image->initialize( _mipmaps
             , _width
             , _height
-            , hwChannels
             , hwFormat
             , textureInternalFormat
             , textureColorFormat
@@ -1071,17 +1052,15 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _width );
         MENGINE_UNUSED( _height );
-        MENGINE_UNUSED( _channels );
         MENGINE_UNUSED( _format );
         MENGINE_UNUSED( _doc );
 
-        uint32_t hwChannels = 0;
         EPixelFormat hwFormat = PF_UNKNOWN;
-        this->findFormatFromChannels_( _format, _channels, &hwFormat, &hwChannels );
+        this->findFormatFromChannels_( _format, &hwFormat );
 
         GLint textureInternalFormat = Helper::toGLInternalFormat( hwFormat );
 
@@ -1103,7 +1082,7 @@ namespace Mengine
 
         OpenGLRenderTargetTexturePtr renderTarget = m_factoryRenderTargetTexture->createObject( _doc );
 
-        if( renderTarget->initialize( _width, _height, hwChannels, hwFormat, textureInternalFormat, textureColorFormat, textureColorDataType ) == false )
+        if( renderTarget->initialize( _width, _height, hwFormat, textureInternalFormat, textureColorFormat, textureColorDataType ) == false )
         {
             LOGGER_ERROR( "invalid initialize" );
 
@@ -1116,11 +1095,10 @@ namespace Mengine
         return renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _width );
         MENGINE_UNUSED( _height );
-        MENGINE_UNUSED( _channels );
         MENGINE_UNUSED( _format );
         MENGINE_UNUSED( _doc );
 

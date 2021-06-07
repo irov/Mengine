@@ -11,6 +11,7 @@ namespace Mengine
     {
         static uint16_t readBEUint16( const uint8_t * pIn )
         {
+            //cppcheck-suppress objectIndex
             return (pIn[0] << 8) | pIn[1];
         }
     }
@@ -29,16 +30,23 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderETC1::_decode( void * const _buffer, size_t _bufferSize )
+    size_t ImageDecoderETC1::_decode( const DecoderData * _data )
     {
-        size_t size = m_stream->read( _buffer, _bufferSize );
+        void * buffer = _data->buffer;
+        size_t size = _data->size;
 
-        return size;
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        size_t byte = stream->read( buffer, size );
+
+        return byte;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderETC1::_prepareData()
     {
-        m_stream->read( &m_header, sizeof( ETC1Header ) );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        stream->read( &m_header, sizeof( ETC1Header ) );
 
         MENGINE_ASSERTION_FATAL( MENGINE_STRNCMP( m_header.tag, "PKM 10", 6 ) == 0, "Bad or not ETC1 file" );
         MENGINE_ASSERTION_FATAL( m_header.texWidth >= m_header.origWidth );
@@ -54,12 +62,10 @@ namespace Mengine
         m_header.origHeight = Detail::readBEUint16( buffer + ETC1_PKM_HEIGHT_OFFSET );
         m_header.origWidth = Detail::readBEUint16( buffer + ETC1_PKM_WIDTH_OFFSET );
 
-        m_dataInfo.channels = 3;
-        m_dataInfo.depth = 1;
+        m_dataInfo.mipmaps = 1 + m_header.format;
         m_dataInfo.width = m_header.texWidth;
         m_dataInfo.height = m_header.texHeight;
-
-        m_dataInfo.mipmaps = 1 + m_header.format;
+        m_dataInfo.format = PF_R8G8B8;
 
         return true;
     }

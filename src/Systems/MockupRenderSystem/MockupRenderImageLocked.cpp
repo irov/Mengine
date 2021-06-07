@@ -2,6 +2,8 @@
 
 #include "Interface/MemoryServiceInterface.h"
 
+#include "Kernel/PixelFormatHelper.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -14,17 +16,23 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImageLocked::initialize( const Rect & _lockedRect, uint32_t _hwChannels, uint32_t _hwDepth )
+    void MockupRenderImageLocked::initialize( const Rect & _lockedRect, EPixelFormat _hwPixelFormat )
     {
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        size_t size = (size_t)(_lockedRect.right - _lockedRect.left) * (_lockedRect.bottom - _lockedRect.top) * _hwChannels * _hwDepth;
+        uint32_t hwChannels = Helper::getPixelFormatChannels( _hwPixelFormat );
+        uint32_t hwDepth = Helper::getPixelFormatDepth( _hwPixelFormat );
+
+        size_t pitch = (size_t)(_lockedRect.right - _lockedRect.left) * hwChannels * hwDepth;
+        
+        uint32_t height = _lockedRect.bottom - _lockedRect.top;
+        size_t size = pitch * (size_t)height;
 
         memory->newBuffer( size );
 
         m_lockedMemory = memory;
-        m_lockedPitch = (size_t)(_lockedRect.right - _lockedRect.left) * _hwChannels * _hwDepth;
+        m_lockedPitch = pitch;
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer MockupRenderImageLocked::getBuffer( size_t * const _pitch ) const

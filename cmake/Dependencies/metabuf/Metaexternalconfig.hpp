@@ -46,7 +46,7 @@ namespace Metabuf
 
         void deallocate( T * p, std::size_t s )
         {
-            MENGINE_UNUSED( s );
+            METABUF_UNUSED( s );
 
             METABUF_FREE( p, s );
         }

@@ -113,18 +113,11 @@ namespace Mengine
         return HWHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderImageTarget::getHWChannels() const
+    bool OpenGLRenderImageTarget::getUpscalePow2() const
     {
-        uint32_t HWChannels = m_renderTarget->getHWChannels();
+        bool upscalePow2 = m_renderTarget->getUpscalePow2();
 
-        return HWChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderImageTarget::getHWDepth() const
-    {
-        uint32_t HWDepth = m_renderTarget->getHWDepth();
-
-        return HWDepth;
+        return upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderImageTarget::getHWMipmaps() const

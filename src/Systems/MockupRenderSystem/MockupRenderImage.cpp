@@ -9,8 +9,6 @@ namespace Mengine
         : m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
-        , m_hwChannels( 0 )
-        , m_hwDepth( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
@@ -27,8 +25,6 @@ namespace Mengine
         m_hwMipmaps = _mipmaps;
         m_hwWidth = _width;
         m_hwHeight = _height;
-        m_hwChannels = 4;
-        m_hwDepth = 1;
         m_hwPixelFormat = _pixelFormat;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
@@ -59,7 +55,7 @@ namespace Mengine
 
         MockupRenderImageLockedPtr locked = MockupRenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        locked->initialize( _rect, m_hwChannels, m_hwDepth );
+        locked->initialize( _rect, m_hwPixelFormat );
 
         return locked;
     }

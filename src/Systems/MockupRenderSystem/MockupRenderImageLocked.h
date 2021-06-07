@@ -5,6 +5,7 @@
 
 #include "Kernel/Rect.h"
 #include "Kernel/Factorable.h"
+#include "Kernel/PixelFormat.h"
 
 namespace Mengine
 {
@@ -20,7 +21,7 @@ namespace Mengine
         ~MockupRenderImageLocked();
 
     public:
-        void initialize( const Rect & _lockedRect, uint32_t _hwChannels, uint32_t _hwDepth );
+        void initialize( const Rect & _lockedRect, EPixelFormat _hwPixelFormat );
 
     protected:
         Pointer getBuffer( size_t * const _pitch ) const override;

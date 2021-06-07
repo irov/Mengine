@@ -34,28 +34,30 @@ namespace Mengine
         void bind( uint32_t _stage ) override;
         void unbind( uint32_t _stage ) override;
 
-    protected:
+    public:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
 
-    protected:
+    public:
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
-        uint32_t getHWChannels() const override;
-        uint32_t getHWDepth() const override;
         uint32_t getHWMipmaps() const override;
 
+    public:
         EPixelFormat getHWPixelFormat() const override;
 
-    protected:
+    public:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
 
-    protected:
+    public:
+        bool getUpscalePow2() const override;
+
+    public:
         RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
         bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
 
-    protected:
+    public:
         GLuint getUID() const override;
 
     protected:

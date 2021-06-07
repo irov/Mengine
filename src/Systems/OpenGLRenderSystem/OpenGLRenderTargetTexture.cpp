@@ -7,6 +7,7 @@
 #include "OpenGLRenderError.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/TextureHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -19,7 +20,6 @@ namespace Mengine
         , m_height( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
-        , m_hwChannels( 0 )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
         , m_hwPixelFormat( PF_UNKNOWN )
@@ -31,6 +31,7 @@ namespace Mengine
         , m_format( GL_RGB )
         , m_type( GL_UNSIGNED_BYTE )
         , m_pow2( false )
+        , m_upscalePow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_fuid == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+    bool OpenGLRenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
         MENGINE_ASSERTION_FATAL( _width != 0 );
         MENGINE_ASSERTION_FATAL( _height != 0 );
@@ -59,19 +60,19 @@ namespace Mengine
 
         m_width = _width;
         m_height = _height;
-        m_hwWidth = Helper::getTexturePOW2( _width );
-        m_hwHeight = Helper::getTexturePOW2( _height );
+        m_hwWidth = Helper::getTexturePow2( _width );
+        m_hwHeight = Helper::getTexturePow2( _height );
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
 
-        m_hwChannels = _channels;
         m_hwPixelFormat = _pixelFormat;
         m_internalFormat = _internalFormat;
         m_format = _format;
         m_type = _type;
 
-        m_pow2 = Helper::isTexturePOW2( _width ) && Helper::isTexturePOW2( _height );
+        m_pow2 = Helper::isTexturePow2( _width ) == true && Helper::isTexturePow2( _height ) == true;
+        m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
         if( this->create() == false )
         {
@@ -192,16 +193,6 @@ namespace Mengine
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderTargetTexture::getHWChannels() const
-    {
-        return m_hwChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderTargetTexture::getHWDepth() const
-    {
-        return 1U;
-    }
-    //////////////////////////////////////////////////////////////////////////
     EPixelFormat OpenGLRenderTargetTexture::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
@@ -215,6 +206,11 @@ namespace Mengine
     float OpenGLRenderTargetTexture::getHWHeightInv() const
     {
         return m_hwHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderTargetTexture::getUpscalePow2() const
+    {
+        return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const

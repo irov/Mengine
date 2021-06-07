@@ -11,6 +11,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/TextureHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -23,7 +25,6 @@ namespace Mengine
         , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
-        , m_hwChannels( 0 )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
         , m_minFilter( GL_LINEAR )
@@ -35,6 +36,7 @@ namespace Mengine
         , m_type( GL_UNSIGNED_BYTE )
         , m_lockFirst( false )
         , m_pow2( false )
+        , m_upscalePow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -43,7 +45,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_uid == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+    bool OpenGLRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
         MENGINE_ASSERTION_FATAL( _width != 0 );
         MENGINE_ASSERTION_FATAL( _height != 0 );
@@ -71,9 +73,8 @@ namespace Mengine
         m_width = _width;
         m_height = _height;
         m_hwMipmaps = _mipmaps;
-        m_hwWidth = Helper::getTexturePOW2( _width );
-        m_hwHeight = Helper::getTexturePOW2( _height );
-        m_hwChannels = _channels;
+        m_hwWidth = Helper::getTexturePow2( _width );
+        m_hwHeight = Helper::getTexturePow2( _height );
         m_hwPixelFormat = _pixelFormat;
         m_internalFormat = _internalFormat;
         m_format = _format;
@@ -82,14 +83,14 @@ namespace Mengine
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
 
-        m_pow2 = Helper::isTexturePOW2( _width ) && Helper::isTexturePOW2( _height );
+        m_pow2 = Helper::isTexturePow2( _width ) == true && Helper::isTexturePow2( _height ) == true;
+        m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
         if( this->create() == false )
         {
-            LOGGER_ERROR( "invalid gen texture for size %d:%d channel %d PF %d"
+            LOGGER_ERROR( "invalid gen texture for size %u:%u PF %u"
                 , _width
                 , _height
-                , _channels
                 , _format
             );
 
@@ -121,16 +122,6 @@ namespace Mengine
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderImage::getHWChannels() const
-    {
-        return m_hwChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderImage::getHWDepth() const
-    {
-        return 1;
-    }
-    //////////////////////////////////////////////////////////////////////////
     EPixelFormat OpenGLRenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
@@ -144,6 +135,11 @@ namespace Mengine
     float OpenGLRenderImage::getHWHeightInv() const
     {
         return m_hwHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderImage::getUpscalePow2() const
+    {
+        return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::bind( uint32_t _stage )
@@ -222,7 +218,7 @@ namespace Mengine
         uint32_t miplevel_width = rect_width >> _level;
         uint32_t miplevel_height = rect_height >> _level;
 
-        size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
+        size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwPixelFormat );
 
         OpenGLRenderImageLockedPtr imageLocked = OpenGLRenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -249,7 +245,7 @@ namespace Mengine
 
         GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
-        LOGGER_INFO( "render", "l %d r %d:%d-%d:%d"
+        LOGGER_INFO( "render", "l %u r %u:%u-%u:%u"
             , _level
             , lockedRect.left
             , lockedRect.top
@@ -273,7 +269,7 @@ namespace Mengine
             {
                 if( lockedRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
-                    GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
+                    GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwPixelFormat );
 #ifdef MENGINE_RENDER_OPENGL_ES
                     IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
 #else

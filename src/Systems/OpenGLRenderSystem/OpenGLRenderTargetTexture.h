@@ -23,7 +23,7 @@ namespace Mengine
         ~OpenGLRenderTargetTexture() override;
 
     public:
-        bool initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
+        bool initialize( uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
         void finalize();
 
     public:
@@ -35,13 +35,16 @@ namespace Mengine
         uint32_t getHWMipmaps() const override;
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
-        uint32_t getHWChannels() const override;
-        uint32_t getHWDepth() const override;
+
+    public:
         EPixelFormat getHWPixelFormat() const override;
 
     public:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
+
+    public:
+        bool getUpscalePow2() const override;
 
     public:
         void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
@@ -69,7 +72,6 @@ namespace Mengine
 
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
-        uint32_t m_hwChannels;
 
         float m_hwWidthInv;
         float m_hwHeightInv;
@@ -87,6 +89,7 @@ namespace Mengine
         GLenum m_type;
 
         bool m_pow2;
+        bool m_upscalePow2;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenGLRenderTargetTexture, RenderTargetInterface> OpenGLRenderTargetTexturePtr;

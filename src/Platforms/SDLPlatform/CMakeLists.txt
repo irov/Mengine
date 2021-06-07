@@ -15,6 +15,8 @@ src
 IF(MENGINE_TARGET_MACOS)
 ADD_FILTER(
 OSX
+    OSX/OSXOpenUrlInDefaultBrowser.h
+    OSX/OSXOpenUrlInDefaultBrowser.m
     OSX/OSXSetDesktopWallpaper.h
     OSX/OSXSetDesktopWallpaper.m
 )

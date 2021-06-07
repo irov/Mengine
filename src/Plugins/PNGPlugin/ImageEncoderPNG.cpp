@@ -125,7 +125,7 @@ namespace Mengine
         uint32_t channels = Helper::getPixelFormatChannels( dataInfo->format );
 
         int32_t color_type;
-        
+
         switch( channels )
         {
         case 1:

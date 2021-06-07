@@ -36,7 +36,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
     MENGINE_UNUSED( nShowCmd );
-        
+
     {
         Mengine::ServiceProviderInterface * serviceProvider;
         if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )

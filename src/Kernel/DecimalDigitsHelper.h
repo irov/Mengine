@@ -28,11 +28,11 @@ namespace Mengine
             {
                 if constexpr( std::is_same_v<T, float> == true )
                 {
-                    return (FLT_MAX_10_EXP) + 10;
+                    return (FLT_MAX_10_EXP)+10;
                 }
                 else if constexpr( std::is_same_v<T, double> == true )
                 {
-                    return (DBL_MAX_10_EXP) + 10;
+                    return (DBL_MAX_10_EXP)+10;
                 }
             }
             else

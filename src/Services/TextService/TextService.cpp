@@ -706,7 +706,7 @@ namespace Mengine
     const TextEntryInterfacePtr & TextService::getTextEntry( const ConstString & _key ) const
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
-                
+
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////

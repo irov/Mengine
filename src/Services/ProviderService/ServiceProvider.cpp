@@ -88,7 +88,7 @@ namespace Mengine
         }
         catch( const std::exception & ex )
         {
-             MENGINE_UNUSED( ex );
+            MENGINE_UNUSED( ex );
 
 #ifdef MENGINE_DEBUG
             m_initializeServiceName = nullptr;
@@ -155,7 +155,7 @@ namespace Mengine
                 MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (waits) (doc: %s)"
                     , service->getServiceID()
                     , MENGINE_DOCUMENT_STR( _doc )
-                    );
+                );
 
                 return false;
             }
@@ -165,11 +165,11 @@ namespace Mengine
             return true;
         }
 
-        MENGINE_THROW_EXCEPTION("invalid allocate service name '%s' max count [%u] (doc: %s)"
+        MENGINE_THROW_EXCEPTION( "invalid allocate service name '%s' max count [%u] (doc: %s)"
             , service->getServiceID()
             , MENGINE_SERVICE_PROVIDER_COUNT
             , MENGINE_DOCUMENT_STR( _doc )
-            );
+        );
 
         return false;
     }
@@ -278,7 +278,7 @@ namespace Mengine
             , _name
             , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
-            );
+        );
 
         DependencyDesc & desc = m_dependencies[m_dependenciesCount++];
 

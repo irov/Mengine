@@ -3,7 +3,7 @@
 #include "Config/Config.h"
 
 namespace Mengine
-{    
+{
     enum EErrorLevel
     {
         ERROR_LEVEL_MESSAGE = 1,

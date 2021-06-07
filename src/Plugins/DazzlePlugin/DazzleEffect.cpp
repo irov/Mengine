@@ -215,7 +215,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         m_instance = instance;
 
         bool loop = this->isLoop();
@@ -426,7 +426,7 @@ namespace Mengine
             ++it )
         {
             RenderVertex2D & r = _vertices[it];
-            
+
             m_resourceImage->correctUVImage( r.uv[0], &(r.uv[0]) );
         }
     }

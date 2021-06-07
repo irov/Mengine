@@ -119,7 +119,7 @@ void SetElementPathText( HWND element, HWND hwnd )
     {
         // Create a buffer to store the path, then 
         // get the path.
-        WCHAR buffer[_MAX_PATH] = { '\0' };
+        WCHAR buffer[_MAX_PATH] = {'\0'};
         if( ::SHGetPathFromIDList( pIDL, buffer ) != 0 )
         {
             SetWindowText( element, buffer );

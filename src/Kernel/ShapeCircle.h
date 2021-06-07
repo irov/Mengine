@@ -40,7 +40,7 @@ namespace Mengine
         uint8_t m_quality;
 
         mutable VectorRenderIndex m_indices;
-        
+
         typedef Vector<mt::vec2f> VectorPositions;
         mutable VectorPositions m_positions;
 

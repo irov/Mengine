@@ -9,7 +9,7 @@
 #include "Config/StdIO.h"
 
 namespace Mengine
-{    
+{
     namespace Detail
     {
         void assertionVocabularyEmpty( const ConstString & _category, const Char * _file, uint32_t _line )

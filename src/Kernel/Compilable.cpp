@@ -74,7 +74,7 @@ namespace Mengine
 
             return true;
         }
-         
+
         if( this->_compile() == false )
         {
             m_compile = false;

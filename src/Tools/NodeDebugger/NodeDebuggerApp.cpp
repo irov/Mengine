@@ -2575,7 +2575,7 @@ namespace Mengine
             if( _node->componentSurface.hasAtlas && ImGui::CollapsingHeader( "Atlas:", ImGuiTreeNodeFlags_DefaultOpen ) )
             {
                 uiReadOnlyString( "resource name", _node->componentSurface.atlas.ResourceName );
-                uiReadOnlyString( "resource type", _node->componentSurface.atlas.ResourceType );                
+                uiReadOnlyString( "resource type", _node->componentSurface.atlas.ResourceType );
 
                 if( _node->componentSurface.atlas.isContent && ImGui::CollapsingHeader( "Atlas Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {

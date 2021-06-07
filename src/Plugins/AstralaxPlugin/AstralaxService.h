@@ -90,7 +90,7 @@ namespace Mengine
         MapHashEmitterContainers m_containers;
 
         int32_t m_stageCount;
-        const RenderMaterialStage * m_stages[256] = { nullptr };
+        const RenderMaterialStage * m_stages[256] = {nullptr};
 
         typedef Vector<ResourceImagePtr> VectorAtlasDesc;
         VectorAtlasDesc m_atlases;
@@ -98,7 +98,7 @@ namespace Mengine
         struct MagicMaterialDesc
         {
             const RenderMaterialStage * stage;
-            
+
             ResourceImagePtr images[MENGINE_MAX_TEXTURE_STAGES];
             uint32_t imageCount;
 

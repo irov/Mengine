@@ -107,7 +107,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( this->isCompile() == false );
 
-        FrameImageSequence frame;        
+        FrameImageSequence frame;
         frame.resourceImage = _resourceImage;
         frame.delay = _delay;
 

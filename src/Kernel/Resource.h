@@ -124,7 +124,7 @@ namespace Mengine
         ConstString m_locale;
         ConstString m_groupName;
         Tags m_tags;
-        
+
         bool m_initialize;
         bool m_groupCache;
         bool m_keep;
@@ -229,7 +229,7 @@ namespace Mengine
             if( dynamic_cast<typename Detail::reinterpret_resource_cast_void_t<T>::type>(static_cast<T>(_resource)) == nullptr )
             {
                 throw std::runtime_error( "reinterpret resource cast" );
-            }            
+            }
 #endif
 
             return reinterpret_cast<T>(_resource);

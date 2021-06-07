@@ -1,23 +1,25 @@
 #include "ToolUtils/ToolUtils.h"
 
-#include <vector>
-#include <string>
-#include <sstream>
+#include "Config/Config.h"
 
 #include "movie/movie.hpp"
 #include "pugixml.hpp"
 
+#include <vector>
+#include <string>
+#include <sstream>
+
 //////////////////////////////////////////////////////////////////////////
 static void * stdlib_movie_alloc( void * _data, size_t _size )
 {
-    (void)_data;
+    MENGINE_UNUSED( _data );
 
     return malloc( _size );
 }
 //////////////////////////////////////////////////////////////////////////
 static void * stdlib_movie_alloc_n( void * _data, size_t _size, size_t _count )
 {
-    (void)_data;
+    MENGINE_UNUSED( _data );
 
     size_t total = _size * _count;
 
@@ -26,21 +28,21 @@ static void * stdlib_movie_alloc_n( void * _data, size_t _size, size_t _count )
 //////////////////////////////////////////////////////////////////////////
 static void stdlib_movie_free( void * _data, const void * _ptr )
 {
-    (void)_data;
+    MENGINE_UNUSED( _data );
 
     free( (void *)_ptr );
 }
 //////////////////////////////////////////////////////////////////////////
 static void stdlib_movie_free_n( void * _data, const void * _ptr )
 {
-    (void)_data;
+    MENGINE_UNUSED( _data );
 
     free( (void *)_ptr );
 }
 //////////////////////////////////////////////////////////////////////////
 static void stdlib_movie_logerror( void * _data, aeMovieErrorCode _code, const char * _format, ... )
 {
-    (void)_data;
+    MENGINE_UNUSED( _data );
 
     switch( _code )
     {
@@ -530,7 +532,7 @@ static bool save_xml( const pugi::xml_document & xmldoc, const std::wstring & ou
 
     if( f_out == NULL )
     {
-        message_error( "invalid open out path '%ls'\n"
+        message_error( "invalid open out path '%ls'"
             , out_path.c_str()
         );
 
@@ -560,14 +562,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in_path.empty() == true )
     {
-        message_error( "not found 'in' param\n" );
+        message_error( "not found 'in' param" );
 
         return EXIT_FAILURE;
     }
 
     if( out_path.empty() == true )
     {
-        message_error( "not found 'out' param\n" );
+        message_error( "not found 'out' param" );
 
         return EXIT_FAILURE;
     }
@@ -585,7 +587,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( movieInstance == nullptr )
     {
-        message_error( "invalid create movie instance\n" );
+        message_error( "invalid create movie instance" );
 
         return EXIT_FAILURE;
     }
@@ -594,7 +596,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( f_in == NULL )
     {
-        message_error( "invalid open in path '%ls'\n"
+        message_error( "invalid open in path '%ls'"
             , in_path.c_str()
         );
 
@@ -628,7 +630,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
     {
-        message_error( "invalid load movie data '%s' version '%d.%d' load '%d.%d'\n"
+        message_error( "invalid load movie data '%s' version '%d.%d' load '%d.%d'"
             , ae_get_movie_result_string_info( result_load_movie_data )
             , ae_get_movie_sdk_major_version()
             , ae_get_movie_sdk_minor_version()

@@ -44,7 +44,7 @@ namespace Mengine
 
     protected:
         struct WindowElement
-        {            
+        {
             ResourceImagePtr resourceImage;
             mt::vec2f offset = {0.f, 0.f};
         };

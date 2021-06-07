@@ -133,4 +133,4 @@ namespace Mengine
     static const Mengine::ConstString & getFactorableType(){return Mengine::ConstString::none();}\
     protected:
 //////////////////////////////////////////////////////////////////////////
-    
+

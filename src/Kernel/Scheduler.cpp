@@ -51,7 +51,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         m_schedulers.insert( m_schedulers.end(), m_schedulersAdd.begin(), m_schedulersAdd.end() );
         m_schedulersAdd.clear();
-        
+
         m_schedulers.erase( std::remove_if( m_schedulers.begin(), m_schedulers.end(), []( const SchedulerEventDesc & _desc )
         {
             return _desc.dead;

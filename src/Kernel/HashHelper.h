@@ -18,8 +18,8 @@ namespace Mengine
             const uint32_t bl = (uint32_t)b;
             const uint32_t bh = (uint32_t)b32;
 
-            uint64_t x1 = (uint64_t)(al)* bh;
-            uint64_t x2 = (uint64_t)(ah)* bl;
+            uint64_t x1 = (uint64_t)(al)*bh;
+            uint64_t x2 = (uint64_t)(ah)*bl;
             const uint64_t x3 = (uint64_t)(al) * (uint64_t)(bl);
 
             x2 += x3 >> 32;

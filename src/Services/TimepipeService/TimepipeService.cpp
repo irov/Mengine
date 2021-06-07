@@ -100,7 +100,7 @@ namespace Mengine
         TimepipeInterfacePtr old_timepipe = add_desc.timepipe;
 
         m_timepipeAdd.erase( it_add_find );
-        
+
         return old_timepipe;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ namespace Mengine
     {
         m_timepipe.insert( m_timepipe.end(), m_timepipeAdd.begin(), m_timepipeAdd.end() );
         m_timepipeAdd.clear();
-        
+
         for( const TimepipeDesc & desc : m_timepipe )
         {
             if( desc.id == REMOVE_UNIQUE_ID )

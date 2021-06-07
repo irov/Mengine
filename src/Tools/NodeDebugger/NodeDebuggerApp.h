@@ -342,7 +342,7 @@ namespace Mengine
     struct NodeAtlas
     {
         String ResourceName;
-        String ResourceType;        
+        String ResourceType;
 
         bool isContent;
         NodeContent content;
@@ -357,7 +357,7 @@ namespace Mengine
             DESERIALIZE_PROP( ResourceName );
             DESERIALIZE_PROP( ResourceType );
         }
-    };    
+    };
 
     struct NodeComponentSurface
     {

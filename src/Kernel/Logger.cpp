@@ -118,7 +118,7 @@ namespace Mengine
             this->logMessage( msg, MENGINE_STATIC_STRING_LENGTH( msg ) );
 
             int32_t size_sprintf = MENGINE_SPRINTF( str, "%s"
-                , _format 
+                , _format
             );
 
             if( size_sprintf < 0 )

@@ -1,125 +1,125 @@
-#	include "ToolUtils/ToolUtils.h"
+#include "ToolUtils/ToolUtils.h"
 
-#	include "pugixml.hpp"
+#include "Config/Config.h"
 
-#	include <vector>
-#	include <string>
-#	include <sstream>
+#include "pugixml.hpp"
 
-#	include "jansson.h"
+#include <vector>
+#include <string>
+#include <sstream>
+
+#include "jansson.h"
 
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-	(void)hInstance;
-	(void)hPrevInstance;
-	(void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
 
     //uint32_t image_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
-	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
-    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );    
+    std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
     std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
-	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker_path", std::wstring() );
+    std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker_path", std::wstring() );
     std::wstring log_path = parse_kwds( lpCmdLine, L"--log_path", std::wstring() );
     std::wstring premultiply = parse_kwds( lpCmdLine, L"--premultiply", std::wstring() );
-	
-	std::vector<std::wstring> images_path;
 
-	FILE * f_in = _wfopen( in_path.c_str(), L"r" );
+    std::vector<std::wstring> images_path;
 
-	if( f_in == NULL )
-	{
-        message_error( "#invalid open in_path %ls\n"
-			, in_path.c_str()
-		);
+    FILE * f_in = _wfopen( in_path.c_str(), L"r" );
 
-		return EXIT_FAILURE;
-	}
-	
-	WCHAR wimage_path[MAX_PATH];
-	while( fgetws( wimage_path, MAX_PATH, f_in ) )
-	{		
-		wchar_t * pos;
-		if( (pos = wcschr( wimage_path, L'\n' )) != NULL )
-		{
-			*pos = '\0';
-		}
+    if( f_in == NULL )
+    {
+        message_error( "invalid open in_path %ls"
+            , in_path.c_str()
+        );
 
-		images_path.push_back( wimage_path );
-	}
+        return EXIT_FAILURE;
+    }
+
+    WCHAR wimage_path[MAX_PATH];
+    while( fgetws( wimage_path, MAX_PATH, f_in ) )
+    {
+        wchar_t * pos;
+        if( (pos = wcschr( wimage_path, L'\n' )) != NULL )
+        {
+            *pos = '\0';
+        }
+
+        images_path.push_back( wimage_path );
+    }
 
     fclose( f_in );
 
-	if( texturepacker_path.empty() == true )
-	{
-        message_error( "#not found 'texturepacker' param\n"
-			);
+    if( texturepacker_path.empty() == true )
+    {
+        message_error( "not found 'texturepacker' param" );
 
-		return EXIT_FAILURE;
-	}
+        return EXIT_FAILURE;
+    }
 
-	if( images_path.empty() == true )
-	{
-        message_error( "#not found 'images' param\n"
-			);
+    if( images_path.empty() == true )
+    {
+        message_error( "not found 'images' param" );
 
-		return EXIT_FAILURE;
-	}
+        return EXIT_FAILURE;
+    }
 
-	std::wstring system_cmd;
+    std::wstring system_cmd;
 
-	system_cmd += L" --multipack ";
-	system_cmd += L" --enable-rotation ";
-	system_cmd += L" --trim-mode Trim ";
-	system_cmd += L" --size-constraints POT ";	
+    system_cmd += L" --multipack ";
+    system_cmd += L" --enable-rotation ";
+    system_cmd += L" --trim-mode Trim ";
+    system_cmd += L" --size-constraints POT ";
 
-	WCHAR tempPath[MAX_PATH];
-	GetTempPath( MAX_PATH, tempPath );
+    WCHAR tempPath[MAX_PATH];
+    GetTempPath( MAX_PATH, tempPath );
 
-	WCHAR libmovieTempDir[MAX_PATH];
-	PathCombine( libmovieTempDir, tempPath, L".libmovie\\TexturePacker\\" );
+    WCHAR libmovieTempDir[MAX_PATH];
+    PathCombine( libmovieTempDir, tempPath, L".libmovie\\TexturePacker\\" );
 
-	WCHAR dataTempDir[MAX_PATH];
-	PathCombine( dataTempDir, libmovieTempDir, L"data\\" );
+    WCHAR dataTempDir[MAX_PATH];
+    PathCombine( dataTempDir, libmovieTempDir, L"data\\" );
 
-	WCHAR dataFormat[MAX_PATH];
-	PathCombine( dataFormat, dataTempDir, L"atlas_{n}.json" );
+    WCHAR dataFormat[MAX_PATH];
+    PathCombine( dataFormat, dataTempDir, L"atlas_{n}.json" );
 
-	WCHAR dataFormatQuote[MAX_PATH];
-	ForcePathQuoteSpaces( dataFormatQuote, dataFormat );
+    WCHAR dataFormatQuote[MAX_PATH];
+    ForcePathQuoteSpaces( dataFormatQuote, dataFormat );
 
-	WCHAR sheetFormat[MAX_PATH];
-	PathCombine( sheetFormat, out_path.c_str(), L"atlas_{n}.png" );
+    WCHAR sheetFormat[MAX_PATH];
+    PathCombine( sheetFormat, out_path.c_str(), L"atlas_{n}.png" );
 
-	WCHAR sheetFormatQuote[MAX_PATH];
-	ForcePathQuoteSpaces( sheetFormatQuote, sheetFormat );
+    WCHAR sheetFormatQuote[MAX_PATH];
+    ForcePathQuoteSpaces( sheetFormatQuote, sheetFormat );
 
-	system_cmd += L" --data ";
-	system_cmd += dataFormatQuote;
-	system_cmd += L" ";
+    system_cmd += L" --data ";
+    system_cmd += dataFormatQuote;
+    system_cmd += L" ";
 
-	system_cmd += L" --sheet ";
-	system_cmd += sheetFormatQuote;
-	system_cmd += L" ";
+    system_cmd += L" --sheet ";
+    system_cmd += sheetFormatQuote;
+    system_cmd += L" ";
 
-	system_cmd += L" --format json-array ";	
-	system_cmd += L" --texture-format png ";
+    system_cmd += L" --format json-array ";
+    system_cmd += L" --texture-format png ";
     system_cmd += L" --alpha-handling PremultiplyAlpha ";
-	system_cmd += L" --max-width 2048 ";
-	system_cmd += L" --max-height 2048 ";
-	system_cmd += L" --max-size 2048 ";
-	
-	for( const std::wstring & image_path : images_path )
-	{
-		system_cmd += L" ";
+    system_cmd += L" --max-width 2048 ";
+    system_cmd += L" --max-height 2048 ";
+    system_cmd += L" --max-size 2048 ";
 
-		WCHAR ImagePathCanonicalizeQuote[MAX_PATH];
-		ForcePathQuoteSpaces( ImagePathCanonicalizeQuote, image_path.c_str() );
+    for( const std::wstring & image_path : images_path )
+    {
+        system_cmd += L" ";
 
-		system_cmd += ImagePathCanonicalizeQuote;
-	}
+        WCHAR ImagePathCanonicalizeQuote[MAX_PATH];
+        ::ForcePathQuoteSpaces( ImagePathCanonicalizeQuote, image_path.c_str() );
 
-	ForceRemoveDirectory( libmovieTempDir );
+        system_cmd += ImagePathCanonicalizeQuote;
+    }
+
+    ::ForceRemoveDirectory( libmovieTempDir );
 
     HANDLE hLogFile = INVALID_HANDLE_VALUE;
 
@@ -138,10 +138,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             FILE_ATTRIBUTE_NORMAL,
             NULL );
     }
-	
-	STARTUPINFO lpStartupInfo;
-	ZeroMemory( &lpStartupInfo, sizeof( STARTUPINFOW ) );
-	lpStartupInfo.cb = sizeof( lpStartupInfo );
+
+    STARTUPINFO lpStartupInfo;
+    ZeroMemory( &lpStartupInfo, sizeof( STARTUPINFOW ) );
+    lpStartupInfo.cb = sizeof( lpStartupInfo );
     lpStartupInfo.wShowWindow = SW_HIDE;
 
     if( hLogFile != INVALID_HANDLE_VALUE )
@@ -152,241 +152,241 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         lpStartupInfo.hStdOutput = hLogFile;
     }
 
-	PROCESS_INFORMATION lpProcessInformation;
-	ZeroMemory( &lpProcessInformation, sizeof( PROCESS_INFORMATION ) );
+    PROCESS_INFORMATION lpProcessInformation;
+    ZeroMemory( &lpProcessInformation, sizeof( PROCESS_INFORMATION ) );
 
-	WCHAR lpCommandLine[32768];
-	wcscpy_s( lpCommandLine, system_cmd.c_str() );
+    WCHAR lpCommandLine[32768];
+    wcscpy_s( lpCommandLine, system_cmd.c_str() );
 
-	WCHAR TexturePathCanonicalizeQuote[MAX_PATH];
-	ForcePathQuoteSpaces( TexturePathCanonicalizeQuote, texturepacker_path );
-	PathUnquoteSpaces( TexturePathCanonicalizeQuote );
-	
-	if( CreateProcess( TexturePathCanonicalizeQuote
-		, lpCommandLine
-		, NULL
-		, NULL
+    WCHAR TexturePathCanonicalizeQuote[MAX_PATH];
+    ::ForcePathQuoteSpaces( TexturePathCanonicalizeQuote, texturepacker_path );
+    ::PathUnquoteSpaces( TexturePathCanonicalizeQuote );
+
+    if( ::CreateProcess( TexturePathCanonicalizeQuote
+        , lpCommandLine
+        , NULL
+        , NULL
         , (hLogFile != INVALID_HANDLE_VALUE) ? TRUE : FALSE
-		, CREATE_NO_WINDOW
-		, NULL
-		, NULL
-		, &lpStartupInfo
-		, &lpProcessInformation ) == FALSE )
-	{
-        message_error( "#invalid CreateProcess %ls %ls\n"
-			, TexturePathCanonicalizeQuote
-			, lpCommandLine
-			);
+        , CREATE_NO_WINDOW
+        , NULL
+        , NULL
+        , &lpStartupInfo
+        , &lpProcessInformation ) == FALSE )
+    {
+        message_error( "invalid CreateProcess %ls %ls"
+            , TexturePathCanonicalizeQuote
+            , lpCommandLine
+        );
 
         if( hLogFile != INVALID_HANDLE_VALUE )
         {
             CloseHandle( hLogFile );
         }
 
-		return EXIT_FAILURE;
-	}
-        
-	CloseHandle( lpProcessInformation.hThread );
+        return EXIT_FAILURE;
+    }
 
-	WaitForSingleObject( lpProcessInformation.hProcess, INFINITE );
+    CloseHandle( lpProcessInformation.hThread );
 
-	DWORD exit_code;//��� ���������� ��������
-	GetExitCodeProcess( lpProcessInformation.hProcess, &exit_code );
+    WaitForSingleObject( lpProcessInformation.hProcess, INFINITE );
 
-	CloseHandle( lpProcessInformation.hProcess );
+    DWORD exit_code;
+    GetExitCodeProcess( lpProcessInformation.hProcess, &exit_code );
 
-	if( exit_code != 0 )
-	{
-        message_error( "#invalid Process %ls exit_code %d\n"
-			, TexturePathCanonicalizeQuote
-			, exit_code
-			);
+    CloseHandle( lpProcessInformation.hProcess );
+
+    if( exit_code != 0 )
+    {
+        message_error( "invalid Process %ls exit_code %d"
+            , TexturePathCanonicalizeQuote
+            , exit_code
+        );
 
         if( hLogFile != INVALID_HANDLE_VALUE )
         {
             CloseHandle( hLogFile );
         }
 
-		return EXIT_FAILURE;
-	}
+        return EXIT_FAILURE;
+    }
 
     if( hLogFile != INVALID_HANDLE_VALUE )
     {
         CloseHandle( hLogFile );
     }
 
-	WCHAR dataPath[MAX_PATH];
-	PathCombine( dataPath, dataTempDir, L"*.json" );
-	
-	std::vector<std::wstring> files;
-	SelectFile( dataPath, files );
+    WCHAR dataPath[MAX_PATH];
+    PathCombine( dataPath, dataTempDir, L"*.json" );
 
-	struct AtlasImageDesc
-	{
-		std::string name;
-		std::string atlas;
+    std::vector<std::wstring> files;
+    SelectFile( dataPath, files );
 
-		json_int_t aw;
-		json_int_t ah;
+    struct AtlasImageDesc
+    {
+        std::string name;
+        std::string atlas;
 
-		json_int_t ox;
-		json_int_t oy;
+        json_int_t aw;
+        json_int_t ah;
 
-		json_int_t ow;
-		json_int_t oh;
+        json_int_t ox;
+        json_int_t oy;
 
-		json_int_t fw;
-		json_int_t fh;
+        json_int_t ow;
+        json_int_t oh;
 
-		json_int_t x0;
-		json_int_t y0;
-		json_int_t x1;
-		json_int_t y1;
-		json_int_t x2;
-		json_int_t y2;
-		json_int_t x3;
-		json_int_t y3;
+        json_int_t fw;
+        json_int_t fh;
+
+        json_int_t x0;
+        json_int_t y0;
+        json_int_t x1;
+        json_int_t y1;
+        json_int_t x2;
+        json_int_t y2;
+        json_int_t x3;
+        json_int_t y3;
 
         bool rotated;
-	};
+    };
 
-	std::vector<AtlasImageDesc> atlas_images;
+    std::vector<AtlasImageDesc> atlas_images;
 
-	for( Files::const_iterator
-		it = files.begin(),
-		it_end = files.end();
-		it != it_end;
-		++it )
-	{
-		const std::wstring & path = *it;
+    for( Files::const_iterator
+        it = files.begin(),
+        it_end = files.end();
+        it != it_end;
+        ++it )
+    {
+        const std::wstring & path = *it;
 
-		WCHAR sheetPath[MAX_PATH];
-		PathCombine( sheetPath, dataTempDir, path.c_str() );
+        WCHAR sheetPath[MAX_PATH];
+        PathCombine( sheetPath, dataTempDir, path.c_str() );
 
-		FILE * f = _wfopen( sheetPath, L"rb" );
+        FILE * f = _wfopen( sheetPath, L"rb" );
 
-		if( f == NULL )
-		{
-            message_error( "#invalid _wfopen %ls\n"
-				, sheetPath
-				);
+        if( f == NULL )
+        {
+            message_error( "invalid _wfopen %ls"
+                , sheetPath
+            );
 
-			return EXIT_FAILURE;
-		}
+            return EXIT_FAILURE;
+        }
 
-		fseek( f, 0, SEEK_END );
-		int f_size = ftell( f );
-		rewind( f );
+        fseek( f, 0, SEEK_END );
+        int f_size = ftell( f );
+        rewind( f );
 
-		void * buff = malloc( f_size );
-		fread( buff, f_size, 1, f );
-		fclose( f );
-		
-		json_error_t jerror;
-		json_t * root = json_loadb( (const char *)buff, f_size, 0, &jerror );
+        void * buff = malloc( f_size );
+        fread( buff, f_size, 1, f );
+        fclose( f );
 
-		json_t * meta = json_object_get( root, "meta" );
+        json_error_t jerror;
+        json_t * root = json_loadb( (const char *)buff, f_size, 0, &jerror );
 
-		json_t * meta_image = json_object_get( meta, "image" );		
-		const char * atlasname = json_string_value( meta_image );
+        json_t * meta = json_object_get( root, "meta" );
 
-		json_t * meta_size = json_object_get( meta, "size" );
+        json_t * meta_image = json_object_get( meta, "image" );
+        const char * atlasname = json_string_value( meta_image );
 
-		json_t * meta_size_w = json_object_get( meta_size, "w" );
-		json_int_t atlas_w = json_integer_value( meta_size_w );
+        json_t * meta_size = json_object_get( meta, "size" );
 
-		json_t * meta_size_h = json_object_get( meta_size, "h" );
-		json_int_t atlas_h = json_integer_value( meta_size_h );
+        json_t * meta_size_w = json_object_get( meta_size, "w" );
+        json_int_t atlas_w = json_integer_value( meta_size_w );
 
-		json_t * frames = json_object_get( root, "frames" );
+        json_t * meta_size_h = json_object_get( meta_size, "h" );
+        json_int_t atlas_h = json_integer_value( meta_size_h );
 
-		size_t frames_size = json_array_size( frames );
+        json_t * frames = json_object_get( root, "frames" );
 
-		for( size_t i = 0; i != frames_size; ++i )
-		{
-			json_t * frame_data = json_array_get( frames, i );
+        size_t frames_size = json_array_size( frames );
 
-			json_t * frame_data_filename = json_object_get( frame_data, "filename" );
+        for( size_t i = 0; i != frames_size; ++i )
+        {
+            json_t * frame_data = json_array_get( frames, i );
 
-			const char * filename = json_string_value( frame_data_filename );
+            json_t * frame_data_filename = json_object_get( frame_data, "filename" );
 
-			json_t * frame_data_sourceSize = json_object_get( frame_data, "sourceSize" );
+            const char * filename = json_string_value( frame_data_filename );
 
-			json_t * frame_data_sourceSize_w = json_object_get( frame_data_sourceSize, "w" );
-			json_int_t fw = json_integer_value( frame_data_sourceSize_w );
+            json_t * frame_data_sourceSize = json_object_get( frame_data, "sourceSize" );
 
-			json_t * frame_data_sourceSize_h = json_object_get( frame_data_sourceSize, "h" );
-			json_int_t fh = json_integer_value( frame_data_sourceSize_h );
+            json_t * frame_data_sourceSize_w = json_object_get( frame_data_sourceSize, "w" );
+            json_int_t fw = json_integer_value( frame_data_sourceSize_w );
 
-			json_t * frame_data_spriteSourceSize = json_object_get( frame_data, "spriteSourceSize" );
-			
-			json_t * frame_data_spriteSourceSize_x = json_object_get( frame_data_spriteSourceSize, "x" );
-			json_int_t ox = json_integer_value( frame_data_spriteSourceSize_x );
+            json_t * frame_data_sourceSize_h = json_object_get( frame_data_sourceSize, "h" );
+            json_int_t fh = json_integer_value( frame_data_sourceSize_h );
 
-			json_t * frame_data_spriteSourceSize_y = json_object_get( frame_data_spriteSourceSize, "y" );
-			json_int_t oy = json_integer_value( frame_data_spriteSourceSize_y );
+            json_t * frame_data_spriteSourceSize = json_object_get( frame_data, "spriteSourceSize" );
 
-			json_t * frame_data_frame = json_object_get( frame_data, "frame" );
+            json_t * frame_data_spriteSourceSize_x = json_object_get( frame_data_spriteSourceSize, "x" );
+            json_int_t ox = json_integer_value( frame_data_spriteSourceSize_x );
 
-			json_t * frame_data_frame_x = json_object_get( frame_data_frame, "x" );
-			json_int_t x = json_integer_value( frame_data_frame_x );
+            json_t * frame_data_spriteSourceSize_y = json_object_get( frame_data_spriteSourceSize, "y" );
+            json_int_t oy = json_integer_value( frame_data_spriteSourceSize_y );
 
-			json_t * frame_data_frame_y = json_object_get( frame_data_frame, "y" );
-			json_int_t y = json_integer_value( frame_data_frame_y );
+            json_t * frame_data_frame = json_object_get( frame_data, "frame" );
 
-			json_t * frame_data_frame_w = json_object_get( frame_data_frame, "w" );
-			json_int_t w = json_integer_value( frame_data_frame_w );
+            json_t * frame_data_frame_x = json_object_get( frame_data_frame, "x" );
+            json_int_t x = json_integer_value( frame_data_frame_x );
 
-			json_t * frame_data_frame_h = json_object_get( frame_data_frame, "h" );
-			json_int_t h = json_integer_value( frame_data_frame_h );
+            json_t * frame_data_frame_y = json_object_get( frame_data_frame, "y" );
+            json_int_t y = json_integer_value( frame_data_frame_y );
 
-			json_t * frame_data_rotated = json_object_get( frame_data, "rotated" );
-			bool rotated = json_boolean_value( frame_data_rotated );
+            json_t * frame_data_frame_w = json_object_get( frame_data_frame, "w" );
+            json_int_t w = json_integer_value( frame_data_frame_w );
 
-			AtlasImageDesc image;
-			image.name = filename;
-			image.atlas = atlasname;
+            json_t * frame_data_frame_h = json_object_get( frame_data_frame, "h" );
+            json_int_t h = json_integer_value( frame_data_frame_h );
 
-			image.aw = atlas_w;
-			image.ah = atlas_h;
+            json_t * frame_data_rotated = json_object_get( frame_data, "rotated" );
+            bool rotated = json_boolean_value( frame_data_rotated );
 
-			image.ox = ox;
-			image.oy = oy;
+            AtlasImageDesc image;
+            image.name = filename;
+            image.atlas = atlasname;
 
-			image.ow = w;
-			image.oh = h;
+            image.aw = atlas_w;
+            image.ah = atlas_h;
 
-			image.fw = fw;
-			image.fh = fh;
+            image.ox = ox;
+            image.oy = oy;
 
-			if( rotated == true )
-			{
-				image.x0 = x + h;
-				image.y0 = y + 0;
-				image.x1 = x + h;
-				image.y1 = y + w;
-				image.x2 = x + 0;
-				image.y2 = y + w;
-				image.x3 = x + 0;
-				image.y3 = y + 0;
-			}
-			else
-			{
-				image.x0 = x + 0;
-				image.y0 = y + 0;
-				image.x1 = x + w;
-				image.y1 = y + 0;
-				image.x2 = x + w;
-				image.y2 = y + h;
-				image.x3 = x + 0;
-				image.y3 = y + h;
-			}
+            image.ow = w;
+            image.oh = h;
+
+            image.fw = fw;
+            image.fh = fh;
+
+            if( rotated == true )
+            {
+                image.x0 = x + h;
+                image.y0 = y + 0;
+                image.x1 = x + h;
+                image.y1 = y + w;
+                image.x2 = x + 0;
+                image.y2 = y + w;
+                image.x3 = x + 0;
+                image.y3 = y + 0;
+            }
+            else
+            {
+                image.x0 = x + 0;
+                image.y0 = y + 0;
+                image.x1 = x + w;
+                image.y1 = y + 0;
+                image.x2 = x + w;
+                image.y2 = y + h;
+                image.x3 = x + 0;
+                image.y3 = y + h;
+            }
 
             image.rotated = rotated;
-			
-			atlas_images.push_back( image );
-		}
-	}
+
+            atlas_images.push_back( image );
+        }
+    }
 
     WCHAR infoCanonicalizeQuote[MAX_PATH];
     ForcePathQuoteSpaces( infoCanonicalizeQuote, result_path.c_str() );
@@ -397,7 +397,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( err != 0 )
     {
-        message_error( "invalid _wfopen %ls err %d\n"
+        message_error( "invalid _wfopen %ls err %d"
             , infoCanonicalizeQuote
             , err
         );
@@ -407,16 +407,16 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     uint32_t atlasCount = atlas_images.size();
     fprintf_s( f_result, "%u\n", atlasCount );
-		
-	for( std::vector<AtlasImageDesc>::const_iterator
-		it = atlas_images.begin(),
-		it_end = atlas_images.end();
-		it != it_end;
-		++it )
-	{
-		const AtlasImageDesc & image = *it;
 
-        fprintf_s( f_result, "%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%u\n"
+    for( std::vector<AtlasImageDesc>::const_iterator
+        it = atlas_images.begin(),
+        it_end = atlas_images.end();
+        it != it_end;
+        ++it )
+    {
+        const AtlasImageDesc & image = *it;
+
+        fprintf_s( f_result, "%s;%s;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%d\n"
             , image.name.c_str()
             , image.atlas.c_str()
             , image.aw
@@ -436,10 +436,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             , image.x3
             , image.y3
             , image.rotated == true ? 1 : 0
-		);
-	}
+        );
+    }
 
     fclose( f_result );
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

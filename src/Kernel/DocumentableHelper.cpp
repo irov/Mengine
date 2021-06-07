@@ -18,11 +18,11 @@ namespace Mengine
             {
                 return _capacity;
             }
-             
+
             const Char * message = parent->getMessage();
 
             MENGINE_STRNCAT( _message, message, _capacity );
-            
+
             size_t size = parent->getMessageSize();
 
             Char delim[] = " ==> ";

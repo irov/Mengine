@@ -13,6 +13,8 @@
 
 #include "ToolUtils/ToolUtils.h"
 
+#include "Config/Config.h"
+
 #include <Shlwapi.h>
 #include <shellapi.h>
 
@@ -47,7 +49,8 @@ static const uint32_t DDPF_BUMPLUMINANCE = 0x00040000l;        // L,U,V
 static const uint32_t DDPF_BUMPDUDV = 0x00080000l;        // U,V
 
 #pragma pack( push, 1 )
-struct DDS_PIXELFORMAT {
+struct DDS_PIXELFORMAT
+{
     uint32_t dwSize;
     uint32_t dwFlags;
     uint32_t dwFourCC;
@@ -58,7 +61,8 @@ struct DDS_PIXELFORMAT {
     uint32_t dwABitMask;
 };
 
-typedef struct {
+typedef struct
+{
     uint32_t           dwSize;
     uint32_t           dwFlags;
     uint32_t           dwHeight;
@@ -78,9 +82,9 @@ typedef struct {
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
 
     int cmd_num;
     LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
@@ -105,23 +109,21 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in.empty() == true )
     {
-        message_error( "not found 'in' param\n"
-        );
+        message_error( "not found 'in' param" );
 
         return 1;
     }
 
     if( out.empty() == true )
     {
-        message_error( "not found 'out' param\n"
-        );
+        message_error( "not found 'out' param" );
 
         return 1;
     }
 
     WCHAR inCanonicalizeQuote[MAX_PATH];
-    ForcePathQuoteSpaces( inCanonicalizeQuote, in.c_str() );
-    PathUnquoteSpaces( inCanonicalizeQuote );
+    ::ForcePathQuoteSpaces( inCanonicalizeQuote, in.c_str() );
+    ::PathUnquoteSpaces( inCanonicalizeQuote );
 
     FILE * file_in = _wfopen( inCanonicalizeQuote, L"rb" );
 
@@ -161,16 +163,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
     {
-        message_error( "ExtractDXT1 dds file no compress"
-        );
+        message_error( "ExtractDXT1 dds file no compress" );
 
         return false;
     }
 
     if( header.ddspf.dwFourCC != FOURCC( 'D', 'X', 'T', '1' ) )
     {
-        message_error( "ExtractDXT1 dds file no DXT1"
-        );
+        message_error( "ExtractDXT1 dds file no DXT1" );
 
         return false;
     }
@@ -185,8 +185,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     fclose( file_in );
 
     WCHAR outCanonicalizeQuote[MAX_PATH];
-    ForcePathQuoteSpaces( outCanonicalizeQuote, out.c_str() );
-    PathUnquoteSpaces( outCanonicalizeQuote );
+    ::ForcePathQuoteSpaces( outCanonicalizeQuote, out.c_str() );
+    ::PathUnquoteSpaces( outCanonicalizeQuote );
 
     FILE * file_out = _wfopen( outCanonicalizeQuote, L"wb" );
 

@@ -27,7 +27,7 @@ namespace Mengine
         const ContentInterfacePtr & content = resource->getContent();
 
         metadata->getm_File_Path( content.get(), &ContentInterface::setFilePath );
-        
+
         ConstString codecType;
         if( metadata->get_File_Codec( &codecType ) == false )
         {
@@ -48,7 +48,7 @@ namespace Mengine
 
         resource->setImageMaxSize( maxSize );
         resource->setImageWidth( width );
-        resource->setImageHeight( height );        
+        resource->setImageHeight( height );
 
         return true;
     }

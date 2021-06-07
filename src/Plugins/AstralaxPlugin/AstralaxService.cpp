@@ -1533,10 +1533,10 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_ERROR("not supported render platform [%u]"
+                LOGGER_ERROR( "not supported render platform [%u]"
                     , m_renderPlatform
                 );
-                
+
                 return nullptr;
             }break;
         }

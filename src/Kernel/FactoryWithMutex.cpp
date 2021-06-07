@@ -40,7 +40,7 @@ namespace Mengine
         }
 
         Factorable * object = this->_createObject();
-        
+
         MENGINE_ASSERTION_MEMORY_PANIC( object );
 
         ++m_count;

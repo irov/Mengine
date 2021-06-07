@@ -23,7 +23,7 @@ namespace Mengine
 
             size_t element_size = sizeof( T );
             void * memory_buffer = Helper::allocateMemory( element_size, doc );
-            
+
             return static_cast<T *>(memory_buffer);
         }
         //////////////////////////////////////////////////////////////////////////

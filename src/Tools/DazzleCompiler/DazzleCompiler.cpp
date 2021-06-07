@@ -44,7 +44,7 @@ static bool loadFile( const std::wstring & _filepath, Blobject & _buffer )
 
     if( f == NULL )
     {
-        message_error( "invalid _wfopen %ls\n"
+        message_error( "invalid _wfopen %ls"
             , _filepath.c_str()
         );
 
@@ -58,8 +58,8 @@ static bool loadFile( const std::wstring & _filepath, Blobject & _buffer )
     if( f_size == 0 )
     {
         ::fclose( f );
-        
-        message_error( "invalid size %ls\n"
+
+        message_error( "invalid size %ls"
             , _filepath.c_str()
         );
 
@@ -82,7 +82,7 @@ static bool writeCompress( const std::wstring & _filepath, const Blobject & _buf
 
     if( fz == NULL )
     {
-        message_error( "invalid _wfopen '%ls'\n"
+        message_error( "invalid _wfopen '%ls'"
             , _filepath.c_str()
         );
 
@@ -113,8 +113,8 @@ static bool writeCompress( const std::wstring & _filepath, const Blobject & _buf
     if( compressSize < 0 )
     {
         ::fclose( fz );
-        
-        message_error( "invalid compress '%ls'\n"
+
+        message_error( "invalid compress '%ls'"
             , _filepath.c_str()
         );
 
@@ -132,23 +132,23 @@ static bool writeCompress( const std::wstring & _filepath, const Blobject & _buf
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
 
     std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
     std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
 
     if( in_path.empty() == true )
     {
-        message_error( "not found 'in' param\n" );
+        message_error( "not found 'in' param" );
 
         return EXIT_FAILURE;
     }
 
     if( out_path.empty() == true )
     {
-        message_error( "not found 'out' param\n" );
+        message_error( "not found 'out' param" );
 
         return EXIT_FAILURE;
     }

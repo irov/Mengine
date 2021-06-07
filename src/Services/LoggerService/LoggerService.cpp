@@ -362,7 +362,7 @@ namespace Mengine
 
                 logger->log( _level, _flag, _color, _message, _size );
             }
-        
+
             this->logHistory_( _level, _flag, _color, _message, _size );
         }
 
@@ -439,7 +439,7 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        VectorLoggers::iterator it_find = 
+        VectorLoggers::iterator it_find =
             std::find( m_loggers.begin(), m_loggers.end(), _logger );
 
         if( it_find == m_loggers.end() )

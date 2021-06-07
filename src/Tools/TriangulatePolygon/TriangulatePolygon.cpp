@@ -57,11 +57,13 @@ struct vec2f
 
     double operator [] ( size_t i ) const
     {
+        //cppcheck-suppress objectIndex
         return (&x)[i];
     }
 
     double & operator [] ( size_t i )
     {
+        //cppcheck-suppress objectIndex
         return (&x)[i];
     }
 
@@ -486,7 +488,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( err != 0 )
     {
-        message_error( "invalid _wfopen %ls err %d\n"
+        message_error( "invalid _wfopen %ls err %d"
             , infoCanonicalizeQuote
             , err
         );

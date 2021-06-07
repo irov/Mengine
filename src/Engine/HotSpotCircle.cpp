@@ -87,7 +87,7 @@ namespace Mengine
     bool HotSpotCircle::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
     {
         MENGINE_UNUSED( _contentResolution );
-        
+
         if( m_global == true )
         {
             return !m_outward;

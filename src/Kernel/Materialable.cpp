@@ -6,7 +6,7 @@
 #include "Kernel/ResourceImage.h"
 
 namespace Mengine
-{    
+{
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////

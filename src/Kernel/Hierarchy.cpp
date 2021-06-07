@@ -155,7 +155,7 @@ namespace Mengine
         {
             return;
         }
-         
+
         NodePtr single = m_children.single();
 
         if( single != nullptr )
@@ -205,7 +205,7 @@ namespace Mengine
                 return false;
             }
         }
-    
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

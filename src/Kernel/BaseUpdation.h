@@ -5,7 +5,7 @@
 #include "Kernel/UpdateMode.h"
 
 namespace Mengine
-{    
+{
     class BaseUpdation
         : public UpdationInterface
     {
@@ -20,5 +20,5 @@ namespace Mengine
 
     protected:
         uint32_t m_updatableProxyId;
-    };    
+    };
 }

@@ -90,7 +90,7 @@ namespace Mengine
         }
 
         m_soundIdentity->setSoundListener( nullptr );
-            
+
         m_soundIdentity = nullptr;
 
         m_resourceSound->release();

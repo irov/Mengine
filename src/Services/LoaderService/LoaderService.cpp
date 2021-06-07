@@ -289,7 +289,7 @@ namespace Mengine
 
         if( read_size != bin_size )
         {
-            if( _metadata->parse( binary_memory, bin_size, read_size, (void *)& m_metacache ) == false )
+            if( _metadata->parse( binary_memory, bin_size, read_size, (void *)&m_metacache ) == false )
             {
                 LOGGER_ERROR( "invalid parse (error)" );
 

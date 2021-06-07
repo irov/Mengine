@@ -8,7 +8,7 @@
 #include "Config/Char.h"
 
 namespace Mengine
-{    
+{
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////

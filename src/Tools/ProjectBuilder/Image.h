@@ -27,7 +27,7 @@ namespace Mengine
         bool load( const FilePath & _path );
         bool save( const FilePath & _path );
 
-        bool create( uint32_t _width, uint32_t _height, uint32_t _channel );
+        bool create( uint32_t _width, uint32_t _height, uint32_t _channels );
 
         void fill( const Color & _colour );
 
@@ -62,7 +62,8 @@ namespace Mengine
 
         uint32_t m_width;
         uint32_t m_height;
-        uint32_t m_channels;
+
+        EPixelFormat m_format;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Image> ImagePtr;

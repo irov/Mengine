@@ -115,7 +115,7 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            
+
             ev.type = IET_MOUSE_LEAVE;
 
             INPUT_SERVICE()

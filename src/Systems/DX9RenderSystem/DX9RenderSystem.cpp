@@ -1425,13 +1425,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentPtr & _doc )
     {
-        DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
+        DX9RenderVertexBufferPtr vertexBuffer = m_factoryVertexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer );
 
-        buffer->setDirect3DDevice9( m_pD3DDevice );
+        vertexBuffer->setDirect3DDevice9( m_pD3DDevice );
 
-        if( buffer->initialize( _vertexSize, _bufferType ) == false )
+        if( vertexBuffer->initialize( _vertexSize, _bufferType ) == false )
         {
             LOGGER_ERROR( "invalid initialize vertex buffer [%u] type [%u]"
                 , _vertexSize
@@ -1441,13 +1441,13 @@ namespace Mengine
             return nullptr;
         }
 
-        m_renderResourceHandlers.push_back( buffer.get() );
+        m_renderResourceHandlers.push_back( vertexBuffer.get() );
 
 #ifdef MENGINE_DEBUG
         ++m_vertexBufferCount;
 #endif
 
-        return buffer;
+        return vertexBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer )
@@ -1479,24 +1479,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const DocumentPtr & _doc )
     {
-        DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
+        DX9RenderIndexBufferPtr indexBuffer = m_factoryIndexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer );
 
-        buffer->setDirect3DDevice9( m_pD3DDevice );
+        indexBuffer->setDirect3DDevice9( m_pD3DDevice );
 
-        if( buffer->initialize( _indexSize, _bufferType ) == false )
+        if( indexBuffer->initialize( _indexSize, _bufferType ) == false )
         {
             return nullptr;
         }
 
-        m_renderResourceHandlers.push_back( buffer.get() );
+        m_renderResourceHandlers.push_back( indexBuffer.get() );
 
 #ifdef MENGINE_DEBUG
         ++m_indexBufferCount;
 #endif
 
-        return buffer;
+        return indexBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer )

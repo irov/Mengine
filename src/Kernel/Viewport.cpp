@@ -206,10 +206,10 @@ namespace Mengine
             return 0.f;
         }
 
-        float sx[4] = { _bbox.minimum.x, _bbox.maximum.x, this->begin.x, this->end.x };
+        float sx[4] = {_bbox.minimum.x, _bbox.maximum.x, this->begin.x, this->end.x};
         std::sort( sx, sx + 4 );
 
-        float sy[4] = { _bbox.minimum.y, _bbox.maximum.y, this->begin.y, this->end.y };
+        float sy[4] = {_bbox.minimum.y, _bbox.maximum.y, this->begin.y, this->end.y};
         std::sort( sy, sy + 4 );
 
         float s = (sx[2] - sx[1]) * (sy[2] - sy[1]);

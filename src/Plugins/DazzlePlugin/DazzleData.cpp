@@ -36,7 +36,7 @@ namespace Mengine
     void DazzleData::release()
     {
         //Empty
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void DazzleData::setDazzleService( const dz_service_t * _service )
     {

@@ -5,7 +5,7 @@
 #include "Kernel/BaseAffector.h"
 
 namespace Mengine
-{    
+{
     template<class T>
     class LambdaAffector
         : public BaseAffector

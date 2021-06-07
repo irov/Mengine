@@ -62,24 +62,15 @@ namespace Mengine
             return false;
         }
 
-        XmlCodecOptions options;
-        options.pathProtocol = Helper::stringizeFilePath( utf8_protocolPath );
-        options.pathXml = Helper::stringizeFilePath( utf8_xmlPath );
-        options.pathBin = Helper::stringizeFilePath( utf8_binPath );
+        XmlDecoderData data;
+        data.pathProtocol = Helper::stringizeFilePath( utf8_protocolPath );
+        data.pathXml = Helper::stringizeFilePath( utf8_xmlPath );
+        data.pathBin = Helper::stringizeFilePath( utf8_binPath );
 
-        options.useProtocolVersion = Metacode::get_metacode_protocol_version();
-        options.useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
+        data.useProtocolVersion = Metacode::get_metacode_protocol_version();
+        data.useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
 
-        if( decoder->setOptions( &options ) == false )
-        {
-            LOGGER_ERROR( "writeBin invalid setup decoder xml2bin for %s"
-                , utf8_xmlPath.c_str()
-            );
-
-            return false;
-        }
-
-        if( decoder->decode( 0, 0 ) == 0 )
+        if( decoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "writeBin invalid decode %s"
                 , utf8_xmlPath.c_str()

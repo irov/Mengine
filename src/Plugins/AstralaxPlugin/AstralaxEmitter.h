@@ -83,7 +83,7 @@ namespace Mengine
 
         void setResourceAstralax( const ResourcePtr & _resource ) override;
         const ResourcePtr & getResourceAstralax() const override;
-        
+
         void setEmitterRandomMode( bool _randomMode );
         bool getEmitterRandomMode() const;
 

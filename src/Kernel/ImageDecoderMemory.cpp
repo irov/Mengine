@@ -54,7 +54,7 @@ namespace Mengine
         else
         {
             LOGGER_ERROR( "invalid channels data %u options %u"
-                , imageChannels 
+                , imageChannels
                 , optionChannels
             );
 

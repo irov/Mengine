@@ -62,7 +62,7 @@ namespace Mengine
         }
 
         m_initializeModule = true;
-         
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_MODULE_INITIALIZE, m_name );
 
         return true;

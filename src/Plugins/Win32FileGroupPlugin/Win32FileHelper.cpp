@@ -20,7 +20,7 @@ namespace Mengine
             WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
             Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
-            HANDLE handle = ::CreateFile( 
+            HANDLE handle = ::CreateFile(
                 pathCorrect, //lpFileName
                 _desiredAccess, //dwDesiredAccess
                 _sharedMode, //dwShareMode

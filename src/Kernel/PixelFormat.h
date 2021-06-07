@@ -3,7 +3,7 @@
 #include "Config/Config.h"
 
 namespace Mengine
-{    
+{
     enum EPixelFormat
     {
         PF_UNKNOWN = 0,
@@ -58,5 +58,5 @@ namespace Mengine
         PF_PVRTC4_RGBA = 40,
 
         PF_COUNT = 41
-    };    
+    };
 }

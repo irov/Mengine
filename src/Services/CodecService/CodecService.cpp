@@ -115,7 +115,7 @@ namespace Mengine
     void CodecService::removeCodecExt( const ConstString & _ext )
     {
         MENGINE_ASSERTION( m_codecExts.find( _ext ) != m_codecExts.end(), "not found codec ext '%s'"
-            , _ext.c_str() 
+            , _ext.c_str()
         );
 
         m_codecExts.erase( _ext );

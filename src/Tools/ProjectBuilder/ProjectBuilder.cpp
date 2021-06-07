@@ -1,9 +1,4 @@
-#include <iostream>
-
 #include "Interface/ServiceInterface.h"
-
-#include "XmlToBinDecoder.h"
-#include "XmlToAekConverter.h"
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
@@ -30,6 +25,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "XmlToBinDecoder.h"
+#include "XmlToAekConverter.h"
 #include "Image.h"
 
 #include "Kernel/String.h"
@@ -44,17 +41,20 @@
 #include "Kernel/Vector.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/AllocatorHelper.h"
-
-#include "Config/StdIO.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "ToolUtils/ToolLogger.h"
+
+#include "Config/StdIO.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
 
 #include "stdex/sha1.h"
 
+#include <iostream>
 #include <algorithm>
+
 #include <io.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void createConsole()
     {
-        typedef BOOL( WINAPI *PATTACHCONSOLE )(DWORD);
+        typedef BOOL( WINAPI * PATTACHCONSOLE )(DWORD);
 
         PATTACHCONSOLE pAttachConsole = nullptr;
 
@@ -173,7 +173,7 @@ namespace Mengine
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );        
+        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
@@ -362,9 +362,14 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-        bool isAlpha = (dataInfo->channels == 4);
+        uint32_t channels = Helper::getPixelFormatChannels( dataInfo->format );
 
-        return _kernel->ret_bool( isAlpha );
+        if( channels != 4 )
+        {
+            return _kernel->ret_false();
+        }
+
+        return _kernel->ret_true();
     }
     //////////////////////////////////////////////////////////////////////////
     static PyObject * isUselessAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
@@ -994,7 +999,7 @@ bool run()
         WCHAR szRegPath[512] = {L'\0'};
         MENGINE_WNSPRINTF( szRegPath, 512, L"SOFTWARE\\Python\\PythonCore\\%ls\\PythonPath"
             , version.c_str()
-        );        
+        );
 
         if( getCurrentUserRegValue( szRegPath, L"", desc.szPythonPath, 512 ) == false )
         {
@@ -1232,7 +1237,7 @@ bool run()
 #ifdef _MSC_VER
 int CALLBACK WinMain( _In_  HINSTANCE hInstance, _In_  HINSTANCE hPrevInstance, _In_  LPSTR lpCmdLine, _In_  int nCmdShow )
 #elif __MINGW32__
-int main( int argc, char *argv[] )
+int main( int argc, char * argv[] )
 #else
 #   error unsupport
 #endif

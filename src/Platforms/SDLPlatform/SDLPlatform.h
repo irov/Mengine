@@ -167,7 +167,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
     public:
-        virtual HWND getWindowHandle() const = 0;
+        HWND getWindowHandle() const override;
 #endif
 
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )

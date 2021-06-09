@@ -4627,11 +4627,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer Win32Platform::getPlatformExtention()
-    {
-        return this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );

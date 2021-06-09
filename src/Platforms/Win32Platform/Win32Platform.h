@@ -186,9 +186,6 @@ namespace Mengine
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 
     protected:
-        UnknownPointer getPlatformExtention() override;
-
-    protected:
         HWND getWindowHandle() const override;
 
     protected:

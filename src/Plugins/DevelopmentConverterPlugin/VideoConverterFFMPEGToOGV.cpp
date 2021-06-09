@@ -36,7 +36,7 @@ namespace Mengine
     bool VideoConverterFFMPEGToOGV::convert()
     {
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getPlatformExtention();
+            ->getUnknown();
 
         const ConstString & folderPath = m_options.fileGroup->getFolderPath();
 

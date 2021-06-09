@@ -81,7 +81,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t Win32GetCurrentThreadId()
         {
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
             uint32_t id = ::GetCurrentThreadId();
 #else
             uint32_t id = 0;
@@ -92,7 +92,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetLastErrorMessage()
         {
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
             DWORD error = ::GetLastError();
 
             Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()

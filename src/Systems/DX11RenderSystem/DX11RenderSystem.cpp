@@ -357,10 +357,12 @@ namespace Mengine
         swapChainDesc.BufferCount = 2;
 
         // Set the handle for the window to render to.
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getUnknown();
 
         swapChainDesc.OutputWindow = win32Platform->getWindowHandle();
+#endif
 
         // Turn multisampling off.
         swapChainDesc.SampleDesc.Count = 1;

@@ -92,7 +92,7 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
         SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getPlatformExtention();
+            ->getUnknown();
 
         SDL_Window * window = sdlPlatform->getWindow();
 

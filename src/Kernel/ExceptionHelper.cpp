@@ -52,7 +52,7 @@ namespace Mengine
         MENGINE_STRCAT( exception_msg, format_line );
         MENGINE_STRCAT( exception_msg, "\n" );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
         if( SERVICE_EXIST( PlatformInterface ) == true )
         {
             Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()

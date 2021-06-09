@@ -170,9 +170,9 @@ namespace Mengine
             return true;
         }
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
-            ->getPlatformExtention();
+            ->getUnknown();
 
         uint64_t mainThreadId = THREAD_SERVICE()
             ->getMainThreadId();

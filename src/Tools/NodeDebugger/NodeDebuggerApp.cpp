@@ -760,6 +760,10 @@ namespace Mengine
             pugi::xml_node node = _xmlContainer.child( "Node" );
 
             uint32_t id = node.attribute( "SelectedNodeId" ).as_uint();
+            
+            //ToDo
+            
+            MENGINE_UNUSED( id );
 
             String pathToRoot = node.attribute( "PathToRoot" ).value();
 
@@ -851,13 +855,13 @@ namespace Mengine
             {
                 _node->componentSurface.surfaceImage.deserialize( typeSurfaceImageNode );
 
-                pugi::xml_node contentNode = typeSurfaceImageNode.child( "Content" );
+                pugi::xml_node contentImageNode = typeSurfaceImageNode.child( "Content" );
 
-                _node->componentSurface.surfaceImage.isContent = contentNode;
+                _node->componentSurface.surfaceImage.isContent = contentImageNode;
 
                 if( _node->componentSurface.surfaceImage.isContent == true )
                 {
-                    _node->componentSurface.surfaceImage.content.deserialize( contentNode );
+                    _node->componentSurface.surfaceImage.content.deserialize( contentImageNode );
                 }
 
                 pugi::xml_node atlasNode = typeSurfaceImageNode.child( "Atlas" );
@@ -868,13 +872,13 @@ namespace Mengine
                 {
                     _node->componentSurface.atlas.deserialize( atlasNode );
 
-                    pugi::xml_node contentNode = atlasNode.child( "Content" );
+                    pugi::xml_node contentAtlasNode = atlasNode.child( "Content" );
 
-                    _node->componentSurface.atlas.isContent = contentNode;
+                    _node->componentSurface.atlas.isContent = contentAtlasNode;
 
-                    if( _node->componentSurface.atlas.isContent )
+                    if( _node->componentSurface.atlas.isContent == true )
                     {
-                        _node->componentSurface.atlas.content.deserialize( contentNode );
+                        _node->componentSurface.atlas.content.deserialize( contentAtlasNode );
                     }
                 }
             }

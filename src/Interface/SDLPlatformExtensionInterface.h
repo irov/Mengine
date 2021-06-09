@@ -12,6 +12,11 @@ namespace Mengine
     public:
         virtual SDL_Window * getWindow() const = 0;
 
+#if defined(MENGINE_PLATFORM_WINDOWS)
+    public:
+        virtual HWND getWindowHandle() const = 0;
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
         virtual SDL_GLContext getGLContext() const = 0;

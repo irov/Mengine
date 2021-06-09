@@ -4,7 +4,12 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+#   include "Interface/Win32PlatformExtensionInterface.h"
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+#   include "Interface/SDLPlatformExtensionInterface.h"
+#endif
 
 #include "DX11RenderEnum.h"
 #include "DX11ErrorHelper.h"
@@ -358,10 +363,17 @@ namespace Mengine
 
         // Set the handle for the window to render to.
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+        Win32PlatformExtensionInterface * win32Extension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        swapChainDesc.OutputWindow = win32Platform->getWindowHandle();
+        swapChainDesc.OutputWindow = win32Extension->getWindowHandle();
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
+        SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        swapChainDesc.OutputWindow = sdlExtension->getWindowHandle();
+#else
+#   error "unsupported platform"
 #endif
 
         // Turn multisampling off.
@@ -403,15 +415,15 @@ namespace Mengine
         DXRELEASE( dxgiFactory );
 
         // Get the pointer to the back buffer.
-        ID3D11Texture2D * backBufferPtr;
-        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
+        ID3D11Texture2D * backBuffer;
+        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBuffer) )
         {
             return false;
         }
 
         // Create the render target view with the back buffer pointer.
         ID3D11RenderTargetView * renderTargetView;
-        IF_DXCALL( m_pD3DDevice, CreateRenderTargetView, (backBufferPtr, nullptr, &renderTargetView) )
+        IF_DXCALL( m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView) )
         {
             return false;
         }
@@ -419,8 +431,8 @@ namespace Mengine
         m_renderTargetView.Attach( renderTargetView );
 
         // Release pointer to the back buffer as we no longer need it.
-        backBufferPtr->Release();
-        backBufferPtr = 0;
+        backBuffer->Release();
+        backBuffer = 0;
 
         // Initialize the description of the depth buffer.
         D3D11_TEXTURE2D_DESC depthBufferDesc;

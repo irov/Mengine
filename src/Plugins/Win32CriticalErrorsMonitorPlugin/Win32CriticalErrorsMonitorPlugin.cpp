@@ -66,21 +66,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void s_log_callstack( void * _ud, const char * _format, ... )
-    {
-        MENGINE_UNUSED( _ud );
-
-        va_list argList;
-        va_start( argList, _format );
-
-        Char format_msg[4096] = {'\0'};
-        MENGINE_VSNPRINTF( format_msg, 4096, _format, argList );
-
-        va_end( argList );
-
-        LOGGER_ERROR( "%s", format_msg );
-    }
-    //////////////////////////////////////////////////////////////////////////
     LONG WINAPI Win32CriticalErrorsMonitorPlugin::s_exceptionHandler( EXCEPTION_POINTERS * pExceptionPointers )
     {
         MENGINE_UNUSED( pExceptionPointers );

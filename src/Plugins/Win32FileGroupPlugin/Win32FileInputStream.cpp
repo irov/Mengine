@@ -395,6 +395,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::time( uint64_t * const _time ) const
     {
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         FILETIME creation;
         FILETIME access;
         FILETIME write;
@@ -409,13 +410,16 @@ namespace Mengine
         }
 
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getPlatformExtention();
+            ->getUnknown();
 
         time_t time = win32Platform->getFileUnixTime( &write );
 
         *_time = (uint64_t)time;
 
         return true;
+#else
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::memory( void ** const _memory, size_t * const _size )

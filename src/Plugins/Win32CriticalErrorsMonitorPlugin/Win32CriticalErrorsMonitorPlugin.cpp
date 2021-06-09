@@ -83,10 +83,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LONG WINAPI Win32CriticalErrorsMonitorPlugin::s_exceptionHandler( EXCEPTION_POINTERS * pExceptionPointers )
     {
+        MENGINE_UNUSED( pExceptionPointers );
+
         LOGGER_ERROR( "Exception catch" );
 
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
-            ->getPlatformExtention();
+            ->getUnknown();
 
         Char stack[8096] = {'\0'};
         if( extension->getCallstack( ~0U, stack, 8095, pExceptionPointers->ContextRecord ) == false )
@@ -97,13 +100,14 @@ namespace Mengine
         }
         else
         {
-            LOGGER_CRITICAL( "Catch exception and write dumb '%s'\n\n\n %s\n\n\n"
+            LOGGER_CRITICAL( "Catch exception and write dumb '%s'\n\n\n%s\n\n\n"
                 , g_monitor->m_dumpPath
                 , stack
             );
         }
 
         Win32CriticalErrorsMonitorPlugin::s_writeCrashDump( pExceptionPointers );
+#endif
 
         return EXCEPTION_EXECUTE_HANDLER;
     }

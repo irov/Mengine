@@ -89,11 +89,11 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY, &NodeDebuggerModule::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION, &NodeDebuggerModule::notifyIncrefFactoryGeneration, MENGINE_DOCUMENT_FACTORABLE );
 
-#ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         uint32_t globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
             Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-                ->getPlatformExtention();
+                ->getUnknown();
 
             uint32_t exitCode;
             win32Platform->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", false, &exitCode );

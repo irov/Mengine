@@ -14,7 +14,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
     public:
-        virtual HWND getWindowHandle() const = 0;
+        virtual void * getWindowHandle() const = 0;
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)

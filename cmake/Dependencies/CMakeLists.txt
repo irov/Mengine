@@ -574,7 +574,7 @@ if(MENGINE_DEPENDENCE_SDL2)
         
         if(MENGINE_WINDOWS_UNIVERSAL)
             set(WINDOWS_STORE ON CACHE BOOL "WINDOWS_STORE" FORCE)
-            SET(HAVE_SENSORSAPI_H OFF CACHE BOOL "HAVE_SENSORSAPI_H" FORCE)
+            set(HAVE_SENSORSAPI_H OFF CACHE BOOL "HAVE_SENSORSAPI_H" FORCE)
         endif()
 
         if(MENGINE_TARGET_WINDOWS)
@@ -584,17 +584,17 @@ if(MENGINE_DEPENDENCE_SDL2)
         
         if(MENGINE_TARGET_ANDROID)
             set(SDL_SHARED ON CACHE BOOL "Build a static version of the library" FORCE)
-            set(SDL_STATIC OFF CACHE BOOL "Build a static version of the library" FORCE)    
+            set(SDL_STATIC OFF CACHE BOOL "Build a static version of the library" FORCE)
         endif()
 
         if(MENGINE_TARGET_IOS)
             set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-            set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)    
+            set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
         endif()
 
         if(MENGINE_TARGET_MACOS)
             set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
-            set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)    
+            set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
         endif()
         
         if(MENGINE_TARGET_UNIX)

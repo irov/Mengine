@@ -2308,9 +2308,13 @@ namespace Mengine
 
         SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
 
+#if defined(SDL_VIDEO_DRIVER_WINDOWS)
         HWND hwnd = wmInfo.info.win.window;
 
         return hwnd;
+#endif
+
+        return NULL;
     }
     //////////////////////////////////////////////////////////////////////////
 #endif

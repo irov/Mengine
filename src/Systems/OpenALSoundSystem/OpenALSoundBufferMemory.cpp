@@ -119,7 +119,7 @@ namespace Mengine
                 );
 
                 return false;
-            }
+            }break;
         }
 
         ALsizei al_decode_size = (ALsizei)decode_size;

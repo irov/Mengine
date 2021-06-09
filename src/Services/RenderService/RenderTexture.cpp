@@ -45,8 +45,8 @@ namespace Mengine
         uint32_t HWWidth = m_image->getHWWidth();
         uint32_t HWHeight = m_image->getHWHeight();
 
-        float scaleU = float( m_rect.right ) / float( HWWidth );
-        float scaleV = float( m_rect.bottom ) / float( HWHeight );
+        float scaleU = float( m_rect.right - m_rect.left ) / float( HWWidth );
+        float scaleV = float( m_rect.bottom - m_rect.top ) / float( HWHeight );
 
         mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, scaleU, scaleV ) );
 

@@ -16,11 +16,10 @@ namespace Mengine
         {
             switch( _hr )
             {
-#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
-
                 MENGINE_CHEK_ERR( S_OK, "Ok" );
                 MENGINE_CHEK_ERR( S_FALSE, "S_FALSE" );
 
+#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
                 MENGINE_CHEK_ERR( D3D11_ERROR_FILE_NOT_FOUND, "file not found" );
                 MENGINE_CHEK_ERR( D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS, "There are too many unique instances of a particular type of state object" );
                 MENGINE_CHEK_ERR( D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS, "There are too many unique instances of a particular type of view object" );
@@ -56,7 +55,6 @@ namespace Mengine
                 MENGINE_CHEK_ERR( DXGI_ERROR_WAS_STILL_DRAWING, "The previous blit operation that is transferring information to or from this surface is incomplete" );
 
 #endif
-
             default:
                 return "Unknown error.";
             }

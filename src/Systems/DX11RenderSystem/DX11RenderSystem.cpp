@@ -98,8 +98,8 @@ namespace Mengine
 
         // Create a DirectX graphics interface factory.
 // DirectX 11 (for 11.1 or 11.2 need to use other factory)
-        IDXGIFactory * factory;
-        result = CreateDXGIFactory( __uuidof(IDXGIFactory), (void **)&factory );
+        IDXGIFactory1 * factory;
+        result = CreateDXGIFactory1( __uuidof(IDXGIFactory1), (void **)&factory );
 
         if( FAILED( result ) )
         {
@@ -306,8 +306,8 @@ namespace Mengine
 
         // Create a DirectX graphics interface factory.
         // DirectX 11 (for 11.1 or 11.2 need to use other factory)
-        IDXGIFactory * dxgiFactory;
-        HRESULT result = CreateDXGIFactory( __uuidof(IDXGIFactory), (void **)&dxgiFactory );
+        IDXGIFactory1 * dxgiFactory;
+        HRESULT result = CreateDXGIFactory1( __uuidof(IDXGIFactory1), (void **)&dxgiFactory );
 
         if( FAILED( result ) )
         {
@@ -358,7 +358,7 @@ namespace Mengine
 
         // Set the handle for the window to render to.
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getPlatformExtention();
+            ->getUnknown();
 
         swapChainDesc.OutputWindow = win32Platform->getWindowHandle();
 

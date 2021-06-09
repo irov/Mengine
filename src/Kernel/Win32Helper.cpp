@@ -96,7 +96,7 @@ namespace Mengine
             DWORD error = ::GetLastError();
 
             Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-                ->getPlatformExtention();
+                ->getUnknown();
 
             Char str_le[1024] = {'\0'};
             win32Platform->getErrorMessage( error, str_le, 1024 );

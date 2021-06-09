@@ -59,8 +59,8 @@ namespace Mengine
 
         ALenum m_format;
 
-        int32_t m_frequency;
-        int32_t m_channels;
+        uint32_t m_frequency;
+        uint32_t m_channels;
         float m_length;
         bool m_isStereo;
 

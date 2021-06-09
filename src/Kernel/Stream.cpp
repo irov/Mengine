@@ -531,7 +531,7 @@ namespace Mengine
 
                 if( check_crc32 != crc32 )
                 {
-                    LOGGER_ERROR( "invalid crc32 '%d' need '%d'"
+                    LOGGER_ERROR( "invalid crc32 '%u' need '%u'"
                         , check_crc32
                         , crc32
                     );

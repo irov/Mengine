@@ -588,7 +588,7 @@ namespace Mengine
         //Get Devivce Caps after create device
         DXCALL( m_pD3DDevice, GetDeviceCaps, (&m_d3dCaps) );
 
-        LOGGER_INFO( "render", "Mode: resolution %d x %d x %s\n"
+        LOGGER_INFO( "render", "Mode: resolution [%ux%u] format '%s'"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , Helper::getD3DFormatName( m_displayMode.Format )
@@ -1236,7 +1236,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage %u (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1245,7 +1245,6 @@ namespace Mengine
         }
 
         DWORD state = D3DTTFF_COUNT2;
-
         IF_DXCALL( m_pD3DDevice, SetTextureStageState, (_stage, D3DTSS_TEXTURETRANSFORMFLAGS, state) )
         {
             return;
@@ -1293,7 +1292,7 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetTexture, (i, NULL) )
             {
-                LOGGER_ERROR( "texture %u not reset"
+                LOGGER_ERROR( "texture [%u] not reset"
                     , i
                 );
             }
@@ -1407,7 +1406,7 @@ namespace Mengine
             ULONG ref = m_pD3DDevice->Release();
             MENGINE_UNUSED( ref );
 
-            //MENGINE_ASSERTION_FATAL( ref == 0, "D3DDevice has refcount [%d]", ref );
+            MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%ull]", ref );
 
             m_pD3DDevice = nullptr;
         }
@@ -1417,7 +1416,7 @@ namespace Mengine
             ULONG ref = m_pD3D->Release();
             MENGINE_UNUSED( ref );
 
-            //MENGINE_ASSERTION_FATAL( ref == 0, "D3D has refcount [%d]", ref );
+            MENGINE_ASSERTION( ref == 0, "D3D has refcount [%ull]", ref );
 
             m_pD3D = nullptr;
         }
@@ -1555,7 +1554,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage %u (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1617,7 +1616,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage %u (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1733,7 +1732,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage %u (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );

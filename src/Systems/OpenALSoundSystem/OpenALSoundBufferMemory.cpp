@@ -123,7 +123,8 @@ namespace Mengine
         }
 
         ALsizei al_decode_size = (ALsizei)decode_size;
-        IF_OPENAL_CALL( alBufferData, (alBufferId, m_format, binary_memory_buffer, al_decode_size, m_frequency) )
+        ALsizei al_frequency = (ALsizei)m_frequency;
+        IF_OPENAL_CALL( alBufferData, (alBufferId, m_format, binary_memory_buffer, al_decode_size, al_frequency) )
         {
             m_soundSystem->releaseBufferId( alBufferId );
 

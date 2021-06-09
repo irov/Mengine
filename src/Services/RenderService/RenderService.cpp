@@ -132,7 +132,7 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -353,7 +353,7 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()

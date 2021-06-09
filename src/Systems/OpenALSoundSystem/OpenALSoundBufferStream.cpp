@@ -393,9 +393,10 @@ namespace Mengine
         }
 
         ALsizei al_bytesWritten = (ALsizei)bytesWritten;
-        IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, m_frequency) )
+        ALsizei al_frequency = (ALsizei)m_frequency;
+        IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, al_frequency) )
         {
-            LOGGER_ERROR( "invalid alBufferData buffer [%u] id [%u] format [%u] bytes [%zu] frequency [%d]"
+            LOGGER_ERROR( "invalid alBufferData buffer [%u] id [%u] format [%u] bytes [%zu] frequency [%u]"
                 , _alBufferId
                 , m_sourceId
                 , m_format

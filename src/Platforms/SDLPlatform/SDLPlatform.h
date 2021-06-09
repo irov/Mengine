@@ -163,13 +163,10 @@ namespace Mengine
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 
     public:
-        UnknownPointer getPlatformExtention() override;
-
-    public:
         SDL_Window * getWindow() const override;
 
-
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
+    public:
         SDL_GLContext getGLContext() const override;
 #endif
 
@@ -206,9 +203,9 @@ namespace Mengine
         Resolution m_windowResolution;
         bool m_fullscreen;
 
-        SDL_Window * m_window;
+        SDL_Window * m_sdlWindow;
 
-        SDL_Joystick * m_accelerometer;
+        SDL_Joystick * m_sdlAccelerometer;
 
         struct SDLEventHandlerDesc
         {

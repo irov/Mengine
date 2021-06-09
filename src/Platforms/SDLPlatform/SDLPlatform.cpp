@@ -86,8 +86,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLPlatform::SDLPlatform()
         : m_fullscreen( false )
-        , m_window( nullptr )
-        , m_accelerometer( nullptr )
+        , m_sdlWindow( nullptr )
+        , m_sdlAccelerometer( nullptr )
         , m_enumerator( 0 )
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
@@ -216,12 +216,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SDLPlatform::getJoystickAxis( uint32_t _index ) const
     {
-        if( m_accelerometer == nullptr )
+        if( m_sdlAccelerometer == nullptr )
         {
             return 0.f;
         }
 
-        float axis = SDL_JoystickGetAxis( m_accelerometer, _index );
+        float axis = SDL_JoystickGetAxis( m_sdlAccelerometer, _index );
 
         const float inv_maxint32f = 1.f / 32767.f;
 
@@ -709,12 +709,12 @@ namespace Mengine
                     , joystickName
                 );
 
-                m_accelerometer = joystick;
+                m_sdlAccelerometer = joystick;
                 break;
             }
         }
 
-        if( m_accelerometer == nullptr )
+        if( m_sdlAccelerometer == nullptr )
         {
             LOGGER_MESSAGE_RELEASE( "Accelerometer not found"
             );
@@ -737,14 +737,14 @@ namespace Mengine
 
         m_platformTags.clear();
 
-        if( m_accelerometer != nullptr )
+        if( m_sdlAccelerometer != nullptr )
         {
-            if( SDL_JoystickGetAttached( m_accelerometer ) == SDL_TRUE )
+            if( SDL_JoystickGetAttached( m_sdlAccelerometer ) == SDL_TRUE )
             {
-                SDL_JoystickClose( m_accelerometer );
+                SDL_JoystickClose( m_sdlAccelerometer );
             }
 
-            m_accelerometer = nullptr;
+            m_sdlAccelerometer = nullptr;
         }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
@@ -837,10 +837,10 @@ namespace Mengine
                     APPLICATION_SERVICE()
                         ->flush();
 
-                    if( m_window != nullptr )
+                    if( m_sdlWindow != nullptr )
                     {
-                        SDL_ShowWindow( m_window );
-                        SDL_GL_SwapWindow( m_window );
+                        SDL_ShowWindow( m_sdlWindow );
+                        SDL_GL_SwapWindow( m_sdlWindow );
                     }
                 }
             }
@@ -996,7 +996,7 @@ namespace Mengine
 
 #if defined(MENGINE_WINDOWS_UNIVERSAL)
 #else
-        SDL_GLContext glContext = SDL_GL_CreateContext( m_window );
+        SDL_GLContext glContext = SDL_GL_CreateContext( m_sdlWindow );
 
         if( glContext == nullptr )
         {
@@ -1004,8 +1004,8 @@ namespace Mengine
                 , SDL_GetError()
             );
 
-            SDL_DestroyWindow( m_window );
-            m_window = nullptr;
+            SDL_DestroyWindow( m_sdlWindow );
+            m_sdlWindow = nullptr;
 
             return false;
         }
@@ -1125,8 +1125,8 @@ namespace Mengine
         Resolution resoultion;
         if( this->getDesktopResolution( &resoultion ) == false )
         {
-            SDL_DestroyWindow( m_window );
-            m_window = nullptr;
+            SDL_DestroyWindow( m_sdlWindow );
+            m_sdlWindow = nullptr;
 
             return false;
         }
@@ -1142,8 +1142,8 @@ namespace Mengine
 
             if( this->notifyWindowModeChanged( desktopResolution, true ) == false )
             {
-                SDL_DestroyWindow( m_window );
-                m_window = nullptr;
+                SDL_DestroyWindow( m_sdlWindow );
+                m_sdlWindow = nullptr;
 
                 return false;
             }
@@ -1152,8 +1152,8 @@ namespace Mengine
         {
             if( this->notifyWindowModeChanged( m_windowResolution, false ) == false )
             {
-                SDL_DestroyWindow( m_window );
-                m_window = nullptr;
+                SDL_DestroyWindow( m_sdlWindow );
+                m_sdlWindow = nullptr;
 
                 return false;
             }
@@ -1161,7 +1161,7 @@ namespace Mengine
 
         int win_width;
         int win_height;
-        SDL_GetWindowSize( m_window, &win_width, &win_height );
+        SDL_GetWindowSize( m_sdlWindow, &win_width, &win_height );
 
         float dwf = static_cast<float>(win_width);
         float dhf = static_cast<float>(win_height);
@@ -1223,13 +1223,13 @@ namespace Mengine
     {
         int displayIndex;
 
-        if( m_window == nullptr )
+        if( m_sdlWindow == nullptr )
         {
             displayIndex = 0;
         }
         else
         {
-            displayIndex = SDL_GetWindowDisplayIndex( m_window );
+            displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
         }
 
         uint32_t width;
@@ -1338,7 +1338,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
     {
-        SDL_MinimizeWindow( m_window );
+        SDL_MinimizeWindow( m_sdlWindow );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setCursorPosition( const mt::vec2f & _pos )
@@ -1356,7 +1356,7 @@ namespace Mengine
         int wndPosY = static_cast<int>(_pos.y * height);
 
         // ! This function generates a mouse motion event !
-        SDL_WarpMouseInWindow( m_window, wndPosX, wndPosY );
+        SDL_WarpMouseInWindow( m_sdlWindow, wndPosX, wndPosY );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setCursorIcon( const ConstString & _icon )
@@ -1387,12 +1387,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-        if( m_window == nullptr )
+        if( m_sdlWindow == nullptr )
         {
             return true;
         }
 
-        Uint32 flags = SDL_GetWindowFlags( m_window );
+        Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
 
         if( _fullscreen == true && !(flags & SDL_WINDOW_FULLSCREEN) )
         {
@@ -2294,15 +2294,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer SDLPlatform::getPlatformExtention()
-    {
-        return this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     SDL_Window * SDLPlatform::getWindow() const
     {
-        return m_window;
+        return m_sdlWindow;
     }
+    //////////////////////////////////////////////////////////////////////////
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
     //////////////////////////////////////////////////////////////////////////
     SDL_GLContext SDLPlatform::getGLContext() const
@@ -2685,7 +2681,7 @@ namespace Mengine
             return false;
         }
 
-        m_window = window;
+        m_sdlWindow = window;
 
         return true;
 }
@@ -2700,16 +2696,16 @@ namespace Mengine
         }
 #endif
 
-        if( m_window != nullptr )
+        if( m_sdlWindow != nullptr )
         {
-            SDL_DestroyWindow( m_window );
-            m_window = nullptr;
+            SDL_DestroyWindow( m_sdlWindow );
+            m_sdlWindow = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents_()
     {
-        Uint32 windowID = SDL_GetWindowID( m_window );
+        Uint32 windowID = SDL_GetWindowID( m_sdlWindow );
 
         SDL_Event sdlEvent;
         while( SDL_PollEvent( &sdlEvent ) != 0 )

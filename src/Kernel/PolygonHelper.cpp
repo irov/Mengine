@@ -108,7 +108,7 @@ namespace Mengine
                 return (aCROSSbp >= 0.f) && (bCROSScp >= 0.f) && (cCROSSap >= 0.f);
             }
             //////////////////////////////////////////////////////////////////////////
-            static bool snip( const VectorPoints & _points, Polygon::size_type u, Polygon::size_type v, Polygon::size_type w, Polygon::size_type n, Polygon::size_type * V )
+            static bool snip( const VectorPoints & _points, Polygon::size_type u, Polygon::size_type v, Polygon::size_type w, Polygon::size_type n, Polygon::size_type * const V )
             {
                 Polygon::size_type Vu = V[u];
                 Polygon::size_type Vv = V[v];
@@ -359,14 +359,14 @@ namespace Mengine
 
             if( polygon_area < 0.f )
             {
-                for( uint32_t v = 0; v < polygon_size; v++ )
+                for( uint32_t v = 0; v != polygon_size; ++v )
                 {
                     V[v] = v;
                 }
             }
             else
             {
-                for( uint32_t v = 0; v < polygon_size; v++ )
+                for( uint32_t v = 0; v != polygon_size; ++v )
                 {
                     V[v] = (polygon_size - 1) - v;
                 }

@@ -370,7 +370,7 @@ namespace Mengine
         m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getPlatformExtention();
+            ->getUnknown();
 
         HWND windowHandle = win32Platform->getWindowHandle();
 

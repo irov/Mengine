@@ -3,6 +3,7 @@
 #include "Config/Config.h"
 
 #include <d3d11.h>
+#include <dxgi1_2.h>
 
 #include <wrl/client.h>
 
@@ -15,6 +16,7 @@ namespace Mengine
     typedef DX11ResourcePtr<ID3D11Device> ID3D11DevicePtr;
     typedef DX11ResourcePtr<ID3D11DeviceContext> ID3D11DeviceContextPtr;
     typedef DX11ResourcePtr<IDXGISwapChain> IDXGISwapChainPtr;
+    typedef DX11ResourcePtr<IDXGISwapChain1> IDXGISwapChain1Ptr;
     typedef DX11ResourcePtr<ID3D11Texture2D> ID3D11Texture2DPtr;
     typedef DX11ResourcePtr<ID3D11ShaderResourceView> ID3D11ShaderResourceViewPtr;
     typedef DX11ResourcePtr<ID3D11RenderTargetView> ID3D11RenderTargetViewPtr;

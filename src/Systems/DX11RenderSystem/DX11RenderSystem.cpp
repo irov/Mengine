@@ -311,8 +311,8 @@ namespace Mengine
 
         // Create a DirectX graphics interface factory.
         // DirectX 11 (for 11.1 or 11.2 need to use other factory)
-        IDXGIFactory1 * dxgiFactory;
-        HRESULT result = CreateDXGIFactory1( __uuidof(IDXGIFactory1), (void **)&dxgiFactory );
+        IDXGIFactory2 * dxgiFactory;
+        HRESULT result = CreateDXGIFactory1( __uuidof(IDXGIFactory2), (void **)&dxgiFactory );
 
         if( FAILED( result ) )
         {
@@ -325,94 +325,71 @@ namespace Mengine
         }
 
         // Create Swap Chain
-        DXGI_SWAP_CHAIN_DESC swapChainDesc;
+        DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
 
         // Initialize the swap chain description.
         ZeroMemory( &swapChainDesc, sizeof( swapChainDesc ) );
 
         // Set the width and height of the back buffer.
-        swapChainDesc.BufferDesc.Width = m_windowResolution.getWidth();
-        swapChainDesc.BufferDesc.Height = m_windowResolution.getHeight();
+        swapChainDesc.Width = m_windowResolution.getWidth();
+        swapChainDesc.Height = m_windowResolution.getHeight();
 
         // Set regular 32-bit surface for the back buffer.
-        swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        swapChainDesc.Stereo = FALSE;
 
-        // Set the refresh rate of the back buffer.
-        if( m_waitForVSync == true )
-        {
-            for( const DXGI_MODE_DESC & displayModeDesc : m_DisplayModeList )
-            {
-                if( displayModeDesc.Width == swapChainDesc.BufferDesc.Width && displayModeDesc.Height == swapChainDesc.BufferDesc.Height )
-                {
-                    swapChainDesc.BufferDesc.RefreshRate.Numerator = displayModeDesc.RefreshRate.Numerator;
-                    swapChainDesc.BufferDesc.RefreshRate.Denominator = displayModeDesc.RefreshRate.Denominator;
+        swapChainDesc.SampleDesc.Count = 1; /* Don't use multi-sampling. */
+        swapChainDesc.SampleDesc.Quality = 0;
 
-                    break;
-                }
-            }
-        }
-        else
-        {
-            swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
-            swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-        }
-
-        // Set the usage of the back buffer.
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.BufferCount = 2;
+        swapChainDesc.BufferCount = 2; /* Use double-buffering to minimize latency. */
+
+#if WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
+        swapChainDesc.Scaling = DXGI_SCALING_STRETCH; /* On phone, only stretch and aspect-ratio stretch scaling are allowed. */
+        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; /* On phone, no swap effects are supported. */
+        /* TODO, WinRT: see if Win 8.x DXGI_SWAP_CHAIN_DESC1 settings are available on Windows Phone 8.1, and if there's any advantage to having them on */
+#else
+        swapChainDesc.Scaling = DXGI_SCALING_NONE;
+        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL; /* All Windows Store apps must use this SwapEffect. */
+#endif
+        swapChainDesc.Flags = 0;
+
+        IDXGISwapChain1 * dxgiSwapChain;
 
         // Set the handle for the window to render to.
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * win32Extension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        swapChainDesc.OutputWindow = win32Extension->getWindowHandle();
+        HWND hwnd = win32Extension->getWindowHandle();
+
+        IF_DXCALL( dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hwnd, &swapChainDesc, NULL, NULL, &dxgiSwapChain) )
+        {
+            return false;
+        }
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
         SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        swapChainDesc.OutputWindow = sdlExtension->getWindowHandle();
+        IInspectable * iwindow = reinterpret_cast<IInspectable *>(sdlExtension->getWindowHandle());
+        
+        IF_DXCALL( dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iwindow, &swapChainDesc, NULL, &dxgiSwapChain) )
+        {
+            return false;
+        }
 #else
 #   error "unsupported platform"
 #endif
 
-        // Turn multisampling off.
-        swapChainDesc.SampleDesc.Count = 1;
-        swapChainDesc.SampleDesc.Quality = 0;
-
-        // Set to full screen or windowed mode.
-        swapChainDesc.Windowed = _fullscreen == false ? true : false;
-
-        // Set the scan line ordering and scaling to unspecified.
-        swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-        swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-        // Discard the back buffer contents after presenting.
-        if( _MultiSampleCount > 1 )
-        {
-            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-        }
-        else
-        {
-            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        }
-
-        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-
-        // Don't set the advanced flags.
-        swapChainDesc.Flags = 0;
-
-        IDXGISwapChain * dxgiSwapChain;
-        IF_DXCALL( dxgiFactory, CreateSwapChain, (m_pD3DDevice.Get(), &swapChainDesc, &dxgiSwapChain) )
-        {
-            return false;
-        }
+        //IDXGISwapChain * dxgiSwapChain;
+        //IF_DXCALL( dxgiFactory, CreateSwapChain, (m_pD3DDevice.Get(), &swapChainDesc, &dxgiSwapChain) )
+        //{
+        //    return false;
+        //}
 
         m_dxgiSwapChain.Attach( dxgiSwapChain );
 
-        m_SwapChainBufferDesc = swapChainDesc.BufferDesc;
-
-        DXRELEASE( dxgiFactory );
+        //DXRELEASE( dxgiFactory );
 
         // Get the pointer to the back buffer.
         ID3D11Texture2D * backBuffer;
@@ -877,21 +854,21 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        if( m_windowResolution != _resolution )
-        {
-            m_SwapChainBufferDesc.Width = _resolution.getWidth();
-            m_SwapChainBufferDesc.Height = _resolution.getHeight();
+        //if( m_windowResolution != _resolution )
+        //{
+        //    m_SwapChainBufferDesc.Width = _resolution.getWidth();
+        //    m_SwapChainBufferDesc.Height = _resolution.getHeight();
 
-            IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
-            {
-                return;
-            }
+        //    IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
+        //    {
+        //        return;
+        //    }
 
-            IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, _resolution.getWidth(), _resolution.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
-            {
-                return;
-            }
-        }
+        //    IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, _resolution.getWidth(), _resolution.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
+        //    {
+        //        return;
+        //    }
+        //}
 
         m_windowResolution = _resolution;
 
@@ -1697,29 +1674,29 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
 
         // Set the refresh rate of the back buffer.
-        if( m_waitForVSync == true )
-        {
-            for( const DXGI_MODE_DESC & displayModeDesc : m_DisplayModeList )
-            {
-                if( displayModeDesc.Width == m_SwapChainBufferDesc.Width && displayModeDesc.Height == m_SwapChainBufferDesc.Height )
-                {
-                    m_SwapChainBufferDesc.RefreshRate.Numerator = displayModeDesc.RefreshRate.Numerator;
-                    m_SwapChainBufferDesc.RefreshRate.Denominator = displayModeDesc.RefreshRate.Denominator;
+        //if( m_waitForVSync == true )
+        //{
+        //    for( const DXGI_MODE_DESC & displayModeDesc : m_DisplayModeList )
+        //    {
+        //        if( displayModeDesc.Width == m_SwapChainBufferDesc.Width && displayModeDesc.Height == m_SwapChainBufferDesc.Height )
+        //        {
+        //            m_SwapChainBufferDesc.RefreshRate.Numerator = displayModeDesc.RefreshRate.Numerator;
+        //            m_SwapChainBufferDesc.RefreshRate.Denominator = displayModeDesc.RefreshRate.Denominator;
 
-                    break;
-                }
-            }
-        }
-        else
-        {
-            m_SwapChainBufferDesc.RefreshRate.Numerator = 60;
-            m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
-        }
+        //            break;
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    m_SwapChainBufferDesc.RefreshRate.Numerator = 60;
+        //    m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
+        //}
 
-        IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
-        {
-            return;
-        }
+        //IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
+        //{
+        //    return;
+        //}
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDestroyVertexAttribute_( DX11RenderVertexAttribute * _attribute )

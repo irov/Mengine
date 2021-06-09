@@ -433,6 +433,14 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
         }
+        else if( MENGINE_STRCMP( sdlPlatform, "WinRT" ) == 0 )
+        {
+            m_desktop = true;
+            m_touchpad = false;
+
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WinRT" ) );
+        }
         else if( MENGINE_STRCMP( sdlPlatform, "Mac OS X" ) == 0 )
         {
             m_desktop = true;
@@ -840,7 +848,11 @@ namespace Mengine
                     if( m_sdlWindow != nullptr )
                     {
                         SDL_ShowWindow( m_sdlWindow );
-                        SDL_GL_SwapWindow( m_sdlWindow );
+
+                        if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
+                        {
+                            SDL_GL_SwapWindow( m_sdlWindow );
+                        }
                     }
                 }
             }
@@ -1416,22 +1428,25 @@ namespace Mengine
     {
         MENGINE_UNUSED( _vsync );
 
-        if( _vsync == false )
+        if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
         {
-            if( SDL_GL_SetSwapInterval( 0 ) != 0 )
+            if( _vsync == false )
             {
-                LOGGER_ERROR( "notify vsync changed error: %s"
-                    , SDL_GetError()
-                );
+                if( SDL_GL_SetSwapInterval( 0 ) != 0 )
+                {
+                    LOGGER_ERROR( "notify vsync changed error: %s"
+                        , SDL_GetError()
+                    );
+                }
             }
-        }
-        else
-        {
-            if( SDL_GL_SetSwapInterval( 1 ) != 0 )
+            else
             {
-                LOGGER_ERROR( "notify vsync changed error: %s"
-                    , SDL_GetError()
-                );
+                if( SDL_GL_SetSwapInterval( 1 ) != 0 )
+                {
+                    LOGGER_ERROR( "notify vsync changed error: %s"
+                        , SDL_GetError()
+                    );
+                }
             }
         }
     }
@@ -2301,7 +2316,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_WINDOWS)
     //////////////////////////////////////////////////////////////////////////
-    HWND SDLPlatform::getWindowHandle() const
+    void * SDLPlatform::getWindowHandle() const
     {
         SDL_SysWMinfo wmInfo;
         SDL_VERSION( &wmInfo.version );
@@ -2312,9 +2327,13 @@ namespace Mengine
         HWND hwnd = wmInfo.info.win.window;
 
         return hwnd;
-#endif
+#elif defined(SDL_VIDEO_DRIVER_WINRT)
+        IInspectable * iwindow = wmInfo.info.winrt.window;        
 
+        return iwindow;
+#else
         return NULL;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 #endif

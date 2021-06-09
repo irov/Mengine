@@ -159,8 +159,8 @@ namespace Mengine
         ID3D11DeviceContextPtr m_pD3DDeviceContext;
         ID3D11DeviceContextPtr m_pD3DImmediateContext;
 
-        IDXGISwapChainPtr m_dxgiSwapChain;
-        DXGI_MODE_DESC m_SwapChainBufferDesc;
+        IDXGISwapChain1Ptr m_dxgiSwapChain;
+        //DXGI_MODE_DESC m_SwapChainBufferDesc;
 
         typedef Vector<DXGI_MODE_DESC> VectorModeDescs;
         VectorModeDescs m_DisplayModeList;

@@ -11,6 +11,10 @@
 extern void * _metabuf_malloc( size_t _size );
 extern void _metabuf_free( void * _ptr );
 
+#ifndef METABUF_UNUSED
+#define METABUF_UNUSED(X) (void)X
+#endif
+
 #ifndef METABUF_MALLOC
 #define METABUF_MALLOC(S) (_metabuf_malloc(S))
 #endif

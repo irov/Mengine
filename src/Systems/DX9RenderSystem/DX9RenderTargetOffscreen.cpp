@@ -5,6 +5,7 @@
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionNotImplemented.h"
 
 #include "stdex/memorycopy.h"
 
@@ -57,13 +58,22 @@ namespace Mengine
         uint8_t * dstData = reinterpret_cast<uint8_t *>(_buffer);
         uint8_t * srcData = reinterpret_cast<uint8_t *>(LockedRect.pBits);
 
-        for( DWORD i = 0; i != m_height; ++i )
-        {
-            stdex::memorycopy( dstData, 0, srcData, m_width * 4 );
 
-            dstData += _pitch;
-            srcData += LockedRect.Pitch;
-        }
+        MENGINE_UNUSED( dstData );
+        MENGINE_UNUSED( srcData );
+
+        MENGINE_UNUSED( _pitch );
+
+        //ToDo
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        //for( DWORD i = 0; i != m_height; ++i )
+        //{
+        //    stdex::memorycopy( dstData, 0, srcData, m_width * 4 );
+
+        //    dstData += _pitch;
+        //    srcData += LockedRect.Pitch;
+        //}
 
         DXCALL( m_pD3DSurfacePlain, UnlockRect, () );
 

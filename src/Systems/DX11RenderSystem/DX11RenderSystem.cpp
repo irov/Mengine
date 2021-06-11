@@ -891,6 +891,9 @@ namespace Mengine
 		m_renderTargetView->Release();
 		m_depthStencilBuffer->Release();
 		m_depthStencilView->Release();
+		m_renderTargetView = nullptr;
+		m_depthStencilBuffer = nullptr;
+		m_depthStencilView = nullptr;
 
         if( m_fullscreen != _fullscreen )
         {

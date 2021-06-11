@@ -819,14 +819,46 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setScissor( const Viewport & _viewport )
     {
-        MENGINE_UNUSED( _viewport );
+        //MENGINE_UNUSED( _viewport );
 
-        //ToDo
-    }
+		MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDeviceContext, "device context not found");
+
+		mt::mat4f pm;
+		mt::mul_m4_m4(pm, m_projectionMatrix, m_modelViewMatrix);
+
+		mt::vec2f b;
+		mt::mul_v2_v2_m4(b, _viewport.begin, pm);
+
+		mt::vec2f e;
+		mt::mul_v2_v2_m4(e, _viewport.end, pm);
+
+		mt::vec2f vs = m_viewport.size();
+
+		float bx = (b.x + 1.f) * 0.5f * vs.x;
+		float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
+		float ex = (e.x + 1.f) * 0.5f * vs.x;
+		float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
+
+		bx = MENGINE_MAX(bx, m_viewport.begin.x);
+		by = MENGINE_MAX(by, m_viewport.begin.y);
+		ex = MENGINE_MIN(ex, m_viewport.end.x);
+		ey = MENGINE_MIN(ey, m_viewport.end.y);
+
+		RECT r;
+		r.left = (uint32_t)bx;
+		r.top = (uint32_t)by;
+		r.right = (uint32_t)ex;
+		r.bottom = (uint32_t)ey;
+
+		//DXCALL(m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE));
+		m_D3D11RasterizerState.ScissorEnable = true;
+		// scissors
+		m_pD3DDeviceContext->RSSetScissorRects(1, &r);
+	}
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::removeScissor()
     {
-        //ToDo
+		m_D3D11RasterizerState.ScissorEnable = false;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setViewport( const Viewport & _viewport )

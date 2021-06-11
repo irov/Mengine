@@ -310,6 +310,7 @@ namespace Mengine
         m_fullscreen = _fullscreen;
         m_depth = _depth;
         m_waitForVSync = _waitForVSync;
+		m_multiSampleCount = _MultiSampleCount;
 
         // Create a DirectX graphics interface factory.
         // DirectX 11 (for 11.1 or 11.2 need to use other factory)
@@ -884,6 +885,13 @@ namespace Mengine
             return;
         }
 
+		m_pD3DDeviceContext->OMSetRenderTargets(0, 0, 0);
+
+		// Release all outstanding references to the swap chain's buffers.
+		m_renderTargetView->Release();
+		m_depthStencilBuffer->Release();
+		m_depthStencilView->Release();
+
         if( m_fullscreen != _fullscreen )
         {
             IF_DXCALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
@@ -893,7 +901,6 @@ namespace Mengine
 
             m_fullscreen = _fullscreen;
         }
-
 
         uint32_t resolutionWidth = _resolution.getWidth();
         uint32_t resolutionHeight = _resolution.getHeight();
@@ -917,6 +924,80 @@ namespace Mengine
 
             m_windowResolution = _resolution;
         }
+
+		// create new render targets
+		// Get the pointer to the back buffer.
+		ID3D11Texture2D * backBuffer;
+		IF_DXCALL(m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBuffer))
+		{
+			return;
+		}
+
+		// Create the render target view with the back buffer pointer.
+		ID3D11RenderTargetView * renderTargetView;
+		IF_DXCALL(m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView))
+		{
+			return;
+		}
+
+		m_renderTargetView.Attach(renderTargetView);
+
+		// Release pointer to the back buffer as we no longer need it.
+		backBuffer->Release();
+		backBuffer = 0;
+
+		// Initialize the description of the depth buffer.
+		D3D11_TEXTURE2D_DESC depthBufferDesc;
+		ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
+
+		// Set up the description of the depth buffer.
+		depthBufferDesc.Width = m_windowResolution.getWidth();
+		depthBufferDesc.Height = m_windowResolution.getHeight();
+		depthBufferDesc.MipLevels = 1;
+		depthBufferDesc.ArraySize = 1;
+		depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthBufferDesc.SampleDesc.Count = 1;
+		depthBufferDesc.SampleDesc.Quality = 0;
+		depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		depthBufferDesc.CPUAccessFlags = 0;
+		depthBufferDesc.MiscFlags = 0;
+
+		// Create the texture for the depth buffer using the filled out description.
+		ID3D11Texture2D * depthStencilBuffer;
+		IF_DXCALL(m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, nullptr, &depthStencilBuffer))
+		{
+			return;
+		}
+
+		m_depthStencilBuffer.Attach(depthStencilBuffer);
+
+		// Initialize the depth stencil view.
+		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+		ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
+
+		// Set up the depth stencil view description.
+		depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+		if (m_multiSampleCount <= 1)
+		{
+			depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		}
+		else
+		{
+			depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+		}
+
+		depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+		// Create the depth stencil view.
+		ID3D11DepthStencilView * depthStencilView;
+		IF_DXCALL(m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView))
+		{
+			return;
+		}
+
+		m_depthStencilView.Attach(depthStencilView);
 
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );

@@ -260,6 +260,13 @@ namespace Mengine
         return imageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
+    RenderMaterialStageCacheInterfacePtr MockupRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage )
+    {
+        MENGINE_UNUSED( _stage );
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::beginScene()
     {
         //Empty

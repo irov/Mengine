@@ -28,7 +28,7 @@ namespace Mengine
         m_hash = _hash;
         m_primitiveType = _primitiveType;
         m_stage = _stage;
-
+    
         m_textureCount = _textureCount;
 
         for( uint32_t i = 0; i != m_textureCount; ++i )

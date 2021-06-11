@@ -6,11 +6,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MockupRenderTargetTexture::MockupRenderTargetTexture()
-        : m_width( 0 )
-        , m_height( 0 )
-        , m_hwPixelFormat( PF_UNKNOWN )
-        , m_hwWidth( 0 )
+        : m_hwWidth( 0 )
         , m_hwHeight( 0 )
+        , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
         , m_upscalePow2( false )
@@ -23,8 +21,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _format )
     {
-        m_width = _width;
-        m_height = _height;
         m_hwWidth = Helper::getTexturePow2( _width );
         m_hwHeight = Helper::getTexturePow2( _height );
 

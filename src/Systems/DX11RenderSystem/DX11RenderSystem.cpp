@@ -224,6 +224,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::_finalizeService()
     {
+        m_dxgiSwapChain->SetFullscreenState( FALSE, nullptr );
+
         m_deferredCompilePrograms.clear();
 
         if( this->releaseResources_() == false )
@@ -337,26 +339,6 @@ namespace Mengine
         // Set regular 32-bit surface for the back buffer.
         swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
-        // Set the refresh rate of the back buffer.
-        if( m_waitForVSync == true )
-        {
-            for( const DXGI_MODE_DESC & displayModeDesc : m_DisplayModeList )
-            {
-                if( displayModeDesc.Width == swapChainDesc.BufferDesc.Width && displayModeDesc.Height == swapChainDesc.BufferDesc.Height )
-                {
-                    swapChainDesc.BufferDesc.RefreshRate.Numerator = displayModeDesc.RefreshRate.Numerator;
-                    swapChainDesc.BufferDesc.RefreshRate.Denominator = displayModeDesc.RefreshRate.Denominator;
-
-                    break;
-                }
-            }
-        }
-        else
-        {
-            swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
-            swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-        }
-
         // Set the usage of the back buffer.
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         swapChainDesc.BufferCount = 2;
@@ -411,6 +393,8 @@ namespace Mengine
         m_dxgiSwapChain.Attach( dxgiSwapChain );
 
         m_SwapChainBufferDesc = swapChainDesc.BufferDesc;
+
+        this->updateVSyncDPP_();
 
         DXRELEASE( dxgiFactory );
 
@@ -510,8 +494,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        float DirectX11_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetX", 0.0f );
-        float DirectX11_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetY", 0.0f );
+        float DirectX11_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetX", 0.f );
+        float DirectX11_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetY", 0.f );
 
         float perfect_x = DirectX11_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
         float perfect_y = DirectX11_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
@@ -821,44 +805,44 @@ namespace Mengine
     {
         //MENGINE_UNUSED( _viewport );
 
-		MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDeviceContext, "device context not found");
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
 
-		mt::mat4f pm;
-		mt::mul_m4_m4(pm, m_projectionMatrix, m_modelViewMatrix);
+        mt::mat4f pm;
+        mt::mul_m4_m4( pm, m_projectionMatrix, m_modelViewMatrix );
 
-		mt::vec2f b;
-		mt::mul_v2_v2_m4(b, _viewport.begin, pm);
+        mt::vec2f b;
+        mt::mul_v2_v2_m4( b, _viewport.begin, pm );
 
-		mt::vec2f e;
-		mt::mul_v2_v2_m4(e, _viewport.end, pm);
+        mt::vec2f e;
+        mt::mul_v2_v2_m4( e, _viewport.end, pm );
 
-		mt::vec2f vs = m_viewport.size();
+        mt::vec2f vs = m_viewport.size();
 
-		float bx = (b.x + 1.f) * 0.5f * vs.x;
-		float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
-		float ex = (e.x + 1.f) * 0.5f * vs.x;
-		float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
+        float bx = (b.x + 1.f) * 0.5f * vs.x;
+        float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
+        float ex = (e.x + 1.f) * 0.5f * vs.x;
+        float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
 
-		bx = MENGINE_MAX(bx, m_viewport.begin.x);
-		by = MENGINE_MAX(by, m_viewport.begin.y);
-		ex = MENGINE_MIN(ex, m_viewport.end.x);
-		ey = MENGINE_MIN(ey, m_viewport.end.y);
+        bx = MENGINE_MAX( bx, m_viewport.begin.x );
+        by = MENGINE_MAX( by, m_viewport.begin.y );
+        ex = MENGINE_MIN( ex, m_viewport.end.x );
+        ey = MENGINE_MIN( ey, m_viewport.end.y );
 
-		RECT r;
-		r.left = (uint32_t)bx;
-		r.top = (uint32_t)by;
-		r.right = (uint32_t)ex;
-		r.bottom = (uint32_t)ey;
+        RECT r;
+        r.left = (uint32_t)bx;
+        r.top = (uint32_t)by;
+        r.right = (uint32_t)ex;
+        r.bottom = (uint32_t)ey;
 
-		//DXCALL(m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE));
-		m_D3D11RasterizerState.ScissorEnable = true;
-		// scissors
-		m_pD3DDeviceContext->RSSetScissorRects(1, &r);
-	}
+        //DXCALL(m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE));
+        m_D3D11RasterizerState.ScissorEnable = TRUE;
+        // scissors
+        m_pD3DDeviceContext->RSSetScissorRects( 1, &r );
+    }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::removeScissor()
     {
-		m_D3D11RasterizerState.ScissorEnable = false;
+		m_D3D11RasterizerState.ScissorEnable = FALSE;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setViewport( const Viewport & _viewport )
@@ -881,8 +865,8 @@ namespace Mengine
         // Setup the viewport for rendering.
         viewport.Width = _viewport.getWidth();
         viewport.Height = _viewport.getHeight();
-        viewport.MinDepth = 0.0f;
-        viewport.MaxDepth = 1.0f;
+        viewport.MinDepth = 0.f;
+        viewport.MaxDepth = 1.f;
         viewport.TopLeftX = MT_floorf( _viewport.begin.x + 0.5f );
         viewport.TopLeftY = MT_floorf( _viewport.begin.y + 0.5f );
 
@@ -911,15 +895,18 @@ namespace Mengine
 
         if( m_windowResolution != _resolution )
         {
-            m_SwapChainBufferDesc.Width = _resolution.getWidth();
-            m_SwapChainBufferDesc.Height = _resolution.getHeight();
+            uint32_t resolutionWidth = _resolution.getWidth();
+            uint32_t resolutionHeight = _resolution.getHeight();
+
+            m_SwapChainBufferDesc.Width = resolutionWidth;
+            m_SwapChainBufferDesc.Height = resolutionHeight;
 
             IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
             {
                 return;
             }
 
-            IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, _resolution.getWidth(), _resolution.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
+            IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, resolutionWidth, resolutionHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
             {
                 return;
             }
@@ -1024,9 +1011,11 @@ namespace Mengine
     {
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
-            D3D11_SAMPLER_DESC * D3D11SamplerState = m_D3D11SamplerStates + index;
+            D3D11_SAMPLER_DESC * samplerState = m_D3D11SamplerStates + index;
 
-            ZeroMemory( D3D11SamplerState, sizeof( D3D11_SAMPLER_DESC ) );
+            ZeroMemory( samplerState, sizeof( D3D11_SAMPLER_DESC ) );
+
+            samplerState->Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
         }
 
         ZeroMemory( &m_D3D11BlendState, sizeof( m_D3D11BlendState ) );
@@ -1039,25 +1028,25 @@ namespace Mengine
         m_D3D11RasterizerState.CullMode = D3D11_CULL_NONE;
 
         m_D3D11RasterizerState.DepthBias = 0;
-        m_D3D11RasterizerState.DepthBiasClamp = 0.0f;
-        m_D3D11RasterizerState.DepthClipEnable = true;
+        m_D3D11RasterizerState.DepthBiasClamp = 0.f;
+        m_D3D11RasterizerState.DepthClipEnable = TRUE;
         m_D3D11RasterizerState.FillMode = D3D11_FILL_SOLID;
-        m_D3D11RasterizerState.FrontCounterClockwise = true;
+        m_D3D11RasterizerState.FrontCounterClockwise = TRUE;
         //      rasterDesc.FrontCounterClockwise = false;
 
-        m_D3D11RasterizerState.MultisampleEnable = false;
-        m_D3D11RasterizerState.ScissorEnable = false;
-        m_D3D11RasterizerState.SlopeScaledDepthBias = 0.0f;
+        m_D3D11RasterizerState.MultisampleEnable = FALSE;
+        m_D3D11RasterizerState.ScissorEnable = FALSE;
+        m_D3D11RasterizerState.SlopeScaledDepthBias = 0.f;
 
         // Initialize the description of the stencil state.
         ZeroMemory( &m_D3D11DepthStencilState, sizeof( m_D3D11DepthStencilState ) );
 
         // Set up the description of the stencil state.
-        m_D3D11DepthStencilState.DepthEnable = true;
+        m_D3D11DepthStencilState.DepthEnable = TRUE;
         m_D3D11DepthStencilState.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
         m_D3D11DepthStencilState.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-        m_D3D11DepthStencilState.StencilEnable = true;
+        m_D3D11DepthStencilState.StencilEnable = TRUE;
         m_D3D11DepthStencilState.StencilReadMask = 0xFF;
         m_D3D11DepthStencilState.StencilWriteMask = 0xFF;
 
@@ -1290,12 +1279,10 @@ namespace Mengine
 
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
-            D3D11_SAMPLER_DESC * samplerStateDesk = m_D3D11SamplerStates + index;
-
-			samplerStateDesk->Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            D3D11_SAMPLER_DESC * samplerDesc = m_D3D11SamplerStates + index;
 
             ID3D11SamplerState ** samplerState = &samplerStates[index];
-            IF_DXCALL( m_pD3DDevice, CreateSamplerState, (samplerStateDesk, samplerState) )
+            IF_DXCALL( m_pD3DDevice, CreateSamplerState, (samplerDesc, samplerState) )
             {
                 return;
             }
@@ -1720,6 +1707,11 @@ namespace Mengine
 
         this->updateVSyncDPP_();
 
+        IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
+        {
+            return;
+        }
+
         if( this->restore_() == false )
         {
             LOGGER_ERROR( "Graphics change mode failed" );
@@ -1740,20 +1732,15 @@ namespace Mengine
                     m_SwapChainBufferDesc.RefreshRate.Numerator = displayModeDesc.RefreshRate.Numerator;
                     m_SwapChainBufferDesc.RefreshRate.Denominator = displayModeDesc.RefreshRate.Denominator;
 
-                    break;
+                    return;
                 }
             }
-        }
-        else
-        {
-            m_SwapChainBufferDesc.RefreshRate.Numerator = 60;
-            m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
+
+            LOGGER_ERROR( "not found display mode" );
         }
 
-        IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
-        {
-            return;
-        }
+        m_SwapChainBufferDesc.RefreshRate.Numerator = 60;
+        m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDestroyVertexAttribute_( DX11RenderVertexAttribute * _attribute )

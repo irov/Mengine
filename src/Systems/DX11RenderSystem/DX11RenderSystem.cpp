@@ -254,7 +254,6 @@ namespace Mengine
         m_pD3DDeviceContext = nullptr;
         m_pD3DImmediateContext = nullptr;
 
-
         ID3D11Debug * D3DDevice;
         m_pD3DDevice->QueryInterface( __uuidof(ID3D11Debug), reinterpret_cast<void **>(&D3DDevice) );
         D3DDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
@@ -350,7 +349,14 @@ namespace Mengine
         Win32PlatformExtensionInterface * win32Extension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        swapChainDesc.OutputWindow = win32Extension->getWindowHandle();
+        HWND hWnd = win32Extension->getWindowHandle();
+
+        swapChainDesc.OutputWindow = hWnd;
+
+        IF_DXCALL( dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES) )
+        {
+            return false;
+        }
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
         SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getUnknown();

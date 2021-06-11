@@ -138,7 +138,7 @@ namespace Mengine
         const ID3D11DeviceContextPtr & getDirect3D11DeviceContext() const override;
 
     protected:
-        void updateVSyncDPP_();
+        void updateVSyncDPP_( DXGI_MODE_DESC * const _dxgiSwapChainBufferDesc );
         bool resetDevice_();
 
     protected:
@@ -160,7 +160,7 @@ namespace Mengine
         ID3D11DeviceContextPtr m_pD3DImmediateContext;
 
         IDXGISwapChainPtr m_dxgiSwapChain;
-        DXGI_MODE_DESC m_SwapChainBufferDesc;
+        DXGI_MODE_DESC m_dxgiSwapChainBufferDesc;
 
         typedef Vector<DXGI_MODE_DESC> VectorModeDescs;
         VectorModeDescs m_DisplayModeList;

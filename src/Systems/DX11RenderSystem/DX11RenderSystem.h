@@ -240,6 +240,7 @@ namespace Mengine
         bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES] = {false};
 
         bool m_waitForVSync;
+		uint32_t m_multiSampleCount;
     };
     //////////////////////////////////////////////////////////////////////////
 }

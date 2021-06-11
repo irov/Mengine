@@ -349,14 +349,7 @@ namespace Mengine
         Win32PlatformExtensionInterface * win32Extension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        HWND hWnd = win32Extension->getWindowHandle();
-
-        swapChainDesc.OutputWindow = hWnd;
-
-        IF_DXCALL( dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES) )
-        {
-            return false;
-        }
+        swapChainDesc.OutputWindow = win32Extension->getWindowHandle();
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
         SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getUnknown();
@@ -393,6 +386,11 @@ namespace Mengine
         }
 
         m_dxgiSwapChain.Attach( dxgiSwapChain );
+
+        IF_DXCALL( dxgiFactory, MakeWindowAssociation, (swapChainDesc.OutputWindow, DXGI_MWA_NO_WINDOW_CHANGES) )
+        {
+            return false;
+        }
 
         m_dxgiSwapChainBufferDesc = swapChainDesc.BufferDesc;
 

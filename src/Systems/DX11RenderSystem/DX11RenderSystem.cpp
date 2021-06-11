@@ -1260,6 +1260,8 @@ namespace Mengine
         {
             D3D11_SAMPLER_DESC * samplerStateDesk = m_D3D11SamplerStates + index;
 
+			samplerStateDesk->Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+
             ID3D11SamplerState ** samplerState = &samplerStates[index];
             IF_DXCALL( m_pD3DDevice, CreateSamplerState, (samplerStateDesk, samplerState) )
             {

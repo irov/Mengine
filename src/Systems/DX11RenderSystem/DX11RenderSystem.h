@@ -204,6 +204,7 @@ namespace Mengine
 
     protected:
         UINT m_adapterToUse;
+        uint32_t m_multiSampleCount;
 
         Viewport m_viewport;
 
@@ -243,8 +244,7 @@ namespace Mengine
 
         bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES] = {false};
 
-        bool m_waitForVSync;
-		uint32_t m_multiSampleCount;
+        bool m_waitForVSync;		
     };
     //////////////////////////////////////////////////////////////////////////
 }

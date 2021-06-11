@@ -699,6 +699,15 @@ namespace Mengine
         return renderImageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
+    RenderMaterialStageCacheInterfacePtr DX11RenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage )
+    {
+        MENGINE_UNUSED( _stage );
+
+        //ToDo
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::resetDevice_()
     {
         return true;

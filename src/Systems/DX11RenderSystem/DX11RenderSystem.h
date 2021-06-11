@@ -101,6 +101,10 @@ namespace Mengine
 
         RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
 
+    public:
+        RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage ) override;
+
+    public:
         bool beginScene() override;
         void endScene() override;
         void swapBuffers() override;

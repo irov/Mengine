@@ -12,9 +12,9 @@ namespace Mengine
     public:
         virtual SDL_Window * getWindow() const = 0;
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_WINDOWS_UNIVERSAL)
     public:
-        virtual void * getWindowHandle() const = 0;
+        virtual IInspectable * getWindowHandle() const = 0;
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)

@@ -350,6 +350,8 @@ namespace Mengine
             );
     }
     //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_WINDOWS_UNIVERSAL
+    //////////////////////////////////////////////////////////////////////////
     static void * s_SDL_malloc_func( size_t size )
     {
         void * p = Helper::allocateMemory( size, "SDL" );
@@ -376,6 +378,8 @@ namespace Mengine
         Helper::deallocateMemory( mem, "SDL" );
     }
     //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
         ::setlocale( LC_ALL, "C" );
@@ -395,6 +399,7 @@ namespace Mengine
             , isTablet == SDL_TRUE ? "true" : "false"
         );
 
+#ifndef MENGINE_WINDOWS_UNIVERSAL
         SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
 
         if( SDL_SetMemoryFunctions( &s_SDL_malloc_func, &s_SDL_calloc_func, &s_SDL_realloc_func, &s_SDL_free_func ) != 0 )
@@ -405,6 +410,7 @@ namespace Mengine
 
             return false;
         }
+#endif
 
 #ifdef MENGINE_DEBUG
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_DEBUG );
@@ -761,12 +767,14 @@ namespace Mengine
         m_factoryDynamicLibraries = nullptr;
         m_factoryDateTimeProviders = nullptr;
 
+#ifdef MENGINE_WINDOWS_UNIVERSAL
         if( SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func ) != 0 )
         {
             LOGGER_ERROR( "invalid set memory functions: %s"
                 , SDL_GetError()
             );
         }
+#endif
 
         MENGINE_ASSERTION_ALLOCATOR( "SDL" );
     }
@@ -1147,28 +1155,10 @@ namespace Mengine
             ->changeWindowResolution( resoultion );
 #endif
 
-        if( m_fullscreen == true )
+        if( RENDER_SYSTEM()
+            ->onWindowChangeFullscreen( m_fullscreen ) == false )
         {
-            Resolution desktopResolution;
-            this->getDesktopResolution( &desktopResolution );
-
-            if( this->notifyWindowModeChanged( desktopResolution, true ) == false )
-            {
-                SDL_DestroyWindow( m_sdlWindow );
-                m_sdlWindow = nullptr;
-
-                return false;
-            }
-        }
-        else
-        {
-            if( this->notifyWindowModeChanged( m_windowResolution, false ) == false )
-            {
-                SDL_DestroyWindow( m_sdlWindow );
-                m_sdlWindow = nullptr;
-
-                return false;
-            }
+            return false;
         }
 
         int win_width;
@@ -1406,14 +1396,9 @@ namespace Mengine
 
         Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
 
-        if( _fullscreen == true && !(flags & SDL_WINDOW_FULLSCREEN) )
-        {
-            if( this->changeWindow_( _resolution, _fullscreen ) == false )
-            {
-                return false;
-            }
-        }
-        else if( _fullscreen == false && (flags & SDL_WINDOW_FULLSCREEN) )
+        bool alredyFullscreen = (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
+
+        if( _fullscreen != alredyFullscreen )
         {
             if( this->changeWindow_( _resolution, _fullscreen ) == false )
             {
@@ -2314,9 +2299,9 @@ namespace Mengine
         return m_sdlWindow;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
-    void * SDLPlatform::getWindowHandle() const
+    IInspectable * SDLPlatform::getWindowHandle() const
     {
         SDL_SysWMinfo wmInfo;
         SDL_VERSION( &wmInfo.version );

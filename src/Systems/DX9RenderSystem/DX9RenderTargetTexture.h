@@ -63,9 +63,6 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
-        uint32_t m_width;
-        uint32_t m_height;
-
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
         EPixelFormat m_hwPixelFormat;

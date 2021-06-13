@@ -49,12 +49,10 @@ namespace Mengine
         bool getData( void * const _buffer, size_t _pitch ) const override;
 
     protected:
-        uint32_t m_width;
-        uint32_t m_height;
-        EPixelFormat m_hwPixelFormat;
-
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
+
+        EPixelFormat m_hwPixelFormat;
 
         float m_hwWidthInv;
         float m_hwHeightInv;

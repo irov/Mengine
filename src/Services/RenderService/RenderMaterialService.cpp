@@ -313,7 +313,7 @@ namespace Mengine
             }
         }
 
-        if( _src.alphaBlendEnable != _dst.alphaBlendEnable )
+        if( _src.blendSrc != _dst.blendSrc )
         {
             return false;
         }
@@ -323,17 +323,7 @@ namespace Mengine
             return false;
         }
 
-        if( _src.blendSrc != _dst.blendSrc )
-        {
-            return false;
-        }
-
         if( _src.blendOp != _dst.blendOp )
-        {
-            return false;
-        }
-
-        if( _src.separateAlphaBlendEnable != _dst.separateAlphaBlendEnable )
         {
             return false;
         }
@@ -349,6 +339,26 @@ namespace Mengine
         }
 
         if( _src.separateAlphaBlendOp != _dst.separateAlphaBlendOp )
+        {
+            return false;
+        }
+
+        if( _src.separateAlphaBlendEnable != _dst.separateAlphaBlendEnable )
+        {
+            return false;
+        }
+
+        if( _src.alphaBlendEnable != _dst.alphaBlendEnable )
+        {
+            return false;
+        }
+
+        if( _src.depthBufferTestEnable != _dst.depthBufferTestEnable )
+        {
+            return false;
+        }
+
+        if( _src.depthBufferWriteEnable != _dst.depthBufferWriteEnable )
         {
             return false;
         }
@@ -404,13 +414,15 @@ namespace Mengine
 
         m_stages[m_stageCount] = _stage;
 
-        RenderMaterialStage & cache_other = m_stages[m_stageCount];
+        RenderMaterialStage & cache_stage = m_stages[m_stageCount];
 
         m_stageCount++;
 
-        cache_other.id = m_stageCount;
+        cache_stage.id = m_stageCount;
+        cache_stage.cache = RENDER_SYSTEM()
+            ->createRenderMaterialStageCache( &cache_stage );
 
-        return &cache_other;
+        return &cache_stage;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialService::uncacheMaterialStage( const RenderMaterialStage * _stage )

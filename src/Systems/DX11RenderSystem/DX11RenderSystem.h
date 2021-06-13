@@ -101,6 +101,10 @@ namespace Mengine
 
         RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
 
+    public:
+        RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage ) override;
+
+    public:
         bool beginScene() override;
         void endScene() override;
         void swapBuffers() override;
@@ -138,7 +142,7 @@ namespace Mengine
         const ID3D11DeviceContextPtr & getDirect3D11DeviceContext() const override;
 
     protected:
-        void updateVSyncDPP_();
+        void updateVSyncDPP_( UINT _width, UINT _height, DXGI_RATIONAL * const _refreshRate );
         bool resetDevice_();
 
     protected:
@@ -159,8 +163,8 @@ namespace Mengine
         ID3D11DeviceContextPtr m_pD3DDeviceContext;
         ID3D11DeviceContextPtr m_pD3DImmediateContext;
 
-        IDXGISwapChain1Ptr m_dxgiSwapChain;
-        //DXGI_MODE_DESC m_SwapChainBufferDesc;
+        IDXGISwapChainPtr m_dxgiSwapChain;
+        DXGI_MODE_DESC m_dxgiSwapChainBufferDesc;
 
         typedef Vector<DXGI_MODE_DESC> VectorModeDescs;
         VectorModeDescs m_DisplayModeList;
@@ -200,6 +204,7 @@ namespace Mengine
 
     protected:
         UINT m_adapterToUse;
+        uint32_t m_multiSampleCount;
 
         Viewport m_viewport;
 
@@ -239,7 +244,7 @@ namespace Mengine
 
         bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES] = {false};
 
-        bool m_waitForVSync;
+        bool m_waitForVSync;		
     };
     //////////////////////////////////////////////////////////////////////////
 }

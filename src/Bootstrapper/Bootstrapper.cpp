@@ -694,6 +694,14 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "enable document debug [ON]" );
 #endif
 
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getCurrentPath( currentPath );
+
+        LOGGER_MESSAGE( "Current Folder: %s"
+            , currentPath
+        );
+
         LOGGER_INFO( "bootstrapper", "bootstrapper load application ini" );
 
         if( this->loadApplicationIni_() == false )

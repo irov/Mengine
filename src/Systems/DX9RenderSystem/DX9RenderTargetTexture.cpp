@@ -9,9 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderTargetTexture::DX9RenderTargetTexture()
-        : m_width( 0 )
-        , m_height( 0 )
-        , m_hwWidth( 0 )
+        : m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
@@ -30,9 +28,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _format )
     {
-        m_width = _width;
-        m_height = _height;
-
         D3DFORMAT d3dFormat = Helper::toD3DFormat( _format );
 
         IDirect3DTexture9 * pD3DTexture;

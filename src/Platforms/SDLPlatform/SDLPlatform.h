@@ -165,9 +165,9 @@ namespace Mengine
     public:
         SDL_Window * getWindow() const override;
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_WINDOWS_UNIVERSAL)
     public:
-        void * getWindowHandle() const override;
+        IInspectable * getWindowHandle() const override;
 #endif
 
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )

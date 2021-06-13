@@ -10,6 +10,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    class RenderMaterialStageCacheInterface
+        : public Interface
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderMaterialStageCacheInterface> RenderMaterialStageCacheInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     struct RenderTextureStage
     {
         ETextureFilter mipmap = TF_NONE;
@@ -26,6 +33,7 @@ namespace Mengine
         uint32_t id = 0;
 
         RenderProgramInterfacePtr program;
+        RenderMaterialStageCacheInterfacePtr cache;
 
         RenderTextureStage textureStage[MENGINE_MAX_TEXTURE_STAGES];
 

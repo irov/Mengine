@@ -63,6 +63,7 @@ namespace Mengine
         : m_fullscreen( true )
         , m_depth( false )
         , m_adapterToUse( 0 )
+        , m_multiSampleCount( 0 )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
         , m_vertexAttributeEnable( false )
@@ -224,6 +225,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::_finalizeService()
     {
+#ifndef MENGINE_WINDOWS_UNIVERSAL
+        m_dxgiSwapChain->SetFullscreenState( FALSE, nullptr );
+#endif
+
         m_deferredCompilePrograms.clear();
 
         if( this->releaseResources_() == false )
@@ -251,12 +256,11 @@ namespace Mengine
         m_pD3DDeviceContext = nullptr;
         m_pD3DImmediateContext = nullptr;
 
-
         ID3D11Debug * D3DDevice;
         m_pD3DDevice->QueryInterface( __uuidof(ID3D11Debug), reinterpret_cast<void **>(&D3DDevice) );
         D3DDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
         D3DDevice->Release();
-        
+
         m_pD3DDevice = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
@@ -308,6 +312,7 @@ namespace Mengine
         m_fullscreen = _fullscreen;
         m_depth = _depth;
         m_waitForVSync = _waitForVSync;
+        m_multiSampleCount = _MultiSampleCount;
 
         // Create a DirectX graphics interface factory.
         // DirectX 11 (for 11.1 or 11.2 need to use other factory)
@@ -338,21 +343,27 @@ namespace Mengine
         swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
         swapChainDesc.Stereo = FALSE;
 
-        swapChainDesc.SampleDesc.Count = 1; /* Don't use multi-sampling. */
+        // Turn multisampling off.
+        swapChainDesc.SampleDesc.Count = 1;
         swapChainDesc.SampleDesc.Quality = 0;
 
+        // Set the usage of the back buffer.
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.BufferCount = 2; /* Use double-buffering to minimize latency. */
+        swapChainDesc.BufferCount = 2;
 
-#if WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
-        swapChainDesc.Scaling = DXGI_SCALING_STRETCH; /* On phone, only stretch and aspect-ratio stretch scaling are allowed. */
-        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; /* On phone, no swap effects are supported. */
-        /* TODO, WinRT: see if Win 8.x DXGI_SWAP_CHAIN_DESC1 settings are available on Windows Phone 8.1, and if there's any advantage to having them on */
-#else
-        swapChainDesc.Scaling = DXGI_SCALING_NONE;
-        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL; /* All Windows Store apps must use this SwapEffect. */
-#endif
+        // Set the scan line ordering and scaling to unspecified.
+        swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
+
+        // Discard the back buffer contents after presenting.
+        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+
+        // Don't set the advanced flags.
         swapChainDesc.Flags = 0;
+
+        if( _fullscreen == true )
+        {
+            swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+        }
 
         IDXGISwapChain1 * dxgiSwapChain;
 
@@ -363,7 +374,14 @@ namespace Mengine
 
         HWND hwnd = win32Extension->getWindowHandle();
 
-        IF_DXCALL( dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hwnd, &swapChainDesc, NULL, NULL, &dxgiSwapChain) )
+        DXGI_SWAP_CHAIN_FULLSCREEN_DESC dxgiSwapChainFullscreenDesc;
+
+        this->updateVSyncDPP_( swapChainDesc.Width, swapChainDesc.Height, &dxgiSwapChainFullscreenDesc.RefreshRate );
+        dxgiSwapChainFullscreenDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+        dxgiSwapChainFullscreenDesc.Scaling = DXGI_MODE_SCALING_CENTERED;
+        dxgiSwapChainFullscreenDesc.Windowed = _fullscreen == true ? TRUE : FALSE;
+
+        IF_DXCALL( dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hwnd, &swapChainDesc, &dxgiSwapChainFullscreenDesc, NULL, &dxgiSwapChain) )
         {
             return false;
         }
@@ -371,8 +389,8 @@ namespace Mengine
         SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        IInspectable * iwindow = reinterpret_cast<IInspectable *>(sdlExtension->getWindowHandle());
-        
+        IInspectable * iwindow = sdlExtension->getWindowHandle();
+
         IF_DXCALL( dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iwindow, &swapChainDesc, NULL, &dxgiSwapChain) )
         {
             return false;
@@ -381,13 +399,9 @@ namespace Mengine
 #   error "unsupported platform"
 #endif
 
-        //IDXGISwapChain * dxgiSwapChain;
-        //IF_DXCALL( dxgiFactory, CreateSwapChain, (m_pD3DDevice.Get(), &swapChainDesc, &dxgiSwapChain) )
-        //{
-        //    return false;
-        //}
-
         m_dxgiSwapChain.Attach( dxgiSwapChain );
+
+        //m_dxgiSwapChainBufferDesc = swapChainDesc.BufferDesc;
 
         //DXRELEASE( dxgiFactory );
 
@@ -487,8 +501,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        float DirectX11_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetX", 0.0f );
-        float DirectX11_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetY", 0.0f );
+        float DirectX11_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetX", 0.f );
+        float DirectX11_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetY", 0.f );
 
         float perfect_x = DirectX11_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
         float perfect_y = DirectX11_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
@@ -700,6 +714,15 @@ namespace Mengine
         return renderImageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
+    RenderMaterialStageCacheInterfacePtr DX11RenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage )
+    {
+        MENGINE_UNUSED( _stage );
+
+        //ToDo
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::resetDevice_()
     {
         return true;
@@ -796,14 +819,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setScissor( const Viewport & _viewport )
     {
-        MENGINE_UNUSED( _viewport );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
 
-        //ToDo
+        mt::mat4f pm;
+        mt::mul_m4_m4( pm, m_projectionMatrix, m_modelViewMatrix );
+
+        mt::vec2f b;
+        mt::mul_v2_v2_m4( b, _viewport.begin, pm );
+
+        mt::vec2f e;
+        mt::mul_v2_v2_m4( e, _viewport.end, pm );
+
+        mt::vec2f vs = m_viewport.size();
+
+        float bx = (b.x + 1.f) * 0.5f * vs.x;
+        float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
+        float ex = (e.x + 1.f) * 0.5f * vs.x;
+        float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
+
+        bx = MENGINE_MAX( bx, m_viewport.begin.x );
+        by = MENGINE_MAX( by, m_viewport.begin.y );
+        ex = MENGINE_MIN( ex, m_viewport.end.x );
+        ey = MENGINE_MIN( ey, m_viewport.end.y );
+
+        RECT r;
+        r.left = (uint32_t)bx;
+        r.top = (uint32_t)by;
+        r.right = (uint32_t)ex;
+        r.bottom = (uint32_t)ey;
+
+        //DXCALL(m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE));
+        m_D3D11RasterizerState.ScissorEnable = TRUE;
+        // scissors
+        m_pD3DDeviceContext->RSSetScissorRects( 1, &r );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::removeScissor()
     {
-        //ToDo
+        m_D3D11RasterizerState.ScissorEnable = FALSE;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setViewport( const Viewport & _viewport )
@@ -826,8 +879,8 @@ namespace Mengine
         // Setup the viewport for rendering.
         viewport.Width = _viewport.getWidth();
         viewport.Height = _viewport.getHeight();
-        viewport.MinDepth = 0.0f;
-        viewport.MaxDepth = 1.0f;
+        viewport.MinDepth = 0.f;
+        viewport.MaxDepth = 1.f;
         viewport.TopLeftX = MT_floorf( _viewport.begin.x + 0.5f );
         viewport.TopLeftY = MT_floorf( _viewport.begin.y + 0.5f );
 
@@ -844,33 +897,126 @@ namespace Mengine
             return;
         }
 
+        m_pD3DDeviceContext->OMSetRenderTargets( 0, nullptr, nullptr );
+
+        // Release all outstanding references to the swap chain's buffers.
+        m_renderTargetView = nullptr;
+        m_depthStencilBuffer = nullptr;
+        m_depthStencilView = nullptr;
+
         if( m_fullscreen != _fullscreen )
         {
+#ifndef MENGINE_WINDOWS_UNIVERSAL
             IF_DXCALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
             {
                 return;
             }
+#endif
+
+            m_fullscreen = _fullscreen;
         }
 
-        m_fullscreen = _fullscreen;
+        uint32_t resolutionWidth = _resolution.getWidth();
+        uint32_t resolutionHeight = _resolution.getHeight();
 
-        //if( m_windowResolution != _resolution )
-        //{
-        //    m_SwapChainBufferDesc.Width = _resolution.getWidth();
-        //    m_SwapChainBufferDesc.Height = _resolution.getHeight();
+#ifndef MENGINE_WINDOWS_UNIVERSAL
+        DXGI_MODE_DESC modeDesc;
+        modeDesc.Width = resolutionWidth;
+        modeDesc.Height = resolutionHeight;
+        this->updateVSyncDPP_( resolutionWidth, resolutionHeight, &modeDesc.RefreshRate );
+        modeDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+        modeDesc.Scaling = DXGI_MODE_SCALING_CENTERED;
 
-        //    IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
-        //    {
-        //        return;
-        //    }
+        IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&modeDesc) )
+        {
+            return;
+        }
+#endif
 
-        //    IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, _resolution.getWidth(), _resolution.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
-        //    {
-        //        return;
-        //    }
-        //}
+        if( m_windowResolution != _resolution )
+        {
+            IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, resolutionWidth, resolutionHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
+            {
+                return;
+            }
 
-        m_windowResolution = _resolution;
+            m_windowResolution = _resolution;
+        }
+
+        // create new render targets
+        // Get the pointer to the back buffer.
+        ID3D11Texture2D * backBuffer;
+        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBuffer) )
+        {
+            return;
+        }
+
+        // Create the render target view with the back buffer pointer.
+        ID3D11RenderTargetView * renderTargetView;
+        IF_DXCALL( m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView) )
+        {
+            return;
+        }
+
+        m_renderTargetView.Attach( renderTargetView );
+
+        // Release pointer to the back buffer as we no longer need it.
+        backBuffer->Release();
+        backBuffer = 0;
+
+        // Initialize the description of the depth buffer.
+        D3D11_TEXTURE2D_DESC depthBufferDesc;
+        ZeroMemory( &depthBufferDesc, sizeof( depthBufferDesc ) );
+
+        // Set up the description of the depth buffer.
+        depthBufferDesc.Width = m_windowResolution.getWidth();
+        depthBufferDesc.Height = m_windowResolution.getHeight();
+        depthBufferDesc.MipLevels = 1;
+        depthBufferDesc.ArraySize = 1;
+        depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        depthBufferDesc.SampleDesc.Count = 1;
+        depthBufferDesc.SampleDesc.Quality = 0;
+        depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+        depthBufferDesc.CPUAccessFlags = 0;
+        depthBufferDesc.MiscFlags = 0;
+
+        // Create the texture for the depth buffer using the filled out description.
+        ID3D11Texture2D * depthStencilBuffer;
+        IF_DXCALL( m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, nullptr, &depthStencilBuffer) )
+        {
+            return;
+        }
+
+        m_depthStencilBuffer.Attach( depthStencilBuffer );
+
+        // Initialize the depth stencil view.
+        D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+        ZeroMemory( &depthStencilViewDesc, sizeof( depthStencilViewDesc ) );
+
+        // Set up the depth stencil view description.
+        depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+        if( m_multiSampleCount <= 1 )
+        {
+            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+        }
+        else
+        {
+            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+        }
+
+        depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+        // Create the depth stencil view.
+        ID3D11DepthStencilView * depthStencilView;
+        IF_DXCALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
+        {
+            return;
+        }
+
+        m_depthStencilView.Attach( depthStencilView );
 
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );
@@ -969,9 +1115,11 @@ namespace Mengine
     {
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
-            D3D11_SAMPLER_DESC * D3D11SamplerState = m_D3D11SamplerStates + index;
+            D3D11_SAMPLER_DESC * samplerState = m_D3D11SamplerStates + index;
 
-            ZeroMemory( D3D11SamplerState, sizeof( D3D11_SAMPLER_DESC ) );
+            ZeroMemory( samplerState, sizeof( D3D11_SAMPLER_DESC ) );
+
+            samplerState->Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
         }
 
         ZeroMemory( &m_D3D11BlendState, sizeof( m_D3D11BlendState ) );
@@ -984,25 +1132,25 @@ namespace Mengine
         m_D3D11RasterizerState.CullMode = D3D11_CULL_NONE;
 
         m_D3D11RasterizerState.DepthBias = 0;
-        m_D3D11RasterizerState.DepthBiasClamp = 0.0f;
-        m_D3D11RasterizerState.DepthClipEnable = true;
+        m_D3D11RasterizerState.DepthBiasClamp = 0.f;
+        m_D3D11RasterizerState.DepthClipEnable = TRUE;
         m_D3D11RasterizerState.FillMode = D3D11_FILL_SOLID;
-        m_D3D11RasterizerState.FrontCounterClockwise = true;
+        m_D3D11RasterizerState.FrontCounterClockwise = TRUE;
         //      rasterDesc.FrontCounterClockwise = false;
 
-        m_D3D11RasterizerState.MultisampleEnable = false;
-        m_D3D11RasterizerState.ScissorEnable = false;
-        m_D3D11RasterizerState.SlopeScaledDepthBias = 0.0f;
+        m_D3D11RasterizerState.MultisampleEnable = FALSE;
+        m_D3D11RasterizerState.ScissorEnable = FALSE;
+        m_D3D11RasterizerState.SlopeScaledDepthBias = 0.f;
 
         // Initialize the description of the stencil state.
         ZeroMemory( &m_D3D11DepthStencilState, sizeof( m_D3D11DepthStencilState ) );
 
         // Set up the description of the stencil state.
-        m_D3D11DepthStencilState.DepthEnable = true;
+        m_D3D11DepthStencilState.DepthEnable = TRUE;
         m_D3D11DepthStencilState.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
         m_D3D11DepthStencilState.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-        m_D3D11DepthStencilState.StencilEnable = true;
+        m_D3D11DepthStencilState.StencilEnable = TRUE;
         m_D3D11DepthStencilState.StencilReadMask = 0xFF;
         m_D3D11DepthStencilState.StencilWriteMask = 0xFF;
 
@@ -1235,10 +1383,10 @@ namespace Mengine
 
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
-            D3D11_SAMPLER_DESC * samplerStateDesk = m_D3D11SamplerStates + index;
+            D3D11_SAMPLER_DESC * samplerDesc = m_D3D11SamplerStates + index;
 
             ID3D11SamplerState ** samplerState = &samplerStates[index];
-            IF_DXCALL( m_pD3DDevice, CreateSamplerState, (samplerStateDesk, samplerState) )
+            IF_DXCALL( m_pD3DDevice, CreateSamplerState, (samplerDesc, samplerState) )
             {
                 return;
             }
@@ -1652,7 +1800,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setVSync( bool _vSync )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
 
         if( m_waitForVSync == _vSync )
         {
@@ -1661,42 +1809,33 @@ namespace Mengine
 
         m_waitForVSync = _vSync;
 
-        this->updateVSyncDPP_();
-
         if( this->restore_() == false )
         {
             LOGGER_ERROR( "Graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::updateVSyncDPP_()
+    void DX11RenderSystem::updateVSyncDPP_( UINT _width, UINT _height, DXGI_RATIONAL * const _refreshRate )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
-
         // Set the refresh rate of the back buffer.
-        //if( m_waitForVSync == true )
-        //{
-        //    for( const DXGI_MODE_DESC & displayModeDesc : m_DisplayModeList )
-        //    {
-        //        if( displayModeDesc.Width == m_SwapChainBufferDesc.Width && displayModeDesc.Height == m_SwapChainBufferDesc.Height )
-        //        {
-        //            m_SwapChainBufferDesc.RefreshRate.Numerator = displayModeDesc.RefreshRate.Numerator;
-        //            m_SwapChainBufferDesc.RefreshRate.Denominator = displayModeDesc.RefreshRate.Denominator;
+        if( m_waitForVSync == true )
+        {
+            for( const DXGI_MODE_DESC & displayModeDesc : m_DisplayModeList )
+            {
+                if( displayModeDesc.Width == _width && displayModeDesc.Height == _height )
+                {
+                    _refreshRate->Numerator = displayModeDesc.RefreshRate.Numerator;
+                    _refreshRate->Denominator = displayModeDesc.RefreshRate.Denominator;
 
-        //            break;
-        //        }
-        //    }
-        //}
-        //else
-        //{
-        //    m_SwapChainBufferDesc.RefreshRate.Numerator = 60;
-        //    m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
-        //}
+                    return;
+                }
+            }
 
-        //IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
-        //{
-        //    return;
-        //}
+            LOGGER_ERROR( "not found display mode" );
+        }
+
+        _refreshRate->Numerator = 60;
+        _refreshRate->Denominator = 1;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDestroyVertexAttribute_( DX11RenderVertexAttribute * _attribute )

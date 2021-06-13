@@ -111,6 +111,9 @@ namespace Mengine
         virtual RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) = 0;
 
     public:
+        virtual RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage ) = 0;
+
+    public:
         virtual bool beginScene() = 0;
         virtual void endScene() = 0;
         virtual void swapBuffers() = 0;

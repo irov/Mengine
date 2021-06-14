@@ -13,6 +13,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "Config/StdString.h"
+
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
 
@@ -151,6 +153,50 @@ namespace Mengine
 
             return l;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static pybind::list s_ResourceMovie2_getCompositionLayers( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
+        {
+            pybind::list l = pybind::make_list_t( _kernel );
+
+            _resourceMovie2->foreachCompositionLayers( _compositionName, [_kernel, &l]( const ResourceMovie2::CompositionLayer & _layer )
+            {
+                pybind::dict d = pybind::make_dict_t( _kernel );
+
+                d["index"] = _layer.index;
+                d["name"] = _layer.name;
+                d["type"] = _layer.type;
+                d["matrix"] = _layer.matrix;
+                d["color"] = _layer.color;
+                d["dimension"] = _layer.dimension;
+
+                pybind::list options = pybind::make_list_t( _kernel );
+
+                for( uint32_t o : _layer.options )
+                {
+                    Char o_str[5] = {'\0'};
+
+                    o_str[0] = (Char)(o >> 24) && 0xff;
+                    o_str[1] = (Char)(o >> 16) && 0xff;
+                    o_str[2] = (Char)(o >> 8) && 0xff;
+                    o_str[3] = (Char)(o >> 0) && 0xff;
+
+                    o_str[0] = o_str[0] == '\0' ? ' ' : o_str[0];
+                    o_str[1] = o_str[1] == '\0' ? ' ' : o_str[1];
+                    o_str[2] = o_str[2] == '\0' ? ' ' : o_str[2];
+                    o_str[3] = o_str[3] == '\0' ? ' ' : o_str[3];
+
+                    Char * o_str_value = MENGINE_STRRCHR( o_str, ' ' );
+
+                    options.append( o_str_value );
+                }
+
+                d["options"] = options;
+
+                l.append( d );
+            } );
+
+            return l;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     Movie2ScriptEmbedding::Movie2ScriptEmbedding()
@@ -215,6 +261,7 @@ namespace Mengine
             .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
             .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
             .def_static_kernel( "getCompositionResources", &Detail::s_ResourceMovie2_getCompositionResources )
+            .def_static_kernel( "getCompositionLayers", &Detail::s_ResourceMovie2_getCompositionLayers )
             ;
 
         Helper::registerScriptWrapping<Movie2>( _kernel, STRINGIZE_STRING_LOCAL( "Movie2" ), MENGINE_DOCUMENT_FACTORABLE );

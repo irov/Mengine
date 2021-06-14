@@ -89,7 +89,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( const ConstString & _name, const CompositionDesc & _desc )> LambdaCompositionDescs;
-        void foreachCompositionDesc( const LambdaCompositionDescs & _lambda ) const;
+        void foreachCompositionsDesc( const LambdaCompositionDescs & _lambda ) const;
 
     protected:
         bool _compile() override;

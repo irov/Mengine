@@ -197,6 +197,28 @@ namespace Mengine
 
             return l;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static pybind::list s_ResourceMovie2_getCompositions( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2 )
+        {
+            pybind::list l = pybind::make_list_t( _kernel );
+
+            _resourceMovie2->foreachCompositionsDesc( [_kernel, &l]( const ConstString & _name, const ResourceMovie2::CompositionDesc & _layer )
+            {
+                pybind::dict d = pybind::make_dict_t( _kernel );
+
+                d["name"] = _name;
+                d["duration"] = _layer.duration;
+                d["frameDuration"] = _layer.frameDuration;
+                d["has_bounds"] = _layer.has_bounds;
+                d["bounds"] = _layer.bounds;
+                d["master"] = _layer.master;
+
+                l.append( d );
+            } );
+
+            return l;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     Movie2ScriptEmbedding::Movie2ScriptEmbedding()
@@ -262,6 +284,7 @@ namespace Mengine
             .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
             .def_static_kernel( "getCompositionResources", &Detail::s_ResourceMovie2_getCompositionResources )
             .def_static_kernel( "getCompositionLayers", &Detail::s_ResourceMovie2_getCompositionLayers )
+            .def_static_kernel( "getCompositions", &Detail::s_ResourceMovie2_getCompositions )
             ;
 
         Helper::registerScriptWrapping<Movie2>( _kernel, STRINGIZE_STRING_LOCAL( "Movie2" ), MENGINE_DOCUMENT_FACTORABLE );

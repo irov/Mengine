@@ -946,7 +946,7 @@ namespace Mengine
                 .def( "getCharCount", &TextField::getCharCount )
                 ;
 
-            pybind::interface_<ScriptHolder, pybind::bases<Node, Eventable>>( _kernel, "ScriptHolder", false )
+            pybind::interface_<ScriptHolder, pybind::bases<Node>>( _kernel, "ScriptHolder", false )
                 .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ScriptHolder_setEventListener )
                 ;
 
@@ -986,7 +986,7 @@ namespace Mengine
             //    .def( "getParallaxFactor", &Parallax::getParallaxFactor )
             //    ;
 
-            pybind::interface_<HotSpot, pybind::bases<Node, Eventable>>( _kernel, "HotSpot", false )
+            pybind::interface_<HotSpot, pybind::bases<Node>>( _kernel, "HotSpot", false )
                 .def( "testPoint", &HotSpot::testPoint )
                 .def( "setOutward", &HotSpot::setOutward )
                 .def( "getOutward", &HotSpot::getOutward )
@@ -1124,7 +1124,7 @@ namespace Mengine
                 ;
 
 
-            pybind::interface_<Meshget, pybind::bases<Node, Eventable>>( _kernel, "Meshget", false )
+            pybind::interface_<Meshget, pybind::bases<Node>>( _kernel, "Meshget", false )
                 .def( "setSurface", &Meshget::setSurface )
                 .def( "getSurface", &Meshget::getSurface )
                 .def( "setVertices", &Meshget::setVertices )

@@ -358,7 +358,7 @@ namespace Mengine
         m_factoryDateTimeProviders = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::_runService()
+    bool Win32Platform::_runService()
     {
         DateTimeProviderInterfacePtr dateTimeProvider =
             this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
@@ -405,57 +405,57 @@ namespace Mengine
         };
 
         LOGGER_MESSAGE_RELEASE( "CPU instruction:" );
-        support_message( "3DNOW", cpuinfo._3DNOW() );
-        support_message( "3DNOWEXT", cpuinfo._3DNOWEXT() );
-        support_message( "ABM", cpuinfo.ABM() );
-        support_message( "ADX", cpuinfo.ADX() );
-        support_message( "AES", cpuinfo.AES() );
-        support_message( "AVX", cpuinfo.AVX() );
-        support_message( "AVX2", cpuinfo.AVX2() );
-        support_message( "AVX512CD", cpuinfo.AVX512CD() );
-        support_message( "AVX512ER", cpuinfo.AVX512ER() );
-        support_message( "AVX512F", cpuinfo.AVX512F() );
-        support_message( "AVX512PF", cpuinfo.AVX512PF() );
-        support_message( "BMI1", cpuinfo.BMI1() );
-        support_message( "BMI2", cpuinfo.BMI2() );
-        support_message( "CLFSH", cpuinfo.CLFSH() );
-        support_message( "CMPXCHG16B", cpuinfo.CMPXCHG16B() );
-        support_message( "CX8", cpuinfo.CX8() );
-        support_message( "ERMS", cpuinfo.ERMS() );
-        support_message( "F16C", cpuinfo.F16C() );
-        support_message( "FMA", cpuinfo.FMA() );
-        support_message( "FSGSBASE", cpuinfo.FSGSBASE() );
-        support_message( "FXSR", cpuinfo.FXSR() );
-        support_message( "HLE", cpuinfo.HLE() );
-        support_message( "INVPCID", cpuinfo.INVPCID() );
-        support_message( "LAHF", cpuinfo.LAHF() );
-        support_message( "LZCNT", cpuinfo.LZCNT() );
-        support_message( "MMX", cpuinfo.MMX() );
-        support_message( "MMXEXT", cpuinfo.MMXEXT() );
-        support_message( "MONITOR", cpuinfo.MONITOR() );
-        support_message( "MOVBE", cpuinfo.MOVBE() );
-        support_message( "MSR", cpuinfo.MSR() );
-        support_message( "OSXSAVE", cpuinfo.OSXSAVE() );
-        support_message( "PCLMULQDQ", cpuinfo.PCLMULQDQ() );
-        support_message( "POPCNT", cpuinfo.POPCNT() );
-        support_message( "PREFETCHWT1", cpuinfo.PREFETCHWT1() );
-        support_message( "RDRAND", cpuinfo.RDRAND() );
-        support_message( "RDSEED", cpuinfo.RDSEED() );
-        support_message( "RDTSCP", cpuinfo.RDTSCP() );
-        support_message( "RTM", cpuinfo.RTM() );
-        support_message( "SEP", cpuinfo.SEP() );
-        support_message( "SHA", cpuinfo.SHA() );
-        support_message( "SSE", cpuinfo.SSE() );
-        support_message( "SSE2", cpuinfo.SSE2() );
-        support_message( "SSE3", cpuinfo.SSE3() );
-        support_message( "SSE4.1", cpuinfo.SSE41() );
-        support_message( "SSE4.2", cpuinfo.SSE42() );
-        support_message( "SSE4a", cpuinfo.SSE4a() );
-        support_message( "SSSE3", cpuinfo.SSSE3() );
-        support_message( "SYSCALL", cpuinfo.SYSCALL() );
-        support_message( "TBM", cpuinfo.TBM() );
-        support_message( "XOP", cpuinfo.XOP() );
-        support_message( "XSAVE", cpuinfo.XSAVE() );
+        support_message( "  3DNOW", cpuinfo._3DNOW() );
+        support_message( "  3DNOWEXT", cpuinfo._3DNOWEXT() );
+        support_message( "  ABM", cpuinfo.ABM() );
+        support_message( "  ADX", cpuinfo.ADX() );
+        support_message( "  AES", cpuinfo.AES() );
+        support_message( "  AVX", cpuinfo.AVX() );
+        support_message( "  AVX2", cpuinfo.AVX2() );
+        support_message( "  AVX512CD", cpuinfo.AVX512CD() );
+        support_message( "  AVX512ER", cpuinfo.AVX512ER() );
+        support_message( "  AVX512F", cpuinfo.AVX512F() );
+        support_message( "  AVX512PF", cpuinfo.AVX512PF() );
+        support_message( "  BMI1", cpuinfo.BMI1() );
+        support_message( "  BMI2", cpuinfo.BMI2() );
+        support_message( "  CLFSH", cpuinfo.CLFSH() );
+        support_message( "  CMPXCHG16B", cpuinfo.CMPXCHG16B() );
+        support_message( "  CX8", cpuinfo.CX8() );
+        support_message( "  ERMS", cpuinfo.ERMS() );
+        support_message( "  F16C", cpuinfo.F16C() );
+        support_message( "  FMA", cpuinfo.FMA() );
+        support_message( "  FSGSBASE", cpuinfo.FSGSBASE() );
+        support_message( "  FXSR", cpuinfo.FXSR() );
+        support_message( "  HLE", cpuinfo.HLE() );
+        support_message( "  INVPCID", cpuinfo.INVPCID() );
+        support_message( "  LAHF", cpuinfo.LAHF() );
+        support_message( "  LZCNT", cpuinfo.LZCNT() );
+        support_message( "  MMX", cpuinfo.MMX() );
+        support_message( "  MMXEXT", cpuinfo.MMXEXT() );
+        support_message( "  MONITOR", cpuinfo.MONITOR() );
+        support_message( "  MOVBE", cpuinfo.MOVBE() );
+        support_message( "  MSR", cpuinfo.MSR() );
+        support_message( "  OSXSAVE", cpuinfo.OSXSAVE() );
+        support_message( "  PCLMULQDQ", cpuinfo.PCLMULQDQ() );
+        support_message( "  POPCNT", cpuinfo.POPCNT() );
+        support_message( "  PREFETCHWT1", cpuinfo.PREFETCHWT1() );
+        support_message( "  RDRAND", cpuinfo.RDRAND() );
+        support_message( "  RDSEED", cpuinfo.RDSEED() );
+        support_message( "  RDTSCP", cpuinfo.RDTSCP() );
+        support_message( "  RTM", cpuinfo.RTM() );
+        support_message( "  SEP", cpuinfo.SEP() );
+        support_message( "  SHA", cpuinfo.SHA() );
+        support_message( "  SSE", cpuinfo.SSE() );
+        support_message( "  SSE2", cpuinfo.SSE2() );
+        support_message( "  SSE3", cpuinfo.SSE3() );
+        support_message( "  SSE4.1", cpuinfo.SSE41() );
+        support_message( "  SSE4.2", cpuinfo.SSE42() );
+        support_message( "  SSE4a", cpuinfo.SSE4a() );
+        support_message( "  SSSE3", cpuinfo.SSSE3() );
+        support_message( "  SYSCALL", cpuinfo.SYSCALL() );
+        support_message( "  TBM", cpuinfo.TBM() );
+        support_message( "  XOP", cpuinfo.XOP() );
+        support_message( "  XSAVE", cpuinfo.XSAVE() );
 
         MEMORYSTATUSEX mem_st;
         mem_st.dwLength = sizeof( mem_st );
@@ -474,6 +474,8 @@ namespace Mengine
         {
             LOGGER_MESSAGE_RELEASE( "Application not setup Process DPI Aware" );
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::setProcessDPIAware()
@@ -1119,7 +1121,6 @@ namespace Mengine
                 {
                     this->setActive_( false );
                 }
-
 
                 return 0;
             }break;

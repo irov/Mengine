@@ -1,5 +1,5 @@
 #include "DX9RenderImageTarget.h"
-#include "DX9ErrorHelper.h"
+#include "DX9RenderErrorHelper.h"
 
 #include "DX9RenderTargetTexture.h"
 

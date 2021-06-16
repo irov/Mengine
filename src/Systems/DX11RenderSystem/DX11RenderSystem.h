@@ -26,6 +26,7 @@ namespace Mengine
     class DX11RenderImageTarget;
     class DX11RenderTargetTexture;
     class DX11RenderTargetOffscreen;
+    class DX11RenderMaterialStageCache;
     //////////////////////////////////////////////////////////////////////////
     class DX11RenderSystem
         : public ServiceBase<RenderSystemInterface>
@@ -73,7 +74,7 @@ namespace Mengine
         bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable ) override;
 
     public:
-        void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex, uint32_t _minIndex, uint32_t _vertexCount, uint32_t _startIndex, uint32_t _indexCount ) override;
+        void drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc ) override;
 
     public:
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
@@ -102,7 +103,7 @@ namespace Mengine
         RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
 
     public:
-        RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage ) override;
+        RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentPtr & _doc ) override;
 
     public:
         bool beginScene() override;
@@ -177,10 +178,7 @@ namespace Mengine
         // sync routines
         uint32_t m_frames;
 
-        D3D11_SAMPLER_DESC m_D3D11SamplerStates[MENGINE_MAX_TEXTURE_STAGES];
-        D3D11_RASTERIZER_DESC  m_D3D11RasterizerState;
-        D3D11_BLEND_DESC m_D3D11BlendState;
-        D3D11_DEPTH_STENCIL_DESC m_D3D11DepthStencilState;
+        D3D11_RASTERIZER_DESC m_D3D11RasterizerState;
 
     protected:
         void restoreStates_();
@@ -198,6 +196,7 @@ namespace Mengine
         void onDestroyRenderImageTarget_( DX11RenderImageTarget * _imageTarget );
         void onDestroyRenderTargetTexture_( DX11RenderTargetTexture * _targetTexture );
         void onDestroyRenderTargetOffscreen_( DX11RenderTargetOffscreen * _targetOffscreen );
+        void onDestroyRenderMaterialStageCache_( DX11RenderMaterialStageCache * _materialStageCache );
 
     protected:
         void updateWVPInvMatrix_();
@@ -219,6 +218,7 @@ namespace Mengine
         FactoryPtr m_factoryRenderImageTarget;
         FactoryPtr m_factoryRenderTargetTexture;
         FactoryPtr m_factoryRenderTargetOffscreen;
+        FactoryPtr m_factoryRenderMaterialStageCache;
 
         typedef Vector<DX11RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;

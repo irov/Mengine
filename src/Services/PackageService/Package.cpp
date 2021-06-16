@@ -1264,7 +1264,7 @@ namespace Mengine
 
             for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
             {
-                RenderTextureStage & textureStage = stage.textureStage[index];
+                RenderTextureStage & textureStage = stage.textureStages[index];
 
                 textureStage.mipmap = RENDERMATERIAL_SERVICE()
                     ->getDefaultTextureFilterMipmap();
@@ -1280,7 +1280,7 @@ namespace Mengine
             {
                 uint32_t index = meta_TextureStages.get_Stage();
 
-                RenderTextureStage & textureStage = stage.textureStage[index];
+                RenderTextureStage & textureStage = stage.textureStages[index];
 
                 meta_TextureStages.get_AddressMode_U( &textureStage.addressU );
                 meta_TextureStages.get_AddressMode_V( &textureStage.addressV );
@@ -1288,7 +1288,7 @@ namespace Mengine
             }
 
             const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
-                ->createMaterialStage( name, stage );
+                ->createMaterialStage( name, stage, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, "material '%s:%s' invalid create stage group '%s'"
                 , _fileGroup->getName().c_str()

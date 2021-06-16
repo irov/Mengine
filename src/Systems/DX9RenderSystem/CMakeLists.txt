@@ -28,8 +28,8 @@ src
     DX9RenderProgram.h
     DX9RenderProgram.cpp
     DX9RenderEnum.h
-    DX9ErrorHelper.h
-    DX9ErrorHelper.cpp
+    DX9RenderErrorHelper.h
+    DX9RenderErrorHelper.cpp
     DX9RenderProgramVariable.h
     DX9RenderProgramVariable.cpp
     DX9RenderResourceHandler.h

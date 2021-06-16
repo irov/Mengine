@@ -28,12 +28,14 @@ src
     DX11RenderProgram.h
     DX11RenderProgram.cpp
     DX11RenderEnum.h
-    DX11ErrorHelper.h
-    DX11ErrorHelper.cpp
+    DX11RenderErrorHelper.h
+    DX11RenderErrorHelper.cpp
     DX11RenderBuffer.h
     DX11RenderBuffer.cpp
     DX11RenderProgramVariable.h
     DX11RenderProgramVariable.cpp
+    DX11RenderMaterialStageCache.h
+    DX11RenderMaterialStageCache.cpp
     DX11RenderResourceHandler.h
     DX11RenderResourceHandler.cpp
 )

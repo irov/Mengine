@@ -42,6 +42,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    struct RenderIndexedPrimitiveDesc
+    {
+        EPrimitiveType primitiveType;
+        uint32_t baseVertexIndex;
+        uint32_t minIndex;
+        uint32_t vertexCount;
+        uint32_t startIndex;
+        uint32_t indexCount;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class RenderSystemInterface
         : public ServiceInterface
         , public Unknowable
@@ -84,7 +94,7 @@ namespace Mengine
         virtual bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable ) = 0;
 
     public:
-        virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex, uint32_t _minIndex, uint32_t _vertexCount, uint32_t _startIndex, uint32_t _indexCount ) = 0;
+        virtual void drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc ) = 0;
 
     public:
         virtual void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
@@ -111,7 +121,7 @@ namespace Mengine
         virtual RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage ) = 0;
+        virtual RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual bool beginScene() = 0;

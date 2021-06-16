@@ -12,6 +12,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+#include "Config/Algorithm.h"
 
 #include "OzzDetail.h"
 
@@ -23,8 +24,6 @@
 #include "ozz/animation/runtime/local_to_model_job.h"
 
 #include "ozz/geometry/runtime/skinning_job.h"
-
-#include <algorithm>
 
 namespace Mengine
 {

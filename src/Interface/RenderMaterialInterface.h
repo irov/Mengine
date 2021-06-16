@@ -33,9 +33,9 @@ namespace Mengine
         uint32_t id = 0;
 
         RenderProgramInterfacePtr program;
-        RenderMaterialStageCacheInterfacePtr cache;
+        RenderMaterialStageCacheInterfacePtr stageCache;
 
-        RenderTextureStage textureStage[MENGINE_MAX_TEXTURE_STAGES];
+        RenderTextureStage textureStages[MENGINE_MAX_TEXTURE_STAGES];
 
         EBlendFactor blendSrc = BF_ONE;
         EBlendFactor blendDst = BF_ZERO;

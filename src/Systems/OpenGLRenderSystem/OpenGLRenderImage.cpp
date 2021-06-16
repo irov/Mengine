@@ -5,8 +5,8 @@
 
 #include "OpenGLRenderImageLockedFactoryStorage.h"
 
+#include "OpenGLRenderErrorHelper.h"
 #include "OpenGLRenderExtension.h"
-#include "OpenGLRenderError.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"

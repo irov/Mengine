@@ -1,5 +1,5 @@
 #include "OpenALSoundSystem.h"
-#include "OpenALSoundError.h"
+#include "OpenALSoundErrorHelper.h"
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"

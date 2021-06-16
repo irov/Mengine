@@ -1,6 +1,6 @@
 #include "DX9RenderProgram.h"
 
-#include "DX9ErrorHelper.h"
+#include "DX9RenderErrorHelper.h"
 
 #include "Kernel/Logger.h"
 

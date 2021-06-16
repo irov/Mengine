@@ -2,6 +2,7 @@
 
 #include "Interface/SoundSystemInterface.h"
 
+#include "OpenALIncluder.h"
 #include "OpenALSoundBufferBase.h"
 #include "OpenALSoundBufferStream.h"
 #include "OpenALSoundSource.h"
@@ -9,9 +10,6 @@
 #include "Kernel/Factory.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "AL/al.h"
-#include "AL/alc.h"
 
 namespace Mengine
 {

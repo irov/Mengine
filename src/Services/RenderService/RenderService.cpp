@@ -500,7 +500,7 @@ namespace Mengine
         for( uint32_t stageId = 0; stageId != m_currentRenderTextureStage; ++stageId )
         {
             RenderTextureStage & current_texture_stage = m_renderTextureStages[stageId];
-            const RenderTextureStage & texture_stage = m_currentRenderMaterialStage->textureStage[stageId];
+            const RenderTextureStage & texture_stage = m_currentRenderMaterialStage->textureStages[stageId];
 
             if( current_texture_stage.addressU != texture_stage.addressU
                 || current_texture_stage.addressV != texture_stage.addressV
@@ -668,14 +668,18 @@ namespace Mengine
 
         EPrimitiveType primitiveType = material->getPrimitiveType();
 
-        m_renderSystem->drawIndexedPrimitive(
-            primitiveType,
-            _renderPrimitive->baseVertexIndex,
-            _renderPrimitive->minIndex,
-            _renderPrimitive->vertexCount,
-            _renderPrimitive->startIndex,
-            _renderPrimitive->indexCount
-        );
+        RenderIndexedPrimitiveDesc desc;
+        desc.primitiveType = primitiveType;
+        desc.baseVertexIndex = _renderPrimitive->baseVertexIndex;
+        desc.minIndex = _renderPrimitive->minIndex;
+        desc.vertexCount = _renderPrimitive->vertexCount;
+        desc.startIndex = _renderPrimitive->startIndex;
+        desc.indexCount = _renderPrimitive->indexCount;
+
+        const RenderMaterialStage * materialStage = material->getStage();
+        const RenderMaterialStageCacheInterfacePtr & stageCache = materialStage->stageCache;
+
+        m_renderSystem->drawIndexedPrimitive( stageCache, desc );
 
         MENGINE_ASSERTION_FATAL( IntrusivePtrBase::intrusive_ptr_get_ref( material ) > 1, "not-cached material" );
 

@@ -160,7 +160,7 @@ namespace Mengine
         BLF_LOCK_DISCARD,
         BLF_LOCK_NOOVERWRITE,
         BLF_LOCK_NOSYSLOCK,
-		BLF_LOCK_WRITE, // D3D11_MAP_WRITE
+		BLF_LOCK_WRITE
     };
     //////////////////////////////////////////////////////////////////////////
     enum ERenderBatchMode
@@ -169,4 +169,5 @@ namespace Mengine
         ERBM_NORMAL = 1,
         ERBM_SMART = 2
     };
+    //////////////////////////////////////////////////////////////////////////
 }

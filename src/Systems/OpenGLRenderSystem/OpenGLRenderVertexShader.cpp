@@ -1,5 +1,5 @@
 #include "OpenGLRenderVertexShader.h"
-#include "OpenGLRenderError.h"
+#include "OpenGLRenderErrorHelper.h"
 
 #include "Kernel/Logger.h"
 

@@ -260,9 +260,10 @@ namespace Mengine
         return imageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialStageCacheInterfacePtr MockupRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage )
+    RenderMaterialStageCacheInterfacePtr MockupRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _stage );
+        MENGINE_UNUSED( _doc );
 
         return nullptr;
     }
@@ -519,15 +520,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase
-        , uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
+    void MockupRenderSystem::drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc )
     {
-        MENGINE_UNUSED( _type );
-        MENGINE_UNUSED( _vertexBase );
-        MENGINE_UNUSED( _minIndex );
-        MENGINE_UNUSED( _vertexCount );
-        MENGINE_UNUSED( _indexStart );
-        MENGINE_UNUSED( _indexCount );
+        MENGINE_UNUSED( _stageCache );
+        MENGINE_UNUSED( _desc );
 
         //Empty
     }

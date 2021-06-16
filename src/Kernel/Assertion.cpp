@@ -23,7 +23,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool Assertion_NotDebugBreak = true;
+        static bool Assertion_NotDebugBreak = true;
         //////////////////////////////////////////////////////////////////////////
         void AssertionSetNotDebugBreak( bool _debugBreak )
         {

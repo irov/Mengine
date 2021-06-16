@@ -36,6 +36,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        bool _runService() override;
         void _stopService() override;
 
     public:

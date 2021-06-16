@@ -1,6 +1,6 @@
 #include "DX9RenderVertexShader.h"
 
-#include "DX9ErrorHelper.h"
+#include "DX9RenderErrorHelper.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
@@ -37,6 +37,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexShader::finalize()
     {
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
+        
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

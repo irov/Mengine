@@ -2,10 +2,10 @@
 
 #include "Interface/SoundSystemInterface.h"
 
+#include "OpenALIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"
-
-#include "AL/al.h"
 
 namespace Mengine
 {

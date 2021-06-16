@@ -27,7 +27,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
-        void _runService() override;
+        bool _runService() override;
 
     public:
         UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;

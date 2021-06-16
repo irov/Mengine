@@ -47,6 +47,8 @@ extern "C" {
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/Algorithm.h"
+#include "Config/Utils.h"
 
 #if defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_IOS)
 #   include "TargetConditionals.h"
@@ -58,10 +60,7 @@ extern "C" {
 
 #include <cstdio>
 #include <clocale>
-
 #include <ctime>
-#include <algorithm>
-
 #include <iomanip>
 
 #include <sys/stat.h>
@@ -607,7 +606,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::_runService()
+    bool SDLPlatform::_runService()
     {
         DateTimeProviderInterfacePtr dateTimeProvider =
             this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
@@ -624,8 +623,7 @@ namespace Mengine
             , dateTime.second
         );
 
-        LOGGER_MESSAGE_RELEASE( "Device info:"
-        );
+        LOGGER_MESSAGE_RELEASE( "[Device Info]" );
 
         LOGGER_MESSAGE_RELEASE( "Platform: %s"
             , SDL_GetPlatform()
@@ -724,15 +722,17 @@ namespace Mengine
                 );
 
                 m_sdlAccelerometer = joystick;
+
                 break;
             }
         }
 
         if( m_sdlAccelerometer == nullptr )
         {
-            LOGGER_MESSAGE_RELEASE( "Accelerometer not found"
-            );
+            LOGGER_MESSAGE_RELEASE( "Accelerometer not found" );
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_finalizeService()
@@ -767,7 +767,7 @@ namespace Mengine
         m_factoryDynamicLibraries = nullptr;
         m_factoryDateTimeProviders = nullptr;
 
-#ifdef MENGINE_WINDOWS_UNIVERSAL
+#ifndef MENGINE_WINDOWS_UNIVERSAL
         if( SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func ) != 0 )
         {
             LOGGER_ERROR( "invalid set memory functions: %s"
@@ -885,7 +885,6 @@ namespace Mengine
                 if( APPLICATION_SERVICE()
                     ->getVSync() == false && maxfps == false )
                 {
-
                     SDL_Delay( 1 );
                 }
 #endif
@@ -1154,12 +1153,6 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->changeWindowResolution( resoultion );
 #endif
-
-        if( RENDER_SYSTEM()
-            ->onWindowChangeFullscreen( m_fullscreen ) == false )
-        {
-            return false;
-        }
 
         int win_width;
         int win_height;
@@ -2385,6 +2378,10 @@ namespace Mengine
         RENDER_SERVICE()
             ->onDeviceLostRestore();
 
+        SDL_RaiseWindow( m_sdlWindow );
+        SDL_ShowWindow( m_sdlWindow );
+        SDL_SetWindowInputFocus( m_sdlWindow );
+
         if( RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen ) == false )
         {
@@ -2727,6 +2724,37 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        static const Char * getWindowEventMessage( SDL_WindowEventID _eventId )
+        {
+            switch( _eventId )
+            {
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_NONE, "Never used" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_SHOWN, "Window has been shown" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_HIDDEN, "Window has been hidden" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_EXPOSED, "Window has been exposed and should be redrawn" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MOVED, "Window has been moved to data1, data2" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_RESIZED, "Window has been resized to data1xdata2" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_SIZE_CHANGED, "The window size has changed, either as a result of an API call or through the system or user changing the window size." );            MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MINIMIZED, "Window has been minimized" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MAXIMIZED, "Window has been maximized" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_RESTORED, "Window has been restored to normal size and position" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_ENTER, "Window has gained mouse focus" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_LEAVE, "Window has lost mouse focus" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_FOCUS_GAINED, "Window has gained keyboard focus" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_FOCUS_LOST, "Window has lost keyboard focus" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_CLOSE, "The window manager requests that the window be closed" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_TAKE_FOCUS, "Window is being offered a focus (should SetWindowInputFocus() on itself or a subwindow, or ignore)" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_HIT_TEST, "Window had a hit test that wasn't SDL_HITTEST_NORMAL." );
+            default:
+                {
+                }break;
+            }
+
+            return "Unknown";
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents_()
     {
         Uint32 windowID = SDL_GetWindowID( m_sdlWindow );
@@ -2771,16 +2799,22 @@ namespace Mengine
 
                     SDL_WindowEventID windowEventId = (SDL_WindowEventID)sdlEvent.window.event;
 
+                    LOGGER_INFO( "platform", "window event: %s"
+                        , Helper::getWindowEventMessage( windowEventId )
+                        );
+
                     switch( windowEventId )
                     {
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
                     case SDL_WINDOWEVENT_MAXIMIZED:
                     case SDL_WINDOWEVENT_RESTORED:
+                    case SDL_WINDOWEVENT_ENTER:
                         {
                             this->setActive_( true );
                         }break;
                     case SDL_WINDOWEVENT_FOCUS_LOST:
                     case SDL_WINDOWEVENT_MINIMIZED:
+                    case SDL_WINDOWEVENT_LEAVE:
                         {
                             this->setActive_( false );
                         }break;
@@ -2882,20 +2916,25 @@ namespace Mengine
             return true;
         }
 
+        if( m_active == false )
+        {
+            return false;
+        }
+
         bool focus = APPLICATION_SERVICE()
             ->isFocus();
 
-        if( focus == true && m_active == true )
+        if( focus == false )
         {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::initializeFileService_()
     {
-        LOGGER_INFO( "application", "Initialize SDL file group..." );
+        LOGGER_INFO( "platform", "Initialize SDL file group..." );
 
         PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 

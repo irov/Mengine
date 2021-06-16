@@ -2,7 +2,7 @@
 
 #include "OpenALSoundSystem.h"
 #include "OpenALSoundBufferBase.h"
-#include "OpenALSoundError.h"
+#include "OpenALSoundErrorHelper.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"

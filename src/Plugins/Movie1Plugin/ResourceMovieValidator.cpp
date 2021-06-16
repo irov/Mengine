@@ -17,7 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

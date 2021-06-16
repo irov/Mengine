@@ -3,7 +3,7 @@
 #include "Interface/SoundCodecInterface.h"
 
 #include "OpenALSoundSystem.h"
-#include "OpenALSoundError.h"
+#include "OpenALSoundErrorHelper.h"
 
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/DocumentHelper.h"

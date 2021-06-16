@@ -38,7 +38,7 @@ namespace Mengine
         else
         {
             depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-        }       
+        }
 
         depthStencilStateDesc.StencilEnable = TRUE;
         depthStencilStateDesc.StencilReadMask = 0xFF;

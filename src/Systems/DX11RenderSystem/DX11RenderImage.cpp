@@ -51,7 +51,7 @@ namespace Mengine
         m_hwWidth = _width;
         m_hwHeight = _height;
         m_hwChannels = hwChannels;
-        m_hwDepth = hwDepth;        
+        m_hwDepth = hwDepth;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;

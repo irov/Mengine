@@ -66,7 +66,7 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderBuffer::resizeBuffer( D3D11_BIND_FLAG _bindFlag, uint32_t _elementsCount, void * _initData )
+    bool DX11RenderBuffer::resizeBuffer( D3D11_BIND_FLAG _bindFlag, uint32_t _elementsCount, const void * _initData )
     {
         m_elementsCount = _elementsCount;
 

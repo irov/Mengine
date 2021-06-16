@@ -5,7 +5,7 @@
 #include "Kernel/Assertion.h"
 
 #include "DX11RenderEnum.h"
-#include "DX11ErrorHelper.h"
+#include "DX11RenderErrorHelper.h"
 
 namespace Mengine
 {

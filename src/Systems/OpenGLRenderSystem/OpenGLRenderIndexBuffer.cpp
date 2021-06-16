@@ -4,7 +4,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/OpenGLRenderSystemExtensionInterface.h"
 
-#include "OpenGLRenderError.h"
+#include "OpenGLRenderErrorHelper.h"
 #include "OpenGLRenderEnum.h"
 
 #include "Kernel/MemoryAllocator.h"

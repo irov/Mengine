@@ -6,8 +6,8 @@ src
     OpenGLRenderExtension.h
     OpenGLRenderSystem.cpp
     OpenGLRenderSystem.h
-    OpenGLRenderError.cpp
-    OpenGLRenderError.h
+    OpenGLRenderErrorHelper.cpp
+    OpenGLRenderErrorHelper.h
     OpenGLRenderEnum.cpp
     OpenGLRenderEnum.h
     OpenGLRenderResourceHandler.h

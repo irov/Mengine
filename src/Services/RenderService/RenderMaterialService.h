@@ -57,11 +57,11 @@ namespace Mengine
         void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) override;
 
     public:
-        const RenderMaterialStage * createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage ) override;
+        const RenderMaterialStage * createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage, const DocumentPtr & _doc ) override;
         const RenderMaterialStage * removeMaterialStage( const ConstString & _name ) override;
 
         const RenderMaterialStage * getMaterialStage( const ConstString & _name ) const override;
-        const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other ) override;
+        const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other, const DocumentPtr & _doc ) override;
         void uncacheMaterialStage( const RenderMaterialStage * _stage ) override;
 
     public:

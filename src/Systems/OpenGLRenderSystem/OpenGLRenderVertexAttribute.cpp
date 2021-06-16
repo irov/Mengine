@@ -1,7 +1,6 @@
 #include "OpenGLRenderVertexAttribute.h"
-
 #include "OpenGLRenderEnum.h"
-#include "OpenGLRenderError.h"
+#include "OpenGLRenderErrorHelper.h"
 
 #include "Kernel/Logger.h"
 

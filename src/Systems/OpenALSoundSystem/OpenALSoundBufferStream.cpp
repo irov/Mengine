@@ -1,6 +1,6 @@
 #include "OpenALSoundBufferStream.h"
 #include "OpenALSoundSystem.h"
-#include "OpenALSoundError.h"
+#include "OpenALSoundErrorHelper.h"
 
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/ThreadServiceInterface.h"

@@ -1,5 +1,5 @@
 #include "OpenGLRenderFragmentShader.h"
-#include "OpenGLRenderError.h"
+#include "OpenGLRenderErrorHelper.h"
 
 #include "Kernel/Logger.h"
 

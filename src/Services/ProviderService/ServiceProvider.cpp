@@ -160,7 +160,15 @@ namespace Mengine
                 return false;
             }
 
-            service->runService();
+            if( service->runService() == false )
+            {
+                MENGINE_THROW_EXCEPTION( "invalid run service '%s' (waits) (doc: %s)"
+                    , service->getServiceID()
+                    , MENGINE_DOCUMENT_STR( _doc )
+                );
+
+                return false;
+            }
 
             return true;
         }

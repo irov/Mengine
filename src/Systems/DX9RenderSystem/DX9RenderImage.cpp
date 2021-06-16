@@ -2,7 +2,7 @@
 
 #include "DX9RenderImageLockedFactoryStorage.h"
 
-#include "DX9ErrorHelper.h"
+#include "DX9RenderErrorHelper.h"
 #include "DX9RenderEnum.h"
 
 #include "Kernel/Assertion.h"

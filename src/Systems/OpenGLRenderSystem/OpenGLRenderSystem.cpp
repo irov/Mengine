@@ -6,7 +6,7 @@
 #include "OpenGLRenderImageLockedFactoryStorage.h"
 
 #include "OpenGLRenderEnum.h"
-#include "OpenGLRenderError.h"
+#include "OpenGLRenderErrorHelper.h"
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/FactoryDefault.h"
@@ -20,8 +20,9 @@
 
 #include "Kernel/Logger.h"
 
-#include <cmath>
 #include "Config/Algorithm.h"
+
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::OpenGLRenderSystem );
@@ -548,16 +549,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type
-        , uint32_t _baseVertexIndex
-        , uint32_t _minIndex
-        , uint32_t _verticesNum
-        , uint32_t _startIndex
-        , uint32_t _indexCount )
+    void OpenGLRenderSystem::drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc )
     {
-        MENGINE_UNUSED( _baseVertexIndex );
-        MENGINE_UNUSED( _minIndex );
-        MENGINE_UNUSED( _verticesNum );
+        MENGINE_UNUSED( _stageCache );
+        MENGINE_UNUSED( _desc );
 
         MENGINE_ASSERTION_FATAL( m_currentIndexBuffer != nullptr );
         MENGINE_ASSERTION_FATAL( m_currentVertexBuffer != nullptr );
@@ -622,11 +617,11 @@ namespace Mengine
 
         vertexAttribute->enable();
 
-        GLenum mode = Helper::toGLPrimitiveMode( _type );
+        GLenum mode = Helper::toGLPrimitiveMode( _desc.primitiveType );
         GLenum indexType = Helper::toGLIndexType( sizeof( RenderIndex ) );
-        const GLvoid * indices = reinterpret_cast<const GLvoid *>(_startIndex * sizeof( RenderIndex ));
+        const GLvoid * indices = reinterpret_cast<const GLvoid *>(_desc.startIndex * sizeof( RenderIndex ));
 
-        GLCALL( glDrawElements, (mode, _indexCount, indexType, indices) );
+        GLCALL( glDrawElements, (mode, _desc.indexCount, indexType, indices) );
 
         vertexAttribute->disable();
 
@@ -1126,6 +1121,16 @@ namespace Mengine
         m_renderResourceHandlers.push_back( imageTarget_ptr );
 
         return imageTarget;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialStageCacheInterfacePtr OpenGLRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _stage );
+        MENGINE_UNUSED( _doc );
+
+        //Empty
+
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _buffer )

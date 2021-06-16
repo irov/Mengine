@@ -190,6 +190,7 @@ namespace Mengine
             RenderMaterialStage & stage = m_stages[i];
 
             stage.program = nullptr;
+            stage.stageCache = nullptr;
         }
 
         m_materialStageIndexer.clear();
@@ -304,8 +305,8 @@ namespace Mengine
 
         for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
-            const RenderTextureStage & src_textureStage = _src.textureStage[i];
-            const RenderTextureStage & dst_textureStage = _dst.textureStage[i];
+            const RenderTextureStage & src_textureStage = _src.textureStages[i];
+            const RenderTextureStage & dst_textureStage = _dst.textureStages[i];
 
             if( s_equalTextureStage( src_textureStage, dst_textureStage ) == false )
             {
@@ -393,7 +394,7 @@ namespace Mengine
         return stage;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::cacheMaterialStage( const RenderMaterialStage & _stage )
+    const RenderMaterialStage * RenderMaterialService::cacheMaterialStage( const RenderMaterialStage & _stage, const DocumentPtr & _doc )
     {
         for( uint32_t it = 0; it != m_stageCount; ++it )
         {
@@ -419,8 +420,8 @@ namespace Mengine
         m_stageCount++;
 
         cache_stage.id = m_stageCount;
-        cache_stage.cache = RENDER_SYSTEM()
-            ->createRenderMaterialStageCache( &cache_stage );
+        cache_stage.stageCache = RENDER_SYSTEM()
+            ->createRenderMaterialStageCache( &cache_stage, _doc );
 
         return &cache_stage;
     }
@@ -632,13 +633,13 @@ namespace Mengine
         m_materialEnumerators.emplace_back( materialId );
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage )
+    const RenderMaterialStage * RenderMaterialService::createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION( m_materialStageIndexer.find( _name ) == nullptr, "'%s' is already created"
             , _name.c_str()
         );
 
-        const RenderMaterialStage * cache_stage = this->cacheMaterialStage( _stage );
+        const RenderMaterialStage * cache_stage = this->cacheMaterialStage( _stage, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, "'%s' invalid cache"
             , _name.c_str()

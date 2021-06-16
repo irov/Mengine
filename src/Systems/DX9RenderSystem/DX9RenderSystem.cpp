@@ -7,7 +7,7 @@
 #include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "DX9RenderEnum.h"
-#include "DX9ErrorHelper.h"
+#include "DX9RenderErrorHelper.h"
 
 #include "DX9RenderImage.h"
 #include "DX9RenderImageTarget.h"
@@ -870,6 +870,16 @@ namespace Mengine
         return renderImageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
+    RenderMaterialStageCacheInterfacePtr DX9RenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _stage );
+        MENGINE_UNUSED( _doc );
+
+        //Empty
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::resetDevice_()
     {
         if( m_fullscreen == false )
@@ -1525,17 +1535,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase,
-        uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
+    void DX9RenderSystem::drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc )
     {
+        MENGINE_UNUSED( _stageCache );
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        D3DPRIMITIVETYPE primitiveType = Helper::toD3DPrimitiveType( _type );
+        D3DPRIMITIVETYPE primitiveType = Helper::toD3DPrimitiveType( _desc.primitiveType );
 
-        UINT primCount = Helper::getPrimitiveCount( _type, _indexCount );
+        UINT primCount = Helper::getPrimitiveCount( _desc.primitiveType, _desc.indexCount );
 
         DXCALL( m_pD3DDevice, DrawIndexedPrimitive
-            , (primitiveType, _vertexBase, _minIndex, _vertexCount, _indexStart, primCount)
+            , (primitiveType, _desc.baseVertexIndex, _desc.minIndex, _desc.vertexCount, _desc.startIndex, primCount)
         );
 
 #ifdef MENGINE_DEBUG

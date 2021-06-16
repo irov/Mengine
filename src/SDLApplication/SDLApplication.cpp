@@ -27,8 +27,9 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 
+#include "Config/Algorithm.h"
+
 #include <ctime>
-#include <algorithm>
 #include <sstream>
 #include <iomanip>
 

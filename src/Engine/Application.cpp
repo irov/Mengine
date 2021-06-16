@@ -132,8 +132,9 @@
 #include "ScenePrototypeGenerator.h"
 #include "ArrowPrototypeGenerator.h"
 
+#include "Kernel/Stringstream.h"
+
 #include <ctime>
-#include <sstream>
 #include <iomanip>
 
 #define MENGINE_DEBUG_HOTSPOTS 0x00000001

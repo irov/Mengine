@@ -2,7 +2,7 @@
 
 #include "DX11RenderImageLockedFactoryStorage.h"
 
-#include "DX11ErrorHelper.h"
+#include "DX11RenderErrorHelper.h"
 #include "DX11RenderEnum.h"
 
 #include "Kernel/Logger.h"

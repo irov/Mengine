@@ -75,9 +75,11 @@ namespace Mengine
             this->_replaceService();
         }
 
-        void runService() override
+        bool runService() override
         {
-            this->_runService();
+            bool result = this->_runService();
+
+            return result;
         }
 
     public:
@@ -119,9 +121,11 @@ namespace Mengine
             //Empty
         }
 
-        virtual void _runService()
+        virtual bool _runService()
         {
             //Empty
+
+            return true;
         }
 
     protected:

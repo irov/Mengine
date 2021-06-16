@@ -62,13 +62,9 @@ namespace Mengine
         bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable ) override;
 
     public:
-        void drawIndexedPrimitive( EPrimitiveType _type
-            , uint32_t _baseVertexIndex
-            , uint32_t _minIndex
-            , uint32_t _vertexCount
-            , uint32_t _startIndex
-            , uint32_t _indexCount ) override;
+        void drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc ) override;
 
+    public:
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
         void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
         void setTextureFactor( uint32_t _color ) override;
@@ -95,7 +91,7 @@ namespace Mengine
         RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
 
     public:
-        RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage ) override;
+        RenderMaterialStageCacheInterfacePtr createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentPtr & _doc ) override;
 
     public:
         bool beginScene() override;

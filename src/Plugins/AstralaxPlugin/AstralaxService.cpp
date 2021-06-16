@@ -16,8 +16,7 @@
 #include "Kernel/Document.h"
 
 #include "Config/StdString.h"
-
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AstralaxService, Mengine::AstralaxService );
@@ -385,7 +384,7 @@ namespace Mengine
 
                 const ETextureAddressMode dx_address[] = {TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER};
 
-                RenderTextureStage & textureStage = rs.textureStage[stage];
+                RenderTextureStage & textureStage = rs.textureStages[stage];
 
                 textureStage.mipmap = RENDERMATERIAL_SERVICE()
                     ->getDefaultTextureFilterMipmap();
@@ -402,7 +401,7 @@ namespace Mengine
             }
 
             const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
-                ->cacheMaterialStage( rs );
+                ->cacheMaterialStage( rs, MENGINE_DOCUMENT_FACTORABLE );
 
             m_stages[i] = cache_stage;
         }

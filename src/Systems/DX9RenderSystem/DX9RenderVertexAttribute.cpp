@@ -5,7 +5,7 @@
 #include "Kernel/Assertion.h"
 
 #include "DX9RenderEnum.h"
-#include "DX9ErrorHelper.h"
+#include "DX9RenderErrorHelper.h"
 
 namespace Mengine
 {
@@ -31,7 +31,10 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::finalize()
-    {        
+    {
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )

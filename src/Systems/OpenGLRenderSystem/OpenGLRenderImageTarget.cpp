@@ -1,7 +1,7 @@
 #include "OpenGLRenderImageTarget.h"
 
 #include "OpenGLRenderExtension.h"
-#include "OpenGLRenderError.h"
+#include "OpenGLRenderErrorHelper.h"
 
 namespace Mengine
 {

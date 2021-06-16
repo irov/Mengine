@@ -25,4 +25,8 @@ namespace Mengine
     typedef DX11ResourcePtr<ID3D11VertexShader> ID3D11VertexShaderPtr;
     typedef DX11ResourcePtr<ID3D11PixelShader> ID3D11PixelShaderPtr;
     typedef DX11ResourcePtr<ID3D11InputLayout> ID3D11InputLayoutPtr;
+    typedef DX11ResourcePtr<ID3D11DepthStencilState> ID3D11DepthStencilStatePtr;
+    typedef DX11ResourcePtr<ID3D11RasterizerState> ID3D11RasterizerStatePtr;
+    typedef DX11ResourcePtr<ID3D11BlendState> ID3D11BlendStatePtr;
+    typedef DX11ResourcePtr<ID3D11SamplerState> ID3D11SamplerStatePtr;
 }

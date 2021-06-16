@@ -29,10 +29,9 @@
 #include "Kernel/AssertionNode.h"
 
 #include "Config/StdString.h"
+#include "Config/Algorithm.h"
 
 #include "math/quat.h"
-
-#include <algorithm>
 
 namespace Mengine
 {

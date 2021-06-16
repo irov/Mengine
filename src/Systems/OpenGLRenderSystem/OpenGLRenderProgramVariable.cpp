@@ -1,6 +1,6 @@
 #include "OpenGLRenderProgramVariable.h"
 
-#include "OpenGLRenderError.h"
+#include "OpenGLRenderErrorHelper.h"
 #include "OpenGLRenderEnum.h"
 #include "OpenGLRenderProgram.h"
 

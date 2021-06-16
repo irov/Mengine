@@ -19,10 +19,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "math/mat4.h"
+#include "Config/Algorithm.h"
 
-#include <algorithm>
-#include <math.h>
+#include "math/mat4.h"
 
 namespace Mengine
 {

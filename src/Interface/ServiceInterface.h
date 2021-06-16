@@ -20,7 +20,7 @@ namespace Mengine
         virtual bool initializeService() = 0;
         virtual void finalizeService() = 0;
         virtual void replaceService() = 0;
-        virtual void runService() = 0;
+        virtual bool runService() = 0;
 
     public:
         virtual bool isInitializeService() const = 0;

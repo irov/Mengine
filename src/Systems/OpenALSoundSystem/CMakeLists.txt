@@ -2,6 +2,7 @@ MENGINE_PROJECT(OpenALSoundSystem)
 
 ADD_FILTER(
 src
+    OpenALIncluder.h
     OpenALSoundBufferBase.cpp
     OpenALSoundBufferBase.h
     OpenALSoundBufferMemory.cpp
@@ -12,8 +13,8 @@ src
     OpenALSoundSource.h
     OpenALSoundSystem.cpp
     OpenALSoundSystem.h
-    OpenALSoundError.cpp
-    OpenALSoundError.h
+    OpenALSoundErrorHelper.cpp
+    OpenALSoundErrorHelper.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/openal-soft/include)

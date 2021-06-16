@@ -1,6 +1,6 @@
 #include "DX9RenderFragmentShader.h"
 
-#include "DX9ErrorHelper.h"
+#include "DX9RenderErrorHelper.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
@@ -37,7 +37,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderFragmentShader::finalize()
     {
-        m_memory = nullptr;        
+        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
+
+        m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderFragmentShader::compile( IDirect3DDevice9 * _pD3DDevice )
@@ -62,7 +64,7 @@ namespace Mengine
         }
 
         ++m_compileReferenceCount;
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

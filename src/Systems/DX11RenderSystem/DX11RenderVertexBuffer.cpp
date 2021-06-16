@@ -3,7 +3,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "DX11RenderEnum.h"
-#include "DX11ErrorHelper.h"
+#include "DX11RenderErrorHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Documentable.h"

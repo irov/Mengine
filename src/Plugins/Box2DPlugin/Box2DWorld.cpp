@@ -11,7 +11,7 @@
 #include "Box2DJoint.h"
 #include "Box2DScaler.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

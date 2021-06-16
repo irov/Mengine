@@ -15,7 +15,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

@@ -1,6 +1,6 @@
 #include "DX11RenderProgramVariable.h"
 
-#include "DX11ErrorHelper.h"
+#include "DX11RenderErrorHelper.h"
 
 #include "stdex/memorycopy.h"
 

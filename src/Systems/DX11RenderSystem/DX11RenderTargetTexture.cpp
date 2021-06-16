@@ -1,7 +1,7 @@
 #include "DX11RenderTargetTexture.h"
 
 #include "DX11RenderEnum.h"
-#include "DX11ErrorHelper.h"
+#include "DX11RenderErrorHelper.h"
 
 #include "Kernel/Assertion.h"
 
@@ -36,13 +36,13 @@ namespace Mengine
         m_textureDesc.Width = _width;
         m_textureDesc.Height = _height;
         m_textureDesc.MipLevels = 1;
-		m_textureDesc.ArraySize = 1;
-		m_textureDesc.SampleDesc.Count = 1;
-		m_textureDesc.SampleDesc.Quality = 0;
+        m_textureDesc.ArraySize = 1;
+        m_textureDesc.SampleDesc.Count = 1;
+        m_textureDesc.SampleDesc.Quality = 0;
         m_textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
         m_textureDesc.Usage = D3D11_USAGE_DEFAULT;
-		m_textureDesc.CPUAccessFlags = 0;
-		m_textureDesc.MiscFlags = 0;
+        m_textureDesc.CPUAccessFlags = 0;
+        m_textureDesc.MiscFlags = 0;
         m_hwPixelFormat = _format;
 
         m_hwWidthInv = 1.f / (float)m_textureDesc.Width;

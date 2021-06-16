@@ -1,6 +1,6 @@
 #include "DX11RenderImageLocked.h"
 
-#include "DX11ErrorHelper.h"
+#include "DX11RenderErrorHelper.h"
 
 #include "Kernel/Logger.h"
 
@@ -31,10 +31,7 @@ namespace Mengine
         stagingTextureDesc.Usage = D3D11_USAGE_STAGING;
 
         ID3D11Texture2D * pD3DStagingTexture;
-        IF_DXCALL( _pD3DDevice, CreateTexture2D, (
-            &stagingTextureDesc,
-            NULL,
-            &pD3DStagingTexture) )
+        IF_DXCALL( _pD3DDevice, CreateTexture2D, (&stagingTextureDesc, NULL, &pD3DStagingTexture) )
         {
             LOGGER_ERROR( "invalid create texture 2d [%u:%u]"
                 , _width
@@ -59,12 +56,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderImageLocked::lock( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
-        IF_DXCALL( _pImmediateContext, Map, (m_pD3DStagingTexture.Get(),
-            0,
-            D3D11_MAP_WRITE,
-            0,
-            &m_stagingTextureMemory
-            ) )
+        IF_DXCALL( _pImmediateContext, Map, (m_pD3DStagingTexture.Get(), 0, D3D11_MAP_WRITE, 0, &m_stagingTextureMemory) )
         {
             LOGGER_ERROR( "invalid map staging texture" );
 
@@ -83,15 +75,7 @@ namespace Mengine
             return;
         }
 
-        _pImmediateContext->CopySubresourceRegion(
-            _pD3DTexture.Get(),
-            0,
-            m_stagingOffsetX,
-            m_stagingOffsetY,
-            0,
-            m_pD3DStagingTexture.Get(),
-            0,
-            NULL );
+        _pImmediateContext->CopySubresourceRegion( _pD3DTexture.Get(), 0, m_stagingOffsetX, m_stagingOffsetY, 0, m_pD3DStagingTexture.Get(), 0, NULL );
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer DX11RenderImageLocked::getBuffer( size_t * const _pitch ) const

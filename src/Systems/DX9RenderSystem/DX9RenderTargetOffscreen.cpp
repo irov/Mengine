@@ -1,7 +1,7 @@
 #include "DX9RenderTargetOffscreen.h"
 
 #include "DX9RenderEnum.h"
-#include "DX9ErrorHelper.h"
+#include "DX9RenderErrorHelper.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"

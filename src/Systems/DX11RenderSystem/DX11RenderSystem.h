@@ -95,6 +95,7 @@ namespace Mengine
 
         void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
+    public:
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc ) override;
 
         RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc ) override;
@@ -244,7 +245,7 @@ namespace Mengine
 
         bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES] = {false};
 
-        bool m_waitForVSync;		
+        bool m_waitForVSync;
     };
     //////////////////////////////////////////////////////////////////////////
 }

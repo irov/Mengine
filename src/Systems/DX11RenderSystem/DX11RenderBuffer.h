@@ -27,7 +27,7 @@ namespace Mengine
         uint32_t getElementSize() const;
 
     protected:
-        bool resizeBuffer( D3D11_BIND_FLAG _bindFlag, uint32_t _elementsCount, void * _initData );
+        bool resizeBuffer( D3D11_BIND_FLAG _bindFlag, uint32_t _elementsCount, const void * _initData );
 
     protected:
         // only for write

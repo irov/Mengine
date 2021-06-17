@@ -48,6 +48,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImGUIRender::_activate()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -123,7 +125,7 @@ namespace Mengine
     ImTextureID ImGUIRender::getImTexture( const RenderTextureInterfacePtr & _texture ) const
     {
         const RenderImageInterfacePtr & image = _texture->getImage();
-                
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         DX9RenderImageExtensionInterface * extension = image->getUnknown();
 

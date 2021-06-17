@@ -332,30 +332,19 @@ namespace Mengine
         return *pFormatList;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution
-        , uint32_t _bits
-        , bool _fullscreen
-        , bool _depth
-        , bool _waitForVSync
-        , int32_t _FSAAType
-        , int32_t _FSAAQuality
-        , uint32_t _MultiSampleCount )
+    bool DX9RenderSystem::createRenderWindow( const RenderWindowDesc * _windowDesc )
     {
-        MENGINE_UNUSED( _bits );
-        MENGINE_UNUSED( _FSAAType );
-        MENGINE_UNUSED( _FSAAQuality );
-
-        m_windowResolution = _resolution;
+        m_windowResolution = _windowDesc->resolution;
 
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        m_fullscreen = _fullscreen;
-        m_depth = _depth;
-        m_waitForVSync = _waitForVSync;
+        m_fullscreen = _windowDesc->fullscreen;
+        m_depth = _windowDesc->depth;
+        m_waitForVSync = _windowDesc->waitForVSync;
 
-        D3DMULTISAMPLE_TYPE multiSampleType = this->findMatchingMultiSampleType_( _MultiSampleCount );
+        D3DMULTISAMPLE_TYPE multiSampleType = this->findMatchingMultiSampleType_( _windowDesc->MultiSampleCount );
 
         ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );
 
@@ -427,7 +416,7 @@ namespace Mengine
 
         this->updateVSyncDPP_();
 
-        m_d3dpp = _fullscreen == true ? &m_d3dppFS : &m_d3dppW;
+        m_d3dpp = m_fullscreen == true ? &m_d3dppFS : &m_d3dppW;
 
         // Create D3D Device
 
@@ -444,8 +433,7 @@ namespace Mengine
 
         HRESULT hr;
 
-        if( (m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 ||
-            m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
+        if( (m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 || m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
         {
             LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE" );
 
@@ -614,7 +602,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         float DirectX9_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetX", -0.5f );
-        float DirectX9_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetY", 0.0f );
+        float DirectX9_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetY", 0.f );
 
         float perfect_x = DirectX9_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
         float perfect_y = DirectX9_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
@@ -645,7 +633,7 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::updateImageParams_( uint32_t * const _width, uint32_t * const _height, EPixelFormat * const _format ) const
+    void DX9RenderSystem::updateImageParams_( uint32_t * const _width, uint32_t * const _height, EPixelFormat * const _pixelFormat ) const
     {
         uint32_t width = *_width;
         uint32_t height = *_height;
@@ -656,30 +644,30 @@ namespace Mengine
             *_height = Helper::getTexturePow2( height );
         }
 
-        EPixelFormat format = *_format;
+        EPixelFormat pixelFormat = *_pixelFormat;
 
-        switch( format )
+        switch( pixelFormat )
         {
         case PF_A8:
             {
                 if( m_supportA8 == true )
                 {
-                    *_format = PF_A8;
+                    *_pixelFormat = PF_A8;
                 }
                 else
                 {
-                    *_format = PF_A8R8G8B8;
+                    *_pixelFormat = PF_A8R8G8B8;
                 }
             }break;
         case PF_R8G8B8:
             {
                 if( m_supportR8G8B8 == true )
                 {
-                    *_format = PF_R8G8B8;
+                    *_pixelFormat = PF_R8G8B8;
                 }
                 else
                 {
-                    *_format = PF_X8R8G8B8;
+                    *_pixelFormat = PF_X8R8G8B8;
                 }
             }break;
         default:
@@ -1159,11 +1147,6 @@ namespace Mengine
     uint32_t DX9RenderSystem::getTextureCount() const
     {
         return m_textureCount;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UnknownPointer DX9RenderSystem::getRenderSystemExtention()
-    {
-        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     IDirect3DDevice9 * DX9RenderSystem::getDirect3DDevice9() const

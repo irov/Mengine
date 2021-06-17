@@ -2,6 +2,8 @@ MENGINE_PROJECT(JPEGPlugin)
 
 ADD_FILTER(
 src
+    JPEGIncluder.h
+    
     JPEGPlugin.h
     JPEGPlugin.def
     JPEGPlugin.cpp

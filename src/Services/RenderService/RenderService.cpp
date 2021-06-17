@@ -155,8 +155,20 @@ namespace Mengine
             , Engine_RenderMultiSampleCount
         );
 
-        if( m_renderSystem->createRenderWindow( m_windowResolution, _bits, m_fullscreen, Engine_RenderEnableAutoDepthStencil, m_vsync, _FSAAType, _FSAAQuality, Engine_RenderMultiSampleCount ) == false )
+        RenderWindowDesc desc;
+        desc.resolution = m_windowResolution;
+        desc.bits = _bits;
+        desc.fullscreen = _fullscreen;
+        desc.depth = Engine_RenderEnableAutoDepthStencil;
+        desc.waitForVSync = m_vsync;
+        desc.FSAAType = _FSAAType;
+        desc.FSAAQuality = _FSAAQuality;
+        desc.MultiSampleCount = Engine_RenderMultiSampleCount;
+
+        if( m_renderSystem->createRenderWindow( &desc ) == false )
         {
+            LOGGER_ERROR( "invalid create render window" );
+
             return false;
         }
 

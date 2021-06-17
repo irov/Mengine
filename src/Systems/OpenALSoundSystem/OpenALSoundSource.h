@@ -2,7 +2,7 @@
 
 #include "Interface/SoundSystemInterface.h"
 
-#include "OpenALIncluder.h"
+#include "OpenALSoundIncluder.h"
 
 #include "OpenALSoundBufferBase.h"
 
@@ -80,6 +80,6 @@ namespace Mengine
         bool m_loop;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenALSoundSource> OpenALSoundSourcePtr;
+    typedef IntrusivePtr<OpenALSoundSource, SoundSourceInterface> OpenALSoundSourcePtr;
     //////////////////////////////////////////////////////////////////////////
 }

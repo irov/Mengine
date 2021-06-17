@@ -33,7 +33,7 @@ namespace Mengine
     bool OpenGLRenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
     {
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getRenderSystemExtention();
+            ->getUnknown();
 
         GLuint id = extension->genBuffer();
 
@@ -190,7 +190,7 @@ namespace Mengine
         if( m_id != 0 )
         {
             OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-                ->getRenderSystemExtention();
+                ->getUnknown();
 
             extension->deleteBuffer( m_id );
 
@@ -210,7 +210,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_id == 0 );
 
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getRenderSystemExtention();
+            ->getUnknown();
 
         GLuint id = extension->genBuffer();
 

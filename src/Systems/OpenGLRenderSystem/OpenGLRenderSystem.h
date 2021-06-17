@@ -40,7 +40,7 @@ namespace Mengine
         const ConstString & getRenderPlatformName() const override;
 
     public:
-        bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
+        bool createRenderWindow( const RenderWindowDesc * _windowDesc ) override;
 
     public:
         void setViewMatrix( const mt::mat4f & _view ) override;
@@ -127,9 +127,6 @@ namespace Mengine
         uint32_t getAvailableTextureMemory() const override;
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
-
-    public:
-        UnknownPointer getRenderSystemExtention() override;
 
     protected:
         void findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const;

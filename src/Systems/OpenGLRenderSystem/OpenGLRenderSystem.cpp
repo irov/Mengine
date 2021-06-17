@@ -156,17 +156,9 @@ namespace Mengine
         return m_renderPlatform;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
+    bool OpenGLRenderSystem::createRenderWindow( const RenderWindowDesc * _windowDesc )
     {
-        MENGINE_UNUSED( _bits );
-        MENGINE_UNUSED( _fullscreen );
-        MENGINE_UNUSED( _depth );
-        MENGINE_UNUSED( _waitForVSync );
-        MENGINE_UNUSED( _FSAAType );
-        MENGINE_UNUSED( _FSAAQuality );
-        MENGINE_UNUSED( _MultiSampleCount );
-
-        m_windowResolution = _resolution;
+        m_windowResolution = _windowDesc->resolution;
 
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );
@@ -176,28 +168,28 @@ namespace Mengine
         Mengine::initialize_GLEXT();
 #endif
 
-        LOGGER_MESSAGE_RELEASE( "OpenGL driver properties" );
+        LOGGER_MESSAGE_RELEASE( "OpenGL driver properties:" );
 
         const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
-        LOGGER_MESSAGE_RELEASE( "Vendor      : %s", vendorStr );
+        LOGGER_MESSAGE_RELEASE( "  Vendor: %s", vendorStr );
         OPENGL_RENDER_CHECK_ERROR();
 
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
-        LOGGER_MESSAGE_RELEASE( "Renderer    : %s", rendererStr );
+        LOGGER_MESSAGE_RELEASE( "  Renderer: %s", rendererStr );
         OPENGL_RENDER_CHECK_ERROR();
 
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
-        LOGGER_MESSAGE_RELEASE( "Version     : %s", versionStr );
+        LOGGER_MESSAGE_RELEASE( "  Version: %s", versionStr );
         OPENGL_RENDER_CHECK_ERROR();
 
 #ifdef MENGINE_RENDER_OPENGL_ES
         const Char * extensionsStr = reinterpret_cast<const Char *>(glGetString( GL_EXTENSIONS ));
-        LOGGER_MESSAGE_RELEASE( "Extensions  : %s", extensionsStr );
+        LOGGER_MESSAGE_RELEASE( "  Extensions: %s", extensionsStr );
         OPENGL_RENDER_CHECK_ERROR();
 #endif
 
         const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
-        LOGGER_MESSAGE_RELEASE( "Shading Language Version     : %s", shadingLanguageVersion );
+        LOGGER_MESSAGE_RELEASE( "  Shading Language Version: %s", shadingLanguageVersion );
         OPENGL_RENDER_CHECK_ERROR();
 
         GLint maxCombinedTextureImageUnits;
@@ -755,11 +747,6 @@ namespace Mengine
     uint32_t OpenGLRenderSystem::getTextureCount() const
     {
         return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UnknownPointer OpenGLRenderSystem::getRenderSystemExtention()
-    {
-        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setDepthBufferTestEnable( bool _depthTest )

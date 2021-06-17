@@ -99,7 +99,7 @@ namespace Mengine
         pybind::interface_<AreaOfInterestZone, pybind::bases<AreaOfInterestZoneInterface, Scriptable>>( _kernel, "AreaOfInterestZone", false )
             ;
 
-        pybind::interface_<NodeAreaOfInterestTrigger, pybind::bases<Node, Eventable>>( _kernel, "NodeAOITrigger", false )
+        pybind::interface_<NodeAreaOfInterestTrigger, pybind::bases<Node>>( _kernel, "NodeAOITrigger", false )
             .def( "setRadius", &NodeAreaOfInterestTrigger::setRadius )
             .def( "getRadius", &NodeAreaOfInterestTrigger::getRadius )
             .def( "setIFF", &NodeAreaOfInterestTrigger::setIFF )

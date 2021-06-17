@@ -1,17 +1,8 @@
 #pragma once
 
+#include "JPEGIncluder.h"
+
 #include "Kernel/ImageEncoder.h"
-
-extern "C"
-{
-#define XMD_H
-#undef FAR
-
-#include <csetjmp>
-#include "jinclude.h"
-#include "jpeglib.h"
-#include "jerror.h"
-}
 
 namespace Mengine
 {

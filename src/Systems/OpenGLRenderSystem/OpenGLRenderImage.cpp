@@ -179,7 +179,7 @@ namespace Mengine
         if( m_uid != 0 )
         {
             OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-                ->getRenderSystemExtention();
+                ->getUnknown();
 
             extension->deleteTexture( m_uid );
 
@@ -192,7 +192,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_uid == 0 );
 
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getRenderSystemExtention();
+            ->getUnknown();
 
         GLuint tuid = extension->genTexture();
 

@@ -130,29 +130,17 @@ namespace Mengine
         MockupRenderImageLockedFactoryStorage::finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderSystem::createRenderWindow( const Resolution & _resolution
-        , uint32_t _bits
-        , bool _fullscreen
-        , bool _depth
-        , bool _waitForVSync
-        , int32_t _FSAAType
-        , int32_t _FSAAQuality
-        , uint32_t _MultiSampleCount )
+    bool MockupRenderSystem::createRenderWindow( const RenderWindowDesc * _windowDesc )
     {
-        MENGINE_UNUSED( _bits );
-        MENGINE_UNUSED( _FSAAType );
-        MENGINE_UNUSED( _FSAAQuality );
-        MENGINE_UNUSED( _MultiSampleCount );
-
-        m_windowResolution = _resolution;
+        m_windowResolution = _windowDesc->resolution;
 
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        m_fullscreen = _fullscreen;
-        m_depth = _depth;
-        m_waitForVSync = _waitForVSync;
+        m_fullscreen = _windowDesc->fullscreen;
+        m_depth = _windowDesc->depth;
+        m_waitForVSync = _windowDesc->waitForVSync;
 
         LOGGER_MESSAGE_RELEASE( "Mockup create render window successfully!" );
 
@@ -346,11 +334,6 @@ namespace Mengine
     uint32_t MockupRenderSystem::getTextureCount() const
     {
         return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UnknownPointer MockupRenderSystem::getRenderSystemExtention()
-    {
-        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::supportTextureFormat( EPixelFormat _format ) const

@@ -47,10 +47,9 @@
 #include "Kernel/TextureHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Algorithm.h"
 
 #include "math/uv4.h"
-
-#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::DX11RenderSystem );
@@ -102,7 +101,7 @@ namespace Mengine
         HRESULT result;
 
         // Create a DirectX graphics interface factory.
-// DirectX 11 (for 11.1 or 11.2 need to use other factory)
+        // DirectX 11 (for 11.1 or 11.2 need to use other factory)
         IDXGIFactory1 * factory;
         result = CreateDXGIFactory1( __uuidof(IDXGIFactory1), (void **)&factory );
 
@@ -113,9 +112,7 @@ namespace Mengine
 
         // Use the factory to create an adapter for the primary graphics interface (video card).
         IDXGIAdapter * adapter;
-        result = factory->EnumAdapters( m_adapterToUse, &adapter );
-
-        if( FAILED( result ) )
+        IF_DXCALL( factory, EnumAdapters, (m_adapterToUse, &adapter) )
         {
             return false;
         }
@@ -157,8 +154,7 @@ namespace Mengine
 
         IDXGIOutput * adapterOutput;
         // Enumerate the primary adapter output (monitor).
-        result = adapter->EnumOutputs( 0, &adapterOutput );
-        if( FAILED( result ) )
+        IF_DXCALL( adapter, EnumOutputs, (0, &adapterOutput) )
         {
             return false;
         }
@@ -292,29 +288,18 @@ namespace Mengine
         DX11RenderImageLockedFactoryStorage::finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderSystem::createRenderWindow( const Resolution & _resolution
-        , uint32_t _bits
-        , bool _fullscreen
-        , bool _depth
-        , bool _waitForVSync
-        , int32_t _FSAAType
-        , int32_t _FSAAQuality
-        , uint32_t _MultiSampleCount )
+    bool DX11RenderSystem::createRenderWindow( const RenderWindowDesc * _windowDesc )
     {
-        MENGINE_UNUSED( _bits );
-        MENGINE_UNUSED( _FSAAType );
-        MENGINE_UNUSED( _FSAAQuality );
-
-        m_windowResolution = _resolution;
+        m_windowResolution = _windowDesc->resolution;
 
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        m_fullscreen = _fullscreen;
-        m_depth = _depth;
-        m_waitForVSync = _waitForVSync;
-        m_multiSampleCount = _MultiSampleCount;
+        m_fullscreen = _windowDesc->fullscreen;
+        m_depth = _windowDesc->depth;
+        m_waitForVSync = _windowDesc->waitForVSync;
+        m_multiSampleCount = _windowDesc->MultiSampleCount;
 
         // Create a DirectX graphics interface factory.
         // DirectX 11 (for 11.1 or 11.2 need to use other factory)
@@ -358,11 +343,12 @@ namespace Mengine
 
         // Discard the back buffer contents after presenting.
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+        swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 
         // Don't set the advanced flags.
         swapChainDesc.Flags = 0;
 
-        if( _fullscreen == true )
+        if( m_fullscreen == true )
         {
             swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
         }
@@ -381,12 +367,13 @@ namespace Mengine
         this->updateVSyncDPP_( swapChainDesc.Width, swapChainDesc.Height, &dxgiSwapChainFullscreenDesc.RefreshRate );
         dxgiSwapChainFullscreenDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
         dxgiSwapChainFullscreenDesc.Scaling = DXGI_MODE_SCALING_CENTERED;
-        dxgiSwapChainFullscreenDesc.Windowed = _fullscreen == true ? TRUE : FALSE;
+        dxgiSwapChainFullscreenDesc.Windowed = m_fullscreen == true ? TRUE : FALSE;
 
         IF_DXCALL( dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hwnd, &swapChainDesc, &dxgiSwapChainFullscreenDesc, NULL, &dxgiSwapChain) )
         {
             return false;
         }
+
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
         SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getUnknown();
@@ -460,7 +447,7 @@ namespace Mengine
         // Set up the depth stencil view description.
         depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-        if( _MultiSampleCount <= 1 )
+        if( m_multiSampleCount <= 1 )
         {
             depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
         }
@@ -1037,7 +1024,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderSystem::getAvailableTextureMemory() const
     {
-        return 0;
+        //ToDo
+
+        return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderSystem::getTextureMemoryUse() const
@@ -1048,11 +1037,6 @@ namespace Mengine
     uint32_t DX11RenderSystem::getTextureCount() const
     {
         return m_textureCount;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UnknownPointer DX11RenderSystem::getRenderSystemExtention()
-    {
-        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     const ID3D11DevicePtr & DX11RenderSystem::getDirect3D11Device() const

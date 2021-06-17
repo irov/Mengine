@@ -67,6 +67,6 @@ namespace Mengine
         void setUpdating_( bool _updating );
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenALSoundBufferStream> OpenALSoundBufferStreamPtr;
+    typedef IntrusivePtr<OpenALSoundBufferStream, SoundBufferInterface> OpenALSoundBufferStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }

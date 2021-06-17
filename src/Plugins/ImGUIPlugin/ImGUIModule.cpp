@@ -48,7 +48,6 @@
 #include "imgui_impl_opengl2.h"
 #endif
 
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 #endif
@@ -73,6 +72,7 @@ namespace Mengine
 
             Helper::deallocateMemory( ptr, "imgui" );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     ImGUIModule::ImGUIModule()
@@ -229,7 +229,7 @@ namespace Mengine
         ImGui_ImplWin32_Init( hWnd );
 
         DX9RenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getRenderSystemExtention();
+            ->getUnknown();
 
         if( extension != nullptr )
         {

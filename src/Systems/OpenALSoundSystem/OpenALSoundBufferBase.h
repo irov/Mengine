@@ -2,7 +2,7 @@
 
 #include "Interface/SoundSystemInterface.h"
 
-#include "OpenALIncluder.h"
+#include "OpenALSoundIncluder.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"

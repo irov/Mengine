@@ -47,7 +47,7 @@ namespace Mengine
         const ConstString & getRenderPlatformName() const override;
 
     public:
-        bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth, bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) override;
+        bool createRenderWindow( const RenderWindowDesc * _windowDesc ) override;
 
     public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
@@ -135,9 +135,6 @@ namespace Mengine
         uint32_t getAvailableTextureMemory() const override;
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
-
-    public:
-        UnknownPointer getRenderSystemExtention() override;
 
     public:
         const ID3D11DevicePtr & getDirect3D11Device() const override;

@@ -90,7 +90,7 @@ namespace Mengine
     bool OpenGLRenderTargetTexture::create()
     {
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getRenderSystemExtention();
+            ->getUnknown();
 
         GLuint tuid = extension->genTexture();
 
@@ -148,7 +148,7 @@ namespace Mengine
     void OpenGLRenderTargetTexture::release()
     {
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getRenderSystemExtention();
+            ->getUnknown();
 
         if( m_tuid != 0 )
         {

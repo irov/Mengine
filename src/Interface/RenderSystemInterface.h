@@ -52,6 +52,20 @@ namespace Mengine
         uint32_t indexCount;
     };
     //////////////////////////////////////////////////////////////////////////
+    struct RenderWindowDesc
+    {
+        Resolution resolution;
+
+        uint32_t bits;
+        bool fullscreen;
+        bool depth;
+        bool waitForVSync;
+
+        int32_t FSAAType;
+        int32_t FSAAQuality;
+        uint32_t MultiSampleCount;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class RenderSystemInterface
         : public ServiceInterface
         , public Unknowable
@@ -63,8 +77,7 @@ namespace Mengine
         virtual const ConstString & getRenderPlatformName() const = 0;
 
     public:
-        virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth
-            , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
+        virtual bool createRenderWindow( const RenderWindowDesc * _windowDesc ) = 0;
 
     public:
         virtual void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
@@ -153,9 +166,6 @@ namespace Mengine
         virtual uint32_t getAvailableTextureMemory() const = 0;
         virtual uint32_t getTextureMemoryUse() const = 0;
         virtual uint32_t getTextureCount() const = 0;
-
-    public:
-        virtual UnknownPointer getRenderSystemExtention() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

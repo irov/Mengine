@@ -37,6 +37,6 @@ namespace Mengine
         ALuint m_alBufferId;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenALSoundBufferMemory> OpenALSoundBufferMemoryPtr;
+    typedef IntrusivePtr<OpenALSoundBufferMemory, SoundBufferInterface> OpenALSoundBufferMemoryPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -10,7 +10,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        namespace
+        namespace Detail
         {
             //////////////////////////////////////////////////////////////////////////
             class GlobalBaseHandler
@@ -236,7 +236,7 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalKeyHandler>( _doc, _code, _isDown, _event, false );
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _doc, _code, _isDown, _event, false );
 
             UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
@@ -248,7 +248,7 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalKeyHandler>( _doc, _code, _isDown, _event, true );
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _doc, _code, _isDown, _event, true );
 
             UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
@@ -260,7 +260,7 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalMouseButtonHandler>( _doc, _code, _isDown, _event );
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseButtonHandler>( _doc, _code, _isDown, _event );
 
             UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
@@ -272,7 +272,7 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalMouseMoveHandler>( _doc, _event );
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseMoveHandler>( _doc, _event );
 
             UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
@@ -284,7 +284,7 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalMouseWheelHandler>( _doc, _event );
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseWheelHandler>( _doc, _event );
 
             UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 

@@ -348,11 +348,6 @@ namespace Mengine
         // Don't set the advanced flags.
         swapChainDesc.Flags = 0;
 
-        if( m_fullscreen == true )
-        {
-            swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-        }
-
         IDXGISwapChain1 * dxgiSwapChain;
 
         // Set the handle for the window to render to.
@@ -360,16 +355,14 @@ namespace Mengine
         Win32PlatformExtensionInterface * win32Extension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        HWND hwnd = win32Extension->getWindowHandle();
+        HWND hWnd = win32Extension->getWindowHandle();
 
-        DXGI_SWAP_CHAIN_FULLSCREEN_DESC dxgiSwapChainFullscreenDesc;
+        IF_DXCALL( dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hWnd, &swapChainDesc, NULL, NULL, &dxgiSwapChain) )
+        {
+            return false;
+        }
 
-        this->updateVSyncDPP_( swapChainDesc.Width, swapChainDesc.Height, &dxgiSwapChainFullscreenDesc.RefreshRate );
-        dxgiSwapChainFullscreenDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-        dxgiSwapChainFullscreenDesc.Scaling = DXGI_MODE_SCALING_CENTERED;
-        dxgiSwapChainFullscreenDesc.Windowed = m_fullscreen == true ? TRUE : FALSE;
-
-        IF_DXCALL( dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hwnd, &swapChainDesc, &dxgiSwapChainFullscreenDesc, NULL, &dxgiSwapChain) )
+        IF_DXCALL( dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES) )
         {
             return false;
         }
@@ -730,14 +723,18 @@ namespace Mengine
         m_pD3DImmediateContext.Attach( pD3DImmediateContext );
 
         // Bind the render target view and depth stencil buffer to the output render pipeline.
-        ID3D11RenderTargetView * d3dRenderTargetView = m_renderTargetView.Get();
-        m_pD3DDeviceContext->OMSetRenderTargets( 1, &d3dRenderTargetView, m_depthStencilView.Get() );
+        ID3D11RenderTargetView * d3dRenderTargetViews[1] = {m_renderTargetView.Get()};
+        ID3D11DepthStencilView * depthStencilView = m_depthStencilView.Get();
+        m_pD3DDeviceContext->OMSetRenderTargets( 1, d3dRenderTargetViews, depthStencilView );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::endScene()
     {
+        ID3D11RenderTargetView * nullViews[1] = {NULL};
+        m_pD3DDeviceContext->OMSetRenderTargets( 1, nullViews, NULL );
+
         m_pD3DImmediateContext = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -884,30 +881,20 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
 
-        if( m_windowResolution == _resolution && m_fullscreen == _fullscreen )
-        {
-            return;
-        }
-
-        m_pD3DDeviceContext->OMSetRenderTargets( 0, nullptr, nullptr );
-
         // Release all outstanding references to the swap chain's buffers.
         m_renderTargetView = nullptr;
         m_depthStencilBuffer = nullptr;
         m_depthStencilView = nullptr;
 
-        if( m_fullscreen != _fullscreen )
-        {
 #ifndef MENGINE_WINDOWS_UNIVERSAL
-            IF_DXCALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
-            {
-                return;
-            }
+        IF_DXCALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
+        {
+            return;
+        }
 #endif
 
-            m_fullscreen = _fullscreen;
-        }
-
+        m_fullscreen = _fullscreen;
+        
         uint32_t resolutionWidth = _resolution.getWidth();
         uint32_t resolutionHeight = _resolution.getHeight();
 
@@ -918,7 +905,7 @@ namespace Mengine
         this->updateVSyncDPP_( resolutionWidth, resolutionHeight, &modeDesc.RefreshRate );
         modeDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
         modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-        modeDesc.Scaling = DXGI_MODE_SCALING_CENTERED;
+        modeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
         IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&modeDesc) )
         {
@@ -926,15 +913,12 @@ namespace Mengine
         }
 #endif
 
-        if( m_windowResolution != _resolution )
+        IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, resolutionWidth, resolutionHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
         {
-            IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, resolutionWidth, resolutionHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
-            {
-                return;
-            }
-
-            m_windowResolution = _resolution;
+            return;
         }
+
+        m_windowResolution = _resolution;
 
         // create new render targets
         // Get the pointer to the back buffer.

@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GraphicsScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<Graphics, pybind::bases<Node, Eventable>>( _kernel, "Graphics", false )
+        pybind::interface_<Graphics, pybind::bases<Node>>( _kernel, "Graphics", false )
             .def( "setLineWidth", &Graphics::setLineWidth )
             .def( "getLineWidth", &Graphics::getLineWidth )
             .def( "setLineSoft", &Graphics::setLineSoft )

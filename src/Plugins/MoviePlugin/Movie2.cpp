@@ -381,7 +381,7 @@ namespace Mengine
         {
             Stringstream ss;
 
-            m_resourceMovie2->foreachCompositionDesc( [&ss]( const ConstString & _name, const ResourceMovie2::CompositionDesc & _desc )
+            m_resourceMovie2->foreachCompositionsDesc( [&ss]( const ConstString & _name, const ResourceMovie2::CompositionDesc & _desc )
             {
                 if( _desc.master == false )
                 {

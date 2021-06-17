@@ -188,13 +188,13 @@ namespace Mengine
 
         for( const CompositionLayer & layer : layers )
         {
-            _lambda( layer.index, layer.name, layer.type );
+            _lambda( layer );
         }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::foreachCompositionDesc( const LambdaCompositionDescs & _lambda ) const
+    void ResourceMovie2::foreachCompositionsDesc( const LambdaCompositionDescs & _lambda ) const
     {
         for( const MapCompositions::value_type & value : m_compositions )
         {

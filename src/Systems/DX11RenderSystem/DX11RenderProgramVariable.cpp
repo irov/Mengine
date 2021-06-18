@@ -27,6 +27,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::finalize()
     {
+        m_vertexFloats.clear();
+        m_pixelFloats.clear();
+
         m_vertexVariables.clear();
         m_pixelVariables.clear();
 
@@ -45,7 +48,7 @@ namespace Mengine
         m_pixelBuffers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void DX11RenderProgramVariable::setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
@@ -66,25 +69,7 @@ namespace Mengine
         m_vertexVariables[_index] = variable;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        MENGINE_UNUSED( _uniform );
-        MENGINE_UNUSED( _index );
-        MENGINE_UNUSED( _values );
-        MENGINE_UNUSED( _size );
-        MENGINE_UNUSED( _count );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        MENGINE_UNUSED( _uniform );
-        MENGINE_UNUSED( _index );
-        MENGINE_UNUSED( _values );
-        MENGINE_UNUSED( _size );
-        MENGINE_UNUSED( _count );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void DX11RenderProgramVariable::setPixelVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
@@ -99,25 +84,7 @@ namespace Mengine
         m_pixelVariables[_index] = variable;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        MENGINE_UNUSED( _uniform );
-        MENGINE_UNUSED( _index );
-        MENGINE_UNUSED( _values );
-        MENGINE_UNUSED( _size );
-        MENGINE_UNUSED( _count );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        MENGINE_UNUSED( _uniform );
-        MENGINE_UNUSED( _index );
-        MENGINE_UNUSED( _values );
-        MENGINE_UNUSED( _size );
-        MENGINE_UNUSED( _count );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::updatePixelVariableFloats( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void DX11RenderProgramVariable::updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
@@ -125,22 +92,6 @@ namespace Mengine
         std::copy( _values, _values + _size * _count, values );
 
         m_pixelBufferUpdate = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        MENGINE_UNUSED( _index );
-        MENGINE_UNUSED( _values );
-        MENGINE_UNUSED( _size );
-        MENGINE_UNUSED( _count );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        MENGINE_UNUSED( _index );
-        MENGINE_UNUSED( _values );
-        MENGINE_UNUSED( _size );
-        MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderProgramVariable::apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const RenderProgramInterfacePtr & _program )
@@ -220,7 +171,7 @@ namespace Mengine
             {
                 descConstBuffer.ByteWidth = v.count * v.size;
 
-                float * values = &m_pixelFloats[v.offset];
+                const float * values = m_pixelFloats.data() + v.offset;
 
                 D3D11_SUBRESOURCE_DATA InitData;
                 InitData.pSysMem = values;
@@ -250,7 +201,6 @@ namespace Mengine
 
                 IF_DXCALL( _pImmediateContext, Map, (d3dBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource) )
                 {
-                    // TODO: add error log
                     return nullptr;
                 }
 

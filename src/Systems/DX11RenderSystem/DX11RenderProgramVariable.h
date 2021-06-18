@@ -25,39 +25,18 @@ namespace Mengine
         void finalize();
 
     public:
-        void setVertexVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
-        void setVertexVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
-        void setVertexVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
+        void setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
+        void setPixelVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
-        void setPixelVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
-        void setPixelVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
-        void setPixelVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
-
-    public:
-        void updatePixelVariableFloats( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
-        void updatePixelVariableIntegers( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
-        void updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
+        void updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
         bool apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const RenderProgramInterfacePtr & _program );
 
     public:
-
-        // D3D11 uses buffers registers (13 nums maximum)
-        // each variable representing a buffer
-
- /*       enum EProgramVariableType
-        {
-            EPVT_FLOAT,
-            EPVT_INTEGER,
-            EPVT_BOOLEAN
-        };
-*/
-// we still can update whole buffer with variable index if we need not only float4 variable
         struct ProgramVariableDesc
         {
-            //EProgramVariableType type;
             uint32_t offset;
             uint32_t size;
             uint32_t count;
@@ -65,7 +44,6 @@ namespace Mengine
 
     protected:
         typedef Vector<float> VectorDataFloats;
-
         VectorDataFloats m_vertexFloats;
         VectorDataFloats m_pixelFloats;
 

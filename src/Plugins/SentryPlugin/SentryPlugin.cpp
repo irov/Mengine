@@ -249,11 +249,7 @@ namespace Mengine
 
         m_loggerCapture = nullptr;
 
-        sentry_shutdown();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SentryPlugin::_destroyPlugin()
-    {
+        sentry_close();
     }
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )

@@ -11,6 +11,20 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        template<class T>
+        static void makeVariableData( OpenGLRenderProgramVariable::ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, const T * _values, uint32_t _size, uint32_t _count )
+        {
+            MENGINE_STRCPY( _variable.uniform, _uniform );
+            _variable.offset = (uint32_t)_container.size();
+            _variable.size = _size;
+            _variable.count = _count;
+
+            _container.insert( _container.end(), _values, _values + _size * _count );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     OpenGLRenderProgramVariable::OpenGLRenderProgramVariable()
     {
     }
@@ -29,94 +43,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgramVariable::finalize()
     {
+        m_dataFloats.clear();
+        m_pixelFloats.clear();
+
         m_vertexVariables.clear();
         m_pixelVariables.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        template<class T>
-        static void makeVariableData( OpenGLRenderProgramVariable::ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, OpenGLRenderProgramVariable::EProgramVariableType _type, const T * _values, uint32_t _size, uint32_t _count )
-        {
-            MENGINE_STRCPY( _variable.uniform, _uniform );
-            _variable.type = _type;
-            _variable.offset = (uint32_t)_container.size();
-            _variable.size = _size;
-            _variable.count = _count;
-
-            _container.insert( _container.end(), _values, _values + _size * _count );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::setVertexVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataFloats, _uniform, EPVT_FLOAT, _values, _size, _count );
+        Detail::makeVariableData( v, m_dataFloats, _uniform, _values, _size, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::setPixelVariables( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataIntegers, _uniform, EPVT_INTEGER, _values, _size, _count );
-
-        m_vertexVariables[_index] = v;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataBooleans, _uniform, EPVT_BOOLEAN, _values, _size, _count );
-
-        m_vertexVariables[_index] = v;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
-    {
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_pixelFloats, _uniform, EPVT_FLOAT, _values, _size, _count );
+        Detail::makeVariableData( v, m_pixelFloats, _uniform, _values, _size, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_pixelIntegers, _uniform, EPVT_INTEGER, _values, _size, _count );
-
-        m_pixelVariables[_index] = v;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_pixelBooleans, _uniform, EPVT_BOOLEAN, _values, _size, _count );
-
-        m_pixelVariables[_index] = v;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::updatePixelVariableFloats( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::updatePixelVariables( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
         float * values = m_pixelFloats.data() + v.offset;
-        std::copy( _values, _values + _size * _count, values );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        ProgramVariableDesc & v = m_pixelVariables[_index];
-
-        int32_t * values = m_pixelIntegers.data() + v.offset;
-        std::copy( _values, _values + _size * _count, values );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
-    {
-        ProgramVariableDesc & v = m_pixelVariables[_index];
-
-        int32_t * values = m_pixelBooleans.data() + v.offset;
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -147,90 +101,40 @@ namespace Mengine
                 v.location = location;
             }
 
-            switch( v.type )
+            const float * buff = m_dataFloats.data() + v.offset;
+
+            switch( v.size )
             {
-            case EPVT_FLOAT:
+            case 1:
                 {
-                    const float * buff = m_dataFloats.data() + v.offset;
-
-                    switch( v.size )
+                    IF_GLCALL( glUniform1fv, (v.location, v.count, buff) )
                     {
-                    case 1:
-                        {
-                            GLCALL( glUniform1fv, (v.location, v.count, buff) );
-                        }break;
-                    case 2:
-                        {
-                            GLCALL( glUniform2fv, (v.location, v.count, buff) );
-                        }break;
-                    case 3:
-                        {
-                            GLCALL( glUniform3fv, (v.location, v.count, buff) );
-                        }break;
-                    case 4:
-                        {
-                            GLCALL( glUniform4fv, (v.location, v.count, buff) );
-                        }break;
-                    default:
                         return false;
                     }
                 }break;
-            case EPVT_INTEGER:
+            case 2:
                 {
-                    const int32_t * buff = m_dataIntegers.data() + v.offset;
-
-                    switch( v.size )
+                    IF_GLCALL( glUniform2fv, (v.location, v.count, buff) )
                     {
-                    case 1:
-                        {
-                            GLCALL( glUniform1iv, (v.location, v.count, buff) );
-                        }break;
-                    case 2:
-                        {
-                            GLCALL( glUniform2iv, (v.location, v.count, buff) );
-                        }break;
-                    case 3:
-                        {
-                            GLCALL( glUniform3iv, (v.location, v.count, buff) );
-                        }break;
-                    case 4:
-                        {
-                            GLCALL( glUniform4iv, (v.location, v.count, buff) );
-                        }break;
-                    default:
                         return false;
                     }
                 }break;
-            case EPVT_BOOLEAN:
+            case 3:
                 {
-                    const int32_t * buff = m_dataBooleans.data() + v.offset;
-
-                    switch( v.size )
+                    IF_GLCALL( glUniform3fv, (v.location, v.count, buff) )
                     {
-                    case 1:
-                        {
-                            GLCALL( glUniform1iv, (v.location, v.count, buff) );
-                        }break;
-                    case 2:
-                        {
-                            GLCALL( glUniform2iv, (v.location, v.count, buff) );
-                        }break;
-                    case 3:
-                        {
-                            GLCALL( glUniform3iv, (v.location, v.count, buff) );
-                        }break;
-                    case 4:
-                        {
-                            GLCALL( glUniform4iv, (v.location, v.count, buff) );
-                        }break;
-                    default:
+                        return false;
+                    }
+                }break;
+            case 4:
+                {
+                    IF_GLCALL( glUniform4fv, (v.location, v.count, buff) )
+                    {
                         return false;
                     }
                 }break;
             default:
-                {
-                    return false;
-                }
+                return false;
             }
 
             ++vertexEnumerator;
@@ -257,90 +161,28 @@ namespace Mengine
                 v.location = location;
             }
 
-            switch( v.type )
+            const float * buff = m_pixelFloats.data() + v.offset;
+
+            switch( v.size )
             {
-            case EPVT_FLOAT:
+            case 1:
                 {
-                    const float * buff = m_pixelFloats.data() + v.offset;
-
-                    switch( v.size )
-                    {
-                    case 1:
-                        {
-                            GLCALL( glUniform1fv, (v.location, v.count, buff) );
-                        }break;
-                    case 2:
-                        {
-                            GLCALL( glUniform2fv, (v.location, v.count, buff) );
-                        }break;
-                    case 3:
-                        {
-                            GLCALL( glUniform3fv, (v.location, v.count, buff) );
-                        }break;
-                    case 4:
-                        {
-                            GLCALL( glUniform4fv, (v.location, v.count, buff) );
-                        }break;
-                    default:
-                        return false;
-                    }
+                    GLCALL( glUniform1fv, (v.location, v.count, buff) );
                 }break;
-            case EPVT_INTEGER:
+            case 2:
                 {
-                    const int32_t * buff = m_pixelIntegers.data() + v.offset;
-
-                    switch( v.size )
-                    {
-                    case 1:
-                        {
-                            GLCALL( glUniform1iv, (v.location, v.count, buff) );
-                        }break;
-                    case 2:
-                        {
-                            GLCALL( glUniform2iv, (v.location, v.count, buff) );
-                        }break;
-                    case 3:
-                        {
-                            GLCALL( glUniform3iv, (v.location, v.count, buff) );
-                        }break;
-                    case 4:
-                        {
-                            GLCALL( glUniform4iv, (v.location, v.count, buff) );
-                        }break;
-                    default:
-                        return false;
-                    }
+                    GLCALL( glUniform2fv, (v.location, v.count, buff) );
                 }break;
-            case EPVT_BOOLEAN:
+            case 3:
                 {
-                    const int32_t * buff = m_pixelBooleans.data() + v.offset;
-
-                    switch( v.size )
-                    {
-                    case 1:
-                        {
-                            GLCALL( glUniform1iv, (v.location, v.count, buff) );
-                        }break;
-                    case 2:
-                        {
-                            GLCALL( glUniform2iv, (v.location, v.count, buff) );
-                        }break;
-                    case 3:
-                        {
-                            GLCALL( glUniform3iv, (v.location, v.count, buff) );
-                        }break;
-                    case 4:
-                        {
-                            GLCALL( glUniform4iv, (v.location, v.count, buff) );
-                        }break;
-                    default:
-                        return false;
-                    }
+                    GLCALL( glUniform3fv, (v.location, v.count, buff) );
+                }break;
+            case 4:
+                {
+                    GLCALL( glUniform4fv, (v.location, v.count, buff) );
                 }break;
             default:
-                {
-                    return false;
-                }
+                return false;
             }
 
             ++pixelEnumerator;

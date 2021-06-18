@@ -362,18 +362,17 @@ namespace Mengine
             return false;
         }
 
-        IF_DXCALL( dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES) )
+        IF_DXCALL( dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER) )
         {
             return false;
         }
-
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
         SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        IInspectable * iwindow = sdlExtension->getWindowHandle();
+        IInspectable * iWindow = sdlExtension->getWindowHandle();
 
-        IF_DXCALL( dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iwindow, &swapChainDesc, NULL, &dxgiSwapChain) )
+        IF_DXCALL( dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iWindow, &swapChainDesc, NULL, &dxgiSwapChain) )
         {
             return false;
         }
@@ -382,10 +381,6 @@ namespace Mengine
 #endif
 
         m_dxgiSwapChain.Attach( dxgiSwapChain );
-
-        //m_dxgiSwapChainBufferDesc = swapChainDesc.BufferDesc;
-
-        //DXRELEASE( dxgiFactory );
 
         // Get the pointer to the back buffer.
         ID3D11Texture2D * backBuffer;
@@ -405,7 +400,7 @@ namespace Mengine
 
         // Release pointer to the back buffer as we no longer need it.
         backBuffer->Release();
-        backBuffer = 0;
+        backBuffer = nullptr;
 
         // Initialize the description of the depth buffer.
         D3D11_TEXTURE2D_DESC depthBufferDesc;
@@ -589,17 +584,14 @@ namespace Mengine
 
         renderTargetTexture->setDirect3D11Device( m_pD3DDevice );
 
-        if( ((_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
-        {
-            _width = Helper::getTexturePow2( _width );
-            _height = Helper::getTexturePow2( _height );
-        }
+        uint32_t pow2_width = Helper::getTexturePow2( _width );
+        uint32_t pow2_height = Helper::getTexturePow2( _height );
 
-        if( renderTargetTexture->initialize( _width, _height, _format ) == false )
+        if( renderTargetTexture->initialize( pow2_width, pow2_height, _format ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u"
-                , _width
-                , _height
+                , pow2_width
+                , pow2_height
                 , _format
             );
 
@@ -609,8 +601,8 @@ namespace Mengine
         m_renderResourceHandlers.push_back( renderTargetTexture.get() );
 
         LOGGER_INFO( "render", "offscreen target created %ux%u format %u"
-            , _width
-            , _height
+            , pow2_width
+            , pow2_height
             , _format
         );
 

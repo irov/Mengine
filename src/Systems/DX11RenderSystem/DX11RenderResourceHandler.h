@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
-
 #include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/IntrusiveLinked.h"
 
 namespace Mengine

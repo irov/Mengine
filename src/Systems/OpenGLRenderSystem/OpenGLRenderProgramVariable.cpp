@@ -81,7 +81,7 @@ namespace Mengine
         GLuint programId = openglProgram->getProgramId();
 
         uint32_t vertexEnumerator = 0;
-        for( ProgramVariableDesc & v : m_vertexVariables )
+        for( const ProgramVariableDesc & v : m_vertexVariables )
         {
             if( v.location == -1 )
             {
@@ -141,7 +141,7 @@ namespace Mengine
         }
 
         uint32_t pixelEnumerator = 0;
-        for( ProgramVariableDesc & v : m_pixelVariables )
+        for( const ProgramVariableDesc & v : m_pixelVariables )
         {
             if( v.location == -1 )
             {
@@ -167,19 +167,31 @@ namespace Mengine
             {
             case 1:
                 {
-                    GLCALL( glUniform1fv, (v.location, v.count, buff) );
+                    IF_GLCALL( glUniform1fv, (v.location, v.count, buff) )
+                    {
+                        return false;
+                    }
                 }break;
             case 2:
                 {
-                    GLCALL( glUniform2fv, (v.location, v.count, buff) );
+                    IF_GLCALL( glUniform2fv, (v.location, v.count, buff) )
+                    {
+                        return false;
+                    }
                 }break;
             case 3:
                 {
-                    GLCALL( glUniform3fv, (v.location, v.count, buff) );
+                    IF_GLCALL( glUniform3fv, (v.location, v.count, buff) )
+                    {
+                        return false;
+                    }
                 }break;
             case 4:
                 {
-                    GLCALL( glUniform4fv, (v.location, v.count, buff) );
+                    IF_GLCALL( glUniform4fv, (v.location, v.count, buff) )
+                    {
+                        return false;
+                    }
                 }break;
             default:
                 return false;

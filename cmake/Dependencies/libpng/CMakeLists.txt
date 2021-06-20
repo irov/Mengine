@@ -268,18 +268,18 @@ if(UNIX)
   symbol_prefix()
 endif()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${THIRDPARTY_CONFIG_DIR})
 
 # No awk available to generate sources; use pre-built pnglibconf.h
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt
-             ${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h)
+             ${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h)
 add_custom_target(genfiles) # Dummy
 
 # OUR SOURCES
 set(libpng_public_hdrs
   png.h
   pngconf.h
-  "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h"
+  "${THIRDPARTY_CONFIG_DIR}/pnglibconf.h"
 )
 set(libpng_private_hdrs
   pngpriv.h

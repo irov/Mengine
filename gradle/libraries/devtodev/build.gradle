@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('../../../dependencies/devtodev-android/devtodev-android 1.14.9/devtodev-1.14.9.aar'))

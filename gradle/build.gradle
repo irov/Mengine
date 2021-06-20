@@ -17,7 +17,6 @@ subprojects {
 buildscript {
     repositories {
         google()
-        jcenter()
         maven { url 'https://maven.google.com' }
         mavenCentral()
     }
@@ -28,7 +27,7 @@ buildscript {
         // in the individual module build.gradle files
         classpath 'com.google.gms:google-services:4.3.8'
         
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.6.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.0'
         
         classpath 'io.sentry:sentry-android-gradle-plugin:1.7.35'
     }
@@ -44,7 +43,6 @@ allprojects {
 
     repositories {
         google()
-        jcenter()
         maven { url 'https://maven.google.com' }
         mavenCentral()
     }

@@ -2356,7 +2356,7 @@ install(
 )
 
 file(GLOB INCLUDE_FILES ${SDL2_SOURCE_DIR}/include/*.h)
-file(GLOB BIN_INCLUDE_FILES ${SDL2_BINARY_DIR}/include/*.h)
+file(GLOB BIN_INCLUDE_FILES ${THIRDPARTY_CONFIG_DIR}/include/*.h)
 foreach(_FNAME ${BIN_INCLUDE_FILES})
   get_filename_component(_INCNAME ${_FNAME} NAME)
   list(REMOVE_ITEM INCLUDE_FILES ${SDL2_SOURCE_DIR}/include/${_INCNAME})

@@ -706,7 +706,6 @@ if(MENGINE_DEPENDENCE_PNG)
     set(PNG_INTEL_SSE "off" CACHE STRING "Enable INTEL_SSE optimizations" FORCE)
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/CMakeLists.txt ${THIRDPARTY_DIR}/libpng/CMakeLists.txt COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/pnglibconf.h ${THIRDPARTY_DIR}/libpng/pnglibconf.h COPYONLY)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libpng ${CMAKE_TEMP_DIR}/libpng)
     add_dependencies(png_static zlib)

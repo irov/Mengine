@@ -2380,7 +2380,6 @@ namespace Mengine
 
         SDL_RaiseWindow( m_sdlWindow );
         SDL_ShowWindow( m_sdlWindow );
-        SDL_SetWindowInputFocus( m_sdlWindow );
 
         if( RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen ) == false )

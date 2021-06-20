@@ -294,7 +294,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_UNITYADS", true) == true ) {
     println 'ANDROID_APP_ENABLE_UNITYADS: TRUE'
 
     dependencies {
-        implementation project(':unity-ads')
+        implementation project(':libraries:unity-ads')
     }
 }
 else
@@ -306,12 +306,12 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_DEVTODEV", true) == true ) {
     println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
 
     dependencies {
-        implementation 'com.devtodev:android:1.14.8'
+        implementation project(':libraries:devtodev')
     }
 }
 else
 {
-    println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
+    println 'ANDROID_APP_ENABLE_DEVTODEV: FALSE'
 }
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_FACEBOOK", true) == true ) {

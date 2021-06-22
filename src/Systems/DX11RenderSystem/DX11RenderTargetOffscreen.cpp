@@ -99,15 +99,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderTargetOffscreen::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
-    {
-        float uv_width = _size.x * m_hwWidthInv;
-        float uv_height = _size.y * m_hwHeightInv;
-
-        _viewport->begin = mt::vec2f( 0.f, 0.f );
-        _viewport->end = mt::vec2f( uv_width, uv_height );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();

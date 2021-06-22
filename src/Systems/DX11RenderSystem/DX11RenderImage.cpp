@@ -48,8 +48,8 @@ namespace Mengine
         uint32_t hwDepth = Helper::getPixelFormatDepth( m_hwPixelFormat );
 
         m_hwMipmaps = _mipmaps;
-        m_hwWidth = _width;
-        m_hwHeight = _height;
+        m_hwWidth = Helper::getTexturePow2( _width );
+        m_hwHeight = Helper::getTexturePow2( _height );
         m_hwChannels = hwChannels;
         m_hwDepth = hwDepth;
 

@@ -5,6 +5,7 @@
 #include "DX9RenderErrorHelper.h"
 #include "DX9RenderEnum.h"
 
+#include "Kernel/TextureHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
@@ -32,8 +33,11 @@ namespace Mengine
     {
         D3DFORMAT D3DFormat = Helper::toD3DFormat( _pixelFormat );
 
+        uint32_t HWWidth = Helper::getTexturePow2( _width );
+        uint32_t HWHeight = Helper::getTexturePow2( _height );
+
         IDirect3DTexture9 * pD3DTexture = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateTexture, (_width, _height, _mipmaps, 0, D3DFormat, D3DPOOL_MANAGED, &pD3DTexture, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (HWWidth, HWHeight, _mipmaps, 0, D3DFormat, D3DPOOL_MANAGED, &pD3DTexture, NULL) )
         {
             return false;
         }

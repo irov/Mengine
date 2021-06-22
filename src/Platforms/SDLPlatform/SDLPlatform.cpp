@@ -265,119 +265,143 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static int s_RemoveMouse_EventFilter( void * userdata, SDL_Event * event )
+    namespace Detail
     {
-        MENGINE_UNUSED( userdata );
-
-        switch( event->type )
+        //////////////////////////////////////////////////////////////////////////
+        static int SDL_EventFilter_RemoveMouse( void * userdata, SDL_Event * event )
         {
-        case SDL_MOUSEMOTION:
-        case SDL_MOUSEBUTTONDOWN:
-        case SDL_MOUSEBUTTONUP:
-            return 0;
-        default: break;
-        };
+            MENGINE_UNUSED( userdata );
 
-        return 1;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static const Char * s_SDL_GetCategoryName( int category )
-    {
-        switch( category )
-        {
-        case SDL_LOG_CATEGORY_APPLICATION:
-            return "application";
-        case SDL_LOG_CATEGORY_ERROR:
-            return "error";
-        case SDL_LOG_CATEGORY_ASSERT:
-            return "assert";
-        case SDL_LOG_CATEGORY_SYSTEM:
-            return "system";
-        case SDL_LOG_CATEGORY_AUDIO:
-            return "audio";
-        case SDL_LOG_CATEGORY_VIDEO:
-            return "video";
-        case SDL_LOG_CATEGORY_RENDER:
-            return "render";
-        case SDL_LOG_CATEGORY_INPUT:
-            return "input";
-        case SDL_LOG_CATEGORY_TEST:
-            return "test";
-        case SDL_LOG_CATEGORY_CUSTOM:
-            return "custom";
-        default:
-            break;
+            switch( event->type )
+            {
+            case SDL_MOUSEMOTION:
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+                return 0;
+            default: break;
+            };
+
+            return 1;
         }
-
-        return "unknown";
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static ELoggerLevel s_SDL_GetLoggerLevel( SDL_LogPriority priority )
-    {
-        switch( priority )
+        //////////////////////////////////////////////////////////////////////////
+        static int SDL_EventFilter_EnterBackground( void * userdata, SDL_Event * event )
         {
-        case SDL_LOG_PRIORITY_VERBOSE:
-            return LM_VERBOSE;
-        case SDL_LOG_PRIORITY_DEBUG:
-            return LM_WARNING;
-        case SDL_LOG_PRIORITY_INFO:
-            return LM_INFO;
-        case SDL_LOG_PRIORITY_WARN:
-            return LM_WARNING;
-        case SDL_LOG_PRIORITY_ERROR:
+            MENGINE_UNUSED( userdata );
+
+            switch( event->type )
+            {
+            case SDL_APP_WILLENTERBACKGROUND:
+                {
+                    return 0;
+                }break;
+            case SDL_APP_DIDENTERBACKGROUND:
+                {
+                    return 0;
+                }break;
+            default: break;
+            };
+
+            return 1;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * SDL_GetCategoryName( int category )
+        {
+            switch( category )
+            {
+            case SDL_LOG_CATEGORY_APPLICATION:
+                return "application";
+            case SDL_LOG_CATEGORY_ERROR:
+                return "error";
+            case SDL_LOG_CATEGORY_ASSERT:
+                return "assert";
+            case SDL_LOG_CATEGORY_SYSTEM:
+                return "system";
+            case SDL_LOG_CATEGORY_AUDIO:
+                return "audio";
+            case SDL_LOG_CATEGORY_VIDEO:
+                return "video";
+            case SDL_LOG_CATEGORY_RENDER:
+                return "render";
+            case SDL_LOG_CATEGORY_INPUT:
+                return "input";
+            case SDL_LOG_CATEGORY_TEST:
+                return "test";
+            case SDL_LOG_CATEGORY_CUSTOM:
+                return "custom";
+            default:
+                break;
+            }
+
+            return "unknown";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static ELoggerLevel SDL_GetLoggerLevel( SDL_LogPriority priority )
+        {
+            switch( priority )
+            {
+            case SDL_LOG_PRIORITY_VERBOSE:
+                return LM_VERBOSE;
+            case SDL_LOG_PRIORITY_DEBUG:
+                return LM_WARNING;
+            case SDL_LOG_PRIORITY_INFO:
+                return LM_INFO;
+            case SDL_LOG_PRIORITY_WARN:
+                return LM_WARNING;
+            case SDL_LOG_PRIORITY_ERROR:
+                return LM_ERROR;
+            case SDL_LOG_PRIORITY_CRITICAL:
+                return LM_CRITICAL;
+            default:
+                break;
+            }
+
             return LM_ERROR;
-        case SDL_LOG_PRIORITY_CRITICAL:
-            return LM_CRITICAL;
-        default:
-            break;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static void SDL_LogOutputFunction( void * userdata, int category, SDL_LogPriority priority, const char * message )
+        {
+            MENGINE_UNUSED( userdata );
+            MENGINE_UNUSED( category );
+            MENGINE_UNUSED( priority );
 
-        return LM_ERROR;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_SDL_LogOutputFunction( void * userdata, int category, SDL_LogPriority priority, const char * message )
-    {
-        MENGINE_UNUSED( userdata );
-        MENGINE_UNUSED( category );
-        MENGINE_UNUSED( priority );
+            ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
 
-        ELoggerLevel level = s_SDL_GetLoggerLevel( priority );
-
-        LOGGER_VERBOSE_LEVEL( ConstString::none(), level, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )("SDL [%s]: %s"
-            , s_SDL_GetCategoryName( category )
-            , message
-            );
-    }
-    //////////////////////////////////////////////////////////////////////////
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )("SDL [%s]: %s"
+                , Detail::SDL_GetCategoryName( category )
+                , message
+                );
+        }
+        //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOWS_UNIVERSAL
     //////////////////////////////////////////////////////////////////////////
-    static void * s_SDL_malloc_func( size_t size )
-    {
-        void * p = Helper::allocateMemory( size, "SDL" );
+        static void * s_SDL_malloc_func( size_t size )
+        {
+            void * p = Helper::allocateMemory( size, "SDL" );
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * s_SDL_calloc_func( size_t nmemb, size_t size )
-    {
-        void * p = Helper::callocateMemory( nmemb, size, "SDL" );
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * s_SDL_calloc_func( size_t nmemb, size_t size )
+        {
+            void * p = Helper::callocateMemory( nmemb, size, "SDL" );
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * s_SDL_realloc_func( void * mem, size_t size )
-    {
-        void * p = Helper::reallocateMemory( mem, size, "SDL" );
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * s_SDL_realloc_func( void * mem, size_t size )
+        {
+            void * p = Helper::reallocateMemory( mem, size, "SDL" );
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_SDL_free_func( void * mem )
-    {
-        Helper::deallocateMemory( mem, "SDL" );
-    }
-    //////////////////////////////////////////////////////////////////////////
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_SDL_free_func( void * mem )
+        {
+            Helper::deallocateMemory( mem, "SDL" );
+        }
+        //////////////////////////////////////////////////////////////////////////
 #endif
+    }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
@@ -417,7 +441,7 @@ namespace Mengine
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
 #endif
 
-        SDL_LogSetOutputFunction( &s_SDL_LogOutputFunction, nullptr );
+        SDL_LogSetOutputFunction( &Detail::SDL_LogOutputFunction, nullptr );
 
         if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) != 0 )
         {
@@ -445,6 +469,9 @@ namespace Mengine
 
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WinRT" ) );
+
+
+            SDL_SetEventFilter( &Detail::SDL_EventFilter_EnterBackground, nullptr );
         }
         else if( MENGINE_STRCMP( sdlPlatform, "Mac OS X" ) == 0 )
         {
@@ -459,7 +486,7 @@ namespace Mengine
             m_touchpad = true;
 
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-            SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
+            SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
         }
         else if( MENGINE_STRCMP( sdlPlatform, "iOS" ) == 0 )
         {
@@ -467,7 +494,7 @@ namespace Mengine
             m_touchpad = true;
 
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
-            SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
+            SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
         }
         else if( MENGINE_STRCMP( sdlPlatform, "Linux" ) == 0 )
         {
@@ -2353,6 +2380,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
     {
+        MENGINE_UNUSED( _resolution );
+
 #if defined(MENGINE_PLATFORM_IOS)
         if( RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen ) == false )
@@ -2360,6 +2389,15 @@ namespace Mengine
             return false;
         }
 #elif defined(MENGINE_PLATFORM_ANDROID)
+        if( RENDER_SYSTEM()
+            ->onWindowChangeFullscreen( _fullscreen ) == false )
+        {
+            return false;
+        }
+#elif defined(MENGINE_WINDOWS_UNIVERSAL)
+        SDL_bool sdl_fullscreen = _fullscreen == true ? SDL_TRUE : SDL_FALSE;
+        SDL_SetWindowFullscreen( m_sdlWindow, sdl_fullscreen );
+
         if( RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen ) == false )
         {
@@ -2581,11 +2619,11 @@ namespace Mengine
             );
         }
 #elif defined(MENGINE_WINDOWS_UNIVERSAL)
-        windowFlags |= SDL_WINDOW_HIDDEN;
+        windowFlags |= SDL_WINDOW_SHOWN;
 
         if( _fullscreen == true )
         {
-            windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+            windowFlags |= SDL_WINDOW_FULLSCREEN;
         }
 
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "direct3d11" );

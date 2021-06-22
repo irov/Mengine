@@ -15,6 +15,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
+#include "Interface/GameEventReceiverInterface.h"
 
 #include "GameServiceAccountProvider.h"
 #include "GameServiceSoundVolumeProvider.h"

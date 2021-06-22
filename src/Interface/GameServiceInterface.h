@@ -5,10 +5,12 @@
 #include "Interface/UpdationInterface.h"
 #include "Interface/EventationInterface.h"
 #include "Interface/InputHandlerInterface.h"
-#include "Interface/GameEventReceiverInterface.h"
 #include "Interface/RenderPipelineInterface.h"
 
+#include "Kernel/Resolution.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Params.h"
 
 namespace Mengine
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/GameServiceInterface.h"
+#include "Interface/GameEventReceiverInterface.h"
 
 namespace Mengine
 {

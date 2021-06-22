@@ -2074,6 +2074,7 @@ endif()
 #   endif()
 # endif()
 
+MESSAGE("configure config: ${THIRDPARTY_CONFIG_DIR}/SDL/SDL_config.h")
 configure_file("${SDL2_SOURCE_DIR}/include/SDL_config.h.cmake"
   "${THIRDPARTY_CONFIG_DIR}/SDL/SDL_config.h")
 include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)

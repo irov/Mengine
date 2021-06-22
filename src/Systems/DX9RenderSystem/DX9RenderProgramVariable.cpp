@@ -68,6 +68,7 @@ namespace Mengine
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
         float * values = m_pixelFloats.data() + v.offset;
+
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -79,6 +80,7 @@ namespace Mengine
         for( const ProgramVariableDesc & v : m_vertexVariables )
         {
             const float * buff = m_dataFloats.data() + v.offset;
+
             IF_DXCALL( _pD3DDevice, SetVertexShaderConstantF, (vertexEnumerator, buff, v.count) )
             {
                 return false;
@@ -91,6 +93,7 @@ namespace Mengine
         for( const ProgramVariableDesc & v : m_pixelVariables )
         {
             const float * buff = m_pixelFloats.data() + v.offset;
+
             IF_DXCALL( _pD3DDevice, SetPixelShaderConstantF, (pixelEnumerator, buff, v.count) )
             {
                 return false;

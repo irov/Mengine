@@ -39,9 +39,6 @@ namespace Mengine
         bool getUpscalePow2() const override;
 
     public:
-        void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
-
-    public:
         bool begin() const override;
         void end() const override;
 

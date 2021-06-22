@@ -40,9 +40,6 @@ namespace Mengine
         bool getUpscalePow2() const override;
 
     public:
-        void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
-
-    public:
         bool begin() const override;
         void end() const override;
 
@@ -61,13 +58,19 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
+        uint32_t m_width;
+        uint32_t m_height;
+
         ID3D11Texture2DPtr m_pD3DTexture;
         ID3D11ShaderResourceViewPtr m_pD3DResourceView;
 
         ID3D11RenderTargetViewPtr m_pRenderTargetView;
-        mutable ID3D11RenderTargetViewPtr m_pRenderTargetViewOld;
         ID3D11DepthStencilViewPtr m_pDepthStencilMain;
+
+        mutable ID3D11RenderTargetViewPtr m_pRenderTargetViewOld;
         mutable ID3D11DepthStencilViewPtr m_pDepthStencilMainOld;
+
+        mutable D3D11_VIEWPORT m_VPOld;
 
         D3D11_TEXTURE2D_DESC m_textureDesc;
 

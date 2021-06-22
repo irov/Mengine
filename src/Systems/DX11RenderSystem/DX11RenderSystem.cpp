@@ -520,12 +520,6 @@ namespace Mengine
 
         renderImage->setDirect3D11Device( m_pD3DDevice );
 
-        if( ((_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
-        {
-            _width = Helper::getTexturePow2( _width );
-            _height = Helper::getTexturePow2( _height );
-        }
-
         if( renderImage->initialize( _mipmaps, _width, _height, _format ) == false )
         {
             LOGGER_ERROR( "can't initialize image %ux%u channels %u depth %u format %u"
@@ -584,14 +578,11 @@ namespace Mengine
 
         renderTargetTexture->setDirect3D11Device( m_pD3DDevice );
 
-        uint32_t pow2_width = Helper::getTexturePow2( _width );
-        uint32_t pow2_height = Helper::getTexturePow2( _height );
-
-        if( renderTargetTexture->initialize( pow2_width, pow2_height, _format ) == false )
+        if( renderTargetTexture->initialize( _width, _height, _format ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u"
-                , pow2_width
-                , pow2_height
+                , _width
+                , _height
                 , _format
             );
 
@@ -601,8 +592,8 @@ namespace Mengine
         m_renderResourceHandlers.push_back( renderTargetTexture.get() );
 
         LOGGER_INFO( "render", "offscreen target created %ux%u format %u"
-            , pow2_width
-            , pow2_height
+            , _width
+            , _height
             , _format
         );
 

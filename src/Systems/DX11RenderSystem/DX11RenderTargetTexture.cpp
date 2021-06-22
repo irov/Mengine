@@ -3,13 +3,16 @@
 #include "DX11RenderEnum.h"
 #include "DX11RenderErrorHelper.h"
 
+#include "Kernel/TextureHelper.h"
 #include "Kernel/Assertion.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetTexture::DX11RenderTargetTexture()
-        : m_hwPixelFormat( PF_UNKNOWN )
+        : m_width( 0 )
+        , m_height( 0 )
+        , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
     {
@@ -32,9 +35,12 @@ namespace Mengine
             return false;
         }
 
+        m_width = _width;
+        m_height = _height;
+
         m_textureDesc.Format = D3DFormat;
-        m_textureDesc.Width = _width;
-        m_textureDesc.Height = _height;
+        m_textureDesc.Width = Helper::getTexturePow2( _width );
+        m_textureDesc.Height = Helper::getTexturePow2( _height );
         m_textureDesc.MipLevels = 1;
         m_textureDesc.ArraySize = 1;
         m_textureDesc.SampleDesc.Count = 1;
@@ -137,15 +143,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
-    {
-        float uv_width = _size.x * m_hwWidthInv;
-        float uv_height = _size.y * m_hwHeightInv;
-
-        _viewport->begin = mt::vec2f( 0.f, 0.f );
-        _viewport->end = mt::vec2f( uv_width, uv_height );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::begin() const
     {
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
@@ -157,9 +154,25 @@ namespace Mengine
         m_pRenderTargetViewOld = pRenderTargetViewOld;
         m_pDepthStencilMainOld = pDepthStencilMainOld;
 
+        UINT NumViewports = 1;
+        D3D11_VIEWPORT VPOld;
+        pImmediateContext->RSGetViewports( &NumViewports, &VPOld );
+
+        m_VPOld = VPOld;
+
         ID3D11RenderTargetView * pRenderTargetView = m_pRenderTargetView.Get();
 
         pImmediateContext->OMSetRenderTargets( 1, &pRenderTargetView, m_pDepthStencilMain.Get() );
+
+        D3D11_VIEWPORT VP;
+        VP.TopLeftX = 0.f;
+        VP.TopLeftY = 0.f;
+        VP.Width = (float)m_width;
+        VP.Height = (float)m_height;
+        VP.MinDepth = 0.f;
+        VP.MaxDepth = 1.f;
+
+        pImmediateContext->RSSetViewports( 1, &VP );
 
         return true;
     }
@@ -174,6 +187,8 @@ namespace Mengine
 
         m_pRenderTargetViewOld = nullptr;
         m_pDepthStencilMainOld = nullptr;
+
+        pImmediateContext->RSSetViewports( 1, &m_VPOld );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const

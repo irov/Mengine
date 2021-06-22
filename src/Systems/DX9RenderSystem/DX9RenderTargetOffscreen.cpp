@@ -45,9 +45,9 @@ namespace Mengine
     bool DX9RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DSurfacePlain, "not set d3d surface plain" );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DSurface, "not set d3d surface" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DSurfaceCurrent, "not set d3d surface" );
 
-        DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurface, m_pD3DSurfacePlain) );
+        DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurfaceCurrent, m_pD3DSurfacePlain) );
 
         D3DLOCKED_RECT LockedRect;
         IF_DXCALL( m_pD3DSurfacePlain, LockRect, (&LockedRect, NULL, 0) )

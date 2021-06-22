@@ -633,47 +633,38 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::updateImageParams_( uint32_t * const _width, uint32_t * const _height, EPixelFormat * const _pixelFormat ) const
+    EPixelFormat DX9RenderSystem::updateImagePixelFormat_( EPixelFormat _pixelFormat ) const
     {
-        uint32_t width = *_width;
-        uint32_t height = *_height;
-
-        if( ((width & (width - 1)) != 0 || (height & (height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
-        {
-            *_width = Helper::getTexturePow2( width );
-            *_height = Helper::getTexturePow2( height );
-        }
-
-        EPixelFormat pixelFormat = *_pixelFormat;
-
-        switch( pixelFormat )
+        switch( _pixelFormat )
         {
         case PF_A8:
             {
                 if( m_supportA8 == true )
                 {
-                    *_pixelFormat = PF_A8;
+                    return PF_A8;
                 }
                 else
                 {
-                    *_pixelFormat = PF_A8R8G8B8;
+                    return PF_A8R8G8B8;
                 }
             }break;
         case PF_R8G8B8:
             {
                 if( m_supportR8G8B8 == true )
                 {
-                    *_pixelFormat = PF_R8G8B8;
+                    return PF_R8G8B8;
                 }
                 else
                 {
-                    *_pixelFormat = PF_X8R8G8B8;
+                    return PF_X8R8G8B8;
                 }
             }break;
         default:
             {
             }break;
         }
+
+        return _pixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
@@ -686,12 +677,9 @@ namespace Mengine
 
         renderImage->setDirect3DDevice9( m_pD3DDevice );
 
-        uint32_t fix_width = _width;
-        uint32_t fix_height = _height;
-        EPixelFormat fix_format = _format;
-        this->updateImageParams_( &fix_width, &fix_height, &fix_format );
+        EPixelFormat fix_format = this->updateImagePixelFormat_( _format );
 
-        if( renderImage->initialize( _mipmaps, fix_width, fix_height, fix_format ) == false )
+        if( renderImage->initialize( _mipmaps, _width, _height, fix_format ) == false )
         {
             LOGGER_ERROR( "can't initialize image [%ux%u] format [%u] (doc %s)"
                 , renderImage->getHWWidth()
@@ -751,12 +739,9 @@ namespace Mengine
 
         renderTargetTexture->setDirect3DDevice9( m_pD3DDevice );
 
-        uint32_t fix_width = _width;
-        uint32_t fix_height = _height;
-        EPixelFormat fix_format = _format;
-        this->updateImageParams_( &fix_width, &fix_height, &fix_format );
+        EPixelFormat fix_format = this->updateImagePixelFormat_( _format );
 
-        if( renderTargetTexture->initialize( fix_width, fix_height, fix_format ) == false )
+        if( renderTargetTexture->initialize( _width, _height, fix_format ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u (doc %s)"
                 , renderTargetTexture->getHWWidth()
@@ -802,12 +787,9 @@ namespace Mengine
 
         renderTargetOffscreen->setDirect3DDevice9( m_pD3DDevice );
 
-        uint32_t fix_width = _width;
-        uint32_t fix_height = _height;
-        EPixelFormat fix_format = _format;
-        this->updateImageParams_( &fix_width, &fix_height, &fix_format );
+        EPixelFormat fix_format = this->updateImagePixelFormat_( _format );
 
-        if( renderTargetOffscreen->initialize( fix_width, fix_height, fix_format ) == false )
+        if( renderTargetOffscreen->initialize( _width, _height, fix_format ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u (doc %s)"
                 , renderTargetOffscreen->getHWWidth()

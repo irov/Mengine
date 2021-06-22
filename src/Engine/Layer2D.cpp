@@ -275,13 +275,12 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid get material" );
 
-        Viewport v;
-        renderTarget->calcViewport( m_size, &v );
+        const mt::uv4f & uv = renderTargetTexture->getUV();
 
-        m_verticesImageMaskWM[0].uv[0] = mt::vec2f( v.begin.x, v.begin.y );
-        m_verticesImageMaskWM[1].uv[0] = mt::vec2f( v.end.x, v.begin.y );
-        m_verticesImageMaskWM[2].uv[0] = mt::vec2f( v.end.x, v.end.y );
-        m_verticesImageMaskWM[3].uv[0] = mt::vec2f( v.begin.x, v.end.y );
+        m_verticesImageMaskWM[0].uv[0] = uv.p0;
+        m_verticesImageMaskWM[1].uv[0] = uv.p1;
+        m_verticesImageMaskWM[2].uv[0] = uv.p2;
+        m_verticesImageMaskWM[3].uv[0] = uv.p3;
 
         const mt::uv4f & uv_mask = renderTargetTextureMask->getUV();
 

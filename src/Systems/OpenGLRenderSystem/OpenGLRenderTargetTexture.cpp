@@ -213,21 +213,11 @@ namespace Mengine
         return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
-    {
-        float uv_width = _size.x * m_hwWidthInv;
-        float uv_height = _size.y * m_hwHeightInv;
-
-        _viewport->begin = mt::vec2f( 0.f, uv_height );
-        _viewport->end = mt::vec2f( uv_width, 0.f );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::begin() const
     {
         GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
 
-        RENDER_SYSTEM()
-            ->setViewport( Viewport( 0.f, 0.f, (float)m_width, (float)m_height ) );
+        GLCALL( glViewport, (0, 0, m_width, m_height) );
 
         return true;
     }

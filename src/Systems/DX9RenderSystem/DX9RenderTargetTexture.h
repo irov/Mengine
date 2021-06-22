@@ -45,9 +45,6 @@ namespace Mengine
         bool getUpscalePow2() const override;
 
     public:
-        void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
-
-    public:
         bool begin() const override;
         void end() const override;
 
@@ -63,6 +60,9 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
+        uint32_t m_width;
+        uint32_t m_height;
+
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
         EPixelFormat m_hwPixelFormat;
@@ -72,8 +72,10 @@ namespace Mengine
         
         IDirect3DTexture9 * m_pD3DTexture;
         
-        mutable IDirect3DSurface9 * m_pD3DSurface;
+        mutable IDirect3DSurface9 * m_pD3DSurfaceCurrent;
         mutable IDirect3DSurface9 * m_pD3DSurfaceOld;
+
+        mutable D3DVIEWPORT9 m_VPOld;
 
         bool m_upscalePow2;
     };

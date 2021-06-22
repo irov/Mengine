@@ -268,7 +268,7 @@ if(UNIX)
   symbol_prefix()
 endif()
 
-include_directories(${THIRDPARTY_CONFIG_DIR})
+include_directories(${THIRDPARTY_CONFIG_DIR}/libpng)
 
 # No awk available to generate sources; use pre-built pnglibconf.h
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt
@@ -279,7 +279,7 @@ add_custom_target(genfiles) # Dummy
 set(libpng_public_hdrs
   png.h
   pngconf.h
-  "${THIRDPARTY_CONFIG_DIR}/pnglibconf.h"
+  "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h"
 )
 set(libpng_private_hdrs
   pngpriv.h

@@ -144,7 +144,7 @@ namespace Mengine
         void updateViewport_( const Viewport & _viewport );
 
     protected:
-        void updateImageParams_( uint32_t * const _width, uint32_t * const _height, EPixelFormat * const _pixelFormat ) const;
+        EPixelFormat updateImagePixelFormat_( EPixelFormat _pixelFormat ) const;
 
     protected:
         ConstString m_renderSystemName;

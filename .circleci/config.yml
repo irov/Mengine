@@ -62,6 +62,8 @@ jobs:
           no_output_timeout: 20m
           command: |
             sudo chown -R circleci:circleci /home/circleci/project
+            sudo chown -R circleci:circleci /home/circleci/project/dependencies
+            sudo chown -R circleci:circleci /home/circleci/project/dependencies/SDL
             
             pushd gradle
             sudo chmod +x gradlew

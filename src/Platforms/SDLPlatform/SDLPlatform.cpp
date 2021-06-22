@@ -2765,6 +2765,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+#if MENGINE_LOGGER_DEBUG
+        //////////////////////////////////////////////////////////////////////////
         static const Char * getWindowEventMessage( SDL_WindowEventID _eventId )
         {
             switch( _eventId )
@@ -2775,7 +2778,8 @@ namespace Mengine
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_EXPOSED, "Window has been exposed and should be redrawn" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MOVED, "Window has been moved to data1, data2" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_RESIZED, "Window has been resized to data1xdata2" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_SIZE_CHANGED, "The window size has changed, either as a result of an API call or through the system or user changing the window size." );            MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MINIMIZED, "Window has been minimized" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_SIZE_CHANGED, "The window size has changed, either as a result of an API call or through the system or user changing the window size." );           
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MINIMIZED, "Window has been minimized" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MAXIMIZED, "Window has been maximized" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_RESTORED, "Window has been restored to normal size and position" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_ENTER, "Window has gained mouse focus" );
@@ -2792,6 +2796,9 @@ namespace Mengine
 
             return "Unknown";
         }
+        //////////////////////////////////////////////////////////////////////////
+#endif
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents_()

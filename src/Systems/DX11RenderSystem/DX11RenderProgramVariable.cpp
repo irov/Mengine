@@ -146,7 +146,7 @@ namespace Mengine
         if( m_vertexBuffers.empty() == false )
         {
             ID3D11Buffer ** buffers = m_vertexBuffers.data();
-            VectorBuffers::size_type count = m_vertexBuffers.size();
+            UINT count = (UINT)m_vertexBuffers.size();
 
             _pImmediateContext->VSSetConstantBuffers( 0, count, buffers );
         }
@@ -218,7 +218,7 @@ namespace Mengine
         if( m_pixelBuffers.empty() == false )
         {
             ID3D11Buffer ** buffers = m_pixelBuffers.data();
-            VectorBuffers::size_type count = m_pixelBuffers.size();
+            UINT count = (UINT)m_pixelBuffers.size();
 
             _pImmediateContext->PSSetConstantBuffers( 0, count, buffers );
         }

@@ -19,7 +19,7 @@ set "YEAR=2019"
 @popd
 
 @pushd %~dp0..
-@call make_solution.bat "SOLUTION_NAME=solution_msvc%VERSION%_windowsstore" "SOURCE_DIRECTORY=%CD%\..\cmake\Win32_WindowsStore" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=Win32" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%" "BUILD_VERSION=%BUILD_VERSION%"
+@call make_solution.bat "SOLUTION_NAME=solution_msvc%VERSION%_windowsstore" "SOURCE_DIRECTORY=%CD%\..\cmake\Win32_WindowsStore" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=x64" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%" "BUILD_VERSION=%BUILD_VERSION%"
 @popd
 
 :end

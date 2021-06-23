@@ -1,3 +1,7 @@
+if(NOT THIRDPARTY_CONFIG_DIR)
+  SET(THIRDPARTY_CONFIG_DIR "${CMAKE_SOURCE_DIR}/../configuration/Ninja/android_ogl/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}")
+endif()
+
 # CMake build file list for OpenAL
 
 cmake_minimum_required(VERSION 3.0.2)
@@ -1119,7 +1123,7 @@ if(ALSOFT_UPDATE_BUILD_VERSION AND GIT_FOUND AND EXISTS "${OpenAL_SOURCE_DIR}/.g
     add_custom_target(build_version
         ${CMAKE_COMMAND} -D GIT_EXECUTABLE=${GIT_EXECUTABLE} -D LIB_VERSION=${LIB_VERSION}
             -D LIB_VERSION_NUM=${LIB_VERSION_NUM} -D SRC=${OpenAL_SOURCE_DIR}/version.h.in
-            -D DST=${OpenAL_BINARY_DIR}/version.h -P ${OpenAL_SOURCE_DIR}/version.cmake
+            -D DST=${THIRDPARTY_CONFIG_DIR}/openal-soft/version.h -P ${OpenAL_SOURCE_DIR}/version.cmake
         WORKING_DIRECTORY "${OpenAL_SOURCE_DIR}"
         VERBATIM
     )
@@ -1128,7 +1132,7 @@ else()
     set(GIT_COMMIT_HASH "unknown")
     configure_file(
         "${OpenAL_SOURCE_DIR}/version.h.in"
-        "${OpenAL_BINARY_DIR}/version.h")
+        "${THIRDPARTY_CONFIG_DIR}/openal-soft/version.h")
 endif()
 
 
@@ -1136,7 +1140,7 @@ option(ALSOFT_EMBED_HRTF_DATA "Embed the HRTF data files (increases library foot
 if(ALSOFT_EMBED_HRTF_DATA)
     macro(make_hrtf_header FILENAME VARNAME)
         set(infile  "${OpenAL_SOURCE_DIR}/hrtf/${FILENAME}")
-        set(outfile  "${OpenAL_BINARY_DIR}/${VARNAME}.h")
+        set(outfile  "${THIRDPARTY_CONFIG_DIR}/openal-soft/${VARNAME}.h")
 
         add_custom_command(OUTPUT "${outfile}"
             COMMAND ${CMAKE_COMMAND} -D "INPUT_FILE=${infile}" -D "OUTPUT_FILE=${outfile}"
@@ -1194,15 +1198,15 @@ endif()
 # End configuration
 configure_file(
     "${OpenAL_SOURCE_DIR}/config.h.in"
-    "${OpenAL_BINARY_DIR}/config.h")
+    "${THIRDPARTY_CONFIG_DIR}/openal-soft/config.h")
 configure_file(
     "${OpenAL_SOURCE_DIR}/openal.pc.in"
-    "${OpenAL_BINARY_DIR}/openal.pc"
+    "${THIRDPARTY_CONFIG_DIR}/openal-soft/openal.pc"
     @ONLY)
 
 
 add_library(common STATIC EXCLUDE_FROM_ALL ${COMMON_OBJS})
-target_include_directories(common PRIVATE ${OpenAL_BINARY_DIR} ${OpenAL_SOURCE_DIR}/include)
+target_include_directories(common PRIVATE ${THIRDPARTY_CONFIG_DIR}/openal-soft ${OpenAL_SOURCE_DIR}/include)
 target_compile_definitions(common PRIVATE ${CPP_DEFS})
 target_compile_options(common PRIVATE ${C_FLAGS})
 set_target_properties(common PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
@@ -1245,7 +1249,7 @@ else()
             $<INSTALL_INTERFACE:include>
           PRIVATE
             ${OpenAL_SOURCE_DIR}/common
-            ${OpenAL_BINARY_DIR}
+            ${THIRDPARTY_CONFIG_DIR}/openal-soft
         )
         set_target_properties(OpenAL PROPERTIES PREFIX "")
         set_target_properties(OpenAL PROPERTIES OUTPUT_NAME ${LIBNAME})
@@ -1310,7 +1314,7 @@ target_include_directories(${IMPL_TARGET}
     $<INSTALL_INTERFACE:include>
   PRIVATE
     ${INC_PATHS}
-    ${OpenAL_BINARY_DIR}
+    ${THIRDPARTY_CONFIG_DIR}/openal-soft
     ${OpenAL_SOURCE_DIR}
     ${OpenAL_SOURCE_DIR}/alc
     ${OpenAL_SOURCE_DIR}/common
@@ -1389,7 +1393,7 @@ if(ALSOFT_INSTALL)
         FILE OpenALConfig.cmake)
     install(DIRECTORY include/AL
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-    install(FILES "${OpenAL_BINARY_DIR}/openal.pc"
+    install(FILES "${THIRDPARTY_CONFIG_DIR}/openal-soft/openal.pc"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
     if(TARGET soft_oal)
         install(TARGETS soft_oal
@@ -1457,7 +1461,7 @@ if(ALSOFT_UTILS)
         add_executable(makemhr ${MAKEMHR_SRCS})
         target_compile_definitions(makemhr PRIVATE ${CPP_DEFS})
         target_include_directories(makemhr
-            PRIVATE ${OpenAL_BINARY_DIR} ${OpenAL_SOURCE_DIR}/utils)
+            PRIVATE ${THIRDPARTY_CONFIG_DIR}/openal-soft ${OpenAL_SOURCE_DIR}/utils)
         target_compile_options(makemhr PRIVATE ${C_FLAGS})
         target_link_libraries(makemhr PRIVATE ${LINKER_FLAGS} sofa-support ${UNICODE_FLAG})
         if(ALSOFT_INSTALL_EXAMPLES)

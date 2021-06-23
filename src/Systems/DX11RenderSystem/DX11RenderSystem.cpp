@@ -181,16 +181,7 @@ namespace Mengine
 
         this->restoreStates_();
 
-        //LOGGER_MESSAGE_RELEASE( "D3D Adapter Driver: %s", AdID.Driver );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Description: %s", AdapterDesc.Description );
-        //LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceName: %s", AdID.DeviceName );
-
-        /*LOGGER_MESSAGE_RELEASE( "D3D Adapter Version: %hu.%hu.%hu.%hu"
-            , HIWORD( AdID.DriverVersion.HighPart )
-            , LOWORD( AdID.DriverVersion.HighPart )
-            , HIWORD( AdID.DriverVersion.LowPart )
-            , LOWORD( AdID.DriverVersion.LowPart )
-        );*/
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter Description: %ls", AdapterDesc.Description );
 
         LOGGER_MESSAGE_RELEASE( "D3D Adapter VendorId: %lu", AdapterDesc.VendorId );
         LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceId: %lu", AdapterDesc.DeviceId );
@@ -522,7 +513,7 @@ namespace Mengine
 
         if( renderImage->initialize( _mipmaps, _width, _height, _format ) == false )
         {
-            LOGGER_ERROR( "can't initialize image %ux%u channels %u depth %u format %u"
+            LOGGER_ERROR( "can't initialize image %ux%u format [%u]"
                 , _width
                 , _height
                 , _format

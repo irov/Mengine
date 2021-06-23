@@ -765,6 +765,10 @@ namespace Mengine
 
         if( it_found == m_aliases.end() )
         {
+            MENGINE_ASSERTION_FATAL( !(_alias.empty() == false && _alias.c_str()[0] == '$'), "not found alias '%s'"
+                , _alias.c_str()
+            );
+
             return _alias;
         }
 

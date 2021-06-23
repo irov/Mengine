@@ -8,7 +8,7 @@ PROJECT(Depends_WIN32_WindowsStore)
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../win32_windowsstore_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../win64_windowsstore_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(WINDOWS DIRECTX11 SDL MSVC)
 

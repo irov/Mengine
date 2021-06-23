@@ -344,7 +344,7 @@ namespace Mengine
 
         if( separateHorizontalAlpha == false && _decoderData->format == PF_X8R8G8B8 )
         {
-            uint32_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 4;
+            size_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 4;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -420,7 +420,7 @@ namespace Mengine
         }
         else if( separateHorizontalAlpha == false && _decoderData->format == PF_R8G8B8 )
         {
-            uint32_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 3;
+            size_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 3;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -492,7 +492,7 @@ namespace Mengine
         }
         else if( separateHorizontalAlpha == true && _decoderData->format == PF_A8R8G8B8 )
         {
-            uint32_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 4;
+            size_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 4;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;

@@ -896,10 +896,13 @@ namespace Mengine
 
             Detail::serializeNodeProp( String( textValue, textSize ), "Format", xmlNode );
 
-            VectorString textFormatArgs = _textField->getTextFormatArgs();
+            VectorString textFormatArgs;
 
-            TEXT_SERVICE()
-                ->getTextAliasArguments( textAliasEnvironment, textId, &textFormatArgs );
+            if( TEXT_SERVICE()
+                ->getTextAliasArguments( textAliasEnvironment, textId, &textFormatArgs ) == false )
+            {
+                textFormatArgs = _textField->getTextFormatArgs();
+            }
 
             String fmt;
             Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs );

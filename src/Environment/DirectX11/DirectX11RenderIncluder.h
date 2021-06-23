@@ -14,7 +14,6 @@ namespace Mengine
 
     typedef DX11ResourcePtr<ID3D11DeviceContext> ID3D11DeviceContextPtr;
     typedef DX11ResourcePtr<ID3D11Device> ID3D11DevicePtr;
-    typedef DX11ResourcePtr<ID3D11DeviceContext> ID3D11DeviceContextPtr;
     typedef DX11ResourcePtr<IDXGISwapChain> IDXGISwapChainPtr;
     typedef DX11ResourcePtr<IDXGISwapChain1> IDXGISwapChain1Ptr;
     typedef DX11ResourcePtr<ID3D11Texture2D> ID3D11Texture2DPtr;

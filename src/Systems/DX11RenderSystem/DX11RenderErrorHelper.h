@@ -6,10 +6,6 @@
 
 #include "Kernel/Assertion.h"
 
-#ifdef MENGINE_DEBUG
-#   define MENGINE_RENDER_CHECK_ERROR
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -31,6 +27,7 @@ namespace Mengine
         uint32_t m_line;
         const Char * m_method;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define DXERRORCHECK( MethodName, HRES )\
@@ -39,20 +36,20 @@ namespace Mengine
 #define IF_DXERRORCHECK( Method, HRES )\
     if( DXERRORCHECK(#Method, HRES) )
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_RENDER_CHECK_ERROR
+#if MENGINE_RENDER_CHECK_ERROR
 //////////////////////////////////////////////////////////////////////////
-#define DXRELEASE( Object )\
+#   define DXRELEASE( Object )\
     if( Object == nullptr ){}else{ ULONG ref = Object -> Release(); MENGINE_ASSERTION_FATAL( ref == 0, "ref not zero [%lu]", ref ); Object = nullptr; }
 //////////////////////////////////////////////////////////////////////////
-#define DXCALL( Device, Method, Args )\
+#   define DXCALL( Device, Method, Args )\
     (DXERRORCHECK(#Method, Device -> Method Args))
 //////////////////////////////////////////////////////////////////////////
 #else
 //////////////////////////////////////////////////////////////////////////
-#define DXRELEASE( Object )\
+#   define DXRELEASE( Object )\
     if( Object == nullptr ){}else{Object -> Release(); Object = nullptr;}
 //////////////////////////////////////////////////////////////////////////
-#define DXCALL( Device, Method, Args )\
+#   define DXCALL( Device, Method, Args )\
     (Device -> Method Args)
 //////////////////////////////////////////////////////////////////////////
 #endif

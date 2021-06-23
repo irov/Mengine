@@ -112,6 +112,14 @@
 #   define MENGINE_DEBUG_ARGUMENTS(...)
 #endif
 
+#ifndef MENGINE_RENDER_CHECK_ERROR
+#   ifdef MENGINE_DEBUG
+#       define MENGINE_RENDER_CHECK_ERROR 1
+#   else
+#       define MENGINE_RENDER_CHECK_ERROR 0
+#   endif
+#endif
+
 #ifndef MENGINE_ASSERTION_DEBUG
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_ASSERTION_DEBUG 1
@@ -254,7 +262,6 @@
 #   endif
 #endif
 
-//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_LOGGER_MAX_MESSAGE
 #define MENGINE_LOGGER_MAX_MESSAGE 4096
 #endif

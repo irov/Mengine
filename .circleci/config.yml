@@ -57,6 +57,7 @@ jobs:
             
       - run:
           name: assemble
+          no_output_timeout: 30m
           command: |
             sudo chown -R circleci:circleci /home/circleci/project
             pushd gradle

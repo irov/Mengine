@@ -41,7 +41,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }   
+    }
     
     defaultConfig {
         if (project.hasProperty("ANDROID_APP_ID")) {
@@ -153,7 +153,6 @@ android {
                         "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON",
                         "-DCMAKE_BUILD_TYPE:STRING=Debug"
-                        
                 }
             }
         }
@@ -289,7 +288,6 @@ dependencies {
     implementation project(':libraries:OpenAL32')
 }
 
-
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_UNITYADS", true) == true ) {
     println 'ANDROID_APP_ENABLE_UNITYADS: TRUE'
 
@@ -388,7 +386,6 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
 
     dependencies {
         implementation 'io.sentry:sentry-android:4.1.0'
-
     }
 
     sentry {

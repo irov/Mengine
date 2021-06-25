@@ -193,9 +193,6 @@ namespace Mengine
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 
-        PLATFORM_SERVICE()
-            ->setIcon( 0 );
-
         const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;
 

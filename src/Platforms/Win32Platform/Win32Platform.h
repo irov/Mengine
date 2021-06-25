@@ -42,8 +42,7 @@ namespace Mengine
         void stopPlatform() override;
 
     public:
-        void setIcon( uint32_t _icon ) override;
-        uint32_t getIcon() const override;
+        bool setHWNDIcon( const WChar * _iconResource ) override;
 
         void setProjectTitle( const Char * _projectTitle ) override;
         size_t getProjectTitle( Char * const _projectTitle ) const override;
@@ -53,11 +52,6 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
-
-    protected:
-        ATOM registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra
-            , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
-            , const WChar * _className );
 
     public:
         const Tags & getPlatformTags() const override;
@@ -256,7 +250,7 @@ namespace Mengine
         typedef Vector<TimerDesc> VectorTimers;
         VectorTimers m_timers;
 
-        uint32_t m_icon;
+        HICON m_hIcon;
         WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
 
         uint64_t m_prevTime;

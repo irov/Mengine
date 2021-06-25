@@ -92,7 +92,6 @@ namespace Mengine
         , m_glContext( nullptr )
 #endif
         , m_sdlInput( nullptr )
-        , m_icon( 0 )
         , m_prevTime( 0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
@@ -986,16 +985,6 @@ namespace Mengine
         Uint32 ticks = SDL_GetTicks();
 
         return (uint64_t)ticks;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::setIcon( uint32_t _icon )
-    {
-        m_icon = _icon;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t SDLPlatform::getIcon() const
-    {
-        return m_icon;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setProjectTitle( const Char * _projectTitle )

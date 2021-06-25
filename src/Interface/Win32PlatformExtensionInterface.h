@@ -21,6 +21,9 @@ namespace Mengine
         virtual void removeWin32ProcessHandler( uint32_t _id ) = 0;
 
     public:
+        virtual bool setHWNDIcon( const WChar * _iconResource ) = 0;
+
+    public:
         virtual size_t getShortPathName( const Char * _filePath, Char * const _shortFilePath ) const = 0;
 
     public:

@@ -59,9 +59,6 @@ namespace Mengine
         uint64_t getTicks() const override;
 
     public:
-        void setIcon( uint32_t _icon ) override;
-        uint32_t getIcon() const override;
-
         void setProjectTitle( const Char * _projectTitle ) override;
         size_t getProjectTitle( Char * const _projectTitle ) const override;
 
@@ -247,7 +244,6 @@ namespace Mengine
 
         SDLInputPtr m_sdlInput;
 
-        uint32_t m_icon;
         Char m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
 
         uint64_t m_prevTime;

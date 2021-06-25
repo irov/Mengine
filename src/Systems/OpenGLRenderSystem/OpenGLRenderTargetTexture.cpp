@@ -103,8 +103,7 @@ namespace Mengine
 
         if( fuid == 0 )
         {
-            LOGGER_ERROR( "invalid gen framebuffer"
-            );
+            LOGGER_ERROR( "invalid gen framebuffer" );
 
             GLCALL( glDeleteTextures, (1, &m_tuid) );
 

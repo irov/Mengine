@@ -276,7 +276,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotImage::getWorldBoundingBox( mt::box2f * _bb ) const
+    void HotSpotImage::getWorldBoundingBox( mt::box2f * const _bb ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 

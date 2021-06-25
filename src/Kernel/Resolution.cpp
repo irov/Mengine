@@ -41,10 +41,11 @@ namespace Mengine
         float height = this->getHeightF();
 
         float aspect = width / height;
+
         return aspect;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resolution::calcSize( mt::vec2f * _size ) const
+    void Resolution::calcSize( mt::vec2f * const _size ) const
     {
         float width = this->getWidthF();
         float height = this->getHeightF();
@@ -53,7 +54,7 @@ namespace Mengine
         _size->y = height;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resolution::calcInvSize( mt::vec2f * _size ) const
+    void Resolution::calcInvSize( mt::vec2f * const _size ) const
     {
         float width = this->getWidthF();
         float height = this->getHeightF();

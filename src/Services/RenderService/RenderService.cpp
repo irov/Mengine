@@ -937,13 +937,13 @@ namespace Mengine
                 uint32_t width = m_contentResolution.getWidth();
                 uint32_t height = m_contentResolution.getHeight();
 
-                Viewport renderViewport;
-                renderViewport.begin.x = 0.f;
-                renderViewport.begin.y = 0.f;
-                renderViewport.end.x = (float)width;
-                renderViewport.end.y = (float)height;
+                Viewport rv;
+                rv.begin.x = 0.f;
+                rv.begin.y = 0.f;
+                rv.end.x = (float)width;
+                rv.end.y = (float)height;
 
-                m_renderSystem->setViewport( renderViewport );
+                m_renderSystem->setViewport( rv );
 
                 m_currentRenderContext.viewport = nullptr;
             }

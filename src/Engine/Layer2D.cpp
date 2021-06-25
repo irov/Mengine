@@ -87,8 +87,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::setViewport( const Viewport & _viewport )
     {
-        if( m_viewport.equalViewport( _viewport ) == true &&
-            m_hasViewport == true )
+        if( m_viewport.equalViewport( _viewport ) == true && m_hasViewport == true )
         {
             return;
         }
@@ -182,8 +181,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _resourceImageMask, "image mask is nullptr" );
 
-        if( m_resourceImageMask == _resourceImageMask &&
-            m_hasImageMask == true )
+        if( m_resourceImageMask == _resourceImageMask && m_hasImageMask == true )
         {
             return true;
         }
@@ -204,7 +202,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Layer2D::getImageMask( ResourceImagePtr * _resourceImageMask ) const
+    bool Layer2D::getImageMask( ResourceImagePtr * const _resourceImageMask ) const
     {
         *_resourceImageMask = m_resourceImageMask;
 

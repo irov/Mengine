@@ -86,7 +86,7 @@ namespace Mengine
         , m_performanceSupport( false )
         , m_active( false )
         , m_update( false )
-        , m_icon( 0 )
+        , m_hIcon( NULL )
         , m_close( false )
         , m_pauseUpdatingTime( -1.f )
         , m_prevTime( 0 )
@@ -271,6 +271,7 @@ namespace Mengine
             this->finalizeFileService_();
         } );
 
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA
         if( HAS_OPTION( "workdir" ) == true )
         {
             Char currentPath[MENGINE_MAX_PATH] = {'\0'};
@@ -281,7 +282,13 @@ namespace Mengine
                 return false;
             }
 
-            if( ::SetDllDirectoryA( currentPath ) == FALSE )
+            WChar currentPathW[MENGINE_MAX_PATH];
+            if( Helper::utf8ToUnicode( currentPath, currentPathW, MENGINE_MAX_PATH, nullptr ) == false )
+            {
+                return false;
+            }
+
+            if( ::SetDllDirectoryW( currentPathW ) == FALSE )
             {
                 LOGGER_ERROR( "SetDllDirectoryA invalid %s"
                     , Helper::Win32GetLastErrorMessage()
@@ -290,6 +297,7 @@ namespace Mengine
                 return false;
             }
         }
+#endif
 
         return true;
     }
@@ -328,6 +336,12 @@ namespace Mengine
 #endif
 
         m_timers.clear();
+
+        if( m_hIcon != NULL )
+        {
+            ::DestroyIcon( m_hIcon );
+            m_hIcon = NULL;
+        }
 
         if( m_hWnd != NULL )
         {
@@ -822,14 +836,23 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::setIcon( uint32_t _icon )
+    bool Win32Platform::setHWNDIcon( const WChar * _iconResource )
     {
-        m_icon = _icon;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::getIcon() const
-    {
-        return m_icon;
+        HICON hIcon = ::LoadIcon( m_hInstance, _iconResource );
+
+        if( hIcon == NULL )
+        {
+            LOGGER_ERROR( "invalid load HWND icon '%ls' %s"
+                , _iconResource
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return false;
+        }
+
+        m_hIcon = hIcon;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setProjectTitle( const Char * _projectTitle )
@@ -1026,42 +1049,45 @@ namespace Mengine
         return m_touchpad;
     }
     //////////////////////////////////////////////////////////////////////////
-    static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+    namespace Detail
     {
-        switch( uMsg )
+        static LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
         {
-            //case WM_NCCREATE:
-        case WM_CREATE:
+            switch( uMsg )
             {
-                LPCREATESTRUCTW createStruct = (LPCREATESTRUCTW)lParam;
+                //case WM_NCCREATE:
+            case WM_CREATE:
+                {
+                    LPCREATESTRUCTW createStruct = (LPCREATESTRUCTW)lParam;
 
-                Win32Platform * app = (Win32Platform *)createStruct->lpCreateParams;
+                    Win32Platform * app = (Win32Platform *)createStruct->lpCreateParams;
 
 #ifdef MENGINE_PLATFORM_WINDOWS64
-                ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)app );
+                    ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)app );
 #else
-                ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG)app );
+                    ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG)app );
 #endif
 
-                return (LRESULT)NULL;
+                    return (LRESULT)NULL;
+                }
+                break;
             }
-            break;
+
+            LONG_PTR value = ::GetWindowLongPtr( hWnd, GWLP_USERDATA );
+
+            Win32Platform * platform = (Win32Platform *)value;
+
+            if( platform == NULL )
+            {
+                LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+
+                return result;
+            }
+
+            LRESULT app_result = platform->wndProc( hWnd, uMsg, wParam, lParam );
+
+            return app_result;
         }
-
-        LONG_PTR value = ::GetWindowLongPtr( hWnd, GWLP_USERDATA );
-
-        Win32Platform * platform = (Win32Platform *)value;
-
-        if( platform == NULL )
-        {
-            LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
-
-            return result;
-        }
-
-        LRESULT app_result = platform->wndProc( hWnd, uMsg, wParam, lParam );
-
-        return app_result;
     }
     //////////////////////////////////////////////////////////////////////////
     LRESULT Win32Platform::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -1164,6 +1190,7 @@ namespace Mengine
                 );
 
             }break;
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA
         case WM_WTSSESSION_CHANGE:
             {
                 LOGGER_INFO( "platform", "HWND [%p] WM_WTSSESSION_CHANGE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
@@ -1178,7 +1205,7 @@ namespace Mengine
                 case WTS_SESSION_LOCK:
                     {
                         LOGGER_INFO( "platform", "HWND [%p] WTS_SESSION_LOCK"
-                            , hWnd 
+                            , hWnd
                         );
 
                         m_sessionLock = true;
@@ -1186,13 +1213,14 @@ namespace Mengine
                 case WTS_SESSION_UNLOCK:
                     {
                         LOGGER_INFO( "platform", "HWND [%p] WTS_SESSION_UNLOCK"
-                            , hWnd 
+                            , hWnd
                         );
 
                         m_sessionLock = false;
                     }break;
                 }
             }break;
+#endif
         case WM_DISPLAYCHANGE:
             {
                 LOGGER_INFO( "platform", "HWND [%p] WM_DISPLAYCHANGE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
@@ -1215,7 +1243,7 @@ namespace Mengine
                 if( wParam == SIZE_MAXIMIZED )
                 {
                     LOGGER_INFO( "platform", "HWND [%p] SIZE_MAXIMIZED"
-                        , hWnd 
+                        , hWnd
                     );
 
                     this->setActive_( true );
@@ -1223,7 +1251,7 @@ namespace Mengine
                 else if( wParam == SIZE_MINIMIZED )
                 {
                     LOGGER_INFO( "platform", "HWND [%p] SIZE_MINIMIZED"
-                        , hWnd 
+                        , hWnd
                     );
 
                     this->setActive_( false );
@@ -1231,7 +1259,7 @@ namespace Mengine
                 else if( wParam == SIZE_RESTORED /*&& m_application->getFullscreenMode() == true*/ )
                 {
                     LOGGER_INFO( "platform", "HWND [%p] SIZE_RESTORED"
-                        , hWnd 
+                        , hWnd
                     );
 
                     bool fullsreenMode = APPLICATION_SERVICE()
@@ -2026,29 +2054,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ATOM Win32Platform::registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra
-        , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
-        , const WChar * _className )
-    {
-        WNDCLASS wc;
-        ::ZeroMemory( &wc, sizeof( WNDCLASS ) );
-        wc.cbClsExtra = _clsExtra;
-        wc.cbWndExtra = _wndExtra;
-        wc.style = /*CS_DBLCLKS |*/ CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-        wc.lpfnWndProc = _wndProc;
-        wc.hInstance = _hInstance;
-
-        wc.hIcon = ::LoadIcon( _hInstance, MAKEINTRESOURCEW( _hIcon ) );
-        wc.hCursor = ::LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
-
-        wc.lpszClassName = _className;
-        wc.hbrBackground = _hbrBackground;
-
-        ATOM atom = ::RegisterClass( &wc );
-
-        return atom;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::alreadyRunningMonitor()
     {
         bool Platform_AlreadyRunning = CONFIG_VALUE( "Platform", "AlreadyRunning", true );
@@ -2090,16 +2095,24 @@ namespace Mengine
             return true;
         }
 
-        HBRUSH black_brush = (HBRUSH)::GetStockObject( BLACK_BRUSH );
+        WNDCLASSEX wc;
+        ::ZeroMemory( &wc, sizeof( WNDCLASSEX ) );
+        wc.cbSize = sizeof( WNDCLASSEX );
+        wc.style = /*CS_DBLCLKS |*/ CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+        wc.lpfnWndProc = &Detail::wndProc;
+        wc.cbClsExtra = 0;
+        wc.cbWndExtra = 0;
+        wc.hInstance = m_hInstance;
 
-        // Register the window class
-        ATOM result = this->registerClass_( &s_wndProc
-            , 0
-            , 0
-            , m_hInstance
-            , m_icon
-            , black_brush
-            , m_windowClassName );
+        wc.hIcon = m_hIcon;
+        wc.hCursor = ::LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
+        wc.hbrBackground = (HBRUSH)::GetStockObject( BLACK_BRUSH );
+
+        wc.lpszMenuName = NULL;
+        wc.lpszClassName = m_windowClassName;
+        wc.hIconSm = NULL;
+
+        ATOM result = ::RegisterClassEx( &wc );
 
         if( result == 0 )
         {
@@ -2151,6 +2164,7 @@ namespace Mengine
             ::ShowWindow( m_hWnd, SW_SHOW );
         }
 
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA
         if( ::WTSRegisterSessionNotification( m_hWnd, NOTIFY_FOR_ALL_SESSIONS ) == FALSE )
         {
             LOGGER_ERROR( "invalid hwnd [%p] register session notification %s"
@@ -2158,17 +2172,14 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessage()
             );
         }
+#endif
 
         if( _fullscreen == true )
         {
             Resolution desktopResolution;
             this->getDesktopResolution( &desktopResolution );
 
-            this->notifyWindowModeChanged( desktopResolution, true );
-        }
-        else
-        {
-            this->notifyWindowModeChanged( m_windowResolution, false );
+            m_windowResolution = desktopResolution;
         }
 
         ::SetForegroundWindow( m_hWnd );
@@ -2208,36 +2219,36 @@ namespace Mengine
 
         LONG dwExStyle = ::GetWindowLong( m_hWnd, GWL_EXSTYLE );
 
+        HWND hWndTop;
+
         if( m_fullscreen == false )
         {
-            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~dwFullscreenExStyle) );
-            ::SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
+            LONG dwExStyleNew = dwExStyle & (~dwFullscreenExStyle);
 
-            ::SetWindowPos(
-                m_hWnd
-                , HWND_NOTOPMOST
-                , rc.left
-                , rc.top
-                , rc.right - rc.left
-                , rc.bottom - rc.top
-                , SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOACTIVATE
-            );
+            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyleNew );
+
+            hWndTop = HWND_NOTOPMOST;
         }
         else
         {
-            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | dwFullscreenExStyle );
-            ::SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
+            LONG dwExStyleNew = dwExStyle | dwFullscreenExStyle;
 
-            ::SetWindowPos(
-                m_hWnd
-                , HWND_TOPMOST
-                , rc.left
-                , rc.top
-                , rc.right - rc.left
-                , rc.bottom - rc.top
-                , SWP_NOACTIVATE
-            );
+            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyleNew );
+
+            hWndTop = HWND_TOPMOST;
         }
+
+        ::SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
+
+        ::SetWindowPos(
+            m_hWnd
+            , hWndTop
+            , rc.left
+            , rc.top
+            , rc.right - rc.left
+            , rc.bottom - rc.top
+            , SWP_NOCOPYBITS | SWP_NOACTIVATE
+        );
 
         return true;
     }
@@ -2374,30 +2385,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DWORD Win32Platform::getWindowStyle_( bool _fullsreen ) const
     {
-        DWORD dwStyle = WS_POPUP;
+        MENGINE_UNUSED( _fullsreen );
+
+        DWORD dwStyle = WS_OVERLAPPED;
+
+        dwStyle |= WS_POPUP;
+        dwStyle |= WS_VISIBLE;
 
         if( _fullsreen == false )
         {
-            dwStyle |= WS_CAPTION | WS_VISIBLE;
+            dwStyle |= WS_CAPTION;
 
-            //bool hasWindowPanel = true;
-            //m_application->getHasWindowPanel();
-
-            //if( hasWindowPanel == true )
-            {
-                dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
-            }
-
-            //bool allowMaximize = m_application->getAllowFullscreenSwitchShortcut();
-
-            //if( allowMaximize == true )
-            //{
-            //  dwStyle |= WS_MAXIMIZEBOX;
-            //}
-        }
-        else
-        {
-            dwStyle |= WS_VISIBLE;
+            dwStyle |= WS_SYSMENU;
+            dwStyle |= WS_MINIMIZEBOX;
         }
 
         return dwStyle;
@@ -2405,7 +2405,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DWORD Win32Platform::getWindowExStyle_( bool _fullsreen ) const
     {
-        DWORD dwExStyle = WS_EX_APPWINDOW;
+        MENGINE_UNUSED( _fullsreen );
+
+        DWORD dwExStyle = 0;
+
+        //ToDo
+
+        dwExStyle |= WS_EX_APPWINDOW;
 
         if( _fullsreen == false )
         {

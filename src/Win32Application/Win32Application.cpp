@@ -10,6 +10,7 @@
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Win32MessageBoxLogger.h"
 #include "Win32OutputDebugLogger.h"
@@ -283,8 +284,10 @@ namespace Mengine
             return true;
         }
 
-        PLATFORM_SERVICE()
-            ->setIcon( IDI_MENGINE );
+        Win32PlatformExtensionInterface * win32PlatformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        win32PlatformExtension->setHWNDIcon( MAKEINTRESOURCEW( IDI_MENGINE ) );
 
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();

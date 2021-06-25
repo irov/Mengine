@@ -117,7 +117,7 @@ namespace Mengine
 
         m_thread = thread;
 
-#if defined(MENGINE_TOOLCHAIN_MSVC)
+#if defined(MENGINE_TOOLCHAIN_MSVC) && (MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA)
         DWORD threadId = ::GetThreadId( m_thread );
         Detail::SetThreadName( threadId, _name.c_str() );
 #endif

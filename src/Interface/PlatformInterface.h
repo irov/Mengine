@@ -50,9 +50,6 @@ namespace Mengine
         virtual uint64_t getTicks() const = 0;
 
     public:
-        virtual void setIcon( uint32_t _icon ) = 0;
-        virtual uint32_t getIcon() const = 0;
-
         virtual void setProjectTitle( const Char * _projectTitle ) = 0;
         virtual size_t getProjectTitle( Char * const _projectTitle ) const = 0;
 

@@ -47,7 +47,7 @@ namespace Mengine
 
     public:
         bool setImageMask( const ResourceImagePtr & _resourceImageMask );
-        bool getImageMask( ResourceImagePtr * _resourceImageMask ) const;
+        bool getImageMask( ResourceImagePtr * const _resourceImageMask ) const;
         void removeImageMask();
 
     protected:

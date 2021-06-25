@@ -41,7 +41,7 @@ namespace Mengine
         bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
     public:
-        void getWorldBoundingBox( mt::box2f * _bb ) const;
+        void getWorldBoundingBox( mt::box2f * const _bb ) const;
         void getScreenBoundingBox( const RenderContext * _context, const Resolution & _contentResolution, mt::box2f * const _bb ) const;
 
     protected:

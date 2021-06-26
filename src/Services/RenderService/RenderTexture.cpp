@@ -37,18 +37,13 @@ namespace Mengine
         m_widthInv = 1.f / (float)m_width;
         m_heightInv = 1.f / (float)m_height;
 
-        m_rect.left = 0;
-        m_rect.top = 0;
-        m_rect.right = m_width;
-        m_rect.bottom = m_height;
-
         uint32_t HWWidth = m_image->getHWWidth();
         uint32_t HWHeight = m_image->getHWHeight();
 
-        float scaleU = float( m_rect.right - m_rect.left ) / float( HWWidth );
-        float scaleV = float( m_rect.bottom - m_rect.top ) / float( HWHeight );
+        float u = float( m_width ) / float( HWWidth );
+        float v = float( m_height ) / float( HWHeight );
 
-        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, scaleU, scaleV ) );
+        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
 
         m_pow2 = Helper::isTexturePow2( m_width ) == true && Helper::isTexturePow2( m_height ) == true;
     }
@@ -97,11 +92,6 @@ namespace Mengine
     float RenderTexture::getHeightInv() const
     {
         return m_heightInv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Rect & RenderTexture::getRect() const
-    {
-        return m_rect;
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & RenderTexture::getUV() const

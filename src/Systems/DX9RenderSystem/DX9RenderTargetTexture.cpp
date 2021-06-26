@@ -64,6 +64,11 @@ namespace Mengine
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
 
+        float u = float( m_width ) / float( m_hwWidth );
+        float v = float( m_height ) / float( m_hwHeight );
+
+        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
+
         if( this->_initialize() == false )
         {
             DXRELEASE( pD3DTexture );
@@ -191,6 +196,11 @@ namespace Mengine
 
         m_pD3DSurfaceCurrent->Release();
         m_pD3DSurfaceCurrent = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & DX9RenderTargetTexture::getUV() const
+    {
+        return m_uv;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const

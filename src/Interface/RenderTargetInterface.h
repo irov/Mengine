@@ -5,6 +5,7 @@
 #include "Kernel/Viewport.h"
 
 #include "math/vec2.h"
+#include "math/uv4.h"
 
 namespace Mengine
 {
@@ -30,6 +31,9 @@ namespace Mengine
     public:
         virtual bool begin() const = 0;
         virtual void end() const = 0;
+
+    public:
+        virtual const mt::uv4f & getUV() const = 0;
 
     public:
         virtual bool getData( void * const _buffer, size_t _pitch ) const = 0;

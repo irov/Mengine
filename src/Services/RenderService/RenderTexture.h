@@ -38,8 +38,6 @@ namespace Mengine
         void setFilePath( const FilePath & _filePath ) override;
         const FilePath & getFilePath() const override;
 
-        const Rect & getRect() const override;
-
         const mt::uv4f & getUV() const override;
 
         uint32_t getWidth() const override;
@@ -64,7 +62,6 @@ namespace Mengine
         float m_widthInv;
         float m_heightInv;
 
-        Rect m_rect;
         mt::uv4f m_uv;
 
         bool m_pow2;

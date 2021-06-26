@@ -71,6 +71,11 @@ namespace Mengine
         m_format = _format;
         m_type = _type;
 
+        float u = float( m_width ) / float( m_hwWidth );
+        float v = float( m_height ) / float( m_hwHeight );
+
+        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, v, u, 0.f ) );
+
         m_pow2 = Helper::isTexturePow2( _width ) == true && Helper::isTexturePow2( _height ) == true;
         m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
@@ -105,8 +110,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid gen framebuffer" );
 
-            GLCALL( glDeleteTextures, (1, &m_tuid) );
-
+            extension->deleteTexture( m_tuid );
             m_tuid = 0;
 
             return false;
@@ -130,12 +134,10 @@ namespace Mengine
         {
             OPENGL_RENDER_CHECK_ERROR();
 
-            GLCALL( glDeleteTextures, (1, &m_tuid) );
-
+            extension->deleteTexture( m_tuid );
             m_tuid = 0;
 
-            GLCALL( glDeleteFramebuffers, (1, &m_fuid) );
-
+            extension->deleteFramebuffer( m_fuid );
             m_fuid = 0;
 
             return false;
@@ -224,6 +226,11 @@ namespace Mengine
     void OpenGLRenderTargetTexture::end() const
     {
         GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, 0) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & OpenGLRenderTargetTexture::getUV() const
+    {
+        return m_uv;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const

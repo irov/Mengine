@@ -1,6 +1,8 @@
 #include "OpenGLRenderVertexShader.h"
 #include "OpenGLRenderErrorHelper.h"
 
+#include "Interface/OpenGLRenderSystemExtensionInterface.h"
+
 #include "Kernel/Logger.h"
 
 #include "Config/Char.h"
@@ -40,8 +42,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexShader::_compile()
     {
-        GLuint shaderId;
-        GLCALLR( shaderId, glCreateShader, (GL_VERTEX_SHADER) );
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
+
+        GLuint shaderId = extension->genVertexShader();
 
         if( shaderId == 0 )
         {
@@ -63,7 +67,7 @@ namespace Mengine
 
         if( status == GL_FALSE )
         {
-            GLchar errorLog[1024];
+            GLchar errorLog[1024] = {'\0'};
             GLCALL( glGetShaderInfoLog, (shaderId, 1023, NULL, errorLog) );
 
             LOGGER_ERROR( "compilation vertex shader '%s' error '%s'"
@@ -83,7 +87,10 @@ namespace Mengine
     {
         if( m_shaderId != 0 )
         {
-            GLCALL( glDeleteShader, (m_shaderId) );
+            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+                ->getUnknown();
+            
+            extension->deleteVertexShader( m_shaderId );
             m_shaderId = 0;
         }
     }

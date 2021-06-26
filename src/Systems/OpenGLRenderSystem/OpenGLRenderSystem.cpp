@@ -40,6 +40,8 @@ namespace Mengine
         , m_counterTexture( 0 )
         , m_counterFramebuffer( 0 )
         , m_counterBuffer( 0 )
+        , m_counterFragmentShader( 0 )
+        , m_counterVertexShader( 0 )
     {
         mt::ident_m4( m_worldMatrix );
         mt::ident_m4( m_viewMatrix );
@@ -138,6 +140,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_counterTexture == 0 );
         MENGINE_ASSERTION_FATAL( m_counterFramebuffer == 0 );
         MENGINE_ASSERTION_FATAL( m_counterBuffer == 0 );
+        MENGINE_ASSERTION_FATAL( m_counterFragmentShader == 0 );
+        MENGINE_ASSERTION_FATAL( m_counterVertexShader == 0 );
 
         OpenGLRenderImageLockedFactoryStorage::finalize();
     }
@@ -286,8 +290,8 @@ namespace Mengine
 
         m_viewport = _viewport;
 
-        GLsizei x = static_cast<GLsizei>(m_viewport.begin.x + 0.5f);
-        GLsizei y = static_cast<GLsizei>(m_viewport.getHeight() - m_viewport.end.y + 0.5f);
+        GLint x = static_cast<GLint>(m_viewport.begin.x + 0.5f);
+        GLint y = static_cast<GLint>(m_viewport.getHeight() - m_viewport.end.y + 0.5f);
         GLsizei w = static_cast<GLsizei>(m_viewport.getWidth() + 0.5f);
         GLsizei h = static_cast<GLsizei>(m_viewport.getHeight() + 0.5f);
 
@@ -1225,6 +1229,40 @@ namespace Mengine
         GLCALL( glDeleteBuffers, (1, &_id) );
 
         --m_counterBuffer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLuint OpenGLRenderSystem::genFragmentShader()
+    {
+        GLuint id;
+        GLCALLR( id, glCreateShader, (GL_FRAGMENT_SHADER) );
+
+        ++m_counterFragmentShader;
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::deleteFragmentShader( GLuint _id )
+    {
+        GLCALL( glDeleteShader, (_id) );
+
+        --m_counterFragmentShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLuint OpenGLRenderSystem::genVertexShader()
+    {
+        GLuint id;
+        GLCALLR( id, glCreateShader, (GL_VERTEX_SHADER) );
+
+        ++m_counterVertexShader;
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::deleteVertexShader( GLuint _id )
+    {
+        GLCALL( glDeleteShader, (_id) );
+
+        --m_counterVertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
 }

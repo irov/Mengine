@@ -34,6 +34,11 @@ namespace Mengine
             return false;
         }
 
+        float u = float( _width ) / float( m_hwWidth );
+        float v = float( _height ) / float( m_hwHeight );
+
+        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
+
         m_upscalePow2 = m_hwWidth != _width || m_hwHeight != _height;
 
         return true;
@@ -99,6 +104,11 @@ namespace Mengine
     void MockupRenderTargetTexture::end() const
     {
         //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & MockupRenderTargetTexture::getUV() const
+    {
+        return m_uv;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const

@@ -168,7 +168,7 @@ namespace Mengine
 
         const uint32_t bufferOffset = _offset * m_vertexSize;
         const uint32_t bufferSize = _count * m_vertexSize;
-        
+
         GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, bufferOffset, bufferSize, _buffer) );
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 

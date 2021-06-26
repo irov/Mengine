@@ -273,7 +273,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid get material" );
 
-        const mt::uv4f & uv = renderTargetTexture->getUV();
+        const mt::uv4f & uv = renderTarget->getUV();
 
         m_verticesImageMaskWM[0].uv[0] = uv.p0;
         m_verticesImageMaskWM[1].uv[0] = uv.p1;

@@ -43,6 +43,9 @@ namespace Mengine
         void end() const override;
 
     public:
+        const mt::uv4f & getUV() const override;
+
+    public:
         bool getData( void * const _buffer, size_t _pitch ) const override;
 
     protected:
@@ -53,6 +56,8 @@ namespace Mengine
 
         float m_hwWidthInv;
         float m_hwHeightInv;
+
+        mt::uv4f m_uv;
 
         bool m_upscalePow2;
     };

@@ -619,7 +619,7 @@ namespace Mengine
             return nullptr;
         }
 
-        if( renderTargetOffscreen->initialize( backBufferPtr ) == false )
+        if( renderTargetOffscreen->initialize( _width, _height, backBufferPtr ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u"
                 , _width

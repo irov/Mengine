@@ -16,7 +16,7 @@ namespace Mengine
         : public RenderFragmentShaderInterface
         , public OpenGLRenderResourceHandler
         , public CompilableReference
-        , public Factorable        
+        , public Factorable
     {
         DECLARE_FACTORABLE( RenderImageInterface );
 

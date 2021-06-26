@@ -21,7 +21,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderTargetOffscreen::initialize( ID3D11Texture2D * _textureSource )
+    bool DX11RenderTargetOffscreen::initialize( uint32_t _width, uint32_t _height, ID3D11Texture2D * _textureSource )
     {
         m_pD3DTextureSource.Attach( _textureSource );
 
@@ -45,6 +45,11 @@ namespace Mengine
 
         m_hwWidthInv = 1.f / m_textureDesc.Width;
         m_hwHeightInv = 1.f / m_textureDesc.Height;
+
+        float u = float( _width ) / float( m_textureDesc.Width );
+        float v = float( _height ) / float( m_textureDesc.Height );
+
+        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
 
         return true;
     }
@@ -97,6 +102,11 @@ namespace Mengine
     bool DX11RenderTargetOffscreen::getUpscalePow2() const
     {
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & DX11RenderTargetOffscreen::getUV() const
+    {
+        return m_uv;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const

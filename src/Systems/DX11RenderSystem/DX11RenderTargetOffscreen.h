@@ -19,7 +19,7 @@ namespace Mengine
         ~DX11RenderTargetOffscreen() override;
 
     public:
-        bool initialize( ID3D11Texture2D * _textureSource );
+        bool initialize( uint32_t _width, uint32_t _height, ID3D11Texture2D * _textureSource );
         void finalize();
 
     public:
@@ -40,6 +40,9 @@ namespace Mengine
         void end() const override;
 
     public:
+        const mt::uv4f & getUV() const override;
+
+    public:
         bool getData( void * const _buffer, size_t _pitch ) const override;
 
     protected:
@@ -55,6 +58,8 @@ namespace Mengine
 
         float m_hwWidthInv;
         float m_hwHeightInv;
+
+        mt::uv4f m_uv;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderTargetOffscreen, RenderTargetInterface> DX11RenderTargetOffscreenPtr;

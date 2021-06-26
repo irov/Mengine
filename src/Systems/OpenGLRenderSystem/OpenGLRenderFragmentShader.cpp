@@ -1,6 +1,8 @@
 #include "OpenGLRenderFragmentShader.h"
 #include "OpenGLRenderErrorHelper.h"
 
+#include "Interface/OpenGLRenderSystemExtensionInterface.h"
+
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -38,8 +40,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderFragmentShader::_compile()
     {
-        GLuint shaderId;
-        GLCALLR( shaderId, glCreateShader, (GL_FRAGMENT_SHADER) );
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
+
+        GLuint shaderId = extension->genFragmentShader();
 
         if( shaderId == 0 )
         {
@@ -61,7 +65,7 @@ namespace Mengine
 
         if( status == GL_FALSE )
         {
-            GLchar errorLog[1024];
+            GLchar errorLog[1024] = {'\0'};
             GLCALL( glGetShaderInfoLog, (shaderId, 1023, NULL, errorLog) );
 
             LOGGER_ERROR( "compilation fragment shader '%s' error '%s'"
@@ -81,7 +85,10 @@ namespace Mengine
     {
         if( m_shaderId != 0 )
         {
-            GLCALL( glDeleteShader, (m_shaderId) );
+            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+                ->getUnknown();
+
+            extension->deleteFragmentShader( m_shaderId );
             m_shaderId = 0;
         }
     }

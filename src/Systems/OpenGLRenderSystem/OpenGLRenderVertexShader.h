@@ -16,7 +16,7 @@ namespace Mengine
         : public RenderVertexShaderInterface
         , public OpenGLRenderResourceHandler
         , public CompilableReference
-        , public Factorable        
+        , public Factorable
     {
         DECLARE_FACTORABLE( OpenGLRenderVertexShader );
 

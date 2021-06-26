@@ -52,7 +52,7 @@ namespace Mengine
         {
             ConstString uniform;
             uint32_t index;
-            
+
             uint32_t size;
             EVertexAttributeType type;
             uint32_t stride;

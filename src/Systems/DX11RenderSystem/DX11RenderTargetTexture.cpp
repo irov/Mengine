@@ -54,6 +54,11 @@ namespace Mengine
         m_hwWidthInv = 1.f / (float)m_textureDesc.Width;
         m_hwHeightInv = 1.f / (float)m_textureDesc.Height;
 
+        float u = float( _width ) / float( m_textureDesc.Width );
+        float v = float( _height ) / float( m_textureDesc.Height );
+
+        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
+
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         ID3D11Texture2D * pD3DTexture;
@@ -189,6 +194,11 @@ namespace Mengine
         m_pDepthStencilMainOld = nullptr;
 
         pImmediateContext->RSSetViewports( 1, &m_VPOld );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & DX11RenderTargetTexture::getUV() const
+    {
+        return m_uv;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const

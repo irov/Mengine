@@ -25,8 +25,6 @@ namespace Mengine
         virtual uint32_t getId() const = 0;
 
     public:
-        virtual const Rect & getRect() const = 0;
-
         virtual const mt::uv4f & getUV() const = 0;
 
         virtual void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;

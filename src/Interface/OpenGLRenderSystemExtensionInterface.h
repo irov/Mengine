@@ -18,5 +18,11 @@ namespace Mengine
 
         virtual GLuint genBuffer() = 0;
         virtual void deleteBuffer( GLuint _id ) = 0;
+
+        virtual GLuint genFragmentShader() = 0;
+        virtual void deleteFragmentShader( GLuint _id ) = 0;
+
+        virtual GLuint genVertexShader() = 0;
+        virtual void deleteVertexShader( GLuint _id ) = 0;
     };
 }

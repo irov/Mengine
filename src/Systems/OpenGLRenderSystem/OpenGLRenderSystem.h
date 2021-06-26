@@ -20,7 +20,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderSystem
         : public ServiceBase<RenderSystemInterface>
         , public OpenGLRenderSystemExtensionInterface
@@ -154,6 +153,12 @@ namespace Mengine
         GLuint genBuffer() override;
         void deleteBuffer( GLuint _id ) override;
 
+        GLuint genFragmentShader() override;
+        void deleteFragmentShader( GLuint _id ) override;
+
+        GLuint genVertexShader() override;
+        void deleteVertexShader( GLuint _id ) override;
+
     protected:
         ConstString m_renderPlatform;
 
@@ -218,5 +223,7 @@ namespace Mengine
         uint32_t m_counterTexture;
         uint32_t m_counterFramebuffer;
         uint32_t m_counterBuffer;
+        uint32_t m_counterFragmentShader;
+        uint32_t m_counterVertexShader;
     };
 }

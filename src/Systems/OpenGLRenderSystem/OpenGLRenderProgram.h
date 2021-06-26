@@ -29,7 +29,7 @@ namespace Mengine
         : public RenderProgramInterface
         , public OpenGLRenderResourceHandler
         , public CompilableReference
-        , public Factorable        
+        , public Factorable
     {
         DECLARE_FACTORABLE( OpenGLRenderProgram );
 

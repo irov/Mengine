@@ -110,17 +110,17 @@ endif()
 
 function(configure_pkg_config FILE)
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${FILE}.in"
-                 "${CMAKE_CURRENT_BINARY_DIR}/${FILE}")
+                 "${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/${FILE}")
 
   if(HAVE_MATH_LIBRARY)
     # MSVC doesn't have libm
-    file(READ ${CMAKE_CURRENT_BINARY_DIR}/${FILE} data)
+    file(READ ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/${FILE} data)
     string(REPLACE "-lm" "" data ${data})
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${FILE} ${data})
+    file(WRITE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/${FILE} ${data})
   endif()
 
   install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/${FILE}"
+    FILES "${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/${FILE}"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 endfunction()
@@ -176,7 +176,9 @@ foreach(FILE ${WEBP_SIMD_FILES_NOT_TO_INCLUDE})
 endforeach()
 
 # Generate the config.h file.
-set(WEBP_HAVE_SSE41 0)
+if(WIN32)
+    set(WEBP_HAVE_SSE41 0)
+endif()
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/config.h.in
                ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src/webp/config.h)
@@ -218,18 +220,18 @@ endif()
 include_directories(${WEBP_DEP_INCLUDE_DIRS})
 add_library(webpdecode OBJECT ${WEBP_DEC_SRCS})
 target_include_directories(webpdecode
-                           PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+                           PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                                    ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(webpdspdecode OBJECT ${WEBP_DSP_COMMON_SRCS} ${WEBP_DSP_DEC_SRCS})
 target_include_directories(webpdspdecode
-                           PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+                           PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                                    ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(webputilsdecode
             OBJECT
             ${WEBP_UTILS_COMMON_SRCS}
             ${WEBP_UTILS_DEC_SRCS})
 target_include_directories(webputilsdecode
-                           PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+                           PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                                    ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(webpdecoder
             $<TARGET_OBJECTS:webpdecode>
@@ -241,7 +243,7 @@ endif()
 target_link_libraries(webpdecoder ${WEBP_DEP_LIBRARIES})
 target_include_directories(
   webpdecoder
-  PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+  PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}
   INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 set_target_properties(
@@ -254,7 +256,7 @@ configure_pkg_config("src/libwebpdecoder.pc")
 # Build the webp library.
 add_library(webpencode OBJECT ${WEBP_ENC_SRCS})
 target_include_directories(webpencode
-                           PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+                           PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                                    ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(webpdsp
             OBJECT
@@ -262,7 +264,7 @@ add_library(webpdsp
             ${WEBP_DSP_DEC_SRCS}
             ${WEBP_DSP_ENC_SRCS})
 target_include_directories(webpdsp
-                           PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+                           PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                                    ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(webputils
             OBJECT
@@ -270,7 +272,7 @@ add_library(webputils
             ${WEBP_UTILS_DEC_SRCS}
             ${WEBP_UTILS_ENC_SRCS})
 target_include_directories(webputils
-                           PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+                           PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                                    ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(webp
             $<TARGET_OBJECTS:webpdecode>
@@ -283,7 +285,7 @@ endif()
 target_link_libraries(webp ${WEBP_DEP_LIBRARIES})
 target_include_directories(webp
                            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-                                   ${CMAKE_CURRENT_BINARY_DIR}
+                                   ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                            PUBLIC $<INSTALL_INTERFACE:include>)
 set_target_properties(
   webp
@@ -307,7 +309,7 @@ add_library(webpdemux ${WEBP_DEMUX_SRCS})
 target_link_libraries(webpdemux webp)
 target_include_directories(webpdemux
                            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-                                   ${CMAKE_CURRENT_BINARY_DIR}
+                                   ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                            PUBLIC $<INSTALL_INTERFACE:include>)
 set_target_properties(
   webpdemux
@@ -432,7 +434,7 @@ if(WEBP_BUILD_ANIM_UTILS
                       imagedec
                       imageenc
                PROPERTY INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/src
-                        ${CMAKE_CURRENT_BINARY_DIR}/src)
+                        ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
 endif()
 
 if(WEBP_BUILD_DWEBP)
@@ -440,7 +442,7 @@ if(WEBP_BUILD_DWEBP)
   parse_makefile_am(${CMAKE_CURRENT_SOURCE_DIR}/examples "DWEBP_SRCS" "dwebp")
   add_executable(dwebp ${DWEBP_SRCS})
   target_link_libraries(dwebp exampleutil imagedec imageenc)
-  target_include_directories(dwebp PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(dwebp PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
   install(TARGETS dwebp RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 
@@ -449,7 +451,7 @@ if(WEBP_BUILD_CWEBP)
   parse_makefile_am(${CMAKE_CURRENT_SOURCE_DIR}/examples "CWEBP_SRCS" "cwebp")
   add_executable(cwebp ${CWEBP_SRCS})
   target_link_libraries(cwebp exampleutil imagedec webp)
-  target_include_directories(cwebp PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(cwebp PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
   install(TARGETS cwebp RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 
@@ -458,7 +460,7 @@ if(WEBP_BUILD_GIF2WEBP OR WEBP_BUILD_IMG2WEBP)
   add_library(libwebpmux ${WEBP_MUX_SRCS})
   target_link_libraries(libwebpmux webp)
   target_include_directories(libwebpmux
-                             PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+                             PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
                                      ${CMAKE_CURRENT_SOURCE_DIR})
   parse_version(mux/Makefile.am webpmux WEBP_MUX_SOVERSION)
   set_target_properties(libwebpmux
@@ -488,7 +490,7 @@ if(WEBP_BUILD_GIF2WEBP)
                         webp
                         libwebpmux
                         ${WEBP_DEP_GIF_LIBRARIES})
-  target_include_directories(gif2webp PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(gif2webp PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
   install(TARGETS gif2webp RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 
@@ -504,7 +506,7 @@ if(WEBP_BUILD_IMG2WEBP)
                         imageioutil
                         webp
                         libwebpmux)
-  target_include_directories(img2webp PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(img2webp PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
   install(TARGETS img2webp RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 
@@ -524,7 +526,7 @@ if(WEBP_BUILD_VWEBP)
                           webpdemux)
     target_include_directories(vwebp
                                PRIVATE ${GLUT_INCLUDE_DIR}
-                                       ${CMAKE_CURRENT_BINARY_DIR}/src
+                                       ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src
                                        ${OPENGL_INCLUDE_DIR})
     install(TARGETS vwebp RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     if(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
@@ -543,7 +545,7 @@ if(WEBP_BUILD_WEBPINFO)
                     "webpinfo")
   add_executable(webpinfo ${WEBPINFO_SRCS})
   target_link_libraries(webpinfo exampleutil imageioutil)
-  target_include_directories(webpinfo PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(webpinfo PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
   install(TARGETS webpinfo RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 
@@ -553,7 +555,7 @@ if(WEBP_BUILD_WEBPMUX)
                     "webpmux")
   add_executable(webpmux ${WEBPMUX_SRCS})
   target_link_libraries(webpmux exampleutil imageioutil libwebpmux webp)
-  target_include_directories(webpmux PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(webpmux PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
   install(TARGETS webpmux RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 
@@ -570,7 +572,7 @@ if(WEBP_BUILD_EXTRAS)
   target_include_directories(get_disto
                              PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
                                      ${CMAKE_CURRENT_SOURCE_DIR}/src
-                                     ${CMAKE_CURRENT_BINARY_DIR}/src)
+                                     ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
   install(TARGETS get_disto RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
   # webp_quality
@@ -578,7 +580,7 @@ if(WEBP_BUILD_EXTRAS)
   target_link_libraries(webp_quality exampleutil imagedec)
   target_include_directories(webp_quality
                              PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-                                     ${CMAKE_CURRENT_BINARY_DIR})
+                                     ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME})
   install(TARGETS webp_quality RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
   # vwebp_sdl
@@ -589,8 +591,8 @@ if(WEBP_BUILD_EXTRAS)
     target_include_directories(vwebp_sdl
                                PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
                                        ${CMAKE_CURRENT_SOURCE_DIR}/src
-                                       ${CMAKE_CURRENT_BINARY_DIR}
-                                       ${CMAKE_CURRENT_BINARY_DIR}/src
+                                       ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}
+                                       ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src
                                        ${SDL_INCLUDE_DIR})
     set(WEBP_HAVE_SDL 1)
     target_compile_definitions(vwebp_sdl PUBLIC WEBP_HAVE_SDL)
@@ -604,7 +606,7 @@ if(WEBP_BUILD_WEBP_JS)
     # JavaScript version
     add_executable(webp_js ${CMAKE_CURRENT_SOURCE_DIR}/extras/webp_to_sdl.c)
     target_link_libraries(webp_js webpdecoder SDL)
-    target_include_directories(webp_js PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+    target_include_directories(webp_js PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME})
     set(WEBP_HAVE_SDL 1)
     set_target_properties(
       webp_js
@@ -618,7 +620,7 @@ if(WEBP_BUILD_WEBP_JS)
   # WASM version
   add_executable(webp_wasm ${CMAKE_CURRENT_SOURCE_DIR}/extras/webp_to_sdl.c)
   target_link_libraries(webp_wasm webpdecoder SDL)
-  target_include_directories(webp_wasm PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+  target_include_directories(webp_wasm PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME})
   set_target_properties(
     webp_wasm
     PROPERTIES LINK_FLAGS "-s WASM=1 \
@@ -644,7 +646,7 @@ if(WEBP_BUILD_ANIM_UTILS)
                         libwebpmux
                         webpdemux
                         ${WEBP_DEP_GIF_LIBRARIES})
-  target_include_directories(anim_diff PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(anim_diff PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
 
   # anim_dump
   include_directories(${WEBP_DEP_IMG_INCLUDE_DIRS} ${WEBP_DEP_GIF_INCLUDE_DIRS})
@@ -660,7 +662,7 @@ if(WEBP_BUILD_ANIM_UTILS)
                         libwebpmux
                         webpdemux
                         ${WEBP_DEP_GIF_LIBRARIES})
-  target_include_directories(anim_dump PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(anim_dump PRIVATE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src)
 endif()
 
 # Install the different headers and libraries.
@@ -680,7 +682,7 @@ install(EXPORT ${PROJECT_NAME}Targets
 # Create the CMake version file.
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/WebPConfigVersion.cmake"
+  "${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/WebPConfigVersion.cmake"
   VERSION ${PACKAGE_VERSION}
   COMPATIBILITY AnyNewerVersion)
 
@@ -688,13 +690,13 @@ write_basic_package_version_file(
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/WebPConfig.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/WebPConfig.cmake
+  ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/WebPConfig.cmake
   INSTALL_DESTINATION
   ${ConfigPackageLocation})
 
 # Install the generated CMake files.
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/WebPConfigVersion.cmake"
-              "${CMAKE_CURRENT_BINARY_DIR}/WebPConfig.cmake"
+install(FILES "${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/WebPConfigVersion.cmake"
+              "${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/WebPConfig.cmake"
         DESTINATION ${ConfigPackageLocation})
 
 # Install the man pages.

@@ -116,7 +116,7 @@ namespace Mengine
         _renderPipeline->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
+    void MovieMesh2D::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         if( m_vertexCount == 0 )
         {

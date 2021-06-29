@@ -705,7 +705,7 @@ namespace Mengine
         m_emitter->changeEmitterModel( nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
+    void AstralaxEmitter::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         const mt::box2f & bb = m_emitter->getBoundingBox();
 

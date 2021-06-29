@@ -24,7 +24,7 @@ namespace Mengine
         uint32_t width = 0;
         uint32_t height = 0;
 
-        float fps;
+        float fps = 0.f;
 
         EPixelFormat format = PF_UNKNOWN;
         bool clamp = true;

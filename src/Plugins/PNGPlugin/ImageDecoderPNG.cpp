@@ -13,48 +13,53 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void s_handlerError( png_structp png_ptr, const char * _error )
+    namespace Detail
     {
-        MENGINE_UNUSED( png_ptr );
-        MENGINE_UNUSED( _error );
+        //////////////////////////////////////////////////////////////////////////
+        static void png_handler_error( png_structp png_ptr, const char * _error )
+        {
+            MENGINE_UNUSED( png_ptr );
+            MENGINE_UNUSED( _error );
 
-        LOGGER_ERROR( "png error: '%s'"
-            , _error
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void PNGAPI s_handlerWarning( png_structp png_ptr, const char * _error )
-    {
-        MENGINE_UNUSED( png_ptr );
-        MENGINE_UNUSED( _error );
+            LOGGER_ERROR( "png error: '%s'"
+                , _error
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void PNGAPI png_handler_warning( png_structp png_ptr, const char * _error )
+        {
+            MENGINE_UNUSED( png_ptr );
+            MENGINE_UNUSED( _error );
 
-        LOGGER_INFO( "png", "png warning: '%s'"
-            , _error
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void PNGAPI s_readProc( png_structp _png_ptr, uint8_t * _data, png_size_t _size )
-    {
-        png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-        InputStreamInterface * stream = reinterpret_cast<InputStreamInterface *>(io_ptr);
+            LOGGER_INFO( "png", "png warning: '%s'"
+                , _error
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void PNGAPI png_read_proc( png_structp _png_ptr, uint8_t * _data, png_size_t _size )
+        {
+            png_voidp io_ptr = png_get_io_ptr( _png_ptr );
+            InputStreamInterface * stream = reinterpret_cast<InputStreamInterface *>(io_ptr);
 
-        stream->read( _data, _size );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static png_voidp PNGAPI s_png_malloc_ptr( png_structp _png, png_size_t _size )
-    {
-        MENGINE_UNUSED( _png );
+            stream->read( _data, _size );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static png_voidp PNGAPI png_malloc_ptr( png_structp _png, png_size_t _size )
+        {
+            MENGINE_UNUSED( _png );
 
-        void * p = Helper::allocateMemory( _size, "dpng" );
+            void * p = Helper::allocateMemory( _size, "dpng" );
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
-    {
-        MENGINE_UNUSED( _png );
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void PNGAPI png_free_ptr( png_structp _png, png_voidp _ptr )
+        {
+            MENGINE_UNUSED( _png );
 
-        Helper::deallocateMemory( _ptr, "dpng" );
+            Helper::deallocateMemory( _ptr, "dpng" );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderPNG::ImageDecoderPNG()
@@ -73,7 +78,7 @@ namespace Mengine
     {
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
-        png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
+        png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &Detail::png_handler_error, &Detail::png_handler_warning, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
 
         MENGINE_ASSERTION_MEMORY_PANIC( png_ptr );
 
@@ -114,7 +119,7 @@ namespace Mengine
 
         //png_set_crc_action( m_png_ptr, PNG_CRC_WARN_USE, PNG_CRC_WARN_USE );
 
-        png_set_read_fn( m_png_ptr, m_stream.get(), &s_readProc );
+        png_set_read_fn( m_png_ptr, m_stream.get(), &Detail::png_read_proc );
 
         png_set_sig_bytes( m_png_ptr, MENGINE_DECODER_PNG_BYTES_TO_CHECK );
 
@@ -421,10 +426,11 @@ namespace Mengine
 
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
-        //m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
-        m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
+        png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &Detail::png_handler_error, &Detail::png_handler_warning, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_png_ptr, "Can't create read structure" );
+        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, "Can't create read structure" );
+
+        m_png_ptr = png_ptr;
 
         m_info_ptr = png_create_info_struct( m_png_ptr );
 

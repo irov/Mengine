@@ -8,56 +8,61 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void s_handlerError( png_structp _png_ptr, const char * _error )
+    namespace Detail
     {
-        MENGINE_UNUSED( _png_ptr );
-        MENGINE_UNUSED( _error );
+        //////////////////////////////////////////////////////////////////////////
+        static void png_handler_error( png_structp _png_ptr, const char * _error )
+        {
+            MENGINE_UNUSED( _png_ptr );
+            MENGINE_UNUSED( _error );
 
-        LOGGER_ERROR( "%s"
-            , _error
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_handlerWarning( png_structp _png_ptr, const char * _error )
-    {
-        MENGINE_UNUSED( _png_ptr );
-        MENGINE_UNUSED( _error );
+            LOGGER_ERROR( "%s"
+                , _error
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void png_handler_warning( png_structp _png_ptr, const char * _error )
+        {
+            MENGINE_UNUSED( _png_ptr );
+            MENGINE_UNUSED( _error );
 
-        LOGGER_WARNING( "%s"
-            , _error
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_writeProc( png_structp _png_ptr, uint8_t * data, png_size_t size )
-    {
-        png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-        OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(io_ptr);
+            LOGGER_WARNING( "%s"
+                , _error
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void png_write_proc( png_structp _png_ptr, uint8_t * data, png_size_t size )
+        {
+            png_voidp io_ptr = png_get_io_ptr( _png_ptr );
+            OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(io_ptr);
 
-        stream->write( (char *)data, size );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_flushProc( png_structp _png_ptr )
-    {
-        png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-        OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(io_ptr);
+            stream->write( (char *)data, size );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void png_flush_proc( png_structp _png_ptr )
+        {
+            png_voidp io_ptr = png_get_io_ptr( _png_ptr );
+            OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(io_ptr);
 
-        stream->flush();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static png_voidp PNGAPI s_png_malloc_ptr( png_structp _png, png_size_t _size )
-    {
-        MENGINE_UNUSED( _png );
+            stream->flush();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static png_voidp PNGAPI png_malloc_ptr( png_structp _png, png_size_t _size )
+        {
+            MENGINE_UNUSED( _png );
 
-        void * p = Helper::allocateMemory( _size, "epng" );
+            void * p = Helper::allocateMemory( _size, "epng" );
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
-    {
-        MENGINE_UNUSED( _png );
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void PNGAPI png_free_ptr( png_structp _png, png_voidp _ptr )
+        {
+            MENGINE_UNUSED( _png );
 
-        Helper::deallocateMemory( _ptr, "epng" );
+            Helper::deallocateMemory( _ptr, "epng" );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderPNG::ImageEncoderPNG()
@@ -79,22 +84,21 @@ namespace Mengine
     {
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
-        png_structp png_ptr = png_create_write_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
+        png_structp png_ptr = png_create_write_struct_2( png_ver, (png_voidp)this, &Detail::png_handler_error, &Detail::png_handler_warning, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
 
         MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, "PNG encoder error: Can't create write structure" );
 
         m_png_ptr = png_ptr;
 
         // init the IO
-        png_set_write_fn( m_png_ptr, m_stream.get(), s_writeProc, s_flushProc );
+        png_set_write_fn( m_png_ptr, m_stream.get(), &Detail::png_write_proc, &Detail::png_flush_proc );
 
         // allocate/initialize the image information data.
         png_infop info_ptr = png_create_info_struct( m_png_ptr );
 
         if( info_ptr == nullptr )
         {
-            LOGGER_ERROR( "can't create info structure"
-            );
+            LOGGER_ERROR( "can't create info structure" );
 
             return false;
         }
@@ -119,6 +123,7 @@ namespace Mengine
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 
         int32_t color_type;
+
         if( dataInfo->channels == 1 )
         {
             color_type = PNG_COLOR_TYPE_GRAY;
@@ -144,8 +149,7 @@ namespace Mengine
         png_uint_32 height = (png_uint_32)dataInfo->height;
         int32_t pixel_depth = 8;
 
-        png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE,
-            PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
+        png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
 
         png_set_bgr( m_png_ptr );
 

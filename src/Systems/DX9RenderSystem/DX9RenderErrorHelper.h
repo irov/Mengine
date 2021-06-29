@@ -48,7 +48,7 @@ namespace Mengine
 #else
 //////////////////////////////////////////////////////////////////////////
 #   define DXRELEASE( Object )\
-    if( Object == nullptr ){}else{Object -> Release(); Object = nullptr;}
+    if( Object == nullptr ){}else{ Object -> Release(); Object = nullptr; }
 //////////////////////////////////////////////////////////////////////////
 #   define DXCALL( Device, Method, Args )\
     (Device -> Method Args)
@@ -59,5 +59,5 @@ namespace Mengine
     if( DXCALL(Device, Method, Args) )
 //////////////////////////////////////////////////////////////////////////
 #define DXGETREF( Object )\
-    [Object](){Object->AddRef(); ULONG ref = Object->Release(); return ref;}()
+    [Object](){ Object -> AddRef(); ULONG ref = Object -> Release(); return ref; }()
 //////////////////////////////////////////////////////////////////////////

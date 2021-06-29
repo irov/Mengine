@@ -24,7 +24,7 @@ namespace Mengine
         void updateBoundingBox() const;
 
     protected:
-        virtual void _updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const;
+        virtual void _updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const;
 
     protected:
         mutable mt::box2f m_boundingBox;

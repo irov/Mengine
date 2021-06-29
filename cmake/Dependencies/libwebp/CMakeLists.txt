@@ -110,17 +110,17 @@ endif()
 
 function(configure_pkg_config FILE)
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${FILE}.in"
-                 "${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/${FILE}")
+                 "${THIRDPARTY_CONFIG_DIR}/libwebp/${FILE}")
 
   if(HAVE_MATH_LIBRARY)
     # MSVC doesn't have libm
-    file(READ ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/${FILE} data)
+    file(READ ${THIRDPARTY_CONFIG_DIR}/libwebp/${FILE} data)
     string(REPLACE "-lm" "" data ${data})
-    file(WRITE ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/${FILE} ${data})
+    file(WRITE ${THIRDPARTY_CONFIG_DIR}/libwebp/${FILE} ${data})
   endif()
 
   install(
-    FILES "${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/${FILE}"
+    FILES "${THIRDPARTY_CONFIG_DIR}/libwebp/${FILE}"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 endfunction()
@@ -181,7 +181,7 @@ if(WIN32)
 endif()
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/config.h.in
-               ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/src/webp/config.h)
+               ${THIRDPARTY_CONFIG_DIR}/libwebp/src/webp/config.h)
 
 include_directories(${THIRDPARTY_CONFIG_DIR}/libwebp)
 add_definitions(-DHAVE_CONFIG_H)

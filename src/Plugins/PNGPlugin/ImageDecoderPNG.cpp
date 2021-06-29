@@ -14,6 +14,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -78,6 +79,7 @@ namespace Mengine
     bool ImageDecoderPNG::_initialize()
     {
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
+
         png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &Detail::png_handler_error_ptr, &Detail::png_handler_warning_ptr, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
 
         MENGINE_ASSERTION_MEMORY_PANIC( png_ptr );

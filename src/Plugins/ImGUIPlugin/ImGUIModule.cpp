@@ -147,6 +147,7 @@ namespace Mengine
 
         m_handlerId = handlerId;
 #endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

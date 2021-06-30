@@ -13,8 +13,8 @@ out vec2 v_UV1;
 
 void main(void)
 {
-	gl_Position = wvpMatrix * inVert;
-	v_Col = inCol;
+    gl_Position = wvpMatrix * inVert;
+    v_Col = inCol;
     v_UV0 = inUV0;
     v_UV1 = inUV1;
 }

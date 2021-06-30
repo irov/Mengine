@@ -11,7 +11,7 @@ out vec2 v_UV0;
 
 void main(void)
 {
-	gl_Position = wvpMatrix * inVert;
+    gl_Position = wvpMatrix * inVert;
     v_Col = inCol;
     v_UV0 = inUV0;
 }

@@ -32,10 +32,6 @@
         <File Path = "Materials/DX9_Vertex_Blend_ExternalAlpha.txt" Converter="text2vso" Compile="1"/>
     </VertexShader>
     
-    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "DX9">
-        <File Path = "Materials/DX9_Ozz_Fragment_Blend.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>
-    
     <FragmentShader Name = "Fragment_Blend" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_Blend.txt" Converter="text2pso" Compile="1"/>
     </FragmentShader>
@@ -111,5 +107,9 @@
     <FragmentShader Name = "Fragment_HSV" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_HSV.txt" Converter="text2pso" Compile="1"/>
     </FragmentShader>
+    
+    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "DX9">
+        <File Path = "Materials/DX9_Ozz_Fragment_Blend.txt" Converter="text2pso" Compile="1"/>
+    </FragmentShader>    
 </DataBlock>
 

@@ -31,7 +31,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexAttribute::finalize()
     {
-        //Empty
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+
+        m_attributes.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexAttribute::compile( const ID3D11DevicePtr & _pD3DDevice, const MemoryInterfacePtr & _shaderCompileMemory )

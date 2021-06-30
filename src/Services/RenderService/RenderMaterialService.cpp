@@ -136,11 +136,6 @@ namespace Mengine
             m_defaultStagesEnum[name] = (EMaterial)i;
         }
 
-        for( uint32_t i = 0; i != EM_MATERIAL_COUNT; ++i )
-        {
-            m_defaultStages[i] = nullptr;
-        }
-
         uint32_t defaultTextureFilterMipmap = CONFIG_VALUE( "Engine", "DefaultTextureFilterMipmap", 0U );
         uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMagnification", 2U );
         uint32_t defaultTextureFilterMinification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMinification", 2U );

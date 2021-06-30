@@ -258,12 +258,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImage::onRenderReset()
     {
-        //Empty
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderImage::onRenderRestore()
     {
-        //Empty
+        //ToDo
 
         return true;
     }

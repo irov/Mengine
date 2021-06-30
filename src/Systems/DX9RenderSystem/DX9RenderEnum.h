@@ -14,11 +14,6 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        static constexpr D3DFORMAT D32SFormats[] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT)0};
-        static constexpr D3DFORMAT D32Formats[] = {D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D15S1, (D3DFORMAT)0};
-        static constexpr D3DFORMAT D16SFormats[] = {D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT)0};
-        static constexpr D3DFORMAT D16Formats[] = {D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (D3DFORMAT)0};
-        //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE uint32_t getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
         {
             switch( _pType )
@@ -45,31 +40,22 @@ namespace Mengine
             {
             case 0:
                 return D3DMULTISAMPLE_NONE;
-                break;
             case 1:
                 return D3DMULTISAMPLE_NONE;
-                break;
             case 2:
                 return D3DMULTISAMPLE_2_SAMPLES;
-                break;
             case 3:
                 return D3DMULTISAMPLE_3_SAMPLES;
-                break;
             case 4:
                 return D3DMULTISAMPLE_4_SAMPLES;
-                break;
             case 5:
                 return D3DMULTISAMPLE_5_SAMPLES;
-                break;
             case 6:
                 return D3DMULTISAMPLE_6_SAMPLES;
-                break;
             case 7:
                 return D3DMULTISAMPLE_7_SAMPLES;
-                break;
             case 8:
                 return D3DMULTISAMPLE_8_SAMPLES;
-                break;
             default:
                 break;
             }

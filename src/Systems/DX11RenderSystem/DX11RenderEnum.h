@@ -14,18 +14,6 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-
-        static constexpr DXGI_FORMAT D64SFormats[] = {DXGI_FORMAT_D32_FLOAT_S8X24_UINT, DXGI_FORMAT_UNKNOWN};
-        static constexpr DXGI_FORMAT D32SFormats[] = {DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_UNKNOWN};
-        static constexpr DXGI_FORMAT D32Formats[] = {DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN};
-        static constexpr DXGI_FORMAT D16Formats[] = {DXGI_FORMAT_D16_UNORM, DXGI_FORMAT_UNKNOWN};
-
-        /*        static constexpr DXGI_FORMAT D32SFormats[] = {DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D16_UNORM, (DXGI_FORMAT)0};
-                static constexpr DXGI_FORMAT D32Formats[] = { DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D16_UNORM, DXGI_FORMAT_UNKNOWN, (DXGI_FORMAT)0};
-                static constexpr DXGI_FORMAT D16SFormats[] = {D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (DXGI_FORMAT)0};
-                static constexpr DXGI_FORMAT D16Formats[] = {D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (DXGI_FORMAT)0};
-                */
-                //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE uint32_t getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
         {
             switch( _pType )
@@ -59,8 +47,6 @@ namespace Mengine
                 return (D3D11_MAP)0;
             case BLF_LOCK_READONLY:
                 return D3D11_MAP_READ;
-            case BLF_LOCK_WRITE:
-                return D3D11_MAP_WRITE;
             case BLF_LOCK_DISCARD:
                 return D3D11_MAP_WRITE_DISCARD;
             case BLF_LOCK_NOOVERWRITE:
@@ -298,23 +284,6 @@ namespace Mengine
 
             return D3D11_FILL_SOLID;
         }
-
-        //////////////////////////////////////////////////////////////////////////
-    /*  MENGINE_INLINE D3DSAMPLERSTATETYPE toD3DTextureFilterType( ETextureFilterType _filterType )
-        {
-            switch( _filterType )
-            {
-            case TFT_MAGNIFICATION:
-                return D3DSAMP_MAGFILTER;
-            case TFT_MINIFICATION:
-                return D3DSAMP_MINFILTER;
-            case TFT_MIPMAP:
-                return D3DSAMP_MIPFILTER;
-            }
-
-            return D3DSAMP_MAGFILTER;
-        }
-        */
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE D3D11_FILTER toD3DTextureFilter( ETextureFilter _filter )
         {
@@ -416,7 +385,7 @@ namespace Mengine
                 break;
             }
 
-            return  DXGI_FORMAT_UNKNOWN;
+            return DXGI_FORMAT_UNKNOWN;
         }
         //////////////////////////////////////////////////////////////////////////
     }

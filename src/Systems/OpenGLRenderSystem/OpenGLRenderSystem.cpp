@@ -201,11 +201,6 @@ namespace Mengine
 
         m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
 
-        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
-        {
-            m_textureStage[i] = TextureStage();
-        }
-
         GLCALL( glFrontFace, (GL_CW) );
         GLCALL( glEnable, (GL_DEPTH_TEST) );
         GLCALL( glDisable, (GL_STENCIL_TEST) );

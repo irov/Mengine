@@ -82,9 +82,7 @@ namespace Mengine
         uint32_t bufferSize = m_elementsCapacity * m_elementSize;
 
         D3D11_BUFFER_DESC desc;
-        desc.CPUAccessFlags = 0;
-        desc.MiscFlags = 0;
-        desc.BindFlags = _bindFlag;
+        desc.ByteWidth = (UINT)bufferSize;
 
         switch( m_bufferType )
         {
@@ -96,12 +94,26 @@ namespace Mengine
         case BT_DYNAMIC:
             {
                 desc.Usage = D3D11_USAGE_DYNAMIC;
+            }break;
+        };
+
+        desc.BindFlags = _bindFlag;
+
+        switch( m_bufferType )
+        {
+        case BT_STATIC:
+            {
+                desc.CPUAccessFlags = 0;
+            }break;
+        case BT_STREAM:
+        case BT_DYNAMIC:
+            {
                 desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             }break;
         };
 
+        desc.MiscFlags = 0;
         desc.StructureByteStride = (UINT)m_elementSize;
-        desc.ByteWidth = (UINT)bufferSize;
 
         // Define the resource data.
         D3D11_SUBRESOURCE_DATA InitData;
@@ -148,10 +160,9 @@ namespace Mengine
         //uint32_t offsetSize = _offset * m_elementSize;
         //uint32_t lockSize = _count * m_elementSize;
 
-        D3D11_MAPPED_SUBRESOURCE mappedResource;
-
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
+        D3D11_MAPPED_SUBRESOURCE mappedResource;
         IF_DXCALL( pImmediateContext, Map, (m_pD3DBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
         {
             // TODO: add error log
@@ -227,11 +238,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderBuffer::onRenderReset()
     {
-
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderBuffer::onRenderRestore()
     {
+        //ToDo
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

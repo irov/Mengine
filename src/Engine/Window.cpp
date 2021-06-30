@@ -47,14 +47,6 @@ namespace Mengine
     Window::Window()
         : m_clientSize( 100.f, 100.f )
     {
-        for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
-        {
-            WindowEdge & edge = m_edge[i];
-
-            edge.initialSize.x = 0.f;
-            edge.initialSize.y = 0.f;
-            edge.material = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     Window::~Window()

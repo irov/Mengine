@@ -68,7 +68,7 @@ namespace Mengine
 
         struct WindowEdge
         {
-            mt::vec2f initialSize;
+            mt::vec2f initialSize = {0.f, 0.f};
             RenderMaterialInterfacePtr material;
         };
 

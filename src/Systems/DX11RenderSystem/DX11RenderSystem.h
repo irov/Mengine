@@ -141,6 +141,9 @@ namespace Mengine
         const ID3D11DeviceContextPtr & getDirect3D11DeviceContext() const override;
 
     protected:
+        bool createSwapChain_( IDXGIFactory2 * _dxgiFactory );
+
+    protected:
         void updateVSyncDPP_( UINT _width, UINT _height, DXGI_RATIONAL * const _refreshRate );
         bool resetDevice_();
 

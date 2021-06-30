@@ -221,6 +221,7 @@ namespace Mengine
         if( this->releaseResources_() == false )
         {
             LOGGER_ERROR( "invalid release resource" );
+
             return;
         }
 
@@ -232,10 +233,10 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_vertexBufferCount == 0 );
         MENGINE_ASSERTION_FATAL( m_indexBufferCount == 0 );
 
+        m_dxgiSwapChain = nullptr;
         m_renderTargetView = nullptr;
         m_depthStencilBuffer = nullptr;
         m_depthStencilView = nullptr;
-        m_dxgiSwapChain = nullptr;
 
         // Flush the immediate context to force cleanup
         m_pD3DDeviceContext->Flush();
@@ -307,71 +308,12 @@ namespace Mengine
             return false;
         }
 
-        // Create Swap Chain
-        DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
-
-        // Initialize the swap chain description.
-        ZeroMemory( &swapChainDesc, sizeof( swapChainDesc ) );
-
-        // Set the width and height of the back buffer.
-        swapChainDesc.Width = m_windowResolution.getWidth();
-        swapChainDesc.Height = m_windowResolution.getHeight();
-
-        // Set regular 32-bit surface for the back buffer.
-        swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-        swapChainDesc.Stereo = FALSE;
-
-        // Turn multisampling off.
-        swapChainDesc.SampleDesc.Count = 1;
-        swapChainDesc.SampleDesc.Quality = 0;
-
-        // Set the usage of the back buffer.
-        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.BufferCount = 2;
-
-        // Set the scan line ordering and scaling to unspecified.
-        swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
-
-        // Discard the back buffer contents after presenting.
-        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-        swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-
-        // Don't set the advanced flags.
-        swapChainDesc.Flags = 0;
-
-        IDXGISwapChain1 * dxgiSwapChain;
-
-        // Set the handle for the window to render to.
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        Win32PlatformExtensionInterface * win32Extension = PLATFORM_SERVICE()
-            ->getUnknown();
-
-        HWND hWnd = win32Extension->getWindowHandle();
-
-        IF_DXCALL( dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hWnd, &swapChainDesc, NULL, NULL, &dxgiSwapChain) )
+        if( this->createSwapChain_( dxgiFactory ) == false )
         {
+            LOGGER_ERROR( "invalid create swap chain" );
+
             return false;
-        }
-
-        IF_DXCALL( dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER) )
-        {
-            return false;
-        }
-#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
-        SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
-            ->getUnknown();
-
-        IInspectable * iWindow = sdlExtension->getWindowHandle();
-
-        IF_DXCALL( dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iWindow, &swapChainDesc, NULL, &dxgiSwapChain) )
-        {
-            return false;
-        }
-#else
-#   error "unsupported platform"
-#endif
-
-        m_dxgiSwapChain.Attach( dxgiSwapChain );
+        }        
 
         // Get the pointer to the back buffer.
         ID3D11Texture2D * backBuffer;
@@ -741,6 +683,18 @@ namespace Mengine
                         , (uint32_t)hr_reason
                         , Helper::getDX11ErrorMessage( hr_reason )
                     );
+
+                    if( this->releaseResources_() == false )
+                    {
+                        LOGGER_ERROR( "invalid release resource" );
+
+                        return;
+                    }
+
+                    m_dxgiSwapChain = nullptr;
+                    m_renderTargetView = nullptr;
+                    m_depthStencilBuffer = nullptr;
+                    m_depthStencilView = nullptr;
                 }break;
             case DXGI_ERROR_DEVICE_RESET:
                 {
@@ -1647,6 +1601,77 @@ namespace Mengine
         {
             LOGGER_ERROR( "Graphics change mode failed" );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderSystem::createSwapChain_( IDXGIFactory2 * _dxgiFactory )
+    {
+        // Create Swap Chain
+        DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
+
+        // Initialize the swap chain description.
+        ZeroMemory( &swapChainDesc, sizeof( swapChainDesc ) );
+
+        // Set the width and height of the back buffer.
+        swapChainDesc.Width = m_windowResolution.getWidth();
+        swapChainDesc.Height = m_windowResolution.getHeight();
+
+        // Set regular 32-bit surface for the back buffer.
+        swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        swapChainDesc.Stereo = FALSE;
+
+        // Turn multisampling off.
+        swapChainDesc.SampleDesc.Count = 1;
+        swapChainDesc.SampleDesc.Quality = 0;
+
+        // Set the usage of the back buffer.
+        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        swapChainDesc.BufferCount = 2;
+
+        // Set the scan line ordering and scaling to unspecified.
+        swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
+
+        // Discard the back buffer contents after presenting.
+        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+        swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+
+        // Don't set the advanced flags.
+        swapChainDesc.Flags = 0;
+
+        IDXGISwapChain1 * dxgiSwapChain;
+
+        // Set the handle for the window to render to.
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+        Win32PlatformExtensionInterface * win32Extension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        HWND hWnd = win32Extension->getWindowHandle();
+
+        IF_DXCALL( _dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hWnd, &swapChainDesc, NULL, NULL, &dxgiSwapChain) )
+        {
+            return false;
+        }
+
+        IF_DXCALL( _dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER) )
+        {
+            return false;
+        }
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
+        SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        IInspectable * iWindow = sdlExtension->getWindowHandle();
+
+        IF_DXCALL( _dxgiFactory, CreateSwapChainForCoreWindow, (m_pD3DDevice.Get(), iWindow, &swapChainDesc, NULL, &dxgiSwapChain) )
+        {
+            return false;
+        }
+#else
+#   error "unsupported platform"
+#endif
+
+        m_dxgiSwapChain.Attach( dxgiSwapChain );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::updateVSyncDPP_( UINT _width, UINT _height, DXGI_RATIONAL * const _refreshRate )

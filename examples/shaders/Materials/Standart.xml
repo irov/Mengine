@@ -299,7 +299,7 @@
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>  
+        <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Blend"/>
 	</Material>
@@ -374,7 +374,10 @@
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "SOURCE_COLOUR" Dest = "ONE_MINUS_SOURCE_ALPHA"/>   
+        <BlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_COLOUR"/>
+        
+        <SeparateAlphaBlend Enable = "1"/>
+        <SeparateAlphaBlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Blend"/>
 	</Material>   
@@ -383,7 +386,10 @@
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "SOURCE_COLOUR" Dest = "ONE_MINUS_SOURCE_ALPHA"/>   
+        <BlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_COLOUR"/>
+        
+        <SeparateAlphaBlend Enable = "1"/>
+        <SeparateAlphaBlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Blend_Premultiply"/>
 	</Material>
@@ -392,16 +398,16 @@
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "ONE" Dest = "ONE_MINUS_SOURCE_COLOUR"/>
+        <BlendFactor Source = "ONE" Dest = "ONE_MINUS_DEST_COLOUR"/>
         
         <Program Name = "Blend"/>
 	</Material>    
     
-    <Material Name = "Texture_Screen_Premultiply">        
+    <Material Name = "Texture_Screen_Premultiply">
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "ONE" Dest = "ONE_MINUS_SOURCE_COLOUR"/>       
+        <BlendFactor Source = "ONE" Dest = "ONE_MINUS_DEST_COLOUR"/>       
         
         <Program Name = "Blend_Premultiply"/>
 	</Material>   
@@ -428,7 +434,10 @@
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE"/>       
+        <BlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_COLOUR"/>
+        
+        <SeparateAlphaBlend Enable = "1"/>
+        <SeparateAlphaBlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Blend_OnlyColor"/>
 	</Material>   
@@ -516,7 +525,10 @@
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "SOURCE_COLOUR" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
+        <BlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_COLOUR"/>
+        
+        <SeparateAlphaBlend Enable = "1"/>
+        <SeparateAlphaBlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "ExternalAlpha"/>
 	</Material>   
@@ -552,7 +564,10 @@
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "SOURCE_COLOUR" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
+        <BlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_COLOUR"/>
+        
+        <SeparateAlphaBlend Enable = "1"/>
+        <SeparateAlphaBlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "ExternalAlpha_OnlyColor"/>
 	</Material>
@@ -606,7 +621,10 @@
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "SOURCE_COLOUR" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
+        <BlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_COLOUR"/>
+        
+        <SeparateAlphaBlend Enable = "1"/>
+        <SeparateAlphaBlendFactor Source = "ZERO" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
                 
         <Program Name = "Color"/>
 	</Material>    

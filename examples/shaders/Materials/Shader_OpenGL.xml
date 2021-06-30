@@ -95,4 +95,8 @@
     <FragmentShader Name = "Fragment_Legendary_ExternalAlpha" RenderPlatform = "OpenGL">
         <File Path = "Materials/GL_Fragment_Legendary_ExternalAlpha.txt" Compile="1"/>
     </FragmentShader>     
+    
+    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Ozz_Fragment_Blend.txt" Compile="1"/>
+    </FragmentShader>    
 </DataBlock>

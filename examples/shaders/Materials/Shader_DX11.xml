@@ -32,10 +32,6 @@
         <File Path = "Materials/DX11_Vertex_Blend_ExternalAlpha.hlsl" Converter="text2vso11" Compile="1"/>
     </VertexShader>
     
-    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Ozz_Fragment_Blend.hlsl" Converter="text2pso11" Compile="1"/>
-    </FragmentShader>
-    
     <FragmentShader Name = "Fragment_Blend" RenderPlatform = "DX11">
         <File Path = "Materials/DX11_Fragment_Blend.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
@@ -111,4 +107,8 @@
     <FragmentShader Name = "Fragment_HSV" RenderPlatform = "DX11">
         <File Path = "Materials/DX11_Fragment_HSV.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
+    
+    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "DX11">
+        <File Path = "Materials/DX11_Ozz_Fragment_Blend.hlsl" Converter="text2pso11" Compile="1"/>
+    </FragmentShader>    
 </DataBlock>

@@ -31,9 +31,6 @@ namespace Mengine
         cURLReceiverInterfacePtr createHttpReceiver_( GOAP::NodeInterface * _node );
 
     protected:
-        void requestComplete_( HttpRequestID _requestId );
-
-    protected:
         String m_url;
         cURLHeaders m_headers;
 
@@ -43,8 +40,6 @@ namespace Mengine
         cURLTaskReceiverInterfacePtr m_receiver;
 
         HttpRequestID m_requestId;
-
-        class TaskcURLReceiver;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskcURLHttpBase> TaskcURLHttpBasePtr;

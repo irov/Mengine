@@ -8,6 +8,8 @@ src
 
 ADD_FILTER(
 Tasks
+    TaskcURLReceiver.h
+    TaskcURLReceiver.cpp
     TaskcURLHttpBase.cpp
     TaskcURLHttpBase.h
     TaskcURLHttpGet.cpp

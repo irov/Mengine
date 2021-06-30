@@ -142,6 +142,12 @@ namespace Mengine
 
     protected:
         bool createSwapChain_( IDXGIFactory2 * _dxgiFactory );
+        bool createRenderTargetView_();
+        bool createDepthStencilBuffer_();
+        bool createDepthStencilView_();
+
+    protected:
+        bool updateRasterizerState_() const;
 
     protected:
         void updateVSyncDPP_( UINT _width, UINT _height, DXGI_RATIONAL * const _refreshRate );
@@ -158,15 +164,15 @@ namespace Mengine
 
         Resolution m_windowResolution;
         Viewport m_windowViewport;
-        bool m_fullscreen;
-        bool m_depth;
+        bool m_windowFullscreen;
+        bool m_windowDepth;
 
         ID3D11DevicePtr m_pD3DDevice;
         ID3D11DeviceContextPtr m_pD3DDeviceContext;
-        ID3D11DeviceContextPtr m_pD3DImmediateContext;
+        ID3D11DeviceContextPtr m_pD3DDeviceImmediateContext;
 
-        IDXGISwapChainPtr m_dxgiSwapChain;
         DXGI_MODE_DESC m_dxgiSwapChainBufferDesc;
+        IDXGISwapChainPtr m_dxgiSwapChain;        
 
         typedef Vector<DXGI_MODE_DESC> VectorModeDescs;
         VectorModeDescs m_DisplayModeList;
@@ -179,10 +185,12 @@ namespace Mengine
         // sync routines
         uint32_t m_frames;
 
-        D3D11_RASTERIZER_DESC m_D3D11RasterizerState;
+        D3D11_RASTERIZER_DESC m_D3DRasterizerStateDesc;
+
+        mutable ID3D11RasterizerStatePtr m_pD3DRasterizerState;
+        mutable bool m_invalidateRasterizerState;
 
     protected:
-        void restoreStates_();
         bool releaseResources_();
         bool restore_();
 

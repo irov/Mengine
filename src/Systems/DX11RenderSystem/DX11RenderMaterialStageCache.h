@@ -22,7 +22,8 @@ namespace Mengine
         void finalize();
 
     public:
-        void apply( const ID3D11DeviceContextPtr & _pD3DDevice ) const;
+        void begin( const ID3D11DeviceContextPtr & _pD3DDeviceContext ) const;
+        void end( const ID3D11DeviceContextPtr & _pD3DDeviceContext ) const;
 
     protected:
         ID3D11DepthStencilStatePtr m_depthStencilState;

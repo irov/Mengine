@@ -144,11 +144,21 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderMaterialStageCache::apply( const ID3D11DeviceContextPtr & _pD3DDeviceContext ) const
+    void DX11RenderMaterialStageCache::begin( const ID3D11DeviceContextPtr & _pD3DDeviceContext ) const
     {
         _pD3DDeviceContext->OMSetDepthStencilState( m_depthStencilState.Get(), 1 );
         _pD3DDeviceContext->OMSetBlendState( m_blendState.Get(), nullptr, 0xffffffff );
+
         _pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, m_samplerStates );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderMaterialStageCache::end( const ID3D11DeviceContextPtr & _pD3DDeviceContext ) const
+    {
+        _pD3DDeviceContext->OMSetDepthStencilState( nullptr, 1 );
+        _pD3DDeviceContext->OMSetBlendState( nullptr, nullptr, 0xffffffff );
+        
+        ID3D11SamplerState * emptySamplerStates[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
+        _pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, emptySamplerStates );
     }
     //////////////////////////////////////////////////////////////////////////
 }

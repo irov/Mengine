@@ -98,13 +98,13 @@ namespace Mengine
 
         size_t mipmap_size = pitch * image_height;
 
-        EPixelFormat pixelFormat = _image->getHWPixelFormat();
+        EPixelFormat HWPixelFormat = _image->getHWPixelFormat();
 
         ImageDecoderData data;
         data.buffer = textureBuffer;
         data.size = mipmap_size;
         data.pitch = pitch;
-        data.format = pixelFormat;
+        data.format = HWPixelFormat;
         data.mipmap = mipmap;
         data.flags = m_codecFlags;
 
@@ -119,11 +119,10 @@ namespace Mengine
 
         if( _image->getUpscalePow2() == true )
         {
-            uint32_t HWWidth = Helper::getTexturePow2( image_width );
-            uint32_t HWHeight = Helper::getTexturePow2( image_height );
+            uint32_t mipmap_width = image_width >> mipmap;
+            uint32_t mipmap_height = image_height >> mipmap;
 
-            uint32_t mipmap_width = HWWidth >> mipmap;
-            uint32_t mipmap_height = HWHeight >> mipmap;
+            uint32_t pixel_size = Helper::getPixelFormatChannels( HWPixelFormat );
 
             const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 
@@ -131,7 +130,6 @@ namespace Mengine
             if( dataInfo->width != mipmap_width )
             {
                 uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
-                uint32_t pixel_size = Helper::getPixelFormatChannels( dataInfo->format );
 
                 for( uint32_t j = 0; j != dataInfo->height; ++j )
                 {
@@ -144,7 +142,6 @@ namespace Mengine
             if( dataInfo->height != mipmap_height )
             {
                 uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
-                uint32_t pixel_size = Helper::getPixelFormatChannels( dataInfo->format );
 
                 stdex::memorycopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
             }

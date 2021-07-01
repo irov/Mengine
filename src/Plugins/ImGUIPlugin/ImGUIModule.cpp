@@ -52,7 +52,7 @@
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 #endif
-
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     namespace Detail
@@ -73,6 +73,7 @@ namespace Mengine
 
             Helper::deallocateMemory( ptr, "imgui" );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     ImGUIModule::ImGUIModule()
@@ -147,6 +148,7 @@ namespace Mengine
 
         m_handlerId = handlerId;
 #endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -533,6 +533,16 @@ namespace Mengine
             return;
         }
 
+        if( node->isEnable() == false )
+        {
+            return;
+        }
+
+        if( node->isActivate() == false )
+        {
+            return;
+        }
+
         RenderContext node_context = *_context;
         Helper::fillNodeRenderContext( node, &node_context );
 
@@ -1119,7 +1129,12 @@ namespace Mengine
 
         Detail::serializeNodeProp( fileGroup->getName(), "FileGroup", xmlNode );
 
-        Detail::serializeNodeProp( _content->getFilePath(), "FilePath", xmlNode );
+        const FilePath & filePath = _content->getFilePath();
+
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+        fileGroup->getFullPath( filePath, fullPath );
+
+        Detail::serializeNodeProp( fullPath, "FilePath", xmlNode );
         Detail::serializeNodeProp( _content->getCodecType(), "CodecType", xmlNode );
         Detail::serializeNodeProp( _content->getConverterType(), "ConverterType", xmlNode );
     }

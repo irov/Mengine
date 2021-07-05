@@ -5,18 +5,6 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
-#ifndef MENGINE_OPTIONS_KEY_SIZE
-#define MENGINE_OPTIONS_KEY_SIZE 32
-#endif
-
-#ifndef MENGINE_OPTIONS_VALUE_SIZE
-#define MENGINE_OPTIONS_VALUE_SIZE 64
-#endif
-
-#ifndef MENGINE_OPTIONS_VALUE_COUNT
-#define MENGINE_OPTIONS_VALUE_COUNT 16
-#endif
-
 namespace Mengine
 {
     class OptionsService

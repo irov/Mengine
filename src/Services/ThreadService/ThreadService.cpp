@@ -93,8 +93,7 @@ namespace Mengine
 
         if( threadJob->initialize( _sleep, _doc ) == false )
         {
-            LOGGER_ERROR( "invalid create"
-            );
+            LOGGER_ERROR( "invalid create" );
 
             return nullptr;
         }

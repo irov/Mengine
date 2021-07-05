@@ -9,7 +9,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class TTFAtlasService
         : public ServiceBase<TTFAtlasServiceInterface>
     {

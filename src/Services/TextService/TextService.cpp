@@ -26,12 +26,10 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/Algorithm.h"
 
 #include "xmlsax/xmlsax.hpp"
-
 #include "utf8.h"
-
-#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TextService, Mengine::TextService );
@@ -580,7 +578,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TextEntryInterfacePtr TextService::createTextEntry( const ConstString & _key
         , const Char * _text
-        , const size_t _size
+        , size_t _size
         , const Tags & _tags
         , const TextFontInterfacePtr & _font
         , const Color & _colorFont
@@ -611,7 +609,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::addTextEntry( const ConstString & _key
         , const Char * _text
-        , const size_t _size
+        , size_t _size
         , const Tags & _tags
         , const TextFontInterfacePtr & _font
         , const Color & _colorFont

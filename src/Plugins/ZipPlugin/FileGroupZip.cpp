@@ -87,7 +87,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static voidpf s_alloc_func( voidpf _opaque, uInt _items, uInt _size )
+        static voidpf zip_alloc_func( voidpf _opaque, uInt _items, uInt _size )
         {
             MENGINE_UNUSED( _opaque );
 
@@ -98,14 +98,14 @@ namespace Mengine
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_free_func( voidpf _opaque, voidpf _address )
+        static void zip_free_func( voidpf _opaque, voidpf _address )
         {
             MENGINE_UNUSED( _opaque );
 
             Helper::deallocateMemory( _address, "zip" );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_inflate_memory( void * const _buffer, size_t _capacity, z_const void * _src, size_t _size )
+        static bool zip_inflate_memory( void * const _buffer, size_t _capacity, z_const void * _src, size_t _size )
         {
             z_stream zs;
             zs.next_in = static_cast<z_const Bytef *>(_src);
@@ -114,8 +114,8 @@ namespace Mengine
             zs.next_out = static_cast<Bytef *>(_buffer);
             zs.avail_out = (uInt)_capacity;
 
-            zs.zalloc = &s_alloc_func;
-            zs.zfree = &s_free_func;
+            zs.zalloc = &zip_alloc_func;
+            zs.zfree = &zip_free_func;
 
             int32_t err_init = inflateInit2( &zs, -MAX_WBITS );
 
@@ -647,7 +647,7 @@ namespace Mengine
             m_zipFile->read( compress_memory, fi.file_size );
             m_mutex->unlock();
 
-            if( Detail::s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
+            if( Detail::zip_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
             {
                 LOGGER_ERROR( "zip '%s' file '%s' failed inflate"
                     , m_folderPath.c_str()

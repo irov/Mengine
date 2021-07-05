@@ -6,7 +6,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class SoundDecoderOGGVorbis
         : public SoundDecoder
     {

@@ -13,8 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
+    {        
         static bool isThreeDNode( const VectorMovieLayers & _layers, uint32_t _index )
         {
             for( const MovieLayer & layer : _layers )

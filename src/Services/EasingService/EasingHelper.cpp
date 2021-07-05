@@ -286,40 +286,43 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static float bounce( float  _t )
+    namespace Detail
     {
-        if( _t < 1.f / 2.75f )
+        static float bounce( float  _t )
         {
-            return 7.5625f * _t * _t;
-        }
-        else if( _t < 2.f / 2.75f )
-        {
-            _t -= 1.5f / 2.75f;
+            if( _t < 1.f / 2.75f )
+            {
+                return 7.5625f * _t * _t;
+            }
+            else if( _t < 2.f / 2.75f )
+            {
+                _t -= 1.5f / 2.75f;
 
-            return 7.5625f * _t * _t + 0.75f;
-        }
-        else if( _t < 2.5f / 2.75f )
-        {
-            _t -= 2.25f / 2.75f;
+                return 7.5625f * _t * _t + 0.75f;
+            }
+            else if( _t < 2.5f / 2.75f )
+            {
+                _t -= 2.25f / 2.75f;
 
-            return 7.5625f * _t * _t + 0.9375f;
-        }
-        else
-        {
-            _t -= 2.625f / 2.75f;
+                return 7.5625f * _t * _t + 0.9375f;
+            }
+            else
+            {
+                _t -= 2.625f / 2.75f;
 
-            return 7.5625f * _t * _t + 0.984375f;
+                return 7.5625f * _t * _t + 0.984375f;
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingBounceIn::easing( float _t ) const
     {
-        return 1.f - bounce( 1.f - _t );
+        return 1.f - Detail::bounce( 1.f - _t );
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingBounceOut::easing( float _t ) const
     {
-        return bounce( _t );
+        return Detail::bounce( _t );
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingBounceInOut::easing( float _t ) const
@@ -327,11 +330,11 @@ namespace Mengine
         if( _t < 0.5f )
         {
             _t *= 2.f;
-            return (1.f - bounce( 1.f - _t )) * 0.5f;
+            return (1.f - Detail::bounce( 1.f - _t )) * 0.5f;
         }
         else
         {
-            return bounce( _t * 2.f - 1.f ) * 0.5f + 0.5f;
+            return Detail::bounce( _t * 2.f - 1.f ) * 0.5f + 0.5f;
         }
     }
     //////////////////////////////////////////////////////////////////////////

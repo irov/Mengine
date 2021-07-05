@@ -213,7 +213,7 @@ namespace Mengine
         float posms = m_soundBuffer->getTimePos( m_sourceId );
 
         //timing dont assign to zero when m_soundBuffer is stopped!
-        if( MT_fabsf( posms ) < 0.0001f && MT_fabsf( m_time ) > 0.0001 )
+        if( MT_fabsf( posms ) < 0.0001f && MT_fabsf( m_time ) > 0.0001f )
         {
             posms = m_time;
         }

@@ -76,8 +76,7 @@ namespace Mengine
 
         if( buffer->load( _soundDecoder, _streamable ) == false )
         {
-            LOGGER_ERROR( "failed to load sound buffer from decoder"
-            );
+            LOGGER_ERROR( "failed to load sound buffer from decoder" );
 
             return nullptr;
         }

@@ -3,11 +3,13 @@ MENGINE_PROJECT(ZipPlugin)
 ADD_FILTER(
 src
     ZipPlugin.h
-    ZipPlugin.cpp   
+    ZipPlugin.def
+    ZipPlugin.cpp
+    
     FileGroupZip.h
     FileGroupZip.cpp
     ArchivatorZip.h
-    ArchivatorZip.cpp    
+    ArchivatorZip.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/zlib)

@@ -7,13 +7,13 @@
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Node.h"
+#include "Kernel/Vector.h"
 
 #include "math/vec3.h"
 
-#include "Kernel/Vector.h"
-
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Motor
         : public Factorable
         , public Updatable
@@ -50,4 +50,7 @@ namespace Mengine
         typedef Vector<VelocityDesc> VectorVelocities;
         VectorVelocities m_velocities;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Motor> MotorPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

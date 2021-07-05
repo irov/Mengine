@@ -153,6 +153,7 @@ namespace Mengine
         PLUGIN_SERVICE_LEAVE( DataServiceInterface, []()
         {
             DataflowInterfacePtr dataflow = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+
             dataflow->finalize();
         } );
 

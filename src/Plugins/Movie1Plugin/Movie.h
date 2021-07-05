@@ -270,22 +270,15 @@ namespace Mengine
 
         struct Nodies
         {
-            Nodies()
-                : visible( false )
-                , enable( true )
-                , child( false )
-            {
-            }
-
             NodePtr node;
             RenderInterfacePtr render;
             AnimationInterfacePtr animation;
             SoundablePtr soundable;
             MoviePtr movie;
 
-            bool visible;
-            bool enable;
-            bool child;
+            bool visible = false;
+            bool enable = true;
+            bool child = false;
         };
 
         typedef Vector<Nodies> VectorNodies;

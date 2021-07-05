@@ -65,6 +65,6 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Win32ThreadIdentity> Win32ThreadIdentityPtr;
+    typedef IntrusivePtr<Win32ThreadIdentity, ThreadIdentityInterface> Win32ThreadIdentityPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -21,10 +21,10 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 
-#include "stdex/memorycopy.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+
+#include "stdex/memorycopy.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderTextureService, Mengine::RenderTextureService );

@@ -109,16 +109,17 @@ namespace Mengine
 
         this->setVerboseFlag( verboseFlag );
 
-        const Char * verboses[16];
+        const Char * verboses[MENGINE_OPTIONS_VALUE_COUNT];
         uint32_t verboses_count;
-        OPTIONS_SERVICE()
-            ->getOptionValues( "verboses", verboses, &verboses_count );
-
-        for( uint32_t index = 0; index != verboses_count; ++index )
+        if( OPTIONS_SERVICE()
+            ->getOptionValues( "verboses", verboses, &verboses_count ) == false )
         {
-            const Char * verbose = verboses[index];
+            for( uint32_t index = 0; index != verboses_count; ++index )
+            {
+                const Char * verbose = verboses[index];
 
-            m_verboses.emplace_back( Helper::stringizeString( verbose ) );
+                m_verboses.emplace_back( Helper::stringizeString( verbose ) );
+            }
         }
 
         if( HAS_OPTION( "loghistory" ) == true )

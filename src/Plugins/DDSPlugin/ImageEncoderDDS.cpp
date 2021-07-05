@@ -57,7 +57,7 @@ namespace Mengine
 
         header.ddspf.dwSize = 32;
         header.ddspf.dwFlags = DDPF_FOURCC;
-        header.ddspf.dwFourCC = s_convertFormatFourCC( imageInfo->format );
+        header.ddspf.dwFourCC = Detail::convertFormatFourCC( imageInfo->format );
 
         write_size += m_stream->write( &header, sizeof( header ) );
         write_size += m_stream->write( _data->buffer, ddsSize );

@@ -26,16 +26,11 @@ namespace Mengine
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
             ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( container == nullptr )
-        {
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't create container file '%s'"
-                , _resource->getName().c_str()
-                , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( container, "resource '%s' group '%s' can't create container file '%s'"
+            , _resource->getName().c_str()
+            , _resource->getGroupName().c_str()
+            , _resource->getContent()->getFilePath().c_str()
+        );
 
         if( container->isValid() == false )
         {

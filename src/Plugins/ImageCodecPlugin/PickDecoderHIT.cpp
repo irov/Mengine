@@ -40,7 +40,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid load magic header" );
 
-            return 0;
+            return false;
         }
 
         stream->read( &m_dataInfo.width, sizeof( m_dataInfo.width ) );

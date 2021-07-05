@@ -3,10 +3,10 @@
 #include "Interface/DataflowInterface.h"
 #include "Interface/ArchivatorInterface.h"
 
+#include "DazzleIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
-
-#include "dazzle/dazzle.hpp"
 
 namespace Mengine
 {

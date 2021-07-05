@@ -8,7 +8,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class BitmapGlyphService
         : public ServiceBase<BitmapGlyphServiceInterface>
     {
@@ -26,10 +25,7 @@ namespace Mengine
     protected:
         FactoryPtr m_factoryTextGlyph;
 
-        typedef Map<ConstString, BitmapGlyphPtr> MapBitmapGlyph;
+        typedef Map<FilePath, BitmapGlyphPtr> MapBitmapGlyph;
         MapBitmapGlyph m_glyphs;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BitmapGlyphService> BitmapGlyphServicePtr;
-    //////////////////////////////////////////////////////////////////////////
 }

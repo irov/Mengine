@@ -34,7 +34,8 @@ namespace Mengine
         uint32_t getLayoutCount() const override;
 
     public:
-        void setGlyph( const BitmapGlyphPtr & _glyph );
+        void setBitmapGlyph( const BitmapGlyphPtr & _glyph );
+        const BitmapGlyphPtr & getBitmapGlyph() const;
 
     protected:
         bool hasGlyph( GlyphCode _code ) const override;

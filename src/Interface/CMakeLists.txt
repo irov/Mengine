@@ -123,9 +123,6 @@ src
     SettingInterface.h
     SettingsServiceInterface.h
     DocumentServiceInterface.h
-    ComponentServiceInterface.h
-    ComponentHubInterface.h
-    ComponentInterface.h
     AffectorHubInterface.h
     DebuggerBoundingBoxInterface.h
 )

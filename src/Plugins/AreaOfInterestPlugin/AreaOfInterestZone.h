@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class AreaOfInterestZone
         : public AreaOfInterestZoneInterface
         , public Scriptable

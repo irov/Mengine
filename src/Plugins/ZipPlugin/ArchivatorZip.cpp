@@ -31,35 +31,34 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static int32_t zip_uncompress( Bytef * _dest, uLong * _destLen, const Bytef * _source, uLong _sourceLen )
         {
-            z_stream stream;
-            int32_t err;
-
-            stream.next_in = const_cast<Bytef *>(_source);
-            stream.avail_in = (uInt)_sourceLen;
+            z_stream zs;
+            zs.next_in = const_cast<z_const Bytef *>(_source);
+            zs.avail_in = (uInt)_sourceLen;
+            
             /* Check for source > 64K on 16-bit machine: */
-            if( (uLong)stream.avail_in != _sourceLen ) return Z_BUF_ERROR;
+            if( (uLong)zs.avail_in != _sourceLen ) return Z_BUF_ERROR;
 
-            stream.next_out = _dest;
-            stream.avail_out = (uInt)*_destLen;
-            if( (uLong)stream.avail_out != *_destLen ) return Z_BUF_ERROR;
+            zs.next_out = _dest;
+            zs.avail_out = (uInt)*_destLen;
+            if( (uLong)zs.avail_out != *_destLen ) return Z_BUF_ERROR;
 
-            stream.zalloc = (alloc_func)Detail::zip_alloc_func;
-            stream.zfree = (free_func)Detail::zip_free_func;
+            zs.zalloc = (alloc_func)Detail::zip_alloc_func;
+            zs.zfree = (free_func)Detail::zip_free_func;
 
-            err = inflateInit( &stream );
+            int32_t err = inflateInit( &zs );
             if( err != Z_OK ) return err;
 
-            err = inflate( &stream, Z_FINISH );
+            err = inflate( &zs, Z_FINISH );
             if( err != Z_STREAM_END )
             {
-                inflateEnd( &stream );
-                if( err == Z_NEED_DICT || (err == Z_BUF_ERROR && stream.avail_in == 0) )
+                inflateEnd( &zs );
+                if( err == Z_NEED_DICT || (err == Z_BUF_ERROR && zs.avail_in == 0) )
                     return Z_DATA_ERROR;
                 return err;
             }
-            *_destLen = stream.total_out;
+            *_destLen = zs.total_out;
 
-            err = inflateEnd( &stream );
+            err = inflateEnd( &zs );
 
             return err;
         }

@@ -19,9 +19,9 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 
-#include "math/utils.h"
-
 #include "Config/Algorithm.h"
+
+#include "math/utils.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundService, Mengine::SoundService );

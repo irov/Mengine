@@ -13,18 +13,21 @@
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-static const char * FT_error_message( FT_Error err )
+namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        static const char * FT_error_message( FT_Error err )
+        {
 #undef __FTERRORS_H__
 #define FT_ERRORDEF( e, v, s )  case e: return s;
 #define FT_ERROR_START_LIST     switch (err) {
 #define FT_ERROR_END_LIST       }
 #include FT_ERRORS_H
-    return "(Unknown error)";
-}
-//////////////////////////////////////////////////////////////////////////
-namespace Mengine
-{
+            return "(Unknown error)";
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     TTFDataflow::TTFDataflow()
         : m_library( nullptr )
@@ -116,7 +119,7 @@ namespace Mengine
         if( err_code_memory_face != FT_Err_Ok )
         {
             LOGGER_ERROR( "FT_New_Memory_Face font error: %s [%d] (doc: %s)"
-                , FT_error_message( err_code_memory_face )
+                , Detail::FT_error_message( err_code_memory_face )
                 , err_code_memory_face
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -129,7 +132,7 @@ namespace Mengine
         if( err_code_select_charmap != FT_Err_Ok )
         {
             LOGGER_ERROR( "FT_Select_Charmap font error: %s [%d] (doc: %s)"
-                , FT_error_message( err_code_memory_face )
+                , Detail::FT_error_message( err_code_memory_face )
                 , err_code_memory_face
                 , MENGINE_DOCUMENT_STR( _doc )
             );

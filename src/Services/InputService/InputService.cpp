@@ -319,12 +319,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & InputService::getCursorPosition( ETouchCode _touchId ) const
     {
-        return m_cursorPosition[_touchId];
+        const mt::vec2f & position = m_cursorPosition[_touchId];
+
+        return position;
     }
     //////////////////////////////////////////////////////////////////////////
     float InputService::getCursorPressure( ETouchCode _touchId ) const
     {
-        return m_cursorPressure[_touchId];
+        float pressure = m_cursorPressure[_touchId];
+
+        return pressure;
     }
     //////////////////////////////////////////////////////////////////////////
     UniqueId InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc )

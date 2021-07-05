@@ -279,7 +279,7 @@ namespace Mengine
         {
             ConstStringHolder::hash_type holder_hash = holder->hash();
 
-            if( (int32_t)holder_hash != (int32_t)_hash )
+            if( holder_hash != _hash )
             {
                 continue;
             }

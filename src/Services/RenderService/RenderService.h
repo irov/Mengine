@@ -24,13 +24,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    enum ERenderObjectFlag
-    {
-        RENDER_OBJECT_FLAG_NONE = 0x00000000,
-        RENDER_OBJECT_FLAG_DEBUG = 0x00000001
-    };
-    //////////////////////////////////////////////////////////////////////////
     class RenderService
         : public ServiceBase<RenderServiceInterface>
     {

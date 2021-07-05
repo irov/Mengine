@@ -16,26 +16,28 @@ SERVICE_FACTORY( UpdateService, Mengine::UpdateService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static uint32_t s_calcDeep( EUpdateMode _mode, uint32_t _deep )
+    namespace Detail
     {
-        switch( _mode )
+        static uint32_t calcDeep( EUpdateMode _mode, uint32_t _deep )
         {
-        case EUM_NODE_BASE:
-            return _deep * 2U + 0U;
-            break;
-        case EUM_NODE_AFFECTOR:
-            return _deep * 2U + 1U;
-            break;
-        case EUM_SERVICE_BEFORE:
-            return _deep;
-            break;
-        case EUM_SERVICE_AFTER:
-            return _deep;
-            break;
-        default:
-            return ~0U;
-        };
+            switch( _mode )
+            {
+            case EUM_NODE_BASE:
+                return _deep * 2U + 0U;
+                break;
+            case EUM_NODE_AFFECTOR:
+                return _deep * 2U + 1U;
+                break;
+            case EUM_SERVICE_BEFORE:
+                return _deep;
+                break;
+            case EUM_SERVICE_AFTER:
+                return _deep;
+                break;
+            default:
+                return ~0U;
+            };
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     UpdateService::UpdateService()
@@ -139,7 +141,7 @@ namespace Mengine
         UpdatableProxy proxy;
         proxy.updation = _updation;
         proxy.mode = _mode;
-        proxy.deep = s_calcDeep( _mode, _deep );
+        proxy.deep = Detail::calcDeep( _mode, _deep );
 
         proxy.state = EUS_NORMAL;
 
@@ -184,7 +186,7 @@ namespace Mengine
             return;
         }
 
-        uint32_t mode_deep = s_calcDeep( proxy.mode, _deep );
+        uint32_t mode_deep = Detail::calcDeep( proxy.mode, _deep );
 
         if( proxy.deep == mode_deep )
         {

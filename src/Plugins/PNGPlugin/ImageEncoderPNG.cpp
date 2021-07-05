@@ -99,8 +99,7 @@ namespace Mengine
 
         if( info_ptr == nullptr )
         {
-            LOGGER_ERROR( "can't create info structure"
-            );
+            LOGGER_ERROR( "can't create info structure" );
 
             return false;
         }

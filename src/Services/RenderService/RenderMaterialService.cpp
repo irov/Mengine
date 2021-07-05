@@ -468,13 +468,13 @@ namespace Mengine
         }
 
 #ifdef MENGINE_DEBUG
-        for( uint32_t i = 0; i != _textureCount; ++i )
+        for( uint32_t index = 0; index != _textureCount; ++index )
         {
-            if( _textures[i] == nullptr )
+            if( _textures[index] == nullptr )
             {
                 LOGGER_ERROR( "stage '%s' invalid setup texture %u"
                     , _materialName.c_str()
-                    , i
+                    , index
                 );
 
                 return nullptr;

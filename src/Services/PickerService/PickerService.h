@@ -47,7 +47,6 @@ namespace Mengine
 
     public:
         void update() override;
-        void clear() override;
 
     public:
         bool pickTraps( const mt::vec2f & _point, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickers * const _pickers ) const override;

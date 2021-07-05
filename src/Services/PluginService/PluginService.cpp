@@ -145,8 +145,7 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.plugin->isSystemPlugin() == true &&
-                this->isInitializeService() == true )
+            if( desc.plugin->isSystemPlugin() == true && this->isInitializeService() == true )
             {
                 m_plugins.push_back( desc );
 
@@ -292,4 +291,5 @@ namespace Mengine
 
         return PluginInterfacePtr::none();
     }
+    //////////////////////////////////////////////////////////////////////////
 }

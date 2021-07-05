@@ -70,6 +70,6 @@ namespace Mengine
         void unloadBuffer_();
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SilentSoundSource> SilentSoundSourcePtr;
+    typedef IntrusivePtr<SilentSoundSource, SoundSourceInterface> SilentSoundSourcePtr;
     //////////////////////////////////////////////////////////////////////////
 }

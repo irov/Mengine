@@ -51,6 +51,11 @@ namespace Mengine
 
         m_protocolPath = CONFIG_VALUE( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
 
+        LOGGER_MESSAGE_RELEASE( "metacode: version %u protocol %u"
+            , Metacode::get_metacode_version()
+            , Metacode::get_metacode_protocol_version()
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -156,7 +161,6 @@ namespace Mengine
         }
 
         uint8_t header_buff[Metacode::header_size];
-
         stream->read( header_buff, Metacode::header_size );
 
         size_t header_read = 0;

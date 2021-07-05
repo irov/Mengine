@@ -166,7 +166,7 @@ namespace Mengine
         sampling_job.animation = &ozz_animation;
         sampling_job.cache = &m_cache;
         sampling_job.ratio = ratio;
-        sampling_job.output = make_span( m_locals );
+        sampling_job.output = ozz::make_span( m_locals );
 
         // Samples animation.
         if( sampling_job.Run() == false )

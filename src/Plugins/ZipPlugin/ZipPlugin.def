@@ -1,0 +1,2 @@
+LIBRARY "ZipPlugin"
+EXPORTS dllCreatePlugin @1

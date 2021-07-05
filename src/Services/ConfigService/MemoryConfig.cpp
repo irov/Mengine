@@ -14,7 +14,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_getRecord( const MemoryConfig::VectorRecords & _records, const Char * _section, const Char * _key, const MemoryConfig::RecordDesc ** const _record )
+        static bool getRecord( const MemoryConfig::VectorRecords & _records, const Char * _section, const Char * _key, const MemoryConfig::RecordDesc ** const _record )
         {
             for( const MemoryConfig::RecordDesc & record : _records )
             {
@@ -38,7 +38,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef Vector<const MemoryConfig::RecordDesc *> VectorRecordRefs;
         //////////////////////////////////////////////////////////////////////////
-        static void s_filterRecords( const MemoryConfig::VectorRecords & _records, const Char * _section, const Char * _key, VectorRecordRefs * const _refs )
+        static void filterRecords( const MemoryConfig::VectorRecords & _records, const Char * _section, const Char * _key, VectorRecordRefs * const _refs )
         {
             for( const MemoryConfig::RecordDesc & record : _records )
             {
@@ -57,7 +57,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool s_hasValueT( const MemoryConfig::VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T * const _value )
+        static bool hasValueT( const MemoryConfig::VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T * const _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _section );
@@ -70,7 +70,7 @@ namespace Mengine
                 platform_section.append( tag );
 
                 const MemoryConfig::RecordDesc * tag_record;
-                if( Detail::s_getRecord( _records, platform_section.c_str(), _key, &tag_record ) == false )
+                if( Detail::getRecord( _records, platform_section.c_str(), _key, &tag_record ) == false )
                 {
                     continue;
                 }
@@ -86,7 +86,7 @@ namespace Mengine
             }
 
             const MemoryConfig::RecordDesc * record;
-            if( Detail::s_getRecord( _records, _section, _key, &record ) == false )
+            if( Detail::getRecord( _records, _section, _key, &record ) == false )
             {
                 return false;
             }
@@ -102,11 +102,11 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static T s_getValueT( const MemoryConfig::VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T _default )
+        static T getValueT( const MemoryConfig::VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T _default )
         {
             T value;
 
-            if( Detail::s_hasValueT( _records, _tags, _section, _key, &value ) == false )
+            if( Detail::hasValueT( _records, _tags, _section, _key, &value ) == false )
             {
                 return _default;
             }
@@ -115,7 +115,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static void s_calcValuesT( const MemoryConfig::VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, Vector<T> * const _values )
+        static void calcValuesT( const MemoryConfig::VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, Vector<T> * const _values )
         {
             ArrayString<128> platform_section;
             platform_section.append( _section );
@@ -129,12 +129,12 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                Detail::s_filterRecords( _records, platform_section.c_str(), _key, &record_refs );
+                Detail::filterRecords( _records, platform_section.c_str(), _key, &record_refs );
             }
 
             if( record_refs.empty() == true )
             {
-                Detail::s_filterRecords( _records, _section, _key, &record_refs );
+                Detail::filterRecords( _records, _section, _key, &record_refs );
             }
 
             for( const MemoryConfig::RecordDesc * desc : record_refs )
@@ -150,6 +150,7 @@ namespace Mengine
                 _values->emplace_back( value );
             }
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryConfig::MemoryConfig()
@@ -183,7 +184,7 @@ namespace Mengine
             platform_section.append( tag );
 
             const RecordDesc * tag_record;
-            if( Detail::s_getRecord( m_records, platform_section.c_str(), _key, &tag_record ) == false )
+            if( Detail::getRecord( m_records, platform_section.c_str(), _key, &tag_record ) == false )
             {
                 continue;
             }
@@ -192,7 +193,7 @@ namespace Mengine
         }
 
         const RecordDesc * record;
-        if( Detail::s_getRecord( m_records, _section, _key, &record ) == false )
+        if( Detail::getRecord( m_records, _section, _key, &record ) == false )
         {
             return false;
         }
@@ -202,162 +203,162 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, bool * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, int8_t * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, uint8_t * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, int32_t * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, uint32_t * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, uint64_t * const  _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, float * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, double * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, const Char ** const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, ConstString * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, FilePath * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, Tags * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, Resolution * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, Color * const _value ) const
     {
-        return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::getValue( const Char * _section, const Char * _key, bool _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     int8_t MemoryConfig::getValue( const Char * _section, const Char * _key, int8_t _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     uint8_t MemoryConfig::getValue( const Char * _section, const Char * _key, uint8_t _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t MemoryConfig::getValue( const Char * _section, const Char * _key, int32_t _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MemoryConfig::getValue( const Char * _section, const Char * _key, uint32_t _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t MemoryConfig::getValue( const Char * _section, const Char * _key, uint64_t _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     float MemoryConfig::getValue( const Char * _section, const Char * _key, float _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     double MemoryConfig::getValue( const Char * _section, const Char * _key, double _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * MemoryConfig::getValue( const Char * _section, const Char * _key, const Char * _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     ConstString MemoryConfig::getValue( const Char * _section, const Char * _key, const ConstString & _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     FilePath MemoryConfig::getValue( const Char * _section, const Char * _key, const FilePath & _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     Tags MemoryConfig::getValue( const Char * _section, const Char * _key, const Tags & _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     Resolution MemoryConfig::getValue( const Char * _section, const Char * _key, const Resolution & _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     Color MemoryConfig::getValue( const Char * _section, const Char * _key, const Color & _default ) const
     {
-        return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const
     {
-        Detail::s_calcValuesT( m_records, m_platformTags, _section, _key, _values );
+        Detail::calcValuesT( m_records, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorFilePath * const _values ) const
     {
-        Detail::s_calcValuesT( m_records, m_platformTags, _section, _key, _values );
+        Detail::calcValuesT( m_records, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorConstString * const _values ) const
     {
-        Detail::s_calcValuesT( m_records, m_platformTags, _section, _key, _values );
+        Detail::calcValuesT( m_records, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorString * const _values ) const
     {
-        Detail::s_calcValuesT( m_records, m_platformTags, _section, _key, _values );
+        Detail::calcValuesT( m_records, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryConfig::setValue( const Char * _section, const Char * _key, const Char * _value )

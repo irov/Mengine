@@ -67,7 +67,7 @@ namespace Mengine
         FT_Library ftlibrary;
         FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
 
-        if( ft_err != 0 )
+        if( ft_err != FT_Err_Ok )
         {
             LOGGER_ERROR( "invalid init FreeType '%d'"
                 , ft_err

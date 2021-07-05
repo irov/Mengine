@@ -5,6 +5,7 @@ src
     XmlToBinPlugin.h
     XmlToBinPlugin.def
     XmlToBinPlugin.cpp
+    
     XmlToBinDecoder.h
     XmlToBinDecoder.cpp    
     XmlToBinInterface.h

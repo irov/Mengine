@@ -688,11 +688,6 @@ Core
     
     Range.h
     
-    Componentable.h
-    
-    BaseComponentHub.h
-    BaseComponentHub.cpp
-    
     Hashgen.h
     Hashtable.h
     Hashtable2.h

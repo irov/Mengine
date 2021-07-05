@@ -86,12 +86,12 @@ namespace Mengine
     {
         if( Helper::loadStreamMagicHeader( _stream, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ) ) == false )
         {
-            LOGGER_ERROR( "invalid magic header"
-            );
+            LOGGER_ERROR( "invalid magic header" );
 
             return false;
         }
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

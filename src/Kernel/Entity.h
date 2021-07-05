@@ -6,7 +6,6 @@
 #include "Kernel/EntityBehaviorInterface.h"
 
 #include "Kernel/Node.h"
-#include "Kernel/Componentable.h"
 #include "Kernel/DummyRender.h"
 #include "Kernel/DummyPicker.h"
 #include "Kernel/BaseTransformation.h"
@@ -16,7 +15,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Entity
         : public Node
-        , public Componentable
         , protected DummyRender
         , protected DummyPicker
         , protected BaseTransformation

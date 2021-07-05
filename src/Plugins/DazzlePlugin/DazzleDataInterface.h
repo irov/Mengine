@@ -2,7 +2,7 @@
 
 #include "Interface/DataInterface.h"
 
-#include "dazzle/dazzle.hpp"
+#include "DazzleIncluder.h"
 
 namespace Mengine
 {

@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     AstralaxInterface.h
     
+    AstralaxIncluder.h
+    
     AstralaxPlugin.cpp
     AstralaxPlugin.h
     AstralaxPlugin.def

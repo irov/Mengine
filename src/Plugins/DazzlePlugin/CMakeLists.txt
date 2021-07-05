@@ -3,6 +3,8 @@ MENGINE_PROJECT(DazzlePlugin)
 ADD_FILTER(
 src
     DazzleInterface.h
+    
+    DazzleIncluder.h
 
     DazzlePlugin.cpp
     DazzlePlugin.h

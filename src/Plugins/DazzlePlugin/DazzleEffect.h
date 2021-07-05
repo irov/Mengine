@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DazzleInterface.h"
+#include "DazzleIncluder.h"
 
 #include "ResourceDazzleEffect.h"
 
@@ -11,8 +12,6 @@
 #include "Kernel/BaseRender.h"
 #include "Kernel/BaseTransformation.h"
 #include "Kernel/Materialable.h"
-
-#include "dazzle/dazzle.hpp"
 
 namespace Mengine
 {

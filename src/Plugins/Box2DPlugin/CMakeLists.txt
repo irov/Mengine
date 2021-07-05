@@ -2,7 +2,8 @@ MENGINE_PROJECT(Box2DPlugin)
 
 ADD_FILTER(
 src
-    Box2DInterface.h
+    Box2DInterface.h    
+    Box2DIncluder.h
 
     Box2DPlugin.cpp
     Box2DPlugin.h

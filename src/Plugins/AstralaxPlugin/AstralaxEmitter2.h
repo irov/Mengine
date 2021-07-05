@@ -1,21 +1,13 @@
 #pragma once
 
 #include "AstralaxInterface.h"
+#include "AstralaxIncluder.h"
 
 #include "Kernel/Factorable.h"
 
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#endif 
-
-#include "magic.h"
-
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#endif
-
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class AstralaxEmitter2
         : public AstralaxEmitterInterface
         , public Factorable

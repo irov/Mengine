@@ -98,7 +98,6 @@ SERVICE_EXTERN( TimepipeService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
-SERVICE_EXTERN( ComponentService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
@@ -660,7 +659,6 @@ namespace Mengine
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( ComponentService, MENGINE_DOCUMENT_FACTORABLE );
 
 #if MENGINE_ASSERTION_DEBUG == 0
         LOGGER_MESSAGE_RELEASE( "enable assertion debug [OFF]" );
@@ -1140,7 +1138,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createFrameworks_()
     {
-        LOGGER_MESSAGE( "run Frameworks..." );
+        LOGGER_MESSAGE( "create Frameworks..." );
 
         VectorConstString frameworks;
         CONFIG_VALUES( "Frameworks", "Name", &frameworks );
@@ -1163,7 +1161,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::runModules_()
     {
-        LOGGER_MESSAGE( "run Modules..." );
+        LOGGER_MESSAGE( "create Modules..." );
 
         VectorConstString modules;
         CONFIG_VALUES( "Modules", "Name", &modules );
@@ -1479,8 +1477,7 @@ namespace Mengine
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( TimepipeService );
-        SERVICE_FINALIZE( ComponentService );
-
+        
         if( m_loggerFile != nullptr )
         {
             LOGGER_SERVICE()
@@ -1547,11 +1544,11 @@ namespace Mengine
         SERVICE_DESTROY( FileService );
         SERVICE_DESTROY( ThreadSystem );
         SERVICE_DESTROY( TimepipeService );
-        SERVICE_DESTROY( ComponentService );
         SERVICE_DESTROY( Platform );
         SERVICE_DESTROY( NotificationService );
-        SERVICE_DESTROY( LoggerService );        
+        SERVICE_DESTROY( LoggerService );
         SERVICE_DESTROY( FactoryService );
         SERVICE_DESTROY( OptionsService );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

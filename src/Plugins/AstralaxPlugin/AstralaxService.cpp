@@ -527,7 +527,7 @@ namespace Mengine
         return m_maxParticlesNum;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxService::createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m )
+    void AstralaxService::createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m ) const
     {
         int32_t textures = m->textures;
 
@@ -761,7 +761,7 @@ namespace Mengine
         ss << "}" << std::endl;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxService::createFragmentShaderDX11Source_( Stringstream & ss, const MAGIC_MATERIAL * m )
+    void AstralaxService::createFragmentShaderDX11Source_( Stringstream & ss, const MAGIC_MATERIAL * m ) const
     {
         int32_t textures = m->textures;
 
@@ -1000,7 +1000,7 @@ namespace Mengine
         ss << "}" << std::endl;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxService::createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m )
+    void AstralaxService::createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m ) const
     {
         int32_t textures = m->textures;
 
@@ -1225,7 +1225,7 @@ namespace Mengine
         ss << "}" << std::endl;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxService::createFragmentShaderGLESSource_( Stringstream & ss, const MAGIC_MATERIAL * m )
+    void AstralaxService::createFragmentShaderGLESSource_( Stringstream & ss, const MAGIC_MATERIAL * m ) const
     {
         int32_t textures = m->textures;
 
@@ -1450,7 +1450,7 @@ namespace Mengine
         ss << "}" << std::endl;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr AstralaxService::cacheFragmentShader_( const MAGIC_MATERIAL * m )
+    RenderFragmentShaderInterfacePtr AstralaxService::cacheFragmentShader_( const MAGIC_MATERIAL * m ) const
     {
         int32_t textures = m->textures;
 

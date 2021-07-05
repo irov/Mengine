@@ -72,47 +72,52 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE EPixelFormat s_convertFourCCFormat( uint32_t fourcc )
+    namespace Detail
     {
-        // convert dxt pixel format
-        switch( fourcc )
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_INLINE EPixelFormat convertFourCCFormat( uint32_t fourcc )
         {
-        case MENGINE_FOURCC( 'D', 'X', 'T', '1' ):
-            return PF_DXT1;
-        case MENGINE_FOURCC( 'D', 'X', 'T', '2' ):
-            return PF_DXT2;
-        case MENGINE_FOURCC( 'D', 'X', 'T', '3' ):
-            return PF_DXT3;
-        case MENGINE_FOURCC( 'D', 'X', 'T', '4' ):
-            return PF_DXT4;
-        case MENGINE_FOURCC( 'D', 'X', 'T', '5' ):
-            return PF_DXT5;
-        default:
-            break;
-        }
+            // convert dxt pixel format
+            switch( fourcc )
+            {
+            case MENGINE_FOURCC( 'D', 'X', 'T', '1' ):
+                return PF_DXT1;
+            case MENGINE_FOURCC( 'D', 'X', 'T', '2' ):
+                return PF_DXT2;
+            case MENGINE_FOURCC( 'D', 'X', 'T', '3' ):
+                return PF_DXT3;
+            case MENGINE_FOURCC( 'D', 'X', 'T', '4' ):
+                return PF_DXT4;
+            case MENGINE_FOURCC( 'D', 'X', 'T', '5' ):
+                return PF_DXT5;
+            default:
+                break;
+            }
 
-        return PF_UNKNOWN;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE uint32_t s_convertFormatFourCC( EPixelFormat _format )
-    {
-        // convert dxt pixel format
-        switch( _format )
+            return PF_UNKNOWN;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_INLINE uint32_t convertFormatFourCC( EPixelFormat _format )
         {
-        case PF_DXT1:
-            return MENGINE_FOURCC( 'D', 'X', 'T', '1' );
-        case PF_DXT2:
-            return MENGINE_FOURCC( 'D', 'X', 'T', '2' );
-        case PF_DXT3:
-            return MENGINE_FOURCC( 'D', 'X', 'T', '3' );
-        case PF_DXT4:
-            return MENGINE_FOURCC( 'D', 'X', 'T', '4' );
-        case PF_DXT5:
-            return MENGINE_FOURCC( 'D', 'X', 'T', '5' );
-        default:
-            break;
-        }
+            // convert dxt pixel format
+            switch( _format )
+            {
+            case PF_DXT1:
+                return MENGINE_FOURCC( 'D', 'X', 'T', '1' );
+            case PF_DXT2:
+                return MENGINE_FOURCC( 'D', 'X', 'T', '2' );
+            case PF_DXT3:
+                return MENGINE_FOURCC( 'D', 'X', 'T', '3' );
+            case PF_DXT4:
+                return MENGINE_FOURCC( 'D', 'X', 'T', '4' );
+            case PF_DXT5:
+                return MENGINE_FOURCC( 'D', 'X', 'T', '5' );
+            default:
+                break;
+            }
 
-        return MENGINE_FOURCC( 'U', 'N', 'K', 'N' );
-    };
+            return MENGINE_FOURCC( 'U', 'N', 'K', 'N' );
+        };
+        //////////////////////////////////////////////////////////////////////////
+    }
 }

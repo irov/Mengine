@@ -1,29 +1,18 @@
 #pragma once
 
-#include "AstralaxInterface.h"
-
 #include "Interface/RenderSystemInterface.h"
 
-#include "Kernel/ServiceBase.h"
-#include "Kernel/String.h"
-
+#include "AstralaxInterface.h"
+#include "AstralaxIncluder.h"
 #include "AstralaxEmitterContainer.h"
 #include "AstralaxEmitter2.h"
 
+#include "Kernel/ServiceBase.h"
+#include "Kernel/String.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
-
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#endif 
-
-#include "magic.h"
-
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#endif
 
 namespace Mengine
 {
@@ -117,14 +106,14 @@ namespace Mengine
         };
 
         typedef Vector<MagicStatesCache> VectorRenderFragmentShaderCache;
-        VectorRenderFragmentShaderCache m_renderFragmentShaderCache;
+        mutable VectorRenderFragmentShaderCache m_renderFragmentShaderCache;
 
     protected:
-        void createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m );
-        void createFragmentShaderDX11Source_( Stringstream & ss, const MAGIC_MATERIAL * m );
-        void createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m );
-        void createFragmentShaderGLESSource_( Stringstream & ss, const MAGIC_MATERIAL * m );
+        void createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m ) const;
+        void createFragmentShaderDX11Source_( Stringstream & ss, const MAGIC_MATERIAL * m ) const;
+        void createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m ) const;
+        void createFragmentShaderGLESSource_( Stringstream & ss, const MAGIC_MATERIAL * m ) const;
 
-        RenderFragmentShaderInterfacePtr cacheFragmentShader_( const MAGIC_MATERIAL * m );
+        RenderFragmentShaderInterfacePtr cacheFragmentShader_( const MAGIC_MATERIAL * m ) const;
     };
 }

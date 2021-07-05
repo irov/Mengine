@@ -12,22 +12,25 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static EPixelFormat s_convertFormat( uint32_t _format )
+    namespace Detail
     {
-        switch( _format )
+        static EPixelFormat convertFormat( uint32_t _format )
         {
-        case 1:
-            return PF_DXT1;
-        case 2:
-            return PF_ETC1;
-        case 3:
-            return PF_PVRTC4_RGB;
-        default:
-            break;
-        }
+            switch( _format )
+            {
+            case 1:
+                return PF_DXT1;
+            case 2:
+                return PF_ETC1;
+            case 3:
+                return PF_PVRTC4_RGB;
+            default:
+                break;
+            }
 
-        return PF_UNKNOWN;
-    };
+            return PF_UNKNOWN;
+        };
+    }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderHTF::ImageDecoderHTF()
     {
@@ -73,7 +76,7 @@ namespace Mengine
         m_dataInfo.height = height;
         m_dataInfo.channels = 3;
 
-        m_dataInfo.format = s_convertFormat( format );
+        m_dataInfo.format = Detail::convertFormat( format );
         m_dataInfo.mipmaps = mipmaps;
 
         return true;

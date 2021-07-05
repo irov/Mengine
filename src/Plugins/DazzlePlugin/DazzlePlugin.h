@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Kernel/PluginBase.h"
+#include "DazzleIncluder.h"
 
-#include "dazzle/dazzle.hpp"
+#include "Kernel/PluginBase.h"
 
 namespace Mengine
 {

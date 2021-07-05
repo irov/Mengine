@@ -62,7 +62,7 @@ namespace Mengine
             , glyphPath.c_str()
         );
 
-        font->setGlyph( glyph );
+        font->setBitmapGlyph( glyph );
 
         uint32_t height = glyph->getHeight();
 

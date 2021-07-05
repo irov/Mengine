@@ -12,23 +12,26 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static uint32_t s_convertFormat( EPixelFormat _format )
+    namespace Detail
     {
-        switch( _format )
+        static uint32_t convertFormat( EPixelFormat _format )
         {
-        case PF_DXT1:
-            return 1;
-        case PF_ETC1:
-            return 2;
-        case PF_PVRTC4_RGB:
-            return 3;
-        default:
+            switch( _format )
             {
-            }break;
-        }
+            case PF_DXT1:
+                return 1;
+            case PF_ETC1:
+                return 2;
+            case PF_PVRTC4_RGB:
+                return 3;
+            default:
+                {
+                }break;
+            }
 
-        return 0;
-    };
+            return 0;
+        };
+    }
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderHTF::ImageEncoderHTF()
     {
@@ -74,7 +77,7 @@ namespace Mengine
         m_stream->write( &width, sizeof( width ) );
         m_stream->write( &height, sizeof( height ) );
 
-        uint32_t format = s_convertFormat( dataInfo->format );
+        uint32_t format = Detail::convertFormat( dataInfo->format );
         m_stream->write( &format, sizeof( format ) );
 
         uint32_t mipmaps = dataInfo->mipmaps;
@@ -82,9 +85,9 @@ namespace Mengine
 
         const uint8_t * mipmap_buffer = reinterpret_cast<const uint8_t *>(_buffer);
 
-        for( uint32_t i = 0; i != mipmaps; ++i )
+        for( uint32_t index = 0; index != mipmaps; ++index )
         {
-            size_t mipmap_size = dataInfo->getMipMapSize( i );
+            size_t mipmap_size = dataInfo->getMipMapSize( index );
 
             if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
             {

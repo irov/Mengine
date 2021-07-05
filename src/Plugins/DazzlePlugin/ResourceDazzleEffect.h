@@ -1,11 +1,10 @@
 #pragma once
 
 #include "DazzleInterface.h"
+#include "DazzleIncluder.h"
 #include "DazzleDataInterface.h"
 
 #include "Kernel/Resource.h"
-
-#include "dazzle/dazzle.hpp"
 
 namespace Mengine
 {

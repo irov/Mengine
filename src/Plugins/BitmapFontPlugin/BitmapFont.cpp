@@ -85,9 +85,14 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BitmapFont::setGlyph( const BitmapGlyphPtr & _glyph )
+    void BitmapFont::setBitmapGlyph( const BitmapGlyphPtr & _glyph )
     {
         m_glyph = _glyph;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const BitmapGlyphPtr & BitmapFont::getBitmapGlyph() const
+    {
+        return m_glyph;
     }
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const

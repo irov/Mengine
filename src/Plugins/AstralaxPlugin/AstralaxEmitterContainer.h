@@ -1,25 +1,15 @@
 #pragma once
 
-#include "AstralaxInterface.h"
-
 #include "Interface/MemoryInterface.h"
 
+#include "AstralaxInterface.h"
+#include "AstralaxIncluder.h"
 #include "AstralaxEmitter2.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
 #include "Kernel/VectorResourceImages.h"
 #include "Kernel/Vector.h"
-
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#endif 
-
-#include "magic.h"
-
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#endif
 
 namespace Mengine
 {

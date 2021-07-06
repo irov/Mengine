@@ -47,7 +47,7 @@ namespace Mengine
         m_timepipeAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc )
+    UniqueId TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -66,7 +66,7 @@ namespace Mengine
         return newid;
     }
     //////////////////////////////////////////////////////////////////////////
-    TimepipeInterfacePtr TimepipeService::removeTimepipe( uint32_t _id )
+    TimepipeInterfacePtr TimepipeService::removeTimepipe( UniqueId _id )
     {
         VectorTimepipe::iterator it_find = std::find_if( m_timepipe.begin(), m_timepipe.end(), [_id]( const TimepipeDesc & _desc )
         {

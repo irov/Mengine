@@ -34,7 +34,7 @@ namespace Mengine
     protected:
         Scene * m_scene;
 
-        uint32_t m_timepipeId;
+        UniqueId m_timepipeId;
 
         HotSpotGlobalPtr m_globalHotspot;
         GOAP::SemaphoreInterfacePtr m_semaphoreBurst;

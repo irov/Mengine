@@ -7,7 +7,7 @@ src
     XmlToBinPlugin.cpp
     
     XmlToBinDecoder.h
-    XmlToBinDecoder.cpp    
+    XmlToBinDecoder.cpp
     XmlToBinInterface.h
 )
 

@@ -21,8 +21,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        uint32_t addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc ) override;
-        TimepipeInterfacePtr removeTimepipe( uint32_t _id ) override;
+        UniqueId addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc ) override;
+        TimepipeInterfacePtr removeTimepipe( UniqueId _id ) override;
 
     public:
         void tick( const UpdateContext * _context ) override;

@@ -8,6 +8,8 @@ namespace Mengine
     class BubblegumFramework
         : public FrameworkBase
     {
+        DECLARE_FACTORABLE( BubblegumFramework );
+
     public:
         BubblegumFramework();
         ~BubblegumFramework() override;

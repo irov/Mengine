@@ -11,12 +11,12 @@
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
 #include "Engine/Engine.h"
-#include "Engine/SurfaceSolidColor.h"
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/ShapeCircle.h"
 #include "Engine/HotSpotGlobal.h"
 #include "Engine/HotSpotCircle.h"
 
+#include "Kernel/SurfaceSolidColor.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeCircle.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/Surface.h"
@@ -82,7 +82,7 @@ namespace Mengine
         );
 
         // create node for box2d objects
-        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -97,7 +97,8 @@ namespace Mengine
         float width = resolution.getWidthF();
         float height = resolution.getHeightF();
 
-        m_boxNode->setLocalPosition( { width / 2.f, height / 2.f, 0.f } );
+        TransformationInterface * transformation = m_boxNode->getTransformation();
+        transformation->setLocalPosition( { width / 2.f, height / 2.f, 0.f } );
 
         // create box2d objects
         mt::vec2f gravity( 0.f, 10.f );
@@ -246,7 +247,7 @@ namespace Mengine
         GOAP::SourceInterfacePtr source = GOAP_SERVICE()
             ->makeSource();
 
-        Cook::addGlobalMouseButton( source, MC_LBUTTON, true, nullptr );
+        Cook::addGlobalMouseButton( source, MC_LBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addPrint( source, "Click" );
 
         GOAP::ChainInterfacePtr chain = GOAP_SERVICE()

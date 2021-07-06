@@ -112,7 +112,7 @@ namespace Mengine
         const Char * verboses[MENGINE_OPTIONS_VALUE_COUNT];
         uint32_t verboses_count;
         if( OPTIONS_SERVICE()
-            ->getOptionValues( "verboses", verboses, &verboses_count ) == false )
+            ->getOptionValues( "verboses", verboses, &verboses_count ) == true )
         {
             for( uint32_t index = 0; index != verboses_count; ++index )
             {

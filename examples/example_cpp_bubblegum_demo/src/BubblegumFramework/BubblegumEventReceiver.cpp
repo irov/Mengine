@@ -8,12 +8,12 @@
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
 #include "Engine/Engine.h"
-#include "Engine/SurfaceSolidColor.h"
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/ShapeCircle.h"
 #include "Engine/HotSpotGlobal.h"
 #include "Engine/HotSpotCircle.h"
 
+#include "Kernel/SurfaceSolidColor.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeCircle.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/Surface.h"
@@ -31,6 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BubblegumEventReceiver::BubblegumEventReceiver()
         : m_scene( nullptr )
+        , m_timepipeId( INVALIDATE_UNIQUE_ID )
         , m_score( 0 )
     {
     }
@@ -104,7 +105,8 @@ namespace Mengine
             return true;
         } );
 
-        textScore->setLocalPosition( {50.f, 50.f, 0.f} );
+        TransformationInterface * textScoreTransformation = textScore->getTransformation();
+        textScoreTransformation->setLocalPosition( {50.f, 50.f, 0.f} );
 
         m_textScore = textScore;
 
@@ -135,7 +137,8 @@ namespace Mengine
             return true;
         } );
 
-        textFinish->setLocalPosition( {300.f, 300.f, 0.f} );
+        TransformationInterface * textFinishTransformation = textFinish->getTransformation();
+        textFinishTransformation->setLocalPosition( {300.f, 300.f, 0.f} );
 
         m_textFinish = textFinish;
 
@@ -154,8 +157,8 @@ namespace Mengine
 
         SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
 
-        float r = randomizer->getRandomRangef( 0.3f, 1.f );
-        float g = randomizer->getRandomRangef( 0.3f, 1.f );
+        float r = randomizer->getRandomRangef( 0.1f, 1.f );
+        float g = randomizer->getRandomRangef( 0.2f, 1.f );
         float b = randomizer->getRandomRangef( 0.3f, 1.f );
         
         surface->setSolidColor( {r, g, b, 1.f} );
@@ -175,8 +178,9 @@ namespace Mengine
         float x = randomizer->getRandomRangef( width * 2, ResolutionWidth - width * 2 );
         float y = randomizer->getRandomRangef( width * 2, ResolutionHeight - width * 2 );
 
-        shape->setLocalPosition( {x, y, 0.f} );
-        shape->setLocalScale( {0.f, 0.f, 0.f} );
+        TransformationInterface * shapeTransformation = shape->getTransformation();
+        shapeTransformation->setLocalPosition( {x, y, 0.f} );
+        shapeTransformation->setLocalScale( {0.f, 0.f, 0.f} );
 
         HotSpotCirclePtr hotspot = Helper::generateHotSpotCircle( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -207,12 +211,12 @@ namespace Mengine
             delay = 5000.f;
         }
 
-        Cook::addTransformationScaleTime( source_scale, shape, shape, nullptr, mt::vec3f( 1.f, 1.f, 1.f ), delay, ETASK_FLAG_NOREWIND );
+        Cook::addTransformationScaleTime( source_scale, shape, shape, nullptr, mt::vec3f( 1.f, 1.f, 1.f ), delay, ETASK_FLAG_NOREWIND, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addNoSkip( source_scale );
         Cook::addPrint( source_scale, "source_scale!!!" );
         Cook::addSemaphoreAssign( source_scale, m_semaphoreBurst, 1 );
 
-        Cook::addPickerableMouseButton( source_click, hotspot, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_click, hotspot, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addNodeDisable( source_click, shape );
 
         Cook::addFunction( source_click, this, &BubblegumEventReceiver::addScore_, shape, _iterator );
@@ -229,7 +233,9 @@ namespace Mengine
 
         int addscore = 100 * n;
 
-        const mt::vec3f & scale = _shape->getLocalScale();
+        TransformationInterface * shapeTransformation = _shape->getTransformation();
+
+        const mt::vec3f & scale = shapeTransformation->getLocalScale();
         float coeff = scale.x;
 
         if( coeff < 0.15f )
@@ -255,7 +261,7 @@ namespace Mengine
         GOAP::TimerInterfacePtr timer = GOAP_SERVICE()
             ->makeTimer();
 
-        uint32_t timepipeId = Helper::addTimepipe( [timer]( const UpdateContext * _context )
+        UniqueId timepipeId = Helper::addTimepipe( [timer]( const UpdateContext * _context )
         {
             float time = _context->time;
 
@@ -269,7 +275,7 @@ namespace Mengine
 
         Cook::addNodeDisable( source, m_textFinish );
 
-        Cook::addGlobalDelay( source, 1000.f );
+        Cook::addGlobalDelay( source, 1000.f, MENGINE_DOCUMENT_FACTORABLE );
 
         auto && [source_generator, source_burst, source_missclick] = Cook::addRace<3>( source );
         
@@ -304,7 +310,7 @@ namespace Mengine
         Cook::addSemaphoreEqual( source_burst, m_semaphoreBurst, 1 );
         Cook::addPrint( source_burst, "burst" );
 
-        Cook::addPickerableMouseButton( source_missclick, m_globalHotspot, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_missclick, m_globalHotspot, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addPrint( source_missclick, "test" );
         Cook::addSemaphoreAssign( source_missclick, m_semaphoreBurst, 1 );
 

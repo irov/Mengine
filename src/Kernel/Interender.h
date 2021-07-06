@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Interender
         : public Node
         , protected BaseRender
@@ -33,4 +34,7 @@ namespace Mengine
         const RenderTransformationInterfacePtr & getPickerTransformation() const override;
         const RenderTargetInterfacePtr & getPickerTarget() const override;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<Interender> InterenderPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

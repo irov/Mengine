@@ -8,6 +8,8 @@ namespace Mengine
     class Box2DFramework
         : public FrameworkBase
     {
+        DECLARE_FACTORABLE( Box2DFramework );
+
     public:
         Box2DFramework();
         ~Box2DFramework() override;

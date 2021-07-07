@@ -656,7 +656,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool NodeScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         NodeScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<NodeScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1219,7 +1219,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void NodeScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
 

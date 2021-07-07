@@ -2188,7 +2188,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool KernelScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool KernelScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         KernelScriptMethodPtr scriptMethod = Helper::makeFactorableUnique<KernelScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -2501,7 +2501,7 @@ namespace Mengine
             .def( "isEnable", &Node::isEnable )
             .def( "isActivate", &Node::isActivate )
             .def( "freeze", &Node::freeze )
-            .def( "isFreeze", &Node::isFreeze )            
+            .def( "isFreeze", &Node::isFreeze )
             .def( "findUniqueChild", &Node::findUniqueChild )
             .def_proxy_static( "removeChildren", scriptMethod, &KernelScriptMethod::s_Node_removeChild )
             .def_proxy_static( "removeAllChild", scriptMethod, &KernelScriptMethod::s_Node_removeAllChild )
@@ -2621,7 +2621,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void KernelScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void KernelScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
 

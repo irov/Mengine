@@ -185,7 +185,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConstsScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool ConstsScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::structhash_<ConstString>( _kernel, "ConstString" )
             .def_compare( &Detail::ConstString_compare )
@@ -206,7 +206,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstsScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void ConstsScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         pybind::unregistration_stl_vector_type_cast<VectorConstString>(_kernel);
 

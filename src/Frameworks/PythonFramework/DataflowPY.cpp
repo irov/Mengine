@@ -98,7 +98,7 @@ namespace Mengine
         }
 
         data->setScriptCode( pybind::make_borrowed_t( m_kernel, py_code ) );
-        
+
         return true;
     }
 }

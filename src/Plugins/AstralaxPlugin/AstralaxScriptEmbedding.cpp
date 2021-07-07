@@ -66,7 +66,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool AstralaxScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<ResourceAstralax, pybind::bases<Resource>>( _kernel, "ResourceAstralax", false )
             .def( "getResourceImageCount", &ResourceAstralax::getResourceImageCount )
@@ -102,7 +102,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void AstralaxScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<ResourceAstralax>();
         _kernel->remove_scope<AstralaxEmitter>();

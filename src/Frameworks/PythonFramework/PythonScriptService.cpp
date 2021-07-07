@@ -462,7 +462,7 @@ namespace Mengine
                 , desc.name.c_str()
             );
 
-            embedding->ejecting( m_kernel );
+            embedding->eject( m_kernel );
         }
 #endif
 
@@ -489,7 +489,7 @@ namespace Mengine
         m_kernel->setStdErrorHandle( nullptr );
 
         m_kernel->remove_scope<PythonScriptLogger>();
-        m_kernel->remove_scope<PythonScriptModuleFinder>();        
+        m_kernel->remove_scope<PythonScriptModuleFinder>();
 
         m_bootstrapperModules.clear();
         m_prototypies.clear();
@@ -587,7 +587,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
-    {      
+    {
         MENGINE_ASSERTION_FATAL( std::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
@@ -597,7 +597,7 @@ namespace Mengine
         desc.name = _name;
         desc.embedding = _embedding;
 
-        if( _embedding->embedding( m_kernel ) == false )
+        if( _embedding->embed( m_kernel ) == false )
         {
             return false;
         }
@@ -622,7 +622,7 @@ namespace Mengine
 
         const ScriptEmbeddingInterfacePtr & embedding = desc.embedding;
 
-        embedding->ejecting( m_kernel );
+        embedding->eject( m_kernel );
 
         m_embeddings.erase( it_found );
     }
@@ -642,7 +642,9 @@ namespace Mengine
 
             if( m_kernel->type_initialize( py_type_ptr ) == false )
             {
-                LOGGER_ERROR( "type invalid initialize" );
+                LOGGER_ERROR( "type '%s' invalid initialize"
+                    , _type.repr().c_str()
+                );
 
                 return nullptr;
             }
@@ -673,7 +675,7 @@ namespace Mengine
 
             ScriptModuleInterfacePtr module = this->importModule( package.module );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid import module '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( module, "module '%s' invalid import"
                 , package.module.c_str()
             );
         }
@@ -710,7 +712,7 @@ namespace Mengine
 
         ScriptModuleInterfacePtr module = this->importModule( _pack.module );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid import module '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( module, "module '%s' invalid import"
             , _pack.module.c_str()
         );
 
@@ -721,7 +723,7 @@ namespace Mengine
 
         if( module->onInitialize( _pack.initializer ) == false )
         {
-            LOGGER_ERROR( "invalid initialize module '%s'"
+            LOGGER_ERROR( "module '%s' invalid initialize"
                 , _pack.module.c_str()
             );
 
@@ -793,7 +795,7 @@ namespace Mengine
                     ->prefetchData( fileGroup, _filePath, dataflowPY, &context, _cb ) == false )
                 {
                     LOGGER_ERROR( "invalid prefetch data '%s'"
-                        , _filePath.c_str() 
+                        , _filePath.c_str()
                     );
                 }
 
@@ -1026,7 +1028,7 @@ namespace Mengine
             }
 
             if( _desc.className.empty() == true )
-            { 
+            {
                 LOGGER_STATISTIC( "Debug call '%s' args '%s' kwds '%s':"
                     , _functionName
                     , m_kernel->object_repr( _args ).c_str()
@@ -1037,7 +1039,7 @@ namespace Mengine
                 m_kernel->get_traceback( traceback, 4095 );
 
                 LOGGER_STATISTIC( "%s", traceback );
-            }            
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

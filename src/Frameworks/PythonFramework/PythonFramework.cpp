@@ -55,7 +55,7 @@ namespace Mengine
         {
             return false;
         }
-        
+
         if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ), Helper::makeFactorableUnique<KernelScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;

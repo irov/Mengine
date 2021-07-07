@@ -62,7 +62,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OzzScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool OzzScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::def_function( _kernel, "createOzzSampler", &Detail::s_createOzzSampler );
 
@@ -111,7 +111,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OzzScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void OzzScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<ResourceOzzAnimation>();
         _kernel->remove_scope<ResourceOzzMesh>();

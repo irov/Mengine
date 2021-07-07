@@ -3347,7 +3347,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HelperScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool HelperScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::enum_<EKeyCode>( _kernel, "KeyCode" )
             .def( "KC_UNASSIGNED", KC_UNASSIGNED )
@@ -3551,7 +3551,7 @@ namespace Mengine
             .def( "TC_TOUCH15", TC_TOUCH15 )
             ;
 
-        pybind::registration_stl_optional_type_cast<Optional<mt::box2f>>( _kernel );
+        pybind::registration_stl_optional_type_cast<Optional<mt::box2f>>(_kernel);
 
         pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>(_kernel));
@@ -3884,11 +3884,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HelperScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void HelperScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         m_implement = nullptr;
 
-        pybind::unregistration_stl_optional_type_cast<Optional<mt::box2f>>( _kernel );
+        pybind::unregistration_stl_optional_type_cast<Optional<mt::box2f>>(_kernel);
 
         pybind::unregistration_type_cast<Blobject>(_kernel);
         pybind::unregistration_type_cast<Tags>(_kernel);

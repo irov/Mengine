@@ -229,7 +229,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2ScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool Movie2ScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<Movie2, pybind::bases<Node>>( _kernel, "Movie2", false )
             .def( "setResourceMovie2", &Movie2::setResourceMovie2 )
@@ -295,7 +295,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2ScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void Movie2ScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<Movie2>();
         _kernel->remove_scope<Movie2Slot>();

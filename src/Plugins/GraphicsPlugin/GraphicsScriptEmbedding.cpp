@@ -27,7 +27,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GraphicsScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool GraphicsScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<Graphics, pybind::bases<Node>>( _kernel, "Graphics", false )
             .def( "setLineWidth", &Graphics::setLineWidth )
@@ -58,7 +58,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GraphicsScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void GraphicsScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<Graphics>();
 

@@ -16,7 +16,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
-    {   
+    {
         //////////////////////////////////////////////////////////////////////////
         static void registerGameEventMethods( pybind::kernel_interface * _kernel, const ScriptModuleInterfacePtr & _module, const DocumentPtr & _doc )
         {
@@ -78,7 +78,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GameScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool GameScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         if( SCRIPT_SERVICE()
             ->bootstrapModules() == false )
@@ -102,7 +102,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void GameScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
 

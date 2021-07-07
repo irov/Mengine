@@ -7,7 +7,7 @@
 #include "pybind/pybind.hpp"
 
 namespace Mengine
-{    
+{
     class PythonSchedulePipe
         : public SchedulerPipeInterface
         , public Factorable

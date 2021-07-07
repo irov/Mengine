@@ -65,7 +65,7 @@ namespace Mengine
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, 256, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, color, function, lineno ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );            
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, color, function, lineno ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
         }
         else
         {

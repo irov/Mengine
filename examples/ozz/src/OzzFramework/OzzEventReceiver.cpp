@@ -80,7 +80,8 @@ namespace Mengine
         );
 
         // create node for box2d objects
-        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr node = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -102,9 +103,11 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "Assets" ) );
 
-        ResourcePtr resourceOzzSkeleton = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), MENGINE_DOCUMENT_FUNCTION );
+        ResourcePtr resourceOzzSkeleton = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), MENGINE_DOCUMENT_FUNCTION );
 
-        ContentInterfacePtr resourceOzzSkeletonContent = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ContentInterfacePtr resourceOzzSkeletonContent = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         resourceOzzSkeletonContent->setFileGroup( fileGroup );
         resourceOzzSkeletonContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/pab_skeleton.ozz" ) );
@@ -116,9 +119,11 @@ namespace Mengine
             return false;
         }
 
-        ResourcePtr resourceOzzMesh = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), MENGINE_DOCUMENT_FUNCTION );
+        ResourcePtr resourceOzzMesh = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), MENGINE_DOCUMENT_FUNCTION );
 
-        ContentInterfacePtr resourceOzzMeshContent = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ContentInterfacePtr resourceOzzMeshContent = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         resourceOzzMeshContent->setFileGroup( fileGroup );
         resourceOzzMeshContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/arnaud_mesh.ozz" ) );
@@ -130,15 +135,18 @@ namespace Mengine
             return false;
         }
 
-        NodePtr nodeOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
+        NodePtr nodeOzzAnimation = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
 
         UnknownNodeOzzAnimationInterface * unknownNodeOzzAnimation = nodeOzzAnimation->getUnknown();
 
-        ResourceImagePtr resourceImageDefault = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FUNCTION );
+        ResourceImagePtr resourceImageDefault = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FUNCTION );
 
         resourceImageDefault->setMaxSize( {256.f, 256.f} );
 
-        ContentInterfacePtr resourceImageDefaultContent = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ContentInterfacePtr resourceImageDefaultContent = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         resourceImageDefaultContent->setCodecType( STRINGIZE_STRING_LOCAL( "pngImage" ) );
         resourceImageDefaultContent->setFileGroup( fileGroup );
@@ -192,9 +200,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SamplerOzzAnimationInterfacePtr OzzEventReceiver::createOzzSampler( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ResourcePtr & _resourceOzzSkeleton, float _weight )
     {
-        ResourcePtr resourceOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
+        ResourcePtr resourceOzzAnimation = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
 
-        ContentInterfacePtr resourceOzzAnimationContent = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ContentInterfacePtr resourceOzzAnimationContent = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         resourceOzzAnimationContent->setFileGroup( _fileGroup );
         resourceOzzAnimationContent->setFilePath( _filePath );
@@ -206,7 +216,8 @@ namespace Mengine
             return nullptr;
         }
 
-        SamplerOzzAnimationInterfacePtr samplerOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
+        SamplerOzzAnimationInterfacePtr samplerOzzAnimation = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
 
         samplerOzzAnimation->setResourceOzzSkeleton( _resourceOzzSkeleton );
         samplerOzzAnimation->setResourceOzzAnimation( resourceOzzAnimation );

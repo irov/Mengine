@@ -29,7 +29,8 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
-        NodePtr graphicsNode = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr graphicsNode = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FACTORABLE );
 
         GraphicsInterface * graphics = graphicsNode->getUnknown();
 

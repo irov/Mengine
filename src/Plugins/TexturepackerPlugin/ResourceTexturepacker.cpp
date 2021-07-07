@@ -244,7 +244,8 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
 
-            ContentInterfacePtr resource_content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr resource_content = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
 

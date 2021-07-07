@@ -61,7 +61,8 @@ namespace Mengine
                 return false;
             }
 
-            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr content = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             content->setFileGroup( _fileGroup );
             content->setFilePath( ttfPath );
@@ -98,7 +99,8 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( groupName );
 
-            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr content = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             content->setFileGroup( fileGroup );
             content->setFilePath( ttfPath );
@@ -121,9 +123,11 @@ namespace Mengine
         FilePath FEPath;
         if( _config->hasValue( name.c_str(), "FEPath", &FEPath ) == true )
         {
-            TextFontEffectInterfacePtr textFontEffet = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), MENGINE_DOCUMENT_FACTORABLE );
+            TextFontEffectInterfacePtr textFontEffet = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr content = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             content->setFilePath( FEPath );
             content->setFileGroup( _fileGroup );

@@ -11,11 +11,10 @@
 
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
-#include "Engine/SurfaceSolidColor.h"
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/SurfaceImage.h"
-#include "Engine/ResourceImageDefault.h"
-
+#include "Kernel/SurfaceSolidColor.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/ResourceImageDefault.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/Surface.h"
@@ -228,7 +227,8 @@ namespace Mengine
     bool TrafficJamSceneEventReceiver::setupGame()
     {
         // create game node
-        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr node = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -287,7 +287,8 @@ namespace Mengine
         float resolutionWidth = (resolution.getWidthF() - m_backgroundSize.x) / 2;
         float resolutionHeight = (resolution.getHeightF() - m_backgroundSize.y) / 2;
 
-        m_gameNode->setLocalPosition( { resolutionWidth, resolutionHeight, 0.f } );
+        TransformationInterface * gameNodeTransformation = m_gameNode->getTransformation();
+        gameNodeTransformation->setLocalPosition( { resolutionWidth, resolutionHeight, 0.f } );
 
         return true;
     }
@@ -370,7 +371,8 @@ namespace Mengine
 
         HotSpotPolygonPtr hotspot = this->createHotSpot( name, hotspotSize );
 
-        hotspot->setLocalPosition( { _row * hotspotSize.x, _col * hotspotSize.y, 0.f } );
+        TransformationInterface * hotspotTransformation = hotspot->getTransformation();
+        hotspotTransformation->setLocalPosition( { _row * hotspotSize.x, _col * hotspotSize.y, 0.f } );
 
         return hotspot;
     }
@@ -463,7 +465,8 @@ namespace Mengine
 
         const mt::vec3f spriteLocalPosition = { BORDER_INDENT + _row * CELL_IN_PIXELS, BORDER_INDENT + _col * CELL_IN_PIXELS, 0.f };
 
-        sprite->setLocalPosition( spriteLocalPosition );
+        TransformationInterface * spriteTransformation = sprite->getTransformation();
+        spriteTransformation->setLocalPosition( spriteLocalPosition );
 
         m_cars.push_back( newCar );
 
@@ -472,7 +475,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::moveLeft( const ShapeQuadFixedPtr & _sprite )
     {
-        const mt::vec3f & pos = _sprite->getLocalPosition();
+        TransformationInterface * spriteTransformation = _sprite->getTransformation();
+
+        const mt::vec3f & pos = spriteTransformation->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
@@ -481,7 +486,8 @@ namespace Mengine
 
         if( x_pos > 0 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionX( pos.x - CELL_IN_PIXELS );
+            spriteTransformation->setLocalPositionX( pos.x - CELL_IN_PIXELS );
+
             m_trafficMap.setCell( x_pos - 1, y_pos, ECellType::ECellType_HORIZONTAL_LEFT );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_HORIZONTAL_RIGHT );
             m_trafficMap.setCell( x_pos + 1, y_pos, ECellType::ECellType_EMPTY );
@@ -490,7 +496,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::moveRight( const ShapeQuadFixedPtr & _sprite )
     {
-        const mt::vec3f & pos = _sprite->getLocalPosition();
+        TransformationInterface * spriteTransformation = _sprite->getTransformation();
+
+        const mt::vec3f & pos = spriteTransformation->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
@@ -499,7 +507,8 @@ namespace Mengine
 
         if( x_pos < 4 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionX( pos.x + CELL_IN_PIXELS );
+            spriteTransformation->setLocalPositionX( pos.x + CELL_IN_PIXELS );
+
             m_trafficMap.setCell( x_pos + 1, y_pos, ECellType::ECellType_HORIZONTAL_LEFT );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_EMPTY );
             m_trafficMap.setCell( x_pos + 2, y_pos, ECellType::ECellType_HORIZONTAL_RIGHT );
@@ -508,7 +517,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::moveUp( const ShapeQuadFixedPtr & _sprite )
     {
-        const mt::vec3f & pos = _sprite->getLocalPosition();
+        TransformationInterface * spriteTransformation = _sprite->getTransformation();
+
+        const mt::vec3f & pos = spriteTransformation->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
@@ -517,7 +528,8 @@ namespace Mengine
 
         if( y_pos > 0 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionY( pos.y - CELL_IN_PIXELS );
+            spriteTransformation->setLocalPositionY( pos.y - CELL_IN_PIXELS );
+
             m_trafficMap.setCell( x_pos, y_pos - 1, ECellType::ECellType_VERTICAL_UP );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_VERTICAL_DOWN );
             m_trafficMap.setCell( x_pos, y_pos + 1, ECellType::ECellType_EMPTY );
@@ -526,7 +538,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::moveDown( const ShapeQuadFixedPtr & _sprite )
     {
-        const mt::vec3f & pos = _sprite->getLocalPosition();
+        TransformationInterface * spriteTransformation = _sprite->getTransformation();
+
+        const mt::vec3f & pos = spriteTransformation->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
@@ -535,7 +549,8 @@ namespace Mengine
 
         if( y_pos < 4 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionY( pos.y + CELL_IN_PIXELS );
+            spriteTransformation->setLocalPositionY( pos.y + CELL_IN_PIXELS );
+
             m_trafficMap.setCell( x_pos, y_pos + 1, ECellType::ECellType_VERTICAL_UP );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_EMPTY );
             m_trafficMap.setCell( x_pos, y_pos + 2, ECellType::ECellType_VERTICAL_DOWN );
@@ -544,7 +559,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::movePlayerUp( const ShapeQuadFixedPtr & _sprite )
     {
-        const mt::vec3f & pos = _sprite->getLocalPosition();
+        TransformationInterface * spriteTransformation = _sprite->getTransformation();
+
+        const mt::vec3f & pos = spriteTransformation->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
@@ -553,7 +570,8 @@ namespace Mengine
 
         if( y_pos > 0 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionY( pos.y - CELL_IN_PIXELS );
+            spriteTransformation->setLocalPositionY( pos.y - CELL_IN_PIXELS );
+
             m_trafficMap.setCell( x_pos, y_pos - 1, ECellType::ECellType_VERTICAL_UP );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_VERTICAL_DOWN );
             m_trafficMap.setCell( x_pos, y_pos + 1, ECellType::ECellType_EMPTY );
@@ -562,7 +580,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::movePlayerDown( const ShapeQuadFixedPtr & _sprite )
     {
-        const mt::vec3f & pos = _sprite->getLocalPosition();
+        TransformationInterface * spriteTransformation = _sprite->getTransformation();
+
+        const mt::vec3f & pos = spriteTransformation->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
@@ -573,7 +593,8 @@ namespace Mengine
         }
         else if( y_pos < 4 && m_trafficMap.getCell( x_pos, y_pos + 2 ) == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionY( pos.y + CELL_IN_PIXELS );
+            spriteTransformation->setLocalPositionY( pos.y + CELL_IN_PIXELS );
+
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_EMPTY );
             m_trafficMap.setCell( x_pos, y_pos + 1, ECellType::ECellType_PLAYER_V_UP );
             m_trafficMap.setCell( x_pos, y_pos + 2, ECellType::ECellType_PLAYER_V_DOWN );
@@ -595,8 +616,8 @@ namespace Mengine
             {
                 auto && [race_left, race_right] = Cook::addRace<2>( pickable_race );
 
-                Cook::addPickerableMouseButton( race_left, element.hotspotFirst, EMouseCode::MC_LBUTTON, true, true, nullptr );
-                Cook::addPickerableMouseButton( race_right, element.hotspotSecond, EMouseCode::MC_LBUTTON, true, true, nullptr );
+                Cook::addPickerableMouseButton( race_left, element.hotspotFirst, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addPickerableMouseButton( race_right, element.hotspotSecond, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 if( element.carType == HORIZONTAL_CAR_ID )
                 {

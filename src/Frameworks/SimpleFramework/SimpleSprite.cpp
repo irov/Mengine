@@ -13,9 +13,11 @@ namespace Mengine
     {
         ShapeQuadSizePtr createSimpleSprite( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const mt::vec2f & _textureSize, const mt::vec2f & _size, const DocumentPtr & _doc )
         {
-            ResourceImageDefaultPtr resource = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), _doc );
+            ResourceImageDefaultPtr resource = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), _doc );
 
-            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), _doc );
+            ContentInterfacePtr content = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), _doc );
             
             content->setFileGroup( _fileGroup );
             content->setFilePath( _filePath );
@@ -35,7 +37,8 @@ namespace Mengine
                 return nullptr;
             }
 
-            SurfaceImagePtr surface = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), _doc );
+            SurfaceImagePtr surface = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), _doc );
 
             surface->setResourceImage( resource );
 
@@ -44,7 +47,8 @@ namespace Mengine
                 return nullptr;
             }
 
-            ShapeQuadSizePtr shape = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadSize" ), _doc );
+            ShapeQuadSizePtr shape = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadSize" ), _doc );
 
             shape->setSurface( surface );
             shape->setSize( _size );

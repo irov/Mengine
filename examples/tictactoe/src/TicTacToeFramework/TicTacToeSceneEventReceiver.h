@@ -3,9 +3,9 @@
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
 
 #include "Engine/HotSpotPolygon.h"
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/ResourceImageDefault.h"
 
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ResourceImageDefault.h"
 #include "Kernel/DummySceneEventReceiver.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Resource.h"

@@ -851,7 +851,8 @@ namespace Mengine
 
             resource->setTags( _tags );
 
-            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr content = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             content->setFileGroup( _fileGroup );
 

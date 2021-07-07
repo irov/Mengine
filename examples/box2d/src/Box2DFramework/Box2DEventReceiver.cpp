@@ -82,7 +82,8 @@ namespace Mengine
         );
 
         // create node for box2d objects
-        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr node = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -139,7 +140,8 @@ namespace Mengine
             //body->setAngularVelocity( -90.f * mt::constant::deg2rad );
 
             // vectorizer
-            NodePtr graphicsNode = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FUNCTION );
+            NodePtr graphicsNode = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FUNCTION );
 
             graphicsNode->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_DynamicBody" ) );
 
@@ -166,7 +168,8 @@ namespace Mengine
             m_boxNode->addChild( graphicsNode );
 
             // create box
-            NodePtr phisicalPlaceholder = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), MENGINE_DOCUMENT_FACTORABLE );
+            NodePtr phisicalPlaceholder = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), MENGINE_DOCUMENT_FACTORABLE );
 
             UnknownPhysicalPlaceholderInterface * unknownPhisicalPlaceholder = phisicalPlaceholder->getUnknown();
 
@@ -197,7 +200,8 @@ namespace Mengine
             );
 
             // vectorizer
-            NodePtr graphicsNode = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FUNCTION );
+            NodePtr graphicsNode = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FUNCTION );
 
             graphicsNode->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_StaticBody" ) );
 
@@ -221,7 +225,8 @@ namespace Mengine
             graphics->endFill();
             graphics->popState();
 
-            NodePtr phisicalPlaceholder = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), MENGINE_DOCUMENT_FACTORABLE );
+            NodePtr phisicalPlaceholder = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), MENGINE_DOCUMENT_FACTORABLE );
 
             UnknownPhysicalPlaceholderInterface * unknownPhisicalPlaceholder = phisicalPlaceholder->getUnknown();
 

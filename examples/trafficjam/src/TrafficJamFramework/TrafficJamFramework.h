@@ -5,10 +5,11 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class TrafficJamFramework
         : public FrameworkBase
     {
+        DECLARE_FACTORABLE( TrafficJamFramework );
+
     public:
         TrafficJamFramework();
         ~TrafficJamFramework() override;

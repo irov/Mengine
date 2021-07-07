@@ -1514,7 +1514,8 @@ namespace Mengine
 
                 resource->setName( _resourceName );
 
-                ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+                ContentInterfacePtr content = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
                 content->setFileGroup( fileGroup );
                 content->setFilePath( _filePath );
@@ -2873,7 +2874,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             SecureValuePtr s_makeSecureValue( uint32_t _value )
             {
-                SecureValuePtr secureValue = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+                SecureValuePtr secureValue = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue );
 

@@ -8,6 +8,8 @@ namespace Mengine
     class PathfinderFramework
         : public FrameworkBase
     {
+        DECLARE_FACTORABLE( PathfinderFramework );
+
     public:
         PathfinderFramework();
         ~PathfinderFramework() override;

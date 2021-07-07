@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 ADD_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK ON OFF "MENGINE_PLUGIN_EXAMPLEFRAMEWORK")
 
-ADD_SUBDIRECTORY(../../example_cpp_utils/ExternalBootstrapper ${PROJECT_TEMP_DIR}/ExternalBootstrapper)
+ADD_SUBDIRECTORY(../../utils/ExternalBootstrapper ${PROJECT_TEMP_DIR}/ExternalBootstrapper)
 
 ADD_SUBDIRECTORY(PathfinderFramework)
 

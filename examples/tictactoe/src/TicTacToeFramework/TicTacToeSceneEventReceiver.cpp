@@ -10,11 +10,10 @@
 
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
-#include "Engine/SurfaceSolidColor.h"
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/SurfaceImage.h"
-#include "Engine/ResourceImageDefault.h"
-
+#include "Kernel/SurfaceSolidColor.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/ResourceImageDefault.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/Surface.h"
@@ -140,11 +139,11 @@ namespace Mengine
     void TicTacToeSceneEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
-        
+
         LOGGER_MESSAGE( "Scene onEntityDeactivate [%s]"
             , m_scene->getName().c_str()
         );
-        
+
         this->clearSprites();
         this->clearHotspots();
         this->clearGameNode();
@@ -204,10 +203,10 @@ namespace Mengine
 
         Polygon polygon;
 
-        polygon.append( { 0.f, 0.f } );
-        polygon.append( { _size.x, 0.f } );
-        polygon.append( { _size.x, _size.y } );
-        polygon.append( { 0.f, _size.y } );
+        polygon.append( {0.f, 0.f} );
+        polygon.append( {_size.x, 0.f} );
+        polygon.append( {_size.x, _size.y} );
+        polygon.append( {0.f, _size.y} );
 
         hotspot->setPolygon( polygon );
 
@@ -216,7 +215,8 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     ResourcePtr TicTacToeSceneEventReceiver::createResource( const ConstString & _type )
     {
-        ResourcePtr resource = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), _type, MENGINE_DOCUMENT_FACTORABLE );
+        ResourcePtr resource = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'"
             , _type.c_str()
@@ -261,16 +261,31 @@ namespace Mengine
             maxSize = _maxSize;
         }
 
-        ResourceImageDefaultPtr resource = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FACTORABLE );
+        ResourceImageDefaultPtr resource = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
         resource->setName( _resourceName );
 
+        ContentInterfacePtr content = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+        content->setFileGroup( fileGroup );
+        content->setFilePath( _filePath );
+        content->setCodecType( codecType );
+
+        resource->setContent( content );
+
         mt::uv4f uv_image;
         mt::uv4f uv_alpha;
+        resource->setUVImage( uv_image );
+        resource->setUVAlpha( uv_alpha );
 
-        if( resource->setup( fileGroup, _filePath, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
+        resource->setMaxSize( maxSize );
+        resource->setSize( maxSize );
+
+        if( resource->initialize() == false )
         {
             return nullptr;
         }
@@ -281,7 +296,8 @@ namespace Mengine
     bool TicTacToeSceneEventReceiver::setupGame()
     {
         // create game node
-        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr node = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -315,7 +331,7 @@ namespace Mengine
     {
         // setup resource
         ResourceImageDefaultPtr resourceImage = this->createImageResource( STRINGIZE_STRING_LOCAL( "Background" ),
-            STRINGIZE_STRING_LOCAL( "Assets" ), STRINGIZE_FILEPATH_LOCAL( "background.png" ), { -1.f, -1.f } );
+            STRINGIZE_STRING_LOCAL( "Assets" ), STRINGIZE_FILEPATH_LOCAL( "background.png" ), {-1.f, -1.f} );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
@@ -337,10 +353,11 @@ namespace Mengine
         float resolutionWidth = resolution.getWidthF();
         float resolutionHeight = resolution.getHeightF();
 
-        m_gameNode->setLocalPosition( { (resolutionWidth - m_backgroundSize.x) / 2, (resolutionHeight - m_backgroundSize.y) / 2, 0.f } );
+        TransformationInterface * gameNodeTransformation = m_gameNode->getTransformation();
+        gameNodeTransformation->setLocalPosition( {(resolutionWidth - m_backgroundSize.x) / 2, (resolutionHeight - m_backgroundSize.y) / 2, 0.f} );
 
         // create Hotspot
-        mt::vec2f hotspotSize( { m_backgroundSize.x / 3.f, m_backgroundSize.y / 3.f } );
+        mt::vec2f hotspotSize( {m_backgroundSize.x / 3.f, m_backgroundSize.y / 3.f} );
 
         for( int32_t row = 0; row < 3; row++ )
         {
@@ -352,12 +369,13 @@ namespace Mengine
 
                 m_gameNode->addChild( hotspot );
 
-                hotspot->setLocalPosition( { col * hotspotSize.x, row * hotspotSize.y, 0.f } );
+                TransformationInterface * hotspotTransformation = hotspot->getTransformation();
+                hotspotTransformation->setLocalPosition( {col * hotspotSize.x, row * hotspotSize.y, 0.f} );
 
                 m_hotspots.push_back( hotspot );
             }
         }
-            
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -376,7 +394,7 @@ namespace Mengine
 
         // create node
         ResourceImageDefaultPtr resourceImage = this->createImageResource( STRINGIZE_STRING_LOCAL( "Background" ),
-            STRINGIZE_STRING_LOCAL( "Assets" ), path, { -1.f, -1.f } );
+            STRINGIZE_STRING_LOCAL( "Assets" ), path, {-1.f, -1.f} );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
@@ -391,15 +409,17 @@ namespace Mengine
         // setup position
         const mt::vec2f & spriteSize = resourceImage->getMaxSize();
 
-        mt::vec2f cellSize( { m_backgroundSize.x / m_gridSize.x, m_backgroundSize.y / m_gridSize.y} );
-        mt::vec2f halfCellSize( { cellSize.x / 2, cellSize.y / 2 } );
+        mt::vec2f cellSize( {m_backgroundSize.x / m_gridSize.x, m_backgroundSize.y / m_gridSize.y} );
+        mt::vec2f halfCellSize( {cellSize.x * 0.5f, cellSize.y * 0.5f} );
 
-        sprite->setLocalOrigin( { spriteSize.x / 2, spriteSize.y / 2, 0.f } );
+        TransformationInterface * spriteTransformation = sprite->getTransformation();
+
+        spriteTransformation->setLocalOrigin( {spriteSize.x * 0.5f, spriteSize.y * 0.5f, 0.f} );
 
         int32_t col = _position % (int32_t)m_gridSize.x;
         int32_t row = _position / (int32_t)m_gridSize.y;
 
-        sprite->setLocalPosition( { halfCellSize.x + col * cellSize.x, halfCellSize.y + row * cellSize.y, 0.f } );
+        spriteTransformation->setLocalPosition( {halfCellSize.x + col * cellSize.x, halfCellSize.y + row * cellSize.y, 0.f} );
 
         return true;
     }
@@ -418,7 +438,7 @@ namespace Mengine
             int32_t cellIdx = 0;
             for( auto && [race, hotpspot] : Cook::addParallelZip( race_play, m_hotspots ) )
             {
-                Cook::addPickerableMouseButton( race, hotpspot, EMouseCode::MC_LBUTTON, true, true, nullptr );
+                Cook::addPickerableMouseButton( race, hotpspot, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 Cook::addPrint( race, "Click at cell '%d' hotspot", cellIdx );
 
@@ -516,9 +536,9 @@ namespace Mengine
             MENGINE_UNUSED( _iterator );
             MENGINE_UNUSED( _count );
 
-            Cook::addLocalDelay( _scope_for, delay );
+            Cook::addLocalDelay( _scope_for, delay, MENGINE_DOCUMENT_FACTORABLE );
             Cook::addFunction( _scope_for, this, &TicTacToeSceneEventReceiver::enableSprites, false );
-            Cook::addLocalDelay( _scope_for, delay );
+            Cook::addLocalDelay( _scope_for, delay, MENGINE_DOCUMENT_FACTORABLE );
             Cook::addFunction( _scope_for, this, &TicTacToeSceneEventReceiver::enableSprites, true );
 
             return true;
@@ -586,4 +606,5 @@ namespace Mengine
             m_chain = nullptr;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 };

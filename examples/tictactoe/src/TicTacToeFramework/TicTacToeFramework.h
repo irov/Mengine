@@ -8,6 +8,8 @@ namespace Mengine
     class TicTacToeFramework
         : public FrameworkBase
     {
+        DECLARE_FACTORABLE( TicTacToeFramework );
+
     public:
         TicTacToeFramework();
         ~TicTacToeFramework() override;

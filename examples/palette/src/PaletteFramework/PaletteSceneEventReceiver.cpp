@@ -127,11 +127,11 @@ namespace Mengine
             float b = randomizer->getRandomRangef( 0.3f, 1.f );
             float a = randomizer->getRandomRangef( 0.4f, 1.f );
 
-            surface->setSolidColor( { r, g, b, a } );
+            surface->setSolidColor( {r, g, b, a} );
 
             float w = randomizer->getRandomRangef( 10.f, 200.f );
             float h = randomizer->getRandomRangef( 20.f, 200.f );
-            surface->setSolidSize( { w, h } );
+            surface->setSolidSize( {w, h} );
 
             ShapePtr shape = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -147,7 +147,7 @@ namespace Mengine
             float y = randomizer->getRandomRangef( 0, ResolutionHeight );
 
             TransformationInterface * shapeTransformation = shape->getTransformation();
-            shapeTransformation->setLocalPosition( { x, y, 0.f } );
+            shapeTransformation->setLocalPosition( {x, y, 0.f} );
 
             m_scene->addChild( shape );
         }, nullptr, MENGINE_DOCUMENT_FACTORABLE );
@@ -180,7 +180,7 @@ namespace Mengine
     void PaletteSceneEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
-        
+
         LOGGER_MESSAGE( "Scene onEntityDeactivate [%s]"
             , m_scene->getName().c_str()
         );

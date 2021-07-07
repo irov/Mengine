@@ -32,7 +32,8 @@ namespace Mengine
     {
         if( m_affectorHub == nullptr )
         {
-            AffectorHubInterfacePtr affectorHub = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            AffectorHubInterfacePtr affectorHub = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             AffectorHubProviderInterface * provider = const_cast<Affectorable *>(this)->getAffectorHubProvider();
 

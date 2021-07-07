@@ -31,7 +31,7 @@ namespace Mengine
         MENGINE_UNUSED( _event );
 
         m_cb.call();
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotKey( const InputKeyEvent & _event )
     {

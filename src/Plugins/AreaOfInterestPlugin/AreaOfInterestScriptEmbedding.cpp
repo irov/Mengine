@@ -89,7 +89,7 @@ namespace Mengine
     {
     }    
     //////////////////////////////////////////////////////////////////////////
-    bool AreaOfInterestScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool AreaOfInterestScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<AreaOfInterestZoneInterface, pybind::bases<Mixin>>( _kernel, "AreaOfInterestZoneInterface" )
             .def( "freeze", &AreaOfInterestZoneInterface::freeze )
@@ -130,7 +130,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AreaOfInterestScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void AreaOfInterestScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<AreaOfInterestZoneInterface>();
         _kernel->remove_scope<AreaOfInterestZone>();

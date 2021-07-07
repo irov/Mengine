@@ -179,7 +179,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourcePrefetcherScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool ResourcePrefetcherScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::def_function_args( _kernel, "prefetchResources", &Detail::s_prefetchResources );
         pybind::def_function( _kernel, "unfetchResources", &Detail::s_unfetchResources );
@@ -190,7 +190,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourcePrefetcherScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void ResourcePrefetcherScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_from_module( "prefetchResources", nullptr );
         _kernel->remove_from_module( "unfetchResources", nullptr );

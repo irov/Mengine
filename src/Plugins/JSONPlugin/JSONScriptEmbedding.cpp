@@ -108,7 +108,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool JSONScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<ResourceJSON, pybind::bases<Resource>>( _kernel, "ResourceJSON", false )
             .def_static_kernel( "getJSON", &Helper::s_getJSON )
@@ -119,7 +119,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void JSONScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void JSONScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<ResourceJSON>();
 

@@ -21,8 +21,8 @@ namespace Mengine
         ~cURLScriptEmbedding() override;
 
     public:
-        bool embedding( pybind::kernel_interface * _kernel ) override;
-        void ejecting( pybind::kernel_interface * _kernel ) override;
+        bool embed( pybind::kernel_interface * _kernel ) override;
+        void eject( pybind::kernel_interface * _kernel ) override;
 
     protected:
         HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _fileGroupName, const FilePath & _filepath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args );

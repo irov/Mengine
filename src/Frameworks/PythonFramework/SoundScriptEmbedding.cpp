@@ -110,7 +110,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
                             , id
-                            );
+                        );
                     }
 
                     if( m_cb.is_callable() == true )
@@ -132,7 +132,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
                             , id
-                            );
+                        );
                     }
 
                     if( m_cb.is_callable() == true )
@@ -177,7 +177,7 @@ namespace Mengine
             {
                 MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceName, ResourceSoundPtr, nullptr, "resource '%s' type does not match 'ResourceSound'"
                     , _resourceName.c_str()
-                    );
+                );
 
                 ResourceSoundPtr resource = RESOURCE_SERVICE()
                     ->getResourceReference( ConstString::none(), _resourceName );
@@ -208,13 +208,13 @@ namespace Mengine
                 SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
                     ->createSoundIdentity( true, soundBuffer, _category, streamable
                         , _doc
-                        );
+                    );
 
                 if( soundIdentity == nullptr )
                 {
                     LOGGER_ERROR( "sound '%s' invalid create identity"
                         , _resourceName.c_str()
-                        );
+                    );
 
                     if( _cb.is_callable() == true )
                     {
@@ -237,7 +237,7 @@ namespace Mengine
                     LOGGER_ERROR( "sound '%s' invalid set volume %f"
                         , _resourceName.c_str()
                         , volume
-                        );
+                    );
 
                     if( _cb.is_callable() == true )
                     {
@@ -262,7 +262,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
-                    );
+                );
 
                 LOGGER_INFO( "sound", "[script] sound play resource '%s' file '%s'"
                     , _resourceName.c_str()
@@ -274,7 +274,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid play '%s'"
                         , _resourceName.c_str()
-                        );
+                    );
 
                     return nullptr;
                 }
@@ -288,7 +288,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
-                    );
+                );
 
                 LOGGER_INFO( "sound", "[script] voice play resource '%s' file '%s'"
                     , _resourceName.c_str()
@@ -300,7 +300,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid play '%s'"
                         , _resourceName.c_str()
-                        );
+                    );
 
                     return nullptr;
                 }
@@ -330,7 +330,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, "can't get resource '%s'"
                     , _resourceName.c_str()
-                    );
+                );
 
                 if( SOUND_SERVICE()
                     ->setPosMs( sourceEmitter, _position ) == false )
@@ -338,7 +338,7 @@ namespace Mengine
                     LOGGER_ERROR( "set pos '%s' '%f'"
                         , _resourceName.c_str()
                         , _position
-                        );
+                    );
 
                     return nullptr;
                 }
@@ -356,7 +356,7 @@ namespace Mengine
                     LOGGER_ERROR( "play '%s' '%f'"
                         , _resourceName.c_str()
                         , _position
-                        );
+                    );
 
                     return nullptr;
                 }
@@ -476,7 +476,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
-                    );
+                );
 
                 LOGGER_INFO( "sound", "[script] sound fade out resource '%s' file '%s'"
                     , _resourceName.c_str()
@@ -488,7 +488,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid play '%s'"
                         , _resourceName.c_str()
-                        );
+                    );
 
                     return nullptr;
                 }
@@ -497,7 +497,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( easing, "invalid found easing '%s'"
                     , _easingType.c_str()
-                    );
+                );
 
                 AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
@@ -550,7 +550,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
-                    );
+                );
 
                 LOGGER_INFO( "sound", "[script] sound fade out to resource '%s' file '%s'"
                     , _resourceName.c_str()
@@ -562,7 +562,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid play '%s'"
                         , _resourceName.c_str()
-                        );
+                    );
 
                     return nullptr;
                 }
@@ -571,7 +571,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( easing, "invalid found easing '%s'"
                     , _easingType.c_str()
-                    );
+                );
 
                 float volume = SOUND_SERVICE()
                     ->getSourceMixerVolume( soundIdentity, STRINGIZE_STRING_LOCAL( "Fade" ) );
@@ -646,7 +646,7 @@ namespace Mengine
                     LOGGER_ERROR( "invalid source [%u] volume [%f]"
                         , _emitter->getId()
                         , _volume
-                        );
+                    );
                 }
             }
             //////////////////////////////////////////////////////////////////////////
@@ -730,7 +730,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool SoundScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SoundScriptMethodPtr soundScriptMethod = Helper::makeFactorableUnique<SoundScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -784,7 +784,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void SoundScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
 

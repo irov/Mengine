@@ -46,7 +46,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TexturepackerScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool TexturepackerScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<ResourceTexturepacker, pybind::bases<Resource>>( _kernel, "ResourceTexturepacker", false )
             .def_static( "getFrame", &Detail::ResourceTexturepacker_getFrame )
@@ -57,7 +57,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TexturepackerScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void TexturepackerScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<ResourceTexturepacker>();
 

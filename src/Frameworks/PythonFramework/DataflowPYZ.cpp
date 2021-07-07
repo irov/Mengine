@@ -102,7 +102,7 @@ namespace Mengine
         size_t source_size = _memory->getSize();
 
         MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, "module invalid buffer [doc: %s]"
-            , MENGINE_DOCUMENT_STR( _doc ) 
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         long file_magic = s_get_int( source_buffer );
@@ -122,7 +122,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( py_code, "module invalid marshal get object [doc: %s]"
             , MENGINE_DOCUMENT_STR( _doc )
-            );
+        );
 
 #if defined(MENGINE_DEBUG)
         if( m_kernel->code_check( py_code ) == false )

@@ -45,7 +45,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool VideoScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<ResourceVideo, pybind::bases<Resource>>( _kernel, "ResourceVideo", false )
             ;
@@ -64,7 +64,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VideoScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void VideoScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<ResourceVideo>();
         _kernel->remove_scope<SurfaceVideo>();

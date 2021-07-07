@@ -104,7 +104,7 @@ namespace Mengine
             ->cancelRequest( _id );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool cURLScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::enum_<CURLcode>( _kernel, "CURLcode" )
             .def( "CURLE_OK", CURLE_OK )
@@ -213,7 +213,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void cURLScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_from_module( "getMessage", nullptr );
         _kernel->remove_from_module( "postMessage", nullptr );

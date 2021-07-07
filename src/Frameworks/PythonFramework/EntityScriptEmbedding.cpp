@@ -31,7 +31,7 @@ namespace Mengine
     {
     public:
         EntityScriptMethod()
-        {            
+        {
         }
 
         ~EntityScriptMethod() override
@@ -277,7 +277,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool EntityScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool EntityScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::allocator_interface * allocator = _kernel->get_allocator();
 
@@ -323,7 +323,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void EntityScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void EntityScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
 

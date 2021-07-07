@@ -15,7 +15,7 @@ namespace Mengine
         ~MovieScriptEmbedding() override;
 
     public:
-        bool embedding( pybind::kernel_interface * _kernel ) override;
-        void ejecting( pybind::kernel_interface * _kernel ) override;
+        bool embed( pybind::kernel_interface * _kernel ) override;
+        void eject( pybind::kernel_interface * _kernel ) override;
     };
 }

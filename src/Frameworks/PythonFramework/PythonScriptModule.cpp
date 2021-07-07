@@ -31,7 +31,8 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( m_module.has_attr( _method ) == false )
         {
-            LOGGER_ERROR( "invalid has initializer '%s'"
+            LOGGER_ERROR( "module '%s' invalid has initializer '%s'"
+                , m_module.repr().c_str()
                 , _method.c_str()
             );
 
@@ -46,7 +47,8 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( py_result.is_invalid() == true )
         {
-            LOGGER_ERROR( "invalid call initializer '%s'"
+            LOGGER_ERROR( "module '%s' invalid call initializer '%s'"
+                , m_module.repr().c_str()
                 , _method.c_str()
             );
 
@@ -55,7 +57,8 @@ namespace Mengine
 
         if( py_result.is_bool() == false )
         {
-            LOGGER_ERROR( "invalid call initializer '%s' need return bool [True|False] but return is '%s'"
+            LOGGER_ERROR( "module '%s' invalid call initializer '%s' need return bool [True|False] but return is '%s'"
+                , m_module.repr().c_str()
                 , _method.c_str()
                 , py_result.repr().c_str()
             );

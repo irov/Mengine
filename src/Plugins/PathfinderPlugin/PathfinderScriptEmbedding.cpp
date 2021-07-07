@@ -26,14 +26,14 @@ namespace Mengine
     {
     }    
     //////////////////////////////////////////////////////////////////////////
-    bool PathfinderScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool PathfinderScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PathfinderScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void PathfinderScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
     }

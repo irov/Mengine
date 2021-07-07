@@ -336,7 +336,7 @@ namespace Mengine
                 return false;
             }
 
-            Polygon * polygon = (Polygon*)_place;
+            Polygon * polygon = (Polygon *)_place;
 
             pybind::list py_list( _kernel, _obj );
 
@@ -574,7 +574,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MathScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool MathScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::registration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
         pybind::registration_stl_vector_type_cast<Vector<Polygon>>(_kernel);
@@ -743,7 +743,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MathScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void MathScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         pybind::unregistration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
         pybind::unregistration_stl_vector_type_cast<Vector<Polygon>>(_kernel);

@@ -359,7 +359,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AmplifierScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool AmplifierScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         AmplifierScriptMethodPtr scriptMethod = Helper::makeFactorableUnique<AmplifierScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -388,7 +388,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AmplifierScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void AmplifierScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
 

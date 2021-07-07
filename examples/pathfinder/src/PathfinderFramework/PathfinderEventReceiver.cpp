@@ -83,7 +83,7 @@ namespace Mengine
         {
             for( uint32_t j = 0; j != height; ++j )
             {
-                ShapeQuadSizePtr grass = Helper::createSimpleSprite( fileGroup, STRINGIZE_FILEPATH_LOCAL( "sprite/grass.png" ), mt::vec2f( 100.f, 100.f ), mt::vec2f( size, size ), MENGINE_DOCUMENT_FACTORABLE );
+                ShapeQuadSizePtr grass = Helper::createSimpleSprite( fileGroup, STRINGIZE_FILEPATH_LOCAL( "grass.png" ), mt::vec2f( 320.f, 320.f ), mt::vec2f( size, size ), MENGINE_DOCUMENT_FACTORABLE );
 
                 TransformationInterface * transformation = grass->getTransformation();
 
@@ -104,7 +104,7 @@ namespace Mengine
                     continue;
                 }
 
-                ShapeQuadSizePtr stone = Helper::createSimpleSprite( fileGroup, STRINGIZE_FILEPATH_LOCAL( "sprite/stone.png" ), mt::vec2f( 100.f, 100.f ), mt::vec2f( size, size ), MENGINE_DOCUMENT_FACTORABLE );
+                ShapeQuadSizePtr stone = Helper::createSimpleSprite( fileGroup, STRINGIZE_FILEPATH_LOCAL( "stone.png" ), mt::vec2f( 1184.f, 1184.f ), mt::vec2f( size, size ), MENGINE_DOCUMENT_FACTORABLE );
 
                 TransformationInterface * transformation = stone->getTransformation();
 

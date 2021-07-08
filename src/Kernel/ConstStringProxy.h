@@ -13,7 +13,7 @@ namespace Mengine
         typedef ConstString::value_type value_type;
 
     public:
-        ConstStringProxy( const ConstString::value_type * _string, ConstString::size_type _size )
+        ConstStringProxy( const value_type * _string, size_type _size )
             : m_string( _string )
             , m_size( _size )
         {
@@ -31,7 +31,7 @@ namespace Mengine
             return cstr;
         }
 
-        const ConstString::value_type * c_str() const
+        const value_type * c_str() const
         {
             const ConstString & cstr = this->c_cstr();
 
@@ -59,7 +59,7 @@ namespace Mengine
         }
 
     protected:
-        const ConstString::value_type * m_string;
-        ConstString::size_type m_size;
+        const value_type * m_string;
+        size_type m_size;
     };
 }

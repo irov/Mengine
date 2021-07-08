@@ -100,7 +100,7 @@ namespace Mengine
 
         MENGINE_INLINE bool operator != ( const ConstString & _right ) const noexcept
         {
-            return !this->operator == ( _right );
+            return m_holder != _right.m_holder;
         }
 
         MENGINE_INLINE bool operator < ( const ConstString & _right ) const noexcept
@@ -115,16 +115,12 @@ namespace Mengine
 
         MENGINE_INLINE bool operator > ( const ConstString & _right ) const noexcept
         {
-            const bool result = !(*this <= _right);
-
-            return result;
+            return m_holder > _right.m_holder;
         }
 
         MENGINE_INLINE bool operator >= ( const ConstString & _right ) const noexcept
         {
-            const bool result = !(*this < _right);
-
-            return result;
+            return m_holder >= _right.m_holder;
         }
 
         struct less_type

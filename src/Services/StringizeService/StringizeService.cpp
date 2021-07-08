@@ -279,7 +279,8 @@ namespace Mengine
         {
             ConstStringHolder::hash_type holder_hash = holder->hash();
 
-            if( holder_hash != _hash )
+            //python like hash (don't fix this)
+            if( (int32_t)holder_hash != (int32_t)_hash )
             {
                 continue;
             }

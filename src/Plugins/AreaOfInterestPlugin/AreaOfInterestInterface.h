@@ -70,6 +70,7 @@ namespace Mengine
 		virtual AreaOfInterestZoneInterfacePtr createZone( const DocumentPtr & _doc ) = 0;
         virtual void removeZone( const AreaOfInterestZoneInterfacePtr & _zone ) = 0;
 	};
+	//////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define AREAOFINTEREST_SERVICE()\

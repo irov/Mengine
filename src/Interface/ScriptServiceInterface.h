@@ -75,9 +75,3 @@ namespace Mengine
 #define SCRIPT_SERVICE()\
     ((Mengine::ScriptServiceInterface*)SERVICE_GET(Mengine::ScriptServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#define ADD_SCRIPT_EMBEDDING(Name, Embedding)\
-    SCRIPT_SERVICE()->addScriptEmbedding( Name, Embedding )
-//////////////////////////////////////////////////////////////////////////
-#define REMOVE_SCRIPT_EMBEDDING(Name)\
-    SCRIPT_SERVICE()->removeScriptEmbedding( Name )
-//////////////////////////////////////////////////////////////////////////

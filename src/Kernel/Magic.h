@@ -12,7 +12,7 @@ namespace Mengine
     template<Char c0, Char c1, Char c2, Char c3, uint32_t version>
     struct Magic
     {
-        static constexpr magic_number_type magic_number = c0 + (c1 << 8) + (c2 << 16) + (c3 << 24);
+        static constexpr magic_number_type magic_number = MENGINE_FOURCC( c0, c1, c2, c3 );
         static constexpr magic_version_type magic_version = version;
     };
     //////////////////////////////////////////////////////////////////////////

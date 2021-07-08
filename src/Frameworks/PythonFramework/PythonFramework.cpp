@@ -41,42 +41,50 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::_runFramework()
     {
-        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ), Helper::makeFactorableUnique<ConstsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ), Helper::makeFactorableUnique<ConstsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ), Helper::makeFactorableUnique<MathScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ), Helper::makeFactorableUnique<MathScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ), Helper::makeFactorableUnique<HelperScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ), Helper::makeFactorableUnique<HelperScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ), Helper::makeFactorableUnique<KernelScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ), Helper::makeFactorableUnique<KernelScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ), Helper::makeFactorableUnique<NodeScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ), Helper::makeFactorableUnique<NodeScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ), Helper::makeFactorableUnique<EntityScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ), Helper::makeFactorableUnique<EntityScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ), Helper::makeFactorableUnique<SoundScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ), Helper::makeFactorableUnique<SoundScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ), Helper::makeFactorableUnique<EngineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ), Helper::makeFactorableUnique<EngineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -97,28 +105,46 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_FINALIZE );
 
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::notifyBootstrapperInitializeGame()
     {
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ), Helper::makeFactorableUnique<GameScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ), Helper::makeFactorableUnique<GameScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::notifyBootstrapperFinalizeGame()
     {
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::notifyEngineFinalize()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_SCRIPT_EJECTING );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

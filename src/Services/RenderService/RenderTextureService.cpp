@@ -348,7 +348,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const DocumentPtr & _doc )
     {
-        UniqueId id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
 

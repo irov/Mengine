@@ -2,9 +2,13 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#define UWM_MOUSE_LEAVE (WM_USER+1)
+#ifndef MENGINE_UWM_MOUSE_LEAVE
+#define MENGINE_UWM_MOUSE_LEAVE (WM_USER+1)
+#endif
 
+#ifndef MENGINE_UTIMER_MOUSE_EVENT
 #define MENGINE_UTIMER_MOUSE_EVENT 1001
+#endif
 
 namespace Mengine
 {

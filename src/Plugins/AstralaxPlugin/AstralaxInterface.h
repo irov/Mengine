@@ -193,6 +193,7 @@ namespace Mengine
         virtual void setEmitterPositionRelative( bool _positionRelative ) = 0;
         virtual void setEmitterCameraRelative( bool _cameraRelative ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define ASTRALAX_SERVICE()\

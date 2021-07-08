@@ -90,7 +90,8 @@ namespace Mengine
             , _delay
         );
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         SchedulerEventDesc desc;
 
@@ -132,7 +133,8 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         SchedulerEventDesc desc;
 

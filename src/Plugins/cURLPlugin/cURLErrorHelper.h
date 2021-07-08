@@ -6,7 +6,7 @@
 #include "curl/curl.h"
 
 #ifdef MENGINE_DEBUG
-#define MENGINE_CURL_CHECK_ERROR
+#   define MENGINE_CURL_CHECK_ERROR
 #endif
 
 namespace Mengine

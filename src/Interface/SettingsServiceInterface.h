@@ -11,7 +11,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class SettingsServiceInterface
         : public ServiceInterface
     {

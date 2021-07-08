@@ -805,7 +805,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t mt_enumerator()
             {
-                UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+                UniqueId new_id = ENUMERATOR_SERVICE()
+                    ->generateUniqueIdentity();
 
                 return new_id;
             }

@@ -45,8 +45,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JPEGPlugin::_initializePlugin()
     {
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "jpg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "jpeg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "jpg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "jpeg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
         Helper::registerDecoder<ImageDecoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerEncoder<ImageEncoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -59,8 +62,11 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "jpg" ) );
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "jpeg" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "jpg" ) );
+
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "jpeg" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void JPEGPlugin::_destroyPlugin()

@@ -13,8 +13,8 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NODE_GENERATE(X)\
-namespace Mengine{typedef IntrusiveNodePtr<class X> X ## Ptr;}\
-namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentPtr & _doc );}
+    namespace Mengine{typedef IntrusiveNodePtr<class X> X ## Ptr;}\
+    namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentPtr & _doc );}
 //////////////////////////////////////////////////////////////////////////
 MENGINE_NODE_GENERATE( Interender )
 MENGINE_NODE_GENERATE( Isometric )

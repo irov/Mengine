@@ -24,7 +24,8 @@ namespace Mengine
     {
         Helper::registerDecoder<SoundDecoderWAV>( STRINGIZE_STRING_LOCAL( "wavSound" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "wav" ), STRINGIZE_STRING_LOCAL( "wavSound" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "wav" ), STRINGIZE_STRING_LOCAL( "wavSound" ) );
 
         return true;
     }
@@ -33,7 +34,8 @@ namespace Mengine
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "wavSound" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "wav" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "wav" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

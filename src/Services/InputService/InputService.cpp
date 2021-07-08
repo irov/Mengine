@@ -335,7 +335,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         InputMousePositionProviderDesc desc;
         desc.id = new_id;

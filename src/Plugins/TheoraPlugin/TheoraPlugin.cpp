@@ -31,8 +31,11 @@ namespace Mengine
         Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvVideo" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvaVideo" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogv" ), STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogva" ), STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "ogv" ), STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
+
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "ogva" ), STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 
         return true;
     }
@@ -42,8 +45,11 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogv" ) );
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogva" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "ogv" ) );
+
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "ogva" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

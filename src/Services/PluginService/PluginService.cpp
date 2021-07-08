@@ -96,7 +96,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 

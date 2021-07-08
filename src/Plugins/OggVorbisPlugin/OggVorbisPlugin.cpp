@@ -60,7 +60,8 @@ namespace Mengine
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "oggSound" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "ogvSound" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogg" ), STRINGIZE_STRING_LOCAL( "oggSound" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "ogg" ), STRINGIZE_STRING_LOCAL( "oggSound" ) );
 
         return true;
     }
@@ -70,7 +71,8 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "oggSound" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ogvSound" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogg" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "ogg" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OggVorbisPlugin::_destroyPlugin()

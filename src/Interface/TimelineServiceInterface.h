@@ -6,7 +6,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class TimelineServiceInterface
         : public ServiceInterface
     {

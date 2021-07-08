@@ -73,11 +73,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static int32_t s_get_int( const uint8_t * _buff )
     {
-        int32_t x;
-        x = (int32_t)_buff[0];
-        x |= (int32_t)_buff[1] << 8;
-        x |= (int32_t)_buff[2] << 16;
-        x |= (int32_t)_buff[3] << 24;
+        int32_t x = MENGINE_FOURCC( (int32_t)_buff[0], (int32_t)_buff[1], (int32_t)_buff[2], (int32_t)_buff[3] );
 
         return x;
     }

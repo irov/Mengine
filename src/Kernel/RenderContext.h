@@ -6,8 +6,13 @@
 #include "Interface/RenderScissorInterface.h"
 #include "Interface/RenderTargetInterface.h"
 
+#ifndef MENGINE_RENDER_ZGROUP_DEFAULT
 #define MENGINE_RENDER_ZGROUP_DEFAULT 0x7fffffff
+#endif
+
+#ifndef MENGINE_RENDER_ZINDEX_DEFAULT
 #define MENGINE_RENDER_ZINDEX_DEFAULT 0x7fffffff
+#endif
 
 namespace Mengine
 {

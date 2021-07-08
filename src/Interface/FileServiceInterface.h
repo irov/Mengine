@@ -7,8 +7,7 @@
 #include "Kernel/FilePath.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class FileServiceInterface
         : public ServiceInterface
     {

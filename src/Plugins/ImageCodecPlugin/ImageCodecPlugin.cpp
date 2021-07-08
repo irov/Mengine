@@ -36,8 +36,11 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<ImageDecoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "htf" ), STRINGIZE_STRING_LOCAL( "htfImage" ) );
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "acf" ), STRINGIZE_STRING_LOCAL( "acfImage" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "htf" ), STRINGIZE_STRING_LOCAL( "htfImage" ) );
+
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "acf" ), STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
         Helper::registerEncoder<ImageEncoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerEncoder<ImageEncoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -45,7 +48,8 @@ namespace Mengine
         Helper::registerDecoder<PickDecoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerEncoder<PickEncoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "hit" ), STRINGIZE_STRING_LOCAL( "hitPick" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "hit" ), STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
         return true;
     }
@@ -61,10 +65,14 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "htf" ) );
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "acf" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "htf" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "hit" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "acf" ) );
+
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "hit" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void ImageCodecPlugin::_destroyPlugin()

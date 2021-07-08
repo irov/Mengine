@@ -65,6 +65,7 @@ namespace Mengine
         virtual int32_t addRequestListener( const cURLRequestListenerInterfacePtr & _listener, const DocumentPtr & _doc ) = 0;
         virtual void removeRequestListener( int32_t id ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define CURL_SERVICE()\

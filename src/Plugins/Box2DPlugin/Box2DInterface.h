@@ -271,6 +271,7 @@ namespace Mengine
         virtual Box2DWorldInterfacePtr createWorld( const mt::vec2f & _gravity, float _scaler, const DocumentPtr & _doc ) = 0;
         virtual void destroyWorld( const Box2DWorldInterfacePtr & _world ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define BOX2D_SERVICE()\

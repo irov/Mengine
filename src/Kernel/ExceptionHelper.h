@@ -3,7 +3,6 @@
 #include "Config/Char.h"
 #include "Config/Typedef.h"
 
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     class ExceptionHelper

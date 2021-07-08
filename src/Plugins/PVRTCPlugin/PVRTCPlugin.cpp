@@ -29,7 +29,8 @@ namespace Mengine
     {
         Helper::registerDecoder<ImageDecoderPVRTC>( STRINGIZE_STRING_LOCAL( "pvrImage" ), MENGINE_DOCUMENT_FACTORABLE );
         
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "pvr" ), STRINGIZE_STRING_LOCAL( "pvrImage" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "pvr" ), STRINGIZE_STRING_LOCAL( "pvrImage" ) );
 
         return true;
     }
@@ -38,7 +39,8 @@ namespace Mengine
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "pvrImage" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "pvr" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "pvr" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void PVRTCPlugin::_destroyPlugin()

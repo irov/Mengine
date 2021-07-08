@@ -35,12 +35,14 @@ namespace Mengine
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), Helper::makeFactorableUnique<cURLScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+            SCRIPT_SERVICE()
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), Helper::makeFactorableUnique<cURLScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ) );
+            SCRIPT_SERVICE()
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 

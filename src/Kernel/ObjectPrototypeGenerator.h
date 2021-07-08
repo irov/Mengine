@@ -40,7 +40,9 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
+            UniqueId uniqueIdentity = ENUMERATOR_SERVICE()
+                ->generateUniqueIdentity();
+
             object->setUniqueIdentity( uniqueIdentity );
 
 #if MENGINE_DOCUMENT_ENABLE

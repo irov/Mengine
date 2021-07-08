@@ -48,12 +48,14 @@ namespace Mengine
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ), Helper::makeFactorableUnique<ResourcePrefetcherScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+            SCRIPT_SERVICE()
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ), Helper::makeFactorableUnique<ResourcePrefetcherScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ) );
+            SCRIPT_SERVICE()
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 

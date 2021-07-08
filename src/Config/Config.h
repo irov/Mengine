@@ -12,6 +12,10 @@
 #define MENGINE_CPVOID_OFFSET(P, O) ((const unsigned char *)(P) + (O))
 #endif
 
+#ifndef MENGINE_FOURCC
+#define MENGINE_FOURCC(c0, c1, c2, c3) (((c0) << 0) | ((c1) << 8) | ((c2) << 16) | ((c3) << 24))
+#endif
+
 #ifndef MENGINE_MAX
 #define MENGINE_MAX(A, B) ((A) > (B) ? (A) : (B))
 #endif

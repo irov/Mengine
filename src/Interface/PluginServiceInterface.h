@@ -30,6 +30,7 @@ namespace Mengine
         virtual bool hasPlugin( const Char * _name ) const = 0;
         virtual const PluginInterfacePtr & getPlugin( const Char * _name ) const = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_SERVICE()\

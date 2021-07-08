@@ -127,7 +127,8 @@ namespace Mengine
             return false;
         }
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "dzz" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
 
 #ifndef MENGINE_MASTER_RELEASE
         Helper::registerConverter<DazzleEffectConverterDZBToDZZ>( "dzb2dzz", MENGINE_DOCUMENT_FACTORABLE );
@@ -169,7 +170,8 @@ namespace Mengine
         Helper::unregisterConverter( "dzb2dzz" );
 #endif
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "dzz" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "DazzleEffect" ) );

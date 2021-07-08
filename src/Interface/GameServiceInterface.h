@@ -13,8 +13,7 @@
 #include "Kernel/Params.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class GameServiceInterface
         : public ServiceInterface
         , public Eventable

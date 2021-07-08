@@ -6,7 +6,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class UnicodeSystemInterface
         : public ServiceInterface
     {

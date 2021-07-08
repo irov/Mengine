@@ -197,7 +197,8 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         CacheBufferMemory buffer;
         buffer.id = new_id;

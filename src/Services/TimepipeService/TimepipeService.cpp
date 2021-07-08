@@ -51,7 +51,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId newid = GENERATE_UNIQUE_IDENTITY();
+        UniqueId newid = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         TimepipeDesc desc;
         desc.id = newid;

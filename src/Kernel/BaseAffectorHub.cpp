@@ -33,7 +33,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _affector, "affector is nullptr" );
 
-        UniqueId id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         _affector->setId( id );
 

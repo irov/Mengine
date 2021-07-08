@@ -5,12 +5,16 @@
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/Assertion.h"
 
+#ifndef MENGINE_HASHTABLE_DUMMY_ELEMENT
 #define MENGINE_HASHTABLE_DUMMY_ELEMENT (reinterpret_cast<element_type *>(~0ULL))
+#endif
+
+#ifndef MENGINE_HASHTABLE_PERTURB_SHIFT
 #define MENGINE_HASHTABLE_PERTURB_SHIFT 5
+#endif
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     template<class K, class T, class H = Hashgen<K>>
     class Hashtable
     {
@@ -1230,7 +1234,6 @@ namespace Mengine
 
         value_type * m_buffer;
     };
-    //////////////////////////////////////////////////////////////////////////
 }
 
 #undef MENGINE_HASHTABLE_DUMMY_ELEMENT

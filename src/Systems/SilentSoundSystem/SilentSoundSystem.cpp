@@ -86,7 +86,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SilentSoundSystem::genSourceId()
     {
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         return new_id;
     }
@@ -100,7 +101,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SilentSoundSystem::genBufferId()
     {
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         return new_id;
     }

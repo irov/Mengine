@@ -7,7 +7,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class TextServiceInterface
         : public ServiceInterface
     {

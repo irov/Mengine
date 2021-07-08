@@ -258,7 +258,8 @@ namespace Mengine
             return 0;
         }
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
         {

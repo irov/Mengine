@@ -12,7 +12,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class VocabularyServiceInterface
         : public ServiceInterface
     {
@@ -34,7 +33,7 @@ namespace Mengine
     ((Mengine::VocabularyServiceInterface *)SERVICE_GET(Mengine::VocabularyServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_SET(Interface, Category, Prototype, Factorable, Document)\
-    VOCABULARY_SERVICE()->setFactorable(Category, Prototype, IntrusivePtr<Interface>::from(Factorable), Document)
+    VOCABULARY_SERVICE()->setFactorable(Category, Prototype, Mengine::IntrusivePtr<Interface>::from(Factorable), Document)
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_REMOVE(Category, Prototype)\
     VOCABULARY_SERVICE()->removeFactorable(Category, Prototype)

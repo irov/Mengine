@@ -19,7 +19,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class OptionsServiceInterface
         : public ServiceInterface
     {

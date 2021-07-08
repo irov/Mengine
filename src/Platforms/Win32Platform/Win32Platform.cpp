@@ -622,7 +622,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         TimerDesc desc;
         desc.id = new_id;
@@ -1542,7 +1543,7 @@ namespace Mengine
                 handle = true;
                 *_result = 0;
             }break;
-        case UWM_MOUSE_LEAVE:
+        case MENGINE_UWM_MOUSE_LEAVE:
             {
                 LOGGER_INFO( "platform", "HWND [%p] UWM_MOUSE_LEAVE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
@@ -3500,17 +3501,19 @@ namespace Mengine
             return bRet;
         }
         //////////////////////////////////////////////////////////////////////////
-#define STACKWALK_MAX_NAMELEN 1024
+#ifndef MENGINE_STACKWALK_MAX_NAMELEN
+#define MENGINE_STACKWALK_MAX_NAMELEN 1024
+#endif
         //////////////////////////////////////////////////////////////////////////
         typedef struct _CallstackEntry
         {
             DWORD64 offset;
-            CHAR name[STACKWALK_MAX_NAMELEN];
-            CHAR undName[STACKWALK_MAX_NAMELEN];
-            CHAR undFullName[STACKWALK_MAX_NAMELEN];
+            CHAR name[MENGINE_STACKWALK_MAX_NAMELEN];
+            CHAR undName[MENGINE_STACKWALK_MAX_NAMELEN];
+            CHAR undFullName[MENGINE_STACKWALK_MAX_NAMELEN];
             DWORD lineNumber;
-            CHAR lineFileName[STACKWALK_MAX_NAMELEN];
-            CHAR moduleName[STACKWALK_MAX_NAMELEN];
+            CHAR lineFileName[MENGINE_STACKWALK_MAX_NAMELEN];
+            CHAR moduleName[MENGINE_STACKWALK_MAX_NAMELEN];
         } CallstackEntry;
         //////////////////////////////////////////////////////////////////////////
         enum CallstackEntryType
@@ -3520,7 +3523,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static size_t OnCallstackEntry( Char * const _stack, size_t _capacity, CallstackEntry & entry )
         {
-            CHAR buffer[STACKWALK_MAX_NAMELEN];
+            CHAR buffer[MENGINE_STACKWALK_MAX_NAMELEN];
             if( entry.offset == 0 )
             {
                 return 0;
@@ -3693,12 +3696,12 @@ namespace Mengine
 #error "Platform not supported!"
 #endif
 
-            uint8_t pSymBuff[sizeof( IMAGEHLP_SYMBOL64 ) + STACKWALK_MAX_NAMELEN];
+            uint8_t pSymBuff[sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN];
             IMAGEHLP_SYMBOL64 * pSym = (IMAGEHLP_SYMBOL64 *)pSymBuff;
-            MENGINE_MEMSET( pSym, 0, sizeof( IMAGEHLP_SYMBOL64 ) + STACKWALK_MAX_NAMELEN );
+            MENGINE_MEMSET( pSym, 0, sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN );
 
             pSym->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
-            pSym->MaxNameLength = STACKWALK_MAX_NAMELEN;
+            pSym->MaxNameLength = MENGINE_STACKWALK_MAX_NAMELEN;
 
             IMAGEHLP_LINE64 Line;
             MENGINE_MEMSET( &Line, 0, sizeof( Line ) );
@@ -3742,8 +3745,8 @@ namespace Mengine
                     if( (*pSymGetSymFromAddr64)(hProcess, frame.AddrPC.Offset, &offsetFromSmybol, pSym) == TRUE )
                     {
                         MENGINE_STRCPY( csEntry.name, pSym->Name );
-                        (*pUnDecorateSymbolName)(pSym->Name, csEntry.undName, STACKWALK_MAX_NAMELEN, UNDNAME_NAME_ONLY);
-                        (*pUnDecorateSymbolName)(pSym->Name, csEntry.undFullName, STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE);
+                        (*pUnDecorateSymbolName)(pSym->Name, csEntry.undName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_NAME_ONLY);
+                        (*pUnDecorateSymbolName)(pSym->Name, csEntry.undFullName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE);
                     }
 
                     if( pSymGetLineFromAddr64 != NULL )
@@ -4648,7 +4651,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         Win32ProcessDesc desc;
         desc.id = id;

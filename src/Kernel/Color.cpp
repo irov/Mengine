@@ -47,7 +47,7 @@ namespace Mengine
             uint8_t a8 = _a;
 #endif
 
-            ColorValue_ARGB argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
+            ColorValue_ARGB argb = MENGINE_FOURCC( b8, g8, r8, a8 );
 
             return argb;
         }

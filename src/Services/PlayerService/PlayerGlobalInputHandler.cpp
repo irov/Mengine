@@ -249,7 +249,9 @@ namespace Mengine
 
         GlobalHandlerDesc desc;
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
+
         desc.id = new_id;
 
         desc.handler = _handler;

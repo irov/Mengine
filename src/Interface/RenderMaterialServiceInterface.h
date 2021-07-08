@@ -13,7 +13,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class RenderMaterialServiceInterface
         : public ServiceInterface
     {

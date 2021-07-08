@@ -12,7 +12,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class SoundServiceInterface
         : public ServiceInterface
     {

@@ -4,8 +4,7 @@
 #include "Interface/TextFontInterface.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class FontServiceInterface
         : public ServiceInterface
     {

@@ -8,8 +8,7 @@
 #include "Kernel/Factory.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class FactoryServiceInterface
         : public ServiceInterface
     {

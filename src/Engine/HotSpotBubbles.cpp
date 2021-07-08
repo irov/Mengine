@@ -21,7 +21,8 @@ namespace Mengine
     {
         Bubble bubble;
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         bubble.id = new_id;
         bubble.pos = _pos;

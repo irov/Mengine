@@ -77,12 +77,14 @@ namespace Mengine
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MovieScriptEmbedding" ), Helper::makeFactorableUnique<MovieScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+            SCRIPT_SERVICE()
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "MovieScriptEmbedding" ), Helper::makeFactorableUnique<MovieScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
         {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MovieScriptEmbedding" ) );
+            SCRIPT_SERVICE()
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "MovieScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
@@ -157,7 +159,8 @@ namespace Mengine
             dataflow->finalize();
         } );
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "aek" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "aek" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
@@ -214,7 +217,8 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "aek" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "aek" ) );
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {

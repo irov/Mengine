@@ -30,7 +30,8 @@ namespace Mengine
     {
         Helper::registerDecoder<ImageDecoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "dds" ), STRINGIZE_STRING_LOCAL( "ddsImage" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dds" ), STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
         Helper::registerEncoder<ImageEncoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -42,7 +43,8 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "dds" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "dds" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DDSPlugin::_destroyPlugin()

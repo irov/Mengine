@@ -8,8 +8,7 @@
 #include "Config/Typedef.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class LoggerServiceInterface
         : public ServiceInterface
     {

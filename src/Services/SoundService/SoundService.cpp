@@ -327,7 +327,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity );
 
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
+
         identity->setId( new_id );
 
         identity->setSoundSource( source );

@@ -14,7 +14,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class ResourceServiceInterface
         : public ServiceInterface
     {
@@ -43,7 +42,7 @@ namespace Mengine
                 return false;
             }
 
-            * _resource = Helper::staticResourceCast<T>( resource );
+            *_resource = Helper::staticResourceCast<T>( resource );
 
             return true;
         }

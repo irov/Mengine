@@ -71,7 +71,7 @@ namespace Mengine
             ::KillTimer( m_hWnd, m_uTimer );
             m_uTimer = 0;
 
-            ::SendMessage( m_hWnd, UWM_MOUSE_LEAVE, 0, 0 );
+            ::SendMessage( m_hWnd, MENGINE_UWM_MOUSE_LEAVE, 0, 0 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

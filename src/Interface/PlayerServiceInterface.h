@@ -94,6 +94,7 @@ namespace Mengine
         virtual const AffectorHubInterfacePtr & getAffectorHub() const = 0;
         virtual const AffectorHubInterfacePtr & getGlobalAffectorHub() const = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define PLAYER_SERVICE()\

@@ -1,12 +1,9 @@
 #pragma once
 
-#include "Config/UniqueId.h"
-#include "Config/Typedef.h"
-#include "Config/Char.h"
+#include "Config/Config.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     enum EAffectorType
     {
         ETA_POSITION,
@@ -19,7 +16,4 @@ namespace Mengine
         ETA_END,
         __ETA_LAST__
     };
-    //////////////////////////////////////////////////////////////////////////
-    const Char * affectorToString( uint32_t _event );
-    //////////////////////////////////////////////////////////////////////////
 }

@@ -5,6 +5,8 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/UpdateContext.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

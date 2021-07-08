@@ -9,6 +9,8 @@
 #include "Kernel/UpdateContext.h"
 #include "Kernel/IntrusiveSlugLinkedPtr.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

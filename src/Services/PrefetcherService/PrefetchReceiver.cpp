@@ -1,8 +1,5 @@
 #include "PrefetchReceiver.h"
 
-#include "Kernel/ThreadGuardScope.h"
-#include "Kernel/Assertion.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,40 +10,35 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PrefetchReceiver::~PrefetchReceiver()
     {
-        MENGINE_ASSERTION_FATAL( m_prefetchRefcount == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PrefetchReceiver::initialize( const ThreadTaskPrefetchPtr & _prefetcher )
+    bool PrefetchReceiver::initialize( const ThreadTaskPrefetchPtr & _prefetcher )
     {
         m_prefetcher = _prefetcher;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PrefetchReceiver::finalize()
     {
         m_prefetcher = nullptr;
 
-        m_prefetchRefcount = 0;
+        m_prefetchRefcount.reset();
     }
     //////////////////////////////////////////////////////////////////////////
     void PrefetchReceiver::acquire()
     {
-        MENGINE_THREAD_GUARD_SCOPE( PrefetchReceiver, this, "PrefetchReceiver::acquire" );
-
-        ++m_prefetchRefcount;
+        m_prefetchRefcount.incref();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetchReceiver::release()
     {
-        MENGINE_THREAD_GUARD_SCOPE( PrefetchReceiver, this, "PrefetchReceiver::release" );
-
-        MENGINE_ASSERTION_FATAL( m_prefetchRefcount != 0 );
-
-        if( --m_prefetchRefcount == 0 )
+        if( m_prefetchRefcount.decref() == false )
         {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

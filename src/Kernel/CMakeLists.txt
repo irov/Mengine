@@ -288,6 +288,8 @@ ADD_FILTER(
 Reference
     Reference.cpp
     Reference.h
+    ReferenceCounter.cpp
+    ReferenceCounter.h
 )
 
 ADD_FILTER(
@@ -319,7 +321,7 @@ Resource\\\\Image
     ResourceImageSubstractRGBAndAlpha.cpp
     ResourceImageSubstractRGBAndAlpha.h
     ResourceImageSequence.cpp
-    ResourceImageSequence.h    
+    ResourceImageSequence.h
 )
 
 ADD_FILTER(
@@ -455,7 +457,7 @@ Assertion
 )
 
 ADD_FILTER(
-Core    
+Core
     Pool.h
     
     PoolAllocator.h
@@ -722,7 +724,7 @@ Core
     TouchCode.h
     
     Document.h
-    Document.cpp    
+    Document.cpp
     DocumentHelper.h
     
     Ravingcode.h
@@ -803,10 +805,10 @@ Codec
     ImageDecoderArchive.h
     ImageDecoderArchive.cpp
     ImageEncoder.cpp
-    ImageEncoder.h        
+    ImageEncoder.h
 
     DecoderFactory.h
-    EncoderFactory.h    
+    EncoderFactory.h
     ConverterFactory.h
 )
 

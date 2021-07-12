@@ -188,6 +188,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isKeyDown( EKeyCode _keyCode ) const
     {
+        MENGINE_ASSERTION_FATAL( _keyCode < MENGINE_INPUT_MAX_KEY_CODE );
+
         bool isDown = m_keyBuffer[_keyCode];
 
         return isDown;
@@ -195,6 +197,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isExclusiveKeyDown( EKeyCode _keyCode ) const
     {
+        MENGINE_ASSERTION_FATAL( _keyCode < MENGINE_INPUT_MAX_KEY_CODE );
+
         bool isDown = m_keyBuffer[_keyCode];
 
         if( isDown == false )
@@ -221,11 +225,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isAnyMouseButtonDown() const
     {
-        bool isDown0 = m_mouseBuffer[0];
-        bool isDown1 = m_mouseBuffer[1];
-        bool isDown2 = m_mouseBuffer[2];
+        std::ptrdiff_t mouseDownCount = std::count( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_CODE, true );
 
-        return isDown0 == true || isDown1 == true || isDown2 == true;
+        return mouseDownCount != 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isMouseButtonDown( EMouseCode _button ) const
@@ -280,20 +282,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::applyCursorPosition_( ETouchCode _touchId, float _x, float _y, float _pressure )
     {
-        if( _touchId >= MENGINE_INPUT_MAX_TOUCH )
-        {
-            return;
-        }
+        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH );
 
-        mt::vec2f point( _x, _y );
+        const mt::vec2f & currentPosition = m_cursorPosition[_touchId];
 
         bool change = false;
-        if( mt::cmp_v2_v2( m_cursorPosition[_touchId], point ) == false )
+
+        mt::vec2f point( _x, _y );
+        if( mt::cmp_v2_v2( currentPosition, point ) == false )
         {
             change = true;
         }
 
-        if( mt::equal_f_f( m_cursorPressure[_touchId], _pressure ) == false )
+        float currentPressure = m_cursorPressure[_touchId];
+
+        if( mt::equal_f_f( currentPressure, _pressure ) == false )
         {
             change = true;
         }
@@ -319,6 +322,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & InputService::getCursorPosition( ETouchCode _touchId ) const
     {
+        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH );
+
         const mt::vec2f & position = m_cursorPosition[_touchId];
 
         return position;
@@ -326,6 +331,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float InputService::getCursorPressure( ETouchCode _touchId ) const
     {
+        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH );
+
         float pressure = m_cursorPressure[_touchId];
 
         return pressure;
@@ -398,6 +405,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::keyEvent_( const InputKeyEvent & _event )
     {
+        MENGINE_ASSERTION_FATAL( _event.code < MENGINE_INPUT_MAX_KEY_CODE );
+
         bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
 
         m_keyBuffer[_event.code] = _event.isDown;

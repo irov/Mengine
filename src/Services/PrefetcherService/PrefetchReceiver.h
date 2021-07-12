@@ -2,7 +2,7 @@
 
 #include "ThreadTaskPrefetch.h"
 
-#include "Kernel/ThreadGuard.h"
+#include "Kernel/ReferenceCounter.h"
 #include "Kernel/Factorable.h"
 
 namespace Mengine
@@ -18,7 +18,7 @@ namespace Mengine
         ~PrefetchReceiver() override;
 
     public:
-        void initialize( const ThreadTaskPrefetchPtr & _prefetcher );
+        bool initialize( const ThreadTaskPrefetchPtr & _prefetcher );
         void finalize();
 
     public:
@@ -29,10 +29,8 @@ namespace Mengine
         MENGINE_INLINE const ThreadTaskPrefetchPtr & getPrefetcher() const;
 
     protected:
-        uint32_t m_prefetchRefcount;
+        ReferenceCounter m_prefetchRefcount;
         ThreadTaskPrefetchPtr m_prefetcher;
-
-        MENGINE_THREAD_GUARD_INIT( PrefetchReceiver );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PrefetchReceiver> PrefetchReceiverPtr;
@@ -42,5 +40,4 @@ namespace Mengine
         return m_prefetcher;
     }
     //////////////////////////////////////////////////////////////////////////
-
 }

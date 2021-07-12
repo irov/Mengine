@@ -5,7 +5,7 @@
 #include "OpenALSoundIncluder.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/ThreadGuard.h"
+#include "Kernel/ReferenceCounter.h"
 
 namespace Mengine
 {
@@ -53,7 +53,7 @@ namespace Mengine
     protected:
         OpenALSoundSystem * m_soundSystem;
 
-        uint32_t m_refacquire;
+        ReferenceCounter m_refacquire;
 
         SoundDecoderInterfacePtr m_soundDecoder;
 
@@ -63,8 +63,6 @@ namespace Mengine
         uint32_t m_channels;
         float m_length;
         bool m_isStereo;
-
-        MENGINE_THREAD_GUARD_INIT( OpenALSoundBufferBase );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenALSoundBufferBase, SoundBufferInterface> OpenALSoundBufferBasePtr;

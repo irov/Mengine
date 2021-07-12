@@ -2,8 +2,8 @@
 
 #include "Config/Typedef.h"
 
-#include "Kernel/ThreadGuard.h"
 #include "Kernel/Mixin.h"
+#include "Kernel/ReferenceCounter.h"
 
 namespace Mengine
 {
@@ -17,7 +17,7 @@ namespace Mengine
 
     public:
         bool incrementReference();
-        bool decrementReference();
+        void decrementReference();
 
         MENGINE_INLINE uint32_t countReference() const;
 
@@ -25,17 +25,17 @@ namespace Mengine
         virtual bool _incrementZero();
         virtual void _decrementZero();
 
-    protected:
-        uint32_t m_refcounter;
-
-        MENGINE_THREAD_GUARD_INIT( Reference );
+    private:
+        ReferenceCounter m_refcounter;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Reference> ReferencePtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t Reference::countReference() const
     {
-        return m_refcounter;
+        uint32_t count = m_refcounter.getReferenceCount();
+
+        return count;
     }
     //////////////////////////////////////////////////////////////////////////
 }

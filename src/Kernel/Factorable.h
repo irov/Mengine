@@ -3,7 +3,7 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/ThreadGuard.h"
+#include "Kernel/ReferenceCounter.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_FACTORABLE_DEBUG
@@ -59,9 +59,6 @@ namespace Mengine
 #if MENGINE_FACTORABLE_DEBUG
     public:
         bool isDestroyed() const;
-
-    protected:
-        virtual void _checkDestroy();
 #endif
 
     public:
@@ -73,7 +70,7 @@ namespace Mengine
 #endif
 
     protected:
-        uint32_t m_reference;
+        ReferenceCounter m_reference;
 
         Factory * m_factory;
 
@@ -81,8 +78,6 @@ namespace Mengine
         bool m_destroy;
         bool m_immortal;
 #endif
-
-        MENGINE_THREAD_GUARD_INIT( Factorable );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factorable> FactorablePtr;
@@ -94,7 +89,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t Factorable::getReference() const noexcept
     {
-        return m_reference;
+        uint32_t count = m_reference.getReferenceCount();
+
+        return count;
     }
     //////////////////////////////////////////////////////////////////////////
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG

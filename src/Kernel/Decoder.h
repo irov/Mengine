@@ -152,7 +152,7 @@ namespace Mengine
         {
             //Empty
 
-            return 0.0;
+            return 0.f;
         }
 
     private:

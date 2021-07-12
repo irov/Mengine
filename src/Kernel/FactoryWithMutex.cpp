@@ -43,7 +43,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( object );
 
-        ++m_count;
+        m_count.increfWithMutex();
 
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
@@ -95,7 +95,7 @@ namespace Mengine
 
         this->_destroyObject( _object );
 
-        --m_count;
+        m_count.decrefWithMutex();
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
 

@@ -14,7 +14,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
-#include "Kernel/ThreadGuard.h"
+#include "Kernel/ReferenceCounter.h"
 
 #ifdef MENGINE_DEBUG
 #   include <type_traits>
@@ -117,9 +117,9 @@ namespace Mengine
 
         ContentInterfacePtr m_content;
 
-        uint32_t m_compileReferenceCount;
-        uint32_t m_prefetchReferenceCount;
-        uint32_t m_cacheReferenceCount;
+        ReferenceCounter m_compileReferenceCount;
+        ReferenceCounter m_prefetchReferenceCount;
+        ReferenceCounter m_cacheReferenceCount;
 
         ConstString m_locale;
         ConstString m_groupName;
@@ -131,9 +131,6 @@ namespace Mengine
         bool m_mapping;
         bool m_precompile;
         bool m_ignored;
-
-        MENGINE_THREAD_GUARD_INIT( ResourceCompile );
-        MENGINE_THREAD_GUARD_INIT( ResourcePrefetch );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Resource> ResourcePtr;
@@ -185,12 +182,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t Resource::getCompileReferenceCount() const
     {
-        return m_compileReferenceCount;
+        uint32_t count = m_compileReferenceCount.getReferenceCount();
+
+        return count;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Resource::isCache() const
     {
-        return m_cacheReferenceCount != 0;
+        bool referencing = m_cacheReferenceCount.isReferencing();
+
+        return referencing;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Resource::isIgnored() const

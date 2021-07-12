@@ -13,9 +13,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Factory::Factory()
-        : m_count( 0 )
 #ifdef MENGINE_DEBUG
-        , m_register( false )
+        : m_register( false )
 #endif
     {
 #ifdef MENGINE_DEBUG
@@ -58,13 +57,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_type.empty() == false );
 
-        MENGINE_THREAD_GUARD_CHECK( Factory, this, "Factory::createObject" );
-
         Factorable * object = this->_createObject();
 
         MENGINE_ASSERTION_MEMORY_PANIC( object );
 
-        ++m_count;
+        m_count.incref();
 
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
@@ -92,8 +89,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factory::destroyObject( Factorable * _object )
     {
-        MENGINE_THREAD_GUARD_CHECK( Factory, this, "Factory::destroyObject" );
-
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( FactoryServiceInterface ) == true )
         {
@@ -116,19 +111,23 @@ namespace Mengine
 
         this->_destroyObject( _object );
 
-        --m_count;
+        m_count.decref();
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Factory::isEmptyObjects() const
     {
-        return m_count == 0;
+        bool referencing = m_count.isReferencing();
+
+        return referencing == 0;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Factory::getCountObject() const
     {
-        return m_count;
+        uint32_t count = m_count.getReferenceCount();
+
+        return count;
     }
     //////////////////////////////////////////////////////////////////////////
 }

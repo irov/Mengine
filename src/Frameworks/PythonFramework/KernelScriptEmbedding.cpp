@@ -1454,7 +1454,7 @@ namespace Mengine
 
                     float length = mt::length_v3_v3( node_position, follow_position );
 
-                    if( m_distance > 0.0 )
+                    if( m_distance > 0.f )
                     {
                         if( length - step < m_distance )
                         {
@@ -1672,7 +1672,7 @@ namespace Mengine
 
                     float length = mt::length_v3_v3( node_position, follow_position );
 
-                    if( m_distance > 0.0 )
+                    if( m_distance > 0.f )
                     {
                         if( length - step < m_distance )
                         {

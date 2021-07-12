@@ -162,8 +162,11 @@ namespace Mengine
 
         PrefetchReceiverPtr new_receiver = m_factoryPrefetchReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        new_receiver->initialize( task );
-
+        if( new_receiver->initialize( task ) == false )
+        {
+            return false;
+        }
+        
         const ConstString & fileGroupName = _fileGroup->getName();
 
         m_prefetchReceivers.emplace( fileGroupName, _filePath, new_receiver );
@@ -235,7 +238,10 @@ namespace Mengine
 
         PrefetchReceiverPtr new_receiver = m_factoryPrefetchReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        new_receiver->initialize( task );
+        if( new_receiver->initialize( task ) == false )
+        {
+            return false;
+        }
 
         const ConstString & fileGroupName = _fileGroup->getName();
 
@@ -315,7 +321,10 @@ namespace Mengine
 
         PrefetchReceiverPtr new_receiver = m_factoryPrefetchReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        new_receiver->initialize( task );
+        if( new_receiver->initialize( task ) == false )
+        {
+            return false;
+        }
 
         const ConstString & fileGroupName = _fileGroup->getName();
 
@@ -418,7 +427,10 @@ namespace Mengine
 
         PrefetchReceiverPtr new_receiver = m_factoryPrefetchReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        new_receiver->initialize( task );
+        if( new_receiver->initialize( task ) == false )
+        {
+            return false;
+        }
 
         const ConstString & fileGroupName = _fileGroup->getName();
 

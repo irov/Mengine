@@ -3,14 +3,12 @@
 #include "Interface/SoundCodecInterface.h"
 
 #include "Kernel/Assertion.h"
-#include "Kernel/ThreadGuardScope.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferBase::OpenALSoundBufferBase()
         : m_soundSystem( nullptr )
-        , m_refacquire( 0 )
         , m_format( 0 )
         , m_frequency( 0 )
         , m_channels( 0 )
@@ -21,7 +19,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferBase::~OpenALSoundBufferBase()
     {
-        MENGINE_ASSERTION_FATAL( m_refacquire == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferBase::setSoundSystem( OpenALSoundSystem * _soundSystem )
@@ -36,29 +33,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferBase::acquireSoundBuffer()
     {
-        MENGINE_THREAD_GUARD_SCOPE( OpenALSoundBufferBase, this, "OpenALSoundBufferBase::acquire" );
-
-        if( ++m_refacquire == 1 )
+        if( m_refacquire.incref() == false )
         {
-            if( this->_acquireSoundBuffer() == false )
-            {
-                return false;
-            }
+            return true;
         }
 
+        if( this->_acquireSoundBuffer() == false )
+        {
+            return false;
+        }
+    
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferBase::releaseSoundBuffer()
     {
-        MENGINE_THREAD_GUARD_SCOPE( OpenALSoundBufferBase, this, "OpenALSoundBufferBase::release" );
-
-        MENGINE_ASSERTION_FATAL( m_refacquire > 0 );
-
-        if( --m_refacquire == 0 )
+        if( m_refacquire.decref() == false )
         {
-            this->_releaseSoundBuffer();
+            return;
         }
+
+        this->_releaseSoundBuffer();
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferBase::_acquireSoundBuffer()

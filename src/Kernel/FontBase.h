@@ -4,6 +4,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/CompilableReference.h"
+#include "Kernel/ReferenceCounter.h"
 
 namespace Mengine
 {

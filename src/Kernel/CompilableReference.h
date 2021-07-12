@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Compilable.h"
-#include "Kernel/ThreadGuard.h"
+#include "Kernel/ReferenceCounter.h"
 
 namespace Mengine
 {
@@ -21,16 +21,16 @@ namespace Mengine
         void release() override;
 
     private:
-        uint32_t m_compileReferenceCount;
-
-        MENGINE_THREAD_GUARD_INIT( CompilableReference );
+        ReferenceCounter m_compileReferenceCount;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<CompilableReference> CompilableReferencePtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t CompilableReference::getCompileReferenceCount() const
     {
-        return m_compileReferenceCount;
+        uint32_t count = m_compileReferenceCount.getReferenceCount();
+
+        return count;
     }
     //////////////////////////////////////////////////////////////////////////
 }

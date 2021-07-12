@@ -2,14 +2,12 @@
 #include "Factory.h"
 
 #include "Kernel/Exception.h"
-#include "Kernel/ThreadGuardScope.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Factorable::Factorable()
-        : m_reference( 0 )
-        , m_factory( nullptr )
+        : m_factory( nullptr )
 #if MENGINE_FACTORABLE_DEBUG
         , m_destroy( false )
         , m_immortal( false )
@@ -23,13 +21,6 @@ namespace Mengine
         if( m_destroy == false && m_factory != nullptr )
         {
             MENGINE_THROW_EXCEPTION( "Factorable deleter but not destroy!!" );
-        }
-
-        if( m_reference != 0 )
-        {
-            MENGINE_THROW_EXCEPTION( "m_reference %u != 0"
-                , m_reference
-            );
         }
 #endif
     }
@@ -71,30 +62,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Factorable::incref()
     {
-        MENGINE_THREAD_GUARD_SCOPE( Factorable, this, "Factorable::incref" );
+        m_reference.incref();
 
-        ++m_reference;
+        uint32_t count = m_reference.getReferenceCount();
 
-        return m_reference;
+        return count;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::decref()
     {
+        if( m_reference.decref() == false )
         {
-            MENGINE_THREAD_GUARD_SCOPE( Factorable, this, "Factorable::decref" );
-
-            --m_reference;
+            return;
         }
 
-        if( m_reference == 0 )
-        {
-            this->destroy();
-        }
+        this->destroy();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Factorable::getrefcount() const
     {
-        return m_reference;
+        uint32_t count = m_reference.getReferenceCount();
+
+        return count;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::destroy()
@@ -118,10 +107,6 @@ namespace Mengine
         this->_destroy();
 
 #if MENGINE_FACTORABLE_DEBUG
-        this->_checkDestroy();
-#endif
-
-#if MENGINE_FACTORABLE_DEBUG
         if( m_factory == nullptr )
         {
             MENGINE_THROW_EXCEPTION( "m_factory == nullptr" );
@@ -142,18 +127,6 @@ namespace Mengine
     void Factorable::_destroy()
     {
     }
-    //////////////////////////////////////////////////////////////////////////
-#if MENGINE_FACTORABLE_DEBUG
-    void Factorable::_checkDestroy()
-    {
-        if( m_reference != 0 )
-        {
-            MENGINE_THROW_EXCEPTION( "m_reference %u != 0"
-                , m_reference
-            );
-        }
-    }
-#endif
     //////////////////////////////////////////////////////////////////////////
 
 }

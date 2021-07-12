@@ -12,7 +12,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/Pointer.h"
 
-#include "Kernel/ThreadGuard.h"
+#include "Kernel/ReferenceCounter.h"
 
 namespace Mengine
 {
@@ -46,13 +46,11 @@ namespace Mengine
     protected:
         ConstString m_type;
 
-        uint32_t m_count;
+        ReferenceCounter m_count;
 
-#ifdef MENGINE_DEBUG        
+#ifdef MENGINE_DEBUG
         bool m_register;
 #endif
-
-        MENGINE_THREAD_GUARD_INIT( Factory );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factory> FactoryPtr;

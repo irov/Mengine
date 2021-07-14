@@ -6,6 +6,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ParamsHelper.h"
 
 namespace Mengine
 {
@@ -50,8 +51,10 @@ namespace Mengine
             , full_output.c_str()
         );
 
+        String ffmpeg = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), "ffmpeg.exe" );
+
         uint32_t exitCode;
-        if( win32Platform->createProcess( "ffmpeg.exe", buffer.c_str(), true, &exitCode ) == false )
+        if( win32Platform->createProcess( ffmpeg.c_str(), buffer.c_str(), true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer.c_str()

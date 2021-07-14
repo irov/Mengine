@@ -247,7 +247,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc )
+    UniqueId ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -277,7 +277,7 @@ namespace Mengine
             , MENGINE_THREAD_JOB_WORK_COUNT
         );
 
-        return 0;
+        return INVALID_UNIQUE_ID;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::removeWorker( uint32_t _id )

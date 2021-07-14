@@ -162,8 +162,8 @@ namespace Mengine
         }
 
     protected:
-        uint32_t m_globalKeyHandlerF2;
-        uint32_t m_globalKeyHandlerForSendingSelectedNode;
+        UniqueId m_globalKeyHandlerF2;
+        UniqueId m_globalKeyHandlerForSendingSelectedNode;
 
         ArrowPtr m_arrow;
         ScenePtr m_scene;
@@ -173,7 +173,7 @@ namespace Mengine
         AtomicBool m_shouldRecreateServer;
         AtomicBool m_shouldUpdateScene;
         ThreadJobPtr m_threadJob;
-        uint32_t m_workerId;
+        UniqueId m_workerId;
         ThreadMutexInterfacePtr m_dataMutex;
         Atomic<ENodeDebuggerServerState> m_serverState;
         Deque<NodeDebuggerPacket> m_incomingPackets;

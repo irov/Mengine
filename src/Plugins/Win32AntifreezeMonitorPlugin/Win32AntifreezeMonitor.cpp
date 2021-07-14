@@ -76,7 +76,7 @@ namespace Mengine
             return false;
         }
 
-        uint32_t workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ), MENGINE_DOCUMENT_FACTORABLE );
+        UniqueId workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_workerId = workerId;
 

@@ -12,7 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Affector::Affector()
         : m_type( ETA_POSITION )
-        , m_id( 0 )
+        , m_id( INVALID_UNIQUE_ID )
         , m_updataterId( INVALID_UPDATABLE_ID )
         , m_speedFactor( 1.f )
         , m_freeze( false )

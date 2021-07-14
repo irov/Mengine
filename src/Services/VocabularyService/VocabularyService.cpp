@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VocabularyService::_finalizeService()
     {
-        MENGINE_ASSERTION( m_mixins.empty(), "Vocabulary not empty!" );
+        MENGINE_ASSERTION( m_mixins.empty() == true, "Vocabulary not empty!" );
 
 #ifdef MENGINE_DEBUG
         for( const HashtableMixins::value_type & value : m_mixins )

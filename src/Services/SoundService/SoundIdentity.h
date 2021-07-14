@@ -52,7 +52,7 @@ namespace Mengine
         SoundListenerInterfacePtr listener;
 
         ThreadWorkerSoundBufferUpdatePtr worker;
-        uint32_t workerId;
+        UniqueId workerId;
 
         float time_left;
         MixerValue volume;

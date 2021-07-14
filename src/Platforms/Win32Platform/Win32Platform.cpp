@@ -324,7 +324,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         for( const TimerDesc & desc : m_timers )
         {
-            if( desc.id == INVALIDATE_UNIQUE_ID )
+            if( desc.id == INVALID_UNIQUE_ID )
             {
                 continue;
             }
@@ -653,7 +653,7 @@ namespace Mengine
 
         TimerDesc & desc = *it_found;
 
-        desc.id = INVALIDATE_UNIQUE_ID;
+        desc.id = INVALID_UNIQUE_ID;
         desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -733,7 +733,7 @@ namespace Mengine
 
                 for( TimerDesc & desc : m_timers )
                 {
-                    if( desc.id == INVALIDATE_UNIQUE_ID )
+                    if( desc.id == INVALID_UNIQUE_ID )
                     {
                         continue;
                     }
@@ -752,7 +752,7 @@ namespace Mengine
 
                 m_timers.erase( std::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
                 {
-                    return _desc.id == INVALIDATE_UNIQUE_ID;
+                    return _desc.id == INVALID_UNIQUE_ID;
                 } ), m_timers.end() );
 
                 m_update = true;

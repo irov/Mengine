@@ -50,7 +50,7 @@ namespace Mengine
         DateTimeProviderInterfacePtr m_dateTimeProvider;
 
         uint32_t m_seconds;
-        uint32_t m_workerId;
+        UniqueId m_workerId;
 
         Atomic<uint32_t> m_refalive;
         Atomic<uint32_t> m_reflogger;

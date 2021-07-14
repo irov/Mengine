@@ -211,7 +211,7 @@ namespace Mengine
 
         struct SDLEventHandlerDesc
         {
-            uint32_t id;
+            UniqueId id;
             LambdaSDLEventHandler handler;
         };
 
@@ -220,7 +220,7 @@ namespace Mengine
 
         struct TimerDesc
         {
-            uint32_t id;
+            UniqueId id;
             float milliseconds;
             float time;
             LambdaTimer lambda;
@@ -229,8 +229,6 @@ namespace Mengine
             DocumentPtr doc;
 #endif
         };
-
-        uint32_t m_enumerator;
 
         typedef Vector<TimerDesc> VectorTimers;
         VectorTimers m_timers;

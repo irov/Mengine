@@ -224,7 +224,7 @@ namespace Mengine
 
         struct Win32ProcessDesc
         {
-            uint32_t id;
+            UniqueId id;
             LambdaWin32ProcessHandler lambda;
 
 #if MENGINE_DOCUMENT_ENABLE

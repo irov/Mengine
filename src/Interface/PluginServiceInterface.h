@@ -11,8 +11,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef bool(*TPluginCreate)(ServiceProviderInterface * _serviceProvider, PluginInterface ** const _plugin, uint32_t _uid, bool _dynamic);
-    typedef bool(*TPluginDestroy)(ServiceProviderInterface * _serviceProvider, PluginInterface * _plugin, uint32_t _uid);
+    typedef bool(*TPluginCreate)(ServiceProviderInterface * _serviceProvider, PluginInterface ** const _plugin, UniqueId _uid, bool _dynamic);
+    typedef bool(*TPluginDestroy)(ServiceProviderInterface * _serviceProvider, PluginInterface * _plugin, UniqueId _uid);
     //////////////////////////////////////////////////////////////////////////
     class PluginServiceInterface
         : public ServiceInterface

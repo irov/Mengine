@@ -26,7 +26,7 @@ namespace Mengine
         {
         public:
             AmplifierScriptMethod()
-                : m_affectorMusicID( 0 )
+                : m_affectorMusicID( INVALID_UNIQUE_ID )
             {
             }
 
@@ -276,7 +276,7 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
 
-                if( m_affectorMusicID != 0 )
+                if( m_affectorMusicID != INVALID_UNIQUE_ID )
                 {
                     if( affectorHub->hasAffector( m_affectorMusicID ) == true )
                     {
@@ -331,7 +331,7 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
 
-                if( m_affectorMusicID != 0 )
+                if( m_affectorMusicID != INVALID_UNIQUE_ID )
                 {
                     if( affectorHub->hasAffector( m_affectorMusicID ) == true )
                     {

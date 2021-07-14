@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Arrow::Arrow()
         : m_arrowType( EAT_POINT )
-        , m_inputMousePositionProviderId( INVALIDATE_UNIQUE_ID )
+        , m_inputMousePositionProviderId( INVALID_UNIQUE_ID )
         , m_pointClick( 0.f, 0.f )
         , m_radius( 0.f )
         , m_hided( false )
@@ -94,7 +94,7 @@ namespace Mengine
     {
         INPUT_SERVICE()
             ->removeMousePositionProvider( m_inputMousePositionProviderId );
-        m_inputMousePositionProviderId = 0;
+        m_inputMousePositionProviderId = INVALID_UNIQUE_ID;
 
         Entity::_deactivate();
     }

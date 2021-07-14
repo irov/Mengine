@@ -171,7 +171,7 @@ namespace Mengine
         m_play = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImageSequence::_play( uint32_t _enumerator, float _time )
+    bool SurfaceImageSequence::_play( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _enumerator );
         MENGINE_UNUSED( _time );
@@ -181,7 +181,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImageSequence::_restart( uint32_t _enumerator, float _time )
+    bool SurfaceImageSequence::_restart( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _time );
         MENGINE_UNUSED( _enumerator );
@@ -191,7 +191,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImageSequence::_pause( uint32_t _enumerator )
+    void SurfaceImageSequence::_pause( UniqueId _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 
@@ -206,7 +206,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImageSequence::_stop( uint32_t _enumerator )
+    bool SurfaceImageSequence::_stop( UniqueId _enumerator )
     {
         if( this->isCompile() == false )
         {
@@ -223,7 +223,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImageSequence::_end( uint32_t _enumerator )
+    void SurfaceImageSequence::_end( UniqueId _enumerator )
     {
         if( this->isCompile() == false )
         {
@@ -514,7 +514,7 @@ namespace Mengine
         return time;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImageSequence::_interrupt( uint32_t _enumerator )
+    bool SurfaceImageSequence::_interrupt( UniqueId _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 

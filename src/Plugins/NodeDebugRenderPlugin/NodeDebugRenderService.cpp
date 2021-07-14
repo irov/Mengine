@@ -38,7 +38,7 @@ namespace Mengine
     NodeDebugRenderService::NodeDebugRenderService()
         : m_fps( 0 )
         , m_showDebugText( 0 )
-        , m_globalKeyHandlerF9( INVALIDATE_UNIQUE_ID )
+        , m_globalKeyHandlerF9( INVALID_UNIQUE_ID )
         , m_timerFPS( 0 )
     {
     }
@@ -102,7 +102,7 @@ namespace Mengine
             ->getGlobalInputHandler();
 
         globalHandleSystem->removeGlobalHandler( m_globalKeyHandlerF9 );
-        m_globalKeyHandlerF9 = INVALIDATE_UNIQUE_ID;
+        m_globalKeyHandlerF9 = INVALID_UNIQUE_ID;
 
         if( m_timerFPS != 0 )
         {

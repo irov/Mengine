@@ -64,7 +64,6 @@ namespace Mengine
 
         virtual InputHandlerInterface * getPickerInputHandler() = 0;
 
-
     public:
         virtual const RenderViewportInterfacePtr & getPickerViewport() const = 0;
         virtual const RenderCameraInterfacePtr & getPickerCamera() const = 0;

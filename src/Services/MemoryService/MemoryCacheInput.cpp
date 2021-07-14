@@ -46,7 +46,7 @@ namespace Mengine
         void * memory;
         UniqueId bufferId = m_memoryManager->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( bufferId == INVALIDATE_UNIQUE_ID )
+        if( bufferId == INVALID_UNIQUE_ID )
         {
             return nullptr;
         }

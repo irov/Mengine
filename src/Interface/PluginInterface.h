@@ -9,6 +9,7 @@
 
 #include "Config/Char.h"
 #include "Config/Export.h"
+#include "Config/UniqueId.h"
 
 #ifndef MENGINE_PLUGIN_NAME_MAX
 #define MENGINE_PLUGIN_NAME_MAX 64
@@ -24,8 +25,8 @@ namespace Mengine
         virtual const Char * getPluginName() const = 0;
 
     public:
-        virtual void setUID( uint32_t _uid ) = 0;
-        virtual uint32_t getUID() const = 0;
+        virtual void setUID( UniqueId _uid ) = 0;
+        virtual UniqueId getUID() const = 0;
 
     public:
         virtual void setDynamicLoad( bool _dynamicLoad ) = 0;
@@ -55,7 +56,7 @@ namespace Mengine
     initPlugin##Name
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
-    extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, uint32_t _uid, bool _dynamic ){\
+    extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid, bool _dynamic ){\
     if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);}\
     Mengine::PluginInterface * plugin = Mengine::Helper::newT<Mengine::FactorablePlugin<Type>>();\
     if( plugin == nullptr ){ return false; }\
@@ -67,7 +68,7 @@ namespace Mengine
 #define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
     extern "C"\
     {\
-        MENGINE_DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, uint32_t _uid )\
+        MENGINE_DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid )\
         {\
             return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, _uid, true );\
         }\
@@ -85,7 +86,7 @@ namespace Mengine
 #define PLUGIN_EXPORT(Name)\
     extern "C"\
     {\
-        extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, uint32_t _uid, bool _dynamic );\
+        extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid, bool _dynamic );\
     }
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_SERVICE_WAIT( Type, Lambda )\

@@ -24,7 +24,7 @@ namespace Mengine
 #if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
 #endif
-        , m_id( 0 )
+        , m_id( INVALID_UNIQUE_ID )
     {
         MENGINE_UNUSED( _doc );
     }
@@ -61,12 +61,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TaskTransformationRotateYTime::_onSkip()
     {
-        if( m_id != 0 )
+        if( m_id != INVALID_UNIQUE_ID )
         {
             const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 
             affectorHub->stopAffector( m_id );
-            m_id = 0;
+            m_id = INVALID_UNIQUE_ID;
         }
 
         TransformationInterface * transformation = m_transformable->getTransformation();
@@ -76,12 +76,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TaskTransformationRotateYTime::_onFinally()
     {
-        if( m_id != 0 )
+        if( m_id != INVALID_UNIQUE_ID )
         {
             const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 
             affectorHub->stopAffector( m_id );
-            m_id = 0;
+            m_id = INVALID_UNIQUE_ID;
         }
 
         m_affectorable = nullptr;

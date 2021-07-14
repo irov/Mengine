@@ -1416,9 +1416,9 @@ namespace Mengine
 
             _identity->worker = worker;
 
-            uint32_t workerId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker, MENGINE_DOCUMENT_FACTORABLE );
+            UniqueId workerId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker, MENGINE_DOCUMENT_FACTORABLE );
 
-            if( workerId == 0 )
+            if( workerId == INVALID_UNIQUE_ID )
             {
                 LOGGER_ERROR( "identity worker invalid add worker" );
 

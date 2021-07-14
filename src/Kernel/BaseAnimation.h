@@ -92,13 +92,13 @@ namespace Mengine
         virtual void _setStretch( float _stretch );
 
     protected:
-        virtual bool _play( uint32_t _enumerator, float _time ) = 0;
-        virtual bool _restart( uint32_t _enumerator, float _time ) = 0;
-        virtual void _pause( uint32_t _enumerator ) = 0;
-        virtual void _resume( uint32_t _enumerator, float _time ) = 0;
-        virtual bool _stop( uint32_t _enumerator ) = 0;
-        virtual void _end( uint32_t _enumerator ) = 0;
-        virtual bool _interrupt( uint32_t _enumerator ) = 0;
+        virtual bool _play( UniqueId _enumerator, float _time ) = 0;
+        virtual bool _restart( UniqueId _enumerator, float _time ) = 0;
+        virtual void _pause( UniqueId _enumerator ) = 0;
+        virtual void _resume( UniqueId _enumerator, float _time ) = 0;
+        virtual bool _stop( UniqueId _enumerator ) = 0;
+        virtual void _end( UniqueId _enumerator ) = 0;
+        virtual bool _interrupt( UniqueId _enumerator ) = 0;
 
     protected:
         UniqueId m_playId;

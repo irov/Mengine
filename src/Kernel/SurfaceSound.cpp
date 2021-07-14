@@ -180,7 +180,7 @@ namespace Mengine
         return Color::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::_play( uint32_t _enumerator, float _time )
+    bool SurfaceSound::_play( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _enumerator );
         MENGINE_UNUSED( _time );
@@ -215,7 +215,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::_restart( uint32_t _enumerator, float _time )
+    bool SurfaceSound::_restart( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _time );
         MENGINE_UNUSED( _enumerator );
@@ -225,7 +225,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::_pause( uint32_t _enumerator )
+    void SurfaceSound::_pause( UniqueId _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 
@@ -242,7 +242,7 @@ namespace Mengine
             ->pauseEmitter( m_soundIdentity );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::_resume( uint32_t _enumerator, float _time )
+    void SurfaceSound::_resume( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _time );
         MENGINE_UNUSED( _enumerator );
@@ -260,7 +260,7 @@ namespace Mengine
             ->resumeEmitter( m_soundIdentity );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::_stop( uint32_t _enumerator )
+    bool SurfaceSound::_stop( UniqueId _enumerator )
     {
         if( m_soundIdentity != nullptr )
         {
@@ -278,7 +278,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::_end( uint32_t _enumerator )
+    void SurfaceSound::_end( UniqueId _enumerator )
     {
         //if( m_soundEmitter != nullptr )
         //{
@@ -360,7 +360,7 @@ namespace Mengine
         return lengthMs;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::_interrupt( uint32_t _enumerator )
+    bool SurfaceSound::_interrupt( UniqueId _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 

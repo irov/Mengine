@@ -83,9 +83,9 @@ namespace Mengine
 
             Detail::MyThreadWorkerPtr worker = Helper::makeFactorableUnique<Detail::MyThreadWorker>( _doc, _update, _worker );
 
-            uint32_t workerId = threadJob->addWorker( worker, _doc );
+            UniqueId workerId = threadJob->addWorker( worker, _doc );
 
-            if( workerId == 0 )
+            if( workerId == INVALID_UNIQUE_ID )
             {
                 return false;
             }

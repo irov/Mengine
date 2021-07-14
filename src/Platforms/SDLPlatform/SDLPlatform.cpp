@@ -87,7 +87,6 @@ namespace Mengine
         : m_fullscreen( false )
         , m_sdlWindow( nullptr )
         , m_sdlAccelerometer( nullptr )
-        , m_enumerator( 0 )
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
 #endif
@@ -830,7 +829,7 @@ namespace Mengine
 
             for( TimerDesc & desc : m_timers )
             {
-                if( desc.id == 0 )
+                if( desc.id == INVALID_UNIQUE_ID )
                 {
                     continue;
                 }
@@ -949,7 +948,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        uint32_t new_id = ++m_enumerator;
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         TimerDesc desc;
         desc.id = new_id;
@@ -977,7 +977,7 @@ namespace Mengine
 
         TimerDesc & desc = *it_found;
 
-        desc.id = 0;
+        desc.id = INVALID_UNIQUE_ID;
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t SDLPlatform::getTicks() const
@@ -2345,10 +2345,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SDLPlatform::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
     {
-        uint32_t id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         SDLEventHandlerDesc desc;
-
         desc.id = id;
         desc.handler = _handler;
 

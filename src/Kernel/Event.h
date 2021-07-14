@@ -15,13 +15,12 @@ namespace Mengine
 
         struct EventDesc
         {
-            uint32_t id;
+            UniqueId id;
             LambdaEvent lambda;
         };
 
     public:
         Event()
-            : m_enumerator( 0 )
         {
         }
 
@@ -32,7 +31,8 @@ namespace Mengine
     public:
         uint32_t add( const LambdaEvent & _lambda )
         {
-            uint32_t id = ++m_enumerator;
+            UniqueId id = ENUMERATOR_SERVICE()
+                ->generateUniqueIdentity();
 
             EventDesc desc;
             desc.id = id;
@@ -81,7 +81,6 @@ namespace Mengine
 
         void clear()
         {
-            m_enumerator = 0;
             m_events.clear();
         }
 
@@ -96,8 +95,6 @@ namespace Mengine
         }
 
     protected:
-        uint32_t m_enumerator;
-
         typedef Vector<EventDesc> VectorEvents;
         VectorEvents m_events;
     };

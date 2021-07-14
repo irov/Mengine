@@ -75,13 +75,13 @@ namespace Mengine
         void _setLastFrame() override;
 
     protected:
-        bool _play( uint32_t _enumerator, float _time ) override;
-        bool _restart( uint32_t _enumerator, float _time ) override;
-        void _pause( uint32_t _enumerator ) override;
-        void _resume( uint32_t _enumerator, float _time ) override;
-        bool _stop( uint32_t _enumerator ) override;
-        void _end( uint32_t _enumerator ) override;
-        bool _interrupt( uint32_t _enumerator ) override;
+        bool _play( UniqueId _enumerator, float _time ) override;
+        bool _restart( UniqueId _enumerator, float _time ) override;
+        void _pause( UniqueId _enumerator ) override;
+        void _resume( UniqueId _enumerator, float _time ) override;
+        bool _stop( UniqueId _enumerator ) override;
+        void _end( UniqueId _enumerator ) override;
+        bool _interrupt( UniqueId _enumerator ) override;
 
     protected:
         void _update( const UpdateContext * _context ) override;

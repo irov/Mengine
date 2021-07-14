@@ -15,37 +15,37 @@ namespace Mengine
         , public Factorable
     {
     public:
-        void onAnimationPlay( uint32_t _enumerator, float _time ) override
+        void onAnimationPlay( UniqueId _enumerator, float _time ) override
         {
             m_cb.call( _enumerator, _time );
         }
 
-        void onAnimationRestart( uint32_t _enumerator, float _time ) override
+        void onAnimationRestart( UniqueId _enumerator, float _time ) override
         {
             m_cb.call( _enumerator, _time );
         }
 
-        void onAnimationPause( uint32_t _enumerator ) override
+        void onAnimationPause( UniqueId _enumerator ) override
         {
             m_cb.call( _enumerator );
         }
 
-        void onAnimationResume( uint32_t _enumerator, float _time ) override
+        void onAnimationResume( UniqueId _enumerator, float _time ) override
         {
             m_cb.call( _enumerator, _time );
         }
 
-        void onAnimationStop( uint32_t _enumerator ) override
+        void onAnimationStop( UniqueId _enumerator ) override
         {
             m_cb.call( _enumerator );
         }
 
-        void onAnimationEnd( uint32_t _enumerator ) override
+        void onAnimationEnd( UniqueId _enumerator ) override
         {
             m_cb.call( _enumerator );
         }
 
-        void onAnimationInterrupt( uint32_t _enumerator ) override
+        void onAnimationInterrupt( UniqueId _enumerator ) override
         {
             m_cb.call( _enumerator );
         }

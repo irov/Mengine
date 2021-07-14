@@ -20,7 +20,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PluginBase::PluginBase()
-        : m_uid( 0 )
+        : m_uid( INVALID_UNIQUE_ID )
         , m_dynamicLoad( false )
         , m_initializePlugin( false )
         , m_availablePlugin( true )

@@ -43,7 +43,7 @@ namespace Mengine
 
         if( _affector->prepare( updatableMode, updatableDeep ) == false )
         {
-            return INVALIDATE_UNIQUE_ID;
+            return INVALID_UNIQUE_ID;
         }
 
         m_affectors.push_back( _affector );

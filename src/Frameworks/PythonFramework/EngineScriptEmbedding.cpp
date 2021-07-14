@@ -2713,7 +2713,7 @@ namespace Mengine
 
                     const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
 
-                    if( affectorHub->addAffector( affector ) == INVALIDATE_UNIQUE_ID )
+                    if( affectorHub->addAffector( affector ) == INVALID_UNIQUE_ID )
                     {
                         return nullptr;
                     }

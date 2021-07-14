@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BaseAnimation::BaseAnimation()
-        : m_playId( 0 )
+        : m_playId( INVALID_UNIQUE_ID )
         , m_playTime( 0.f )
         , m_animationSpeedFactor( 1.f )
         , m_intervalStart( 0.f )

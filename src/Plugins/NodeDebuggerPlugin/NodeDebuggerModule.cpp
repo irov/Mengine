@@ -66,10 +66,10 @@ namespace Mengine
         : m_serverState( ENodeDebuggerServerState::Invalid )
         , m_shouldRecreateServer( false )
         , m_shouldUpdateScene( false )
-        , m_workerId( 0 )
-        , m_globalKeyHandlerF2( 0 )
-        , m_globalKeyHandlerForSendingSelectedNode( 0 )
-        , m_requestListenerId( 0 )
+        , m_workerId( INVALID_UNIQUE_ID )
+        , m_globalKeyHandlerF2( INVALID_UNIQUE_ID )
+        , m_globalKeyHandlerForSendingSelectedNode( INVALID_UNIQUE_ID )
+        , m_requestListenerId( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION, &NodeDebuggerModule::notifyIncrefFactoryGeneration, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        uint32_t globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
+        UniqueId globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
             Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
                 ->getUnknown();
@@ -114,7 +114,7 @@ namespace Mengine
             m_requestListenerId = CURL_SERVICE()
                 ->addRequestListener( m_networkLogger, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALIDATE_UNIQUE_ID );
+            MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALID_UNIQUE_ID );
         }
 
         uint32_t idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
@@ -171,6 +171,7 @@ namespace Mengine
         if( m_threadJob != nullptr )
         {
             m_threadJob->removeWorker( m_workerId );
+            m_workerId = INVALID_UNIQUE_ID;
 
             THREAD_SERVICE()
                 ->joinTask( m_threadJob );
@@ -216,6 +217,7 @@ namespace Mengine
         {
             CURL_SERVICE()
                 ->removeRequestListener( m_requestListenerId );
+            m_requestListenerId = INVALID_UNIQUE_ID;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -642,7 +644,11 @@ namespace Mengine
         m_dataMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ), MENGINE_DOCUMENT_FACTORABLE );
+        UniqueId workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ), MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION( workerId != INVALID_UNIQUE_ID );
+
+        m_workerId = workerId;
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 

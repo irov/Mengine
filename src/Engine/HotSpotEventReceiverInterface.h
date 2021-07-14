@@ -3,6 +3,8 @@
 #include "Interface/EventationInterface.h"
 #include "Interface/InputHandlerInterface.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -40,8 +42,8 @@ namespace Mengine
         virtual bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) = 0;
         virtual bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) = 0;
         virtual void onHotSpotMouseOverDestroy() = 0;
-        virtual void onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd ) = 0;
-        virtual void onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd ) = 0;
+        virtual void onHotSpotMouseButtonBegin( UniqueId _enumerator, bool _isEnd ) = 0;
+        virtual void onHotSpotMouseButtonEnd( UniqueId _enumerator, bool _isEnd ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<HotSpotEventReceiverInterface> HotSpotEventReceiverInterfacePtr;

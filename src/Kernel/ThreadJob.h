@@ -8,6 +8,7 @@
 
 #include "Config/Atomic.h"
 #include "Config/Char.h"
+#include "Config/UniqueId.h"
 
 #ifndef MENGINE_THREAD_JOB_WORK_COUNT
 #define MENGINE_THREAD_JOB_WORK_COUNT 32
@@ -54,7 +55,7 @@ namespace Mengine
         void finalize();
 
     public:
-        uint32_t addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc );
+        UniqueId addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc );
         bool removeWorker( uint32_t _id );
         bool pauseWorker( uint32_t _id );
         bool resumeWorker( uint32_t _id );
@@ -74,6 +75,6 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadJob> ThreadJobPtr;
+    typedef IntrusivePtr<ThreadJob, ThreadTaskInterface> ThreadJobPtr;
     //////////////////////////////////////////////////////////////////////////
 }

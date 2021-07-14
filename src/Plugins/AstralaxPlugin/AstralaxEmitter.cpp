@@ -185,7 +185,7 @@ namespace Mengine
         m_renderIndexCount = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::_play( uint32_t _enumerator, float _time )
+    bool AstralaxEmitter::_play( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _enumerator );
         MENGINE_UNUSED( _time );
@@ -200,7 +200,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::_restart( uint32_t _enumerator, float _time )
+    bool AstralaxEmitter::_restart( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _time );
         MENGINE_UNUSED( _enumerator );
@@ -218,7 +218,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_pause( uint32_t _enumerator )
+    void AstralaxEmitter::_pause( UniqueId _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 
@@ -230,7 +230,7 @@ namespace Mengine
         m_emitter->pause();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_resume( uint32_t _enumerator, float _time )
+    void AstralaxEmitter::_resume( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _time );
         MENGINE_UNUSED( _enumerator );
@@ -243,7 +243,7 @@ namespace Mengine
         m_emitter->resume();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::_stop( uint32_t _enumerator )
+    bool AstralaxEmitter::_stop( UniqueId _enumerator )
     {
         if( this->isActivate() == false )
         {
@@ -258,7 +258,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_end( uint32_t _enumerator )
+    void AstralaxEmitter::_end( UniqueId _enumerator )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
@@ -274,7 +274,7 @@ namespace Mengine
         m_emitter->setLoop( _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::_interrupt( uint32_t _enumerator )
+    bool AstralaxEmitter::_interrupt( UniqueId _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 

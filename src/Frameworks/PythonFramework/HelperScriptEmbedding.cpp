@@ -803,7 +803,7 @@ namespace Mengine
                 return s;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t mt_enumerator()
+            UniqueId mt_enumerator()
             {
                 UniqueId new_id = ENUMERATOR_SERVICE()
                     ->generateUniqueIdentity();

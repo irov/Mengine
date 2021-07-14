@@ -2,6 +2,8 @@
 
 #include "Interface/EventationInterface.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -22,13 +24,13 @@ namespace Mengine
         : public EventReceiverInterface
     {
     public:
-        virtual void onAnimationPlay( uint32_t _enumerator, float _time ) = 0;
-        virtual void onAnimationRestart( uint32_t _enumerator, float _time ) = 0;
-        virtual void onAnimationPause( uint32_t _enumerator ) = 0;
-        virtual void onAnimationResume( uint32_t _enumerator, float _time ) = 0;
-        virtual void onAnimationStop( uint32_t _enumerator ) = 0;
-        virtual void onAnimationEnd( uint32_t _enumerator ) = 0;
-        virtual void onAnimationInterrupt( uint32_t _enumerator ) = 0;
+        virtual void onAnimationPlay( UniqueId _enumerator, float _time ) = 0;
+        virtual void onAnimationRestart( UniqueId _enumerator, float _time ) = 0;
+        virtual void onAnimationPause( UniqueId _enumerator ) = 0;
+        virtual void onAnimationResume( UniqueId _enumerator, float _time ) = 0;
+        virtual void onAnimationStop( UniqueId _enumerator ) = 0;
+        virtual void onAnimationEnd( UniqueId _enumerator ) = 0;
+        virtual void onAnimationInterrupt( UniqueId _enumerator ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     EVENTATION_TYPEID( AnimationEventReceiverInterface, EVENT_ANIMATION_PLAY );

@@ -28,8 +28,9 @@ namespace Mengine
     bool ETC1Plugin::_initializePlugin()
     {
         Helper::registerDecoder<ImageDecoderETC1>( STRINGIZE_STRING_LOCAL( "etcImage" ), MENGINE_DOCUMENT_FACTORABLE );
-        
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "etc" ), STRINGIZE_STRING_LOCAL( "etcImage" ) );
+
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "etc" ), STRINGIZE_STRING_LOCAL( "etcImage" ) );
 
         return true;
     }
@@ -38,7 +39,8 @@ namespace Mengine
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "etcImage" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "etc" ) );
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "etc" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void ETC1Plugin::_destroyPlugin()

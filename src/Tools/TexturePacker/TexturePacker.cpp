@@ -405,8 +405,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return EXIT_FAILURE;
     }
 
-    uint32_t atlasCount = atlas_images.size();
-    fprintf_s( f_result, "%u\n", atlasCount );
+	std::vector<AtlasImageDesc>::size_type atlasCount = atlas_images.size();
+    fprintf_s( f_result, "%zu\n", atlasCount );
 		
 	for( std::vector<AtlasImageDesc>::const_iterator
 		it = atlas_images.begin(),
@@ -416,7 +416,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		const AtlasImageDesc & image = *it;
 
-        fprintf_s( f_result, "%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%u\n"
+        fprintf_s( f_result, "%s;%s;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%d\n"
             , image.name.c_str()
             , image.atlas.c_str()
             , image.aw

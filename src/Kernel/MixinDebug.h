@@ -17,6 +17,6 @@ namespace Mengine
 #else
 #   define MENGINE_MIXIN_DEBUG_NAME(Mixin) ("UNKNOWN")
 #   define MENGINE_MIXIN_DEBUG_TYPE(Mixin) ("UNKNOWN")
-#   define MENGINE_MIXIN_DEBUG_UID(Mixin) (Mengine::INVALIDATE_UNIQUE_ID)
+#   define MENGINE_MIXIN_DEBUG_UID(Mixin) (Mengine::INVALID_UNIQUE_ID)
 #endif
 }

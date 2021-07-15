@@ -1,5 +1,5 @@
 <DataBlock Name="Shaders_Standart">
-    <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "OpenGL">        
+    <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "OpenGL">
         <Element Size = "32"/>
         <Attribute Uniform = "inVert" Index = "0" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
         <Attribute Uniform = "inCol" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
@@ -18,7 +18,7 @@
         <Attribute Uniform = "inCol" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
         <Attribute Uniform = "inUV0" Index = "0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
         <Attribute Uniform = "inUV1" Index = "1" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "24"/>
-    </VertexAttribute>    
+    </VertexAttribute>
     
     <VertexShader Name = "Vertex_Blend" RenderPlatform = "OpenGL">
         <File Path = "Materials/GL_Vertex_Blend.txt"/>
@@ -26,15 +26,11 @@
     
     <VertexShader Name = "Vertex_Blend_ExternalAlpha" RenderPlatform = "OpenGL">
         <File Path = "Materials/GL_Vertex_Blend_ExternalAlpha.txt"/>
-    </VertexShader>    
+    </VertexShader>
     
     <VertexShader Name = "Vertex_Color" RenderPlatform = "OpenGL">
         <File Path = "Materials/GL_Vertex_Color.txt"/>
     </VertexShader>
-    
-    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "OpenGL">
-        <File Path = "Materials/GL_Ozz_Fragment_Blend.txt"/>
-    </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend" RenderPlatform = "OpenGL">
         <File Path = "Materials/GL_Fragment_Blend.txt"/>

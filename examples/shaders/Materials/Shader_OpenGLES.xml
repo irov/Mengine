@@ -32,10 +32,6 @@
         <File Path = "Materials/GLES_Vertex_Color.txt"/>
     </VertexShader>
     
-    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "OpenGLES">
-        <File Path = "Materials/GLES_Ozz_Fragment_Blend.txt"/>
-    </FragmentShader>
-    
     <FragmentShader Name = "Fragment_Blend" RenderPlatform = "OpenGLES">
         <File Path = "Materials/GLES_Fragment_Blend.txt"/>
     </FragmentShader>

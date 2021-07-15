@@ -6,8 +6,8 @@
 
 namespace Mengine
 {
-    using Regex = std::regex;
-    using WRegex = std::wregex;
+    using Regex = std::basic_regex<Char>;
+    using WRegex = std::basic_regex<WChar>;
 
     template<class T, class A = StlAllocator<std::sub_match<T>>>
     using MatchResults = std::match_results<T, A>;

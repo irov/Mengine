@@ -1,5 +1,5 @@
-<DataBlock Name="Shaders_Standart">   
-    <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "OpenGLES">        
+<DataBlock Name="Shaders_Standart">
+    <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "OpenGLES">
         <Element Size = "32"/>
         <Attribute Uniform = "inVert" Index = "0" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
         <Attribute Uniform = "inCol" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
@@ -21,23 +21,27 @@
     </VertexAttribute>
     
     <VertexShader Name = "Vertex_Blend" RenderPlatform = "OpenGLES">
-        <File Path = "Materials/GLES_Vertex_Blend.txt" Convert = "vsc"/>
+        <File Path = "Materials/GLES_Vertex_Blend.txt"/>
     </VertexShader>
     
     <VertexShader Name = "Vertex_Blend_ExternalAlpha" RenderPlatform = "OpenGLES">
-        <File Path = "Materials/GLES_Vertex_Blend_ExternalAlpha.txt" Convert = "vsc"/>
+        <File Path = "Materials/GLES_Vertex_Blend_ExternalAlpha.txt"/>
     </VertexShader>
     
     <VertexShader Name = "Vertex_Color" RenderPlatform = "OpenGLES">
-        <File Path = "Materials/GLES_Vertex_Color.txt" Convert = "vsc"/>
+        <File Path = "Materials/GLES_Vertex_Color.txt"/>
     </VertexShader>
+    
+    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "OpenGLES">
+        <File Path = "Materials/GLES_Ozz_Fragment_Blend.txt"/>
+    </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend" RenderPlatform = "OpenGLES">
         <File Path = "Materials/GLES_Fragment_Blend.txt"/>
     </FragmentShader>
 
     <FragmentShader Name = "Fragment_Blend_Premultiply" RenderPlatform = "OpenGLES">
-        <File Path = "Materials/GLES_Fragment_Blend_Premultiply.txt" Compile="1"/>
+        <File Path = "Materials/GLES_Fragment_Blend_Premultiply.txt"/>
     </FragmentShader>
 
     <FragmentShader Name = "Fragment_Blend_ExternalAlpha" RenderPlatform = "OpenGLES">
@@ -82,18 +86,18 @@
     
     <FragmentShader Name = "Fragment_Color_Premultiply" RenderPlatform = "OpenGLES">
         <File Path = "Materials/GLES_Fragment_Color_Premultiply.txt"/>
-    </FragmentShader> 
+    </FragmentShader>
     
     <FragmentShader Name = "Fragment_Desaturate" RenderPlatform = "OpenGLES">
-        <File Path = "Materials/GLES_Fragment_Desaturate.txt" Compile="1"/>
+        <File Path = "Materials/GLES_Fragment_Desaturate.txt"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Legendary" RenderPlatform = "OpenGLES">
-        <File Path = "Materials/GLES_Fragment_Legendary.txt" Compile="1"/>
+        <File Path = "Materials/GLES_Fragment_Legendary.txt"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Legendary_ExternalAlpha" RenderPlatform = "OpenGLES">
-        <File Path = "Materials/GLES_Fragment_Legendary_ExternalAlpha.txt" Compile="1"/>
+        <File Path = "Materials/GLES_Fragment_Legendary_ExternalAlpha.txt"/>
     </FragmentShader>
     
     <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "OpenGLES">

@@ -280,7 +280,13 @@ namespace Mengine
 
         HCURSOR m_cursor;
 
-        typedef Map<ConstString, HCURSOR> MapCursors;
+        struct CursorDesc
+        {
+            HCURSOR cursor;
+            bool shared;
+        };
+
+        typedef Map<ConstString, CursorDesc> MapCursors;
         MapCursors m_cursors;
 
         bool m_lastMouse;

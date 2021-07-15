@@ -814,7 +814,7 @@ namespace Mengine
             , m_renderViewport.getHeight()
         );
 
-        m_createRenderWindow = RENDER_SERVICE()
+        bool result = RENDER_SERVICE()
             ->createRenderWindow( m_currentResolution
                 , m_contentResolution
                 , m_renderViewport
@@ -824,12 +824,14 @@ namespace Mengine
                 , m_FSAAQuality
             );
 
-        if( m_createRenderWindow == false )
+        if( result == false )
         {
             LOGGER_ERROR( "failed to create render window" );
 
             return false;
         }
+
+        m_createRenderWindow = true;
 
         GAME_SERVICE()
             ->initializeRenderResources();
@@ -1388,7 +1390,6 @@ namespace Mengine
         if( m_mouseEnter == false )
         {
             InputMouseEnterEvent ne;
-
             ne.special = _event.special;
             ne.touchId = _event.touchId;
             ne.x = vx;
@@ -1516,7 +1517,6 @@ namespace Mengine
         if( m_mouseEnter == false )
         {
             InputMouseEnterEvent ne;
-
             ne.special = _event.special;
             ne.touchId = _event.touchId;
             ne.x = vx;

@@ -179,20 +179,15 @@ namespace Mengine
     {
         if( m_arrow != nullptr )
         {
-            m_arrow->disable();
+            const NodePtr & arrowNode = m_arrow->getEntity();
 
-            RenderInterface * arrowRender = m_arrow->getRender();
-
-            arrowRender->setRenderCamera( nullptr );
-            arrowRender->setRenderViewport( nullptr );
-            arrowRender->setRenderTransformation( nullptr );
-            arrowRender->setRenderScissor( nullptr );
-            arrowRender->setRenderTarget( nullptr );
+            arrowNode->disable();
 
             PICKER_SERVICE()
                 ->setArrow( nullptr );
 
-            m_arrow->dispose();
+            arrowNode->dispose();
+
             m_arrow = nullptr;
         }
 
@@ -252,26 +247,20 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::setArrow( const ArrowPtr & _arrow )
+    void PlayerService::setArrow( const ArrowInterfacePtr & _arrow )
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_ARROW_PREPARE_DESTROY, m_arrow );
 
         if( m_arrow != nullptr )
         {
-            m_arrow->disable();
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
 
-            RenderInterface * arrowRender = m_arrow->getRender();
-
-            arrowRender->setRenderCamera( nullptr );
-            arrowRender->setRenderViewport( nullptr );
-            arrowRender->setRenderTransformation( nullptr );
-            arrowRender->setRenderScissor( nullptr );
-            arrowRender->setRenderTarget( nullptr );
+            arrowEntity->disable();
 
             PICKER_SERVICE()
                 ->setArrow( nullptr );
 
-            m_arrow->dispose();
+            arrowEntity->dispose();
             m_arrow = nullptr;
         }
 
@@ -279,7 +268,9 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            RenderInterface * arrowRender = m_arrow->getRender();
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
+
+            RenderInterface * arrowRender = arrowEntity->getRender();
 
             arrowRender->setRenderCamera( m_defaultArrowCamera2D );
             arrowRender->setRenderViewport( m_renderViewport );
@@ -288,13 +279,13 @@ namespace Mengine
             PICKER_SERVICE()
                 ->setArrow( m_arrow );
 
-            m_arrow->enable();
+            arrowEntity->enable();
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_ARROW_COMPLETE, m_arrow );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ArrowPtr & PlayerService::getArrow() const
+    const ArrowInterfacePtr & PlayerService::getArrow() const
     {
         return m_arrow;
     }
@@ -426,7 +417,9 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            RenderInterface * arrowRender = m_arrow->getRender();
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
+
+            RenderInterface * arrowRender = arrowEntity->getRender();
 
             arrowRender->setRenderCamera( m_defaultArrowCamera2D );
             arrowRender->setRenderViewport( m_renderViewport );
@@ -590,11 +583,6 @@ namespace Mengine
         PICKER_SERVICE()
             ->update();
 
-        if( m_globalInputHandler != nullptr )
-        {
-            m_globalInputHandler->update();
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -721,16 +709,18 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
+
             if( debugMask == 0 )
             {
-                Helper::nodeRenderChildren( m_arrow.get(), _renderPipeline, &m_renderContext, false );
+                Helper::nodeRenderChildren( arrowEntity.get(), _renderPipeline, &m_renderContext, false );
             }
             else
             {
                 if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugNode( m_arrow, _renderPipeline, &m_renderContext, false, false );
+                        ->renderDebugNode( arrowEntity, _renderPipeline, &m_renderContext, false, false );
                 }
             }
         }
@@ -838,8 +828,10 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->removeFromParent();
-            m_arrow->disable();
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
+
+            arrowEntity->removeFromParent();
+            arrowEntity->disable();
         }
 
         if( m_localScheduler != nullptr )
@@ -881,7 +873,9 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->enableForce();
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
+
+            arrowEntity->enableForce();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -902,8 +896,10 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->removeFromParent();
-            m_arrow->disable();
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
+
+            arrowEntity->removeFromParent();
+            arrowEntity->disable();
         }
 
         if( m_localScheduler != nullptr )
@@ -939,7 +935,9 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->enableForce();
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
+
+            arrowEntity->enableForce();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -949,8 +947,10 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->removeFromParent();
-            m_arrow->disable();
+            const EntityPtr & arrowEntity = m_arrow->getEntity();
+
+            arrowEntity->removeFromParent();
+            arrowEntity->disable();
         }
 
         if( m_localScheduler != nullptr )

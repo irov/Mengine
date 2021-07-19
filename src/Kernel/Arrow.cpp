@@ -2,9 +2,12 @@
 
 #include "Interface/InputServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/TransformationInterface.h"
+#include "Interface/RenderInterface.h"
 
 #include "ArrowInputMousePositionProvider.h"
 
+#include "Kernel/Entity.h"
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
@@ -16,8 +19,8 @@ namespace Mengine
     Arrow::Arrow()
         : m_arrowType( EAT_POINT )
         , m_inputMousePositionProviderId( INVALID_UNIQUE_ID )
-        , m_pointClick( 0.f, 0.f )
-        , m_radius( 0.f )
+        , m_clickPoint( 0.f, 0.f )
+        , m_clickRadius( 0.f )
         , m_hided( false )
     {
     }
@@ -26,30 +29,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    EArrowType Arrow::getArrowType() const
+    bool Arrow::initialize()
     {
-        return m_arrowType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
-    {
-        m_arrowType = EAT_POINT;
-
-        m_pointClick = _offsetClick;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f & Arrow::getOffsetClick() const
-    {
-        return m_pointClick;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Arrow::_activate()
-    {
-        if( Entity::_activate() == false )
-        {
-            return false;
-        }
-
         ArrowInputMousePositionProviderPtr provider = Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, this );
 
         UniqueId inputMousePositionProviderId = INPUT_SERVICE()
@@ -59,95 +40,135 @@ namespace Mengine
 
         m_inputMousePositionProviderId = inputMousePositionProviderId;
 
-        const mt::vec2f & cursor_pos = INPUT_SERVICE()
-            ->getCursorPosition( TC_TOUCH0 );
-
-        RenderContext context;
-        this->makeRenderContext( &context );
-
-        if( context.camera != nullptr && context.viewport != nullptr )
-        {
-            mt::vec2f wp;
-            this->calcMouseWorldPosition( &context, cursor_pos, &wp );
-
-            mt::vec3f pos;
-            pos.x = wp.x;
-            pos.y = wp.y;
-            pos.z = 0.f;
-
-            this->setLocalPosition( pos );
-        }
-        else
-        {
-            mt::vec3f pos;
-            pos.x = 0.f;
-            pos.y = 0.f;
-            pos.z = 0.f;
-
-            this->setLocalPosition( pos );
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::_deactivate()
+    void Arrow::finalize()
     {
         INPUT_SERVICE()
             ->removeMousePositionProvider( m_inputMousePositionProviderId );
+
         m_inputMousePositionProviderId = INVALID_UNIQUE_ID;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arrow::setArrowType( EArrowType _arrowType )
+    {
+        m_arrowType = _arrowType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EArrowType Arrow::getArrowType() const
+    {
+        return m_arrowType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arrow::setEntity( const EntityPtr & _entity )
+    {
+        m_entity = _entity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const EntityPtr & Arrow::getEntity() const
+    {
+        return m_entity;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    //bool Arrow::_activate()
+    //{
 
-        Entity::_deactivate();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
-    {
-        MENGINE_UNUSED( _renderPipeline );
-        MENGINE_UNUSED( _context );
 
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::setPolygon( const Polygon & _polygon )
-    {
-        m_arrowType = EAT_POLYGON;
+    //    if( m_entity != nullptr )
+    //    {
+    //        const RenderInterface * render = m_entity->getRender();
 
-        m_polygon = _polygon;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Polygon & Arrow::getPolygon() const
-    {
-        return m_polygon;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::setRadius( float _radius )
-    {
-        m_arrowType = EAT_RADIUS;
+    //        RenderContext context;
+    //        render->makeRenderContext( &context );
 
-        m_radius = _radius;
+    //        if( context.camera != nullptr && context.viewport != nullptr )
+    //        {
+    //            const mt::vec2f & cursor_pos = INPUT_SERVICE()
+    //                ->getCursorPosition( TC_TOUCH0 );
+
+    //            mt::vec2f wp;
+    //            this->calcMouseWorldPosition( &context, cursor_pos, &wp );
+
+    //            mt::vec3f pos;
+    //            pos.x = wp.x;
+    //            pos.y = wp.y;
+    //            pos.z = 0.f;
+
+    //            TransformationInterface * transformation = m_entity->getTransformation();
+    //            transformation->setLocalPosition( pos );
+    //        }
+    //        else
+    //        {
+    //            mt::vec3f pos;
+    //            pos.x = 0.f;
+    //            pos.y = 0.f;
+    //            pos.z = 0.f;
+
+    //            TransformationInterface * transformation = m_entity->getTransformation();
+    //            transformation->setLocalPosition( pos );
+    //        }
+    //    }
+
+    //    return true;
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void Arrow::_deactivate()
+    //{
+
+    //}
+    //////////////////////////////////////////////////////////////////////////
+    void Arrow::setClickPoint( const mt::vec2f & _clickPoint )
+    {
+        m_clickPoint = _clickPoint;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Arrow::getRadius() const
+    const mt::vec2f & Arrow::getClickPoint() const
     {
-        return m_radius;
+        return m_clickPoint;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arrow::setClickPolygon( const Polygon & _clickPolygon )
+    {
+        m_clickPolygon = _clickPolygon;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Polygon & Arrow::getClickPolygon() const
+    {
+        return m_clickPolygon;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arrow::setClickRadius( float _clickRadius )
+    {
+        m_clickRadius = _clickRadius;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Arrow::getClickRadius() const
+    {
+        return m_clickRadius;
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::onAppMouseLeave()
     {
-        BaseRender::setHide( true );
+        RenderInterface * render = m_entity->getRender();
+
+        render->setHide( true );
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::onAppMouseEnter()
     {
         if( m_hided == false )
         {
-            BaseRender::setHide( false );
+            RenderInterface * render = m_entity->getRender();
+
+            render->setHide( false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const
     {
         mt::vec2f adaptScreenPoint;
-        this->adaptScreenPosition_( _screenPoint, &adaptScreenPoint );
+        this->adaptScreenPosition( _screenPoint, &adaptScreenPoint );
 
         const RenderViewportInterface * renderViewport = _context->viewport;
 
@@ -201,7 +222,7 @@ namespace Mengine
         {
         case EAT_POINT:
             {
-                const mt::vec2f & pc = this->getOffsetClick();
+                const mt::vec2f & pc = this->getClickPoint();
 
                 mt::vec2f p = p1 + pc;
 
@@ -256,7 +277,7 @@ namespace Mengine
 
         p_vm_pm.y = -p_vm_pm.y;
 
-        mt::vec2f p_screen = (p_vm_pm + mt::vec2f( 1.f, 1.f )) / 2.f;
+        mt::vec2f p_screen = (p_vm_pm + mt::vec2f( 1.f, 1.f )) * 0.5f;
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
@@ -274,12 +295,12 @@ namespace Mengine
         mt::vec2f sp = vp_begin + p_screen * vp_size;
 
         mt::vec2f adapt_sp;
-        this->adaptWorldPosition_( sp, &adapt_sp );
+        this->adaptWorldPosition( sp, &adapt_sp );
 
         *_screenPoint = adapt_sp;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const
+    void Arrow::adaptScreenPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const
     {
         const Viewport & renderViewport = APPLICATION_SERVICE()
             ->getRenderViewport();
@@ -299,7 +320,7 @@ namespace Mengine
         *_adaptScreenPoint = (_screenPoint - windowOffset) / windowScale;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f * const _adaptScreenDeltha ) const
+    void Arrow::adaptScreenDeltha( const mt::vec2f & _screenDeltha, mt::vec2f * const _adaptScreenDeltha ) const
     {
         const Viewport & renderViewport = APPLICATION_SERVICE()
             ->getRenderViewport();
@@ -318,7 +339,7 @@ namespace Mengine
         *_adaptScreenDeltha = _screenDeltha / windowScale;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const
+    void Arrow::adaptWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const
     {
         const Viewport & renderViewport = APPLICATION_SERVICE()
             ->getRenderViewport();

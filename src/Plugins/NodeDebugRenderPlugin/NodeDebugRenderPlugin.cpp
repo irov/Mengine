@@ -36,8 +36,8 @@ namespace Mengine
             return true;
         }
 
-        NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<ArrowDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
+        //NODEDEBUGRENDER_SERVICE()
+        //    ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<ArrowDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
             ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ), Helper::makeFactorableUnique<PointDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
@@ -67,8 +67,8 @@ namespace Mengine
             return;
         }
 
-        NODEDEBUGRENDER_SERVICE()
-            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ) );
+        //NODEDEBUGRENDER_SERVICE()
+        //    ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ) );
 
         NODEDEBUGRENDER_SERVICE()
             ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ) );

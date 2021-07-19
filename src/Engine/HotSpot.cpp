@@ -265,7 +265,7 @@ namespace Mengine
         Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const
+    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowInterfacePtr & _arrow ) const
     {
         EArrowType arrowType = _arrow->getArrowType();
 
@@ -279,7 +279,7 @@ namespace Mengine
             }break;
         case EAT_RADIUS:
             {
-                float radius = _arrow->getRadius();
+                float radius = _arrow->getClickRadius();
 
                 bool result = this->testRadius( _context, _contentResolution, _point, radius );
 
@@ -287,7 +287,7 @@ namespace Mengine
             }break;
         case EAT_POLYGON:
             {
-                const Polygon & polygon = _arrow->getPolygon();
+                const Polygon & polygon = _arrow->getClickPolygon();
 
                 bool result = this->testPolygon( _context, _contentResolution, _point, polygon );
 

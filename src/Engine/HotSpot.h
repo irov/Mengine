@@ -61,7 +61,7 @@ namespace Mengine
         void _freeze( bool _value ) override;
 
     protected:
-        bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
+        bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowInterfacePtr & _arrow ) const override;
 
     public:
         Scriptable * getPickerScriptable() override;

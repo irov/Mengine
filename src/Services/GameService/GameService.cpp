@@ -309,14 +309,10 @@ namespace Mengine
 
         ConstString defaultArrowPrototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );
 
-        ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
+        ArrowInterfacePtr defaultArrow = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, "failed create defaultArrow 'Default'" );
-
-        ConstString defaultArrowName = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
-
-        defaultArrow->setName( defaultArrowName );
 
         PLAYER_SERVICE()
             ->setArrow( defaultArrow );

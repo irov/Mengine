@@ -170,7 +170,7 @@ namespace Mengine
         m_handleValue = _value;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::setArrow( const ArrowPtr & _arrow )
+    void PickerService::setArrow( const ArrowInterfacePtr & _arrow )
     {
         if( m_arrow == _arrow )
         {
@@ -782,7 +782,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f adapt_screen_position;
-        m_arrow->adaptScreenPosition_( mt::vec2f( vx, vy ), &adapt_screen_position );
+        m_arrow->adaptScreenPosition( mt::vec2f( vx, vy ), &adapt_screen_position );
 
         bool handle = false;
 
@@ -915,7 +915,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f adapt_screen_position;
-        m_arrow->adaptScreenPosition_( mt::vec2f( vx, vy ), &adapt_screen_position );
+        m_arrow->adaptScreenPosition( mt::vec2f( vx, vy ), &adapt_screen_position );
 
         for( const PickerStateDesc & desc : statesAux )
         {

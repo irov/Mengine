@@ -552,7 +552,7 @@ namespace Mengine
         }
 
         NODE_FACTORY( Entity );
-        NODE_FACTORY( Arrow );
+        //NODE_FACTORY( Arrow );
         NODE_FACTORY( Scene );
         NODE_FACTORY( Gyroscope );
         NODE_FACTORY( Isometric );

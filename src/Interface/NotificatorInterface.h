@@ -2,6 +2,7 @@
 
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderPipelineInterface.h"
+#include "Interface/ArrowInterface.h"
 
 #include "Kernel/Tuple.h"
 #include "Kernel/ConstString.h"
@@ -22,7 +23,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Resource> ResourcePtr;
-    typedef IntrusivePtr<class Arrow, class Node> ArrowPtr;
     typedef IntrusivePtr<class Scene, class Node> ScenePtr;
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID>
@@ -56,8 +56,8 @@ namespace Mengine
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEVELOPMENT_RESOURCE_INITIALIZE, Resource * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, Resource * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, Resource * );
-    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CHANGE_ARROW_PREPARE_DESTROY, const ArrowPtr & );
-    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CHANGE_ARROW_COMPLETE, const ArrowPtr & );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CHANGE_ARROW_PREPARE_DESTROY, const ArrowInterfacePtr & );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CHANGE_ARROW_COMPLETE, const ArrowInterfacePtr & );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, const ScenePtr &, const ScenePtr & );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CHANGE_SCENE_DESTROY, const ScenePtr & );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CHANGE_SCENE_PREPARE_INITIALIZE, const ScenePtr & );

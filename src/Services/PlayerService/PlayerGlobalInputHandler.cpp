@@ -32,13 +32,7 @@ namespace Mengine
     void PlayerGlobalInputHandler::finalize()
     {
 #ifdef MENGINE_DEBUG
-        m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
-        m_handlersAdd.clear();
-
-        m_handlers.erase( std::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
-        {
-            return _handle.dead;
-        } ), m_handlers.end() );
+        this->updateHandlers_();
 
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -59,6 +53,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleKeyEvent( const InputKeyEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -80,6 +76,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleTextEvent( const InputTextEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -101,6 +99,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -122,6 +122,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -143,6 +145,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -164,6 +168,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseMove( const InputMouseMoveEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -185,6 +191,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -206,6 +214,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -227,6 +237,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
+        this->updateHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -454,7 +466,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerGlobalInputHandler::update()
+    void PlayerGlobalInputHandler::updateHandlers_()
     {
         m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
         m_handlersAdd.clear();

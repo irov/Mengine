@@ -27,9 +27,6 @@ namespace Mengine
 
     public:
         virtual bool enableGlobalHandler( UniqueId _id, bool _value ) = 0;
-
-    public:
-        virtual void update() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<GlobalInputHandlerInterface> GlobalInputHandlerInterfacePtr;

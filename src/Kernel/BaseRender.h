@@ -89,7 +89,7 @@ namespace Mengine
         void setZIndex( ZIndexType _zIndex ) override;
         ZIndexType getZIndex() const override;
 
-    public:
+    protected:
         void mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const override;
         void makeRenderContext( RenderContext * const _renderContext ) const override;
 

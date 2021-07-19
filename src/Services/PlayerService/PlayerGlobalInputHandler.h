@@ -34,9 +34,6 @@ namespace Mengine
         bool enableGlobalHandler( UniqueId _id, bool _value ) override;
 
     public:
-        void update() override;
-
-    public:
         bool handleKeyEvent( const InputKeyEvent & _event ) override;
         bool handleTextEvent( const InputTextEvent & _event ) override;
 
@@ -50,6 +47,9 @@ namespace Mengine
     public:
         bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
         void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
+
+    protected:
+        void updateHandlers_();
 
     protected:
         struct GlobalHandlerDesc

@@ -1,81 +1,74 @@
 #pragma once
 
-#include "Kernel/Entity.h"
-#include "Kernel/Resolution.h"
-#include "Kernel/Polygon.h"
+#include "Interface/ArrowInterface.h"
 
-#include "math/vec4.h"
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EArrowType
-    {
-        EAT_POINT,
-        EAT_RADIUS,
-        EAT_POLYGON
-    };
-    //////////////////////////////////////////////////////////////////////////
     class Arrow
-        : public Entity
+        : public ArrowInterface
     {
         DECLARE_FACTORABLE( Arrow );
-        DECLARE_VISITABLE( Entity );
 
     public:
         Arrow();
         ~Arrow() override;
 
     public:
-        EArrowType getArrowType() const;
+        bool initialize() override;
+        void finalize() override;
 
     public:
-        void setOffsetClick( const mt::vec2f & _offsetClick );
-        const mt::vec2f & getOffsetClick() const;
-
-        void setPolygon( const Polygon & _polygon );
-        const Polygon & getPolygon() const;
-
-        void setRadius( float _radius );
-        float getRadius() const;
+        void setArrowType( EArrowType _arrowType ) override;
+        EArrowType getArrowType() const override;
 
     public:
-        void calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const;
-        void calcPointClick( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const;
-        void calcPointDeltha( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha ) const;
+        void setEntity( const EntityPtr & _entity ) override;
+        const EntityPtr & getEntity() const override;
 
     public:
-        void calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const;
+        void setClickPoint( const mt::vec2f & _clickPoint ) override;
+        const mt::vec2f & getClickPoint() const override;
+
+        void setClickPolygon( const Polygon & _clickPolygon ) override;
+        const Polygon & getClickPolygon() const override;
+
+        void setClickRadius( float _clickRadius ) override;
+        float getClickRadius() const override;
 
     public:
-        void adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const;
-        void adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f * const _adaptScreenDeltha ) const;
-        void adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const;
+        void calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const override;
+        void calcPointClick( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const override;
+        void calcPointDeltha( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) const override;
+
+    public:
+        void calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const override;
+
+    public:
+        void adaptScreenPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const;
+        void adaptScreenDeltha( const mt::vec2f & _screenDeltha, mt::vec2f * const _adaptScreenDeltha ) const;
+        void adaptWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const;
 
     public:
         void onAppMouseLeave();
         void onAppMouseEnter();
 
     protected:
-        bool _activate() override;
-        void _deactivate() override;
-
-    protected:
-        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
-
-    protected:
         EArrowType m_arrowType;
+
+        EntityPtr m_entity;
 
         UniqueId m_inputMousePositionProviderId;
 
-        mt::vec2f m_pointClick;
-        float m_radius;
-        Polygon m_polygon;
-        mutable Polygon m_polygonScreen;
+        mt::vec2f m_clickPoint;
+        float m_clickRadius;
+        Polygon m_clickPolygon;
 
         bool m_hided;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveNodePtr<Arrow> ArrowPtr;
+    typedef IntrusivePtr<Arrow, ArrowInterface> ArrowPtr;
     //////////////////////////////////////////////////////////////////////////
 }

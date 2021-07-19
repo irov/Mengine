@@ -129,13 +129,13 @@ namespace Mengine
             const ScenePtr & currentScene = SCENE_SERVICE()
                 ->getCurrentScene();
 
-            const ArrowPtr & arrow = PLAYER_SERVICE()
+            const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
                 ->getArrow();
 
             mt::vec2f point = {_event.x, _event.y};
 
             mt::vec2f adapt_screen_position;
-            arrow->adaptScreenPosition_( point, &adapt_screen_position );
+            arrow->adaptScreenPosition( point, &adapt_screen_position );
 
             mt::vec2f cursorWorldPosition;
             PLAYER_SERVICE()
@@ -370,7 +370,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::setArrow( const ArrowPtr & _arrow )
+    void NodeDebuggerModule::setArrow( const ArrowInterfacePtr & _arrow )
     {
         if( m_arrow != _arrow )
         {
@@ -462,7 +462,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_absorbBoundingBox( const NodePtr & _node, mt::box2f * _bb )
+    static bool s_absorbBoundingBox( const NodePtr & _node, mt::box2f * const _bb )
     {
         if( _node->isEnable() == false )
         {
@@ -1262,7 +1262,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::sendArrow( const ArrowPtr & _arrow )
+    void NodeDebuggerModule::sendArrow( const ArrowInterfacePtr & _arrow )
     {
         pugi::xml_document doc;
 
@@ -1273,7 +1273,9 @@ namespace Mengine
         {
             pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
 
-            this->serializeNode( _arrow, payloadNode );
+            const EntityPtr & entity = _arrow->getEntity();
+
+            this->serializeNode( entity, payloadNode );
         }
 
         NodeDebuggerPacket packet;
@@ -2091,7 +2093,7 @@ namespace Mengine
         *_outStr = stream.str();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyChangeArrow( const ArrowPtr & _arrow )
+    void NodeDebuggerModule::notifyChangeArrow( const ArrowInterfacePtr & _arrow )
     {
         this->setArrow( _arrow );
     }
@@ -2376,10 +2378,12 @@ namespace Mengine
         mt::box2f boundingBox;
         this->getWorldBoundingBox( _node, _imageDesc, &boundingBox );
 
-        const ArrowPtr & arrow = PLAYER_SERVICE()
+        const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
             ->getArrow();
 
-        RenderInterface * render = arrow->getRender();
+        const NodePtr & node = arrow->getEntity();
+
+        RenderInterface * render = node->getRender();
 
         RenderContext context;
         render->makeRenderContext( &context );

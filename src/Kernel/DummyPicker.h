@@ -16,7 +16,7 @@ namespace Mengine
         MENGINE_INLINE bool isPickerDummy() const override;
 
     public:
-        bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
+        bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowInterfacePtr & _arrow ) const override;
 
     protected:
         Scriptable * getPickerScriptable() override;

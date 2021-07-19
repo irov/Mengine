@@ -74,7 +74,7 @@ namespace Mengine
         void onThreadWorkerDone( uint32_t _id ) override;
 
     public:
-        void setArrow( const ArrowPtr & _arrow );
+        void setArrow( const ArrowInterfacePtr & _arrow );
         void updateArrow();
 
     public:
@@ -91,7 +91,7 @@ namespace Mengine
         void compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
         void uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void sendPacket( NodeDebuggerPacket & _packet );
-        void sendArrow( const ArrowPtr & _arrow );
+        void sendArrow( const ArrowInterfacePtr & _arrow );
         void sendScene( const ScenePtr & _scene );
         void sendPickerable( const ScenePtr & _scene );
         void sendRenderable( const ScenePtr & _scene );
@@ -125,7 +125,7 @@ namespace Mengine
         void pathToString( const VectorNodePath & _path, String * const _outStr ) const;
 
     protected:
-        void notifyChangeArrow( const ArrowPtr & _arrow );
+        void notifyChangeArrow( const ArrowInterfacePtr & _arrow );
         void notifyChangeSceneComplete( const ScenePtr & _scene );
         void notifyChangeSceneDestroy( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
@@ -165,7 +165,7 @@ namespace Mengine
         UniqueId m_globalKeyHandlerF2;
         UniqueId m_globalKeyHandlerForSendingSelectedNode;
 
-        ArrowPtr m_arrow;
+        ArrowInterfacePtr m_arrow;
         ScenePtr m_scene;
         NodePtr m_selectedNode;
 

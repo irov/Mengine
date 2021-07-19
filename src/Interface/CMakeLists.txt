@@ -125,6 +125,7 @@ src
     DocumentServiceInterface.h
     AffectorHubInterface.h
     DebuggerBoundingBoxInterface.h
+    ArrowInterface.h
 )
 
 ADD_FILTER(

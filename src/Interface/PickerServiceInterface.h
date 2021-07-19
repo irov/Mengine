@@ -24,7 +24,7 @@ namespace Mengine
         virtual void setHandleValue( bool _value ) = 0;
 
     public:
-        virtual void setArrow( const ArrowPtr & _arrow ) = 0;
+        virtual void setArrow( const ArrowInterfacePtr & _arrow ) = 0;
         virtual void setScene( const ScenePtr & _scene ) = 0;
 
     public:

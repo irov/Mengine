@@ -1711,6 +1711,9 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
+                int32_t fwKeys = GET_KEYSTATE_WPARAM( wParam );
+                MENGINE_UNUSED( fwKeys );
+
                 int32_t zDelta = GET_WHEEL_DELTA_WPARAM( wParam );
 
                 POINT p;
@@ -1723,9 +1726,9 @@ namespace Mengine
                     return false;
                 }
 
-                int32_t wheel = zDelta / WHEEL_DELTA;
+                int32_t scroll = zDelta / WHEEL_DELTA;
 
-                Helper::pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, wheel );
+                Helper::pushMouseWheelEvent( point.x, point.y, WC_CENTRAL, scroll );
 
                 handle = true;
                 *_result = 0;
@@ -4504,11 +4507,8 @@ namespace Mengine
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
 
-        mt::vec2f point;
-        if( this->calcCursorPosition_( &point ) == true )
-        {
-            Helper::pushMousePositionEvent( TC_TOUCH0, point.x, point.y, 0.f );
-        }
+        mt::vec2f point( 0.f, 0.f );
+        this->calcCursorPosition_( &point );
 
         if( m_active == false )
         {
@@ -4522,28 +4522,21 @@ namespace Mengine
             Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
         }
 
-        if( nopause == false )
+        bool focus = m_active;
+
+        if( nopause == true )
         {
-            APPLICATION_SERVICE()
-                ->setFocus( m_active );
-
-            INPUT_SERVICE()
-                ->onFocus( m_active );
-
-            APPLICATION_SERVICE()
-                ->turnSound( m_active );
+            focus = true;
         }
-        else
-        {
-            APPLICATION_SERVICE()
-                ->setFocus( true );
 
-            INPUT_SERVICE()
-                ->onFocus( true );
+        APPLICATION_SERVICE()
+            ->setFocus( focus );
 
-            APPLICATION_SERVICE()
-                ->turnSound( true );
-        }
+        INPUT_SERVICE()
+            ->onFocus( focus );
+
+        APPLICATION_SERVICE()
+            ->turnSound( focus );
 
         if( m_active == true )
         {

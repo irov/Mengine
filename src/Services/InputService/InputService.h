@@ -66,7 +66,6 @@ namespace Mengine
         void mouseButtonEvent_( const InputMouseButtonEvent & _params );
         void mouseMoveEvent_( const InputMouseMoveEvent & _params );
         void mouseWheelEvent_( const InputMouseWheelEvent & _params );
-        void mousePositionEvent_( const InputMousePositionEvent & _params );
         void mouseEnterEvent_( const InputMouseEnterEvent & _params );
         void mouseLeaveEvent_( const InputMouseLeaveEvent & _params );
 

@@ -46,19 +46,19 @@ namespace Mengine
         return m_cb.call( _key, _x, _y );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
     {
-        return m_cb.call( _touchId, _x, _y, _button, _isDown );
+        return m_cb.call( _touchId, _x, _y, _code, _isDown );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
     {
-        return m_cb.call( _touchId, _x, _y, _button, _isDown );
+        return m_cb.call( _touchId, _x, _y, _code, _isDown );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
     {
-        return m_cb.call( _touchId, _x, _y, _button, _isDown );
+        return m_cb.call( _touchId, _x, _y, _code, _isDown );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameMouseMove( ETouchCode _touchId, float _x, float _y, float _dx, float _dy )
@@ -66,9 +66,9 @@ namespace Mengine
         return m_cb.call( _touchId, _x, _y, _dx, _dy );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseWheel( EMouseCode _button, float _x, float _y, int32_t _wheel )
+    bool PythonGameEventReceiver::onGameMouseWheel( float _x, float _y, EWheelCode _code, int32_t _wheel )
     {
-        return m_cb.call( _button, _x, _y, _wheel );
+        return m_cb.call( _x, _y, _code, _wheel );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameAppMouseEnter( float _x, float _y )

@@ -205,7 +205,7 @@ namespace Mengine
         if( handle == false )
         {
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_WHEEL, handle )
-                ->onGameMouseWheel( _event.code, _event.x, _event.y, _event.wheel );
+                ->onGameMouseWheel( _event.x, _event.y, _event.code, _event.scroll );
         }
 
         if( handle == false )

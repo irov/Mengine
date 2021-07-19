@@ -54,7 +54,7 @@ namespace Mengine
 
             mt::vec2f new_camera_scale = camera_scale;
 
-            float scale_step = float( _event.wheel ) * m_scaleStepStep;
+            float scale_step = float( _event.scroll ) * m_scaleStepStep;
 
             if( new_camera_scale.x + scale_step > m_scaleStepMax )
             {

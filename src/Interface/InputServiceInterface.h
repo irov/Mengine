@@ -30,7 +30,6 @@ namespace Mengine
             InputMouseButtonEvent button;
             InputMouseWheelEvent wheel;
             InputMouseMoveEvent move;
-            InputMousePositionEvent position;
             InputMouseEnterEvent enter;
             InputMouseLeaveEvent leave;
         } data;

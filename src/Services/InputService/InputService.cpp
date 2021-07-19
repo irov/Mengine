@@ -82,10 +82,6 @@ namespace Mengine
                 {
                     this->mouseMoveEvent_( ev.data.move );
                 }break;
-            case IET_MOUSE_POSITION:
-                {
-                    this->mousePositionEvent_( ev.data.position );
-                }break;
             case IET_MOUSE_ENTER:
                 {
                     this->mouseEnterEvent_( ev.data.enter );
@@ -407,6 +403,12 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( _event.code < MENGINE_INPUT_MAX_KEY_CODE );
 
+        LOGGER_INFO( "input", "handle key code [%u] down [%u] repeat [%u]"
+            , _event.code
+            , _event.isDown
+            , _event.isRepeat
+        );
+
         bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
 
         m_keyBuffer[_event.code] = _event.isDown;
@@ -422,13 +424,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::textEvent_( const InputTextEvent & _event )
     {
+        LOGGER_INFO( "input", "handle text char [%ls]"
+            , _event.key
+        );
+
         APPLICATION_SERVICE()
             ->textEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )
     {
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
         MENGINE_ASSERTION_FATAL( _event.code < MENGINE_INPUT_MAX_MOUSE_CODE );
+
+        LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] code [%u] down [%u] pressed [%u] pressure [%f]"
+            , _event.touchId
+            , _event.x
+            , _event.y
+            , _event.code
+            , _event.isDown
+            , _event.isPressed
+            , _event.pressure
+        );
 
         m_mouseBuffer[_event.code] = _event.isDown;
 
@@ -440,6 +457,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseMoveEvent_( const InputMouseMoveEvent & _event )
     {
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
+
+        LOGGER_INFO( "input", "handle mouse move touch [%u] pos [%.4f:%.4f] delta [%.8f:%.8f] pressure [%f]"
+            , _event.touchId
+            , _event.x
+            , _event.y
+            , _event.dx
+            , _event.dy
+            , _event.pressure
+        );
+
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
@@ -448,20 +476,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseWheelEvent_( const InputMouseWheelEvent & _event )
     {
+        LOGGER_INFO( "input", "handle mouse wheel pos [%.4f:%.4f] code [%u] scroll [%d]"
+            , _event.x
+            , _event.y
+            , _event.code
+            , _event.scroll
+        );
+
         APPLICATION_SERVICE()
             ->mouseWheel( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mousePositionEvent_( const InputMousePositionEvent & _event )
-    {
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
-
-        APPLICATION_SERVICE()
-            ->mousePosition( _event );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void InputService::mouseEnterEvent_( const InputMouseEnterEvent & _event )
     {
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
+
+        LOGGER_INFO( "input", "handle mouse enter touch [%u] pos [%.4f:%.4f] pressure [%f]"
+            , _event.touchId
+            , _event.x
+            , _event.y
+            , _event.pressure
+        );
+
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
@@ -470,6 +506,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseLeaveEvent_( const InputMouseLeaveEvent & _event )
     {
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
+
+        LOGGER_INFO( "input", "handle mouse leave touch [%u] pos [%.4f:%.4f] pressure [%f]"
+            , _event.touchId
+            , _event.x
+            , _event.y
+            , _event.pressure
+        );
+
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()

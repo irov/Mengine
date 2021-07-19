@@ -19,11 +19,11 @@ namespace Mengine
         void onGameViewport( const Viewport & _viewport, float _aspect ) override;
         bool onGameKey( EKeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) override;
         bool onGameText( WChar _key, float _x, float _y ) override;
-        bool onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) override;
-        bool onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) override;
-        bool onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) override;
+        bool onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown ) override;
+        bool onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown ) override;
+        bool onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown ) override;
         bool onGameMouseMove( ETouchCode _touchId, float _x, float _y, float _dx, float _dy ) override;
-        bool onGameMouseWheel( EMouseCode _button, float _x, float _y, int32_t _wheel ) override;
+        bool onGameMouseWheel( float _x, float _y, EWheelCode _code, int32_t _scroll ) override;
         void onGameAppMouseEnter( float _x, float _y ) override;
         void onGameAppMouseLeave() override;
         void onGameTimeFactor( float _timeFactor ) override;

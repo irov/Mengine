@@ -4,6 +4,7 @@
 
 #include "Kernel/KeyCode.h"
 #include "Kernel/MouseCode.h"
+#include "Kernel/WheelCode.h"
 #include "Kernel/TouchCode.h"
 
 #include "Config/Char.h"
@@ -18,7 +19,6 @@ namespace Mengine
         IET_MOUSE_BUTTON,
         IET_MOUSE_WHELL,
         IET_MOUSE_MOVE,
-        IET_MOUSE_POSITION,
         IET_MOUSE_ENTER,
         IET_MOUSE_LEAVE
     };
@@ -70,8 +70,8 @@ namespace Mengine
 
         float x;
         float y;
-        EMouseCode code;
-        int32_t wheel;
+        EWheelCode code;
+        int32_t scroll;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseMoveEvent
@@ -97,16 +97,6 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseLeaveEvent
-    {
-        InputSpecialData special;
-
-        ETouchCode touchId;
-        float x;
-        float y;
-        float pressure;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct InputMousePositionEvent
     {
         InputSpecialData special;
 

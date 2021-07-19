@@ -153,7 +153,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseWheelEvent( float _x, float _y, EMouseCode _code, int32_t _whell )
+        void pushMouseWheelEvent( float _x, float _y, EWheelCode _code, int32_t _scroll )
         {
             float vx;
             float vy;
@@ -170,32 +170,7 @@ namespace Mengine
             ev.data.wheel.x = vx;
             ev.data.wheel.y = vy;
             ev.data.wheel.code = _code;
-            ev.data.wheel.wheel = _whell;
-
-            INPUT_SERVICE()
-                ->pushEvent( ev );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void pushMousePositionEvent( ETouchCode _touchId, float _x, float _y, float _pressure )
-        {
-            float vx;
-            float vy;
-            if( INPUT_SERVICE()
-                ->validCursorPosition( _x, _y, &vx, &vy ) == false )
-            {
-                return;
-            }
-
-            InputUnionEvent ev;
-            ev.type = IET_MOUSE_POSITION;
-
-            INPUT_SERVICE()
-                ->getSpecial( &ev.data.special );
-
-            ev.data.position.touchId = _touchId;
-            ev.data.position.x = vx;
-            ev.data.position.y = vy;
-            ev.data.position.pressure = _pressure;
+            ev.data.wheel.scroll = _scroll;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );

@@ -105,7 +105,6 @@ namespace Mengine
         bool mouseButtonEvent( const InputMouseButtonEvent & _event ) override;
         bool mouseMove( const InputMouseMoveEvent & _event ) override;
         bool mouseWheel( const InputMouseWheelEvent & _event ) override;
-        void mousePosition( const InputMousePositionEvent & _event ) override;
         void mouseEnter( const InputMouseEnterEvent & _event ) override;
         void mouseLeave( const InputMouseLeaveEvent & _event ) override;
 
@@ -233,7 +232,6 @@ namespace Mengine
         bool m_invalidateVsync;
         bool m_cursorMode;
         bool m_invalidateCursorMode;
-        bool m_mouseEnter;
 
         bool m_inputMouseButtonEventBlock;
 
@@ -243,4 +241,5 @@ namespace Mengine
 
         bool m_initailizeGame;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

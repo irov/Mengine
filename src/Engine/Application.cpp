@@ -174,7 +174,6 @@ namespace Mengine
         , m_invalidateVsync( true )
         , m_cursorMode( false )
         , m_invalidateCursorMode( true )
-        , m_mouseEnter( false )
         , m_inputMouseButtonEventBlock( false )
         , m_debugPause( false )
         , m_debugFileOpen( false )
@@ -1377,28 +1376,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::mouseMove( const InputMouseMoveEvent & _event )
     {
-        float vx;
-        float vy;
-        if( INPUT_SERVICE()
-            ->validCursorPosition( _event.x, _event.y, &vx, &vy ) == false )
-        {
-            m_mouseEnter = false;
-
-            return false;
-        }
-
-        if( m_mouseEnter == false )
-        {
-            InputMouseEnterEvent ne;
-            ne.special = _event.special;
-            ne.touchId = _event.touchId;
-            ne.x = vx;
-            ne.y = vy;
-            ne.pressure = _event.pressure;
-
-            this->mouseEnter( ne );
-        }
-
         bool handle = GAME_SERVICE()
             ->handleMouseMove( _event );
 
@@ -1501,32 +1478,6 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::mousePosition( const InputMousePositionEvent & _event )
-    {
-        float vx;
-        float vy;
-
-        if( INPUT_SERVICE()
-            ->validCursorPosition( _event.x, _event.y, &vx, &vy ) == false )
-        {
-            m_mouseEnter = false;
-
-            return;
-        }
-
-        if( m_mouseEnter == false )
-        {
-            InputMouseEnterEvent ne;
-            ne.special = _event.special;
-            ne.touchId = _event.touchId;
-            ne.x = vx;
-            ne.y = vy;
-            ne.pressure = _event.pressure;
-
-            this->mouseEnter( ne );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Application::mouseEnter( const InputMouseEnterEvent & _event )
     {
         float vx;
@@ -1534,8 +1485,6 @@ namespace Mengine
 
         INPUT_SERVICE()
             ->validCursorPosition( _event.x, _event.y, &vx, &vy );
-
-        m_mouseEnter = true;
 
         InputMouseEnterEvent ne = _event;
         ne.x = vx;
@@ -1547,8 +1496,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::mouseLeave( const InputMouseLeaveEvent & _event )
     {
-        m_mouseEnter = false;
-
         InputMouseLeaveEvent ne = _event;
 
         GAME_SERVICE()

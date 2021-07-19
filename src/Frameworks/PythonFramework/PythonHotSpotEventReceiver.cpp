@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotKey( const InputKeyEvent & _event )
     {
-        return m_cb.call( _event.x, _event.y, (uint32_t)_event.code, _event.isDown, _event.isRepeat );
+        return m_cb.call( _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotText( const InputTextEvent & _event )
@@ -65,7 +65,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseWheel( const InputMouseWheelEvent & _event )
     {
-        return m_cb.call( _event.x, _event.y, _event.code, _event.wheel );
+        return m_cb.call( _event.x, _event.y, _event.code, _event.scroll );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonHotSpotEventReceiver::onHotSpotMouseOverDestroy()

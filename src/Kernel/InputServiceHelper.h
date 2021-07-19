@@ -2,6 +2,7 @@
 
 #include "Kernel/KeyCode.h"
 #include "Kernel/MouseCode.h"
+#include "Kernel/WheelCode.h"
 #include "Kernel/TouchCode.h"
 
 #include "Config/Typedef.h"
@@ -17,7 +18,6 @@ namespace Mengine
         void pushTextEvent( float _x, float _y, WChar _key );
         void pushMouseLeaveEvent( ETouchCode _touchId, float _x, float _y, float _pressure );
         void pushMouseEnterEvent( ETouchCode _touchId, float _x, float _y, float _pressure );
-        void pushMouseWheelEvent( float _x, float _y, EMouseCode _code, int32_t _whell );
-        void pushMousePositionEvent( ETouchCode _touchId, float _x, float _y, float _pressure );
+        void pushMouseWheelEvent( float _x, float _y, EWheelCode _code, int32_t _scroll );
     }
 }

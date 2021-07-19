@@ -3430,7 +3430,7 @@ namespace Mengine
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( _event.code, _event.x, _event.y, _event.wheel, m_args );
+                    pybind::object py_result = m_cb.call_args( _event.x, _event.y, _event.scroll, m_args );
 
                     if( py_result.is_none() == false )
                     {

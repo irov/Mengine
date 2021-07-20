@@ -955,7 +955,7 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::keyEvent( const InputKeyEvent & _event )
+    bool Application::handleKeyEvent( const InputKeyEvent & _event )
     {
 #ifdef MENGINE_PLATFORM_DESKTOP
         bool developmentMode = Helper::isDevelopmentMode();
@@ -1347,7 +1347,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::textEvent( const InputTextEvent & _event )
+    bool Application::handleTextEvent( const InputTextEvent & _event )
     {
         bool handle = GAME_SERVICE()
             ->handleTextEvent( _event );
@@ -1355,26 +1355,46 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::mouseButtonEvent( const InputMouseButtonEvent & _event )
+    bool Application::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         if( m_inputMouseButtonEventBlock == true )
         {
             return false;
         }
 
-        GAME_SERVICE()
-            ->handleMouseButtonEventBegin( _event );
-
         bool handle = GAME_SERVICE()
             ->handleMouseButtonEvent( _event );
 
-        GAME_SERVICE()
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    {
+        if( m_inputMouseButtonEventBlock == true )
+        {
+            return false;
+        }
+
+        bool handle = GAME_SERVICE()
+            ->handleMouseButtonEventBegin( _event );
+
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    {
+        if( m_inputMouseButtonEventBlock == true )
+        {
+            return false;
+        }
+
+        bool handle = GAME_SERVICE()
             ->handleMouseButtonEventEnd( _event );
 
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::mouseMove( const InputMouseMoveEvent & _event )
+    bool Application::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         bool handle = GAME_SERVICE()
             ->handleMouseMove( _event );
@@ -1470,7 +1490,7 @@ namespace Mengine
             );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::mouseWheel( const InputMouseWheelEvent & _event )
+    bool Application::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         bool handle = GAME_SERVICE()
             ->handleMouseWheel( _event );
@@ -1478,28 +1498,18 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::mouseEnter( const InputMouseEnterEvent & _event )
+    bool Application::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
-        float vx;
-        float vy;
+        bool handle = GAME_SERVICE()
+            ->handleMouseEnter( _event );
 
-        INPUT_SERVICE()
-            ->validCursorPosition( _event.x, _event.y, &vx, &vy );
-
-        InputMouseEnterEvent ne = _event;
-        ne.x = vx;
-        ne.y = vy;
-
-        GAME_SERVICE()
-            ->handleMouseEnter( ne );
+        return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::mouseLeave( const InputMouseLeaveEvent & _event )
+    void Application::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
-        InputMouseLeaveEvent ne = _event;
-
         GAME_SERVICE()
-            ->handleMouseLeave( ne );
+            ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::quit()

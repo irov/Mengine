@@ -157,7 +157,7 @@ namespace Mengine
         m_scissor = nullptr;
         m_target = nullptr;
 
-        MENGINE_ASSERTION_FATAL( m_states.empty() );
+        MENGINE_ASSERTION_FATAL( m_states.empty() == true );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setBlock( bool _value )
@@ -768,21 +768,13 @@ namespace Mengine
             return false;
         }
 
-        float vx;
-        float vy;
-        if( INPUT_SERVICE()
-            ->validCursorPosition( _x, _y, &vx, &vy ) == false )
-        {
-            return false;
-        }
-
         this->fillStates_( _states );
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
         mt::vec2f adapt_screen_position;
-        m_arrow->adaptScreenPosition_( mt::vec2f( vx, vy ), &adapt_screen_position );
+        m_arrow->adaptScreenPosition_( mt::vec2f( _x, _y ), &adapt_screen_position );
 
         bool handle = false;
 
@@ -900,14 +892,6 @@ namespace Mengine
             return true;
         }
 
-        float vx;
-        float vy;
-        if( INPUT_SERVICE()
-            ->validCursorPosition( _x, _y, &vx, &vy ) == false )
-        {
-            return false;
-        }
-
         VectorPickerStates statesAux;
         this->fillStates_( &statesAux );
 
@@ -915,7 +899,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f adapt_screen_position;
-        m_arrow->adaptScreenPosition_( mt::vec2f( vx, vy ), &adapt_screen_position );
+        m_arrow->adaptScreenPosition_( mt::vec2f( _x, _y ), &adapt_screen_position );
 
         for( const PickerStateDesc & desc : statesAux )
         {

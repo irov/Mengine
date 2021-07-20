@@ -162,12 +162,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setBlock( bool _value )
     {
+        if( m_block == _value )
+        {
+            return;
+        }
+
         m_block = _value;
+
+        this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setHandleValue( bool _value )
     {
+        if( m_handleValue == _value )
+        {
+            return;
+        }
+
         m_handleValue = _value;
+
+        this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setArrow( const ArrowPtr & _arrow )
@@ -727,9 +741,14 @@ namespace Mengine
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            InputMouseLeaveEvent ne = _event;
+            mt::vec2f adapt_screen_position;
+            m_arrow->adaptScreenPosition_( mt::vec2f( _event.x, _event.y ), &adapt_screen_position );
 
-            inputHandler->handleMouseLeave( ne );
+            InputMouseLeaveEvent ne = _event;
+            ne.x = adapt_screen_position.x;
+            ne.y = adapt_screen_position.y;
+
+            inputHandler->handleMouseLeave( _event );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -806,7 +825,6 @@ namespace Mengine
                         InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                         InputMouseEnterEvent ne;
-
                         ne.special = _special;
                         ne.touchId = _touchId;
                         ne.x = adapt_screen_position.x;
@@ -833,7 +851,6 @@ namespace Mengine
                         InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                         InputMouseLeaveEvent ne;
-
                         ne.special = _special;
                         ne.touchId = _touchId;
                         ne.x = adapt_screen_position.x;
@@ -853,7 +870,6 @@ namespace Mengine
                     InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                     InputMouseLeaveEvent ne;
-
                     ne.special = _special;
                     ne.touchId = _touchId;
                     ne.x = adapt_screen_position.x;

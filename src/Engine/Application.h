@@ -98,15 +98,19 @@ namespace Mengine
         void turnSound( bool _turn ) override;
 
     public:
-        bool keyEvent( const InputKeyEvent & _event ) override;
-        bool textEvent( const InputTextEvent & _event ) override;
+        bool handleKeyEvent( const InputKeyEvent & _event ) override;
+        bool handleTextEvent( const InputTextEvent & _event ) override;
 
     public:
-        bool mouseButtonEvent( const InputMouseButtonEvent & _event ) override;
-        bool mouseMove( const InputMouseMoveEvent & _event ) override;
-        bool mouseWheel( const InputMouseWheelEvent & _event ) override;
-        void mouseEnter( const InputMouseEnterEvent & _event ) override;
-        void mouseLeave( const InputMouseLeaveEvent & _event ) override;
+        bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
+        bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
+
+    public:
+        bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
+        void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     public:
         void setParticleEnable( bool _enabled ) override;

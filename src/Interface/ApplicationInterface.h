@@ -28,6 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ApplicationInterface
         : public ServiceInterface
+        , public InputHandlerInterface
     {
         SERVICE_DECLARE( "Application" );
 
@@ -45,16 +46,6 @@ namespace Mengine
         virtual void close() = 0;
 
         virtual void turnSound( bool _turn ) = 0;
-
-    public:
-        virtual bool keyEvent( const InputKeyEvent & _event ) = 0;
-        virtual bool textEvent( const InputTextEvent & _event ) = 0;
-
-        virtual bool mouseButtonEvent( const InputMouseButtonEvent & _event ) = 0;
-        virtual bool mouseMove( const InputMouseMoveEvent & _event ) = 0;
-        virtual bool mouseWheel( const InputMouseWheelEvent & _event ) = 0;
-        virtual void mouseEnter( const InputMouseEnterEvent & _event ) = 0;
-        virtual void mouseLeave( const InputMouseLeaveEvent & _event ) = 0;
 
     public:
         virtual bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths, const VectorFilePath & _settingsPaths ) = 0;

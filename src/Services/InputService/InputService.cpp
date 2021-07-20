@@ -419,7 +419,7 @@ namespace Mengine
         event.isRepeat = isRepeat;
 
         APPLICATION_SERVICE()
-            ->keyEvent( event );
+            ->handleKeyEvent( event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::textEvent_( const InputTextEvent & _event )
@@ -429,7 +429,7 @@ namespace Mengine
         );
 
         APPLICATION_SERVICE()
-            ->textEvent( _event );
+            ->handleTextEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )
@@ -452,7 +452,13 @@ namespace Mengine
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
-            ->mouseButtonEvent( _event );
+            ->handleMouseButtonEventBegin( _event );
+
+        APPLICATION_SERVICE()
+            ->handleMouseButtonEvent( _event );
+
+        APPLICATION_SERVICE()
+            ->handleMouseButtonEventEnd( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseMoveEvent_( const InputMouseMoveEvent & _event )
@@ -471,7 +477,7 @@ namespace Mengine
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
-            ->mouseMove( _event );
+            ->handleMouseMove( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseWheelEvent_( const InputMouseWheelEvent & _event )
@@ -484,7 +490,7 @@ namespace Mengine
         );
 
         APPLICATION_SERVICE()
-            ->mouseWheel( _event );
+            ->handleMouseWheel( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseEnterEvent_( const InputMouseEnterEvent & _event )
@@ -501,7 +507,7 @@ namespace Mengine
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
-            ->mouseEnter( _event );
+            ->handleMouseEnter( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseLeaveEvent_( const InputMouseLeaveEvent & _event )
@@ -518,7 +524,7 @@ namespace Mengine
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
-            ->mouseLeave( _event );
+            ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
 }

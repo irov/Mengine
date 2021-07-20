@@ -16,8 +16,8 @@ namespace Mengine
 {    
     class GameServiceInterface
         : public ServiceInterface
-        , public Eventable
         , public InputHandlerInterface
+        , public Eventable
     {
         SERVICE_DECLARE( "GameService" )
 

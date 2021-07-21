@@ -812,12 +812,12 @@ namespace Mengine
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            mt::vec2f adapt_screen_position;
-            m_arrow->adaptScreenPosition_( mt::vec2f( _event.x, _event.y ), &adapt_screen_position );
+            mt::vec2f wp;
+            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             InputMouseLeaveEvent ne = _event;
-            ne.x = adapt_screen_position.x;
-            ne.y = adapt_screen_position.y;
+            ne.x = wp.x;
+            ne.y = wp.y;
 
             LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse leave]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
@@ -903,11 +903,14 @@ namespace Mengine
 
                         InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
+                        mt::vec2f wp;
+                        m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
+
                         InputMouseEnterEvent ne;
                         ne.special = _special;
                         ne.touchId = _touchId;
-                        ne.x = adapt_screen_position.x;
-                        ne.y = adapt_screen_position.y;
+                        ne.x = wp.x;
+                        ne.y = wp.y;
                         ne.pressure = _pressure;
 
                         LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse enter]"
@@ -937,11 +940,14 @@ namespace Mengine
 
                         InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
+                        mt::vec2f wp;
+                        m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
+
                         InputMouseLeaveEvent ne;
                         ne.special = _special;
                         ne.touchId = _touchId;
-                        ne.x = adapt_screen_position.x;
-                        ne.y = adapt_screen_position.y;
+                        ne.x = wp.x;
+                        ne.y = wp.y;
                         ne.pressure = _pressure;
 
                         LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse leave]"
@@ -964,11 +970,14 @@ namespace Mengine
 
                     InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
+                    mt::vec2f wp;
+                    m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
+
                     InputMouseLeaveEvent ne;
                     ne.special = _special;
                     ne.touchId = _touchId;
-                    ne.x = adapt_screen_position.x;
-                    ne.y = adapt_screen_position.y;
+                    ne.x = wp.x;
+                    ne.y = wp.y;
                     ne.pressure = _pressure;
 
                     LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse leave]"

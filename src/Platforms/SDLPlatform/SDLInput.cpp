@@ -99,7 +99,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( _event.wheel.x, _event.wheel.y, &point );
 
-                Helper::pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, _event.wheel.y );
+                Helper::pushMouseWheelEvent( point.x, point.y, WC_CENTRAL, _event.wheel.y );
             }break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:

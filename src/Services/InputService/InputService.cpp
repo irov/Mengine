@@ -184,8 +184,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isKeyDown( EKeyCode _keyCode ) const
     {
-        MENGINE_ASSERTION_FATAL( _keyCode < MENGINE_INPUT_MAX_KEY_CODE );
-
         bool isDown = m_keyBuffer[_keyCode];
 
         return isDown;
@@ -193,8 +191,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isExclusiveKeyDown( EKeyCode _keyCode ) const
     {
-        MENGINE_ASSERTION_FATAL( _keyCode < MENGINE_INPUT_MAX_KEY_CODE );
-
         bool isDown = m_keyBuffer[_keyCode];
 
         if( isDown == false )
@@ -401,8 +397,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::keyEvent_( const InputKeyEvent & _event )
     {
-        MENGINE_ASSERTION_FATAL( _event.code < MENGINE_INPUT_MAX_KEY_CODE );
-
         LOGGER_INFO( "input", "handle key code [%u] down [%u] repeat [%u]"
             , _event.code
             , _event.isDown

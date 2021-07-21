@@ -2903,8 +2903,6 @@ namespace Mengine
         mt::vec2f point;
         m_sdlInput->getCursorPosition( &point );
 
-        Helper::pushMousePositionEvent( TC_TOUCH0, point.x, point.y, 0.f );
-
         if( m_active == false )
         {
             if( nopause == false )

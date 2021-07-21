@@ -373,6 +373,14 @@ namespace Mengine
             valueAttrib.set_value( _prop );
         }
 
+        template<size_t N>
+        void serializeNodeProp( const Char (&_prop)[N], const Char * _propName, pugi::xml_node & _xmlParentNode )
+        {
+            const Char * str = _prop;
+
+            Detail::serializeNodeProp( str, _propName, _xmlParentNode );
+        }
+
         template<typename T>
         bool deserializeNodeProp( const Char * _propName, const pugi::xml_node & _xmlParentNode, const Lambda<void( const T & )> & _lambda )
         {

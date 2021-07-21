@@ -382,10 +382,12 @@ namespace Mengine
             ne.x = wp.x;
             ne.y = wp.y;
 
-            LOGGER_INFO( "picker", "handle %s:%s %u [key]"
+            LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [key]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
             );
 
             if( inputHandler->handleKeyEvent( ne ) == false )
@@ -432,10 +434,12 @@ namespace Mengine
             ne.x = wp.x;
             ne.y = wp.y;
 
-            LOGGER_INFO( "picker", "handle %s:%s %u [text]"
+            LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [text]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
             );
 
             if( inputHandler->handleTextEvent( ne ) == false )
@@ -488,10 +492,12 @@ namespace Mengine
             ne.y = wp.y;
             ne.isPressed = picker->isPickerPressed();
 
-            LOGGER_INFO( "picker", "handle %s:%s %u [mouse button]"
+            LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse button]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
             );
 
             if( inputHandler->handleMouseButtonEvent( ne ) == false )
@@ -549,10 +555,12 @@ namespace Mengine
             ne.y = wp.y;
             ne.isPressed = picker->isPickerPressed();
 
-            LOGGER_INFO( "picker", "handle %s:%s %u [mouse button begin]"
+            LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse button begin]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
             );
 
             if( inputHandler->handleMouseButtonEventBegin( ne ) == false )
@@ -617,10 +625,12 @@ namespace Mengine
             ne.y = wp.y;
             ne.isPressed = picker->isPickerPressed();
 
-            LOGGER_INFO( "picker", "handle %s:%s %u [mouse button end]"
+            LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse button end]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
             );
 
             if( inputHandler->handleMouseButtonEventEnd( ne ) == false )
@@ -677,10 +687,12 @@ namespace Mengine
             ne.dx = dp.x;
             ne.dy = dp.y;
 
-            LOGGER_INFO( "picker", "handle %s:%s %u [mouse move]"
+            LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse move]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
             );
 
             if( inputHandler->handleMouseMove( ne ) == false )
@@ -732,10 +744,12 @@ namespace Mengine
             ne.x = wp.x;
             ne.y = wp.y;
 
-            LOGGER_INFO( "picker", "handle %s:%s %u [mouse wheel]"
+            LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse wheel]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
             );
 
             if( inputHandler->handleMouseWheel( ne ) == false )
@@ -805,10 +819,12 @@ namespace Mengine
             ne.x = adapt_screen_position.x;
             ne.y = adapt_screen_position.y;
 
-            LOGGER_INFO( "picker", "handle %s:%s %u [mouse leave]"
+            LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse leave]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
             );
 
             inputHandler->handleMouseLeave( _event );
@@ -894,10 +910,12 @@ namespace Mengine
                         ne.y = adapt_screen_position.y;
                         ne.pressure = _pressure;
 
-                        LOGGER_INFO( "picker", "handle %s:%s %u [mouse enter]"
+                        LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse enter]"
                             , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                             , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                             , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                            , ne.x
+                            , ne.y
                         );
 
                         handle = inputHandler->handleMouseEnter( ne );
@@ -926,10 +944,12 @@ namespace Mengine
                         ne.y = adapt_screen_position.y;
                         ne.pressure = _pressure;
 
-                        LOGGER_INFO( "picker", "handle %s:%s %u [mouse leave]"
+                        LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse leave]"
                             , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                             , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                             , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                            , ne.x
+                            , ne.y
                         );
 
                         inputHandler->handleMouseLeave( ne );
@@ -951,10 +971,12 @@ namespace Mengine
                     ne.y = adapt_screen_position.y;
                     ne.pressure = _pressure;
 
-                    LOGGER_INFO( "picker", "handle %s:%s %u [mouse leave]"
+                    LOGGER_INFO( "picker", "handle %s:%s %u pos [%.4f;%.4f] [mouse leave]"
                         , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                         , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                         , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                        , ne.x
+                        , ne.y
                     );
 
                     inputHandler->handleMouseLeave( ne );

@@ -2278,109 +2278,126 @@ namespace Mengine
         ::SetCursor( m_cursor );
     }
     //////////////////////////////////////////////////////////////////////////
+    HCURSOR Win32Platform::loadCursorICO_( const FilePath & _filePath, const MemoryInterfacePtr & _buffer ) const
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _buffer );
+
+        if( _buffer->empty() == true )
+        {
+            LOGGER_ERROR( "'%s' buffer empty"
+                , _filePath.c_str()
+            );
+
+            return NULL;
+        }
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+        PathString icoFile;
+        icoFile += ".icon_cache/";
+        icoFile += _filePath;
+        icoFile += ".ico";
+
+        FilePath c_icoFile = Helper::stringizeFilePath( icoFile );
+
+        if( fileGroup->createDirectory( c_icoFile ) == false )
+        {
+            LOGGER_ERROR( "invalid create directory '.icon_cache'" );
+
+            return NULL;
+        }
+
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "path '%s' can't open output stream '%s'"
+            , _filePath.c_str()
+            , c_icoFile.c_str()
+        );
+
+        void * memory = _buffer->getBuffer();
+        size_t size = _buffer->getSize();
+
+        if( stream->write( memory, size ) == false )
+        {
+            LOGGER_ERROR( "path '%s' can't write output stream '%s'"
+                , _filePath.c_str()
+                , c_icoFile.c_str()
+            );
+
+            return NULL;
+        }
+
+        stream->flush();
+        stream = nullptr;
+
+        Char icoFullFile[MENGINE_MAX_PATH] = {L'\0'};
+        fileGroup->getFullPath( c_icoFile, icoFullFile );
+
+        WString unicode_icoFullFile;
+        if( Helper::utf8ToUnicode( icoFullFile, &unicode_icoFullFile ) == false )
+        {
+            LOGGER_ERROR( "path '%s' can't file name '%s' to unicode"
+                , _filePath.c_str()
+                , c_icoFile.c_str()
+            );
+
+            return NULL;
+        }
+
+        const WChar * unicode_icoFile_str = unicode_icoFullFile.c_str();
+
+        HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile_str );
+
+        if( cursor == NULL )
+        {
+            LOGGER_ERROR( "icon file '%ls' %s"
+                , unicode_icoFullFile.c_str()
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return NULL;
+        }
+
+        return cursor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HCURSOR Win32Platform::getCursorICO_( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _buffer )
+    {
+        MapCursors::iterator it_found = m_cursors.find( _filePath );
+
+        if( it_found != m_cursors.end() )
+        {
+            HCURSOR cursor = it_found->second;
+
+            return cursor;
+        }
+
+        HCURSOR cursor = this->loadCursorICO_( _filePath, _buffer );
+
+        if( cursor == NULL )
+        {
+            LOGGER_ERROR( "invalid load cursor ICO [%s]"
+                , _name.c_str()
+            );
+
+            cursor = ::LoadCursor( NULL, IDC_ARROW );
+        }
+
+        m_cursors.emplace( _name, cursor );
+
+        return cursor;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _content );
 
         const FilePath & filePath = _content->getFilePath();
 
-        MapCursors::iterator it_found = m_cursors.find( filePath );
+        HCURSOR cursor = this->getCursorICO_( _name, filePath, _buffer );
 
-        if( it_found == m_cursors.end() )
-        {
-            MENGINE_ASSERTION_MEMORY_PANIC( _buffer );
-
-            if( _buffer->empty() == true )
-            {
-                LOGGER_ERROR( "'%s' buffer empty"
-                    , filePath.c_str()
-                );
-
-                return false;
-            }
-
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
-
-            PathString icoFile;
-            icoFile += ".icon_cache/";
-            icoFile += filePath;
-            icoFile += ".ico";
-
-            FilePath c_icoFile = Helper::stringizeFilePath( icoFile );
-
-            if( fileGroup->createDirectory( c_icoFile ) == false )
-            {
-                LOGGER_ERROR( "invalid create directory '.icon_cache'" );
-
-                return false;
-            }
-
-            OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FACTORABLE );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, "name '%s' path '%s' can't open output stream '%s'"
-                , _name.c_str()
-                , filePath.c_str()
-                , c_icoFile.c_str()
-            );
-
-            void * memory = _buffer->getBuffer();
-            size_t size = _buffer->getSize();
-
-            if( stream->write( memory, size ) == false )
-            {
-                LOGGER_ERROR( "name '%s' path '%s' can't write output stream '%s'"
-                    , _name.c_str()
-                    , filePath.c_str()
-                    , c_icoFile.c_str()
-                );
-
-                return false;
-            }
-
-            stream->flush();
-            stream = nullptr;
-
-            PathString icoFullFile;
-            icoFullFile += fileGroup->getFolderPath();
-            icoFullFile += icoFile;
-
-            WString unicode_icoFullFile;
-            if( Helper::utf8ToUnicode( icoFullFile, &unicode_icoFullFile ) == false )
-            {
-                LOGGER_ERROR( "name '%s' path '%s' can't file name '%s' to unicode"
-                    , _name.c_str()
-                    , filePath.c_str()
-                    , c_icoFile.c_str()
-                );
-
-                return false;
-            }
-
-            const WChar * unicode_icoFile_str = unicode_icoFullFile.c_str();
-
-            HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile_str );
-
-            if( cursor == NULL )
-            {
-                DWORD error = ::GetLastError();
-
-                if( error != ERROR_SUCCESS )
-                {
-                    LOGGER_ERROR( "icon '%s' for file '%ls' %s"
-                        , _name.c_str()
-                        , unicode_icoFullFile.c_str()
-                        , Helper::Win32GetLastErrorMessage()
-                    );
-
-                    return false;
-                }
-            }
-
-            it_found = m_cursors.emplace( _name, cursor ).first;
-        }
-
-        m_cursor = it_found->second;
+        m_cursor = cursor;
 
         ::SetCursor( m_cursor );
 

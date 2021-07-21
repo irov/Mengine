@@ -89,6 +89,10 @@ namespace Mengine
         void notifyCursorModeChanged( bool _mode ) override;
         bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer ) override;
 
+    protected:
+        HCURSOR loadCursorICO_( const FilePath & _filePath, const MemoryInterfacePtr & _buffer ) const;
+        HCURSOR getCursorICO_( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _buffer );
+
     public:
         void onEvent( const ConstString & _event, const MapWParams & _params ) override;
 

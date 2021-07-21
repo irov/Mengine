@@ -1721,7 +1721,7 @@ namespace Mengine
                 p.y = GET_Y_LPARAM( lParam );
 
                 mt::vec2f point;
-                if( this->getCursorPosition_( p, &point ) == false )
+                if( this->adaptCursorPosition_( p, &point ) == false ) //indeed carries screen-based coordinates in lParam
                 {
                     return false;
                 }

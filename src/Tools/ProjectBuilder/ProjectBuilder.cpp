@@ -558,7 +558,7 @@ namespace Mengine
         }
 
     public:
-        void write( const char * _msg, uint32_t _size )
+        void write( const char * _msg, size_t _size )
         {
             LOGGER_SERVICE()
                 ->logMessage( LM_ERROR, 0, LCOLOR_NONE, _msg, _size );

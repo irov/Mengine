@@ -151,10 +151,10 @@ namespace Mengine
             m_performanceSupport = true;
         }
 
-        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_ARROW" )] = ::LoadCursor( NULL, IDC_ARROW );
-        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_UPARROW" )] = ::LoadCursor( NULL, IDC_UPARROW );
-        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = ::LoadCursor( NULL, IDC_HAND );
-        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HELP" )] = ::LoadCursor( NULL, IDC_HELP );
+        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_ARROW" )] = {::LoadCursor( NULL, IDC_ARROW ), true};
+        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_UPARROW" )] = {::LoadCursor( NULL, IDC_UPARROW ), true};
+        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = {::LoadCursor( NULL, IDC_HAND ), true};
+        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HELP" )] = {::LoadCursor( NULL, IDC_HELP ), true};
 
         m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 
@@ -307,6 +307,18 @@ namespace Mengine
         m_active = false;
 
         m_platformTags.clear();
+
+        ::SetCursor( NULL );
+
+        for( auto && [name, desc] : m_cursors )
+        {
+            if( desc.shared == true )
+            {
+                continue;
+            }
+
+            ::DestroyCursor( desc.cursor );
+        }
 
         m_cursors.clear();
 
@@ -2273,7 +2285,7 @@ namespace Mengine
             m_cursor = ::LoadCursor( NULL, IDC_ARROW );
         }
 
-        m_cursor = m_cursorMode ? m_cursor : NULL;
+        m_cursor = m_cursorMode == true ? m_cursor : NULL;
 
         ::SetCursor( m_cursor );
     }
@@ -2368,7 +2380,9 @@ namespace Mengine
 
         if( it_found != m_cursors.end() )
         {
-            HCURSOR cursor = it_found->second;
+            const CursorDesc & desc = it_found->second;
+
+            HCURSOR cursor = desc.cursor;
 
             return cursor;
         }
@@ -2384,7 +2398,11 @@ namespace Mengine
             cursor = ::LoadCursor( NULL, IDC_ARROW );
         }
 
-        m_cursors.emplace( _name, cursor );
+        CursorDesc desc;
+        desc.cursor = cursor;
+        desc.shared = false;
+
+        m_cursors.emplace( _name, desc );
 
         return cursor;
     }
@@ -4455,7 +4473,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( it_found != m_cursors.end() );
 
-        m_cursor = it_found->second;
+        const CursorDesc & desc = it_found->second;
+
+        m_cursor = desc.cursor;
 
         ::SetCursor( m_cursor );
     }

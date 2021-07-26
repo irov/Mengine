@@ -183,6 +183,9 @@ endif()
 configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/config.h.in
                ${THIRDPARTY_CONFIG_DIR}/libwebp/src/webp/config.h)
 
+set(WEBP_DEP_INCLUDE_DIRS ${WEBP_DEP_INCLUDE_DIRS}
+    ${THIRDPARTY_CONFIG_DIR}/libwebp)
+
 add_definitions(-DHAVE_CONFIG_H)
 
 # ##############################################################################

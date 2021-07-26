@@ -13,7 +13,7 @@ namespace Mengine
     typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveSlugListSize<Node> IntrusiveSlugListHierarchyChild;
-    typedef IntrusiveSlugIterator<IntrusiveSlugListHierarchyChild> IntrusiveSlugHierarchyChild;
+    typedef IntrusiveSlugIterator<IntrusiveSlugListHierarchyChild> IntrusiveSlugIteratorHierarchyChild;
     //////////////////////////////////////////////////////////////////////////
     class Hierarchy
         : public stdex::intrusive_slug_linked_ptr<Node, void, IntrusivePtr, IntrusivePtrBase>

@@ -165,7 +165,7 @@ namespace Mengine
             return;
         }
 
-        for( IntrusiveSlugHierarchyChild it( m_children ); it.eof() == false; )
+        for( IntrusiveSlugIteratorHierarchyChild it( m_children ); it.eof() == false; )
         {
             NodePtr child( *it );
 
@@ -194,7 +194,7 @@ namespace Mengine
             return true;
         }
 
-        for( IntrusiveSlugHierarchyChild it( m_children ); it.eof() == false; )
+        for( IntrusiveSlugIteratorHierarchyChild it( m_children ); it.eof() == false; )
         {
             NodePtr child( *it );
 
@@ -341,7 +341,7 @@ namespace Mengine
             return;
         }
 
-        for( IntrusiveSlugHierarchyChild it( m_children ); it.eof() == false; )
+        for( IntrusiveSlugIteratorHierarchyChild it( m_children ); it.eof() == false; )
         {
             NodePtr hierarchy( *it );
 

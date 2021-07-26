@@ -4,14 +4,14 @@ IF(COMMAND cmake_policy)
     cmake_policy(SET CMP0008 NEW)
 ENDIF()
 
-SET(MENGINE_PROJECT_NAME "Mengine_Xcode_SDL" CACHE STRING "Mengine project name")
+SET(MENGINE_PROJECT_NAME "Mengine_Xcode_MacOS_Universal_SDL" CACHE STRING "Mengine project name")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../master_options_template.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../xcode_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../xcode_macos_universal_template.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mengine_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(MACOS OPENGL SDL XCODE)

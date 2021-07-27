@@ -3473,10 +3473,10 @@ namespace Mengine
                     return FALSE;
                 }
 
-                char mFileName[MAX_PATH] = {};
+                Char mFileName[MAX_PATH] = {'\0'};
                 DWORD FileNameLen = (*pGetModuleFileNameExA)(hProcess, hMods[i], mFileName, MAX_PATH);
 
-                char mBaseName[MAX_PATH] = {};
+                Char mBaseName[MAX_PATH] = {'\0'};
                 DWORD BaseNameLen = (*pGetModuleBaseNameA)(hProcess, hMods[i], mBaseName, MAX_PATH);
 
                 if( FileNameLen <= 0 || BaseNameLen <= 0 )

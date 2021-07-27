@@ -1376,14 +1376,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _icon );
 
-        //ToDo
+        //ToDo https://github.com/irov/Mengine/issues/93
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasCursorIcon( const ConstString & _icon ) const
     {
         MENGINE_UNUSED( _icon );
 
-        //ToDo
+        //ToDo https://github.com/irov/Mengine/issues/93
 
         return false;
     }

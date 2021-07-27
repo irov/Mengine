@@ -12,8 +12,7 @@ SERVICE_FACTORY( UnicodeSystem, Mengine::SDLUnicodeSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const Char * SDL_UCS_types[] = { "UCS-2-INTERNAL", "UCS-4-INTERNAL" };
-    static const Char * SDL_UCS_wchar_t = SDL_UCS_types[sizeof( WChar ) / 2 - 1];
+    static const Char * SDL_UCS_wchar_t = sizeof( WChar ) == 2 ? "UCS-2-INTERNAL" : "UCS-4-INTERNAL";
     //////////////////////////////////////////////////////////////////////////
     SDLUnicodeSystem::SDLUnicodeSystem()
     {
@@ -72,7 +71,7 @@ namespace Mengine
     {
         size_t utf8Size = (_utf8Size == MENGINE_UNKNOWN_SIZE) ? MENGINE_STRLEN( _utf8 ) + 1 : _utf8Size + 1;
 
-        wchar_t * sdl_unicode = (wchar_t *)SDL_iconv_string( SDL_UCS_wchar_t, "UTF-8"
+        char * sdl_unicode = SDL_iconv_string( SDL_UCS_wchar_t, "UTF-8"
             , _utf8
             , utf8Size * sizeof( Char )
         );
@@ -82,7 +81,9 @@ namespace Mengine
             return false;
         }
 
-        size_t unicodeSize = MENGINE_WCSLEN( sdl_unicode );
+        WChar * sdl_unicode_wchar = (WChar *)sdl_unicode;
+
+        size_t unicodeSize = MENGINE_WCSLEN( sdl_unicode_wchar );
 
         if( _unicode != nullptr )
         {
@@ -98,7 +99,7 @@ namespace Mengine
                 return false;
             }
 
-            std::copy( sdl_unicode, sdl_unicode + unicodeSize, _unicode );
+            std::copy( sdl_unicode_wchar, sdl_unicode_wchar + unicodeSize, _unicode );
 
             _unicode[unicodeSize] = L'\0';
         }
@@ -112,4 +113,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

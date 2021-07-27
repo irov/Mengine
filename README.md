@@ -65,6 +65,17 @@ Desktop
 
 [Marie Antoinette and the Disciples of Loki](https://www.bigfishgames.com/games/6978/marie-antoinette-and-the-disciples-of-loki) The year is 1787 and the French monarchy is living its last years of peace. In Vienna, Mozart is just about to finish his latest opera. Far to the north, in Iceland, a tremendous volcano eruption has already changed the face of Europe forever. What is the link between those events?
 
+## Core Team
+
+These are the humans that form the Mengine core team, which runs the project.
+
+| [@irov][irov-user] |
+| :---: |
+| [![][irov-img]][irov-user] |
+
+[irov-user]: https://github.com/irov
+[irov-img]: https://avatars.githubusercontent.com/u/1975501?s=100&v=4
+
 Code Style
 -------
 see [CODESTYLE](https://github.com/irov/Mengine/wiki/Codestyle) for more information.

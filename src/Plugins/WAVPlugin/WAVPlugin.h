@@ -6,14 +6,14 @@
 
 namespace Mengine
 {
-    class SoundCodecPlugin
+    class WAVPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "SoundCodec" )
+        PLUGIN_DECLARE( "WAV" )
 
     public:
-        SoundCodecPlugin();
-        ~SoundCodecPlugin() override;
+        WAVPlugin();
+        ~WAVPlugin() override;
 
     protected:
         bool _initializePlugin() override;

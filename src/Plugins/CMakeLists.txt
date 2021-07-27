@@ -1,7 +1,18 @@
-ADD_SUBDIRECTORY(ImageCodecPlugin)
-ADD_SUBDIRECTORY(SoundCodecPlugin)
-ADD_SUBDIRECTORY(AmplifierPlugin)
-ADD_SUBDIRECTORY(OggVorbisPlugin)
+if(MENGINE_PLUGIN_IMAGE_CODEC)
+    ADD_SUBDIRECTORY(ImageCodecPlugin)
+endif()
+
+if(MENGINE_PLUGIN_WAV)
+    ADD_SUBDIRECTORY(WAVPlugin)
+endif()
+
+if(MENGINE_PLUGIN_AMPLIFIER)
+    ADD_SUBDIRECTORY(AmplifierPlugin)
+endif()
+
+if(MENGINE_PLUGIN_OGG_VORBIS)
+    ADD_SUBDIRECTORY(OggVorbisPlugin)
+endif()
 
 if(MENGINE_PLUGIN_ZIP)
     ADD_SUBDIRECTORY(ZipPlugin)

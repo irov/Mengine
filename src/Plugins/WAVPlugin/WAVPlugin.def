@@ -1,0 +1,2 @@
+LIBRARY "WAVPlugin"
+EXPORTS dllCreatePlugin @1

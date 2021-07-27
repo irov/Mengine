@@ -99,15 +99,32 @@ SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( Zip );
-PLUGIN_EXPORT( LZ4 );
-PLUGIN_EXPORT( ImageCodec );
-PLUGIN_EXPORT( SoundCodec );
-PLUGIN_EXPORT( Amplifier );
-PLUGIN_EXPORT( OggVorbis );
-//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_EXTERNAL_SOURCE
 PLUGIN_EXPORT( ExternalBootstrapper );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_ZIP_STATIC
+PLUGIN_EXPORT( Zip );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_LZ4_STATIC
+PLUGIN_EXPORT( LZ4 );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_IMAGE_CODEC_STATIC
+PLUGIN_EXPORT( ImageCodec );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_WAV_STATIC
+PLUGIN_EXPORT( WAV );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_AMPLIFIER_STATIC
+PLUGIN_EXPORT( Amplifier );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_OGG_VORBIS_STATIC
+PLUGIN_EXPORT( OggVorbis );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
@@ -878,10 +895,21 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#ifdef MENGINE_PLUGIN_IMAGE_CODEC_STATIC
         MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec...", MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_WAV_STATIC
+        MENGINE_ADD_PLUGIN( WAV, "initialize Plugin WAV Codec...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_OGG_VORBIS_STATIC
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_AMPLIFIER_STATIC
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #ifdef MENGINE_PLUGIN_PVRTC_STATIC
         MENGINE_ADD_PLUGIN( PVRTC, "initialize Plugin PVRTC...", MENGINE_DOCUMENT_FACTORABLE );

@@ -1,26 +1,27 @@
-#include "SoundCodecPlugin.h"
-#include "SoundDecoderWAV.h"
+#include "WAVPlugin.h"
 
 #include "Interface/CodecServiceInterface.h"
+
+#include "SoundDecoderWAV.h"
 
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( SoundCodec, Mengine::SoundCodecPlugin );
+PLUGIN_FACTORY( WAV, Mengine::WAVPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SoundCodecPlugin::SoundCodecPlugin()
+    WAVPlugin::WAVPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundCodecPlugin::~SoundCodecPlugin()
+    WAVPlugin::~WAVPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundCodecPlugin::_initializePlugin()
+    bool WAVPlugin::_initializePlugin()
     {
         Helper::registerDecoder<SoundDecoderWAV>( STRINGIZE_STRING_LOCAL( "wavSound" ), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -30,7 +31,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundCodecPlugin::_finalizePlugin()
+    void WAVPlugin::_finalizePlugin()
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "wavSound" ) );
 

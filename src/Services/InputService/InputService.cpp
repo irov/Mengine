@@ -374,7 +374,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _focus );
 
-        std::fill( m_keyBuffer, m_keyBuffer + sizeof( m_keyBuffer ), false );
+        std::fill( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::pushEvent( const InputUnionEvent & _event )

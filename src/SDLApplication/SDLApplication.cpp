@@ -151,8 +151,10 @@ namespace Mengine
     {
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
 #error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#else
+#elif MENGINE_PLUGIN_MENGINE_STATIC
         ServiceProviderInterface * serviceProvider = initializeMengine();
+#else
+        ServiceProviderInterface * serviceProvider = nullptr;
 #endif
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
@@ -184,7 +186,7 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
 #error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#else
+#elif MENGINE_PLUGIN_MENGINE_STATIC
         if( bootstrapMengine() == false )
         {
             return false;
@@ -278,7 +280,7 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
 #error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#else
+#elif MENGINE_PLUGIN_MENGINE_STATIC
         finalizeMengine();
 #endif
     }

@@ -176,7 +176,7 @@ foreach(FILE ${WEBP_SIMD_FILES_NOT_TO_INCLUDE})
 endforeach()
 
 # Generate the config.h file.
-if(WIN32)
+if(WIN32 OR ANDROID)
     set(WEBP_HAVE_SSE41 0)
 endif()
 

@@ -42,7 +42,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    
+
     defaultConfig {
         if (project.hasProperty("ANDROID_APP_ID")) {
             applicationId ANDROID_APP_ID
@@ -54,18 +54,18 @@ android {
             applicationId "org.Mengine.ANDROID_APP_ID"
             print 'HARDCODE ANDROID_APP_ID = '
         }
-        
+
         println applicationId
 
         minSdkVersion 19
         targetSdkVersion 30
-        
+
         print 'ANDROID_APP_BUILD_PUBLISH = '
         println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
-        
+
         print 'ANDROID_APP_BUILD_NUMBER = '
         println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", "0")
-        
+
         def buildNumber = 0
         if (project.hasProperty("ANDROID_APP_BUILD_NUMBER")) {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
@@ -76,49 +76,49 @@ android {
         } else {
             versionCode = 300000000 + buildNumber
         }
-        
+
         if (project.hasProperty("ANDROID_APP_VERSION_NAME")) {
             versionName ANDROID_APP_VERSION_NAME
         } else {
             versionName versionCode as String
         }
-        
+
         def app_name_gradle = "org.Wonderland.EvilMonkey"
-        
+
         if (project.hasProperty("ANDROID_APP_NAME")) {
             app_name_gradle = ANDROID_APP_NAME
         }
-        
+
         print 'app_name_gradle = '
         println app_name_gradle
-        
+
         def app_screen_orientation = "fullSensor"
-        
+
         if (project.hasProperty("ANDROID_APP_SCREEN_ORIENTATION")) {
             app_screen_orientation = ANDROID_APP_SCREEN_ORIENTATION
         }
-        
+
         print 'app_screen_orientation = '
         println app_screen_orientation
-        
+
         manifestPlaceholders = [app_name_gradle:app_name_gradle, app_screen_orientation:app_screen_orientation]
-        
+
         print 'manifestPlaceholders = '
         println manifestPlaceholders
-        
+
         print 'versionCode = '
         println versionCode
-        
+
         print 'versionName = '
         println versionName
-        
+
         signingConfig signingConfigs.config
 
         multiDexEnabled true
-        
+
         print 'ANDROID_APP_SPLIT_ENABLE = '
         println getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false)
-        
+
         print 'ANDROID_APP_EMULATOR_ENABLE = '
         println getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false)
     }
@@ -130,7 +130,7 @@ android {
             } else {
                 enable false
             }
-            
+
             reset()
 
             include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
@@ -138,7 +138,7 @@ android {
             universalApk false
         }
     }
-    
+
     buildTypes {
         debug {
             debuggable true
@@ -147,7 +147,7 @@ android {
                 cmake {
                     arguments "-DANDROID_PLATFORM=android-19",
                         "-DANDROID_ARM_NEON=TRUE",
-                        "-DANDROID_STL=c++_shared", 
+                        "-DANDROID_STL=c++_shared",
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                         "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
@@ -160,7 +160,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            
+
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_PLATFORM=android-19",
@@ -175,28 +175,28 @@ android {
             }
         }
     }
-    
+
     externalNativeBuild {
         cmake {
             path "../../cmake/Android_SDL/CMakeLists.txt"
             version "3.10.2"
         }
     }
-    
+
     sourceSets {
         main {
             if (project.hasProperty("MANIFEST_SRC_FILE")) {
                 print 'MANIFEST_SRC_FILE = '
                 println MANIFEST_SRC_FILE
-            
+
                 manifest.srcFile MANIFEST_SRC_FILE
             } else if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) == true) {
                 println 'MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
-            
+
                 manifest.srcFile 'AndroidManifestPublish.xml'
             } else {
                 println 'MANIFEST_SRC_FILE = AndroidManifest.xml'
-                
+
                 manifest.srcFile 'AndroidManifest.xml'
             }
 
@@ -213,7 +213,7 @@ android {
             else {
                 java.srcDirs = ['src', '../../dependencies/SDL2/android-project/app/src/main/java/']
             }
-            
+
             if (project.hasProperty("ASSETS_RES_DIR")) {
                 print 'ASSETS_RES_DIR = '
                 println ASSETS_RES_DIR
@@ -231,7 +231,7 @@ android {
             } else {
                 print 'ASSETS_SRC_DIR = '
                 println 'data'
-                
+
                 assets.srcDirs = ['data']
             }
         }
@@ -247,7 +247,7 @@ android {
         pickFirst 'lib/**/libSDL2.so'
         pickFirst 'lib/**/libhidapi.so'
     }
-    
+
     afterEvaluate {
         if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
             build.finalizedBy(uploadCrashlyticsSymbolFileRelease)
@@ -260,7 +260,7 @@ ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
 import com.android.build.OutputFile
 
 android.applicationVariants.all { variant ->
-    variant.outputs.each { output ->    
+    variant.outputs.each { output ->
         def baseAbiVersionCode = project.ext.abiCodes.get(output.getFilter(OutputFile.ABI))
 
         if (baseAbiVersionCode != null) {
@@ -273,7 +273,7 @@ android.applicationVariants.all { variant ->
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.core:core:1.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.preference:preference:1.1.1'
@@ -342,7 +342,7 @@ else
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true ) {
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
-    
+
     apply plugin: 'com.google.firebase.crashlytics'
 
     android {
@@ -366,13 +366,13 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) 
             }
         }
     }
-    
+
     dependencies {
         implementation platform('com.google.firebase:firebase-bom:26.3.0')
 
         implementation 'com.google.firebase:firebase-crashlytics'
         implementation 'com.google.firebase:firebase-analytics'
-    }    
+    }
 }
 else
 {

@@ -43,6 +43,7 @@ namespace Mengine
     public:
         void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key ) override;
         void removeTextAlias( const ConstString & _environment, const ConstString & _alias ) override;
+        bool isTextAlias( const ConstString & _alias ) const override;
         bool hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
         const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
 

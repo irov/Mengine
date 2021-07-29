@@ -741,6 +741,23 @@ namespace Mengine
         m_aliases.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TextService::isTextAlias( const ConstString & _alias ) const
+    {
+        if( _alias.empty() == true )
+        {
+            return false;
+        }
+
+        const Char * alias_str = _alias.c_str();
+
+        if( alias_str[0] != '$' )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TextService::hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const
     {
         PairAliasKey key = std::make_pair( _environment, _alias );

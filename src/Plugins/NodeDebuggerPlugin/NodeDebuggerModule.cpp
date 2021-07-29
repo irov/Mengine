@@ -528,6 +528,11 @@ namespace Mengine
             return;
         }
 
+        if( m_scene == nullptr )
+        {
+            return;
+        }
+
         NodePtr node = Helper::findUniqueNode( m_scene, m_selectedNodePath );
 
         if( node == nullptr )
@@ -883,6 +888,45 @@ namespace Mengine
         Detail::serializeNodeProp( textAliasEnvironment, "TextAliasEnvironment", xmlNode );
 
         if( TEXT_SERVICE()
+            ->isTextAlias( textId ) == false )
+        {
+            Detail::serializeNodeProp( "", "TextAliasId", xmlNode );
+
+            TextEntryInterfacePtr textEntry;
+            if( TEXT_SERVICE()
+                ->hasTextEntry( textId, &textEntry ) == false )
+            {
+                const String & text = _textField->getText();
+
+                if( text.empty() == true )
+                {
+                    Detail::serializeNodeProp( false, "HasText", xmlNode );
+                }
+                else
+                {
+                    Detail::serializeNodeProp( true, "HasText", xmlNode );
+
+                    Detail::serializeNodeProp( text, "Text", xmlNode );
+                }
+            }
+            else
+            {
+                Detail::serializeNodeProp( true, "HasText", xmlNode );
+
+                size_t textSize;
+                const Char * textValue = textEntry->getValue( &textSize );
+
+                Detail::serializeNodeProp( String( textValue, textSize ), "Format", xmlNode );
+
+                const VectorString & textFormatArgs = _textField->getTextFormatArgs();
+
+                String fmt;
+                Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs );
+
+                Detail::serializeNodeProp( fmt, "Text", xmlNode );
+            }
+        }
+        else if( TEXT_SERVICE()
             ->hasTextAlias( textAliasEnvironment, textId ) == true )
         {
             const ConstString & textAliasId = TEXT_SERVICE()

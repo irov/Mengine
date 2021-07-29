@@ -60,6 +60,7 @@ namespace Mengine
     public:
         virtual void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key ) = 0;
         virtual void removeTextAlias( const ConstString & _environment, const ConstString & _alias ) = 0;
+        virtual bool isTextAlias( const ConstString & _alias ) const = 0;
         virtual bool hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const = 0;
         virtual const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _alias ) const = 0;
 

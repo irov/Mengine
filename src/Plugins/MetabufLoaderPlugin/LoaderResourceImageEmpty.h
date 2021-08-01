@@ -6,20 +6,15 @@
 
 namespace Mengine
 {
-    class LoaderResourceImageSequence
+    class LoaderResourceImageEmpty
         : public LoaderInterface
         , public Factorable
     {
     public:
-        LoaderResourceImageSequence();
-        ~LoaderResourceImageSequence() override;
+        LoaderResourceImageEmpty();
+        ~LoaderResourceImageEmpty() override;
 
     protected:
         bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
     };
 }
-
-
-
-
-

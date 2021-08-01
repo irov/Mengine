@@ -14,6 +14,8 @@ src
     LoaderResourceImageData.h
     LoaderResourceImageDefault.cpp
     LoaderResourceImageDefault.h
+    LoaderResourceImageEmpty.cpp
+    LoaderResourceImageEmpty.h    
     LoaderResourceImageSequence.cpp
     LoaderResourceImageSequence.h
     LoaderResourceImageSolid.cpp

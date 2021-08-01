@@ -302,6 +302,8 @@ namespace Mengine
                     , package->getPathPath().c_str()
                 );
 
+                package->finalize();
+
                 return false;
             }
         }

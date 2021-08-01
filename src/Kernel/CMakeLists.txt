@@ -312,16 +312,18 @@ Resource\\\\Image
     ResourceImage.h
     ResourceImageData.cpp
     ResourceImageData.h
-    ResourceImageSolid.h
-    ResourceImageSolid.cpp
     ResourceImageDefault.cpp
     ResourceImageDefault.h
+    ResourceImageEmpty.cpp
+    ResourceImageEmpty.h
+    ResourceImageSequence.cpp
+    ResourceImageSequence.h
+    ResourceImageSolid.h
+    ResourceImageSolid.cpp
     ResourceImageSubstract.cpp
     ResourceImageSubstract.h
     ResourceImageSubstractRGBAndAlpha.cpp
     ResourceImageSubstractRGBAndAlpha.h
-    ResourceImageSequence.cpp
-    ResourceImageSequence.h
 )
 
 ADD_FILTER(

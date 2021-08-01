@@ -878,7 +878,7 @@ namespace Mengine
                     , resource->getType().c_str()
                 );
 
-                continue;
+                return false;
             }
 
             resource->setIgnored( _ignored );

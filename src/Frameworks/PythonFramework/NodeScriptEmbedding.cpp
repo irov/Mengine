@@ -85,6 +85,7 @@
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ResourceImageData.h"
+#include "Kernel/ResourceImageEmpty.h"
 #include "Kernel/ResourceImageSequence.h"
 #include "Kernel/ResourceImageSolid.h"
 #include "Kernel/ResourceImageDefault.h"
@@ -1186,9 +1187,10 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
 
         SCRIPT_CLASS_WRAPPING( Resource );
-        SCRIPT_CLASS_WRAPPING( ResourceImage );
+        SCRIPT_CLASS_WRAPPING( ResourceImage );        
         SCRIPT_CLASS_WRAPPING( ResourceImageData );
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
+        SCRIPT_CLASS_WRAPPING( ResourceImageEmpty );
         SCRIPT_CLASS_WRAPPING( ResourceMusic );
         SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
         SCRIPT_CLASS_WRAPPING( ResourceSound );
@@ -1269,7 +1271,8 @@ namespace Mengine
 
         UNSCRIPT_CLASS_WRAPPING( Resource );
         UNSCRIPT_CLASS_WRAPPING( ResourceImage );
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageData );
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageEmpty );
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageData );        
         UNSCRIPT_CLASS_WRAPPING( ResourceImageDefault );
         UNSCRIPT_CLASS_WRAPPING( ResourceMusic );
         UNSCRIPT_CLASS_WRAPPING( ResourceImageSequence );

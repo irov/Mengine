@@ -220,7 +220,10 @@ namespace Mengine
             this->addTextPath_( m_textsPath, Tags() );
         }
 
-        MENGINE_ASSERTION_RETURN( SERVICE_EXIST( LoaderServiceInterface ) == true, false );
+        if( SERVICE_EXIST( LoaderServiceInterface ) == false )
+        {
+            return false;
+        }
 
         if( m_descriptionPath.empty() == true )
         {

@@ -70,14 +70,20 @@
 #   error "undefine compiler"
 #endif
 
-#ifdef MENGINE_COMPILER_GCC
-#   define MENGINE_CODE_FILE __FILE__
-#   define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
-#   define MENGINE_CODE_LINE __LINE__
-#else
-#   define MENGINE_CODE_FILE __FILE__
-#   define MENGINE_CODE_FUNCTION __FUNCTION__
-#   define MENGINE_CODE_LINE __LINE__
+#ifndef MENGINE_CODE_FILE
+#define MENGINE_CODE_FILE __FILE__
+#endif
+
+#ifndef MENGINE_CODE_LINE
+#define MENGINE_CODE_LINE __LINE__
+#endif
+
+#ifndef MENGINE_CODE_FUNCTION
+#   ifdef MENGINE_COMPILER_GCC
+#       define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
+#   else
+#       define MENGINE_CODE_FUNCTION __FUNCTION__
+#   endif
 #endif
 
 #ifndef NDEBUG

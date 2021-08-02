@@ -6,7 +6,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class LoaderResourceImageData
         : public LoaderInterface
         , public Factorable

@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 147;
+        return 148;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 2354394808; 
+        return 3208988946; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -97,7 +97,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t getInternalStringsCount()
     {
-        return 30;
+        return 31;
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getInternalString( uint32_t _index, uint32_t & _stringSize, int64_t & _stringHash )
@@ -112,6 +112,7 @@ namespace Metacode
         const internal_t internals[] = {
             {17, "ResourceImageData", 3605914952971727146UL},
             {20, "ResourceImageDefault", 3470757930260756242UL},
+            {18, "ResourceImageEmpty", 7148372445039453612UL},
             {33, "ResourceImageSubstractRGBAndAlpha", 1723658646726069585UL},
             {22, "ResourceImageSubstract", 16659728524181123102UL},
             {16, "ResourceParticle", 16164975587347302130UL},
@@ -413,63 +414,63 @@ namespace Metacode
         {
             switch( _id )
             {
-            case 13:
+            case 14:
                 {
                     Meta_DataBlock::Meta_ResourceAstralax * metadata = new Meta_DataBlock::Meta_ResourceAstralax ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 32:
+            case 33:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dAnimation * metadata = new Meta_DataBlock::Meta_ResourceCal3dAnimation ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 33:
+            case 34:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dMesh * metadata = new Meta_DataBlock::Meta_ResourceCal3dMesh ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 31:
+            case 32:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dSkeleton * metadata = new Meta_DataBlock::Meta_ResourceCal3dSkeleton ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 17:
+            case 18:
                 {
                     Meta_DataBlock::Meta_ResourceCursorICO * metadata = new Meta_DataBlock::Meta_ResourceCursorICO ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 16:
+            case 17:
                 {
                     Meta_DataBlock::Meta_ResourceCursorSystem * metadata = new Meta_DataBlock::Meta_ResourceCursorSystem ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 37:
+            case 38:
                 {
                     Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 18:
+            case 19:
                 {
                     Meta_DataBlock::Meta_ResourceFile * metadata = new Meta_DataBlock::Meta_ResourceFile ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 26:
+            case 27:
                 {
                     Meta_DataBlock::Meta_ResourceHIT * metadata = new Meta_DataBlock::Meta_ResourceHIT ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -490,133 +491,140 @@ namespace Metacode
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 25:
+            case 10:
+                {
+                    Meta_DataBlock::Meta_ResourceImageEmpty * metadata = new Meta_DataBlock::Meta_ResourceImageEmpty ();
+                    metadata->parse( _buff, _size, _read, _userData );
+        
+                    includes_Meta_Resource.push_back(metadata);
+                }break;
+            case 26:
                 {
                     Meta_DataBlock::Meta_ResourceImageSequence * metadata = new Meta_DataBlock::Meta_ResourceImageSequence ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 28:
+            case 29:
                 {
                     Meta_DataBlock::Meta_ResourceImageSolid * metadata = new Meta_DataBlock::Meta_ResourceImageSolid ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 11:
+            case 12:
                 {
                     Meta_DataBlock::Meta_ResourceImageSubstract * metadata = new Meta_DataBlock::Meta_ResourceImageSubstract ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 10:
+            case 11:
                 {
                     Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha * metadata = new Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 29:
+            case 30:
                 {
                     Meta_DataBlock::Meta_ResourceInternalObject * metadata = new Meta_DataBlock::Meta_ResourceInternalObject ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 14:
+            case 15:
                 {
                     Meta_DataBlock::Meta_ResourceJSON * metadata = new Meta_DataBlock::Meta_ResourceJSON ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 27:
+            case 28:
                 {
                     Meta_DataBlock::Meta_ResourceModel3D * metadata = new Meta_DataBlock::Meta_ResourceModel3D ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 23:
+            case 24:
                 {
                     Meta_DataBlock::Meta_ResourceMovie * metadata = new Meta_DataBlock::Meta_ResourceMovie ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 22:
+            case 23:
                 {
                     Meta_DataBlock::Meta_ResourceMovie2 * metadata = new Meta_DataBlock::Meta_ResourceMovie2 ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 20:
+            case 21:
                 {
                     Meta_DataBlock::Meta_ResourceMusic * metadata = new Meta_DataBlock::Meta_ResourceMusic ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 12:
+            case 13:
                 {
                     Meta_DataBlock::Meta_ResourceParticle * metadata = new Meta_DataBlock::Meta_ResourceParticle ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 30:
+            case 31:
                 {
                     Meta_DataBlock::Meta_ResourceShape * metadata = new Meta_DataBlock::Meta_ResourceShape ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 19:
+            case 20:
                 {
                     Meta_DataBlock::Meta_ResourceSound * metadata = new Meta_DataBlock::Meta_ResourceSound ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 34:
+            case 35:
                 {
                     Meta_DataBlock::Meta_ResourceSpineAtlas * metadata = new Meta_DataBlock::Meta_ResourceSpineAtlas ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 35:
+            case 36:
                 {
                     Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker * metadata = new Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 36:
+            case 37:
                 {
                     Meta_DataBlock::Meta_ResourceSpineSkeleton * metadata = new Meta_DataBlock::Meta_ResourceSpineSkeleton ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 15:
+            case 16:
                 {
                     Meta_DataBlock::Meta_ResourceTexturepacker * metadata = new Meta_DataBlock::Meta_ResourceTexturepacker ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 24:
+            case 25:
                 {
                     Meta_DataBlock::Meta_ResourceVideo * metadata = new Meta_DataBlock::Meta_ResourceVideo ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 21:
+            case 22:
                 {
                     Meta_DataBlock::Meta_ResourceWindow * metadata = new Meta_DataBlock::Meta_ResourceWindow ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -1918,6 +1926,55 @@ namespace Metacode
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceImageDefault::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+            Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _id, _userData );
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_DataBlock::Meta_ResourceImageEmpty::Meta_ResourceImageEmpty()
+            : Meta_Resource()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_DataBlock::Meta_ResourceImageEmpty::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+        
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
+        
+            if( m_flagNoRequiredAttribute != 0 )
+            {
+                this->_parseArguments( _buff, _size, _read, _userData );
+            }
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceImageEmpty::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
+        
+            Metabuf::read( _buff, _size, _read, _userData, this->m_File_MaxSize );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceImageEmpty::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+            Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceImageEmpty::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
             METABUF_UNUSED( _size );

@@ -1,4 +1,4 @@
-<Protocol Version = "147">
+<Protocol Version = "148">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -193,6 +193,10 @@
 
           <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
+        
+        <Node Name="ResourceImageEmpty" Inheritance="Resource">
+          <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
+        </Node>        
 
         <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance="Resource">
           <Member Node="Image" Name="NameRGB" Type="Mengine::ConstString" Required="1"/>

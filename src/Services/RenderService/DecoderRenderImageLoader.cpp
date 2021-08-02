@@ -11,6 +11,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/DocumentableHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -34,20 +35,22 @@ namespace Mengine
         {
             decoder = this->createImageDecoder_( _fileGroup, _filePath, _codecType );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s':'%s' codec '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s':'%s' codec '%s' (doc: %s)"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , _codecType.c_str()
+                , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
             );
         }
         else
         {
             if( decoder->rewind() == false )
             {
-                LOGGER_ERROR( "invalid rewind decoder '%s':'%s' codec '%s'"
+                LOGGER_ERROR( "invalid rewind decoder '%s':'%s' codec '%s' (doc: %s)"
                     , _fileGroup->getName().c_str()
                     , _filePath.c_str()
                     , _codecType.c_str()
+                    , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
                 );
 
                 return false;
@@ -190,33 +193,37 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open stream '%s:%s' codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open stream '%s:%s' codec '%s' (doc: %s)"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _codecType.c_str()
+            , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
         );
 
-        MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s' codec '%s'"
+        MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s' codec '%s' (doc: %s)"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _codecType.c_str()
+            , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s:%s' codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s:%s' codec '%s' (doc: %s)"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _codecType.c_str()
+            , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
         );
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "invalid prepare data '%s:%s' codec '%s'"
+            LOGGER_ERROR( "invalid prepare data '%s:%s' codec '%s' (doc: %s)"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , _codecType.c_str()
+                , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
             );
 
             return nullptr;

@@ -114,7 +114,7 @@ namespace Mengine
 
             MENGINE_UNUSED( read_data );
 
-            MENGINE_ASSERTION_RETURN( read_data == (size_t)compress_size, nullptr, "invalid read data '%zu' need '%zu'"
+            MENGINE_ASSERTION_FATAL( read_data == (size_t)compress_size, "invalid read data '%zu' need '%zu'"
                 , read_data
                 , compress_size
             );

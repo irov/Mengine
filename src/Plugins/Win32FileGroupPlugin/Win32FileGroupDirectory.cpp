@@ -222,7 +222,7 @@ namespace Mengine
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming, _share );
 
-        MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -238,7 +238,7 @@ namespace Mengine
 
         bool result = file->close();
 
-        MENGINE_ASSERTION_RETURN( result == true, false, "failed close file '%s'"
+        MENGINE_ASSERTION( result == true, "failed close file '%s'"
             , m_folderPath.c_str()
         );
 
@@ -262,7 +262,7 @@ namespace Mengine
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath );
 
-        MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -278,7 +278,7 @@ namespace Mengine
 
         bool result = file->close();
 
-        MENGINE_ASSERTION_RETURN( result == true, false, "failed close file '%s'"
+        MENGINE_ASSERTION( result == true, "failed close file '%s'"
             , m_folderPath.c_str()
         );
 
@@ -324,7 +324,7 @@ namespace Mengine
 
         bool result = mapped->open( m_relationPath, m_folderPath, _filePath, _shared );
 
-        MENGINE_ASSERTION_RETURN( result == true, false, "failed mapped file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed mapped file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -340,7 +340,7 @@ namespace Mengine
 
         bool result = mapped->close();
 
-        MENGINE_ASSERTION_RETURN( result == true, false, "failed close file '%s'"
+        MENGINE_ASSERTION( result == true, "failed close file '%s'"
             , m_folderPath.c_str()
         );
 

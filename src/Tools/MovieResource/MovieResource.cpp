@@ -154,7 +154,24 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
         {
             const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
-            if( resource_image->atlas_image == AE_NULLPTR )
+            if( resource_image->trim_width == 0.f || resource_image->trim_height == 0.f )
+            {
+                pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
+                xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
+                xmlResource.append_attribute( "Type" ).set_value( "ResourceImageEmpty" );
+                xmlResource.append_attribute( "Unique" ).set_value( 0U );
+
+                pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
+
+                char xmlMaxSize[256];
+                sprintf( xmlMaxSize, "%u;%u"
+                    , (uint32_t)resource_image->trim_width
+                    , (uint32_t)resource_image->trim_height
+                );
+
+                xmlResourceFile.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
+            }
+            else if( resource_image->atlas_image == AE_NULLPTR )
             {
                 pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
                 xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
@@ -174,11 +191,33 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                     char xmlMaxSize[256];
                     sprintf( xmlMaxSize, "%u;%u"
-                        , (uint32_t)resource_image->trim_width
-                        , (uint32_t)resource_image->trim_height
+                        , (uint32_t)resource_image->base_width
+                        , (uint32_t)resource_image->base_height
                     );
 
                     xmlResourceFile.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
+
+                    if( resource_image->base_width != resource_image->trim_width || resource_image->base_height != resource_image->trim_height )
+                    {
+                        char xmlTrimSize[256];
+                        sprintf( xmlTrimSize, "%u;%u"
+                            , (uint32_t)resource_image->trim_width
+                            , (uint32_t)resource_image->trim_height
+                        );
+
+                        xmlResourceFile.append_attribute( "Size" ).set_value( xmlTrimSize );
+                    }
+
+                    if( resource_image->offset_x != 0.f || resource_image->offset_y != 0.f )
+                    {
+                        char xmlOffsetSize[256];
+                        sprintf( xmlOffsetSize, "%u;%u"
+                            , (uint32_t)resource_image->offset_x
+                            , (uint32_t)resource_image->offset_y
+                        );
+
+                        xmlResourceFile.append_attribute( "Offset" ).set_value( xmlOffsetSize );
+                    }
                 }
                 else
                 {
@@ -193,11 +232,33 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                     char xmlMaxSize[256];
                     sprintf( xmlMaxSize, "%u;%u"
-                        , (uint32_t)resource_image->trim_width
-                        , (uint32_t)resource_image->trim_height
+                        , (uint32_t)resource_image->base_width
+                        , (uint32_t)resource_image->base_height
                     );
 
                     xmlResourceFile.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
+
+                    if( resource_image->base_width != resource_image->trim_width || resource_image->base_height != resource_image->trim_height )
+                    {
+                        char xmlTrimSize[256];
+                        sprintf( xmlTrimSize, "%u;%u"
+                            , (uint32_t)resource_image->trim_width
+                            , (uint32_t)resource_image->trim_height
+                        );
+
+                        xmlResourceFile.append_attribute( "Size" ).set_value( xmlTrimSize );
+                    }
+
+                    if( resource_image->offset_x != 0.f || resource_image->offset_y != 0.f )
+                    {
+                        char xmlOffsetSize[256];
+                        sprintf( xmlOffsetSize, "%u;%u"
+                            , (uint32_t)resource_image->offset_x
+                            , (uint32_t)resource_image->offset_y
+                        );
+
+                        xmlResourceFile.append_attribute( "Offset" ).set_value( xmlOffsetSize );
+                    }
 
                     xmlResourceFile.append_attribute( "NoConvert" ).set_value( 1U );
                     xmlResourceFile.append_attribute( "NoAtlas" ).set_value( 1U );
@@ -290,7 +351,6 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             xmlResourceFile.append_attribute( "Codec" ).set_value( resource_video->has_alpha_channel == AE_TRUE ? "ogvaVideo" : "ogvVideo" );
             xmlResourceFile.append_attribute( "FrameRate" ).set_value( sf( resource_video->frameRate ).c_str() );
             xmlResourceFile.append_attribute( "Duration" ).set_value( sf( resource_video->duration * 1000.f ).c_str() );
-
         }break;
     case AE_MOVIE_RESOURCE_SOUND:
         {
@@ -316,8 +376,6 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             {
                 xmlResource.append_child( "IsStreamable" ).append_attribute( "Value" ).set_value( 1U );
             }
-
-            //fprintf( f, "   </Resource>\n" );
         }break;
     case AE_MOVIE_RESOURCE_PARTICLE:
         {

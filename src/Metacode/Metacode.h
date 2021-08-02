@@ -2384,6 +2384,37 @@ namespace Metacode
                 mt::vec2f m_File_Size;
             };
             
+            class Meta_ResourceImageEmpty
+                : public Meta_Resource
+            { 
+            public:
+                Meta_ResourceImageEmpty();
+            
+            public:
+                template<class C, class M>
+                void getm_File_MaxSize( C _self, M _method ) const
+                {
+                    (_self->*_method)( this->m_File_MaxSize );
+                }
+                
+                const mt::vec2f & get_File_MaxSize() const
+                {
+                    return this->m_File_MaxSize;
+                }
+                
+            public:
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            
+            protected:
+                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _preparationIncludes( uint32_t _id, uint32_t _count );
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+            
+            public:
+            protected:
+                mt::vec2f m_File_MaxSize;
+            };
+            
             class Meta_ResourceImageSequence
                 : public Meta_Resource
             { 

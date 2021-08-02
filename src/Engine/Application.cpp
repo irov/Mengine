@@ -116,6 +116,7 @@
 #include "Kernel/ResourceImageData.h"
 #include "Kernel/ResourceImageSolid.h"
 #include "Kernel/ResourceImageDefault.h"
+#include "Kernel/ResourceImageEmpty.h"
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
 #include "Kernel/ResourceSound.h"
@@ -746,6 +747,7 @@ namespace Mengine
         ADD_PROTOTYPE( ResourceImageSequence );
         ADD_PROTOTYPE( ResourceImageData );
         ADD_PROTOTYPE( ResourceImageDefault );
+        ADD_PROTOTYPE( ResourceImageEmpty );
         ADD_PROTOTYPE( ResourceImageSubstract );
         ADD_PROTOTYPE( ResourceImageSubstractRGBAndAlpha );
         ADD_PROTOTYPE( ResourceImageSolid );
@@ -775,6 +777,7 @@ namespace Mengine
         REMOVE_PROTOTYPE( ResourceImageSequence );
         REMOVE_PROTOTYPE( ResourceImageData );
         REMOVE_PROTOTYPE( ResourceImageDefault );
+        REMOVE_PROTOTYPE( ResourceImageEmpty );
         REMOVE_PROTOTYPE( ResourceImageSubstract );
         REMOVE_PROTOTYPE( ResourceImageSubstractRGBAndAlpha );
         REMOVE_PROTOTYPE( ResourceImageSolid );

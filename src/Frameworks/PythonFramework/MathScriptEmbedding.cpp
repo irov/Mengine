@@ -59,6 +59,21 @@ namespace Mengine
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
+        static String mat4f_repr( mt::mat4f * _v )
+        {
+            Stringstream ss;
+            ss << "<mat4f: " 
+                << _v->v0.x << ", " << _v->v0.y << ", " << _v->v0.z << ", " << _v->v0.w 
+                << _v->v1.x << ", " << _v->v1.y << ", " << _v->v1.z << ", " << _v->v1.w
+                << _v->v2.x << ", " << _v->v2.y << ", " << _v->v2.z << ", " << _v->v2.w
+                << _v->v3.x << ", " << _v->v3.y << ", " << _v->v3.z << ", " << _v->v3.w
+                << ">";
+
+            String repr = ss.str();
+
+            return repr;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static String uv4f_repr( mt::uv4f * _v )
         {
             Stringstream ss;
@@ -238,6 +253,42 @@ namespace Mengine
                 _place->y = pybind::list_getitem_t( _kernel, _obj, 1 );
                 _place->z = pybind::list_getitem_t( _kernel, _obj, 2 );
                 _place->w = pybind::list_getitem_t( _kernel, _obj, 3 );
+
+                return true;
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool mat4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::mat4f * _place, void * const _user )
+        {
+            MENGINE_UNUSED( _user );
+
+            if( _kernel->tuple_check( _obj ) == true )
+            {
+                if( _kernel->tuple_size( _obj ) != 4 )
+                {
+                    return false;
+                }
+
+                _place->v0 = pybind::tuple_getitem_t( _kernel, _obj, 0 );
+                _place->v1 = pybind::tuple_getitem_t( _kernel, _obj, 1 );
+                _place->v2 = pybind::tuple_getitem_t( _kernel, _obj, 2 );
+                _place->v3 = pybind::tuple_getitem_t( _kernel, _obj, 3 );
+
+                return true;
+            }
+            else if( _kernel->list_check( _obj ) == true )
+            {
+                if( _kernel->list_size( _obj ) != 4 )
+                {
+                    return false;
+                }
+
+                _place->v0 = pybind::list_getitem_t( _kernel, _obj, 0 );
+                _place->v1 = pybind::list_getitem_t( _kernel, _obj, 1 );
+                _place->v2 = pybind::list_getitem_t( _kernel, _obj, 2 );
+                _place->v3 = pybind::list_getitem_t( _kernel, _obj, 3 );
 
                 return true;
             }
@@ -631,6 +682,17 @@ namespace Mengine
             .def_member( "y", &mt::vec4f::y )
             .def_member( "z", &mt::vec4f::z )
             .def_member( "w", &mt::vec4f::w )
+            ;
+
+        pybind::struct_<mt::mat4f>( _kernel, "mat4f" )
+            .def_constructor( pybind::init<>() )
+            .def_convert( &ScriptMethod::mat4f_convert, nullptr )
+            .def_repr( &ScriptMethod::mat4f_repr )
+            .def_operator_getset()
+            .def_member( "v0", &mt::mat4f::v0 )
+            .def_member( "v1", &mt::mat4f::v1 )
+            .def_member( "v2", &mt::mat4f::v2 )
+            .def_member( "v3", &mt::mat4f::v3 )
             ;
 
         pybind::struct_<mt::uv4f>( _kernel, "uv4f" )

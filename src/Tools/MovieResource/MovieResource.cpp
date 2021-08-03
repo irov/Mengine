@@ -487,6 +487,8 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
     aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer_data );
 
+    //ToDo remove string add Enum Type
+
     switch( type )
     {
     case AE_MOVIE_LAYER_TYPE_MOVIE:

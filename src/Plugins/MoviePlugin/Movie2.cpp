@@ -622,18 +622,6 @@ namespace Mengine
 
                 this->addMatrixProxy_( matrixProxy );
             }
-            else
-            {
-                LOGGER_ERROR( "name '%s' resource '%s' composition '%s' layer '%s' invalid create type '%s'"
-                    , this->getName().c_str()
-                    , this->getResourceMovie2()->getName().c_str()
-                    , this->getCompositionName().c_str()
-                    , layer.name.c_str()
-                    , layer.type.c_str()
-                );
-
-                return false;
-            }
         }
 
         for( const ResourceMovie2::CompositionSubComposition & subcomposition : compositionDesc->subcompositions )

@@ -489,43 +489,69 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
     switch( type )
     {
-    case AE_MOVIE_LAYER_TYPE_TEXT:
+    case AE_MOVIE_LAYER_TYPE_MOVIE:
         {
-            __add_node_layer_data( np, "TextField", _callbackData );
-
-            *_nd = AE_NULLPTR;
-
-            return AE_TRUE;
-        }break;
-    case AE_MOVIE_LAYER_TYPE_SLOT:
-        {
-            __add_node_layer_data( np, "Movie2Slot", _callbackData );
-
-            return AE_TRUE;
-        }break;
-    case AE_MOVIE_LAYER_TYPE_SOCKET:
-        {
-            __add_node_layer_data( np, "HotSpotPolygon", _callbackData );
-
-            *_nd = AE_NULLPTR;
-
-            return AE_TRUE;
-        }break;
-    case AE_MOVIE_LAYER_TYPE_PARTICLE:
-        {
-            __add_node_layer_data( np, "AstralaxEmitter", _callbackData );
-
-            *_nd = AE_NULLPTR;
-
-            return AE_TRUE;
+            __add_node_layer_data( np, "Movie", _callbackData );
         }break;
     case AE_MOVIE_LAYER_TYPE_SPRITE:
         {
             __add_node_layer_data( np, "ShapeQuadFixed", _callbackData );
-
-            *_nd = AE_NULLPTR;
-
-            return AE_TRUE;
+        }break;
+    case AE_MOVIE_LAYER_TYPE_TEXT:
+        {
+            __add_node_layer_data( np, "TextField", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_EVENT:
+        {
+            __add_node_layer_data( np, "Event", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SOCKET:
+        {
+            __add_node_layer_data( np, "HotSpotPolygon", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SHAPE:
+        {
+            __add_node_layer_data( np, "Shape", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SLOT:
+        {
+            __add_node_layer_data( np, "Movie2Slot", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_NULL:
+        {
+            __add_node_layer_data( np, "Null", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SCENE_EFFECT:
+        {
+            __add_node_layer_data( np, "SceneEffect", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SOLID:
+        {
+            __add_node_layer_data( np, "Solid", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+        {
+            __add_node_layer_data( np, "Sequence", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_VIDEO:
+        {
+            __add_node_layer_data( np, "Video", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SOUND:
+        {
+            __add_node_layer_data( np, "Sound", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_PARTICLE:
+        {
+            __add_node_layer_data( np, "AstralaxEmitter", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_IMAGE:
+        {
+            __add_node_layer_data( np, "Image", _callbackData );
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SUB_MOVIE:
+        {
+            __add_node_layer_data( np, "SubMovie", _callbackData );
         }break;
     default:
         break;

@@ -187,7 +187,16 @@ namespace Mengine
 
                     Char * o_str_value = MENGINE_STRRCHR( o_str, ' ' );
 
-                    options.append( o_str_value );
+                    if( o_str_value == nullptr )
+                    {
+                        options.append( o_str );
+                    }
+                    else
+                    {
+                        o_str_value++;
+
+                        options.append( o_str_value );
+                    }                    
                 }
 
                 d["options"] = options;

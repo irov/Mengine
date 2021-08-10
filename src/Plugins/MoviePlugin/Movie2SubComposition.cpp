@@ -37,11 +37,6 @@ namespace Mengine
         m_duration = _duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Movie2SubComposition::getDuration() const
-    {
-        return m_duration;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::setFrameDuration( float _frameDuration )
     {
         m_frameDuration = _frameDuration;

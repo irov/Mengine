@@ -173,12 +173,13 @@ namespace Mengine
 
                 for( uint32_t o : _layer.options )
                 {
-                    Char o_str[5] = {'\0'};
+                    Char o_str[5];
 
                     o_str[0] = (Char)(o >> 24) & 0xff;
                     o_str[1] = (Char)(o >> 16) & 0xff;
                     o_str[2] = (Char)(o >> 8) & 0xff;
                     o_str[3] = (Char)(o >> 0) & 0xff;
+                    o_str[4] = '\0';
 
                     o_str[0] = o_str[0] == '\0' ? ' ' : o_str[0];
                     o_str[1] = o_str[1] == '\0' ? ' ' : o_str[1];

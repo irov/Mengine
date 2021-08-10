@@ -44,7 +44,6 @@ namespace Mengine
 
     public:
         void setDuration( float _duration );
-        float getDuration() const;
 
     public:
         void setFrameDuration( float _frameDuration );

@@ -1,5 +1,6 @@
 if(NOT THIRDPARTY_CONFIG_DIR)
   SET(THIRDPARTY_CONFIG_DIR "${CMAKE_SOURCE_DIR}/../configuration/Ninja/android_ogl/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}")
+  MESSAGE("OPENAL| THIRDPARTY_CONFIG_DIR: ${THIRDPARTY_CONFIG_DIR}")
 endif()
 
 # CMake build file list for OpenAL

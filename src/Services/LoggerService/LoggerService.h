@@ -7,6 +7,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
+#include "Kernel/List.h"
 #include "Kernel/String.h"
 
 namespace Mengine
@@ -89,7 +90,9 @@ namespace Mengine
 
         bool m_historically;
 
-        typedef Vector<Record> VectorHistory;
-        VectorHistory m_history;
+        uint32_t m_historyLimit;
+
+        typedef List<Record> ListHistory;
+        ListHistory m_history;
     };
 }

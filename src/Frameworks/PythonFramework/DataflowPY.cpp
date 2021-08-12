@@ -88,11 +88,20 @@ namespace Mengine
 
         PyObject * py_code = m_kernel->code_compile_file( source_buffer, _context->filePath.c_str() );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( py_code, "invalid marshal get object" );
+        if( py_code == nullptr )
+        {
+            LOGGER_ERROR( "invalid code compile file '%s'"
+                , _context->filePath.c_str()
+            );
+
+            return false;
+        }
 
         if( m_kernel->code_check( py_code ) == false )
         {
-            LOGGER_ERROR( "marshal get object not code" );
+            LOGGER_ERROR( "marshal get object not code [file '%s']"
+                , _context->filePath.c_str()
+            );
 
             return false;
         }
@@ -101,4 +110,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

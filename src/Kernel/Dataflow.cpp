@@ -60,6 +60,8 @@ namespace Mengine
             DataInterfacePtr data = DATA_SERVICE()
                 ->dataflow( _dataflow, stream, _context, _doc );
 
+            stream = nullptr;
+
             MENGINE_ASSERTION_MEMORY_PANIC( data, "dataflow invalid create data for file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()
                 , _filePath.c_str()

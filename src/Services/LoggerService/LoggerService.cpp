@@ -4,6 +4,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -17,6 +18,10 @@
 
 #include "Config/Algorithm.h"
 
+#ifndef MENGINE_LOGGER_HISTORY_MAX
+#define MENGINE_LOGGER_HISTORY_MAX 1048576
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( LoggerService, Mengine::LoggerService );
 //////////////////////////////////////////////////////////////////////////
@@ -28,6 +33,7 @@ namespace Mengine
         , m_verboseFlag( 0 )
         , m_silent( false )
         , m_historically( true )
+        , m_historyLimit( MENGINE_LOGGER_HISTORY_MAX )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -130,6 +136,13 @@ namespace Mengine
         {
             m_historically = false;
         }
+
+        SERVICE_WAIT( ConfigServiceInterface, [this]()
+        {
+            m_historyLimit = CONFIG_VALUE( "Limit", "LoggerHistoryMax", MENGINE_LOGGER_HISTORY_MAX );
+
+            return true;
+        } );
 
         ELoggerLevel level = this->getVerboseLevel();
         const Char * loggerLevels[] = {"SILENT", "FATAL", "CRITICAL", "MESSAGE_RELEASE", "ERROR", "PERFOMANCE", "STATISTIC", "WARNING", "MESSAGE", "INFO", "DEBUG", "VERBOSE"};
@@ -247,7 +260,6 @@ namespace Mengine
     void LoggerService::clearHistory()
     {
         m_history.clear();
-        m_history.shrink_to_fit();
     }
     //////////////////////////////////////////////////////////////////////////
     size_t LoggerService::makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const
@@ -377,6 +389,11 @@ namespace Mengine
     {
         if( m_historically == true )
         {
+            if( m_historyLimit != ~0U && m_history.size() >= m_historyLimit )
+            {
+                return;
+            }
+
             Record history;
             history.level = _level;
             history.flag = _flag;

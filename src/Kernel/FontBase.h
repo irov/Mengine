@@ -37,11 +37,11 @@ namespace Mengine
 
     public:
         bool prefetch( const PrefetcherObserverInterfacePtr & _observer ) override;
-        bool unfetch() override;
+        void unfetch() override;
 
     protected:
         virtual bool _prefetch( const PrefetcherObserverInterfacePtr & _observer );
-        virtual bool _unfetch();
+        virtual void _unfetch();
 
     public:
         void setMetricSymbol( GlyphCode _metricsSymbol ) override;

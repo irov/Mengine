@@ -203,14 +203,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::_unfetch()
+    void TTFFont::_unfetch()
     {
         if( m_effect != nullptr )
         {
-            if( m_effect->unfetch() == false )
-            {
-                return false;
-            }
+            m_effect->unfetch();
         }
 
         const ContentInterfacePtr & content = this->getContent();
@@ -218,13 +215,8 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        if( PREFETCHER_SERVICE()
-            ->unfetch( fileGroup, filePath ) == false )
-        {
-            return false;
-        }
-
-        return true;
+        PREFETCHER_SERVICE()
+            ->unfetch( fileGroup, filePath );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_prepareGlyph( GlyphCode _code, const DocumentPtr & _doc )

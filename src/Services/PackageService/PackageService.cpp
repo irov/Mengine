@@ -40,8 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PackageService::_finalizeService()
     {
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE );
 
         for( const PackagePtr & package : m_packages )
         {

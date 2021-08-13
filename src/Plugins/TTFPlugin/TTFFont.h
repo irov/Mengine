@@ -55,7 +55,7 @@ namespace Mengine
 
     protected:
         bool _prefetch( const PrefetcherObserverInterfacePtr & _observer ) override;
-        bool _unfetch() override;
+        void _unfetch() override;
 
     public:
         bool hasGlyph( GlyphCode _code ) const override;

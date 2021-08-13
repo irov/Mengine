@@ -76,7 +76,7 @@ namespace Mengine
 
     public:
         virtual bool prefetch( const PrefetcherObserverInterfacePtr & _observer ) = 0;
-        virtual bool unfetch() = 0;
+        virtual void unfetch() = 0;
 
     public:
         virtual uint32_t getLayoutCount() const = 0;

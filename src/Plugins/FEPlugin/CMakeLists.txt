@@ -9,7 +9,9 @@ src
     FEServiceInterface.h
     FEService.h
     FEService.cpp
-    
+
+    #FEBundle.h
+    #FEBundle.cpp
     FETextFontEffectBase.h
     FETextFontEffectBase.cpp
     FETextFontEffectFile.h

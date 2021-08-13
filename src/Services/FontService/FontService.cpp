@@ -279,6 +279,8 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( font );
 
+            font->unfetch();
+
             font->finalize();
         }
 

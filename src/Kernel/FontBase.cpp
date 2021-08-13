@@ -79,11 +79,9 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontBase::unfetch()
+    void FontBase::unfetch()
     {
-        bool successful = this->_unfetch();
-
-        return successful;
+        this->_unfetch();
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
@@ -94,11 +92,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontBase::_unfetch()
+    void FontBase::_unfetch()
     {
         //Empty
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FontBase::setMetricSymbol( GlyphCode _metricsSymbol )

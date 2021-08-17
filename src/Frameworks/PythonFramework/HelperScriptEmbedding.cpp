@@ -1515,6 +1515,8 @@ namespace Mengine
                 : public Factorable
                 , public AccountSettingProviderInterface
             {
+                DECLARE_FACTORABLE( PythonAccountSettingProvider );
+
             public:
                 PythonAccountSettingProvider( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
                     : m_kernel( _kernel )

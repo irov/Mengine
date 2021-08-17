@@ -104,6 +104,8 @@ ADD_FILTER(
 ScriptService
     PythonScriptService.cpp
     PythonScriptService.h
+    PythonFileLogger.h
+    PythonFileLogger.cpp
     PythonScriptLogger.h
     PythonScriptLogger.cpp
     PythonScriptModule.h

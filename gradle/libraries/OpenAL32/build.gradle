@@ -51,6 +51,8 @@ android {
     
     buildTypes {
         debug {
+            debuggable true
+
             externalNativeBuild {
                 cmake {
                     cFlags "-std=c11 -g -D_DEBUG"

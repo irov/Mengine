@@ -554,7 +554,6 @@ endif()
 
 if(MENGINE_DEPENDENCE_SDL2)
     message("================SDL2================")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/Android.mk ${THIRDPARTY_DIR}/SDL2/Android.mk COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/CMakeLists.txt ${THIRDPARTY_DIR}/SDL2/CMakeLists.txt COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDL_error.c ${THIRDPARTY_DIR}/SDL2/src/SDL_error.c COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDL_error.h ${THIRDPARTY_DIR}/SDL2/include/SDL_error.h COPYONLY)

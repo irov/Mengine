@@ -13,6 +13,8 @@ namespace Mengine
     class PythonScriptLogger
         : public LoggerBase
     {
+        DECLARE_FACTORABLE( PythonScriptLogger );
+
     public:
         PythonScriptLogger();
         ~PythonScriptLogger() override;
@@ -33,6 +35,6 @@ namespace Mengine
         int32_t m_softspace;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonScriptLogger, LoggerInterface> ScriptLoggerPtr;
+    typedef IntrusivePtr<PythonScriptLogger, LoggerInterface> PythonScriptLoggerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -20,6 +20,8 @@ namespace Mengine
         : public Factorable
         , public cURLRequestListenerInterface
     {
+        DECLARE_FACTORABLE( cURLRequestListener );
+
     public:
         cURLRequestListener();
         ~cURLRequestListener() override;

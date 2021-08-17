@@ -68,6 +68,8 @@ namespace Mengine
                 : public Factorable
                 , public SoundListenerInterface
             {
+                DECLARE_FACTORABLE( MySoundNodeListener );
+
             public:
                 MySoundNodeListener( const ResourceSoundPtr & _resource, const pybind::object & _cb, const pybind::args & _args )
                     : m_resource( _resource )

@@ -22,6 +22,8 @@ namespace Mengine
     class Win32AlreadyRunningMonitor
         : public Factorable
     {
+        DECLARE_FACTORABLE( Win32AlreadyRunningMonitor );
+
     public:
         Win32AlreadyRunningMonitor();
         ~Win32AlreadyRunningMonitor() override;

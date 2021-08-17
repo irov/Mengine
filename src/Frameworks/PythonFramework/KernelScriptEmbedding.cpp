@@ -657,6 +657,8 @@ namespace Mengine
             class FactoryAffectorVelocity2
                 : public Factorable
             {
+                DECLARE_FACTORABLE( FactoryAffectorVelocity2 );
+
             public:
                 FactoryAffectorVelocity2()
                 {
@@ -1251,6 +1253,8 @@ namespace Mengine
             class FactoryAffectorInterpolateParabolic
                 : public Factorable
             {
+                DECLARE_FACTORABLE( FactoryAffectorInterpolateParabolic );
+
             public:
                 FactoryAffectorInterpolateParabolic()
                 {
@@ -1502,6 +1506,8 @@ namespace Mengine
             class FactoryAffectorFollowTo
                 : public Factorable
             {
+                DECLARE_FACTORABLE( FactoryAffectorFollowTo );
+
             public:
                 FactoryAffectorFollowTo()
                 {
@@ -1716,6 +1722,8 @@ namespace Mengine
             class FactoryAffectorFollowToW
                 : public Factorable
             {
+                DECLARE_FACTORABLE( FactoryAffectorFollowToW );
+
             public:
                 FactoryAffectorFollowToW()
                 {

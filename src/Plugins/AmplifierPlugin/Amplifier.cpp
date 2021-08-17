@@ -26,6 +26,8 @@ namespace Mengine
         : public Factorable
         , public SoundListenerInterface
     {
+        DECLARE_FACTORABLE( Amplifier );
+
     public:
         explicit MyMusicSoundListener( const AmplifierMusicCallbackInterfacePtr & _callback )
             : m_callback( _callback )

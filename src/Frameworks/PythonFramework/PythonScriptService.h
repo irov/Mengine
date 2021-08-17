@@ -108,8 +108,8 @@ namespace Mengine
 
         VectorScriptModulePack m_bootstrapperModules;
 
-        ScriptLoggerPtr m_loggerWarning;
-        ScriptLoggerPtr m_loggerError;
+        PythonScriptLoggerPtr m_loggerWarning;
+        PythonScriptLoggerPtr m_loggerError;
 
         struct ScriptEmbeddingDesc
         {

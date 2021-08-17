@@ -120,6 +120,7 @@
 #include "PythonSchedulePipe.h"
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
+#include "PythonFileLogger.h"
 
 #include "Kernel/Polygon.h"
 #include "Kernel/MemoryStreamHelper.h"
@@ -2884,6 +2885,23 @@ namespace Mengine
                 return secureValue;
             }
             //////////////////////////////////////////////////////////////////////////
+            PythonFileLoggerPtr s_makeFileLogger( const FilePath & _path )
+            {
+                PythonFileLoggerPtr logger = Helper::makeFactorableUnique<PythonFileLogger>( MENGINE_DOCUMENT_PYBIND );
+
+                const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
+                    ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup );
+
+                if( logger->initialize( userFileGroup, _path ) == false )
+                {
+                    return nullptr;
+                }
+
+                return logger;
+            }
+            //////////////////////////////////////////////////////////////////////////
             Scene * s_findNodeScene( Node * _node )
             {
                 Node * node_iterator = _node;
@@ -4273,6 +4291,13 @@ namespace Mengine
             ;
 
         pybind::def_functor( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureValue );
+
+
+        pybind::interface_<PythonFileLogger, pybind::bases<Mixin>>( _kernel, "PythonFileLogger" )
+            .def_call( &PythonFileLogger::write )
+            ;
+
+        pybind::def_functor( _kernel, "makeFileLogger", nodeScriptMethod, &EngineScriptMethod::s_makeFileLogger );
 
         return true;
     }

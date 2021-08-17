@@ -30,6 +30,8 @@ namespace Mengine
     class PythonScriptModuleFinder
         : public Factorable
     {
+        DECLARE_FACTORABLE( PythonScriptModuleFinder );
+
     public:
         PythonScriptModuleFinder();
         ~PythonScriptModuleFinder() override;

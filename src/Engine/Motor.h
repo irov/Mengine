@@ -19,7 +19,7 @@ namespace Mengine
         , public Updatable
         , protected BaseUpdation
     {
-    public:
+        DECLARE_FACTORABLE( Motor );
         DECLARE_UPDATABLE();
 
     public:

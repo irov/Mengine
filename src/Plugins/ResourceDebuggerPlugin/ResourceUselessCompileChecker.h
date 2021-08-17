@@ -8,10 +8,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceUselessCompileChecker
         : public Factorable
         , public Observable
     {
+        DECLARE_FACTORABLE( ResourceUselessCompileChecker );
+
     public:
         ResourceUselessCompileChecker();
         ~ResourceUselessCompileChecker() override;

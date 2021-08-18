@@ -209,22 +209,6 @@ namespace Mengine
             correct_count = m_size - pos;
         }
 
-        if( correct_count == m_size )
-        {
-            size_t bytesRead;
-            if( this->read_( _buf, 0, correct_count, &bytesRead ) == false )
-            {
-                return 0;
-            }
-
-            m_carriage = 0;
-            m_capacity = 0;
-
-            m_reading += bytesRead;
-
-            return bytesRead;
-        }
-
         if( correct_count > MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE )
         {
             size_t tail = m_capacity - m_carriage;

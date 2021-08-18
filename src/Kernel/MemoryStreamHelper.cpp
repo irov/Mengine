@@ -167,7 +167,7 @@ namespace Mengine
 
             MemoryInterfacePtr memory = Helper::createMemoryCacheStreamSize( _stream, size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid cache size [%zu]", size );
 
             return memory;
         }

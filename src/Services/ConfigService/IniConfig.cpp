@@ -6,6 +6,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ArrayString.h"
+#include "Kernel/FileStreamHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -350,6 +351,8 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 
         IniUtil::IniStore store;
+        store.path = Helper::getInputStreamDebugFilePath( _stream );
+
         if( IniUtil::loadIni( store, _stream, _doc ) == false )
         {
             LOGGER_ERROR( "invalid load config" );

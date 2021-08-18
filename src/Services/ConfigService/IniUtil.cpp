@@ -142,16 +142,18 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
             if( MENGINE_STRCHR( ini_value, '\\' ) != nullptr )
             {
-                LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
+                LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash '%s'"
                     , _ini.path.c_str()
                     , _section
                     , _key
+                    , ini_value
                 );
 
-                MENGINE_THROW_EXCEPTION( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
+                MENGINE_THROW_EXCEPTION( "get ini '%s' filepath section '%s' key '%s' has invalid slash '%s'"
                     , _ini.path.c_str()
                     , _section
                     , _key
+                    , ini_value
                 );
             }
 #endif

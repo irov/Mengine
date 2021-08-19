@@ -1,4 +1,4 @@
-<Protocol Version = "148">
+<Protocol Version = "149">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -325,8 +325,8 @@
               <Attribute Name="Index" Type="uint32_t" Required="1"/>
               <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
               <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
-              <Attribute Name="Matrix" Type="mt::mat4f" Required="1"/>
-              <Attribute Name="Color" Type="Color" Required="1"/>
+              <Attribute Name="Matrix" Type="mt::mat4f"/>
+              <Attribute Name="Color" Type="Color"/>
               <Attribute Name="Options" Type="Mengine::UInt32s"/>
               <Attribute Name="Dimension" Type="mt::box2f"/>
             </Node>

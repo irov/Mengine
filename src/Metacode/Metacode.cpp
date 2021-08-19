@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 148;
+        return 149;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 3208988946; 
+        return 3335575017; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -3192,18 +3192,26 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Metabuf::read( _buff, _size, _read, _userData, this->m_Color );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Index );
-            Metabuf::read( _buff, _size, _read, _userData, this->m_Matrix );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
+            if( (m_flagNoRequiredAttribute & EMETA_Color) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Color );
+            }
+        
             if( (m_flagNoRequiredAttribute & EMETA_Dimension) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_Dimension );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Matrix) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Matrix );
             }
         
             if( (m_flagNoRequiredAttribute & EMETA_Options) != 0 )

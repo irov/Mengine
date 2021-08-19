@@ -61,18 +61,12 @@ namespace Mengine
 
             for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & meta_layer : includes_layer )
             {
-                uint32_t layerIndex = meta_layer.get_Index();
-                const ConstString & layerName = meta_layer.get_Name();
-                const ConstString & layerType = meta_layer.get_Type();
-                const mt::mat4f & layerMatrix = meta_layer.get_Matrix();
-                const Color & layerColor = meta_layer.get_Color();
-
                 ResourceMovie2::CompositionLayer layer;
-                layer.index = layerIndex;
-                layer.name = layerName;
-                layer.type = layerType;
-                layer.matrix = layerMatrix;
-                layer.color = layerColor;
+                layer.index = meta_layer.get_Index();
+                layer.name = meta_layer.get_Name();
+                layer.type = meta_layer.get_Type();
+                meta_layer.getd_Matrix( &layer.matrix, mt::mat4f::identity() );
+                meta_layer.getd_Color( &layer.color, Color::identity() );
 
                 mt::box2f dimension;
                 if( meta_layer.get_Dimension( &dimension ) == true )

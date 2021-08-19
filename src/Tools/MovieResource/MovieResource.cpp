@@ -183,7 +183,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                     pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
                     char xmlFilePath[MAX_PATH];
-                    sprintf( xmlFilePath, "Movies2/.store_images/%s"
+                    sprintf( xmlFilePath, "Movies2/cache_images/%s"
                         , resource_image->path
                     );
 
@@ -224,7 +224,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                     pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
                     char xmlFilePath[MAX_PATH];
-                    sprintf( xmlFilePath, "Movies2/.store_particles/%s"
+                    sprintf( xmlFilePath, "Movies2/cache_particles/%s"
                         , resource_image->path
                     );
 
@@ -333,7 +333,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/.store_video/%s"
+            sprintf( xmlFilePath, "Movies2/cache_video/%s"
                 , resource_video->path
             );
 
@@ -364,7 +364,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/.store_sounds/%s"
+            sprintf( xmlFilePath, "Movies2/cache_sounds/%s"
                 , resource_sound->path
             );
 
@@ -389,7 +389,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/.store_particles/%s"
+            sprintf( xmlFilePath, "Movies2/cache_particles/%s"
                 , resource_particle->path
             );
 
@@ -431,9 +431,30 @@ static void __add_node_layer_data( node_provider_t * np, const ae_char_t * _type
     xmlLayer.append_attribute( "Name" ).set_value( layer_name );
     xmlLayer.append_attribute( "Type" ).set_value( _type );
 
-    xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 
-    xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
+    if( _callbackData->matrix[0] != 1.f ||
+        _callbackData->matrix[1] != 0.f ||
+        _callbackData->matrix[2] != 0.f ||
+        _callbackData->matrix[3] != 0.f ||
+        _callbackData->matrix[4] != 1.f ||
+        _callbackData->matrix[5] != 0.f ||
+        _callbackData->matrix[3] != 0.f ||
+        _callbackData->matrix[4] != 0.f ||
+        _callbackData->matrix[5] != 1.f ||
+        _callbackData->matrix[3] != 0.f ||
+        _callbackData->matrix[4] != 0.f ||
+        _callbackData->matrix[5] != 0.f )
+    {
+        xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
+    }
+
+    if( _callbackData->color.r != 1.f ||
+        _callbackData->color.g != 1.f ||
+        _callbackData->color.b != 1.f ||
+        _callbackData->opacity != 1.f )
+    {
+        xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
+    }
 
     uint32_t option_count = ae_get_movie_layer_data_options_count( layer_data );
 

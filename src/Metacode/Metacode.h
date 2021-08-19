@@ -5638,24 +5638,58 @@ namespace Metacode
                     protected:
                         enum NoRequiredAttribute
                         {
-                            EMETA_Dimension = (1 <<1),
-                            EMETA_Options = (1 <<0),
+                            EMETA_Color = (1 <<1),
+                            EMETA_Dimension = (1 <<3),
+                            EMETA_Matrix = (1 <<0),
+                            EMETA_Options = (1 <<2),
                         };
                         
                         uint32_t m_flagNoRequiredAttribute;
                         
                     public:
+                        bool has_Color() const
+                        {
+                            return (m_flagNoRequiredAttribute & EMETA_Color) != 0;
+                        }
+                        
                         template<class C, class M>
-                        void getm_Color( C _self, M _method ) const
+                        bool getm_Color( C _self, M _method ) const
                         {
+                            if( (m_flagNoRequiredAttribute & EMETA_Color) == 0 )
+                            {
+                                return false;
+                            }
+                        
                             (_self->*_method)( this->m_Color );
+                        
+                            return true;
                         }
                         
-                        const Mengine::Color & get_Color() const
+                        bool get_Color( Mengine::Color * _value ) const
                         {
-                            return this->m_Color;
+                            if( (m_flagNoRequiredAttribute & EMETA_Color) == 0 )
+                            {
+                                return false;
+                            }
+                        
+                            *_value = this->m_Color;
+                        
+                            return true;
                         }
                         
+                        bool getd_Color( Mengine::Color * _value, const Mengine::Color & _default ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_Color) == 0 )
+                            {
+                                *_value = _default;
+                        
+                                return false;
+                            }
+                        
+                            *_value = this->m_Color;
+                        
+                            return true;
+                        }
                         bool has_Dimension() const
                         {
                             return (m_flagNoRequiredAttribute & EMETA_Dimension) != 0;
@@ -5710,17 +5744,49 @@ namespace Metacode
                             return this->m_Index;
                         }
                         
+                        bool has_Matrix() const
+                        {
+                            return (m_flagNoRequiredAttribute & EMETA_Matrix) != 0;
+                        }
+                        
                         template<class C, class M>
-                        void getm_Matrix( C _self, M _method ) const
+                        bool getm_Matrix( C _self, M _method ) const
                         {
+                            if( (m_flagNoRequiredAttribute & EMETA_Matrix) == 0 )
+                            {
+                                return false;
+                            }
+                        
                             (_self->*_method)( this->m_Matrix );
+                        
+                            return true;
                         }
                         
-                        const mt::mat4f & get_Matrix() const
+                        bool get_Matrix( mt::mat4f * _value ) const
                         {
-                            return this->m_Matrix;
+                            if( (m_flagNoRequiredAttribute & EMETA_Matrix) == 0 )
+                            {
+                                return false;
+                            }
+                        
+                            *_value = this->m_Matrix;
+                        
+                            return true;
                         }
                         
+                        bool getd_Matrix( mt::mat4f * _value, const mt::mat4f & _default ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_Matrix) == 0 )
+                            {
+                                *_value = _default;
+                        
+                                return false;
+                            }
+                        
+                            *_value = this->m_Matrix;
+                        
+                            return true;
+                        }
                         template<class C, class M>
                         void getm_Name( C _self, M _method ) const
                         {

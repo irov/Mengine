@@ -1,13 +1,16 @@
-##
-##  Copyright (c) 2020 Google LLC.
-##
-##  Use of this source code is governed by a BSD-style license
-##  that can be found in the LICENSE file in the root of the source
-##  tree. An additional intellectual property rights grant can be found
-##  in the file PATENTS.  All contributing project authors may
-##  be found in the AUTHORS file in the root of the source tree.
+#  Copyright (c) 2020 Google LLC.
+#
+#  Use of this source code is governed by a BSD-style license
+#  that can be found in the LICENSE file in the root of the source
+#  tree. An additional intellectual property rights grant can be found
+#  in the file PATENTS.  All contributing project authors may
+#  be found in the AUTHORS file in the root of the source tree.
 
 cmake_minimum_required(VERSION 3.5)
+
+if(POLICY CMP0072)
+  cmake_policy(SET CMP0072 NEW)
+endif()
 
 project(WebP C)
 
@@ -26,9 +29,11 @@ option(WEBP_BUILD_GIF2WEBP "Build the gif2webp conversion tool." ON)
 option(WEBP_BUILD_IMG2WEBP "Build the img2webp animation tool." ON)
 option(WEBP_BUILD_VWEBP "Build the vwebp viewer tool." ON)
 option(WEBP_BUILD_WEBPINFO "Build the webpinfo command line tool." ON)
+option(WEBP_BUILD_LIBWEBPMUX "Build the libwebpmux library." ON)
 option(WEBP_BUILD_WEBPMUX "Build the webpmux command line tool." ON)
 option(WEBP_BUILD_EXTRAS "Build extras." ON)
 option(WEBP_BUILD_WEBP_JS "Emscripten build of webp.js." OFF)
+option(WEBP_USE_THREAD "Enable threading support" ON)
 option(WEBP_NEAR_LOSSLESS "Enable near-lossless encoding" ON)
 option(WEBP_ENABLE_SWAP_16BIT_CSP "Enable byte swap for 16 bit colorspaces."
        OFF)
@@ -50,6 +55,7 @@ if(WEBP_BUILD_WEBP_JS)
   set(WEBP_BUILD_WEBPINFO OFF)
   set(WEBP_BUILD_WEBPMUX OFF)
   set(WEBP_BUILD_EXTRAS OFF)
+  set(WEBP_USE_THREAD OFF)
 
   if(WEBP_ENABLE_SIMD)
     message("wasm2js does not support SIMD, disabling webp.js generation.")
@@ -231,27 +237,3 @@ set_target_properties(
 ${CMAKE_CURRENT_SOURCE_DIR}/src/webp/encode.h;\
 ${CMAKE_CURRENT_SOURCE_DIR}/src/webp/types.h")
 
-# Set the version numbers.
-function(parse_version FILE NAME VAR)
-  file(READ ${CMAKE_CURRENT_SOURCE_DIR}/src/${FILE} SOURCE_FILE)
-  string(REGEX MATCH
-               "${NAME}_la_LDFLAGS[^\n]* -version-info [0-9:]+"
-               TMP
-               ${SOURCE_FILE})
-  string(REGEX MATCH
-               "[0-9:]+"
-               TMP
-               ${TMP})
-  string(REGEX
-         REPLACE ":"
-                 "."
-                 VERSION
-                 ${TMP})
-  set(${VAR} "${VERSION}" PARENT_SCOPE)
-endfunction()
-parse_version(Makefile.am webp WEBP_WEBP_SOVERSION)
-set_target_properties(webp
-                      PROPERTIES VERSION
-                                 ${PACKAGE_VERSION}
-                                 SOVERSION
-                                 ${WEBP_WEBP_SOVERSION})

@@ -24,16 +24,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ConsoleLoggerPlugin::_availablePlugin() const
     {
-        bool nologs = HAS_OPTION( "nologs" );
+        bool OPTION_nologs = HAS_OPTION( "nologs" );
 
-        if( nologs == true )
+        if( OPTION_nologs == true )
         {
             return false;
         }
 
-        bool console = HAS_OPTION( "console" );
+        bool OPTION_console = HAS_OPTION( "console" );
 
-        if( console == false )
+        if( OPTION_console == false )
         {
             return false;
         }

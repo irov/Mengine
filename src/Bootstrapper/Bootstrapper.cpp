@@ -571,9 +571,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::initializeFileLogger_()
     {
-        bool nologs = HAS_OPTION( "nologs" );
+        bool OPTION_nologs = HAS_OPTION( "nologs" );
 
-        if( nologs == true )
+        if( OPTION_nologs == true )
         {
             return true;
         }
@@ -601,10 +601,10 @@ namespace Mengine
         unicode_logFilename += L"Game";
 
         bool developmentMode = Helper::isDevelopmentMode();
-        bool roamingMode = HAS_OPTION( "roaming" );
-        bool noroamingMode = HAS_OPTION( "noroaming" );
+        bool OPTION_roamingMode = HAS_OPTION( "roaming" );
+        bool OPTION_noroamingMode = HAS_OPTION( "noroaming" );
 
-        if( developmentMode == true && (roamingMode == false || noroamingMode == false) )
+        if( developmentMode == true && (OPTION_roamingMode == false || OPTION_noroamingMode == false) )
         {
             unicode_logFilename += L"_";
             unicode_logFilename += unicode_date;
@@ -726,7 +726,10 @@ namespace Mengine
             return false;
         }
 
-        bool Assertion_NoDebugBreak = HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false;
+        bool OPTION_assertion = HAS_OPTION( "assertion" );
+        bool Engine_AssertionDebugBreak = CONFIG_VALUE( "Engine", "AssertionDebugBreak", false );
+
+        bool Assertion_NoDebugBreak = OPTION_assertion == false && Engine_AssertionDebugBreak == false;
 
         Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
 
@@ -767,9 +770,9 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
 
-        bool norenderMode = HAS_OPTION( "norender" );
+        bool OPTION_norenderMode = HAS_OPTION( "norender" );
 
-        if( norenderMode == true )
+        if( OPTION_norenderMode == true )
         {
             BOOTSTRAPPER_SERVICE_CREATE( MockupRenderSystem, MENGINE_DOCUMENT_FACTORABLE );
         }
@@ -782,9 +785,9 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( RenderMaterialService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( RenderTextureService, MENGINE_DOCUMENT_FACTORABLE );
 
-        bool muteMode = HAS_OPTION( "mute" );
+        bool OPTION_muteMode = HAS_OPTION( "mute" );
 
-        if( muteMode == true )
+        if( OPTION_muteMode == true )
         {
             BOOTSTRAPPER_SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
         }
@@ -1228,9 +1231,9 @@ namespace Mengine
             devmodules = true;
         }
 
-        bool nodevmodules = HAS_OPTION( "nodevmodules" );
+        bool OPTION_nodevmodules = HAS_OPTION( "nodevmodules" );
 
-        if( devmodules == true && nodevmodules == false )
+        if( devmodules == true && OPTION_nodevmodules == false )
         {
             VectorConstString devModules;
             CONFIG_VALUES( "DevModules", "Name", &devModules );
@@ -1326,9 +1329,9 @@ namespace Mengine
             devmodules = true;
         }
 
-        bool nodevmodules = HAS_OPTION( "nodevmodules" );
+        bool OPTION_nodevmodules = HAS_OPTION( "nodevmodules" );
 
-        if( devmodules == true && nodevmodules == false )
+        if( devmodules == true && OPTION_nodevmodules == false )
         {
             VectorConstString devModules;
             CONFIG_VALUES( "DevModules", "Name", &devModules );

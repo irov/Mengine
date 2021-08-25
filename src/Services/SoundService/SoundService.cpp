@@ -71,9 +71,9 @@ namespace Mengine
         float voiceVolume = CONFIG_VALUE( "Engine", "VoiceVolume", 1.f );
         this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), voiceVolume, 0.f );
 
-        bool musicoff = HAS_OPTION( "musicoff" ) || HAS_OPTION( "nomusic" );
+        bool OPTION_musicoff = HAS_OPTION( "musicoff" ) || HAS_OPTION( "nomusic" );
 
-        if( musicoff == true )
+        if( OPTION_musicoff == true )
         {
             this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f );
         }

@@ -71,9 +71,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceValidateService::visitableResources_() const
     {
-        bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
+        bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
-        if( noresourceCheck == true )
+        if( OPTION_noresourceCheck == true )
         {
             return;
         }

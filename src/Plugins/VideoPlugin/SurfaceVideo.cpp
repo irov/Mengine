@@ -314,8 +314,9 @@ namespace Mengine
         bool needUpdate = false;
 
         float frameRate = m_resourceVideo->getFrameRate();
-        float frameTime = 1000.f / frameRate;
         float duration = m_resourceVideo->getDuration();
+
+        float frameTime = 1000.f / frameRate;
 
         while( m_time >= frameTime || m_updateFirstFrame == true )
         {
@@ -395,7 +396,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "vide '%s' resource '%s' not compile"
+            LOGGER_ERROR( "video '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , this->getResourceVideo()->getName().c_str()
             );

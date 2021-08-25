@@ -185,9 +185,9 @@ namespace Mengine
         }
 
 #ifndef MENGINE_MASTER_RELEASE
-        bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
+        bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
-        if( noresourceCheck == false )
+        if( OPTION_noresourceCheck == false )
         {
             bool valid_successful = true;
 

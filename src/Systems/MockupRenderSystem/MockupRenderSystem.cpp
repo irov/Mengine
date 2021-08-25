@@ -791,9 +791,9 @@ namespace Mengine
         dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwPixelFormat );
 
 #ifdef MENGINE_DEBUG
-        bool logcreateimage = HAS_OPTION( "logcreateimage" );
+        bool OPTION_logcreateimage = HAS_OPTION( "logcreateimage" );
 
-        if( logcreateimage == true )
+        if( OPTION_logcreateimage == true )
         {
             LOGGER_STATISTIC( "create texture size %u:%u format %x (doc %s)"
                 , _hwWidth

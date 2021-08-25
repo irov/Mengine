@@ -6,10 +6,12 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "SurfaceVideo.h"
+#include "SurfaceMockupVideo.h"
 #include "ResourceVideoValidator.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
@@ -66,10 +68,24 @@ namespace Mengine
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), Helper::makeFactorableUnique<SurfacePrototypeGenerator<SurfaceVideo, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        bool Engine_MockupVideo = CONFIG_VALUE( "Engine", "MockupVideo", false );
+        bool OPTION_mockupvideo = HAS_OPTION( "mockupvideo" );
+
+        if( Engine_MockupVideo == false && OPTION_mockupvideo == false )
         {
-            return false;
+            if( PROTOTYPE_SERVICE()
+                ->addPrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), Helper::makeFactorableUnique<SurfacePrototypeGenerator<SurfaceVideo, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if( PROTOTYPE_SERVICE()
+                ->addPrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), Helper::makeFactorableUnique<SurfacePrototypeGenerator<SurfaceMockupVideo, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            {
+                return false;
+            }
         }
 
         PLUGIN_SERVICE_WAIT( ResourceValidateServiceInterface, [this]()

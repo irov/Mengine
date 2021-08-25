@@ -9,6 +9,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Resource.h"
 #include "Kernel/ResourcePointer.h"
+#include "Kernel/ResourceCast.h"
 
 #include "Config/Lambda.h"
 
@@ -31,21 +32,6 @@ namespace Mengine
     public:
         virtual const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const = 0;
         virtual bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const = 0;
-
-    public:
-        template<class T>
-        bool hasResourceT( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, T * const _resource ) const
-        {
-            ResourcePtr resource;
-            if( this->hasResource( _groupName, _name, _onlyGroup, &resource ) == false )
-            {
-                return false;
-            }
-
-            *_resource = Helper::staticResourceCast<T>( resource );
-
-            return true;
-        }
 
     public:
         typedef Lambda<void( const ResourcePtr & )> LambdaResource;

@@ -43,21 +43,6 @@ namespace Mengine
         virtual bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const = 0;
 
     public:
-        template<class T>
-        bool hasResourceT( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, T * const _resource ) const
-        {
-            ResourcePtr resource;
-            if( this->hasResource( _groupName, _name, _onlyGroup, &resource ) == false )
-            {
-                return false;
-            }
-
-            *_resource = Helper::staticResourceCast<T>( resource );
-
-            return true;
-        }
-
-    public:
         typedef Lambda<void( const ResourcePtrView & )> LambdaResourceView;
 
         virtual void foreachResources( const LambdaResourceView & _lambda ) const = 0;

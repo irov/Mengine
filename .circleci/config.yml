@@ -7,7 +7,7 @@ jobs:
   build:
     executor:
       name: android/android
-      sdk-version: '29'
+      sdk-version: '30'
       
     steps:
       - checkout

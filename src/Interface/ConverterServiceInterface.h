@@ -7,8 +7,7 @@
 #include "Kernel/ConstString.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class ConverterServiceInterface
         : public ServiceInterface
     {

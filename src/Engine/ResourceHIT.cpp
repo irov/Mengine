@@ -45,7 +45,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "name '%s' - hit file '%s' invalid create decoder '%s'"
             , this->getName().c_str()

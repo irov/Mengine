@@ -2,6 +2,8 @@
 
 #include "Interface/DebuggerBoundingBoxInterface.h"
 
+#include "Kernel/NodeCast.h"
+
 namespace Mengine
 {
     template<class T>

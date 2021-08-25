@@ -53,12 +53,14 @@ namespace Mengine
             , this->getFileGroup()->getName().c_str()
         );
 
-        m_soundDecoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( m_soundCodec, MENGINE_DOCUMENT_FACTORABLE );
+        SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
+            ->createDecoder( m_soundCodec, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_soundDecoder, "invalid create codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "invalid create codec '%s'"
             , m_soundCodec.c_str()
         );
+
+        m_soundDecoder = soundDecoder;
 
         return true;
     }

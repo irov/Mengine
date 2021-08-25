@@ -1138,10 +1138,10 @@ namespace Mengine
 
             ConstString resourceMovieName = Helper::stringizeStringSize( buffer.c_str(), buffer.size() );
 
-            ResourceMoviePtr resourceMovie;
+            ResourcePtr resource;
 
             if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceMoviePtr>( _groupName, resourceMovieName, false, &resourceMovie ) == false )
+                ->hasResource( _groupName, resourceMovieName, false, &resource ) == false )
             {
                 LOGGER_ERROR( "not found resource movie '%s'"
                     , resourceMovieName.c_str()
@@ -1149,6 +1149,8 @@ namespace Mengine
 
                 return pybind::make_none_t( _kernel );
             }
+
+            ResourceMoviePtr resourceMovie = Helper::staticResourceCast<ResourceMoviePtr>( resource );
 
             pybind::list py_list( _kernel );
 
@@ -1177,10 +1179,10 @@ namespace Mengine
 
             ConstString resourceMovieName = Helper::stringizeStringSize( buffer.c_str(), buffer.size() );
 
-            ResourceMoviePtr resourceMovie;
+            ResourcePtr resource;
 
             if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceMoviePtr>( _groupName, resourceMovieName, false, &resourceMovie ) == false )
+                ->hasResource( _groupName, resourceMovieName, false, &resource ) == false )
             {
                 LOGGER_ERROR( "not found resource movie '%s'"
                     , resourceMovieName.c_str()
@@ -1188,6 +1190,8 @@ namespace Mengine
 
                 return _kernel->ret_none();
             }
+
+            ResourceMoviePtr resourceMovie = Helper::staticResourceCast<ResourceMoviePtr>( resource );
 
             const MovieLayer * layer;
             if( resourceMovie->hasMovieLayer( _slotName, &layer ) == false )

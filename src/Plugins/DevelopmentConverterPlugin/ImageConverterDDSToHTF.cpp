@@ -54,7 +54,7 @@ namespace Mengine
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder for '%s'"
             , m_options.inputFilePath.c_str()
@@ -123,7 +123,7 @@ namespace Mengine
         );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
+            ->createEncoder( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( encoder, "invalid create encoder 'htfImage'" );
 

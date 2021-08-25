@@ -389,7 +389,7 @@ namespace Mengine
     bool LoaderService::makeBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _pathXml, const FilePath & _pathBin ) const
     {
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder xml2bin for '%s:%s'"
             , _fileGroup->getName().c_str()

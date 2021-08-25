@@ -5,8 +5,7 @@
 #include "Config/Char.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class AllocatorServiceInterface
         : public ServiceInterface
     {

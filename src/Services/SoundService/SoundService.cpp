@@ -444,7 +444,7 @@ namespace Mengine
         );
 
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, _doc );
+            ->createDecoder( _codecType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "can't create sound decoder for file '%s:%s'"
             , _fileGroup->getName().c_str()

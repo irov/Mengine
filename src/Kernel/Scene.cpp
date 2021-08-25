@@ -3,6 +3,7 @@
 #include "SceneEventReceiverInterface.h"
 
 #include "Kernel/EventableHelper.h"
+#include "Kernel/NodeCast.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

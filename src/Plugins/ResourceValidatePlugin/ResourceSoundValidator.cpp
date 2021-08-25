@@ -46,7 +46,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         SoundDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         if( decoder == nullptr )
         {

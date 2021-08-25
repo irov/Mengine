@@ -20,8 +20,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        DecoderInterfacePtr createDecoder( const ConstString & _type, const DocumentPtr & _doc ) override;
-        EncoderInterfacePtr createEncoder( const ConstString & _type, const DocumentPtr & _doc ) override;
+        DecoderInterfacePointer createDecoder( const ConstString & _type, const DocumentPtr & _doc ) override;
+        EncoderInterfacePointer createEncoder( const ConstString & _type, const DocumentPtr & _doc ) override;
 
     public:
         bool registerCodecExt( const ConstString & _ext, const ConstString & _codecType ) override;

@@ -27,6 +27,8 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/AssertionNode.h"
+#include "Kernel/NodeCast.h"
+#include "Kernel/SurfaceCast.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"

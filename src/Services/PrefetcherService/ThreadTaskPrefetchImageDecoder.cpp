@@ -57,7 +57,7 @@ namespace Mengine
         );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( m_codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "invalid create codec '%s'"
             , m_codecType.c_str()

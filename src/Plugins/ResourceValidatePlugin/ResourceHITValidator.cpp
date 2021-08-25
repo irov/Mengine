@@ -49,7 +49,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         if( decoder == nullptr )
         {

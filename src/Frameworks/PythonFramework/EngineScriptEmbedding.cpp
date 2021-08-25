@@ -1489,7 +1489,7 @@ namespace Mengine
                         ->findCodecType( _filePath );
 
                     ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-                        ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_PYBIND );
+                        ->createDecoder( codecType, MENGINE_DOCUMENT_PYBIND );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder );
 

@@ -34,7 +34,7 @@ namespace Mengine
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Dataflow" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DataflowContext * _context, const DocumentPtr & _doc )
+    DataInterfacePointer DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DataflowContext * _context, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _dataflow );
 

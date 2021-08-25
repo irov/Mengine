@@ -208,7 +208,7 @@ namespace Mengine
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( _codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s:%s' codec '%s' (doc: %s)"
             , _fileGroup->getName().c_str()

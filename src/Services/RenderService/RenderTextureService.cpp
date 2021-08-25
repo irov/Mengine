@@ -148,7 +148,7 @@ namespace Mengine
         );
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createEncoder( _codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, "can't create encoder for file '%s'"
             , _filePath.c_str()

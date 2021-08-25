@@ -167,6 +167,8 @@ ADD_FILTER(
 Surface
     Surface.cpp
     Surface.h
+    
+    SurfaceCast.h
 )
 
 ADD_FILTER(
@@ -304,6 +306,7 @@ Resource
     ResourcePtrView.h
     ResourceHelper.cpp
     ResourceHelper.h
+    ResourceCast.h
 )
 
 ADD_FILTER(
@@ -704,6 +707,7 @@ Core
     HashHelper.h
     
     NodeHelper.h
+    NodeCast.h
     MixinDebug.h
     
     ThreadMutexScope.h
@@ -712,7 +716,7 @@ Core
     Dataflow.h
     Dataflow.cpp
 
-    DataPointer.h
+    DataInterfacePointer.h
     
     StringArguments.h
     StringArguments.cpp
@@ -810,6 +814,9 @@ Codec
     ImageEncoder.cpp
     ImageEncoder.h
 
+    DecoderInterfacePointer.h
+    EncoderInterfacePointer.h
+    
     DecoderFactory.h
     EncoderFactory.h
     ConverterFactory.h

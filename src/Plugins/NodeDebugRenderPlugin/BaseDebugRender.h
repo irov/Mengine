@@ -3,6 +3,7 @@
 #include "NodeDebugRenderInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/NodeCast.h"
 
 namespace Mengine
 {

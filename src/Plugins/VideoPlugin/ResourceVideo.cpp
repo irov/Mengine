@@ -127,7 +127,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE()
-            ->createDecoderT<VideoDecoderInterfacePtr>( codecType, _doc );
+            ->createDecoder( codecType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, "group '%s' name '%s' can't create video decoder for file '%s'"
             , this->getGroupName().c_str()

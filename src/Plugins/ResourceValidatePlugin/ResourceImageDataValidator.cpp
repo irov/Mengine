@@ -80,7 +80,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         if( imageDecoder == nullptr )
         {

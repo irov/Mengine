@@ -43,9 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::_initializeService()
     {
-        bool nologs = HAS_OPTION( "nologs" );
+        bool OPTION_nologs = HAS_OPTION( "nologs" );
 
-        if( nologs == true )
+        if( OPTION_nologs == true )
         {
             m_silent = true;
         }
@@ -53,10 +53,10 @@ namespace Mengine
         ELoggerLevel logLevel;
 
         bool developmentMode = Helper::isDevelopmentMode();
-        bool roamingMode = HAS_OPTION( "roaming" );
-        bool noroamingMode = HAS_OPTION( "noroaming" );
+        bool OPTION_roamingMode = HAS_OPTION( "roaming" );
+        bool OPTION_noroamingMode = HAS_OPTION( "noroaming" );
 
-        if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
+        if( developmentMode == true && (OPTION_roamingMode == false || OPTION_noroamingMode == true) )
         {
             logLevel = LM_MESSAGE;
         }
@@ -106,9 +106,9 @@ namespace Mengine
 
         uint32_t verboseFlag = 0;
 
-        bool profiler = HAS_OPTION( "profiler" );
+        bool OPTION_profiler = HAS_OPTION( "profiler" );
 
-        if( profiler == true )
+        if( OPTION_profiler == true )
         {
             verboseFlag |= 0x00000001;
         }

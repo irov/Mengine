@@ -380,25 +380,25 @@ namespace Mengine
             , m_locale.c_str()
         );
 
-        bool logopenfiles = HAS_OPTION( "logopenfiles" );
+        bool OPTION_logopenfiles = HAS_OPTION( "logopenfiles" );
 
-        if( logopenfiles == true )
+        if( OPTION_logopenfiles == true )
         {
             m_debugFileOpen = true;
 
             this->updateDebugOpenFile_();
         }
 
-        bool novideo = HAS_OPTION( "novideo" );
+        bool OPTION_novideo = HAS_OPTION( "novideo" );
 
-        if( novideo == true )
+        if( OPTION_novideo == true )
         {
             this->setVideoEnable( false );
         }
 
-        bool nopause = HAS_OPTION( "nopause" );
+        bool OPTION_nopause = HAS_OPTION( "nopause" );
 
-        this->setNopause( nopause );
+        this->setNopause( OPTION_nopause );
 
         m_cursorMode = CONFIG_VALUE( "Platform", "Cursor", false );
 
@@ -927,9 +927,9 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE
         bool developmentMode = Helper::isDevelopmentMode();
-        bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
+        bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
-        if( developmentMode == true && noresourceCheck == false )
+        if( developmentMode == true && OPTION_noresourceCheck == false )
         {
             if( TEXT_SERVICE()
                 ->validate() == false )
@@ -2296,9 +2296,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::getVSync() const
     {
-        bool novsync = HAS_OPTION( "novsync" );
+        bool OPTION_novsync = HAS_OPTION( "novsync" );
 
-        if( novsync == true )
+        if( OPTION_novsync == true )
         {
             return false;
         }

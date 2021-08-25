@@ -812,10 +812,10 @@ namespace Mengine
                 }
                 else
                 {
-                    bool maxfps = HAS_OPTION( "maxfps" );
+                    bool OPTION_maxfps = HAS_OPTION( "maxfps" );
 
                     if( APPLICATION_SERVICE()
-                        ->getVSync() == false && maxfps == false )
+                        ->getVSync() == false && OPTION_maxfps == false )
                     {
                         ::Sleep( 1 );
                     }
@@ -4279,10 +4279,10 @@ namespace Mengine
     size_t Win32Platform::getUserPath( Char * const _userPath ) const
     {
         bool developmentMode = Helper::isDevelopmentMode();
-        bool roamingMode = HAS_OPTION( "roaming" );
-        bool noroamingMode = HAS_OPTION( "noroaming" );
+        bool OPTION_roamingMode = HAS_OPTION( "roaming" );
+        bool OPTION_noroamingMode = HAS_OPTION( "noroaming" );
 
-        if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
+        if( (developmentMode == true && OPTION_roamingMode == false) || OPTION_noroamingMode == true )
         {
             WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
             DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );

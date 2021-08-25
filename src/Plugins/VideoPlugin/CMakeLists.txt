@@ -16,6 +16,8 @@ src
 
     SurfaceVideo.cpp
     SurfaceVideo.h
+    SurfaceMockupVideo.cpp
+    SurfaceMockupVideo.h
 
     ResourceVideoValidator.cpp
     ResourceVideoValidator.h

@@ -701,9 +701,9 @@ namespace Mengine
         m_renderResourceHandlers.push_back( renderImage.get() );
 
 #ifdef MENGINE_DEBUG
-        bool logcreateimage = HAS_OPTION( "logcreateimage" );
+        bool OPTION_logcreateimage = HAS_OPTION( "logcreateimage" );
 
-        if( logcreateimage == true )
+        if( OPTION_logcreateimage == true )
         {
             LOGGER_STATISTIC( "create texture [%u:%u] format %u (doc %s)"
                 , renderImage->getHWWidth()

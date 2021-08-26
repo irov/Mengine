@@ -162,7 +162,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         using namespace Mengine::Literals;
 
         Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<Mengine::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {

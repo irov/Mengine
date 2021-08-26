@@ -59,7 +59,7 @@ namespace Mengine
             ->findCodecType( _path );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageDecoder == nullptr )
         {
@@ -128,7 +128,7 @@ namespace Mengine
             ->findCodecType( _path );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createEncoder( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( encoder == nullptr )
         {

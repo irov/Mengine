@@ -339,7 +339,7 @@ namespace Mengine
             ->findCodecType( c_path );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageDecoder == nullptr )
         {

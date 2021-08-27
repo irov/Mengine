@@ -92,7 +92,7 @@ namespace Mengine
         return delreceiver;
     }
     //////////////////////////////////////////////////////////////////////////
-    const EventReceiverInterfacePtr & BaseEventation::getEventReciever( uint32_t _event ) const
+    const EventReceiverInterfacePtr & BaseEventation::getEventReceiver( uint32_t _event ) const
     {
         MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
 
@@ -123,6 +123,14 @@ namespace Mengine
         uint64_t flag = (m_receiverMask | m_receiversMask) & (1ULL << _event);
 
         return flag != 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseEventation::foreachEventReceivers( const LambdaEventReceivers & _lambda ) const
+    {
+        for( const EventReceiverDesc & desc : m_receivers )
+        {
+            _lambda( desc.event, desc.receiver );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::removeEvents() noexcept

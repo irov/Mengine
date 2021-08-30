@@ -101,7 +101,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        const pybind::object & s_createEntity( const ConstString & _prototype )
+        pybind::object s_createEntity( const ConstString & _prototype )
         {
             EntityPtr entity = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, MENGINE_DOCUMENT_PYBIND );

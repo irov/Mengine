@@ -63,8 +63,8 @@ namespace Mengine
 
             pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, "onTriggerEnter", EVENT_AREAOFINTEREST_TRIGGER_ENTER, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, "onTriggerLeave", EVENT_AREAOFINTEREST_TRIGGER_LEAVE, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerEnter" ), EVENT_AREAOFINTEREST_TRIGGER_ENTER, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerLeave" ), EVENT_AREAOFINTEREST_TRIGGER_LEAVE, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 

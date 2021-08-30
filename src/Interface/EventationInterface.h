@@ -2,6 +2,8 @@
 
 #include "Interface/EventReceiverInterface.h"
 
+#include "Config/Lambda.h"
+
 #ifdef MENGINE_DEBUG
 #   include <type_traits>
 #   include <stdexcept>
@@ -29,22 +31,24 @@ namespace Mengine
         virtual EventReceiverInterfacePtr removeEventReceiver( uint32_t _event ) = 0;
 
     public:
-        virtual const EventReceiverInterfacePtr & getEventReciever( uint32_t _event ) const = 0;
+        virtual const EventReceiverInterfacePtr & getEventReceiver( uint32_t _event ) const = 0;
         virtual bool hasEventReceiver( uint32_t _event ) const = 0;
 
     public:
+        typedef Lambda<void( uint32_t _event, const EventReceiverInterfacePtr & _receiver )> LambdaEventReceivers;
+        virtual void foreachEventReceivers( const LambdaEventReceivers & _lambda ) const = 0;
         virtual void removeEvents() noexcept = 0;
 
     public:
         template<class T>
-        T getEventRecieverT( uint32_t _event ) const
+        T getEventReceiverT( uint32_t _event ) const
         {
-            const EventReceiverInterfacePtr & reciever = this->getEventReciever( _event );
+            const EventReceiverInterfacePtr & receiver = this->getEventReceiver( _event );
 
-            EventReceiverInterface * r = reciever.get();
+            EventReceiverInterface * r = receiver.get();
 
 #ifdef MENGINE_DEBUG
-            static_assert(std::is_base_of_v<EventReceiverInterface, std::remove_pointer_t<T>>, "static event reciever cast use on non 'EventReceiverInterface' type");
+            static_assert(std::is_base_of_v<EventReceiverInterface, std::remove_pointer_t<T>>, "static event receiver cast use on non 'EventReceiverInterface' type");
 
             if( r == nullptr )
             {
@@ -53,7 +57,7 @@ namespace Mengine
 
             if( dynamic_cast<T>(r) == nullptr )
             {
-                throw std::runtime_error( "static event reciever cast" );
+                throw std::runtime_error( "static event receiver cast" );
             }
 #endif
 

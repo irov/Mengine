@@ -341,6 +341,36 @@ namespace Mengine
                 _animation->resume( time );
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_Eventation_callEvent( pybind::kernel_interface * _kernel, EventationInterface * _eventation, const ConstString & _method, PyObject * _args )
+            {
+                _eventation->foreachEventReceivers( [_kernel, _method, _args]( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
+                {
+                    MENGINE_UNUSED( _event );
+
+                    EventReceiverInterface * receiver_ptr = _receiver.get();
+
+                    PythonEventReceiver * py_receiver_ptr = dynamic_cast<PythonEventReceiver *>(receiver_ptr);
+
+                    if( py_receiver_ptr == nullptr )
+                    {
+                        return;
+                    }
+
+                    const ConstString & method = py_receiver_ptr->getMethod();
+
+                    if( _method != method )
+                    {
+                        return;
+                    }
+
+                    const pybind::object & cb = py_receiver_ptr->getCb();
+
+                    PyObject * py_cb = cb.ptr();
+
+                    _kernel->call_native( py_cb, _args );
+                } );
+            }
+            //////////////////////////////////////////////////////////////////////////
             UniqueId s_Affectorable_addAffector( Affectorable * _affectorable, const AffectorPtr & _affector )
             {
                 const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
@@ -416,8 +446,8 @@ namespace Mengine
 
                 pybind::dict py_kwds( _kernel, _kwds );
 
-                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onKeepScript" ), EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onReleaseScript" ), EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -2462,6 +2492,7 @@ namespace Mengine
 
         pybind::interface_<EventationInterface, pybind::bases<Mixin>>( _kernel, "Eventation" )
             .def( "removeEvents", &EventationInterface::removeEvents )
+            .def_proxy_static_kernel( "callEvent", scriptMethod, &KernelScriptMethod::s_Eventation_callEvent )
             ;
 
         pybind::interface_<Eventable, pybind::bases<Mixin>>( _kernel, "Eventable" )

@@ -40,30 +40,30 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        T * getThisEventReciever( Eventable * _self, uint32_t _event )
+        T * getThisEventReceiver( Eventable * _self, uint32_t _event )
         {
             EventationInterface * eventation = _self->getEventation();
 
-            T * reciever = eventation->getEventRecieverT<T *>( _event );
+            T * receiver = eventation->getEventReceiverT<T *>( _event );
 
-            return reciever;
+            return receiver;
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        T * getThisEventReciever( const EventablePtr & _self, uint32_t _event )
+        T * getThisEventReceiver( const EventablePtr & _self, uint32_t _event )
         {
             EventationInterface * eventation = _self->getEventation();
 
-            T * reciever = eventation->getEventRecieverT<T *>( _event );
+            T * receiver = eventation->getEventReceiverT<T *>( _event );
 
-            return reciever;
+            return receiver;
         }
         //////////////////////////////////////////////////////////////////////////
     }
 }
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_METHODRT(Event, R, Type)\
-    Mengine::Helper::hasEventableReceiver( this, Event ) == false ? R : Mengine::Helper::getThisEventReciever<Type>( this, Event )
+    Mengine::Helper::hasEventableReceiver( this, Event ) == false ? R : Mengine::Helper::getThisEventReceiver<Type>( this, Event )
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_METHODR(Event, R)\
     EVENTABLE_METHODRT(Event, R, EVENTATION_GETTYPE(Event))
@@ -72,7 +72,7 @@ namespace Mengine
     EVENTABLE_METHODRT(Event, MENGINE_UNUSED(0), EVENTATION_GETTYPE(Event))
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_OTHER_METHODRT(Self, Event, R, Type)\
-    Self == nullptr ? R : Mengine::Helper::hasEventableReceiver( Self, Event ) == false ? R : Mengine::Helper::getThisEventReciever<Type>( Self, Event )
+    Self == nullptr ? R : Mengine::Helper::hasEventableReceiver( Self, Event ) == false ? R : Mengine::Helper::getThisEventReceiver<Type>( Self, Event )
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_OTHER_METHODR(Self, Event, R)\
     EVENTABLE_OTHER_METHODRT(Self, Event, R, EVENTATION_GETTYPE(Event))

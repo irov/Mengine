@@ -900,9 +900,9 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
 
-            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onMovieGetInternal" ), EVENT_MOVIE_GET_INTERNAL, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onMovieActivateInternal" ), EVENT_MOVIE_ACTIVATE_INTERNAL, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onMovieDeactivateInternal" ), EVENT_MOVIE_DEACTIVATE_INTERNAL, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 

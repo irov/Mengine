@@ -23,9 +23,9 @@ namespace Mengine
             return true;
         }
 
-        const EventReceiverInterfacePtr & reciever = eventation->getEventReciever( m_event );
+        const EventReceiverInterfacePtr & receiver = eventation->getEventReceiver( m_event );
 
-        m_invoke( reciever.get() );
+        m_invoke( receiver.get() );
 
         return true;
     }

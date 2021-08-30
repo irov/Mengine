@@ -26,10 +26,11 @@ namespace Mengine
         EventReceiverInterfacePtr removeEventReceiver( uint32_t _event ) override;
 
     public:
-        const EventReceiverInterfacePtr & getEventReciever( uint32_t _event ) const override;
+        const EventReceiverInterfacePtr & getEventReceiver( uint32_t _event ) const override;
         bool hasEventReceiver( uint32_t _event ) const override;
 
     public:
+        void foreachEventReceivers( const LambdaEventReceivers & _lambda ) const override;
         void removeEvents() noexcept override;
 
     protected:

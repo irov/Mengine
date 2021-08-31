@@ -4,6 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ProfilerHelper.h"
 #include "Kernel/Win32Helper.h"
 
 #include <process.h>
@@ -164,6 +165,8 @@ namespace Mengine
         ALLOCATOR_SERVICE()
             ->startThread();
 
+        MENGINE_PROFILER_THREAD( m_name.c_str() );
+
         while( m_exit == false )
         {
 #if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
@@ -184,6 +187,9 @@ namespace Mengine
                 if( m_exit == false )
                 {
                     m_mutex->lock();
+
+                    MENGINE_PROFILER_FRAME( "thread" );
+
                     m_task->main();
                     m_mutex->unlock();
                 }

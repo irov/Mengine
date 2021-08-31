@@ -10,6 +10,7 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
+#include "Interface/ProfilerSystemInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/ServiceInterface.h"
 
@@ -33,6 +34,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/Win32Helper.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -56,7 +58,6 @@
 
 #include <clocale>
 #include <ctime>
-#include <iomanip>
 #include <functional>
 #include <cerrno>
 
@@ -697,11 +698,15 @@ namespace Mengine
 
         LOGGER_MESSAGE_RELEASE( "run platform" );
 
+        MENGINE_PROFILER_BEGIN_APPLICATION();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::updateWndMessage_()
     {
+        MENGINE_PROFILER_CATEGORY( "wnd" );
+
         MSG msg;
         while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
         {
@@ -720,6 +725,8 @@ namespace Mengine
         {
             while( m_close == false )
             {
+                MENGINE_PROFILER_FRAME( "main" );
+
                 uint64_t currentTime = TIME_SYSTEM()
                     ->getTimeMilliseconds();
 
@@ -847,6 +854,8 @@ namespace Mengine
 
             this->updateWndMessage_();
         }
+
+        MENGINE_PROFILER_END_APPLICATION();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::setHWNDIcon( const WChar * _iconResource )

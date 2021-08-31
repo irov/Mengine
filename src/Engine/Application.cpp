@@ -71,6 +71,8 @@
 #include "Kernel/ViewportHelper.h"
 #include "Kernel/List.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/FilePathDateTimeHelper.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -136,7 +138,6 @@
 #include "Kernel/Stringstream.h"
 
 #include <ctime>
-#include <iomanip>
 
 #define MENGINE_DEBUG_HOTSPOTS 0x00000001
 #define MENGINE_DEBUG_PHYSICS 0x00000002
@@ -981,20 +982,10 @@ namespace Mengine
                 DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
                     ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
-                PlatformDateTime dateTime;
-                dateTimeProvider->getLocalDateTime( &dateTime );
+                Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
+                Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate );
 
-                Stringstream ss_date;
-                ss_date << dateTime.year
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.month
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
-
-                String str_date = ss_date.str();
-
-                processDumpPath += str_date;
+                processDumpPath += filePathDate;
                 processDumpPath += ".dmp";
 
                 PLATFORM_SERVICE()
@@ -1644,6 +1635,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::beginUpdate()
     {
+        MENGINE_PROFILER_CATEGORY( "app" );
+
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
             THREAD_SERVICE()
@@ -1697,6 +1690,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::tick( float _time )
     {
+        MENGINE_PROFILER_CATEGORY( "tick" );
+
         ++m_updateRevision;
 
         float time = _time;
@@ -1742,6 +1737,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()
     {
+        MENGINE_PROFILER_CATEGORY( "render" );
+
         if( RENDER_SERVICE()
             ->beginScene( m_renderPipeline ) == false )
         {
@@ -1761,6 +1758,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::flush()
     {
+        MENGINE_PROFILER_CATEGORY( "flush" );
+
         RENDER_SERVICE()
             ->swapBuffers();
     }

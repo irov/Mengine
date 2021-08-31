@@ -7,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -56,6 +57,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::update()
     {
+        MENGINE_PROFILER_CATEGORY( "input" );
+
         m_events = std::move( m_eventsAux );
 
         for( const InputUnionEvent & ev : m_events )

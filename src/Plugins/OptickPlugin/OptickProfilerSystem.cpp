@@ -14,6 +14,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ProfilerSystem, Mengine::OptickProfilerSystem );
@@ -22,6 +23,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OptickProfilerSystem::OptickProfilerSystem()
+        : m_process( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -31,30 +33,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptickProfilerSystem::_initializeService()
     {
-        m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryFrameProfilers = Helper::makeFactoryPool<OptickFrameProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryFrameProfilers = Helper::makeFactoryPool<OptickFrameProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            m_factoryThreadProfilers->setMutex( mutex );
-            m_factoryFrameProfilers->setMutex( mutex );
-            m_factoryCategoryProfilers->setMutex( mutex );
-            m_factoryDescriptions->setMutex( mutex );
+            m_mutex = mutex;
 
             return true;
         } );
 
         SERVICE_LEAVE( ThreadServiceInterface, [this]()
         {
-            m_factoryThreadProfilers->setMutex( nullptr );
-            m_factoryFrameProfilers->setMutex( nullptr );
-            m_factoryCategoryProfilers->setMutex( nullptr );
-            m_factoryDescriptions->setMutex( nullptr );
+            m_mutex = nullptr;
         } );
 
         return true;
@@ -77,14 +73,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OptickProfilerSystem::beginApplication()
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         Optick::RegisterThread( "main" );
         Optick::StartCapture();
+
+        m_process = true;
     }
     //////////////////////////////////////////////////////////////////////////
     static OutputStreamInterface * g_outputFile = nullptr;
     //////////////////////////////////////////////////////////////////////////
     void OptickProfilerSystem::endApplication()
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        m_process = false;
+
         Optick::UnRegisterThread( false );
         Optick::StopCapture();
 
@@ -125,6 +129,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ProfilerInterfacePtr OptickProfilerSystem::addThread( const Char * _threadName )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         OptickThreadProfilerPtr profiler = m_factoryThreadProfilers->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( profiler->initialize( _threadName ) == false )
@@ -137,6 +143,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ProfilerInterfacePtr OptickProfilerSystem::addFrame( ProfilerDescriptionInterface * _description )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        if( m_process == false )
+        {
+            return nullptr;
+        }
+
         OptickFrameProfilerPtr profiler = m_factoryFrameProfilers->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( profiler->initialize( _description ) == false )
@@ -149,6 +162,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ProfilerInterfacePtr OptickProfilerSystem::addCategory( ProfilerDescriptionInterface * _description )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        if( m_process == false )
+        {
+            return nullptr;
+        }
+
         OptickCategoryProfilerPtr profiler = m_factoryCategoryProfilers->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( profiler->initialize( _description ) == false )
@@ -161,6 +181,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ProfilerDescriptionInterface * OptickProfilerSystem::createDescription( const Char * _name, const Char * _file, uint32_t _line )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        if( m_process == false )
+        {
+            return nullptr;
+        }
+
         OptickProfilerDescriptionPtr description = m_factoryDescriptions->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( description->initialize( _name, _file, _line ) == false )

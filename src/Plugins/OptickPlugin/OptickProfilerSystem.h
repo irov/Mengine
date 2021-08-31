@@ -1,13 +1,15 @@
 #pragma once
 
 #include "Interface/ProfilerSystemInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "OptickProfilerDescription.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
-#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/Vector.h"
+
+#include "Config/Atomic.h"
 
 #include "optick.h"
 
@@ -36,12 +38,16 @@ namespace Mengine
         ProfilerDescriptionInterface * createDescription( const Char * _name, const Char * _file, uint32_t _line ) override;
 
     protected:
-        FactoryWithMutexPtr m_factoryThreadProfilers;
-        FactoryWithMutexPtr m_factoryFrameProfilers;
-        FactoryWithMutexPtr m_factoryCategoryProfilers;
-        FactoryWithMutexPtr m_factoryDescriptions;
+        AtomicBool m_process;
+
+        ThreadMutexInterfacePtr m_mutex;
+
+        FactoryPtr m_factoryThreadProfilers;
+        FactoryPtr m_factoryFrameProfilers;
+        FactoryPtr m_factoryCategoryProfilers;
+        FactoryPtr m_factoryDescriptions;
 
         typedef Vector<OptickProfilerDescriptionPtr> VectorProfilerDescriptions;
-        VectorProfilerDescriptions m_descriptions;
+        VectorProfilerDescriptions m_descriptions;        
     };
 }

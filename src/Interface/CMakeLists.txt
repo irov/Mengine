@@ -128,6 +128,13 @@ src
 )
 
 ADD_FILTER(
+Profiler
+    ProfilerInterface.h
+    ProfilerDescriptionInterface.h
+    ProfilerSystemInterface.h
+)
+
+ADD_FILTER(
 Sound
     SoundSystemInterface.h
     SoundSourceInterface.h

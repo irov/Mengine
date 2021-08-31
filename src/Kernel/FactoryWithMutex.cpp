@@ -88,6 +88,7 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, (Factory *)this, _object );
         }
 #endif
+
         if( m_mutex != nullptr )
         {
             m_mutex->lock();

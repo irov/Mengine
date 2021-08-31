@@ -13,6 +13,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/MixinDebug.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -318,6 +319,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::update()
     {
+        MENGINE_PROFILER_CATEGORY( "picker" );
+
         if( m_invalidateTraps == true )
         {
             this->updateTraps_();

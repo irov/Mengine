@@ -6,6 +6,8 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
+#include "Config/Atomic.h"
+
 #ifdef MENGINE_DEBUG
 #include "Kernel/String.h"
 #endif
@@ -79,6 +81,6 @@ namespace Mengine
         typedef Vector<ObserverQueue> VectorObserverQueues;
         VectorObserverQueues m_add;
 
-        uint32_t m_visiting;        
+        Atomic<uint32_t> m_visiting;
     };
 }

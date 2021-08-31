@@ -76,6 +76,10 @@ These are the humans that form the Mengine core team, which runs the project.
 [irov-user]: https://github.com/irov
 [irov-img]: https://avatars.githubusercontent.com/u/1975501?s=100&v=4
 
+Profiler
+-------
+see [OPTICK](https://github.com/bombomby/optick)
+
 Code Style
 -------
 see [CODESTYLE](https://github.com/irov/Mengine/wiki/Codestyle) for more information.

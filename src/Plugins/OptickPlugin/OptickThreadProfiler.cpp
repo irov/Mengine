@@ -1,0 +1,24 @@
+#include "OptickThreadProfiler.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    OptickThreadProfiler::OptickThreadProfiler()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    OptickThreadProfiler::~OptickThreadProfiler()
+    {
+        Optick::UnRegisterThread( false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OptickThreadProfiler::initialize( const Char * _name )
+    {
+        //OPTICK_THREAD("Worker");
+
+        Optick::RegisterThread( _name );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

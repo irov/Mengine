@@ -721,6 +721,9 @@ Core
     StringArguments.h
     StringArguments.cpp
     
+    FilePathDateTimeHelper.h
+    FilePathDateTimeHelper.cpp
+    
     GlobalInputHandlerHelper.h
     GlobalInputHandlerHelper.cpp
 
@@ -747,6 +750,8 @@ Core
     
     Event.h
     Delegate.h
+    
+    ProfilerHelper.h
     
     DateTime.h
 

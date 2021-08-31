@@ -37,6 +37,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileService::_initializeService()
     {
+        //ToDo move to dev plugin [https://github.com/irov/Mengine/issues/95]
+
+#ifdef MENGINE_WINDOWS_DEBUG
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
             Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "FileModifyHook" ), 500, [this]()
@@ -61,12 +64,15 @@ namespace Mengine
 
             m_fileModifyMutex = nullptr;
         } );
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FileService::_finalizeService()
     {
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_fileModifies );
+
         m_fileModifies.clear();
 
         m_defaultFileGroup = nullptr;

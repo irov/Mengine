@@ -33,8 +33,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/FileLogger.h"
 #include "Kernel/BuildMode.h"
-
-#include <iomanip>
+#include "Kernel/FilePathDateTimeHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH
@@ -305,6 +304,10 @@ PLUGIN_EXPORT( AndroidNativeLinking );
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
 PLUGIN_EXPORT( AndroidNativeLocalNotifications );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_OPTICK_STATIC
+PLUGIN_EXPORT( Optick );
 #endif
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
@@ -581,21 +584,11 @@ namespace Mengine
         DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
             ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
-        PlatformDateTime dateTime;
-        dateTimeProvider->getLocalDateTime( &dateTime );
-
-        Stringstream ss_date;
-        ss_date << dateTime.year
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
-
-        String str_date = ss_date.str();
+        Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
+        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate );
 
         WString unicode_date;
-        Helper::utf8ToUnicode( str_date, &unicode_date );
+        Helper::utf8ToUnicode( filePathDate, &unicode_date );
 
         WString unicode_logFilename;
         unicode_logFilename += L"Game";
@@ -733,6 +726,28 @@ namespace Mengine
 
         Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
 
+#ifdef MENGINE_PLUGIN_OPTICK_STATIC
+        MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
+
+        if( this->createDynamicSystemPlugins_() == false )
+        {
+            LOGGER_ERROR( "invalid create dynamic priority plugins" );
+
+            return false;
+        }
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority dev plugins" );
+
+        if( this->createDynamicSystemDevPlugins_() == false )
+        {
+            LOGGER_ERROR( "invalid create dynamic priority dev plugins" );
+
+            return false;
+        }
+
         LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
 
         if( this->mountUserFileGroup_() == false )
@@ -756,6 +771,10 @@ namespace Mengine
         SERVICE_CREATE(Name, Doc)\
 
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
+
+        BOOTSTRAPPER_SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
+
         BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_PLUGIN_ZIP_STATIC
@@ -766,8 +785,6 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( LZ4, "initialize Plugin LZ4...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        BOOTSTRAPPER_SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
-        BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
 
         bool OPTION_norenderMode = HAS_OPTION( "norender" );
@@ -1089,6 +1106,61 @@ namespace Mengine
                     ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     LOGGER_WARNING( "failed to load dev plugin '%s'"
+                        , pluginName.c_str()
+                    );
+                }
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::createDynamicSystemPlugins_()
+    {
+        VectorString plugins;
+        CONFIG_VALUES( "SystemPlugins", "Name", &plugins );
+
+        for( const String & pluginName : plugins )
+        {
+            if( PLUGIN_SERVICE()
+                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                LOGGER_ERROR( "failed to load system plugin '%s'"
+                    , pluginName.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::createDynamicSystemDevPlugins_()
+    {
+        bool devplugins = MENGINE_MASTER_VALUE( false, Helper::isDevelopmentMode() );
+
+        if( HAS_OPTION( "devplugins" ) == true )
+        {
+            devplugins = true;
+        }
+
+        if( HAS_OPTION( "nodevplugins" ) == true )
+        {
+            devplugins = false;
+        }
+
+        if( devplugins == true )
+        {
+            VectorString devPlugins;
+            CONFIG_VALUES( "SystemDevPlugins", "Name", &devPlugins );
+
+            for( const String & pluginName : devPlugins )
+            {
+                if( PLUGIN_SERVICE()
+                    ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                {
+                    LOGGER_WARNING( "failed to load system dev plugin '%s'"
                         , pluginName.c_str()
                     );
                 }
@@ -1494,7 +1566,7 @@ namespace Mengine
         SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
-        SERVICE_FINALIZE( RenderSystem );
+        SERVICE_FINALIZE( RenderSystem );        
         SERVICE_FINALIZE( ConfigService );
         SERVICE_FINALIZE( ArchiveService );
         SERVICE_FINALIZE( MemoryService );
@@ -1561,7 +1633,7 @@ namespace Mengine
         SERVICE_DESTROY( PrototypeService );
         SERVICE_DESTROY( RenderMaterialService );
         SERVICE_DESTROY( RenderTextureService );
-        SERVICE_DESTROY( RenderSystem );
+        SERVICE_DESTROY( RenderSystem );        
         SERVICE_DESTROY( ConfigService );
         SERVICE_DESTROY( SettingsService );
         SERVICE_DESTROY( ArchiveService );

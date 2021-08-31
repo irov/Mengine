@@ -206,6 +206,12 @@
 #   define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (Y)
 #endif
 
+#ifndef MENGINE_PROFILER_ENABLE
+#   ifdef MENGINE_WINDOWS_DEBUG
+#       define MENGINE_PROFILER_ENABLE
+#   endif
+#endif
+
 #ifndef MENGINE_UNKNOWN_SIZE
 #define MENGINE_UNKNOWN_SIZE (~0U)
 #endif

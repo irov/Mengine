@@ -17,10 +17,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionObservable.h"
+#include "Kernel/FilePathDateTimeHelper.h"
 
 #include "Kernel/Stringstream.h"
-
-#include <iomanip>
 
 namespace Mengine
 {
@@ -199,20 +198,10 @@ namespace Mengine
         processDumpPath += "Antifreeze";
         processDumpPath += "_";
 
-        PlatformDateTime dateTime;
-        m_dateTimeProvider->getLocalDateTime( &dateTime );
+        Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
+        Helper::makeFilePathDateTimeHelper( m_dateTimeProvider, filePathDate );
 
-        Stringstream ss_date;
-        ss_date << dateTime.year
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.month
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
-
-        String str_date = ss_date.str();
-
-        processDumpPath += str_date;
+        processDumpPath += filePathDate;
         processDumpPath += ".dmp";
 
         if( PLATFORM_SERVICE()

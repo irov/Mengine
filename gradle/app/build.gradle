@@ -386,14 +386,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
     apply plugin: 'io.sentry.android.gradle'
 
     dependencies {
-        implementation 'io.sentry:sentry-android:4.1.0'
-    }
-
-    sentry {
-        autoProguardConfig true
-        autoUpload true
-        uploadNativeSymbols true
-        includeNativeSources true
+        implementation 'io.sentry:sentry-android:5.1.2'
     }
 }
 else

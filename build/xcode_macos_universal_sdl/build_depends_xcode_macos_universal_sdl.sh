@@ -12,6 +12,6 @@ CONFIGURATION=$1
 
 mkdir -p ../../solutions/dependencies_xcode_macos_universal_sdl/$CONFIGURATION
 pushd ../../solutions/dependencies_xcode_macos_universal_sdl/$CONFIGURATION
-$CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xode_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+$CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_MacOS_Universal_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
 $CMAKE --build ./ --config $CONFIGURATION
 popd

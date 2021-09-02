@@ -20,15 +20,20 @@
 #include "Kernel/Logger.h"
 
 #include "Config/Algorithm.h"
+#include "Config/StdIO.h"
 
 #include <clocale>
 #include <memory>
 #include <cerrno>
 #include <ctime>
 #include <functional>
-#include <iomanip>
 
 #include "resource.h"
+
+
+#ifndef MENGINE_DLL_NAME
+#define MENGINE_DLL_NAME L"Mengine.dll"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_MENGINE_STATIC
@@ -171,10 +176,22 @@ namespace Mengine
     bool Win32Application::initialize()
     {
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
-        HINSTANCE hInstance = ::LoadLibrary( L"Mengine.dll" );
+        HINSTANCE hInstance = ::LoadLibrary( MENGINE_DLL_NAME );
 
         if( hInstance == NULL )
         {
+            DWORD error_code = ::GetLastError();
+
+            MENGINE_UNUSED( error_code );
+
+            WChar message[1024] = {L'\0'};
+            MENGINE_WSPRINTF( message, L"Invalid load %ls [%u]"
+                , MENGINE_DLL_NAME
+                , error_code 
+            );
+
+            ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
+
             return false;
         }
 
@@ -182,6 +199,19 @@ namespace Mengine
 
         if( procInitializeMengine == nullptr )
         {
+            DWORD error_code = ::GetLastError();
+
+            MENGINE_UNUSED( error_code );
+
+            WChar message[1024] = {L'\0'};
+            MENGINE_WSPRINTF( message, L"Invalid get function '%s' from dll '%ls' [%u]"
+                , "initializeMengine"
+                , MENGINE_DLL_NAME
+                , error_code
+            );
+
+            ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
+
             ::FreeLibrary( hInstance );
 
             return false;

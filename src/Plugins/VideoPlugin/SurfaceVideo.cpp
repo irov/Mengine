@@ -8,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/EventableHelper.h"
+#include "Kernel/ResourceHelper.h"
 
 namespace Mengine
 {
@@ -147,6 +148,16 @@ namespace Mengine
         m_needUpdateVideoBuffer = true;
         m_updateFirstFrame = true;
 
+        LOGGER_INFO( "video", "compile '%s' file '%s' size %ux%u duration [%.2f] %s %s"
+            , this->getName().c_str()
+            , Helper::getResourceFilePath( this->getResourceVideo() ).c_str()
+            , surfaceDimension.frameWidth
+            , surfaceDimension.frameHeight
+            , m_resourceVideo->getDuration()
+            , m_resourceVideo->isAlpha() == true ? "[alpha]" : ""
+            , m_resourceVideo->isPremultiply() == true ? "[premultiply]" : ""
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -163,6 +174,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_release()
     {
+        LOGGER_INFO( "video", "release '%s' file '%s'"
+            , this->getName().c_str()
+            , Helper::getResourceFilePath( this->getResourceVideo() ).c_str()
+        );
+
         if( m_decoderVideo != nullptr )
         {
             m_resourceVideo->destroyVideoDecoder( m_decoderVideo );

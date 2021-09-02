@@ -1,0 +1,2 @@
+LIBRARY "OptickPlugin"
+EXPORTS dllCreatePlugin @1

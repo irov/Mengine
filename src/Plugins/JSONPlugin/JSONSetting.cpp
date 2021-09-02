@@ -28,10 +28,10 @@ namespace Mengine
         m_storage = storage;
 
         FILE_SERVICE()
-            ->setFileModifyHook( _fileGroup, _filePath, [this, _fileGroup, _filePath, _doc]()
+            ->setFileModifyHook( m_fileGroup, m_filePath, [this, _doc]()
         {
             JSONStorageInterfacePtr storage = JSON_SERVICE()
-                ->loadJSON( _fileGroup, _filePath, _doc );
+                ->loadJSON( m_fileGroup, m_filePath, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( storage );
 
@@ -43,6 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void JSONSetting::finalize()
     {
+        FILE_SERVICE()
+            ->removeFileModifyHook( m_fileGroup, m_filePath );
+
         m_fileGroup = nullptr;
         m_storage = nullptr;
     }

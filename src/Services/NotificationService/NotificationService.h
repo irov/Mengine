@@ -6,6 +6,8 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
+#include "Config/Atomic.h"
+
 #ifdef MENGINE_DEBUG
 #include "Kernel/String.h"
 #endif
@@ -55,7 +57,15 @@ namespace Mengine
         };
 
         typedef Vector<ObserverDesc> VectorObservers;
-        VectorObservers m_observers[MENGINE_NOTIFICATOR_MAX_COUNT];
+
+        struct ObserversDesc
+        {
+            VectorObservers observers;
+
+            ThreadMutexInterfacePtr mutex;
+        };
+                
+        ObserversDesc m_observers[MENGINE_NOTIFICATOR_MAX_COUNT];
 
         struct ObserverQueue
         {
@@ -71,8 +81,6 @@ namespace Mengine
         typedef Vector<ObserverQueue> VectorObserverQueues;
         VectorObserverQueues m_add;
 
-        uint32_t m_visiting;
-
-        ThreadMutexInterfacePtr m_mutex;
+        Atomic<uint32_t> m_visiting;
     };
 }

@@ -28,6 +28,6 @@ namespace Mengine
         virtual void visitCompositionDataResources( const aeMovieCompositionData * _composition, const LambdaResource & _lambda ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Movie2DataInterface> Movie2DataInterfacePtr;
+    typedef IntrusivePtr<Movie2DataInterface, DataInterface> Movie2DataInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

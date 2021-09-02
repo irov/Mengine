@@ -75,11 +75,23 @@ namespace Mengine
         float volume = m_resourceSound->getDefaultVolume();
         this->setVolume( volume );
 
+        LOGGER_INFO( "sound", "compile '%s' file '%s' %s"
+            , this->getName().c_str()
+            , Helper::getResourceFilePath( this->getResourceSound() ).c_str()
+            , m_resourceSound->isStreamable() == true ? "[stream]" : ""
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_release()
     {
+        LOGGER_INFO( "sound", "release '%s' file '%s' %s"
+            , this->getName().c_str()
+            , Helper::getResourceFilePath( this->getResourceSound() ).c_str()
+            , m_resourceSound->isStreamable() == true ? "[stream]" : ""
+        );
+
         if( SOUND_SERVICE()
             ->releaseSoundSource( m_soundIdentity ) == false )
         {

@@ -17,6 +17,7 @@ import org.Mengine.Build.Facebook.FacebookInteractionLayer;
 import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
 import org.Mengine.Build.LocalNotifications.NotificationPublisher;
 import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
+import org.Mengine.Build.MarSDK.MarSDKInteractionLayer;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
@@ -26,6 +27,7 @@ public class MengineActivity extends SDLActivity {
 
     public FacebookInteractionLayer facebookInteractionLayer;
     public UnityAdsInteractionLayer unityAdsInteractionLayer;
+    public MarSDKInteractionLayer marSDKInteractionLayer;
     public AdMobInteractionLayer adMobInteractionLayer;
     public DevToDevInteractionLayer devToDevInteractionLayer;
     public LocalNotificationsInteractionLayer localNotificationsInteractionLayer;

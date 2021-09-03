@@ -32,6 +32,7 @@
 #include "Kernel/Base64.h"
 #include "Kernel/Crash.h"
 #include "Kernel/Optional.h"
+#include "Kernel/FilePathDateTimeHelper.h"
 
 #include "Config/BuildVersion.h"
 #include "Config/GitSHA1.h"
@@ -1320,6 +1321,17 @@ namespace Mengine
                 d["milliseconds"] = dateTime.milliseconds;
 
                 return d;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            String s_getDatePathTimestamp()
+            {
+                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
+
+                Char PathTimestamp[1024] = {'\0'};
+                Helper::makeFilePathDateTimeHelper( dateTimeProvider, PathTimestamp );
+
+                return PathTimestamp;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getTimeString()
@@ -3663,6 +3675,7 @@ namespace Mengine
 
         pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
         pybind::def_functor_kernel( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getDateStruct );
+        pybind::def_functor( _kernel, "getDatePathTimestamp", helperScriptMethod, &HelperScriptMethod::s_getDatePathTimestamp );
 
         pybind::def_functor( _kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
 

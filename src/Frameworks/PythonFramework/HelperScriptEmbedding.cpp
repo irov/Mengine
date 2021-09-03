@@ -1301,12 +1301,25 @@ namespace Mengine
                 return s;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_getDate()
+            pybind::object s_getDateStruct( pybind::kernel_interface * _kernel )
             {
-                std::time_t ctTime;
-                std::time( &ctTime );
+                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
 
-                return static_cast<uint32_t>(ctTime);
+                PlatformDateTime dateTime;
+                dateTimeProvider->getLocalDateTime( &dateTime );
+
+                pybind::dict d( _kernel );
+
+                d["year"] = dateTime.year;
+                d["month"] = dateTime.month;
+                d["day"] = dateTime.day;
+                d["hour"] = dateTime.hour;
+                d["minute"] = dateTime.minute;
+                d["second"] = dateTime.second;
+                d["milliseconds"] = dateTime.milliseconds;
+
+                return d;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getTimeString()
@@ -3648,7 +3661,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
 
-        pybind::def_functor( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getDate );
+        pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
+        pybind::def_functor_kernel( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getDateStruct );
 
         pybind::def_functor( _kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
 

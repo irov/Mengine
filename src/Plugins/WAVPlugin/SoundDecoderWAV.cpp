@@ -4,6 +4,9 @@
 
 #include "Kernel/Magic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ProfilerHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 #include "math/utils.h"
 
@@ -144,10 +147,15 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SoundDecoderWAV::_decode( const DecoderData * _data )
+    size_t SoundDecoderWAV::_decode( const DecoderData * _decoderData )
     {
-        void * buffer = _data->buffer;
-        size_t size = _data->size;
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const SoundDecoderData * );
+
+        MENGINE_PROFILER_CATEGORY();
+
+        void * buffer = _decoderData->buffer;
+        size_t size = _decoderData->size;
 
         const InputStreamInterfacePtr & stream = this->getStream();
 

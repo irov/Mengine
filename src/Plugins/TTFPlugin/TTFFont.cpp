@@ -21,6 +21,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "utf8.h"
 
@@ -221,6 +222,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_prepareGlyph( GlyphCode _code, const DocumentPtr & _doc )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 

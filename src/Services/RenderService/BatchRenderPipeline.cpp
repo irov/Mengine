@@ -7,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/RenderContextHelper.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -636,6 +637,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::batch()
     {
+        MENGINE_PROFILER_CATEGORY();
+
         for( const RenderPass & pass : m_renderPasses )
         {
             if( (pass.flags & RENDER_PASS_FLAG_SINGLE) == RENDER_PASS_FLAG_SINGLE )
@@ -653,6 +656,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::render()
     {
+        MENGINE_PROFILER_CATEGORY();
+
         std::stable_sort( m_renderPasses.begin(), m_renderPasses.end(), []( const RenderPass & _l, const RenderPass & _r )
         {
             if( _l.zGroup < _r.zGroup )
@@ -823,7 +828,7 @@ namespace Mengine
         *_ibPos = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_testRenderBB( const RenderObject * _begin, const RenderObject * _end, const RenderObject * _ro )
+    MENGINE_INLINE static bool s_testRenderBB( const RenderObject * _begin, const RenderObject * _end, const RenderObject * _ro )
     {
         for( const RenderObject * it = _begin; it != _end; ++it )
         {
@@ -843,7 +848,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BatchRenderPipeline::batchRenderObjectSmart_( const RenderPass & _renderPass, DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderObject * _ro, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * _vbPos, uint32_t * _ibPos )
+    void BatchRenderPipeline::batchRenderObjectSmart_( const RenderPass & _renderPass, DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderPrimitives::iterator _rpBegin, const RenderObject * _ro, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * _vbPos, uint32_t * _ibPos )
     {
         uint32_t vbPos = *_vbPos;
         uint32_t ibPos = *_ibPos;

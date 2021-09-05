@@ -22,6 +22,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/RenderContextHelper.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "math/convex8.h"
 
@@ -461,6 +462,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         _renderPipeline->prepare();
 
         if( m_renderSystem->beginScene() == false )
@@ -479,6 +482,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::endScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         _renderPipeline->flush();
 
         this->flushRender_( _renderPipeline );
@@ -492,6 +497,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::swapBuffers()
     {
+        MENGINE_PROFILER_CATEGORY();
+
         m_renderSystem->swapBuffers();
     }
     //////////////////////////////////////////////////////////////////////////

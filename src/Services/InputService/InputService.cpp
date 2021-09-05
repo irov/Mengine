@@ -57,7 +57,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::update()
     {
-        MENGINE_PROFILER_CATEGORY( "input" );
+        MENGINE_PROFILER_CATEGORY();
 
         m_events = std::move( m_eventsAux );
 

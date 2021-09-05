@@ -319,7 +319,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::update()
     {
-        MENGINE_PROFILER_CATEGORY( "picker" );
+        MENGINE_PROFILER_CATEGORY();
 
         if( m_invalidateTraps == true )
         {
@@ -360,6 +360,8 @@ namespace Mengine
         {
             return false;
         }
+
+        MENGINE_PROFILER_CATEGORY();
 
         for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
@@ -413,6 +415,8 @@ namespace Mengine
             return false;
         }
 
+        MENGINE_PROFILER_CATEGORY();
+
         for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
@@ -464,6 +468,8 @@ namespace Mengine
         {
             return false;
         }
+
+        MENGINE_PROFILER_CATEGORY();
 
         for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
@@ -522,6 +528,8 @@ namespace Mengine
         {
             return false;
         }
+
+        MENGINE_PROFILER_CATEGORY();
 
         for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
@@ -585,6 +593,8 @@ namespace Mengine
         {
             return false;
         }
+
+        MENGINE_PROFILER_CATEGORY();
 
         for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
@@ -656,6 +666,8 @@ namespace Mengine
             return false;
         }
 
+        MENGINE_PROFILER_CATEGORY();
+
         for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
@@ -717,6 +729,8 @@ namespace Mengine
         {
             return false;
         }
+
+        MENGINE_PROFILER_CATEGORY();
 
         for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
@@ -853,6 +867,8 @@ namespace Mengine
     bool PickerService::pickStates_( float _x, float _y, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickerStates * const _states ) const
     {
         MENGINE_ASSERTION_FATAL( _states->empty() );
+
+        MENGINE_PROFILER_CATEGORY();
 
         if( m_arrow == nullptr )
         {

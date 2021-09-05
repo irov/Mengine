@@ -6,7 +6,7 @@
 #include "OptickProfilerDescription.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
+#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/Vector.h"
 
 #include "Config/Atomic.h"
@@ -42,10 +42,10 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutex;
 
-        FactoryPtr m_factoryThreadProfilers;
-        FactoryPtr m_factoryFrameProfilers;
-        FactoryPtr m_factoryCategoryProfilers;
-        FactoryPtr m_factoryDescriptions;
+        FactoryWithMutexPtr m_factoryThreadProfilers;
+        FactoryWithMutexPtr m_factoryFrameProfilers;
+        FactoryWithMutexPtr m_factoryCategoryProfilers;
+        FactoryWithMutexPtr m_factoryDescriptions;
 
         typedef Vector<OptickProfilerDescriptionPtr> VectorProfilerDescriptions;
         VectorProfilerDescriptions m_descriptions;        

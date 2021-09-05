@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AllocatorHelper.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "zlib.h"
 
@@ -127,6 +128,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ArchivatorZip::decompress( void * const _buffer, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _decompressSize )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         uLong destLen = (uLong)_bufferSize;
 
         Bytef * dst_buffer = (Bytef *)_buffer;

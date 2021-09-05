@@ -2,6 +2,9 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/PixelFormat.h"
+#include "Kernel/ProfilerHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 namespace Mengine
 {
@@ -71,10 +74,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderPVRTC::_decode( const DecoderData * _data )
+    size_t ImageDecoderPVRTC::_decode( const DecoderData * _decoderData )
     {
-        void * buffer = _data->buffer;
-        size_t size = _data->size;
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+
+        MENGINE_PROFILER_CATEGORY();
+
+        void * buffer = _decoderData->buffer;
+        size_t size = _decoderData->size;
 
         const InputStreamInterfacePtr & stream = this->getStream();
 

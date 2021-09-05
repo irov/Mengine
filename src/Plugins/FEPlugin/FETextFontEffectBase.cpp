@@ -1,6 +1,7 @@
 #include "FETextFontEffectBase.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ProfilerHelper.h"
 
 namespace Mengine
 {
@@ -102,6 +103,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FETextFontEffectBase::apply( uint32_t _width, uint32_t _rows, uint32_t _pitch, const void * _buffer, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         int32_t im_image_w = _width;
         int32_t im_image_h = _rows;
         int32_t im_image_pitch = _pitch;

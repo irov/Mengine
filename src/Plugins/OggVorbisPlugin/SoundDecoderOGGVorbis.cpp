@@ -2,6 +2,8 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ProfilerHelper.h"
+#include "Kernel/AssertionType.h"
 
 #include "Config/StdLib.h"
 #include "Config/Abs.h"
@@ -189,15 +191,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SoundDecoderOGGVorbis::_decode( const DecoderData * _data )
+    size_t SoundDecoderOGGVorbis::_decode( const DecoderData * _decoderData )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const SoundDecoderData * );
+
+        MENGINE_PROFILER_CATEGORY();
+
         long bytesDone = 0;
-        int32_t bytesReading = (int32_t)_data->size;
+        int32_t bytesReading = (int32_t)_decoderData->size;
 
         for( ;;)
         {
             int32_t current_section = 0;
-            char * readBuffer = (char *)_data->buffer + bytesDone;
+            char * readBuffer = (char *)_decoderData->buffer + bytesDone;
             long decodeSize = ov_read( &m_oggVorbisFile, readBuffer, bytesReading, 0, 2, 1, &current_section );
 
             if( decodeSize == OV_HOLE )

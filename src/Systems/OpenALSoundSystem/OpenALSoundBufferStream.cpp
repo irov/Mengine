@@ -363,11 +363,11 @@ namespace Mengine
     {
         uint8_t * dataBuffer = m_memory->getBuffer();
 
-        DecoderData data_body;
-        data_body.buffer = dataBuffer;
-        data_body.size = MENGINE_OPENAL_STREAM_BUFFER_SIZE;
+        SoundDecoderData decoder_data_body;
+        decoder_data_body.buffer = dataBuffer;
+        decoder_data_body.size = MENGINE_OPENAL_STREAM_BUFFER_SIZE;
 
-        size_t bytesWritten = m_soundDecoder->decode( &data_body );
+        size_t bytesWritten = m_soundDecoder->decode( &decoder_data_body );
 
         if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE && m_looped == true )
         {
@@ -377,11 +377,11 @@ namespace Mengine
 
             bufferSize -= bufferSize % 4;
 
-            DecoderData data_tail;
-            data_tail.buffer = dataBuffer + bytesWritten;
-            data_tail.size = bufferSize;
+            SoundDecoderData decoder_data_tail;
+            decoder_data_tail.buffer = dataBuffer + bytesWritten;
+            decoder_data_tail.size = bufferSize;
 
-            size_t bytesWritten2 = m_soundDecoder->decode( &data_tail );
+            size_t bytesWritten2 = m_soundDecoder->decode( &decoder_data_tail );
 
             bytesWritten += bytesWritten2;
         }

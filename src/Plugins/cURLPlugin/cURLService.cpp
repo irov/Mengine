@@ -21,6 +21,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/StdString.h"
 
@@ -200,6 +201,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         if( this->isStopService() == true )
         {
             LOGGER_ERROR( "service is stop" );
@@ -245,6 +248,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         if( this->isStopService() == true )
         {
             LOGGER_ERROR( "service is stop" );
@@ -290,6 +295,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         if( this->isStopService() == true )
         {
             LOGGER_ERROR( "service is stop" );
@@ -330,6 +337,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         if( this->isStopService() == true )
         {
             LOGGER_ERROR( "service is stop" );

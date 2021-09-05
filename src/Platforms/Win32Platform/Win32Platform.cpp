@@ -705,7 +705,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::updateWndMessage_()
     {
-        MENGINE_PROFILER_CATEGORY( "wnd" );
+        MENGINE_PROFILER_CATEGORY();
 
         MSG msg;
         while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )

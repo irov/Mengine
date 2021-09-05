@@ -33,15 +33,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptickProfilerSystem::_initializeService()
     {
-        m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryFrameProfilers = Helper::makeFactoryPool<OptickFrameProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryFrameProfilers = Helper::makeFactoryPool<OptickFrameProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+            m_factoryThreadProfilers->setMutex( mutex );
+            m_factoryFrameProfilers->setMutex( mutex );
+            m_factoryCategoryProfilers->setMutex( mutex );
+            m_factoryDescriptions->setMutex( mutex );
 
             m_mutex = mutex;
 
@@ -50,6 +55,11 @@ namespace Mengine
 
         SERVICE_LEAVE( ThreadServiceInterface, [this]()
         {
+            m_factoryThreadProfilers->setMutex( nullptr );
+            m_factoryFrameProfilers->setMutex( nullptr );
+            m_factoryCategoryProfilers->setMutex( nullptr );
+            m_factoryDescriptions->setMutex( nullptr );
+
             m_mutex = nullptr;
         } );
 

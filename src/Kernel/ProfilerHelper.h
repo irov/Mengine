@@ -91,17 +91,17 @@ namespace Mengine
 
 #ifdef MENGINE_PROFILER_ENABLE
 #ifndef MENGINE_PROFILER_CATEGORY
-#define MENGINE_PROFILER_CATEGORY(Category)\
+#define MENGINE_PROFILER_CATEGORY()\
     static Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
     if( SERVICE_EXIST( Mengine::ProfilerSystemInterface ) == true && MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) == nullptr )\
     {\
         MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = PROFILER_SYSTEM()\
-            ->createDescription( Category, MENGINE_CODE_FILE, MENGINE_CODE_LINE );\
+            ->createDescription( MENGINE_CODE_FUNCTION, MENGINE_CODE_FILE, MENGINE_CODE_LINE );\
     }\
     Mengine::Detail::ProfilerCategoryScope MENGINE_PP_CONCATENATE( __mengine_profiler_frame_scope, MENGINE_CODE_LINE )(MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ));
 #endif
 #else
-#define MENGINE_PROFILER_CATEGORY(Name)
+#define MENGINE_PROFILER_CATEGORY()
 #endif
 
 #ifdef MENGINE_PROFILER_ENABLE

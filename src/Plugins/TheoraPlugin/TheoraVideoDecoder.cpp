@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionType.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/StdString.h"
 
@@ -300,6 +301,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
         MENGINE_ASSERTION_TYPE( _decoderData, const VideoDecoderData * );
+
+        MENGINE_PROFILER_CATEGORY();
 
         const VideoDecoderData * decoderData = static_cast<const VideoDecoderData *>(_decoderData);
 

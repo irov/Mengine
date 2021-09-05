@@ -47,6 +47,7 @@
 #include "Kernel/Documentable.h"
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -692,6 +693,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
 

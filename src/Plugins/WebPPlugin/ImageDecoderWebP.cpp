@@ -7,6 +7,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/ProfilerHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -113,6 +114,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
         MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+
+        MENGINE_PROFILER_CATEGORY();
 
         const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
 

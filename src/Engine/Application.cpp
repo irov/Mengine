@@ -1635,7 +1635,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::beginUpdate()
     {
-        MENGINE_PROFILER_CATEGORY( "app" );
+        MENGINE_PROFILER_CATEGORY();
 
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
@@ -1690,7 +1690,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::tick( float _time )
     {
-        MENGINE_PROFILER_CATEGORY( "tick" );
+        MENGINE_PROFILER_CATEGORY();
 
         ++m_updateRevision;
 
@@ -1737,8 +1737,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()
     {
-        MENGINE_PROFILER_CATEGORY( "render" );
-
         if( RENDER_SERVICE()
             ->beginScene( m_renderPipeline ) == false )
         {
@@ -1758,8 +1756,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::flush()
     {
-        MENGINE_PROFILER_CATEGORY( "flush" );
-
         RENDER_SERVICE()
             ->swapBuffers();
     }

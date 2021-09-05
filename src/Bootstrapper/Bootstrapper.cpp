@@ -543,6 +543,8 @@ namespace Mengine
             }
         }
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CONFIGS_LOAD );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1596,8 +1598,8 @@ namespace Mengine
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( Platform );
-        SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( LoggerService );
+        SERVICE_FINALIZE( NotificationService );        
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
 

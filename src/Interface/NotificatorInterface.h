@@ -114,6 +114,7 @@ namespace Mengine
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_LOGGER_END, ELoggerLevel, uint32_t, uint32_t, const Char *, size_t );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_TIME_FACTOR_CHANGE, float );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PACKAGES_LOAD );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CONFIGS_LOAD );
     MENGINE_DECLARE_END();
     //////////////////////////////////////////////////////////////////////////
 #undef MENGINE_DECLARE_BEGIN

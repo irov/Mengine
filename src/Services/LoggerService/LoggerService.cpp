@@ -137,13 +137,6 @@ namespace Mengine
             m_historically = false;
         }
 
-        SERVICE_WAIT( ConfigServiceInterface, [this]()
-        {
-            m_historyLimit = CONFIG_VALUE( "Limit", "LoggerHistoryMax", MENGINE_LOGGER_HISTORY_MAX );
-
-            return true;
-        } );
-
         ELoggerLevel level = this->getVerboseLevel();
         const Char * loggerLevels[] = {"SILENT", "FATAL", "CRITICAL", "MESSAGE_RELEASE", "ERROR", "PERFOMANCE", "STATISTIC", "WARNING", "MESSAGE", "INFO", "DEBUG", "VERBOSE"};
 
@@ -194,11 +187,15 @@ namespace Mengine
             m_dateTimeProvider = nullptr;
         } );
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CONFIGS_LOAD, &LoggerService::notifyConfigsLoad_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CONFIGS_LOAD );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( const LoggerInterfacePtr & logger : m_loggers )
@@ -402,6 +399,16 @@ namespace Mengine
 
             m_history.emplace_back( history );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::notifyConfigsLoad_()
+    {
+        m_historyLimit = CONFIG_VALUE( "Limit", "LoggerHistoryMax", MENGINE_LOGGER_HISTORY_MAX );
+
+        VectorConstString verboses;
+        CONFIG_VALUES( "Engine", "Verboses", &verboses );
+
+        m_verboses.insert( m_verboses.begin(), verboses.begin(), verboses.end() );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t LoggerService::getCountMessage( ELoggerLevel _level )

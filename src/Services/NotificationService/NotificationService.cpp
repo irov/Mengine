@@ -1,6 +1,7 @@
 #include "NotificationService.h"
 
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -94,13 +95,6 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_observers[_id].mutex );
 
-        LOGGER_INFO( "notify", "add observer '%s' id [%u] uid [%u] p [%p]"
-            , MENGINE_MIXIN_DEBUG_NAME( _observer )
-            , _id
-            , MENGINE_MIXIN_DEBUG_UID( _observer )
-            , _observer
-        );
-
         MENGINE_ASSERTION_FATAL( this->hasObserver_( _id, _observer ) == false, "dublicate observer '%s' id [%u] (doc: %s)"
             , MENGINE_MIXIN_DEBUG_NAME( _observer )
             , _id
@@ -131,13 +125,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_observers[_id].mutex );
-
-        LOGGER_INFO( "notify", "remove observer '%s' id [%u] uid [%u] p [%p]"
-            , MENGINE_MIXIN_DEBUG_NAME( _observer )
-            , _id
-            , MENGINE_MIXIN_DEBUG_UID( _observer )
-            , _observer
-        );
 
         for( VectorObserverQueues::iterator
             it = m_add.begin(),

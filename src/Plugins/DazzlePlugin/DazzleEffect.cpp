@@ -2,6 +2,7 @@
 
 #include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ColorHelper.h"
 
 #include "Config/StdString.h"
 
@@ -386,7 +387,7 @@ namespace Mengine
             }
             else
             {
-                Color cv( p.color );
+                Color cv = Helper::makeColorARGB( p.color );
                 cv *= color;
                 p.color = cv.getAsARGB();
             }

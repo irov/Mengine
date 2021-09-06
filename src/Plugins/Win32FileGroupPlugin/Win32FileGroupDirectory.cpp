@@ -53,7 +53,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
+    void Win32FileGroupDirectory::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
         size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
 
@@ -63,21 +63,12 @@ namespace Mengine
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
         Char utf8_filePath[MENGINE_MAX_PATH] = {'\0'};
-        if( this->getFullPath( _filePath, utf8_filePath ) == false )
-        {
-            LOGGER_ERROR( "invlalid get fullPath '%s'"
-                , _filePath.c_str()
-            );
-
-            return false;
-        }
+        this->getFullPath( _filePath, utf8_filePath );
 
         bool result = PLATFORM_SERVICE()
             ->existFile( utf8_filePath );
@@ -174,10 +165,7 @@ namespace Mengine
     bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
         Char fullPathBase[MENGINE_MAX_PATH] = {'\0'};
-        if( this->getFullPath( FilePath::none(), fullPathBase ) == false )
-        {
-            return false;
-        }
+        this->getFullPath( FilePath::none(), fullPathBase );
 
         Helper::pathCorrectForwardslashA( fullPathBase );
 

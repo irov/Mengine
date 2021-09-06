@@ -3,6 +3,7 @@
 #include "BitmapFont.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -18,10 +19,9 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
             const FilePath & filePath = content->getFilePath();
 
-            LOGGER_ERROR( "bitmap font '%s' not found file '%s:%s'"
+            LOGGER_ERROR( "bitmap font '%s' not found file '%s'"
                 , bitmapFont->getName().c_str()
-                , fileGroup->getName().c_str()
-                , filePath.c_str()
+                , Helper::getFileGroupFullPath( fileGroup, filePath )
             );
 
             return false;

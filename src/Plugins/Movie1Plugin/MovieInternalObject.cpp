@@ -78,7 +78,7 @@ namespace Mengine
 
         if( py_object.is_invalid() == true )
         {
-            LOGGER_ERROR( "'%s' resource '%s' can't find internal object '%s:%s'"
+            LOGGER_ERROR( "'%s' resource '%s' can't find internal object internal group '%s' name '%s'"
                 , this->getName().c_str()
                 , m_resourceInternalObject->getName().c_str()
                 , internalGroup.c_str()
@@ -110,7 +110,7 @@ namespace Mengine
         NodePtr node = EVENTABLE_OTHER_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
             ->onMovieActivateInternal( m_internalObject );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node, "'%s' resource '%s' invalid get internal node '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( node, "'%s' resource '%s' invalid get internal node group '%s' name '%s'"
             , this->getName().c_str()
             , m_resourceInternalObject->getName().c_str()
             , m_resourceInternalObject->getInternalGroup().c_str()

@@ -23,6 +23,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/ColorHelper.h"
 
 #include "math/convex8.h"
 

@@ -14,6 +14,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/FileGroupHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PackageService, Mengine::PackageService );
@@ -56,9 +57,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "package", "Packages load... %s:%s"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        LOGGER_INFO( "package", "Packages load... %s"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()

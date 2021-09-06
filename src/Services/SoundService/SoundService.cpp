@@ -18,6 +18,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -438,24 +439,21 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _streamable, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open sound file '%s:%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open sound file '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
             ->createDecoder( _codecType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "can't create sound decoder for file '%s:%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "can't create sound decoder for file '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         if( soundDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "can't initialize sound decoder for file '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            LOGGER_ERROR( "can't initialize sound decoder for file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return nullptr;
@@ -468,9 +466,8 @@ namespace Mengine
     {
         if( m_supportStream == false && _streamable == true )
         {
-            LOGGER_WARNING( "unsupport stream sound '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            LOGGER_WARNING( "unsupport stream sound '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             _streamable = false;
@@ -495,9 +492,8 @@ namespace Mengine
             {
                 if( soundDecoder->rewind() == false )
                 {
-                    LOGGER_ERROR( "invalid rewind decoder '%s':'%s'"
-                        , _fileGroup->getName().c_str()
-                        , _filePath.c_str()
+                    LOGGER_ERROR( "invalid rewind decoder '%s'"
+                        , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                     );
 
                     return nullptr;
@@ -509,18 +505,16 @@ namespace Mengine
             soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, true, _doc );
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "invalid create decoder '%s':'%s' type '%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "invalid create decoder '%s' type '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             , _codecType.c_str()
         );
 
         SoundBufferInterfacePtr buffer = SOUND_SYSTEM()
             ->createSoundBuffer( soundDecoder, _streamable, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't create sound buffer for file '%s:%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't create sound buffer for file '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         return buffer;

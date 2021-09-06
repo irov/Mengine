@@ -16,6 +16,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Kernel/Stringstream.h"
 
@@ -158,7 +159,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->initialize( _fileGroup, _filePath, _observer );
-        task->setImageCodec( _codecType );
+        task->setCodecType( _codecType );
 
         PrefetchReceiverPtr new_receiver = m_factoryPrefetchReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -281,9 +282,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DataflowContext * _context, const PrefetcherObserverInterfacePtr & _observer )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, "'%s':'%s' invalid dataflow is nullptr"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, "file '%s' invalid dataflow is nullptr"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         if( this->isAvailableService() == false )

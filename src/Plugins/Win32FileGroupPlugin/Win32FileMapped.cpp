@@ -21,6 +21,7 @@ namespace Mengine
         : m_hFile( INVALID_HANDLE_VALUE )
         , m_hMapping( INVALID_HANDLE_VALUE )
         , m_dwAllocationGranularity( 0 )
+        , m_liSize()
     {
     }
     //////////////////////////////////////////////////////////////////////////

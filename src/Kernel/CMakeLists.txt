@@ -509,6 +509,9 @@ Core
 
     Color.h
     Color.cpp
+    
+    ColorHelper.h
+    ColorHelper.cpp
         
     GlyphCode.h
     
@@ -764,6 +767,9 @@ Core
     
     FileStreamHelper.h
     FileStreamHelper.cpp
+    
+    FileGroupHelper.h
+    FileGroupHelper.cpp
 
     RandomDevice.h
     RandomDevice.cpp

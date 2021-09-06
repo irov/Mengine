@@ -4823,7 +4823,24 @@ namespace Mengine
 #endif
 
         WChar winDir[MENGINE_MAX_PATH] = {L'\0'};
-        ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
+        UINT winDirLen = ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
+
+        if( winDirLen == 0 )
+        {
+            LOGGER_ERROR( "failed GetWindowsDirectory %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
+        }
+
+        if( winDirLen >= MENGINE_MAX_PATH )
+        {
+            LOGGER_ERROR( "failed GetWindowsDirectory len %u great capacity %u"
+                , winDirLen
+                , MENGINE_MAX_PATH
+            );
+
+            return false;
+        }
 
         Helper::pathCorrectBackslashW( winDir );
         ::PathRemoveBackslash( winDir );

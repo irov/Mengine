@@ -57,11 +57,6 @@ namespace Mengine
         {
         }
 
-        MENGINE_INLINE explicit Color( ColorValue_ARGB _argb )
-        {
-            this->setAsARGB( _argb );
-        }
-
         MENGINE_INLINE Color( const Color & _copy )
             : m_r( _copy.m_r )
             , m_g( _copy.m_g )
@@ -97,7 +92,6 @@ namespace Mengine
         void clear();
 
     public:
-        void setAsARGB( ColorValue_ARGB _val );
         MENGINE_INLINE ColorValue_ARGB getAsARGB() const;
 
     public:
@@ -299,14 +293,6 @@ namespace Mengine
         static Color c;
 
         return c;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    namespace Helper
-    {
-        ColorValue_ARGB makeRGBA8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a );
-        ColorValue_ARGB makeRGBA( float _r, float _g, float _b, float _a );
-
-        Color makeColor( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a );
     }
     //////////////////////////////////////////////////////////////////////////
 }

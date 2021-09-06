@@ -22,6 +22,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
 
@@ -348,10 +349,9 @@ namespace Mengine
 
         if( _fileGroup->existFile( _filePath, true ) == true )
         {
-            LOGGER_ERROR( "url '%s' category '%s' file already exist '%s'"
+            LOGGER_ERROR( "url '%s' file already exist '%s'"
                 , _url.c_str()
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return 0;
@@ -373,10 +373,9 @@ namespace Mengine
         
         if( task->initialize( _login, _password, _fileGroup, _filePath, filePathTmp ) == false )
         {
-            LOGGER_ERROR( "url '%s' category '%s' file '%s' invalid initialize task"
+            LOGGER_ERROR( "url '%s' file '%s' invalid initialize task"
                 , _url.c_str()
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return 0;

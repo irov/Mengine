@@ -83,7 +83,7 @@ namespace Mengine
         return listener;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundListenerInterfacePtr SoundIdentity::popSoundListener() const
+    SoundListenerInterfacePtr SoundIdentity::popSoundListener()
     {
         return std::move( listener );
     }

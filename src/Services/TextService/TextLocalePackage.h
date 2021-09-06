@@ -22,7 +22,7 @@ namespace Mengine
         ~TextLocalePackage() override;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        bool initialize( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
         void finalize();
 
     public:
@@ -33,6 +33,8 @@ namespace Mengine
         MemoryInterfacePtr getXmlBuffer() const;
 
     protected:
+        ConstString m_locale;
+
         FileGroupInterfacePtr m_fileGroup;
         FilePath m_filePath;
 
@@ -40,4 +42,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TextLocalePackage> TextLocalePackagePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

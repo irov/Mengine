@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -74,9 +75,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "config", "load config '%s:%s' (doc: %s)"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        LOGGER_INFO( "config", "load config '%s' (doc: %s)"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             , MENGINE_DOCUMENT_STR( _doc )
         );
 

@@ -49,7 +49,7 @@ namespace Mengine
 
     public:
         OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) override;
-        bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) override;
+        bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp ) override;
         bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
 
     public:

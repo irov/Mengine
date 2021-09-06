@@ -237,7 +237,7 @@ namespace Mengine
         if( LOADER_SERVICE()
             ->load( m_fileGroup, m_descriptionPath, &pak, Metacode::Meta_Data::getVersion(), &exist ) == false )
         {
-            LOGGER_ERROR( "invalid resource file '%s:%s' '%s'"
+            LOGGER_ERROR( "invalid resource file '%s' name '%s' description '%s'"
                 , m_filePath.c_str()
                 , m_name.c_str()
                 , m_descriptionPath.c_str()
@@ -398,7 +398,7 @@ namespace Mengine
 
         if( m_enable == true )
         {
-            LOGGER_ERROR( "already enable '%s:%s' '%s'"
+            LOGGER_ERROR( "already enable file '%s' name '%s' description '%s'"
                 , m_filePath.c_str()
                 , m_name.c_str()
                 , m_descriptionPath.c_str()
@@ -425,7 +425,7 @@ namespace Mengine
 
             if( this->loadResources_( m_locale, m_fileGroup, desc.path, desc.tags, desc.ignored ) == false )
             {
-                LOGGER_ERROR( "invalid load '%s:%s' resource '%s'"
+                LOGGER_ERROR( "invalid load file '%s' name '%s' resource '%s'"
                     , m_filePath.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()

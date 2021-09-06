@@ -260,7 +260,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Account::save()
     {
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsPath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         if( file == nullptr )
         {
@@ -336,7 +336,7 @@ namespace Mengine
 
         FilePath fullFilePath = Helper::stringizeFilePath( path );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, fullFilePath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, fullFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {

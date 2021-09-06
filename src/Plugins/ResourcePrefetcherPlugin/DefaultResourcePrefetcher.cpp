@@ -17,7 +17,7 @@ namespace Mengine
     {
         if( _resource->compile() == false )
         {
-            LOGGER_ERROR( "invalid group '%s' resource '%s:%s' compile"
+            LOGGER_ERROR( "invalid group '%s' resource type '%s' name '%s' compile"
                 , _resource->getGroupName().c_str()
                 , _resource->getType().c_str()
                 , _resource->getName().c_str()

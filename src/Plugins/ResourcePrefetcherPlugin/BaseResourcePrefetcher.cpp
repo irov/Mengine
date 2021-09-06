@@ -24,7 +24,7 @@ namespace Mengine
 
         if( successful == false )
         {
-            LOGGER_WARNING( "invalid group '%s' resource '%s:%s' prefetch"
+            LOGGER_WARNING( "invalid group '%s' resource type '%s' name '%s' prefetch"
                 , _resource->getGroupName().c_str()
                 , _resource->getType().c_str()
                 , _resource->getName().c_str()
@@ -47,7 +47,7 @@ namespace Mengine
 
         if( successful == false )
         {
-            LOGGER_WARNING( "invalid group '%s' resource '%s:%s' unfetch"
+            LOGGER_WARNING( "invalid group '%s' resource type '%s' name '%s' unfetch"
                 , _resource->getGroupName().c_str()
                 , _resource->getType().c_str()
                 , _resource->getName().c_str()

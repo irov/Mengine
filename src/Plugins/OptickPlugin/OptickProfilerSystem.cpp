@@ -126,7 +126,7 @@ namespace Mengine
 
         OutputStreamInterfacePtr outputFile = fileGroup->createOutputFile( MENGINE_DOCUMENT_FACTORABLE );
 
-        fileGroup->openOutputFile( cs_optPath, outputFile );
+        fileGroup->openOutputFile( cs_optPath, outputFile, false );
 
         //ToDo FixMe [https://github.com/bombomby/optick/issues/137]
         g_outputFile = outputFile.get();

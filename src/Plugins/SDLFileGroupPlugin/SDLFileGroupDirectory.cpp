@@ -258,13 +258,13 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////	
-    bool SDLFileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
+    bool SDLFileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
-        bool result = file->open( m_relationPath, m_folderPath, _filePath );
+        bool result = file->open( m_relationPath, m_folderPath, _filePath, _withTemp );
         
         MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
             , m_folderPath.c_str()

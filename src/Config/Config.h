@@ -160,6 +160,10 @@
 #define MENGINE_INLINE inline
 #endif
 
+#ifndef MENGINE_THREAD_LOCAL
+#define MENGINE_THREAD_LOCAL thread_local
+#endif
+
 #if defined(_WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #   define MENGINE_PLATFORM_DESKTOP

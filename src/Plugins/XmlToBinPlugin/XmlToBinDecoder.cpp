@@ -316,7 +316,7 @@ namespace Mengine
             , decoderData->pathXml.c_str()
         );
 
-        OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, decoderData->pathBin, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, decoderData->pathBin, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, "error create bin '%s'"
             , decoderData->pathBin.c_str()

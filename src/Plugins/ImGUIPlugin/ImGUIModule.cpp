@@ -160,7 +160,7 @@ namespace Mengine
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( "imgui.ini" ), MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( "imgui.ini" ), true, MENGINE_DOCUMENT_FACTORABLE );
 
         size_t imIniSettingsSize;
         const char * imIniSettings = ImGui::SaveIniSettingsToMemory( &imIniSettingsSize );

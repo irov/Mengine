@@ -7,7 +7,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * getFileGroupFullPath( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
         {
-            static thread_local Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char fullPath[MENGINE_MAX_PATH] = {'\0'};
 
             _fileGroup->getFullPath( _filePath, fullPath );
 

@@ -141,7 +141,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath )
     {
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create file '%s'"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )

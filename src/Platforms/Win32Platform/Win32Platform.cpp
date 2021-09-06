@@ -2329,7 +2329,7 @@ namespace Mengine
             return NULL;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "path '%s' can't open output stream '%s'"
             , _filePath.c_str()

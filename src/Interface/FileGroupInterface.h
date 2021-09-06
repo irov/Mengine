@@ -66,7 +66,7 @@ namespace Mengine
 
     public:
         virtual OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) = 0;
-        virtual bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) = 0;
+        virtual bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp ) = 0;
         virtual bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) = 0;
 
     public:

@@ -115,7 +115,7 @@ namespace Mengine
             miplevel_data_memory += miplevel_data_size;
         }
 
-        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_output, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "invalid open output '%s' for '%s'"
             , full_output.c_str()

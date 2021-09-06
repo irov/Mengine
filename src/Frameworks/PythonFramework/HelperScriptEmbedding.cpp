@@ -496,15 +496,10 @@ namespace Mengine
                 const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
                     ->getTextEntry( _textId );
 
-                if( textEntry == nullptr )
-                {
-                    LOGGER_ERROR( "text entry '%s' not found (doc: %s)"
-                        , _textId.c_str()
-                        , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
-                    );
-
-                    return "";
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "text entry '%s' not found (doc: %s)"
+                    , _textId.c_str()
+                    , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
+                );
 
                 size_t value_size;
                 const Char * value = textEntry->getValue( &value_size );

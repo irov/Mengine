@@ -23,6 +23,7 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/String.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -154,9 +155,8 @@ namespace Mengine
 
                     if( str_value_valid != str_value_end )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read text key '%s' value |%s| invalid utf8 char |%s|"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read text key '%s' value |%s| invalid utf8 char |%s|"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                             , str_value_valid
@@ -187,9 +187,8 @@ namespace Mengine
                     float value = 0.f;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' charOffset '%s'"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' charOffset '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -206,9 +205,8 @@ namespace Mengine
                     float value = 0.f;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' lineOffset '%s'"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' lineOffset '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -228,9 +226,8 @@ namespace Mengine
                     float a = 1.f;
                     if( MENGINE_SSCANF( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' lineOffset '%s'"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' lineOffset '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -247,9 +244,8 @@ namespace Mengine
                     float value = 0.f;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' Override '%s'"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' Override '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -266,9 +262,8 @@ namespace Mengine
                     uint32_t value = 0;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' tag 'Override' '%s'"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' tag 'Override' '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -300,9 +295,8 @@ namespace Mengine
                     }
                     else
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -332,9 +326,8 @@ namespace Mengine
                     }
                     else
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -347,9 +340,8 @@ namespace Mengine
                     float value = 0;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' Scale '%s'"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' Scale '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -366,9 +358,8 @@ namespace Mengine
                     uint32_t value = 0;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "'%s' invalid read for text '%s' tag 'Empty' '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
                         );
@@ -380,9 +371,8 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "'%s:%s' invalid tag '%s' for text '%s'"
-                        , m_fileGroup->getName().c_str()
-                        , m_filePath.c_str()
+                    LOGGER_ERROR( "file '%s' invalid tag '%s' for text '%s'"
+                        , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                         , str_key
                         , textKey.c_str()
                     );
@@ -391,9 +381,8 @@ namespace Mengine
 
             if( text_str_size == 0 && isEmpty == false )
             {
-                LOGGER_ERROR( "'%s:%s' invalid text key '%s' value is empty"
-                    , m_fileGroup->getName().c_str()
-                    , m_filePath.c_str()
+                LOGGER_ERROR( "file '%s' invalid text key '%s' value is empty"
+                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                     , textKey.c_str()
                 );
             }
@@ -419,9 +408,8 @@ namespace Mengine
             Tags tags;
             if( m_textService->addTextEntry( textKey, text_str_value, text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
-                LOGGER_ERROR( "'%s:%s' invalid add text key '%s'"
-                    , m_fileGroup->getName().c_str()
-                    , m_filePath.c_str()
+                LOGGER_ERROR( "file '%s' invalid add text key '%s'"
+                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                     , textKey.c_str()
                 );
 
@@ -451,15 +439,14 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool TextService::loadTextEntry( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( package->initialize( _fileGroup, _filePath ) == false )
+        if( package->initialize( _locale, _fileGroup, _filePath ) == false )
         {
-            LOGGER_ERROR( "file '%s:%s' invalid initialize text locale package"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            LOGGER_ERROR( "file '%s' invalid initialize text locale package"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return false;
@@ -490,9 +477,9 @@ namespace Mengine
 
         if( xmlsax_parse( xml_buff, &callbacks, &tmsc ) == false )
         {
-            LOGGER_ERROR( "file '%s:%s' invalid parse text locale package"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            LOGGER_ERROR( "locale '%s' file '%s' invalid parse text locale package"
+                , _locale.c_str()
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return false;
@@ -500,17 +487,22 @@ namespace Mengine
 
         if( tmsc.isSuccessful() == false )
         {
+            LOGGER_ERROR( "invalid load locale '%s' text entry '%s'"
+                , _locale.c_str()
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            );
+
             return false;
         }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool TextService::unloadTextEntry( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( package->initialize( _fileGroup, _filePath ) == false )
+        if( package->initialize( _locale, _fileGroup, _filePath ) == false )
         {
             return false;
         }
@@ -701,13 +693,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextEntryInterfacePtr & TextService::getTextEntry( const ConstString & _key ) const
-    {
-        const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
-
-        return textEntry;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool TextService::hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * const _entry ) const
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _textId );
@@ -723,6 +708,22 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const TextEntryInterfacePtr & TextService::getTextEntry( const ConstString & _key ) const
+    {
+        const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
+
+        if( textEntry == nullptr )
+        {
+            LOGGER_ERROR( "not found text id '%s'"
+                , _key.c_str()
+            );
+
+            return TextEntryInterfacePtr::none();
+        }
+
+        return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextService::setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key )

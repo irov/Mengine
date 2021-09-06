@@ -1448,10 +1448,7 @@ namespace Mengine
             const FilePath & filePath = _settings->getFilePath();
 
             Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-            if( fileGroup->getFullPath( filePath, fullPath ) == false )
-            {
-                return;
-            }
+            fileGroup->getFullPath( filePath, fullPath );
 
             pugi::xml_node xml_setting = payloadNode.append_child( "Setting" );
 

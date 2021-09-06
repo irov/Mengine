@@ -326,14 +326,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
+    void FileGroupZip::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _fullPath );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::existFile( const FilePath & _filePath, bool _recursive ) const

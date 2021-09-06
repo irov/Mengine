@@ -54,7 +54,7 @@ namespace Mengine
 
         virtual void setSoundListener( const SoundListenerInterfacePtr & _listener ) = 0;
         virtual const SoundListenerInterfacePtr & getSoundListener() const = 0;
-        virtual SoundListenerInterfacePtr popSoundListener() const = 0;
+        virtual SoundListenerInterfacePtr popSoundListener() = 0;
 
     public:
         virtual bool isStreamable() const = 0;

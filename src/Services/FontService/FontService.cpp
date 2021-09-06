@@ -23,6 +23,7 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/String.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -141,9 +142,8 @@ namespace Mengine
 
         for( const ConstString & fontName : fonts )
         {
-            MENGINE_ASSERTION_FATAL( config->hasSection( fontName.c_str() ) == true, "invalid '%s:%s' section for FONT '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            MENGINE_ASSERTION_FATAL( config->hasSection( fontName.c_str() ) == true, "invalid '%s' section for FONT '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                 , fontName.c_str()
             );
 
@@ -152,9 +152,8 @@ namespace Mengine
 
             TextFontInterfacePtr font = this->createFont( fontName, fontType, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( font, "invalid create '%s:%s' font '%s' not found type '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            MENGINE_ASSERTION_MEMORY_PANIC( font, "invalid create '%s' font '%s' not found type '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                 , fontName.c_str()
                 , fontType.c_str()
             );
@@ -163,9 +162,8 @@ namespace Mengine
 
             if( fontConfigLoader->load( font, _fileGroup, config ) == false )
             {
-                LOGGER_ERROR( "invalid load '%s:%s' font '%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
+                LOGGER_ERROR( "invalid load '%s' font '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                     , fontName.c_str()
                 );
 
@@ -174,9 +172,8 @@ namespace Mengine
 
             if( font->initialize() == false )
             {
-                LOGGER_ERROR( "invalid initialize '%s:%s' font '%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
+                LOGGER_ERROR( "invalid initialize '%s' font '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                     , fontName.c_str()
                 );
 
@@ -201,9 +198,8 @@ namespace Mengine
 
                 if( fontValidator->validate( font ) == false )
                 {
-                    LOGGER_ERROR( "invalid initialize '%s:%s' font '%s' type '%s' invalidate!"
-                        , _fileGroup->getName().c_str()
-                        , _filePath.c_str()
+                    LOGGER_ERROR( "invalid initialize '%s' font '%s' type '%s' invalidate!"
+                        , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                         , font->getName().c_str()
                         , fontType.c_str()
                     );
@@ -266,9 +262,8 @@ namespace Mengine
         {
             if( config->hasSection( fontName.c_str() ) == false )
             {
-                LOGGER_ERROR( "invalid '%s:%s' section for FONT '%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
+                LOGGER_ERROR( "invalid '%s' section for FONT '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                     , fontName.c_str()
                 );
 

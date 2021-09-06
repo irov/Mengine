@@ -307,7 +307,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
             if( stdex::intrusive_dynamic_cast<MovieMesh2DPtr>(_node) == nullptr )
             {
-                LOGGER_ERROR( "'%s' resource '%s' layer '%s' is Mesh2D but node is not Mesh2D '%s:%s'"
+                LOGGER_ERROR( "'%s' resource '%s' layer '%s' is Mesh2D but node is not Mesh2D name '%s' type '%s'"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , _layer.name.c_str()
@@ -609,7 +609,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid not compile (%s:%s)"
+            LOGGER_ERROR( "'%s' resource '%s' invalid not compile name '%s' type '%s'"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()

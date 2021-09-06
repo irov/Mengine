@@ -11,6 +11,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "math/config.h"
 #include "math/constant.h"
@@ -140,9 +141,8 @@ namespace Mengine
 
         OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "HIT file '%s' not create (open file '%s')"
-            , m_options.outputFilePath.c_str()
-            , m_options.fileGroup->getName().c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "HIT file '%s' not create (open file)"
+            , Helper::getFileGroupFullPath( m_options.fileGroup, m_options.outputFilePath )
         );
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE()

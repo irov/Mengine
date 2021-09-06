@@ -6,6 +6,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ColorHelper.h"
 
 #include "math/box2.h"
 #include "math/clamp.h"
@@ -126,7 +127,7 @@ namespace Mengine
 
         uint32_t index = _i + _j * m_countX;
 
-        _value->setAsARGB( m_vertices[index].color );
+        *_value = Helper::makeColorARGB( m_vertices[index].color );
 
         return true;
     }
@@ -287,7 +288,7 @@ namespace Mengine
             mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
 
             Color vertex_color( color );
-            vertex_color *= Color( vertex.color );
+            vertex_color *= Helper::makeColorARGB( vertex.color );
 
             ColorValue_ARGB argb = vertex_color.getAsARGB();
 

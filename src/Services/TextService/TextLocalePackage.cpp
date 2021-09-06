@@ -7,6 +7,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -19,16 +20,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextLocalePackage::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool TextLocalePackage::initialize( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
+        m_locale = _locale;
         m_fileGroup = _fileGroup;
         m_filePath = _filePath;
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s:%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         size_t xml_buffer_size = stream->size();

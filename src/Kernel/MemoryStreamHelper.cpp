@@ -5,6 +5,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -69,9 +70,8 @@ namespace Mengine
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file stream '%s:%s' stream [%u] (doc: %s)"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file stream '%s' stream [%u] (doc: %s)"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                 , _stream
                 , MENGINE_DOCUMENT_STR( _doc )
             );

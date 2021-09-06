@@ -140,6 +140,8 @@
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/FileGroupHelper.h"
+#include "Kernel/ColorHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
@@ -1398,14 +1400,12 @@ namespace Mengine
                 {
                     InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s:%s' was not found"
-                        , fileGroup->getName().c_str()
-                        , _filePath.c_str()
+                    MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s' was not found"
+                        , Helper::getFileGroupFullPath( fileGroup, _filePath )
                     );
 
-                    MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s'"
-                        , fileGroup->getName().c_str()
-                        , _filePath.c_str()
+                    MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s'"
+                        , Helper::getFileGroupFullPath( fileGroup, _filePath )
                     );
 
                     uint8_t Magic_PNGBytes[] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
@@ -1444,9 +1444,8 @@ namespace Mengine
                     }
                     else
                     {
-                        LOGGER_ERROR( "invalid get image '%s:%s' type from magic bytes"
-                            , fileGroup->getName().c_str()
-                            , _filePath.c_str()
+                        LOGGER_ERROR( "invalid get image '%s' type from magic bytes"
+                            , Helper::getFileGroupFullPath( fileGroup, _filePath )
                         );
 
                         return nullptr;
@@ -1457,9 +1456,8 @@ namespace Mengine
 
                     if( codecTypeMagic != codecType )
                     {
-                        LOGGER_ERROR( "image '%s:%s' ext not magic bytes types '%s' != '%s'"
-                            , fileGroup->getName().c_str()
-                            , _filePath.c_str()
+                        LOGGER_ERROR( "image '%s' ext not magic bytes types '%s' != '%s'"
+                            , Helper::getFileGroupFullPath( fileGroup, _filePath )
                             , codecType.c_str()
                             , codecTypeMagic.c_str()
                         );
@@ -1475,14 +1473,12 @@ namespace Mengine
                 {
                     InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s:%s' was not found"
-                        , fileGroup->getName().c_str()
-                        , _filePath.c_str()
+                    MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s' was not found"
+                        , Helper::getFileGroupFullPath( fileGroup, _filePath )
                     );
 
-                    MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s'"
-                        , fileGroup->getName().c_str()
-                        , _filePath.c_str()
+                    MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s'"
+                        , Helper::getFileGroupFullPath( fileGroup, _filePath )
                     );
 
                     ConstString codecType = CODEC_SERVICE()
@@ -1541,9 +1537,8 @@ namespace Mengine
 
                 if( resource->initialize() == false )
                 {
-                    LOGGER_ERROR( "invalid initialize image '%s:%s'"
-                        , fileGroup->getName().c_str()
-                        , _filePath.c_str()
+                    LOGGER_ERROR( "invalid initialize image '%s'"
+                        , Helper::getFileGroupFullPath( fileGroup, _filePath )
                     );
 
                     return nullptr;
@@ -2409,7 +2404,7 @@ namespace Mengine
 
                             if( pos_sqrdistance < radius * radius )
                             {
-                                m_grid->setGridColor( i, j, Color( 0x00FFFFFF ) );
+                                m_grid->setGridColor( i, j, Helper::makeColorARGB( 0x00FFFFFF ) );
                             }
                             else if( pos_sqrdistance < (radius + penumbra) * (radius + penumbra) )
                             {

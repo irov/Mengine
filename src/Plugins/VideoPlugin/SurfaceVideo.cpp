@@ -521,7 +521,7 @@ namespace Mengine
         size_t pitch = 0;
         void * lockRect = locked->getBuffer( &pitch );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( lockRect, "'%s:%s' invalid lock texture [%u:%u]"
+        MENGINE_ASSERTION_MEMORY_PANIC( lockRect, "surface '%s' resource '%s' invalid lock texture [%u:%u]"
             , this->getName().c_str()
             , m_resourceVideo->getName().c_str()
             , rect.right

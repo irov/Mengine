@@ -56,7 +56,7 @@ namespace Mengine
 
         if( _generator->initialize() == false )
         {
-            LOGGER_ERROR( "add '%s:%s' invalid initialize!"
+            LOGGER_ERROR( "add category '%s' prototype '%s' invalid initialize!"
                 , _category.c_str()
                 , _prototype.c_str()
             );
@@ -64,14 +64,14 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( m_generators.exist( _category, _prototype ) == false, "prototype '%s:%s' alredy exist"
+        MENGINE_ASSERTION_FATAL( m_generators.exist( _category, _prototype ) == false, "category '%s' prototype '%s' alredy exist"
             , _category.c_str()
             , _prototype.c_str()
         );
 
         m_generators.emplace( _category, _prototype, _generator );
 
-        LOGGER_INFO( "prototype", "add '%s:%s'"
+        LOGGER_INFO( "prototype", "add category '%s' prototype '%s'"
             , _category.c_str()
             , _prototype.c_str()
         );
@@ -124,7 +124,7 @@ namespace Mengine
     {
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, "prototype not found '%s:%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, "prototype not found category '%s' prototype '%s' (doc: %s)"
             , _category.c_str()
             , _prototype.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

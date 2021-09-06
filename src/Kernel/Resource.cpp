@@ -154,7 +154,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_INFO( "resource", "compile '%s:%s' group '%s'"
+        LOGGER_INFO( "resource", "compile type '%s' name '%s' group '%s'"
             , this->getType().c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
@@ -186,7 +186,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_INFO( "resource", "release '%s:%s' group '%s'"
+        LOGGER_INFO( "resource", "release type '%s' name '%s' group '%s'"
             , this->getType().c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
@@ -242,8 +242,7 @@ namespace Mengine
         {
             m_cacheReferenceCount.reset();
 
-            LOGGER_ERROR( "cache resource '%s:%s' group '%s' invalid compile"
-                , this->getGroupName().c_str()
+            LOGGER_ERROR( "cache resource '%s' group '%s' invalid compile"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );

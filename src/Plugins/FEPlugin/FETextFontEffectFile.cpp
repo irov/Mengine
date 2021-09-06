@@ -7,6 +7,7 @@
 #include "Kernel/Dataflow.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -39,9 +40,8 @@ namespace Mengine
 
         if( this->compileFEBundle( bundle ) == false )
         {
-            LOGGER_ERROR( "invalid compile text font effect '%s:%s'"
-                , fileGroup->getName().c_str()
-                , filePath.c_str()
+            LOGGER_ERROR( "invalid compile text font effect '%s'"
+                , Helper::getFileGroupFullPath( fileGroup, filePath )
             );
 
             return false;

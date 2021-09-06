@@ -1901,7 +1901,7 @@ namespace Mengine
 
         if( Helper::getStringFormat( _text, textValue, textSize, textFormatArgs ) == false )
         {
-            LOGGER_ERROR( "invalid formating string '%s:%s' format '%s' with args %" PRIuPTR ""
+            LOGGER_ERROR( "invalid formating string name '%s' id '%s' format '%s' with args %" PRIuPTR ""
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , textValue

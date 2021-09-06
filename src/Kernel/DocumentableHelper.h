@@ -14,7 +14,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DOCUMENTABLE_STR(Ptr, Empty) [](auto _ptr){ static Char message[4096] = {'\0'}; Detail::getDocumentableMessage(dynamic_cast<const Mengine::Documentable*>(_ptr), dynamic_cast<const Mengine::Identity*>(_ptr), message, 4096); return message;}(Ptr)
+#   define MENGINE_DOCUMENTABLE_STR(Ptr, Empty) [](auto _ptr){ static MENGINE_THREAD_LOCAL Char message[4096] = {'\0'}; Detail::getDocumentableMessage(dynamic_cast<const Mengine::Documentable*>(_ptr), dynamic_cast<const Mengine::Identity*>(_ptr), message, 4096); return message;}(Ptr)
 //////////////////////////////////////////////////////////////////////////
 #else
 #   define MENGINE_DOCUMENTABLE_STR(Ptr, Empty) (Empty)

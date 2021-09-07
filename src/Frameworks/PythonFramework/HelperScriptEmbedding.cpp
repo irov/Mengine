@@ -33,6 +33,7 @@
 #include "Kernel/Crash.h"
 #include "Kernel/Optional.h"
 #include "Kernel/FilePathDateTimeHelper.h"
+#include "Kernel/LoggerHelper.h"
 
 #include "Config/BuildVersion.h"
 #include "Config/GitSHA1.h"
@@ -1323,10 +1324,21 @@ namespace Mengine
                 DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
                     ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
 
-                Char PathTimestamp[1024] = {'\0'};
-                Helper::makeFilePathDateTimeHelper( dateTimeProvider, PathTimestamp );
+                Char pathTimestamp[1024] = {'\0'};
+                Helper::makeFilePathDateTimeHelper( dateTimeProvider, pathTimestamp, 1024 );
 
-                return PathTimestamp;
+                return pathTimestamp;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            String s_getLoggerTimestamp( const Char * _format )
+            {
+                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
+
+                Char loggerTimestamp[1024] = {'\0'};
+                Helper::makeLoggerTimestamp( dateTimeProvider, _format, loggerTimestamp, 1024 );
+
+                return loggerTimestamp;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getTimeString()
@@ -3670,6 +3682,7 @@ namespace Mengine
         pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
         pybind::def_functor_kernel( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getDateStruct );
         pybind::def_functor( _kernel, "getDatePathTimestamp", helperScriptMethod, &HelperScriptMethod::s_getDatePathTimestamp );
+        pybind::def_functor( _kernel, "getLoggerTimestamp", helperScriptMethod, &HelperScriptMethod::s_getLoggerTimestamp );        
 
         pybind::def_functor( _kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
 

@@ -686,8 +686,11 @@ Core
     IntrusiveSlugList.h
     IntrusiveSlugLinkedPtr.h
     
-    LoggerBase.cpp
     LoggerBase.h
+    LoggerBase.cpp
+    
+    LoggerHelper.h
+    LoggerHelper.cpp
     
     AspectRatioViewport.h
     VectorAspectRatioViewports.h

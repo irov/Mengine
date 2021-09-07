@@ -13,6 +13,7 @@
 #include "Kernel/String.h"
 #include "Kernel/StringRegex.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/LoggerHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -266,17 +267,9 @@ namespace Mengine
             return 0;
         }
 
-        PlatformDateTime dateTime;
-        m_dateTimeProvider->getLocalDateTime( &dateTime );
+        size_t size = Helper::makeLoggerTimestamp( m_dateTimeProvider, "[%02u:%02u:%02u:%04u] ", _buffer + _offset, _capacity - _offset );
 
-        int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, "[%02u:%02u:%02u:%04u] "
-            , dateTime.hour
-            , dateTime.minute
-            , dateTime.second
-            , dateTime.milliseconds
-        );
-
-        return (size_t)size;
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t LoggerService::makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const

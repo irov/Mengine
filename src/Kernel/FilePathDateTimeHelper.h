@@ -8,6 +8,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        void makeFilePathDateTimeHelper( const DateTimeProviderInterfacePtr & _dateTimeProvider, Char * const _filePath );
+        size_t makeFilePathDateTimeHelper( const DateTimeProviderInterfacePtr & _dateTimeProvider, Char * const _filePath, size_t _capacity );
     }
 }

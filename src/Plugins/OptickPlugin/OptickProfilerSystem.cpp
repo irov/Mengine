@@ -116,8 +116,8 @@ namespace Mengine
         DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
             ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
-        Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
-        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate );
+        Char filePathDate[1024] = {'\0'};
+        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate, 1024 );
 
         optPath += filePathDate;
         optPath += ".opt";

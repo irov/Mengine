@@ -201,7 +201,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     Mengine::Helper::ravingcode( (uint32_t)sequreHash, memoryBuffer, memorySize, memoryBuffer );
 
-    Mengine::OutputStreamInterfacePtr outputStream = Mengine::Helper::openOutputStreamFile( fileGroup, fp_out, MENGINE_DOCUMENT_FUNCTION );
+    Mengine::OutputStreamInterfacePtr outputStream = Mengine::Helper::openOutputStreamFile( fileGroup, fp_out, true, MENGINE_DOCUMENT_FUNCTION );
 
     outputStream->write( "RGCD", 4 );
     outputStream->write( memoryBuffer, memorySize );

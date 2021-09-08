@@ -518,7 +518,7 @@ namespace Mengine
 
             FilePath c_out = Helper::stringizeFilePath( utf8_out );
 
-            OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( fileGroup, c_out, MENGINE_DOCUMENT_FUNCTION );
+            OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( fileGroup, c_out, true, MENGINE_DOCUMENT_FUNCTION );
 
             if( output_stream == nullptr )
             {

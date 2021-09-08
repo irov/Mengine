@@ -782,6 +782,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         ae_bool_t master = ae_is_movie_composition_data_master( compositionData );
 
         const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( compositionData );
+
+        //ToDo fix duration milliseconds
         ae_float_t duration = ae_get_movie_composition_data_duration( compositionData );
         ae_float_t frame_duration = ae_get_movie_composition_data_frame_duration( compositionData );
 

@@ -44,6 +44,8 @@ namespace Mengine
         void updateObservers_( uint32_t _id );
 
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         struct ObserverDesc
         {
             Observable * observer;

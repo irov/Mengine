@@ -41,11 +41,18 @@ namespace Mengine
                 desc.mutex = mutex;
             }
 
+            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+            m_mutex = mutex;
+
             return true;
         } );
 
         SERVICE_LEAVE( ThreadServiceInterface, [this]()
         {
+            m_mutex = nullptr;
+
             for( ObserversDesc & desc : m_observers )
             {
                 desc.mutex = nullptr;
@@ -93,8 +100,6 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_observers[_id].mutex );
-
         MENGINE_ASSERTION_FATAL( this->hasObserver_( _id, _observer ) == false, "dublicate observer '%s' id [%u] (doc: %s)"
             , MENGINE_MIXIN_DEBUG_NAME( _observer )
             , _id
@@ -103,6 +108,8 @@ namespace Mengine
 
         if( m_visiting != 0 )
         {
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
             ObserverQueue desc;
             desc.id = _id;
             desc.observer = _observer;
@@ -117,6 +124,8 @@ namespace Mengine
             return;
         }
 
+        MENGINE_THREAD_MUTEX_SCOPE( m_observers[_id].mutex );
+
         this->addObserver_( _id, _observer, _callable, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -124,38 +133,42 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_observers[_id].mutex );
-
-        for( VectorObserverQueues::iterator
-            it = m_add.begin(),
-            it_end = m_add.end();
-            it != it_end;
-            ++it )
         {
-            const ObserverQueue & queue = *it;
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-            if( queue.id != _id )
+            for( VectorObserverQueues::iterator
+                it = m_add.begin(),
+                it_end = m_add.end();
+                it != it_end;
+                ++it )
             {
-                continue;
+                const ObserverQueue & queue = *it;
+
+                if( queue.id != _id )
+                {
+                    continue;
+                }
+
+                if( queue.observer != _observer )
+                {
+                    continue;
+                }
+
+                //keep callable ptr
+                ObserverCallableInterfacePtr keep_callable = queue.callable;
+
+                *it = m_add.back();
+                m_add.pop_back();
+
+                return;
             }
-
-            if( queue.observer != _observer )
-            {
-                continue;
-            }
-
-            //keep callable ptr
-            ObserverCallableInterfacePtr keep_callable = queue.callable;
-
-            *it = m_add.back();
-            m_add.pop_back();
-
-            return;
         }
 
         if( m_visiting != 0 )
         {
             ObserversDesc & observers = m_observers[_id];
+
+            MENGINE_THREAD_MUTEX_SCOPE( observers.mutex );
 
             for( ObserverDesc & desc : observers.observers )
             {
@@ -184,6 +197,8 @@ namespace Mengine
             return;
         }
 
+        MENGINE_THREAD_MUTEX_SCOPE( m_observers[_id].mutex );
+
         this->removeObserver_( _id, _observer );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -209,6 +224,8 @@ namespace Mengine
             }
         }
 
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         for( const ObserverQueue & queue : m_add )
         {
             if( queue.observer != _observer )
@@ -227,6 +244,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_observers[_id].mutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         this->updateObservers_( _id );
 
@@ -269,36 +287,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::hasObserver_( uint32_t _id, Observable * _observer ) const
     {
-        const ObserversDesc & observers = m_observers[_id];
-
-        for( const ObserverDesc & desc : observers.observers )
         {
-            if( desc.observer != _observer )
-            {
-                continue;
-            }
+            const ObserversDesc & observers = m_observers[_id];
 
-            if( desc.dead == true )
-            {
-                return false;
-            }
+            MENGINE_THREAD_MUTEX_SCOPE( m_observers[_id].mutex );
 
-            return true;
+            for( const ObserverDesc & desc : observers.observers )
+            {
+                if( desc.observer != _observer )
+                {
+                    continue;
+                }
+
+                if( desc.dead == true )
+                {
+                    return false;
+                }
+
+                return true;
+            }
         }
 
-        for( const ObserverQueue & queue : m_add )
         {
-            if( queue.id != _id )
-            {
-                continue;
-            }
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-            if( queue.observer != _observer )
+            for( const ObserverQueue & queue : m_add )
             {
-                continue;
-            }
+                if( queue.id != _id )
+                {
+                    continue;
+                }
 
-            return true;
+                if( queue.observer != _observer )
+                {
+                    continue;
+                }
+
+                return true;
+            }
         }
 
         return false;
@@ -336,8 +362,6 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
-
         ObserversDesc & observers = m_observers[_id];
 
         ObserverDesc desc;
@@ -355,8 +379,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::removeObserver_( uint32_t _id, Observable * _observer )
     {
-        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
-
         ObserversDesc & observers = m_observers[_id];
 
         for( ObserverDesc & desc : observers.observers )

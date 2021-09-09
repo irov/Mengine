@@ -157,22 +157,23 @@ namespace Mengine
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = {::LoadCursor( NULL, IDC_HAND ), true};
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HELP" )] = {::LoadCursor( NULL, IDC_HELP ), true};
 
-        m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-
-#ifdef MENGINE_PLATFORM_WINDOWS32
-        m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#endif
-
-#ifdef MENGINE_PLATFORM_WINDOWS64
-        m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-#endif
-
-        m_touchpad = false;
-        m_desktop = true;
-
-        if( HAS_OPTION( "win32" ) == true )
+        const Char * option_platforms[MENGINE_OPTIONS_VALUE_COUNT];
+        uint32_t option_platforms_count;
+        if( OPTIONS_SERVICE()
+            ->getOptionValues( "platform", option_platforms, &option_platforms_count ) == true )
         {
-            m_platformTags.clear();
+            for( uint32_t index = 0; index != option_platforms_count; ++index )
+            {
+                const Char * option_platform = option_platforms[index];
+
+                Char uppercase_option_platform[256] = {'\0'};;
+                Helper::toupper( option_platform, uppercase_option_platform, 255 );
+
+                m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+            }
+        }
+        else if( HAS_OPTION( "win32" ) == true )
+        {
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 
@@ -181,7 +182,6 @@ namespace Mengine
         }
         else if( HAS_OPTION( "win64" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 
@@ -190,16 +190,30 @@ namespace Mengine
         }
         else if( HAS_OPTION( "mac" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
 
             m_touchpad = false;
             m_desktop = true;
         }
         else if( HAS_OPTION( "ios" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+#endif
 
 #ifdef MENGINE_PLATFORM_WINDOWS32
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
@@ -214,30 +228,44 @@ namespace Mengine
         }
         else if( HAS_OPTION( "android" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
 
             m_touchpad = true;
             m_desktop = false;
         }
         else if( HAS_OPTION( "wp" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
 
             m_touchpad = true;
             m_desktop = false;
         }
-
-        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
-
-        if( option_platform != nullptr )
+        else
         {
-            Char uppercase_option_platform[256];
-            Helper::toupper( option_platform, uppercase_option_platform, 255 );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 
-            m_platformTags.clear();
-            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+#ifdef MENGINE_PLATFORM_WINDOWS32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
+
+            m_touchpad = false;
+            m_desktop = true;
         }
 
         if( HAS_OPTION( "touchpad" ) == true )

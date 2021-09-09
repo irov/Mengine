@@ -232,8 +232,37 @@ namespace Mengine
         //bool status = m_userStats->RequestCurrentStats();
     }
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static WString printWParams( const MapWParams & _params )
+        {
+            WString msg;
+            for( auto && [key, value] : _params )
+            {
+                msg += WString( key.c_str(), key.c_str() + key.size() );
+                msg += L" = \"";
+                msg += value;
+                msg += L"\";";
+            }
+
+            return msg;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ModuleSteam::_message( const ConstString & _messageName, const MapWParams & _params )
     {
+        if( m_steamInitialize == false )
+        {
+            LOGGER_MESSAGE( "Steam not initialize [message '%s' params [%ls]]"
+                , _messageName.c_str()
+                , Detail::printWParams( _params ).c_str()
+                );
+
+            return;
+        }
+
         m_userStats->RequestCurrentStats();
 
         if( _messageName == "SetAchievement" )
@@ -398,6 +427,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleSteam::notifyPackagesLoad_()
     {
+        if( m_steamInitialize == false )
+        {
+            return;
+        }
+
         const Char * AvailableGameLanguages = SteamApps()
             ->GetAvailableGameLanguages();
 

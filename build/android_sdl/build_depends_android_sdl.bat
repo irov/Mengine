@@ -35,7 +35,7 @@ for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
 
     %CMAKE_EXE% -G %CMAKE_GENERATOR% ^
         -DANDROID_PLATFORM=%ANDROID_PLATFORM% ^
-        -DANDROID_ARM_NEON=FALSE ^
+        -DANDROID_ARM_NEON=TRUE ^
         -DANDROID_ABI=%%A ^
         -DANDROID_NDK=%ANDROID_NDK% ^
         -DANDROID_STL=c++_shared ^

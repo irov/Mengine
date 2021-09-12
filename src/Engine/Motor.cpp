@@ -5,7 +5,7 @@
 #include "Kernel/Node.h"
 
 #include "Config/Algorithm.h"
-#include <numeric>
+#include "Config/Numeric.h"
 
 namespace Mengine
 {

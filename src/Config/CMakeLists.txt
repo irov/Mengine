@@ -49,6 +49,7 @@ src
     BuildVersion.h
     UniqueId.h
     Algorithm.h
+    Numeric.h
     Utils.h
 )
 

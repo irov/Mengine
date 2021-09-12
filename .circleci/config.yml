@@ -15,8 +15,8 @@ jobs:
       - android/accept-licenses
       
       - android/install-ndk:
-          ndk-sha: 82274313aba10da6177fd41868f56a0f9651dd81
-          ndk-version: android-ndk-r22
+          ndk-sha: 9bad35f442caeda747780ba1dd92f2d98609d9cd
+          ndk-version: android-ndk-r23
           
       - run:
           name: install cmake

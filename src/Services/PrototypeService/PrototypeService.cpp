@@ -96,7 +96,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PrototypeService::removePrototype( const ConstString & _category, const ConstString & _prototype )
+    void PrototypeService::removePrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * const _generator )
     {
         PrototypeGeneratorInterfacePtr generator = m_generators.erase( _category, _prototype );
 
@@ -106,6 +106,11 @@ namespace Mengine
         );
 
         generator->finalize();
+
+        if( _generator != nullptr )
+        {
+            *_generator = generator;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::hasGenerator( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * const _generator ) const

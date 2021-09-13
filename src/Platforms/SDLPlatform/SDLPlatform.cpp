@@ -968,7 +968,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::removeTimer( uint32_t _id )
     {
-        VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
+        VectorTimers::iterator it_found = Algorithm::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
         {
             return _desc.id == _id;
         } );
@@ -2359,7 +2359,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::removeSDLEventHandler( uint32_t _handlerId )
     {
-        VectorSDLEventHandlers::iterator it_found = std::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
+        VectorSDLEventHandlers::iterator it_found = Algorithm::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
         {
             return _desc.id == _handlerId;
         } );

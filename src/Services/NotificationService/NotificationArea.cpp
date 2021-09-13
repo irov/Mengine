@@ -60,7 +60,7 @@ namespace Mengine
         }
 #endif
 
-        MENGINE_ASSERTION( std::find_if( m_observers.begin(), m_observers.end(), []( const ObserverDesc & _desc )
+        MENGINE_ASSERTION( Algorithm::find_if( m_observers.begin(), m_observers.end(), []( const ObserverDesc & _desc )
         {
             return _desc.observer != nullptr;
         } ) == m_observers.end(), "finalized notification '%u' has observers"
@@ -240,7 +240,7 @@ namespace Mengine
 
         ++m_visiting;
 
-        m_addObservers.erase( std::remove_if( m_addObservers.begin(), m_addObservers.end(), []( const ObserverDesc & _desc )
+        m_addObservers.erase( Algorithm::remove_if( m_addObservers.begin(), m_addObservers.end(), []( const ObserverDesc & _desc )
         {
             return _desc.observer == nullptr;
         } ), m_addObservers.end() );

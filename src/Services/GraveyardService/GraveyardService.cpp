@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GraveyardService::onTimepipe( const UpdateContext * _context )
     {
-        VectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), [_context]( RenderTextureGraveEntry & _entry )
+        VectorTextureGrave::iterator it_erase = Algorithm::remove_if( m_textures.begin(), m_textures.end(), [_context]( RenderTextureGraveEntry & _entry )
         {
             _entry.time -= _context->time;
 
@@ -141,7 +141,7 @@ namespace Mengine
             return nullptr;
         }
 
-        VectorTextureGrave::iterator it_found = std::find_if( m_textures.begin(), m_textures.end(), [&_fileGroup, &_filePath]( const RenderTextureGraveEntry & _entry )
+        VectorTextureGrave::iterator it_found = Algorithm::find_if( m_textures.begin(), m_textures.end(), [&_fileGroup, &_filePath]( const RenderTextureGraveEntry & _entry )
         {
             if( _entry.fileGroup != _fileGroup )
             {

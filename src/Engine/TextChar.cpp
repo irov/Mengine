@@ -7,6 +7,7 @@
 #include "Kernel/StringHelper.h"
 
 #include "Config/Algorithm.h"
+#include "Config/Iterator.h"
 
 namespace Mengine
 {
@@ -84,14 +85,14 @@ namespace Mengine
                 const TextFontInterfacePtr & font = FONT_SERVICE()
                     ->getFont( c_FontName );
 
-                VectorCacheFonts::iterator it_found = std::find_if( _cacheFonts->begin(), _cacheFonts->end(), [&font]( const CacheFont & cache )
+                VectorCacheFonts::iterator it_found = Algorithm::find_if( _cacheFonts->begin(), _cacheFonts->end(), [&font]( const CacheFont & cache )
                 {
                     return cache.font == font;
                 } );
 
                 if( it_found != _cacheFonts->end() )
                 {
-                    ptrdiff_t d = std::distance( _cacheFonts->begin(), it_found );
+                    ptrdiff_t d = Iterator::distance( _cacheFonts->begin(), it_found );
 
                     c.fontId = (uint32_t)d;
                 }
@@ -136,7 +137,7 @@ namespace Mengine
         void substr( VectorTextLineChunks * const _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size )
         {
             VectorTextLineChunks::const_iterator it_offset = _str.begin();
-            std::advance( it_offset, _offset );
+            Iterator::advance( it_offset, _offset );
 
             VectorTextLineChunks::const_iterator it_size = _str.begin();
 
@@ -146,7 +147,7 @@ namespace Mengine
             }
             else
             {
-                std::advance( it_size, _offset + _size );
+                Iterator::advance( it_size, _offset + _size );
             }
 
             _out->insert( _out->begin(), it_offset, it_size );

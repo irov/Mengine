@@ -7,6 +7,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {
@@ -71,7 +72,7 @@ namespace Mengine
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
         float * values = m_pixelFloats.data() + v.offset;
-        std::copy( _values, _values + _size * _count, values );
+        Algorithm::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgramVariable::apply( const RenderProgramInterfacePtr & _program )

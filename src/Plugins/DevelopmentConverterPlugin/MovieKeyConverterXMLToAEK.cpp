@@ -23,6 +23,8 @@
 #include "Kernel/ContainerWriter.h"
 #include "Kernel/FileGroupHelper.h"
 
+#include "Config/Iterator.h"
+
 #include "math/quat.h"
 
 #include "poly2tri/poly2tri.h"
@@ -682,9 +684,9 @@ namespace Mengine
 
                             p2t::Point * pb = p2t_points.data();
 
-                            uint32_t i0 = (uint32_t)std::distance( pb, p0 );
-                            uint32_t i1 = (uint32_t)std::distance( pb, p1 );
-                            uint32_t i2 = (uint32_t)std::distance( pb, p2 );
+                            uint32_t i0 = (uint32_t)Iterator::distance( pb, p0 );
+                            uint32_t i1 = (uint32_t)Iterator::distance( pb, p1 );
+                            uint32_t i2 = (uint32_t)Iterator::distance( pb, p2 );
 
                             shape_indices.emplace_back( i0 );
                             shape_indices.emplace_back( i1 );

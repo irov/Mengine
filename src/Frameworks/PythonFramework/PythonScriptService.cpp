@@ -615,7 +615,7 @@ namespace Mengine
         for( const ScriptModulePackage & pack : _modules )
         {
             m_bootstrapperModules.erase(
-                std::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePackage & _pack )
+                Algorithm::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePackage & _pack )
             {
                 if( _pack.module < pack.module )
                 {
@@ -636,7 +636,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
     {
-        MENGINE_ASSERTION_FATAL( std::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
+        MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
         } ) == m_embeddings.end() );
@@ -659,7 +659,7 @@ namespace Mengine
     {
         m_kernel->collect();
 
-        VectorEmbeddings::const_iterator it_found = std::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
+        VectorEmbeddings::const_iterator it_found = Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
         } );
@@ -1031,7 +1031,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::removeLogFunction( const ConstString & _className, const ConstString & _functionName )
     {
-        VectorDebugCallFunctions::iterator it_found = std::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
+        VectorDebugCallFunctions::iterator it_found = Algorithm::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
         {
             if( _desc.className != _className )
             {

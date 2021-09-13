@@ -443,7 +443,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::removeRequestListener( int32_t _id )
     {
-        m_networkListeners.erase( std::remove_if( m_networkListeners.begin(), m_networkListeners.end(), 
+        m_networkListeners.erase( Algorithm::remove_if( m_networkListeners.begin(), m_networkListeners.end(),
             [_id]( const RequestListenerDesk  & _desc )
         {
             return _desc.id == _id;

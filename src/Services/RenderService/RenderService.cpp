@@ -25,6 +25,8 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ColorHelper.h"
 
+#include "Config/Algorithm.h"
+
 #include "math/convex8.h"
 
 #include "stdex/memorycopy.h"
@@ -801,7 +803,7 @@ namespace Mengine
             this->restoreTextureStage_( i );
         }
 
-        std::fill_n( m_currentTexturesID, MENGINE_MAX_TEXTURE_STAGES, 0 );
+        Algorithm::fill_n( m_currentTexturesID, MENGINE_MAX_TEXTURE_STAGES, 0 );
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;

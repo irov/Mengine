@@ -2,6 +2,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/Algorithm.h"
+
 #include "movie/movie.hpp"
 
 namespace Mengine
@@ -70,7 +72,7 @@ namespace Mengine
     {
         ae_uint32_t option = ae_make_option( _option4 );
 
-        if( std::find( m_options.begin(), m_options.end(), option ) == m_options.end() )
+        if( Algorithm::find( m_options.begin(), m_options.end(), option ) == m_options.end() )
         {
             return false;
         }

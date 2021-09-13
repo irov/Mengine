@@ -22,6 +22,7 @@
 #include "math/box2.h"
 
 #include "Config/Algorithm.h"
+#include "Config/Iterator.h"
 
 #ifndef MENGINE_TEXT_FIELD_MAX_TEXT
 #define MENGINE_TEXT_FIELD_MAX_TEXT 2048
@@ -885,7 +886,7 @@ namespace Mengine
                         GlyphCode glyphChar = (GlyphCode)c;
 
                         U32String::const_iterator it_kerning = it;
-                        std::advance( it_kerning, 1 );
+                        Iterator::advance( it_kerning, 1 );
 
                         GlyphCode glyphCharNext = (it_kerning != word.end()) ? *it_kerning : 0;
 
@@ -978,12 +979,12 @@ namespace Mengine
                 chunk.value = chunk.value.substr( 0, m_maxCharCount - charIterator );
 
                 VectorTextLineChunks::iterator it_chars_erase = it_chars;
-                std::advance( it_chars_erase, 1 );
+                Iterator::advance( it_chars_erase, 1 );
 
                 chars.erase( it_chars_erase, chars.end() );
 
                 VectorTextLineChunks2::iterator it_lines_erase = it_lines;
-                std::advance( it_lines_erase, 1 );
+                Iterator::advance( it_lines_erase, 1 );
 
                 _textLines->erase( it_lines_erase, _textLines->end() );
 

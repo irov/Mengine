@@ -50,6 +50,7 @@ src
     UniqueId.h
     Algorithm.h
     Numeric.h
+    Iterator.h
     Utils.h
 )
 

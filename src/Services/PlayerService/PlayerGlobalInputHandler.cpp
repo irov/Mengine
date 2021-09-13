@@ -35,7 +35,7 @@ namespace Mengine
         m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
         m_handlersAdd.clear();
 
-        m_handlers.erase( std::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
+        m_handlers.erase( Algorithm::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
         {
             return _handle.dead;
         } ), m_handlers.end() );
@@ -269,7 +269,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputHandlerInterfacePtr PlayerGlobalInputHandler::removeGlobalHandler( UniqueId _id )
     {
-        VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle )
+        VectorGlobalHandler::iterator it_found_add = Algorithm::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle )
         {
             return _handle.id == _id;
         } );
@@ -284,7 +284,7 @@ namespace Mengine
             return handler;
         }
 
-        VectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), [_id]( const GlobalHandlerDesc & _handle )
+        VectorGlobalHandler::iterator it_found = Algorithm::find_if( m_handlers.begin(), m_handlers.end(), [_id]( const GlobalHandlerDesc & _handle )
         {
             return _handle.id == _id;
         } );
@@ -423,7 +423,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::enableGlobalHandler( UniqueId _id, bool _value )
     {
-        VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle )
+        VectorGlobalHandler::iterator it_found_add = Algorithm::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle )
         {
             return _handle.id == _id;
         } );
@@ -435,7 +435,7 @@ namespace Mengine
             return true;
         }
 
-        VectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), [_id]( const GlobalHandlerDesc & _handle )
+        VectorGlobalHandler::iterator it_found = Algorithm::find_if( m_handlers.begin(), m_handlers.end(), [_id]( const GlobalHandlerDesc & _handle )
         {
             return _handle.id == _id;
         } );
@@ -459,7 +459,7 @@ namespace Mengine
         m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
         m_handlersAdd.clear();
 
-        VectorGlobalHandler::iterator it_erase = std::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
+        VectorGlobalHandler::iterator it_erase = Algorithm::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
         {
             return _handle.dead;
         } );

@@ -325,7 +325,7 @@ namespace Mengine
                 return false;
             }
 
-            if( std::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
+            if( Algorithm::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
             {
                 return false;
             }
@@ -436,7 +436,7 @@ namespace Mengine
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         VectorLoggers::iterator it_find =
-            std::find( m_loggers.begin(), m_loggers.end(), _logger );
+            Algorithm::find( m_loggers.begin(), m_loggers.end(), _logger );
 
         if( it_find != m_loggers.end() )
         {
@@ -458,7 +458,7 @@ namespace Mengine
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         VectorLoggers::iterator it_find =
-            std::find( m_loggers.begin(), m_loggers.end(), _logger );
+            Algorithm::find( m_loggers.begin(), m_loggers.end(), _logger );
 
         if( it_find == m_loggers.end() )
         {

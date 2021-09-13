@@ -139,7 +139,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::removeOzzAnimationSampler( const ConstString & _name )
     {
-        VectorSamplerOzzAnimations::iterator it_found = std::find_if( m_samplers.begin(), m_samplers.end()
+        VectorSamplerOzzAnimations::iterator it_found = Algorithm::find_if( m_samplers.begin(), m_samplers.end()
             , [_name]( const SamplerOzzAnimationPtr & _sampler )
         {
             return _sampler->getName() == _name;

@@ -40,7 +40,7 @@ namespace Mengine
 
         if( flag != 0 )
         {
-            VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+            VectorEventReceivers::iterator it_found = Algorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
             {
                 return _desc.event == _event;
             } );
@@ -71,7 +71,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
         MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0 );
 
-        VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+        VectorEventReceivers::iterator it_found = Algorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
         {
             return _desc.event == _event;
         } );
@@ -101,7 +101,7 @@ namespace Mengine
             return m_receiver;
         }
 
-        VectorEventReceivers::const_iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+        VectorEventReceivers::const_iterator it_found = Algorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
         {
             return _desc.event == _event;
         } );

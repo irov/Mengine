@@ -553,7 +553,7 @@ namespace Mengine
         }
 
         m_packages.erase(
-            std::remove_if( m_packages.begin(), m_packages.end(), [&_fileGroup]( const TextLocalePackagePtr & _pack )
+            Algorithm::remove_if( m_packages.begin(), m_packages.end(), [&_fileGroup]( const TextLocalePackagePtr & _pack )
         {
             if( _pack->getFileGroup() != _fileGroup )
             {

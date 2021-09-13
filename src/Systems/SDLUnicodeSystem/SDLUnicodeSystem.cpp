@@ -5,6 +5,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Mengine::SDLUnicodeSystem );
@@ -12,7 +13,7 @@ SERVICE_FACTORY( UnicodeSystem, Mengine::SDLUnicodeSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const Char * SDL_UCS_wchar_t = sizeof( WChar ) == 2 ? "UCS-2-INTERNAL" : "UCS-4-INTERNAL";
+    constexpr const Char * SDL_UCS_wchar_t = sizeof( WChar ) == 2 ? "UCS-2-INTERNAL" : "UCS-4-INTERNAL";
     //////////////////////////////////////////////////////////////////////////
     SDLUnicodeSystem::SDLUnicodeSystem()
     {
@@ -52,7 +53,7 @@ namespace Mengine
                 return false;
             }
 
-            std::copy( sdl_utf8, sdl_utf8 + utf8Size, _utf8 );
+            Algorithm::copy( sdl_utf8, sdl_utf8 + utf8Size, _utf8 );
 
             _utf8[utf8Size] = '\0';
         }
@@ -99,7 +100,7 @@ namespace Mengine
                 return false;
             }
 
-            std::copy( sdl_unicode_wchar, sdl_unicode_wchar + unicodeSize, _unicode );
+            Algorithm::copy( sdl_unicode_wchar, sdl_unicode_wchar + unicodeSize, _unicode );
 
             _unicode[unicodeSize] = L'\0';
         }

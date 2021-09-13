@@ -51,7 +51,7 @@ namespace Mengine
     {
         AreaOfInterestZonePtr zone = _zone;
 
-        VectorAreaOfInterestZones::iterator it_found = std::find( m_zones.begin(), m_zones.end(), zone );
+        VectorAreaOfInterestZones::iterator it_found = Algorithm::find( m_zones.begin(), m_zones.end(), zone );
 
         MENGINE_ASSERTION_FATAL( it_found != m_zones.end() );
 

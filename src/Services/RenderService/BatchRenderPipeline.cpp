@@ -658,7 +658,7 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        std::stable_sort( m_renderPasses.begin(), m_renderPasses.end(), []( const RenderPass & _l, const RenderPass & _r )
+        Algorithm::stable_sort( m_renderPasses.begin(), m_renderPasses.end(), []( const RenderPass & _l, const RenderPass & _r )
         {
             if( _l.zGroup < _r.zGroup )
             {

@@ -169,7 +169,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::removeRelationPickerChildren_( BasePicker * _childPicker )
     {
-        VectorBasePicker::iterator it_erase = std::find( m_pickerChildren.begin(), m_pickerChildren.end(), _childPicker );
+        VectorBasePicker::iterator it_erase = Algorithm::find( m_pickerChildren.begin(), m_pickerChildren.end(), _childPicker );
 
         MENGINE_ASSERTION_FATAL( it_erase != m_pickerChildren.end(), "remove relation child is not found" );
 
@@ -178,7 +178,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::addRelationPickerChildrenAfter_( BasePicker * _afterPicker, BasePicker * _childPicker )
     {
-        VectorBasePicker::iterator it_insert = std::find( m_pickerChildren.begin(), m_pickerChildren.end(), _afterPicker );
+        VectorBasePicker::iterator it_insert = Algorithm::find( m_pickerChildren.begin(), m_pickerChildren.end(), _afterPicker );
 
         MENGINE_ASSERTION_FATAL( it_insert != m_pickerChildren.end(), "after relation child is not found" );
 

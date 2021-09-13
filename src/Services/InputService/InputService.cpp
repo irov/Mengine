@@ -201,7 +201,7 @@ namespace Mengine
             return false;
         }
 
-        std::ptrdiff_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
+        std::ptrdiff_t keyDownCount = Algorithm::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
 
         if( keyDownCount != 1 )
         {
@@ -213,14 +213,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isAnyKeyDown() const
     {
-        std::ptrdiff_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
+        std::ptrdiff_t keyDownCount = Algorithm::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
 
         return keyDownCount != 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isAnyMouseButtonDown() const
     {
-        std::ptrdiff_t mouseDownCount = std::count( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_CODE, true );
+        std::ptrdiff_t mouseDownCount = Algorithm::count( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_CODE, true );
 
         return mouseDownCount != 0;
     }
@@ -356,7 +356,7 @@ namespace Mengine
     void InputService::removeMousePositionProvider( UniqueId _id )
     {
         VectorMousePositionProviders::iterator it_found =
-            std::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_id]( const InputService::InputMousePositionProviderDesc & _desc )
+            Algorithm::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_id]( const InputService::InputMousePositionProviderDesc & _desc )
         {
             return _desc.id == _id;
         } );
@@ -377,7 +377,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _focus );
 
-        std::fill( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, false );
+        Algorithm::fill( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::pushEvent( const InputUnionEvent & _event )

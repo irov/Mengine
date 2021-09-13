@@ -95,7 +95,7 @@ namespace Mengine
     template<class T>
     void ResourceCacher<T>::unlock()
     {
-        m_cachers.erase( std::remove_if( m_cachers.begin(), m_cachers.end(), []( ResourceCacher<T>::ResourceCacherDesc & _desc )
+        m_cachers.erase( Algorithm::remove_if( m_cachers.begin(), m_cachers.end(), []( ResourceCacher<T>::ResourceCacherDesc & _desc )
         {
             _desc.lock = false;
 

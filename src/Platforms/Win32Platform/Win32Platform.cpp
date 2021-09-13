@@ -683,7 +683,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::removeTimer( UniqueId _id )
     {
-        VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
+        VectorTimers::iterator it_found = Algorithm::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
         {
             return _desc.id == _id;
         } );
@@ -797,7 +797,7 @@ namespace Mengine
                     desc.lambda( desc.id );
                 }
 
-                m_timers.erase( std::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+                m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
                 {
                     return _desc.id == INVALID_UNIQUE_ID;
                 } ), m_timers.end() );
@@ -4736,7 +4736,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::removeWin32ProcessHandler( uint32_t _id )
     {
-        VectorWin32ProcessHandler::iterator it_found = std::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
+        VectorWin32ProcessHandler::iterator it_found = Algorithm::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
         {
             return _desc.id == _id;
         } );

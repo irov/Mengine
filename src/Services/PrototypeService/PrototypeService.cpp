@@ -58,7 +58,7 @@ namespace Mengine
             return false;
         }
 
-        if( _generator == nullptr )
+        if( _generator != nullptr )
         {
             *_generator = generator;
         }

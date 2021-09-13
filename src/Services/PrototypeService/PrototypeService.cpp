@@ -49,6 +49,23 @@ namespace Mengine
         m_generators.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PrototypeService::hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * const _generator ) const
+    {
+        PrototypeGeneratorInterfacePtr generator = m_generators.find( _category, _prototype );
+
+        if( generator == nullptr )
+        {
+            return false;
+        }
+
+        if( _generator == nullptr )
+        {
+            *_generator = generator;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
     {
         _generator->setCategory( _category );

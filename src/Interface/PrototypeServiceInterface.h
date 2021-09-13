@@ -13,8 +13,11 @@ namespace Mengine
         SERVICE_DECLARE( "PrototypeService" )
 
     public:
+        virtual bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * const _generator ) const = 0;
         virtual bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) = 0;
         virtual void removePrototype( const ConstString & _category, const ConstString & _prototype ) = 0;
+
+    public:
         virtual bool hasGenerator( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * const _generator ) const = 0;
         virtual const PrototypeGeneratorInterfacePtr & getGenerator( const ConstString & _category, const ConstString & _prototype ) const = 0;
 

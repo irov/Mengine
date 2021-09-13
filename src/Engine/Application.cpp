@@ -524,19 +524,19 @@ namespace Mengine
         LOGGER_MESSAGE( "Unregister Base Generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ) );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
@@ -610,7 +610,7 @@ namespace Mengine
 
 #define NODE_FACTORY( Type )\
         PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type) )
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
 
         NODE_FACTORY( Entity );
         NODE_FACTORY( Arrow );
@@ -650,7 +650,7 @@ namespace Mengine
 
 #define SURFACE_FACTORY(Type)\
         PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type) )
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
 
         SURFACE_FACTORY( SurfaceSound );
         SURFACE_FACTORY( SurfaceImage );
@@ -696,7 +696,7 @@ namespace Mengine
         LOGGER_INFO( "system", "Unregister Entity Generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterSceneGenerator_()
@@ -704,7 +704,7 @@ namespace Mengine
         LOGGER_INFO( "system", "Unregister Scene Generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerArrowGenerator_()
@@ -727,7 +727,7 @@ namespace Mengine
         LOGGER_INFO( "system", "Unregister Arrow Generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()
@@ -769,7 +769,7 @@ namespace Mengine
 
 #define REMOVE_PROTOTYPE( Type )\
         PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type) )
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
 
         REMOVE_PROTOTYPE( ResourceMusic );
         REMOVE_PROTOTYPE( ResourceImage );

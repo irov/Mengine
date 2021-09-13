@@ -56,7 +56,7 @@ namespace Mengine
                 const ConstString & prototype = generator->getPrototype();
 
                 PROTOTYPE_SERVICE()
-                    ->removePrototype( category, prototype );
+                    ->removePrototype( category, prototype, nullptr );
             }
 
             m_entityPrototypeGenerators.clear();
@@ -135,12 +135,10 @@ namespace Mengine
         void s_removePrototypeFinder( const ConstString & _category, const ConstString & _prototype )
         {
             PrototypeGeneratorInterfacePtr generator;
-            bool result = PROTOTYPE_SERVICE()
-                ->hasPrototype( _category, _prototype, &generator );
+            PROTOTYPE_SERVICE()
+                ->removePrototype( _category, _prototype, &generator );
 
-            MENGINE_UNUSED( result );
-
-            MENGINE_ASSERTION_FATAL( result == true, "removing generator category '%s' prototype '%s' not found"
+            MENGINE_ASSERTION_FATAL( generator != nullptr, "removing generator category '%s' prototype '%s' not found"
                 , _category.c_str()
                 , _prototype.c_str()
             );

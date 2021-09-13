@@ -36,7 +36,7 @@ namespace Mengine
     void GraphicsPlugin::_finalizePlugin()
     {
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ) );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void GraphicsPlugin::_destroyPlugin()

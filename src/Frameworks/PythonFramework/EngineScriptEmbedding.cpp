@@ -4309,8 +4309,11 @@ namespace Mengine
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );
 
-        PROTOTYPE_SERVICE()->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
-        PROTOTYPE_SERVICE()->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -91,7 +91,7 @@ namespace Mengine
     void RenderService::_finalizeService()
     {
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ) );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), nullptr );
 
         m_renderBatches.clear();
 

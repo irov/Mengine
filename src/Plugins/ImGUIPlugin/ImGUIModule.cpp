@@ -190,7 +190,7 @@ namespace Mengine
         ImGui::DestroyContext();
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ) );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), nullptr );
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()

@@ -111,7 +111,7 @@ namespace Mengine
     bool FrameworkService::stopFrameworks()
     {
         VectorFrameworks reverse_frameworks = m_frameworks;
-        std::reverse( reverse_frameworks.begin(), reverse_frameworks.end() );
+        Algorithm::reverse( reverse_frameworks.begin(), reverse_frameworks.end() );
 
         for( const FrameworkInterfacePtr & framework : reverse_frameworks )
         {
@@ -124,7 +124,7 @@ namespace Mengine
     bool FrameworkService::isInitializeFramework( const ConstString & _name ) const
     {
         VectorFrameworks::const_iterator it_found =
-            std::find_if( m_frameworks.begin(), m_frameworks.end(), [&_name]( const FrameworkInterfacePtr & _framework )
+            Algorithm::find_if( m_frameworks.begin(), m_frameworks.end(), [&_name]( const FrameworkInterfacePtr & _framework )
         {
             return _framework->getName() == _name;
         } );
@@ -140,7 +140,7 @@ namespace Mengine
     const FrameworkInterfacePtr & FrameworkService::findFramework_( const ConstString & _name ) const
     {
         VectorFrameworks::const_iterator it_found =
-            std::find_if( m_frameworks.begin(), m_frameworks.end(), [&_name]( const FrameworkInterfacePtr & _framework )
+            Algorithm::find_if( m_frameworks.begin(), m_frameworks.end(), [&_name]( const FrameworkInterfacePtr & _framework )
         {
             return _framework->getName() == _name;
         } );
@@ -158,7 +158,7 @@ namespace Mengine
     FrameworkInterfacePtr FrameworkService::popFramework_( const ConstString & _name )
     {
         VectorFrameworks::iterator it_found =
-            std::find_if( m_frameworks.begin(), m_frameworks.end(), [&_name]( const FrameworkInterfacePtr & _framework )
+            Algorithm::find_if( m_frameworks.begin(), m_frameworks.end(), [&_name]( const FrameworkInterfacePtr & _framework )
         {
             return _framework->getName() == _name;
         } );

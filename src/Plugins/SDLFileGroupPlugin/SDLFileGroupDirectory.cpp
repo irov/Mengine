@@ -52,31 +52,23 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::getFullPath( const FilePath & _filePath, Char * _fullPath ) const
+    void SDLFileGroupDirectory::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
         bool successful = Helper::concatenateFilePath( m_relationPath, m_folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
 
         MENGINE_UNUSED( successful );
 
-        MENGINE_ASSERTION_FATAL( successful == true, "invalid concatenate fullPath '%s':'%s'"
+        MENGINE_ASSERTION_FATAL( successful == true, "invalid concatenate fullPath relation '%s' folder '%s' file '%s'"
+            , m_relationPath.c_str()
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
         Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-        if( this->getFullPath( _filePath, fullPath ) == false )
-        {
-            LOGGER_ERROR( "invalid get fullPath '%s'"
-                , _filePath.c_str()
-            );
-
-            return false;
-        }
+        this->getFullPath( _filePath, fullPath );
 
         if( PLATFORM_SERVICE()
             ->existFile( fullPath ) == true )
@@ -266,13 +258,13 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////	
-    bool SDLFileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
+    bool SDLFileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
-        bool result = file->open( m_relationPath, m_folderPath, _filePath );
+        bool result = file->open( m_relationPath, m_folderPath, _filePath, _withTemp );
         
         MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
             , m_folderPath.c_str()

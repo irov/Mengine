@@ -266,7 +266,7 @@ namespace Mengine
             next = Detail::next_bresenham_line_point( &br, next );
         }
 
-        _path->segmentPaths.push_back( std::move( segmentPathDesc ) );
+        _path->segmentPaths.push_back( segmentPathDesc );
 
         return true;
     }

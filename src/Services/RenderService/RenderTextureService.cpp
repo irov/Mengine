@@ -20,6 +20,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -140,11 +141,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath )
     {
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create file '%s' '%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create file '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
@@ -246,9 +246,8 @@ namespace Mengine
 
         m_textures.emplace( fileGroupName, _filePath, texture_ptr );
 
-        LOGGER_INFO( "texture", "cache texture '%s:%s'"
-            , fileGroupName.c_str()
-            , _filePath.c_str()
+        LOGGER_INFO( "texture", "cache texture '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -276,9 +275,8 @@ namespace Mengine
             }
         }
 
-        LOGGER_INFO( "texture", "load texture '%s:%s' codec '%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        LOGGER_INFO( "texture", "load texture '%s' codec '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             , _codecType.c_str()
         );
 
@@ -297,9 +295,8 @@ namespace Mengine
 
         RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.format, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( new_texture, "create texture '%s:%s' codec '%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( new_texture, "create texture '%s' codec '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             , _codecType.c_str()
         );
 

@@ -137,8 +137,6 @@
 
 #include "Kernel/Stringstream.h"
 
-#include <ctime>
-
 #define MENGINE_DEBUG_HOTSPOTS 0x00000001
 #define MENGINE_DEBUG_PHYSICS 0x00000002
 #define MENGINE_DEBUG_NODES 0x00000004
@@ -526,19 +524,19 @@ namespace Mengine
         LOGGER_MESSAGE( "Unregister Base Generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ) );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
@@ -612,7 +610,7 @@ namespace Mengine
 
 #define NODE_FACTORY( Type )\
         PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type) )
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
 
         NODE_FACTORY( Entity );
         NODE_FACTORY( Arrow );
@@ -652,7 +650,7 @@ namespace Mengine
 
 #define SURFACE_FACTORY(Type)\
         PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type) )
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
 
         SURFACE_FACTORY( SurfaceSound );
         SURFACE_FACTORY( SurfaceImage );
@@ -698,7 +696,7 @@ namespace Mengine
         LOGGER_INFO( "system", "Unregister Entity Generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterSceneGenerator_()
@@ -706,7 +704,7 @@ namespace Mengine
         LOGGER_INFO( "system", "Unregister Scene Generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerArrowGenerator_()
@@ -729,7 +727,7 @@ namespace Mengine
         LOGGER_INFO( "system", "Unregister Arrow Generator..." );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none() );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()
@@ -771,7 +769,7 @@ namespace Mengine
 
 #define REMOVE_PROTOTYPE( Type )\
         PROTOTYPE_SERVICE()\
-            ->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type) )
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
 
         REMOVE_PROTOTYPE( ResourceMusic );
         REMOVE_PROTOTYPE( ResourceImage );
@@ -982,8 +980,8 @@ namespace Mengine
                 DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
                     ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
-                Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
-                Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate );
+                Char filePathDate[1024] = {'\0'};
+                Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate, 1024 );
 
                 processDumpPath += filePathDate;
                 processDumpPath += ".dmp";
@@ -1635,7 +1633,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::beginUpdate()
     {
-        MENGINE_PROFILER_CATEGORY( "app" );
+        MENGINE_PROFILER_CATEGORY();
 
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
@@ -1690,7 +1688,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::tick( float _time )
     {
-        MENGINE_PROFILER_CATEGORY( "tick" );
+        MENGINE_PROFILER_CATEGORY();
 
         ++m_updateRevision;
 
@@ -1737,8 +1735,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()
     {
-        MENGINE_PROFILER_CATEGORY( "render" );
-
         if( RENDER_SERVICE()
             ->beginScene( m_renderPipeline ) == false )
         {
@@ -1758,8 +1754,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::flush()
     {
-        MENGINE_PROFILER_CATEGORY( "flush" );
-
         RENDER_SERVICE()
             ->swapBuffers();
     }

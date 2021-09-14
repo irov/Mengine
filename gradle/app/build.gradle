@@ -279,13 +279,14 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.annotation:annotation:1.2.0'
 
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
+    implementation fileTree(dir: '../../dependencies/externals-android', include: ['*.jar'])
 }
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_UNITYADS", true) == true ) {
@@ -316,7 +317,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_FACEBOOK", true) == true ) {
     println 'ANDROID_APP_ENABLE_FACEBOOK: TRUE'
 
     dependencies {
-        implementation 'com.facebook.android:facebook-android-sdk:9.0.0'
+        implementation 'com.facebook.android:facebook-android-sdk:11.1.0'
     }
 }
 else
@@ -385,14 +386,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
     apply plugin: 'io.sentry.android.gradle'
 
     dependencies {
-        implementation 'io.sentry:sentry-android:4.1.0'
-    }
-
-    sentry {
-        autoProguardConfig true
-        autoUpload true
-        uploadNativeSymbols true
-        includeNativeSources true
+        implementation 'io.sentry:sentry-android:5.1.2'
     }
 }
 else

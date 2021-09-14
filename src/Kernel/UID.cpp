@@ -30,7 +30,7 @@ namespace Mengine
         {
             uint32_t seed = Helper::generateRandomDeviceSeed();
 
-            makeUIDSeed( seed, _length, _uid );
+            Helper::makeUIDSeed( seed, _length, _uid );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeUIDSeed( uint32_t _seed, uint32_t _length, Char * const _uid )
@@ -39,7 +39,7 @@ namespace Mengine
 
             std::uniform_int_distribution<uint32_t> dist( 0, MENGINE_STATIC_STRING_LENGTH( char_array ) );
 
-            std::generate_n( _uid, _length, [&dist, &rng]()
+            Algorithm::generate_n( _uid, _length, [&dist, &rng]()
             {
                 uint32_t e = dist( rng );
 

@@ -47,6 +47,7 @@
 #include "Kernel/Documentable.h"
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -329,7 +330,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::destroyScheduler( const SchedulerInterfacePtr & _scheduler )
     {
-        VectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
+        VectorUserScheduler::iterator it_found = Algorithm::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
 
         if( it_found == m_schedulers.end() )
         {
@@ -692,6 +693,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
 

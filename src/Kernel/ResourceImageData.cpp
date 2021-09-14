@@ -10,6 +10,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -37,14 +38,12 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s:%s' was not found"
-            , this->getContent()->getFileGroup()->getName().c_str()
-            , this->getContent()->getFilePath().c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s' was not found"
+            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
         );
 
-        MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s' codec '%s'"
-            , this->getContent()->getFileGroup()->getName().c_str()
-            , this->getContent()->getFilePath().c_str()
+        MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty file '%s' codec '%s'"
+            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
             , this->getContent()->getCodecType().c_str()
         );
 
@@ -53,18 +52,16 @@ namespace Mengine
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "image decoder '%s' for file '%s:%s' was not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "image decoder '%s' for file '%s' was not found"
             , this->getContent()->getCodecType().c_str()
-            , this->getContent()->getFileGroup()->getName().c_str()
-            , this->getContent()->getFilePath().c_str()
+            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
         );
 
         if( imageDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "image decoder '%s' for file '%s:%s' was not found"
+            LOGGER_ERROR( "image decoder '%s' for file '%s' was not found"
                 , this->getContent()->getCodecType().c_str()
-                , this->getContent()->getFileGroup()->getName().c_str()
-                , this->getContent()->getFilePath().c_str()
+                , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
             );
 
             return false;
@@ -90,10 +87,9 @@ namespace Mengine
 
         if( imageDecoder->decode( &data ) == 0 )
         {
-            LOGGER_ERROR( "image decoder '%s' for file '%s:%s' invalid decode"
+            LOGGER_ERROR( "image decoder '%s' for file '%s' invalid decode"
                 , this->getContent()->getCodecType().c_str()
-                , this->getContent()->getFileGroup()->getName().c_str()
-                , this->getContent()->getFilePath().c_str()
+                , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
             );
 
             return false;

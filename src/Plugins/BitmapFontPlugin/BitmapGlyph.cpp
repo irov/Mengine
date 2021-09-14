@@ -10,6 +10,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -138,9 +139,8 @@ namespace Mengine
                             float size = 0.f;
                             if( Helper::stringalized( value, &size ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read size '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read size '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -161,9 +161,8 @@ namespace Mengine
                             float ascender = 0.f;
                             if( Helper::stringalized( value, &ascender ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read ascender '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read ascender '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -175,9 +174,8 @@ namespace Mengine
                             uint32_t height = 0;
                             if( Helper::stringalized( value, &height ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read height '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -189,9 +187,8 @@ namespace Mengine
                             float descender = 0.f;
                             if( Helper::stringalized( value, &descender ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read descender '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read descender '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -212,9 +209,8 @@ namespace Mengine
                             uint32_t width = 0;
                             if( Helper::stringalized( value, &width ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read width '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read width '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -228,9 +224,8 @@ namespace Mengine
                             uint32_t height = 0;
                             if( Helper::stringalized( value, &height ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read height '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -257,9 +252,8 @@ namespace Mengine
                         {
                             if( Helper::stringalized( value, &advance ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read width '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read width '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -268,9 +262,8 @@ namespace Mengine
                         {
                             if( Helper::stringalized( value, &offset ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read offset '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read offset '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -279,9 +272,8 @@ namespace Mengine
                         {
                             if( Helper::stringalized( value, &rect ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read rect '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read rect '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -301,9 +293,8 @@ namespace Mengine
 
                     if( cp == 0 || err_code != utf8::internal::UTF8_OK )
                     {
-                        LOGGER_ERROR( "glyph '%s:%s' invalid utf8 id '%s'"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "glyph '%s' invalid utf8 id '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , id
                         );
                     }
@@ -330,9 +321,8 @@ namespace Mengine
                         {
                             if( Helper::stringalized( value, &advance ) == false )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid read advance '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid read advance '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -347,9 +337,8 @@ namespace Mengine
 
                             if( cp == 0 || err_code != utf8::internal::UTF8_OK )
                             {
-                                LOGGER_ERROR( "glyph '%s:%s' invalid utf8 code '%s'"
-                                    , m_fileGroup->getName().c_str()
-                                    , m_filePath.c_str()
+                                LOGGER_ERROR( "glyph '%s' invalid utf8 code '%s'"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
                             }
@@ -360,9 +349,8 @@ namespace Mengine
 
                     if( m_glyphCode == 0 )
                     {
-                        LOGGER_ERROR( "glyph '%s:%s' invalid kerning m_glyphChar is 0"
-                            , m_fileGroup->getName().c_str()
-                            , m_filePath.c_str()
+                        LOGGER_ERROR( "glyph '%s' invalid kerning m_glyphChar is 0"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                         );
 
                         return;
@@ -393,9 +381,8 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s:%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         size_t xml_buffer_size = stream->size();
@@ -428,9 +415,8 @@ namespace Mengine
 
         if( xmlsax_parse( memory, &callbacks, &tmsc ) == false )
         {
-            LOGGER_ERROR( "invalid parse file '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            LOGGER_ERROR( "invalid parse file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return false;
@@ -438,9 +424,8 @@ namespace Mengine
 
         if( tmsc.isValid() == false )
         {
-            LOGGER_ERROR( "invalid glyph format '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            LOGGER_ERROR( "invalid glyph format '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return false;

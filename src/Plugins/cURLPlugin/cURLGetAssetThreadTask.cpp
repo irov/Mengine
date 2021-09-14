@@ -8,6 +8,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -38,12 +39,11 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePathTemp, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePathTemp, true, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "get asset url '%s' invalid open file '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "get asset url '%s' invalid open file '%s'"
             , m_url.c_str()
-            , m_fileGroup->getName().c_str()
-            , m_filePathTemp.c_str()
+            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
         );
 
         m_stream = stream;
@@ -105,12 +105,11 @@ namespace Mengine
 
         if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
         {
-            LOGGER_STATISTIC( "HTTP: get asset url '%s' login '%s' password '%s'\nfile: '%s:%s'"
+            LOGGER_STATISTIC( "HTTP: get asset url '%s' login '%s' password '%s'\nfile: '%s'"
                 , m_url.c_str()
                 , m_login.c_str()
                 , m_password.c_str()
-                , m_fileGroup->getName().c_str()
-                , m_filePath.c_str()
+                , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
             );
         }
     }

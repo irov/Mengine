@@ -20,7 +20,7 @@ namespace Mengine
         ~SDLFileOutputStream() override;
 
     public:
-        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
+        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp ) override;
         bool close() override;
 
     public:

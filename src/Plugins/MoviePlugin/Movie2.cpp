@@ -29,6 +29,7 @@
 #include "Kernel/AssertionNode.h"
 #include "Kernel/NodeCast.h"
 #include "Kernel/SurfaceCast.h"
+#include "Kernel/ColorHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -3193,7 +3194,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSurface_( const SurfacePtr & _surface, bool _compile )
     {
-        MENGINE_ASSERTION_FATAL( std::find( m_surfaces.begin(), m_surfaces.end(), _surface ) == m_surfaces.end() );
+        MENGINE_ASSERTION_FATAL( Algorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface ) == m_surfaces.end() );
 
         if( _compile == true )
         {
@@ -3207,7 +3208,7 @@ namespace Mengine
     {
         _surface->release();
 
-        VectorSurfaces::iterator it_found = std::find( m_surfaces.begin(), m_surfaces.end(), _surface );
+        VectorSurfaces::iterator it_found = Algorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface );
 
         m_surfaces.erase( it_found );
     }

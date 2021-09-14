@@ -9,7 +9,7 @@ namespace Mengine
         void randomizerShuffle( const RandomizerInterfacePtr & _randomizer, uint32_t * const _indices, uint32_t _count )
         {
             uint32_t enumerator = 0;
-            std::for_each( _indices, _indices + _count, [&enumerator]( uint32_t & _value )
+            Algorithm::for_each( _indices, _indices + _count, [&enumerator]( uint32_t & _value )
             {
                 _value = enumerator++;
             } );

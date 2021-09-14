@@ -21,20 +21,14 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
     private static final String TAG = "UnityAds";
 
     private final String _gameId;
-
-    static native void AndroidNativeUnity_onUnityAdsClick(String placementId);
-
-    static native void AndroidNativeUnity_onUnityAdsPlacementStateChanged(String placementId, int placementState, int placementState1);
-
-    static native void AndroidNativeUnity_onUnityAdsReady(String placementId);
-
-    static native void AndroidNativeUnity_onUnityAdsStart(String placementId);
-
-    static native void AndroidNativeUnity_onUnityAdsFinish(String placementId, int finishState);
-
-    static native void AndroidNativeUnity_onUnityAdsError(int unityAdsError, String message);
-
     private HashSet<String> _alreadyInitializedPlacements;
+    
+    static native void AndroidNativeUnity_onUnityAdsClick(String placementId);
+    static native void AndroidNativeUnity_onUnityAdsPlacementStateChanged(String placementId, int placementState, int placementState1);
+    static native void AndroidNativeUnity_onUnityAdsReady(String placementId);
+    static native void AndroidNativeUnity_onUnityAdsStart(String placementId);
+    static native void AndroidNativeUnity_onUnityAdsFinish(String placementId, int finishState);
+    static native void AndroidNativeUnity_onUnityAdsError(int unityAdsError, String message);
 
     public UnityAdsInteractionLayer(String gameId) {
         _gameId = gameId;

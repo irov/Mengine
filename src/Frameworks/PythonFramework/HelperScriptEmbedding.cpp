@@ -32,6 +32,8 @@
 #include "Kernel/Base64.h"
 #include "Kernel/Crash.h"
 #include "Kernel/Optional.h"
+#include "Kernel/FilePathDateTimeHelper.h"
+#include "Kernel/LoggerHelper.h"
 
 #include "Config/BuildVersion.h"
 #include "Config/GitSHA1.h"
@@ -495,15 +497,10 @@ namespace Mengine
                 const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
                     ->getTextEntry( _textId );
 
-                if( textEntry == nullptr )
-                {
-                    LOGGER_ERROR( "text entry '%s' not found (doc: %s)"
-                        , _textId.c_str()
-                        , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
-                    );
-
-                    return "";
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "text entry '%s' not found (doc: %s)"
+                    , _textId.c_str()
+                    , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
+                );
 
                 size_t value_size;
                 const Char * value = textEntry->getValue( &value_size );
@@ -1106,7 +1103,7 @@ namespace Mengine
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f projectionPointToLine( const mt::vec2f & _point, const mt::vec2f & _v0, const mt::vec2f & _v1 )
+            mt::vec2f s_projectionPointToLine( const mt::vec2f & _point, const mt::vec2f & _v0, const mt::vec2f & _v1 )
             {
                 mt::vec2f dir = _v1 - _v0;
 
@@ -1301,12 +1298,47 @@ namespace Mengine
                 return s;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_getDate()
+            pybind::object s_getDateStruct( pybind::kernel_interface * _kernel )
             {
-                std::time_t ctTime;
-                std::time( &ctTime );
+                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
 
-                return static_cast<uint32_t>(ctTime);
+                PlatformDateTime dateTime;
+                dateTimeProvider->getLocalDateTime( &dateTime );
+
+                pybind::dict d( _kernel );
+
+                d["year"] = dateTime.year;
+                d["month"] = dateTime.month;
+                d["day"] = dateTime.day;
+                d["hour"] = dateTime.hour;
+                d["minute"] = dateTime.minute;
+                d["second"] = dateTime.second;
+                d["milliseconds"] = dateTime.milliseconds;
+
+                return d;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            String s_getDatePathTimestamp()
+            {
+                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
+
+                Char pathTimestamp[1024] = {'\0'};
+                Helper::makeFilePathDateTimeHelper( dateTimeProvider, pathTimestamp, 1024 );
+
+                return pathTimestamp;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            String s_getLoggerTimestamp( const Char * _format )
+            {
+                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
+
+                Char loggerTimestamp[1024] = {'\0'};
+                Helper::makeLoggerTimestamp( dateTimeProvider, _format, loggerTimestamp, 1024 );
+
+                return loggerTimestamp;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getTimeString()
@@ -3636,8 +3668,7 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
         pybind::def_functor( _kernel, "angle_between_two_vectors", helperScriptMethod, &HelperScriptMethod::s_angle_between_two_vectors );
 
-        pybind::def_functor( _kernel, "projectionPointToLine", helperScriptMethod, &HelperScriptMethod::projectionPointToLine );
-
+        pybind::def_functor( _kernel, "projectionPointToLine", helperScriptMethod, &HelperScriptMethod::s_projectionPointToLine );
         pybind::def_functor( _kernel, "isPointInsidePolygon", helperScriptMethod, &HelperScriptMethod::s_isPointInsidePolygon );
 
         pybind::def_functor( _kernel, "getBuildMode", helperScriptMethod, &HelperScriptMethod::s_getBuildMode );
@@ -3648,7 +3679,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
 
-        pybind::def_functor( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getDate );
+        pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
+        pybind::def_functor_kernel( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getDateStruct );
+        pybind::def_functor( _kernel, "getDatePathTimestamp", helperScriptMethod, &HelperScriptMethod::s_getDatePathTimestamp );
+        pybind::def_functor( _kernel, "getLoggerTimestamp", helperScriptMethod, &HelperScriptMethod::s_getLoggerTimestamp );        
 
         pybind::def_functor( _kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
 

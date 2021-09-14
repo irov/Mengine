@@ -543,6 +543,8 @@ namespace Mengine
             }
         }
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CONFIGS_LOAD );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -584,8 +586,8 @@ namespace Mengine
         DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
             ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
-        Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
-        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate );
+        Char filePathDate[1024] = {'\0'};
+        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate, MENGINE_MAX_PATH );
 
         WString unicode_date;
         Helper::utf8ToUnicode( filePathDate, &unicode_date );
@@ -1596,8 +1598,8 @@ namespace Mengine
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( Platform );
-        SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( LoggerService );
+        SERVICE_FINALIZE( NotificationService );        
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
 

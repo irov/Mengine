@@ -7,6 +7,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/FileGroupHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -89,9 +90,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SettingsService::loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "settings", "Settings load... %s:%s"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        LOGGER_INFO( "settings", "Settings load... '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()

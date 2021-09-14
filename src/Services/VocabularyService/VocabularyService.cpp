@@ -50,7 +50,7 @@ namespace Mengine
 
         m_mixins.emplace( _category, _type, _factorable );
 
-        LOGGER_INFO( "vocabulary", "add vocabulary '%s:%s'"
+        LOGGER_INFO( "vocabulary", "add vocabulary category '%s' type '%s'"
             , _category.c_str()
             , _type.c_str()
         );
@@ -62,7 +62,7 @@ namespace Mengine
     {
         MixinPtr mixin = m_mixins.erase( _category, _type );
 
-        LOGGER_INFO( "vocabulary", "remove vocabulary '%s:%s'"
+        LOGGER_INFO( "vocabulary", "remove vocabulary category '%s' type '%s'"
             , _category.c_str()
             , _type.c_str()
         );

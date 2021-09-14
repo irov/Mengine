@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "lz4.h"
 #include "lz4hc.h"
@@ -68,6 +69,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ArchivatorLZ4::decompress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _decompressSize )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
 

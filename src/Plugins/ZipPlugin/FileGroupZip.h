@@ -28,7 +28,7 @@ namespace Mengine
         bool isPacked() const override;
 
     public:
-        bool getFullPath( const FilePath & _filePath, Char * const _fullPath ) const override;
+        void getFullPath( const FilePath & _filePath, Char * const _fullPath ) const override;
 
     public:
         bool existDirectory( const FilePath & _folderName, bool _recursive ) const override;
@@ -49,7 +49,7 @@ namespace Mengine
 
     public:
         OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) override;
-        bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) override;
+        bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp ) override;
         bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
 
     public:

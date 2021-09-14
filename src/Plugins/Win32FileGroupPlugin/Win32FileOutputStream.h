@@ -23,7 +23,7 @@ namespace Mengine
         ~Win32FileOutputStream() override;
 
     public:
-        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
+        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp ) override;
         bool close() override;
 
     public:
@@ -41,6 +41,8 @@ namespace Mengine
         FilePath m_relationPath;
         FilePath m_folderPath;
         FilePath m_filePath;
+
+        bool m_withTemp;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32FileOutputStream> Win32FileOutputStreamPtr;

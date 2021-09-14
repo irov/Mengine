@@ -22,6 +22,10 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/RenderContextHelper.h"
+#include "Kernel/ProfilerHelper.h"
+#include "Kernel/ColorHelper.h"
+
+#include "Config/Algorithm.h"
 
 #include "math/convex8.h"
 
@@ -87,7 +91,7 @@ namespace Mengine
     void RenderService::_finalizeService()
     {
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ) );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), nullptr );
 
         m_renderBatches.clear();
 
@@ -461,6 +465,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         _renderPipeline->prepare();
 
         if( m_renderSystem->beginScene() == false )
@@ -479,6 +485,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::endScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         _renderPipeline->flush();
 
         this->flushRender_( _renderPipeline );
@@ -492,6 +500,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::swapBuffers()
     {
+        MENGINE_PROFILER_CATEGORY();
+
         m_renderSystem->swapBuffers();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -793,7 +803,7 @@ namespace Mengine
             this->restoreTextureStage_( i );
         }
 
-        std::fill_n( m_currentTexturesID, MENGINE_MAX_TEXTURE_STAGES, 0 );
+        Algorithm::fill_n( m_currentTexturesID, MENGINE_MAX_TEXTURE_STAGES, 0 );
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;

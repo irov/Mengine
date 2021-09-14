@@ -6,6 +6,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -17,16 +18,14 @@ namespace Mengine
             FileGroupInterface * realFileGroup;
             InputStreamInterfacePtr file = _fileGroup->createInputFile( _filePath, _streaming, &realFileGroup, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( file, "can't create input file '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            MENGINE_ASSERTION_MEMORY_PANIC( file, "can't create input file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             if( realFileGroup->openInputFile( _filePath, file, 0, ~0U, _streaming, _share ) == false )
             {
-                LOGGER_ERROR( "can't open input file '%s:%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
+                LOGGER_ERROR( "can't open input file '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                 );
 
                 return nullptr;
@@ -35,20 +34,18 @@ namespace Mengine
             return file;
         }
         //////////////////////////////////////////////////////////////////////////
-        OutputStreamInterfacePtr openOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+        OutputStreamInterfacePtr openOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentPtr & _doc )
         {
             OutputStreamInterfacePtr file = _fileGroup->createOutputFile( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( file, "can't create output file '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            MENGINE_ASSERTION_MEMORY_PANIC( file, "can't create output file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
-            if( _fileGroup->openOutputFile( _filePath, file ) == false )
+            if( _fileGroup->openOutputFile( _filePath, file, _withTemp ) == false )
             {
-                LOGGER_ERROR( "can't open output file '%s:%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
+                LOGGER_ERROR( "can't open output file '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
                 );
 
                 return nullptr;

@@ -15,6 +15,7 @@ namespace Mengine
     Win32FileOutputStream::Win32FileOutputStream()
         : m_hFile( INVALID_HANDLE_VALUE )
         , m_size( 0 )
+        , m_withTemp( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -23,21 +24,38 @@ namespace Mengine
         this->close();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+    bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
     {
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
 
+        m_withTemp = _withTemp;
+
         WChar fullPathTemp[MENGINE_MAX_PATH] = {L'\0'};
-        size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempW( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
 
-        MENGINE_UNUSED( fullPathTempLen );
+        if( m_withTemp == true )
+        {
+            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempW( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
 
-        MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s':'%s'"
-            , m_folderPath.c_str()
-            , m_filePath.c_str()
-        );
+            MENGINE_UNUSED( fullPathTempLen );
+
+            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s':'%s'"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+            );
+        }
+        else
+        {
+            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathW( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
+
+            MENGINE_UNUSED( fullPathTempLen );
+
+            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s':'%s'"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+            );
+        }
 
         HANDLE hFile = Helper::Win32CreateFile(
             fullPathTemp
@@ -72,35 +90,38 @@ namespace Mengine
         ::CloseHandle( m_hFile );
         m_hFile = INVALID_HANDLE_VALUE;
 
-        Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
-        size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
-
-        MENGINE_UNUSED( fullPathTempLen );
-
-        MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s':'%s'"
-            , m_folderPath.c_str()
-            , m_filePath.c_str()
-        );
-
-        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH );
-
-        MENGINE_UNUSED( fullPathLen );
-
-        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s':'%s'"
-            , m_folderPath.c_str()
-            , m_filePath.c_str()
-        );
-
-        if( PLATFORM_SERVICE()
-            ->moveFile( fullPathTemp, fullPath ) == false )
+        if( m_withTemp == true )
         {
-            LOGGER_ERROR( "invalid move close file from '%s' to '%s'"
-                , fullPathTemp
-                , fullPath
+            Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
+            size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
+
+            MENGINE_UNUSED( fullPathTempLen );
+
+            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s':'%s'"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
             );
 
-            return false;
+            Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+            size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH );
+
+            MENGINE_UNUSED( fullPathLen );
+
+            MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s':'%s'"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+            );
+
+            if( PLATFORM_SERVICE()
+                ->moveFile( fullPathTemp, fullPath ) == false )
+            {
+                LOGGER_ERROR( "invalid move close file from '%s' to '%s'"
+                    , fullPathTemp
+                    , fullPath
+                );
+
+                return false;
+            }
         }
 
         return successful;

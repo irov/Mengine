@@ -10,6 +10,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -40,11 +41,10 @@ namespace Mengine
                 return true;
             }
 
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' not exist file '%s:%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' not exist file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , content->getFileGroup()->getName().c_str()
-                , content->getFilePath().c_str()
+                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
             );
 
             return false;
@@ -54,11 +54,10 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , content->getFileGroup()->getName().c_str()
-                , content->getFilePath().c_str()
+                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
             );
 
             return false;
@@ -66,11 +65,10 @@ namespace Mengine
 
         if( stream->size() == 0 )
         {
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' stream '%s:%s' codec '%s' empty"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' codec '%s' empty"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , content->getFileGroup()->getName().c_str()
-                , content->getFilePath().c_str()
+                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
                 , content->getCodecType().c_str()
             );
 
@@ -84,11 +82,10 @@ namespace Mengine
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , content->getFileGroup()->getName().c_str()
-                , content->getFilePath().c_str()
+                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
                 , content->getCodecType().c_str()
             );
 
@@ -97,11 +94,10 @@ namespace Mengine
 
         if( imageDecoder->prepareData( stream ) == false )
         {
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , content->getFileGroup()->getName().c_str()
-                , content->getFilePath().c_str()
+                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
                 , content->getCodecType().c_str()
             );
 

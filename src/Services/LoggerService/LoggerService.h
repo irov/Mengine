@@ -64,6 +64,9 @@ namespace Mengine
         void logHistory_( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size );
 
     protected:
+        void notifyConfigsLoad_();
+
+    protected:
         DateTimeProviderInterfacePtr m_dateTimeProvider;
 
         ELoggerLevel m_verboseLevel;

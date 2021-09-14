@@ -190,7 +190,7 @@ namespace Mengine
 
         if( old_parent != new_parent )
         {
-            LOGGER_ERROR( "entity '%s:%s' event EVENT_ENTITY_DESTROY replace node to other hierarchy"
+            LOGGER_ERROR( "entity type '%s' name '%s' event EVENT_ENTITY_DESTROY replace node to other hierarchy"
                 , this->getType().c_str()
                 , this->getName().c_str()
             );

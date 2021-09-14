@@ -146,7 +146,7 @@ namespace Mengine
 
                     VectorResources & cache_resources = it_remove_cache_found->second;
 
-                    VectorResources::iterator it_remove_found = std::remove( cache_resources.begin(), cache_resources.end(), prev_resource );
+                    VectorResources::iterator it_remove_found = Algorithm::remove( cache_resources.begin(), cache_resources.end(), prev_resource );
                     cache_resources.erase( it_remove_found, cache_resources.end() );
                 }
             }
@@ -169,7 +169,7 @@ namespace Mengine
 
             VectorResources & cache_resources = it_remove_cache_found->second;
 
-            VectorResources::iterator it_found = std::remove( cache_resources.begin(), cache_resources.end(), _resource );
+            VectorResources::iterator it_found = Algorithm::remove( cache_resources.begin(), cache_resources.end(), _resource );
             cache_resources.erase( it_found, cache_resources.end() );
         }
 

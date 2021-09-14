@@ -33,15 +33,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptickProfilerSystem::_initializeService()
     {
-        m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryFrameProfilers = Helper::makeFactoryPool<OptickFrameProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryFrameProfilers = Helper::makeFactoryPool<OptickFrameProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+            m_factoryThreadProfilers->setMutex( mutex );
+            m_factoryFrameProfilers->setMutex( mutex );
+            m_factoryCategoryProfilers->setMutex( mutex );
+            m_factoryDescriptions->setMutex( mutex );
 
             m_mutex = mutex;
 
@@ -50,6 +55,11 @@ namespace Mengine
 
         SERVICE_LEAVE( ThreadServiceInterface, [this]()
         {
+            m_factoryThreadProfilers->setMutex( nullptr );
+            m_factoryFrameProfilers->setMutex( nullptr );
+            m_factoryCategoryProfilers->setMutex( nullptr );
+            m_factoryDescriptions->setMutex( nullptr );
+
             m_mutex = nullptr;
         } );
 
@@ -106,8 +116,8 @@ namespace Mengine
         DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
             ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
-        Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
-        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate );
+        Char filePathDate[1024] = {'\0'};
+        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate, 1024 );
 
         optPath += filePathDate;
         optPath += ".opt";
@@ -116,7 +126,7 @@ namespace Mengine
 
         OutputStreamInterfacePtr outputFile = fileGroup->createOutputFile( MENGINE_DOCUMENT_FACTORABLE );
 
-        fileGroup->openOutputFile( cs_optPath, outputFile );
+        fileGroup->openOutputFile( cs_optPath, outputFile, false );
 
         //ToDo FixMe [https://github.com/bombomby/optick/issues/137]
         g_outputFile = outputFile.get();

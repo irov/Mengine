@@ -37,7 +37,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImage::_compile()
     {
-        MENGINE_ASSERTION_FATAL( m_maxSize.x >= 0.f && m_maxSize.y >= 0.f, "Image '%s:%s' not set max size"
+        MENGINE_ASSERTION_FATAL( m_maxSize.x >= 0.f && m_maxSize.y >= 0.f, "Image type '%s' name '%s' not set max size"
             , this->getType().c_str()
             , this->getName().c_str()
         );

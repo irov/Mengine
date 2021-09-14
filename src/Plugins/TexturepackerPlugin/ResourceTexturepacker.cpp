@@ -18,6 +18,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
 
@@ -270,9 +271,8 @@ namespace Mengine
             {
                 InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, newFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s' codec '%s'"
-                    , fileGroup->getName().c_str()
-                    , newFilePath.c_str()
+                MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s' codec '%s'"
+                    , Helper::getFileGroupFullPath( fileGroup, newFilePath )
                     , codecType.c_str()
                 );
 

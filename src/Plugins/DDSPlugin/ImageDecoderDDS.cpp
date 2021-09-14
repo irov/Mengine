@@ -5,6 +5,9 @@
 #include "Kernel/PixelFormat.h"
 #include "Kernel/Magic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ProfilerHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 namespace Mengine
 {
@@ -56,10 +59,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderDDS::_decode( const DecoderData * _data )
+    size_t ImageDecoderDDS::_decode( const DecoderData * _decoderData )
     {
-        void * buffer = _data->buffer;
-        size_t size = _data->size;
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+
+        MENGINE_PROFILER_CATEGORY();
+
+        void * buffer = _decoderData->buffer;
+        size_t size = _decoderData->size;
 
         const InputStreamInterfacePtr & stream = this->getStream();
 

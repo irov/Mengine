@@ -12,6 +12,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -65,10 +66,9 @@ namespace Mengine
         m_textureFont = RENDERTEXTURE_SERVICE()
             ->loadTexture( fileGroup, filePath, fontImageCodec, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s'"
             , m_name.c_str()
-            , fileGroup->getName().c_str()
-            , filePath.c_str()
+            , Helper::getFileGroupFullPath( fileGroup, filePath )
         );
 
         return true;

@@ -21,6 +21,9 @@
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/Vector.h"
 #include "Kernel/ContainerWriter.h"
+#include "Kernel/FileGroupHelper.h"
+
+#include "Config/Iterator.h"
 
 #include "math/quat.h"
 
@@ -681,9 +684,9 @@ namespace Mengine
 
                             p2t::Point * pb = p2t_points.data();
 
-                            uint32_t i0 = (uint32_t)std::distance( pb, p0 );
-                            uint32_t i1 = (uint32_t)std::distance( pb, p1 );
-                            uint32_t i2 = (uint32_t)std::distance( pb, p2 );
+                            uint32_t i0 = (uint32_t)Iterator::distance( pb, p0 );
+                            uint32_t i1 = (uint32_t)Iterator::distance( pb, p1 );
+                            uint32_t i2 = (uint32_t)Iterator::distance( pb, p2 );
 
                             shape_indices.emplace_back( i0 );
                             shape_indices.emplace_back( i1 );
@@ -797,11 +800,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::writeFramePackage_( const Blobject & _buffer )
     {
-        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "invalid open file '%s:%s'"
-            , m_options.fileGroup->getName().c_str()
-            , m_options.outputFilePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "invalid open file '%s'"
+            , Helper::getFileGroupFullPath( m_options.fileGroup, m_options.outputFilePath )
         );
 
         const void * buffer_memory = _buffer.data();
@@ -809,9 +811,8 @@ namespace Mengine
 
         if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
         {
-            LOGGER_ERROR( "invalid write stream '%s:%s'"
-                , m_options.fileGroup->getName().c_str()
-                , m_options.outputFilePath.c_str()
+            LOGGER_ERROR( "invalid write stream '%s'"
+                , Helper::getFileGroupFullPath( m_options.fileGroup, m_options.outputFilePath )
             );
 
             return false;

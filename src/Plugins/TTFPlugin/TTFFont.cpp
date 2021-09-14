@@ -21,6 +21,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "utf8.h"
 
@@ -221,10 +222,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_prepareGlyph( GlyphCode _code, const DocumentPtr & _doc )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        VectorTTFGlyphs::const_iterator it_found = Algorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
         {
             return _glyph.ch == _code;
         } );
@@ -483,7 +486,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        VectorTTFGlyphs::const_iterator it_found = Algorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
         {
             return _glyph.ch == _code;
         } );
@@ -501,7 +504,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        VectorTTFGlyphs::const_iterator it_found = Algorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
         {
             return _glyph.ch == _code;
         } );

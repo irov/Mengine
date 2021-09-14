@@ -33,7 +33,7 @@ namespace Mengine
 
         void setSoundListener( const SoundListenerInterfacePtr & _listener ) override;
         const SoundListenerInterfacePtr & getSoundListener() const override;
-        SoundListenerInterfacePtr popSoundListener() const override;
+        SoundListenerInterfacePtr popSoundListener() override;
 
     public:
         bool isStreamable() const override;

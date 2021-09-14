@@ -8,6 +8,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ProfilerHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -274,6 +275,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::onTimepipe( const UpdateContext * _context )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         uint32_t enumerateBeforeDeep = 0U;
         for( LeafUpdatable & leaf : m_beforeLeaf )
         {

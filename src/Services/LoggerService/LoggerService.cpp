@@ -13,6 +13,7 @@
 #include "Kernel/String.h"
 #include "Kernel/StringRegex.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/LoggerHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -137,13 +138,6 @@ namespace Mengine
             m_historically = false;
         }
 
-        SERVICE_WAIT( ConfigServiceInterface, [this]()
-        {
-            m_historyLimit = CONFIG_VALUE( "Limit", "LoggerHistoryMax", MENGINE_LOGGER_HISTORY_MAX );
-
-            return true;
-        } );
-
         ELoggerLevel level = this->getVerboseLevel();
         const Char * loggerLevels[] = {"SILENT", "FATAL", "CRITICAL", "MESSAGE_RELEASE", "ERROR", "PERFOMANCE", "STATISTIC", "WARNING", "MESSAGE", "INFO", "DEBUG", "VERBOSE"};
 
@@ -194,11 +188,15 @@ namespace Mengine
             m_dateTimeProvider = nullptr;
         } );
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CONFIGS_LOAD, &LoggerService::notifyConfigsLoad_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CONFIGS_LOAD );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( const LoggerInterfacePtr & logger : m_loggers )
@@ -269,17 +267,9 @@ namespace Mengine
             return 0;
         }
 
-        PlatformDateTime dateTime;
-        m_dateTimeProvider->getLocalDateTime( &dateTime );
+        size_t size = Helper::makeLoggerTimestamp( m_dateTimeProvider, "[%02u:%02u:%02u:%04u] ", _buffer + _offset, _capacity - _offset );
 
-        int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, "[%02u:%02u:%02u:%04u] "
-            , dateTime.hour
-            , dateTime.minute
-            , dateTime.second
-            , dateTime.milliseconds
-        );
-
-        return (size_t)size;
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t LoggerService::makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const
@@ -335,7 +325,7 @@ namespace Mengine
                 return false;
             }
 
-            if( std::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
+            if( Algorithm::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
             {
                 return false;
             }
@@ -404,6 +394,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void LoggerService::notifyConfigsLoad_()
+    {
+        m_historyLimit = CONFIG_VALUE( "Limit", "LoggerHistoryMax", MENGINE_LOGGER_HISTORY_MAX );
+
+        VectorConstString verboses;
+        CONFIG_VALUES( "Engine", "Verboses", &verboses );
+
+        m_verboses.insert( m_verboses.begin(), verboses.begin(), verboses.end() );
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t LoggerService::getCountMessage( ELoggerLevel _level )
     {
         uint32_t count = m_countMessage[_level];
@@ -436,7 +436,7 @@ namespace Mengine
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         VectorLoggers::iterator it_find =
-            std::find( m_loggers.begin(), m_loggers.end(), _logger );
+            Algorithm::find( m_loggers.begin(), m_loggers.end(), _logger );
 
         if( it_find != m_loggers.end() )
         {
@@ -458,7 +458,7 @@ namespace Mengine
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         VectorLoggers::iterator it_find =
-            std::find( m_loggers.begin(), m_loggers.end(), _logger );
+            Algorithm::find( m_loggers.begin(), m_loggers.end(), _logger );
 
         if( it_find == m_loggers.end() )
         {

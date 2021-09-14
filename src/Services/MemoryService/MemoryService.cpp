@@ -240,7 +240,7 @@ namespace Mengine
     {
         m_memoryCacheMutex->lock();
 
-        m_buffers.erase( std::remove_if( m_buffers.begin(), m_buffers.end(), []( const CacheBufferMemory & _buffer )
+        m_buffers.erase( Algorithm::remove_if( m_buffers.begin(), m_buffers.end(), []( const CacheBufferMemory & _buffer )
         {
             if( _buffer.lock == true )
             {

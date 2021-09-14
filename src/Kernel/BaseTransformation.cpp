@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::removeRelationTransformationChild_( BaseTransformation * _childTransformation )
     {
-        VectorTransformation::iterator it_erase = std::find( m_relationChildren.begin(), m_relationChildren.end(), _childTransformation );
+        VectorTransformation::iterator it_erase = Algorithm::find( m_relationChildren.begin(), m_relationChildren.end(), _childTransformation );
 
         MENGINE_ASSERTION( it_erase != m_relationChildren.end(), "remove relation transformation not found" );
 

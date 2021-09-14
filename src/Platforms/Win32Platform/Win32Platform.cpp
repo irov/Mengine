@@ -157,22 +157,23 @@ namespace Mengine
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = {::LoadCursor( NULL, IDC_HAND ), true};
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HELP" )] = {::LoadCursor( NULL, IDC_HELP ), true};
 
-        m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-
-#ifdef MENGINE_PLATFORM_WINDOWS32
-        m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#endif
-
-#ifdef MENGINE_PLATFORM_WINDOWS64
-        m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-#endif
-
-        m_touchpad = false;
-        m_desktop = true;
-
-        if( HAS_OPTION( "win32" ) == true )
+        const Char * option_platforms[MENGINE_OPTIONS_VALUE_COUNT];
+        uint32_t option_platforms_count;
+        if( OPTIONS_SERVICE()
+            ->getOptionValues( "platform", option_platforms, &option_platforms_count ) == true )
         {
-            m_platformTags.clear();
+            for( uint32_t index = 0; index != option_platforms_count; ++index )
+            {
+                const Char * option_platform = option_platforms[index];
+
+                Char uppercase_option_platform[256] = {'\0'};;
+                Helper::toupper( option_platform, uppercase_option_platform, 255 );
+
+                m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+            }
+        }
+        else if( HAS_OPTION( "win32" ) == true )
+        {
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 
@@ -181,7 +182,6 @@ namespace Mengine
         }
         else if( HAS_OPTION( "win64" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 
@@ -190,16 +190,30 @@ namespace Mengine
         }
         else if( HAS_OPTION( "mac" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
 
             m_touchpad = false;
             m_desktop = true;
         }
         else if( HAS_OPTION( "ios" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+#endif
 
 #ifdef MENGINE_PLATFORM_WINDOWS32
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
@@ -214,30 +228,44 @@ namespace Mengine
         }
         else if( HAS_OPTION( "android" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
 
             m_touchpad = true;
             m_desktop = false;
         }
         else if( HAS_OPTION( "wp" ) == true )
         {
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
 
             m_touchpad = true;
             m_desktop = false;
         }
-
-        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
-
-        if( option_platform != nullptr )
+        else
         {
-            Char uppercase_option_platform[256];
-            Helper::toupper( option_platform, uppercase_option_platform, 255 );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 
-            m_platformTags.clear();
-            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+#ifdef MENGINE_PLATFORM_WINDOWS32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
+
+            m_touchpad = false;
+            m_desktop = true;
         }
 
         if( HAS_OPTION( "touchpad" ) == true )
@@ -655,7 +683,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::removeTimer( UniqueId _id )
     {
-        VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
+        VectorTimers::iterator it_found = Algorithm::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
         {
             return _desc.id == _id;
         } );
@@ -705,7 +733,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::updateWndMessage_()
     {
-        MENGINE_PROFILER_CATEGORY( "wnd" );
+        MENGINE_PROFILER_CATEGORY();
 
         MSG msg;
         while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
@@ -769,7 +797,7 @@ namespace Mengine
                     desc.lambda( desc.id );
                 }
 
-                m_timers.erase( std::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+                m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
                 {
                     return _desc.id == INVALID_UNIQUE_ID;
                 } ), m_timers.end() );
@@ -2329,7 +2357,7 @@ namespace Mengine
             return NULL;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "path '%s' can't open output stream '%s'"
             , _filePath.c_str()
@@ -4708,7 +4736,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::removeWin32ProcessHandler( uint32_t _id )
     {
-        VectorWin32ProcessHandler::iterator it_found = std::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
+        VectorWin32ProcessHandler::iterator it_found = Algorithm::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
         {
             return _desc.id == _id;
         } );
@@ -4823,7 +4851,24 @@ namespace Mengine
 #endif
 
         WChar winDir[MENGINE_MAX_PATH] = {L'\0'};
-        ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
+        UINT winDirLen = ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
+
+        if( winDirLen == 0 )
+        {
+            LOGGER_ERROR( "failed GetWindowsDirectory %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
+        }
+
+        if( winDirLen >= MENGINE_MAX_PATH )
+        {
+            LOGGER_ERROR( "failed GetWindowsDirectory len %u great capacity %u"
+                , winDirLen
+                , MENGINE_MAX_PATH
+            );
+
+            return false;
+        }
 
         Helper::pathCorrectBackslashW( winDir );
         ::PathRemoveBackslash( winDir );

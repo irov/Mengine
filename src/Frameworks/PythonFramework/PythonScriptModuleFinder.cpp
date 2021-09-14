@@ -91,7 +91,7 @@ namespace Mengine
     void PythonScriptModuleFinder::removeModulePath( const FileGroupInterfacePtr & _fileGroup )
     {
         m_modulePaths.erase(
-            std::find_if( m_modulePaths.begin(), m_modulePaths.end(), [&_fileGroup]( const ModulePathes & _pathes )
+            Algorithm::find_if( m_modulePaths.begin(), m_modulePaths.end(), [&_fileGroup]( const ModulePathes & _pathes )
         {
             return _pathes.fileGroup == _fileGroup;
         } )

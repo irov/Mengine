@@ -81,7 +81,7 @@ namespace Mengine
             }
 
             uint32_t layer_parent = layer.parent;
-            if( std::find_if( layers.begin(), layers.end(), [layer_parent]( const MovieLayer & _layer )
+            if( Algorithm::find_if( layers.begin(), layers.end(), [layer_parent]( const MovieLayer & _layer )
             {
                 return _layer.index == layer_parent;
             } ) == layers.end() )

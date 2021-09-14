@@ -51,8 +51,10 @@ namespace Mengine
 
             ResourceMovie2::CompositionDesc desc;
 
-            desc.duration = meta_composition.get_Duration();
-            desc.frameDuration = meta_composition.get_FrameDuration();
+            //ToDo convert to milliseconds
+            desc.duration = meta_composition.get_Duration() * 1000.f;
+            desc.frameDuration = meta_composition.get_FrameDuration() * 1000.f;
+
             desc.has_bounds = meta_composition.get_Bounds( &desc.bounds );
 
             desc.master = meta_composition.getd_Master( true );

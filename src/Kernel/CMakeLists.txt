@@ -509,6 +509,9 @@ Core
 
     Color.h
     Color.cpp
+    
+    ColorHelper.h
+    ColorHelper.cpp
         
     GlyphCode.h
     
@@ -683,8 +686,11 @@ Core
     IntrusiveSlugList.h
     IntrusiveSlugLinkedPtr.h
     
-    LoggerBase.cpp
     LoggerBase.h
+    LoggerBase.cpp
+    
+    LoggerHelper.h
+    LoggerHelper.cpp
     
     AspectRatioViewport.h
     VectorAspectRatioViewports.h
@@ -764,6 +770,9 @@ Core
     
     FileStreamHelper.h
     FileStreamHelper.cpp
+    
+    FileGroupHelper.h
+    FileGroupHelper.cpp
 
     RandomDevice.h
     RandomDevice.cpp

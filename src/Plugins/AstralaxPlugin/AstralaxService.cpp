@@ -17,6 +17,7 @@
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
+#include "Config/Iterator.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AstralaxService, Mengine::AstralaxService );
@@ -260,13 +261,13 @@ namespace Mengine
             case MAGIC_CHANGE_ATLAS_DELETE:
                 {
                     VectorAtlasDesc::iterator it_remove = m_atlases.begin();
-                    std::advance( it_remove, c.index );
+                    Iterator::advance( it_remove, c.index );
 
                     const ResourceImagePtr & resourceImage = *it_remove;
 
                     resourceImage->release();
 
-                    m_materials.erase( std::remove_if( m_materials.begin(), m_materials.end(), [resourceImage]( const MagicMaterialDesc & _desc )
+                    m_materials.erase( Algorithm::remove_if( m_materials.begin(), m_materials.end(), [resourceImage]( const MagicMaterialDesc & _desc )
                     {
                         for( uint32_t index = 0; index != _desc.imageCount; ++index )
                         {

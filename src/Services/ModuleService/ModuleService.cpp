@@ -111,7 +111,7 @@ namespace Mengine
         {
             m_modules.emplace_back( module );
 
-            m_waits.erase( std::remove_if( m_waits.begin(), m_waits.end(), [_name]( const WaitModuleDesc & _desc )
+            m_waits.erase( Algorithm::remove_if( m_waits.begin(), m_waits.end(), [_name]( const WaitModuleDesc & _desc )
             {
                 return _desc.name == _name;
             } ), m_waits.end() );
@@ -142,7 +142,7 @@ namespace Mengine
 
         module->finalizeModule();
 
-        m_leaves.erase( std::remove_if( m_leaves.begin(), m_leaves.end(), [_name]( const LeaveModuleDesc & _desc )
+        m_leaves.erase( Algorithm::remove_if( m_leaves.begin(), m_leaves.end(), [_name]( const LeaveModuleDesc & _desc )
         {
             return _desc.name == _name;
         } ), m_leaves.end() );
@@ -153,7 +153,7 @@ namespace Mengine
     bool ModuleService::isRunModule( const ConstString & _name ) const
     {
         VectorModules::const_iterator it_found =
-            std::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
+            Algorithm::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
         {
             return _module->getName() == _name;
         } );
@@ -285,7 +285,7 @@ namespace Mengine
     const ModuleInterfacePtr & ModuleService::findModule_( const ConstString & _name ) const
     {
         VectorModules::const_iterator it_found =
-            std::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
+            Algorithm::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
         {
             return _module->getName() == _name;
         } );
@@ -303,7 +303,7 @@ namespace Mengine
     ModuleInterfacePtr ModuleService::popModule_( const ConstString & _name )
     {
         VectorModules::iterator it_found =
-            std::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
+            Algorithm::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
         {
             return _module->getName() == _name;
         } );

@@ -64,7 +64,7 @@ namespace Mengine
             , full_inputFilePath.c_str()
         );
 
-        OutputStreamInterfacePtr output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output, "invalid open '%s'"
             , full_outputFilePath.c_str()

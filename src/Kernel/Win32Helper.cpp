@@ -66,7 +66,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetCurrentDllPath()
         {
-            static Char dllPath[MENGINE_MAX_PATH] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char dllPath[MENGINE_MAX_PATH] = {'\0'};
 
             if( dllPath[0] == '\0' )
             {
@@ -101,7 +101,7 @@ namespace Mengine
             Char str_le[1024] = {'\0'};
             win32Platform->getErrorMessage( error, str_le, 1024 );
 
-            static Char message[2048] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char message[2048] = {'\0'};
 
             MENGINE_SPRINTF( message, "[error: %s (%lu)]"
                 , str_le

@@ -178,7 +178,7 @@ namespace Mengine
                 }
             }
 
-            MENGINE_ASSERTION_FATAL( std::count_if( op.key, op.key + MENGINE_STRLEN( op.key ), []( Char _ch )
+            MENGINE_ASSERTION_FATAL( Algorithm::count_if( op.key, op.key + MENGINE_STRLEN( op.key ), []( Char _ch )
             {
                 return ::isupper( _ch ) != 0;
             } ) == 0 );
@@ -191,7 +191,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::hasOption( const Char * _key ) const
     {
-        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
             return ::isupper( _ch ) != 0;
         } ) == 0 );
@@ -211,7 +211,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Char * OptionsService::getOptionValue( const Char * _key, const Char * _default ) const
     {
-        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
             return ::isupper( _ch ) != 0;
         } ) == 0 );
@@ -231,7 +231,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::getOptionValues( const Char * _key, const Char ** _values, uint32_t * _count ) const
     {
-        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
             return ::isupper( _ch ) != 0;
         } ) == 0 );
@@ -258,7 +258,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t OptionsService::getOptionUInt32( const Char * _key, uint32_t _default ) const
     {
-        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
             return ::isupper( _ch ) != 0;
         } ) == 0 );
@@ -289,7 +289,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const
     {
-        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
             return ::isupper( _ch ) != 0;
         } ) == 0 );

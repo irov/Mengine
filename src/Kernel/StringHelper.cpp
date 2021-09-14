@@ -302,7 +302,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void toupper( const String & _in, String * const _upper )
         {
-            std::transform( _in.begin(), _in.end(), _upper->begin(),
+            Algorithm::transform( _in.begin(), _in.end(), _upper->begin(),
                 []( Char c )
             {
                 return (Char)MENGINE_TOUPPER( c );
@@ -334,7 +334,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void tolower( const String & _str, String * const _lower )
         {
-            std::transform( _str.begin(), _str.end(), _lower->begin(),
+            Algorithm::transform( _str.begin(), _str.end(), _lower->begin(),
                 []( Char c )
             {
                 return (Char)MENGINE_TOLOWER( c );

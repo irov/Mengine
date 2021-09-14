@@ -214,7 +214,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRenderChildren_( BaseRender * _childRender )
     {
-        VectorBaseRender::iterator it_erase = std::find( m_renderChildren.begin(), m_renderChildren.end(), _childRender );
+        VectorBaseRender::iterator it_erase = Algorithm::find( m_renderChildren.begin(), m_renderChildren.end(), _childRender );
 
         MENGINE_ASSERTION_FATAL( it_erase != m_renderChildren.end(), "remove relation child is not found" );
 

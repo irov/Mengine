@@ -22,8 +22,6 @@
 
 #include "Config/Algorithm.h"
 
-#include <cmath>
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::OpenGLRenderSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -278,10 +276,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
     {
-        if( m_viewport.equalViewport( _viewport ) == true )
-        {
-            return;
-        }
+        //ToDo [https://github.com/irov/Mengine/issues/99]
+
+        // if( m_viewport.equalViewport( _viewport ) == true )
+        // {
+        //     return;
+        // }
 
         m_viewport = _viewport;
 

@@ -43,51 +43,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::hasCompositionLayer( const ConstString & _compositionName, const ConstString & _layerName ) const
     {
-        if( m_data == nullptr )
-        {
-            LOGGER_ERROR( "resource '%s' not compile (composition '%s' layer '%s')"
-                , this->getName().c_str()
-                , _compositionName.c_str()
-                , _layerName.c_str()
-            );
+        MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
 
-            return false;
-        }
-
-        const aeMovieData * movieData = m_data->getMovieData();
-
-        if( movieData == nullptr )
-        {
-            LOGGER_ERROR( "resource '%s' not data (composition '%s' layer '%s')"
-                , this->getName().c_str()
-                , _compositionName.c_str()
-                , _layerName.c_str()
-            );
-
-            return false;
-        }
-
-        const aeMovieCompositionData * compositionData = ae_get_movie_composition_data( movieData, _compositionName.c_str() );
-
-        if( compositionData == nullptr )
-        {
-            LOGGER_ERROR( "resource '%s' not composition data (composition '%s' layer '%s')"
-                , this->getName().c_str()
-                , _compositionName.c_str()
-                , _layerName.c_str()
-            );
-
-            return false;
-        }
-
-        const aeMovieInstance * instance = ae_get_movie_data_instance( movieData );
-
-        if( ae_has_movie_composition_data_layer( instance, compositionData, _layerName.c_str() ) == AE_FALSE )
+        if( it_found == m_compositions.end() )
         {
             return false;
         }
 
-        return true;
+        const CompositionDesc & composition = it_found->second;
+
+        for( const CompositionLayer & layer : composition.layers )
+        {
+            if( layer.name != _layerName )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     float ResourceMovie2::getCompositionDuration( const ConstString & _compositionName ) const
@@ -101,7 +76,7 @@ namespace Mengine
 
         const CompositionDesc & composition = it_found->second;
 
-        return AE_TIME_MILLISECOND( composition.duration );
+        return composition.duration;
     }
     //////////////////////////////////////////////////////////////////////////
     float ResourceMovie2::getCompositionFrameDuration( const ConstString & _compositionName ) const

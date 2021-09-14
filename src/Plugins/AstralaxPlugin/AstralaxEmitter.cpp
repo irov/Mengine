@@ -16,6 +16,7 @@
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
+#include "Kernel/ColorHelper.h"
 
 #include "math/box2.h"
 #include "math/angle.h"
@@ -414,7 +415,7 @@ namespace Mengine
             }
             else
             {
-                Color cv( p.color );
+                Color cv = Helper::makeColorARGB( p.color );
                 cv *= color;
                 p.color = cv.getAsARGB();
             }

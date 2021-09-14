@@ -42,7 +42,7 @@ namespace Mengine
         virtual const FilePath & getFolderPath() const = 0;
 
     public:
-        virtual bool getFullPath( const FilePath & _filePath, Char * const _fullPath ) const = 0;
+        virtual void getFullPath( const FilePath & _filePath, Char * const _fullPath ) const = 0;
 
     public:
         virtual bool isPacked() const = 0;
@@ -66,7 +66,7 @@ namespace Mengine
 
     public:
         virtual OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) = 0;
-        virtual bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) = 0;
+        virtual bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp ) = 0;
         virtual bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) = 0;
 
     public:

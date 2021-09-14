@@ -13,8 +13,8 @@ namespace Mengine
         SERVICE_DECLARE( "TextService" )
 
     public:
-        virtual bool loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
-        virtual bool unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual bool loadTextEntry( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual bool unloadTextEntry( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
 
     public:
         virtual TextEntryInterfacePtr createTextEntry( const ConstString & _key

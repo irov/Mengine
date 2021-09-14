@@ -198,8 +198,8 @@ namespace Mengine
         processDumpPath += "Antifreeze";
         processDumpPath += "_";
 
-        Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
-        Helper::makeFilePathDateTimeHelper( m_dateTimeProvider, filePathDate );
+        Char filePathDate[1024] = {'\0'};
+        Helper::makeFilePathDateTimeHelper( m_dateTimeProvider, filePathDate, 1024 );
 
         processDumpPath += filePathDate;
         processDumpPath += ".dmp";

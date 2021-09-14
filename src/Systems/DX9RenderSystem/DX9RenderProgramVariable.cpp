@@ -2,6 +2,8 @@
 
 #include "DX9RenderErrorHelper.h"
 
+#include "Config/Algorithm.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -69,7 +71,7 @@ namespace Mengine
 
         float * values = m_pixelFloats.data() + v.offset;
 
-        std::copy( _values, _values + _size * _count, values );
+        Algorithm::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgramVariable::apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program )

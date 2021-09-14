@@ -17,8 +17,8 @@ namespace Mengine
         ~ThreadTaskPrefetchImageDecoder() override;
 
     public:
-        void setImageCodec( const ConstString & _codec );
-        const ConstString & getImageCodec() const;
+        void setCodecType( const ConstString & _codec );
+        const ConstString & getCodecType() const;
 
     public:
         const ImageDecoderInterfacePtr & getDecoder() const;

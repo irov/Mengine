@@ -22,6 +22,8 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
 
+#include "Config/Algorithm.h"
+
 #include "pybind/pybind.hpp"
 
 namespace Mengine
@@ -48,13 +50,13 @@ namespace Mengine
 
         void finalize()
         {
-            for( const PythonEntityPrototypeGeneratorPtr & generator : m_entityPrototypeGenerators )
+            for( const PrototypeGeneratorInterfacePtr & generator : m_entityPrototypeGenerators )
             {
                 const ConstString & category = generator->getCategory();
                 const ConstString & prototype = generator->getPrototype();
 
                 PROTOTYPE_SERVICE()
-                    ->removePrototype( category, prototype );
+                    ->removePrototype( category, prototype, nullptr );
             }
 
             m_entityPrototypeGenerators.clear();
@@ -65,6 +67,35 @@ namespace Mengine
         }
 
     public:
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasPrototypeFinder( const ConstString & _category, const ConstString & _prototype )
+        {
+            bool result = PROTOTYPE_SERVICE()
+                ->hasPrototype( _category, _prototype, nullptr );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasEntityPrototypeFinder( const ConstString & _prototype )
+        {
+            bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasScenePrototypeFinder( const ConstString & _prototype )
+        {
+            bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasArrowPrototypeFinder( const ConstString & _prototype )
+        {
+            bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
+
+            return result;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
         {
@@ -99,6 +130,43 @@ namespace Mengine
             bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, _module );
 
             return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_removePrototypeFinder( const ConstString & _category, const ConstString & _prototype )
+        {
+            PrototypeGeneratorInterfacePtr generator;
+            PROTOTYPE_SERVICE()
+                ->removePrototype( _category, _prototype, &generator );
+
+            MENGINE_ASSERTION_FATAL( generator != nullptr, "removing generator category '%s' prototype '%s' not found"
+                , _category.c_str()
+                , _prototype.c_str()
+            );
+
+            VectorEntityPrototypeGenerators::iterator it_found = Algorithm::find( m_entityPrototypeGenerators.begin(), m_entityPrototypeGenerators.end(), generator );
+
+            MENGINE_ASSERTION_FATAL( it_found != m_entityPrototypeGenerators.end(), "remove generator category '%s' prototype '%s' not add from script"
+                , _category.c_str()
+                , _prototype.c_str()
+            );
+
+            *it_found = m_entityPrototypeGenerators.back();
+            m_entityPrototypeGenerators.pop_back();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_removeEntityPrototypeFinder( const ConstString & _prototype )
+        {
+            s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_removeScenePrototypeFinder( const ConstString & _prototype )
+        {
+            s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_removeArrowPrototypeFinder( const ConstString & _prototype )
+        {
+            s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
         }
         //////////////////////////////////////////////////////////////////////////
         pybind::object s_createEntity( const ConstString & _prototype )
@@ -143,7 +211,7 @@ namespace Mengine
     protected:
         FactoryPtr m_factoryEntityPrototypeGenerator;
 
-        typedef Vector<PythonEntityPrototypeGeneratorPtr> VectorEntityPrototypeGenerators;
+        typedef Vector<PrototypeGeneratorInterfacePtr> VectorEntityPrototypeGenerators;
         VectorEntityPrototypeGenerators m_entityPrototypeGenerators;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -307,9 +375,21 @@ namespace Mengine
             return false;
         }
 
+        pybind::def_functor( _kernel, "hasPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_hasPrototypeFinder );
+        pybind::def_functor( _kernel, "hasEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_hasEntityPrototypeFinder );
+        pybind::def_functor( _kernel, "hasScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_hasScenePrototypeFinder );
+        pybind::def_functor( _kernel, "hasArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_hasArrowPrototypeFinder );
+        
+        pybind::def_functor( _kernel, "removePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_removePrototypeFinder );
+        pybind::def_functor( _kernel, "removeEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_removeEntityPrototypeFinder );
+        pybind::def_functor( _kernel, "removeScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_removeScenePrototypeFinder );
+        pybind::def_functor( _kernel, "removeArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_removeArrowPrototypeFinder );
+
+        pybind::def_functor( _kernel, "addPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addPrototypeFinder );
         pybind::def_functor( _kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
         pybind::def_functor( _kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
         pybind::def_functor( _kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
+
         pybind::def_functor( _kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
         pybind::def_functor( _kernel, "destroyEntity", entityScriptMethod, &EntityScriptMethod::s_destroyEntity );
         pybind::def_functor_kernel( _kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );

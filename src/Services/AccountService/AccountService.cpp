@@ -656,7 +656,7 @@ namespace Mengine
 
         FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, accountsPath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file, "can't open file for writing. Accounts '%s' settings not saved"
             , accountsPath.c_str()
@@ -701,7 +701,7 @@ namespace Mengine
 
             if( account->save() == false )
             {
-                LOGGER_ERROR( "invalid save account '%s:%s'"
+                LOGGER_ERROR( "invalid save account id '%s' folder '%s'"
                     , account->getID().c_str()
                     , account->getFolder().c_str()
                 );

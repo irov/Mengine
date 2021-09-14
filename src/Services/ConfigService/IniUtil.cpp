@@ -14,6 +14,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdString.h"
@@ -30,9 +31,8 @@ namespace Mengine
 
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, "open ini file '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "open ini file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             _ini.path = _filePath;

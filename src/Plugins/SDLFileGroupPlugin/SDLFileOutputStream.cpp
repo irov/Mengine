@@ -20,8 +20,11 @@ namespace Mengine
         this->close();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+    bool SDLFileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
     {
+        //ToDo https://github.com/irov/Mengine/issues/100
+        MENGINE_UNUSED( _withTemp );
+
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;

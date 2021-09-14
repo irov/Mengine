@@ -160,7 +160,7 @@ namespace Mengine
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( "imgui.ini" ), MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( "imgui.ini" ), true, MENGINE_DOCUMENT_FACTORABLE );
 
         size_t imIniSettingsSize;
         const char * imIniSettings = ImGui::SaveIniSettingsToMemory( &imIniSettingsSize );
@@ -190,7 +190,7 @@ namespace Mengine
         ImGui::DestroyContext();
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ) );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), nullptr );
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()

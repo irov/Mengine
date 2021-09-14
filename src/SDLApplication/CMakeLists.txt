@@ -145,7 +145,7 @@ if(MENGINE_TARGET_MACOS)
     endif()
 
     if(MENGINE_PLUGIN_STEAM)
-        set(myApp_STEAM "${THIRDPARTY_DIR}/steam_mac/libsteam_api.dylib")
+        set(myApp_STEAM "${THIRDPARTY_DIR}/steam/redistributable_bin/osx/libsteam_api.dylib")
         set_source_files_properties(${myApp_STEAM} PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS")
     else()
         set(myApp_STEAM)

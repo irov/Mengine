@@ -37,8 +37,10 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/StringHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #include "pybind/debug.hpp"
 
@@ -377,65 +379,111 @@ namespace Mengine
 
         this->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
 
+        const Char * option_globals[MENGINE_OPTIONS_VALUE_COUNT];
+        uint32_t option_globals_count;
+        if( OPTIONS_SERVICE()
+            ->getOptionValues( "globals", option_globals, &option_globals_count ) == true )
+        {
+            this->addGlobalModuleT( "_DEBUG", false );
+            this->addGlobalModuleT( "_WINDOWS", false );
+            this->addGlobalModuleT( "_WIN32", false );
+            this->addGlobalModuleT( "_WIN64", false );
+            this->addGlobalModuleT( "_OSX", false );
+            this->addGlobalModuleT( "_DESKTOP", false );
+            this->addGlobalModuleT( "_LINUX", false );
+            this->addGlobalModuleT( "_ANDROID", false );
+            this->addGlobalModuleT( "_IOS", false );
+            this->addGlobalModuleT( "_MOBILE", false );
+            this->addGlobalModuleT( "_MASTER_RELEASE", false );
+            this->addGlobalModuleT( "_BUILD_PUBLISH", false );
+
+            for( uint32_t index = 0; index != option_globals_count; ++index )
+            {
+                const Char * option_global = option_globals[index];
+
+                Char uppercase_option_global[256] = {'\0'};
+                Helper::toupper( option_global, uppercase_option_global, 256 );
+
+                Char total_global[256] = {'\0'};
+                MENGINE_SNPRINTF( total_global, 256, "_%s", uppercase_option_global );
+
+                this->addGlobalModuleT( total_global, true );
+            }
+        }
+        else
+        {
 #if defined(MENGINE_DEBUG)
-        this->addGlobalModuleT( "_DEBUG", true );
+            this->addGlobalModuleT( "_DEBUG", true );
 #else
-        this->addGlobalModuleT( "_DEBUG", false );
+            this->addGlobalModuleT( "_DEBUG", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        this->addGlobalModuleT( "_WIN32", true );
+            this->addGlobalModuleT( "_WINDOWS", true );
 #else
-        this->addGlobalModuleT( "_WIN32", false );
+            this->addGlobalModuleT( "_WINDOWS", false );
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS32)
+            this->addGlobalModuleT( "_WIN32", true );
+#else
+            this->addGlobalModuleT( "_WIN32", false );
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS64)
+            this->addGlobalModuleT( "_WIN64", true );
+#else
+            this->addGlobalModuleT( "_WIN64", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_OSX)
-        this->addGlobalModuleT( "_OSX", true );
+            this->addGlobalModuleT( "_OSX", true );
 #else
-        this->addGlobalModuleT( "_OSX", false );
+            this->addGlobalModuleT( "_OSX", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_DESKTOP)
-        this->addGlobalModuleT( "_DESKTOP", true );
+            this->addGlobalModuleT( "_DESKTOP", true );
 #else
-        this->addGlobalModuleT( "_DESKTOP", false );
+            this->addGlobalModuleT( "_DESKTOP", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_LINUX)
-        this->addGlobalModuleT( "_LINUX", true );
+            this->addGlobalModuleT( "_LINUX", true );
 #else
-        this->addGlobalModuleT( "_LINUX", false );
+            this->addGlobalModuleT( "_LINUX", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-        this->addGlobalModuleT( "_ANDROID", true );
+            this->addGlobalModuleT( "_ANDROID", true );
 #else
-        this->addGlobalModuleT( "_ANDROID", false );
+            this->addGlobalModuleT( "_ANDROID", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_IOS)
-        this->addGlobalModuleT( "_IOS", true );
+            this->addGlobalModuleT( "_IOS", true );
 #else
-        this->addGlobalModuleT( "_IOS", false );
+            this->addGlobalModuleT( "_IOS", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_MOBILE)
-        this->addGlobalModuleT( "_MOBILE", true );
+            this->addGlobalModuleT( "_MOBILE", true );
 #else
-        this->addGlobalModuleT( "_MOBILE", false );
+            this->addGlobalModuleT( "_MOBILE", false );
 #endif
 
 #if defined(MENGINE_MASTER_RELEASE)
-        this->addGlobalModuleT( "_MASTER_RELEASE", true );
+            this->addGlobalModuleT( "_MASTER_RELEASE", true );
 #else
-        this->addGlobalModuleT( "_MASTER_RELEASE", false );
+            this->addGlobalModuleT( "_MASTER_RELEASE", false );
 #endif
 
 #if defined(MENGINE_BUILD_PUBLISH)
-        this->addGlobalModuleT( "_BUILD_PUBLISH", true );
+            this->addGlobalModuleT( "_BUILD_PUBLISH", true );
 #else
-        this->addGlobalModuleT( "_BUILD_PUBLISH", false );
+            this->addGlobalModuleT( "_BUILD_PUBLISH", false );
 #endif
+        }
 
         return true;
     }
@@ -567,7 +615,7 @@ namespace Mengine
         for( const ScriptModulePackage & pack : _modules )
         {
             m_bootstrapperModules.erase(
-                std::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePackage & _pack )
+                Algorithm::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePackage & _pack )
             {
                 if( _pack.module < pack.module )
                 {
@@ -588,7 +636,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
     {
-        MENGINE_ASSERTION_FATAL( std::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
+        MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
         } ) == m_embeddings.end() );
@@ -611,7 +659,7 @@ namespace Mengine
     {
         m_kernel->collect();
 
-        VectorEmbeddings::const_iterator it_found = std::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
+        VectorEmbeddings::const_iterator it_found = Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
         } );
@@ -983,7 +1031,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::removeLogFunction( const ConstString & _className, const ConstString & _functionName )
     {
-        VectorDebugCallFunctions::iterator it_found = std::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
+        VectorDebugCallFunctions::iterator it_found = Algorithm::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
         {
             if( _desc.className != _className )
             {

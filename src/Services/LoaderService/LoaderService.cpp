@@ -19,6 +19,7 @@
 #include "Kernel/PathString.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #ifndef MENGINE_MASTER_RELEASE
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
@@ -84,15 +85,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist ) const
     {
-        LOGGER_INFO( "load", "load bin '%s:%s'"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        LOGGER_INFO( "load", "load bin '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
         if( _filePath.empty() == true )
         {
             LOGGER_ERROR( "invalid open bin '%s' path is empty"
-                , _fileGroup->getName().c_str()
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return false;
@@ -101,9 +101,8 @@ namespace Mengine
         InputStreamInterfacePtr file_bin;
         if( this->openBin_( _fileGroup, _filePath, &file_bin, _exist ) == false )
         {
-            LOGGER_ERROR( "invalid open bin '%s':'%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+            LOGGER_ERROR( "invalid open bin '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return false;
@@ -386,21 +385,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::makeBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _pathXml, const FilePath & _pathBin ) const
+    bool LoaderService::makeBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePathXml, const FilePath & _pathBin ) const
     {
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder xml2bin for '%s:%s'"
-            , _fileGroup->getName().c_str()
-            , _pathXml.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder xml2bin for '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePathXml )
         );
 
         if( decoder->prepareData( nullptr ) == false )
         {
-            LOGGER_ERROR( "invalid initialize decoder xml2bin for '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _pathXml.c_str()
+            LOGGER_ERROR( "invalid initialize decoder xml2bin for '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePathXml )
             );
 
             return false;
@@ -413,7 +410,7 @@ namespace Mengine
 
         const FilePath & folderPath = _fileGroup->getFolderPath();
 
-        data.pathXml = Helper::concatenationFilePath( folderPath, _pathXml );
+        data.pathXml = Helper::concatenationFilePath( folderPath, _filePathXml );
         data.pathBin = Helper::concatenationFilePath( folderPath, _pathBin );
 
         data.useProtocolVersion = Metacode::get_metacode_protocol_version();

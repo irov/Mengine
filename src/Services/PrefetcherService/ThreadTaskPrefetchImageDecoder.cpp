@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -21,12 +22,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetchImageDecoder::setImageCodec( const ConstString & _codecType )
+    void ThreadTaskPrefetchImageDecoder::setCodecType( const ConstString & _codecType )
     {
         m_codecType = _codecType;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ThreadTaskPrefetchImageDecoder::getImageCodec() const
+    const ConstString & ThreadTaskPrefetchImageDecoder::getCodecType() const
     {
         return m_codecType;
     }
@@ -50,10 +51,9 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s:%s' codec '%s'"
-            , this->getFileGroup()->getName().c_str()
-            , m_filePath.c_str()
-            , m_codecType.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s' codec '%s'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , this->getCodecType().c_str()
         );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
@@ -72,43 +72,42 @@ namespace Mengine
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, ~0U, false, false ) == false )
         {
-            LOGGER_ERROR( "invalid open file '%s:%s'"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
+            LOGGER_ERROR( "invalid open file '%s' codec '%s'"
+                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                , this->getCodecType().c_str()
             );
 
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( m_stream->size() != 0, "empty stream '%s:%s' codec '%s'"
-            , this->getFileGroup()->getName().c_str()
-            , m_filePath.c_str()
-            , m_codecType.c_str()
+        MENGINE_ASSERTION_FATAL( m_stream->size() != 0, "empty file '%s' codec '%s'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , this->getCodecType().c_str()
         );
 
         MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
             ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, "file '%s:%s' invalid create memory input"
-            , this->getFileGroup()->getName().c_str()
-            , this->getFilePath().c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, "file '%s' invalid create memory input code '%s'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , this->getCodecType().c_str()
         );
 
         size_t stream_size = m_stream->size();
 
         void * memory = memoryInput->newBuffer( stream_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, "file '%s:%s' invalid alloc memory '%zu'"
-            , this->getFileGroup()->getName().c_str()
-            , this->getFilePath().c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "file '%s' codec '%s' invalid alloc memory '%zu'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , this->getCodecType().c_str()
             , stream_size
         );
 
         if( m_stream->read( memory, stream_size ) != stream_size )
         {
-            LOGGER_ERROR( "file '%s:%s' invalid read stream '%zu'"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
+            LOGGER_ERROR( "file '%s' codec '%s' invalid read stream '%zu'"
+                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                , this->getCodecType().c_str()
                 , stream_size
             );
 
@@ -117,9 +116,9 @@ namespace Mengine
 
         if( m_imageDecoder->prepareData( memoryInput ) == false )
         {
-            LOGGER_ERROR( "decoder for file '%s:%s' was not initialize"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
+            LOGGER_ERROR( "decoder for file '%s' codec '%s' was not initialize"
+                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                , this->getCodecType().c_str()
             );
 
             return false;

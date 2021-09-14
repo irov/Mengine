@@ -49,6 +49,23 @@ namespace Mengine
         m_generators.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PrototypeService::hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * const _generator ) const
+    {
+        PrototypeGeneratorInterfacePtr generator = m_generators.find( _category, _prototype );
+
+        if( generator == nullptr )
+        {
+            return false;
+        }
+
+        if( _generator != nullptr )
+        {
+            *_generator = generator;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
     {
         _generator->setCategory( _category );
@@ -56,7 +73,7 @@ namespace Mengine
 
         if( _generator->initialize() == false )
         {
-            LOGGER_ERROR( "add '%s:%s' invalid initialize!"
+            LOGGER_ERROR( "add category '%s' prototype '%s' invalid initialize!"
                 , _category.c_str()
                 , _prototype.c_str()
             );
@@ -64,14 +81,14 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( m_generators.exist( _category, _prototype ) == false, "prototype '%s:%s' alredy exist"
+        MENGINE_ASSERTION_FATAL( m_generators.exist( _category, _prototype ) == false, "category '%s' prototype '%s' alredy exist"
             , _category.c_str()
             , _prototype.c_str()
         );
 
         m_generators.emplace( _category, _prototype, _generator );
 
-        LOGGER_INFO( "prototype", "add '%s:%s'"
+        LOGGER_INFO( "prototype", "add category '%s' prototype '%s'"
             , _category.c_str()
             , _prototype.c_str()
         );
@@ -79,7 +96,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PrototypeService::removePrototype( const ConstString & _category, const ConstString & _prototype )
+    void PrototypeService::removePrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * const _generator )
     {
         PrototypeGeneratorInterfacePtr generator = m_generators.erase( _category, _prototype );
 
@@ -89,6 +106,11 @@ namespace Mengine
         );
 
         generator->finalize();
+
+        if( _generator != nullptr )
+        {
+            *_generator = generator;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::hasGenerator( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * const _generator ) const
@@ -124,7 +146,7 @@ namespace Mengine
     {
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, "prototype not found '%s:%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, "prototype not found category '%s' prototype '%s' (doc: %s)"
             , _category.c_str()
             , _prototype.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

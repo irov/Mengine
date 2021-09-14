@@ -23,7 +23,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         this->foreachChildrenSlug( [this]( const NodePtr & _child )
         {
-            LOGGER_ERROR( "slot '%s:%s' has children '%s:%s'!! (please remove, before release movie '%s')"
+            LOGGER_ERROR( "slot name '%s' type '%s' has children name '%s' type '%s'!! (please remove, before release movie '%s')"
                 , this->getName().c_str()
                 , this->getType().c_str()
                 , _child->getName().c_str()
@@ -65,7 +65,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_ERROR( "slot '%s:%s' movie '%s' (please don't change parent it's danger)"
+        LOGGER_ERROR( "slot name '%s' type '%s' movie '%s' (please don't change parent it's danger)"
             , this->getName().c_str()
             , this->getType().c_str()
             , m_movieName.c_str()

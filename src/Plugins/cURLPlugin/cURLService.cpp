@@ -21,6 +21,8 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/ProfilerHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
 
@@ -200,6 +202,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         if( this->isStopService() == true )
         {
             LOGGER_ERROR( "service is stop" );
@@ -245,6 +249,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         if( this->isStopService() == true )
         {
             LOGGER_ERROR( "service is stop" );
@@ -290,6 +296,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         if( this->isStopService() == true )
         {
             LOGGER_ERROR( "service is stop" );
@@ -330,6 +338,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
+        MENGINE_PROFILER_CATEGORY();
+
         if( this->isStopService() == true )
         {
             LOGGER_ERROR( "service is stop" );
@@ -339,10 +349,9 @@ namespace Mengine
 
         if( _fileGroup->existFile( _filePath, true ) == true )
         {
-            LOGGER_ERROR( "url '%s' category '%s' file already exist '%s'"
+            LOGGER_ERROR( "url '%s' file already exist '%s'"
                 , _url.c_str()
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return 0;
@@ -364,10 +373,9 @@ namespace Mengine
         
         if( task->initialize( _login, _password, _fileGroup, _filePath, filePathTmp ) == false )
         {
-            LOGGER_ERROR( "url '%s' category '%s' file '%s' invalid initialize task"
+            LOGGER_ERROR( "url '%s' file '%s' invalid initialize task"
                 , _url.c_str()
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
             return 0;
@@ -435,7 +443,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::removeRequestListener( int32_t _id )
     {
-        m_networkListeners.erase( std::remove_if( m_networkListeners.begin(), m_networkListeners.end(), 
+        m_networkListeners.erase( Algorithm::remove_if( m_networkListeners.begin(), m_networkListeners.end(),
             [_id]( const RequestListenerDesk  & _desc )
         {
             return _desc.id == _id;

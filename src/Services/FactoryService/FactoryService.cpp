@@ -180,7 +180,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::unregisterFactory( const Factory * _factory )
     {
-        VectorFactories::iterator it_found = std::find_if( m_factories.begin(), m_factories.end(), [_factory]( const FactoryDesc & _desc )
+        VectorFactories::iterator it_found = Algorithm::find_if( m_factories.begin(), m_factories.end(), [_factory]( const FactoryDesc & _desc )
         {
             return _desc.factory == _factory;
         } );

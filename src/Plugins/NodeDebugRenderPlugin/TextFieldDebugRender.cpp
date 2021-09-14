@@ -2,6 +2,8 @@
 
 #include "NodeDebugRenderHelper.h"
 
+#include "Kernel/ColorHelper.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

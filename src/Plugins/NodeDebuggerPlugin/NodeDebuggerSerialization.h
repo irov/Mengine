@@ -7,6 +7,7 @@
 #include "Kernel/Vector.h"
 #include "Kernel/String.h"
 #include "Kernel/Blobject.h"
+#include "Kernel/ColorHelper.h"
 
 #include "Config/Lambda.h"
 #include "Config/Char.h"
@@ -190,7 +191,9 @@ namespace Mengine
         template <>
         MENGINE_INLINE Color getXmlValue<Color>( const pugi::xml_attribute & _attrib )
         {
-            return Color( getXmlValue<uint32_t>( _attrib ) );
+            uint32_t argb = getXmlValue<uint32_t>( _attrib );
+
+            return Helper::makeColorARGB( argb );
         }
 
         template <>

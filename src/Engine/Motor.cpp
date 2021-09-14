@@ -5,7 +5,7 @@
 #include "Kernel/Node.h"
 
 #include "Config/Algorithm.h"
-#include <numeric>
+#include "Config/Numeric.h"
 
 namespace Mengine
 {
@@ -39,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Motor::hasVelocity( const ConstString & _name ) const
     {
-        VectorVelocities::const_iterator it_found = std::find_if( m_velocities.begin(), m_velocities.end(), [&_name]( const VelocityDesc & _desc )
+        VectorVelocities::const_iterator it_found = Algorithm::find_if( m_velocities.begin(), m_velocities.end(), [&_name]( const VelocityDesc & _desc )
         {
             return _desc.name == _name;
         } );
@@ -54,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     mt::vec3f Motor::getVelocity( const ConstString & _name ) const
     {
-        VectorVelocities::const_iterator it_found = std::find_if( m_velocities.begin(), m_velocities.end(), [&_name]( const VelocityDesc & _desc )
+        VectorVelocities::const_iterator it_found = Algorithm::find_if( m_velocities.begin(), m_velocities.end(), [&_name]( const VelocityDesc & _desc )
         {
             return _desc.name == _name;
         } );
@@ -76,7 +76,7 @@ namespace Mengine
             return;
         }
 
-        mt::vec3f velocity = std::accumulate( m_velocities.begin(), m_velocities.end(), mt::vec3f( 0.f, 0.f, 0.f ), [_context]( const mt::vec3f & _v, const VelocityDesc & _desc )
+        mt::vec3f velocity = Numeric::accumulate( m_velocities.begin(), m_velocities.end(), mt::vec3f( 0.f, 0.f, 0.f ), [_context]( const mt::vec3f & _v, const VelocityDesc & _desc )
         {
             return _v + _desc.velocity * _context->time;
         } );

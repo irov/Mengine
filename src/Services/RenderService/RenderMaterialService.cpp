@@ -13,6 +13,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderMaterialService, Mengine::RenderMaterialService );
@@ -715,9 +716,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _converterType );
 
-        MENGINE_ASSERTION_FATAL( m_vertexShaders.exist( _name ) == false, "material '%s:%s' already has vertex shader '%s' (doc: %s)"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_FATAL( m_vertexShaders.exist( _name ) == false, "material '%s' already has vertex shader '%s' (doc: %s)"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -761,9 +761,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _converterType );
 
-        MENGINE_ASSERTION_FATAL( m_fragmentShaders.exist( _name ) == false, "material '%s:%s' already has fragment shader '%s' (doc: %s)"
-            , _fileGroup->getName().c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_FATAL( m_fragmentShaders.exist( _name ) == false, "material '%s' already has fragment shader '%s' (doc: %s)"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );

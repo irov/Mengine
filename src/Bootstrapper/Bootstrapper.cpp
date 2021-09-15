@@ -282,6 +282,10 @@ PLUGIN_EXPORT( Win32AntifreezeMonitor );
 PLUGIN_EXPORT( AndroidNativeKernel );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC
+PLUGIN_EXPORT( AndroidNativePython );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
@@ -1031,6 +1035,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeKernel, "initialize Android Kernel Native...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativePython, "initialize Android Kernel Python...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC

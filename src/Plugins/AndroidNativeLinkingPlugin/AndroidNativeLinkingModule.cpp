@@ -1,5 +1,6 @@
 #include "AndroidNativeLinkingModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
@@ -78,7 +79,8 @@ namespace Mengine
     bool AndroidNativeLinkingModule::_initializeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::def_function_proxy_args( kernel, "androidLinkingSetEventHandler", &Detail::androidLinkingSetEventHandler, this );
         pybind::def_functor( kernel, "AndroidOpenUrl", this, &AndroidNativeLinkingModule::openURL );

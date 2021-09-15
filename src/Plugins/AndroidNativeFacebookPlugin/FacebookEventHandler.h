@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     enum EnumFacebookEventHandler
     {
         FACEBOOK_INITIALIZE,
@@ -21,7 +22,7 @@ namespace Mengine
         FACEBOOK_USER_FETCH_SUCCESS,
         FACEBOOK_PROFILE_PICTURE_LINK_GET,
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class FacebookEventHandler
         : public Mixin
     {

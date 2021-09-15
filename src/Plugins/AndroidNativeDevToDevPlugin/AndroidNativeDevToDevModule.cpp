@@ -1,5 +1,6 @@
 #include "AndroidNativeDevToDevModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
@@ -11,9 +12,6 @@
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "pybind/pybind.hpp"
 #endif
-
-#define DEVTODEV_JAVA_PREFIX org_Mengine_Build_DevToDev
-#define DEVTODEV_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(DEVTODEV_JAVA_PREFIX, DevToDevInteractionLayer, function)
 
 static jclass mActivityClass;
 static jmethodID jmethodID_initializePlugin;
@@ -112,7 +110,8 @@ namespace Mengine
     bool AndroidNativeDevToDevModule::_initializeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::enum_<EnumDevToDevEventHandler>( kernel, "EnumDevToDevEventHandler" )
                 .def( "DEVTODEV_INITIALIZE", DEVTODEV_INITIALIZE )

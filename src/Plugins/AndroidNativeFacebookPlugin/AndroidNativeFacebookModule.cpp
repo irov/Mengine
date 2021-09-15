@@ -1,5 +1,6 @@
 #include "AndroidNativeFacebookModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
@@ -370,7 +371,8 @@ namespace Mengine
     bool AndroidNativeFacebookModule::_initializeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::enum_<EnumFacebookEventHandler>( kernel, "EnumFacebookEventHandler" )
             .def( "FACEBOOK_INITIALIZE", FACEBOOK_INITIALIZE )

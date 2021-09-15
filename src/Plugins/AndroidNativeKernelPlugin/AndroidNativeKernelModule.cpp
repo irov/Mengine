@@ -1,19 +1,18 @@
 #include "AndroidNativeKernelModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
 
+#include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidUtils.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "pybind/pybind.hpp"
 #endif
-
-#include <jni.h>
-#include <vector>
 
 //////////////////////////////////////////////////////////////////////////
 Mengine::PluginServiceInterface * g_pluginService = nullptr;
@@ -72,7 +71,8 @@ namespace Mengine
         g_pluginService = pluginService;
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::def_functor( kernel, "androidKernelGetAndroidId", this, &AndroidNativeKernelModule::getAndroidId );
 #endif

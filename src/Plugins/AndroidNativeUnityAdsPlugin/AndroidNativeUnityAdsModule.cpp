@@ -1,18 +1,18 @@
 #include "AndroidNativeUnityAdsModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
 
+#include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidUtils.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "pybind/pybind.hpp"
 #endif
-
-#include <jni.h>
 
 #define UNITY_JAVA_PREFIX org_Mengine_Build_UnityAds
 #define UNITY_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(UNITY_JAVA_PREFIX, UnityAdsInteractionLayer, function)
@@ -261,7 +261,8 @@ namespace Mengine
     bool AndroidNativeUnityAdsModule::_initializeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::enum_<EnumUnityAdsEventHandler>( kernel, "EnumUnityAdsEventHandler" )
                 .def( "UNITYADS_INITIALIZE", UNITYADS_INITIALIZE )

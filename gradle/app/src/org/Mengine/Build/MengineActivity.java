@@ -37,6 +37,8 @@ public class MengineActivity extends SDLActivity {
     private static MengineActivity _instance;
 
     private static native void AndroidNativeKernel_setupKernelJNI();
+    private static native void AndroidNativePython_setupPythonJNI();
+    private static native void AndroidNativePython_call(String method, String args);
     private static native void AndroidNativeFacebook_setupFacebookJNI();
     private static native void AndroidNativeFacebook_onSDKInitialized();
     private static native void AndroidNativeUnity_setupUnityJNI();
@@ -62,6 +64,7 @@ public class MengineActivity extends SDLActivity {
         AppEventsLogger.activateApp(getApplication());
 
         AndroidNativeKernel_setupKernelJNI();
+        AndroidNativePython_setupPythonJNI();
         AndroidNativeFacebook_setupFacebookJNI();
         AndroidNativeUnity_setupUnityJNI();
         AndroidNativeAdMob_setupAdMobJNI();

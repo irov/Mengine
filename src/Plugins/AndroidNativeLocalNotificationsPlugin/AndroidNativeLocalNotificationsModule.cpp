@@ -1,18 +1,18 @@
 #include "AndroidNativeLocalNotificationsModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
 
+#include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidUtils.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "pybind/pybind.hpp"
 #endif
-
-#include <jni.h>
 
 static jclass mActivityClass;
 static jmethodID jmethodID_localNotificationsInitializePlugin;
@@ -126,7 +126,8 @@ namespace Mengine
     bool AndroidNativeLocalNotificationsModule::_initializeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::enum_<EnumLocalNotificationsEventHandler>( kernel, "EnumLocalNotificationsEventHandler" )
                 .def( "LOCAL_NOTIFICATIONS_INITIALIZE", LOCAL_NOTIFICATIONS_INITIALIZE )

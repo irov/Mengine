@@ -1,5 +1,6 @@
 #include "AndroidNativeLinkingModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
@@ -25,12 +26,12 @@ extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLinking_1setupLinkingJNI )(JNIEnv * mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLinking_1setupLinkingJNI )(JNIEnv * env, jclass cls)
     {
-        mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
+        mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
-        jmethodID_openURL = mEnv->GetStaticMethodID( mActivityClass, "linkingOpenURL", "(Ljava/lang/String;)Z" );
-        jmethodID_openMail = mEnv->GetStaticMethodID( mActivityClass, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_openURL = env->GetStaticMethodID( mActivityClass, "linkingOpenURL", "(Ljava/lang/String;)Z" );
+        jmethodID_openMail = env->GetStaticMethodID( mActivityClass, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +79,8 @@ namespace Mengine
     bool AndroidNativeLinkingModule::_initializeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::def_function_proxy_args( kernel, "androidLinkingSetEventHandler", &Detail::androidLinkingSetEventHandler, this );
         pybind::def_functor( kernel, "AndroidOpenUrl", this, &AndroidNativeLinkingModule::openURL );

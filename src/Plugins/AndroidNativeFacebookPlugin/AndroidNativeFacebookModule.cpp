@@ -1,5 +1,6 @@
 #include "AndroidNativeFacebookModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
@@ -32,23 +33,23 @@ extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv * mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv * env, jclass cls)
     {
-        mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
+        mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
-        jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
-        jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)Z" );
-        jmethodID_logout = mEnv->GetStaticMethodID( mActivityClass, "facebookLogout", "()Z" );
-        jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()Z" );
-        jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
-        jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
-        jmethodID_getAccessToken = mEnv->GetStaticMethodID( mActivityClass, "facebookGetAccessToken", "()Ljava/lang/String;" );
-        jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)Z" );
-        jmethodID_getProfileUserPictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfileUserPictureLink", "(Ljava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
+        jmethodID_performLogin = env->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)Z" );
+        jmethodID_logout = env->GetStaticMethodID( mActivityClass, "facebookLogout", "()Z" );
+        jmethodID_getUser = env->GetStaticMethodID( mActivityClass, "facebookGetUser", "()Z" );
+        jmethodID_shareLink = env->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_isLoggedIn = env->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
+        jmethodID_getAccessToken = env->GetStaticMethodID( mActivityClass, "facebookGetAccessToken", "()Ljava/lang/String;" );
+        jmethodID_getProfilePictureLink = env->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)Z" );
+        jmethodID_getProfileUserPictureLink = env->GetStaticMethodID( mActivityClass, "facebookGetProfileUserPictureLink", "(Ljava/lang/String;Ljava/lang/String;)Z" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1onSDKInitialized )(JNIEnv * mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1onSDKInitialized )(JNIEnv * env, jclass cls)
     {
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -370,7 +371,8 @@ namespace Mengine
     bool AndroidNativeFacebookModule::_initializeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::enum_<EnumFacebookEventHandler>( kernel, "EnumFacebookEventHandler" )
             .def( "FACEBOOK_INITIALIZE", FACEBOOK_INITIALIZE )

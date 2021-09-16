@@ -98,6 +98,10 @@ if(MENGINE_PLUGIN_OZZ_ANIMATION)
     ADD_SUBDIRECTORY(OzzAnimationPlugin)
 endif()
 
+if(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON)
+    ADD_SUBDIRECTORY(AndroidNativePythonPlugin)
+endif()
+
 if(MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL)
     ADD_SUBDIRECTORY(AndroidNativeKernelPlugin)
 endif()

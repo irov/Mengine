@@ -1,19 +1,18 @@
 #include "AndroidNativeAdMobModule.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
 
+#include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidUtils.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "pybind/pybind.hpp"
 #endif
-
-#include <jni.h>
-#include <vector>
 
 //////////////////////////////////////////////////////////////////////////
 #define ADMOB_JAVA_PREFIX org_Mengine_Build_AdMob
@@ -401,7 +400,8 @@ namespace Mengine
     bool AndroidNativeAdMobModule::_initializeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
 
         pybind::enum_<EnumAdMobEventHandler>( kernel, "EnumAdMobEventHandler" )
             .def( "ADMOB_INITIALIZE", ADMOB_INITIALIZE )

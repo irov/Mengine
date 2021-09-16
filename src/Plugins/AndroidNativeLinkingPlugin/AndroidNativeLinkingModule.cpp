@@ -26,12 +26,12 @@ extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLinking_1setupLinkingJNI )(JNIEnv * mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLinking_1setupLinkingJNI )(JNIEnv * env, jclass cls)
     {
-        mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
+        mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
-        jmethodID_openURL = mEnv->GetStaticMethodID( mActivityClass, "linkingOpenURL", "(Ljava/lang/String;)Z" );
-        jmethodID_openMail = mEnv->GetStaticMethodID( mActivityClass, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_openURL = env->GetStaticMethodID( mActivityClass, "linkingOpenURL", "(Ljava/lang/String;)Z" );
+        jmethodID_openMail = env->GetStaticMethodID( mActivityClass, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

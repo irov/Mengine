@@ -29,25 +29,23 @@ extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1setupDevToDevJNI )(JNIEnv * mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1setupDevToDevJNI )(JNIEnv * env, jclass cls)
     {
-        mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
+        mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
-        jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "devtodevInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
-        jmethodID_onTutorialEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnTutorialEvent", "(I)Z" );
-        jmethodID_setCurrentLevel = mEnv->GetStaticMethodID( mActivityClass, "devtodevSetCurrentLevel", "(I)Z" );
-        jmethodID_onLevelUp = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnLevelUp", "(I)Z" );
-        jmethodID_onCurrencyAccrual = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnCurrencyAccrual", "(Ljava/lang/String;II)Z" );
-        jmethodID_onRealPayment = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnRealPayment", "(Ljava/lang/String;FLjava/lang/String;Ljava/lang/String;)Z" );
-        jmethodID_onInAppPurchase = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnInAppPurchase", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;)Z" );
-        jmethodID_onSimpleCustomEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnSimpleCustomEvent", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "devtodevInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
+        jmethodID_onTutorialEvent = env->GetStaticMethodID( mActivityClass, "devtodevOnTutorialEvent", "(I)Z" );
+        jmethodID_setCurrentLevel = env->GetStaticMethodID( mActivityClass, "devtodevSetCurrentLevel", "(I)Z" );
+        jmethodID_onLevelUp = env->GetStaticMethodID( mActivityClass, "devtodevOnLevelUp", "(I)Z" );
+        jmethodID_onCurrencyAccrual = env->GetStaticMethodID( mActivityClass, "devtodevOnCurrencyAccrual", "(Ljava/lang/String;II)Z" );
+        jmethodID_onRealPayment = env->GetStaticMethodID( mActivityClass, "devtodevOnRealPayment", "(Ljava/lang/String;FLjava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_onInAppPurchase = env->GetStaticMethodID( mActivityClass, "devtodevOnInAppPurchase", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;)Z" );
+        jmethodID_onSimpleCustomEvent = env->GetStaticMethodID( mActivityClass, "devtodevOnSimpleCustomEvent", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1onSDKInitialized )(JNIEnv * mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1onSDKInitialized )(JNIEnv * env, jclass cls)
     {
-        mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
-
         if( s_androidNativeDevToDevModule != nullptr )
         {
             s_androidNativeDevToDevModule->addCommand( []( const Mengine::DevToDevEventHandlerPtr & _handler )

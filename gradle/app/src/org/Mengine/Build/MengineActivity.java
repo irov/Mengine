@@ -2,6 +2,7 @@ package org.Mengine.Build;
 
 import android.app.Notification;
 import android.content.*;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,6 +90,32 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.i(TAG, "MengineActivity.onActivityResult()");
+
+        if (marSDKInteractionLayer != null) {
+            marSDKInteractionLayer.onActivityResult(requestCode, resultCode, data);
+        }
+
+        if (callbackManager != null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        Log.i(TAG, "MengineActivity.onStart()");
+
+        if( marSDKInteractionLayer != null ) {
+            marSDKInteractionLayer.onStart();
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
 
@@ -102,6 +129,10 @@ public class MengineActivity extends SDLActivity {
         super.onPause();
 
         Log.i(TAG, "MengineActivity.onPause()");
+
+        if( marSDKInteractionLayer != null ) {
+            marSDKInteractionLayer.onPause();
+        }
     }
 
     @Override
@@ -109,7 +140,7 @@ public class MengineActivity extends SDLActivity {
         super.onResume();
 
         Log.i(TAG, "MengineActivity.onResume()");
-        
+
         if (_instance == null) {
             Log.i(TAG, "_instance == null -> init plugins");
 
@@ -117,11 +148,22 @@ public class MengineActivity extends SDLActivity {
 
             initPlugins();
         }
+        else {
+            if (marSDKInteractionLayer != null) {
+                marSDKInteractionLayer.onResume();
+            }
+        }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
+        Log.i(TAG, "MengineActivity.onNewIntent()");
+
+        if (marSDKInteractionLayer != null) {
+            marSDKInteractionLayer.onNewIntent(intent);
+        }
 
         if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
             AndroidNativeLocalNotifications_onLocalNotificationsPress(intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
@@ -129,13 +171,42 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onDestroy(){
+        super.onDestroy();
 
-        Log.i(TAG, "MengineActivity.onActivityResult()");
+        Log.i(TAG, "MengineActivity.onDestroy()");
 
-        if (callbackManager != null) {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (marSDKInteractionLayer != null) {
+            marSDKInteractionLayer.onDestroy();
+        }
+    }
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+
+        Log.i(TAG, "MengineActivity.onRestart()");
+
+        if (marSDKInteractionLayer != null) {
+            marSDKInteractionLayer.onRestart();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+
+        if (marSDKInteractionLayer != null) {
+            marSDKInteractionLayer.onRestart();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (marSDKInteractionLayer != null) {
+            marSDKInteractionLayer.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -153,6 +224,19 @@ public class MengineActivity extends SDLActivity {
         String android_id = Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID);
 
         return android_id;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //MarSDK Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void marSDKInitializePlugin() {
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (_instance != null && _instance.marSDKInteractionLayer == null) {
+                    _instance.marSDKInteractionLayer = new MarSDKInteractionLayer(_instance);
+                }
+            }
+        });
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Facebook Methods

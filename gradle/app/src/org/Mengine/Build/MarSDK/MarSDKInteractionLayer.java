@@ -1,6 +1,9 @@
 package org.Mengine.Build.MarSDK;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,18 +32,47 @@ public class MarSDKInteractionLayer implements MARInitListener {
     
     private boolean logined = false;
 
-    static native void AndroidNativeUnity_onUnityAdsClick(String placementId);
-    static native void AndroidNativeUnity_onUnityAdsPlacementStateChanged(String placementId, int placementState, int placementState1);
-    static native void AndroidNativeUnity_onUnityAdsReady(String placementId);
-    static native void AndroidNativeUnity_onUnityAdsStart(String placementId);
-    static native void AndroidNativeUnity_onUnityAdsFinish(String placementId, int finishState);
-    static native void AndroidNativeUnity_onUnityAdsError(int unityAdsError, String message);    
-
-    public MarSDKInteractionLayer() {
+    public MarSDKInteractionLayer(Activity _activity) {
+        MARPlatform.getInstance().init(_activity, this);
     }
-    
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        MARSDK.getInstance().onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void onStart(){
+        MARSDK.getInstance().onStart();
+    }
+
+    public void onPause(){
+        MARSDK.getInstance().onPause();
+    }
+    public void onResume(){
+        MARSDK.getInstance().onResume();
+    }
+
+    public void onNewIntent(Intent intent) {
+        MARSDK.getInstance().onNewIntent(intent);
+    }
+
+    public void onDestroy() {
+        MARSDK.getInstance().onDestroy();
+    }
+
+    public void onRestart() {
+        MARSDK.getInstance().onRestart();
+    }
+
+    public void onConfigurationChanged(Configuration newConfig){
+        MARSDK.getInstance().onConfigurationChanged(newConfig);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        MARSDK.getInstance().onRequestPermissionResult(requestCode, permissions, grantResults);
+    }
+
     @Override
-    public void onInitResult(int code, String msg) {        
+    public void onInitResult(int code, String msg) {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onInitResult code: " + code + " msg:" + msg);
 
         switch(code){
@@ -67,7 +99,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
                 //get control info
                 int gameType = MARSDK.getInstance().getGameType();
 
-                Log.d(MarSDKInteractionLayer.TAG, "marsdk login game type: " + gameType);                
+                Log.d(MarSDKInteractionLayer.TAG, "marsdk login game type: " + gameType);
                 
                 if ((gameType == 1 || gameType == 3) && !MggControl.getInstance().getFreeFlag()){
                     MggControl.getInstance().reqAdControlInfo();
@@ -115,13 +147,6 @@ public class MarSDKInteractionLayer implements MARInitListener {
     @Override
     public void onRedeemResult(String msg) {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onRedeemResult msg: " + msg);
-        
-        //ToDo
-    }
-
-    @Override
-    public void onResourceResult(String msg) {
-        Log.d(MarSDKInteractionLayer.TAG, "marsdk.onResourceResult msg: " + msg);
         
         //ToDo
     }

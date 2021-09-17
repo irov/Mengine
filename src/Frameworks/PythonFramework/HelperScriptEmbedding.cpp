@@ -647,26 +647,48 @@ namespace Mengine
                 return bb;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_hasOption( const ConstString & _option )
+            bool s_hasOption( const Char * _option )
             {
                 bool exist = OPTIONS_SERVICE()
-                    ->hasOption( _option.c_str() );
+                    ->hasOption( _option );
 
                 return exist;
             }
             //////////////////////////////////////////////////////////////////////////
-            const Char * s_getOptionValue( const ConstString & _option )
+            const Char * s_getOptionValue( const Char * _option )
             {
                 const Char * value = OPTIONS_SERVICE()
-                    ->getOptionValue( _option.c_str(), "" );
+                    ->getOptionValue( _option, "" );
 
                 return value;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_getOptionUInt32( const ConstString & _option )
+            pybind::list s_getOptionValues( pybind::kernel_interface * _kernel, const Char * _option )
+            {
+                pybind::list r = pybind::make_list_t( _kernel );
+
+                const Char * option_values[MENGINE_OPTIONS_VALUE_COUNT];
+                uint32_t option_count;
+                if( OPTIONS_SERVICE()
+                    ->getOptionValues( _option, option_values, &option_count ) == false )
+                {
+                    return r;
+                }
+
+                for( uint32_t index = 0; index != option_count; ++index )
+                {
+                    const Char * value = option_values[index];
+
+                    r.append( value );
+                }
+
+                return r;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_getOptionUInt32( const Char * _option )
             {
                 uint32_t value = OPTIONS_SERVICE()
-                    ->getOptionUInt32( _option.c_str(), 0U );
+                    ->getOptionUInt32( _option, 0U );
 
                 return value;
             }
@@ -3682,7 +3704,7 @@ namespace Mengine
         pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
         pybind::def_functor_kernel( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getDateStruct );
         pybind::def_functor( _kernel, "getDatePathTimestamp", helperScriptMethod, &HelperScriptMethod::s_getDatePathTimestamp );
-        pybind::def_functor( _kernel, "getLoggerTimestamp", helperScriptMethod, &HelperScriptMethod::s_getLoggerTimestamp );        
+        pybind::def_functor( _kernel, "getLoggerTimestamp", helperScriptMethod, &HelperScriptMethod::s_getLoggerTimestamp );
 
         pybind::def_functor( _kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
 
@@ -3907,6 +3929,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "hasOption", helperScriptMethod, &HelperScriptMethod::s_hasOption );
         pybind::def_functor( _kernel, "getOptionValue", helperScriptMethod, &HelperScriptMethod::s_getOptionValue );
+        pybind::def_functor_kernel( _kernel, "getOptionValue", helperScriptMethod, &HelperScriptMethod::s_getOptionValues );
         pybind::def_functor( _kernel, "getOptionUInt32", helperScriptMethod, &HelperScriptMethod::s_getOptionUInt32 );
 
         pybind::def_functor( _kernel, "crashEngine", helperScriptMethod, &HelperScriptMethod::s_crashEngine );

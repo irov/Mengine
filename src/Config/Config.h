@@ -1,59 +1,5 @@
 #pragma once
 
-#ifndef MENGINE_OFFSETOF
-#define MENGINE_OFFSETOF(T, V) offsetof(T, V)
-#endif
-
-#ifndef MENGINE_PVOID_OFFSET
-#define MENGINE_PVOID_OFFSET(P, O) ((unsigned char *)(P) + (O))
-#endif
-
-#ifndef MENGINE_CPVOID_OFFSET
-#define MENGINE_CPVOID_OFFSET(P, O) ((const unsigned char *)(P) + (O))
-#endif
-
-#ifndef MENGINE_FOURCC
-#define MENGINE_FOURCC(c0, c1, c2, c3) (((c0) << 0) | ((c1) << 8) | ((c2) << 16) | ((c3) << 24))
-#endif
-
-#ifndef MENGINE_MAX
-#define MENGINE_MAX(A, B) ((A) > (B) ? (A) : (B))
-#endif
-
-#ifndef MENGINE_MIN
-#define MENGINE_MIN(A, B) ((A) < (B) ? (A) : (B))
-#endif
-
-#ifndef MENGINE_POWER2
-#define MENGINE_POWER2(N) (1 << N)
-#endif
-
-#ifndef MENGINE_STATIC_STRING_LENGTH
-#define MENGINE_STATIC_STRING_LENGTH(S) (sizeof( (S) ) - 1)
-#endif
-
-#ifndef MENGINE_CLAMP
-#define MENGINE_CLAMP(A, B, C) MENGINE_MAX( A, MENGINE_MIN(B, C) )
-#endif
-
-#ifndef MENGINE_STRING_EMPTY
-#define MENGINE_STRING_EMPTY ""
-#endif
-
-#ifndef MENGINE_PP_STRINGIZE
-#   define MENGINE_PP_STRINGIZE_I(X) #X
-#   define MENGINE_PP_STRINGIZE(X) MENGINE_PP_STRINGIZE_I(X)
-#endif
-
-#ifndef MENGINE_PP_CONCATENATE
-#   define MENGINE_PP_CONCATENATE_I(X, Y) X ## Y
-#   define MENGINE_PP_CONCATENATE(X, Y) MENGINE_PP_CONCATENATE_I(X, Y)
-#endif
-
-#ifndef MENGINE_UNUSED
-#define MENGINE_UNUSED(X) ((void)X)
-#endif
-
 #if defined(_MSC_VER)
 #   define MENGINE_COMPILER_MSVC
 #elif defined(__GNUC__)
@@ -68,6 +14,52 @@
 #   define MENGINE_COMPILER_MINGW64
 #else
 #   error "undefine compiler"
+#endif
+
+#if defined(_WIN32)
+#   define MENGINE_PLATFORM_WINDOWS
+#   define MENGINE_PLATFORM_DESKTOP
+
+#   if defined(_WIN64)
+#       define MENGINE_PLATFORM_WINDOWS64
+#   else
+#       define MENGINE_PLATFORM_WINDOWS32
+#   endif
+#elif defined(__linux__) && !defined(__ANDROID__)
+#   define MENGINE_PLATFORM_LINUX
+#   define MENGINE_PLATFORM_DESKTOP
+#elif defined(__APPLE__)
+#   include "TargetConditionals.h"
+#   if TARGET_OS_OSX
+#       define MENGINE_PLATFORM_OSX
+#       define MENGINE_PLATFORM_DESKTOP
+#   elif TARGET_OS_IPHONE
+#       define MENGINE_PLATFORM_IOS
+#       define MENGINE_PLATFORM_MOBILE
+#   endif
+#elif defined(__ANDROID__)
+#   define MENGINE_PLATFORM_ANDROID
+#   define MENGINE_PLATFORM_MOBILE
+#else
+#   error "undefine platform"
+#endif
+
+#if defined(__MINGW32__)
+#   define MENGINE_TOOLCHAIN_MINGW
+#elif defined(_MSC_VER)
+#   define MENGINE_TOOLCHAIN_MSVC
+#endif
+
+#ifdef MENGINE_DEBUG
+#   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_TOOLCHAIN_MINGW)
+#       define MENGINE_WINDOWS_DEBUG
+#   endif
+#endif
+
+#ifdef MENGINE_WINDOWS_DEBUG
+#   define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (X)
+#else
+#   define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (Y)
 #endif
 
 #ifndef MENGINE_CODE_FILE
@@ -90,6 +82,10 @@
 #   define MENGINE_DEBUG
 #else
 #   define MENGINE_RELEASE
+#endif
+
+#ifndef MENGINE_UNUSED
+#define MENGINE_UNUSED(X) ((void)X)
 #endif
 
 #ifndef MENGINE_DEBUG
@@ -161,53 +157,11 @@
 #endif
 
 #ifndef MENGINE_THREAD_LOCAL
-#define MENGINE_THREAD_LOCAL thread_local
-#endif
-
-#if defined(_WIN32)
-#   define MENGINE_PLATFORM_WINDOWS
-#   define MENGINE_PLATFORM_DESKTOP
-
-#   if defined(_WIN64)
-#       define MENGINE_PLATFORM_WINDOWS64
+#   ifndef MENGINE_PLATFORM_IOS
+#       define MENGINE_THREAD_LOCAL thread_local
 #   else
-#       define MENGINE_PLATFORM_WINDOWS32
+#       define MENGINE_THREAD_LOCAL
 #   endif
-#elif defined(__linux__) && !defined(__ANDROID__)
-#   define MENGINE_PLATFORM_LINUX
-#   define MENGINE_PLATFORM_DESKTOP
-#elif defined(__APPLE__)
-#   include "TargetConditionals.h"
-#   if TARGET_OS_OSX
-#       define MENGINE_PLATFORM_OSX
-#       define MENGINE_PLATFORM_DESKTOP
-#   elif TARGET_OS_IPHONE
-#       define MENGINE_PLATFORM_IOS
-#       define MENGINE_PLATFORM_MOBILE
-#   endif
-#elif defined(__ANDROID__)
-#   define MENGINE_PLATFORM_ANDROID
-#   define MENGINE_PLATFORM_MOBILE
-#else
-#   error "undefine platform"
-#endif
-
-#if defined(__MINGW32__)
-#   define MENGINE_TOOLCHAIN_MINGW
-#elif defined(_MSC_VER)
-#   define MENGINE_TOOLCHAIN_MSVC
-#endif
-
-#ifdef MENGINE_DEBUG
-#   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_TOOLCHAIN_MINGW)
-#       define MENGINE_WINDOWS_DEBUG
-#   endif
-#endif
-
-#ifdef MENGINE_WINDOWS_DEBUG
-#   define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (X)
-#else
-#   define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (Y)
 #endif
 
 #ifndef MENGINE_PROFILER_ENABLE
@@ -292,4 +246,54 @@
 
 #ifndef MENGINE_PATH_WDELIM
 #define MENGINE_PATH_WDELIM L'/'
+#endif
+
+#ifndef MENGINE_OFFSETOF
+#define MENGINE_OFFSETOF(T, V) offsetof(T, V)
+#endif
+
+#ifndef MENGINE_PVOID_OFFSET
+#define MENGINE_PVOID_OFFSET(P, O) ((unsigned char *)(P) + (O))
+#endif
+
+#ifndef MENGINE_CPVOID_OFFSET
+#define MENGINE_CPVOID_OFFSET(P, O) ((const unsigned char *)(P) + (O))
+#endif
+
+#ifndef MENGINE_FOURCC
+#define MENGINE_FOURCC(c0, c1, c2, c3) (((c0) << 0) | ((c1) << 8) | ((c2) << 16) | ((c3) << 24))
+#endif
+
+#ifndef MENGINE_MAX
+#define MENGINE_MAX(A, B) ((A) > (B) ? (A) : (B))
+#endif
+
+#ifndef MENGINE_MIN
+#define MENGINE_MIN(A, B) ((A) < (B) ? (A) : (B))
+#endif
+
+#ifndef MENGINE_POWER2
+#define MENGINE_POWER2(N) (1 << N)
+#endif
+
+#ifndef MENGINE_STATIC_STRING_LENGTH
+#define MENGINE_STATIC_STRING_LENGTH(S) (sizeof( (S) ) - 1)
+#endif
+
+#ifndef MENGINE_CLAMP
+#define MENGINE_CLAMP(A, B, C) MENGINE_MAX( A, MENGINE_MIN(B, C) )
+#endif
+
+#ifndef MENGINE_STRING_EMPTY
+#define MENGINE_STRING_EMPTY ""
+#endif
+
+#ifndef MENGINE_PP_STRINGIZE
+#   define MENGINE_PP_STRINGIZE_I(X) #X
+#   define MENGINE_PP_STRINGIZE(X) MENGINE_PP_STRINGIZE_I(X)
+#endif
+
+#ifndef MENGINE_PP_CONCATENATE
+#   define MENGINE_PP_CONCATENATE_I(X, Y) X ## Y
+#   define MENGINE_PP_CONCATENATE(X, Y) MENGINE_PP_CONCATENATE_I(X, Y)
 #endif

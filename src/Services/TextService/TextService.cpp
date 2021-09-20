@@ -726,6 +726,16 @@ namespace Mengine
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextService::foreachTextEntry( const LambdaTextEntry & _lambda ) const
+    {
+        for( const HashtableTextEntry::value_type & value : m_texts )
+        {
+            const TextEntryInterfacePtr & textEntry = value.element;
+
+            _lambda( textEntry );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextService::setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key )
     {
         PairAliasKey key = std::make_pair( _environment, _alias );
@@ -825,41 +835,6 @@ namespace Mengine
         *_arguments = arguments;
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool TextService::validate() const
-    {
-        LOGGER_MESSAGE( "Validate Texts..." );
-
-        bool successful = true;
-
-        for( const HashtableTextEntry::value_type & value : m_texts )
-        {
-            const TextEntryInterfacePtr & text = value.element;
-
-            const ConstString & textId = text->getKey();
-            const TextFontInterfacePtr & font = text->getFont();
-
-            if( font == nullptr )
-            {
-                continue;
-            }
-
-            size_t text_size;
-            const Char * text_value = text->getValue( &text_size );
-
-            if( font->validateText( textId, text_value, text_size ) == false )
-            {
-                LOGGER_ERROR( "text '%s' font name '%s' invalid"
-                    , textId.c_str()
-                    , font->getName().c_str()
-                );
-
-                successful = false;
-            }
-        }
-
-        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     const VectorU32String & TextService::getLineDelims() const

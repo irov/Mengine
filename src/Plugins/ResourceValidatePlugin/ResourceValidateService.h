@@ -22,6 +22,6 @@ namespace Mengine
 
     protected:
         bool visitableResource_( const ResourcePtr & _resource ) const;
-        void visitableResources_() const;
+        void notifyEnablePackages_() const;
     };
 }

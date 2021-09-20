@@ -4,7 +4,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class ResourcePrefetcherPlugin
         : public PluginBase
     {

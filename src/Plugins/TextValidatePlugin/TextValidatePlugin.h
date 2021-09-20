@@ -4,18 +4,20 @@
 
 namespace Mengine
 {
-    class ResourceConvertPlugin
+    class TextValidatePlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "ResourceConvert" )
+        PLUGIN_DECLARE( "TextValidate" )
 
     public:
-        ResourceConvertPlugin();
-        ~ResourceConvertPlugin() override;
+        TextValidatePlugin();
+        ~TextValidatePlugin() override;
 
     protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
-        void _destroyPlugin() override;
+
+    protected:
+        void notifyBootstrapperInitializeGame_();
     };
 }

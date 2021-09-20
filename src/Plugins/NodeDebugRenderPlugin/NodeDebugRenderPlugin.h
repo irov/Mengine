@@ -4,7 +4,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class NodeDebugRenderPlugin
         : public PluginBase
     {

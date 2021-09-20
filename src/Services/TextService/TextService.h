@@ -41,6 +41,9 @@ namespace Mengine
         const TextEntryInterfacePtr & getTextEntry( const ConstString & _textId ) const override;
 
     public:
+        void foreachTextEntry( const LambdaTextEntry & _lambda ) const override;
+
+    public:
         void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key ) override;
         void removeTextAlias( const ConstString & _environment, const ConstString & _alias ) override;
         bool isTextAlias( const ConstString & _alias ) const override;
@@ -51,9 +54,6 @@ namespace Mengine
         void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) override;
         void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) override;
         bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const override;
-
-    public:
-        bool validate() const override;
 
     public:
         TextEntryInterfacePtr createTextEntry( const ConstString & _textId

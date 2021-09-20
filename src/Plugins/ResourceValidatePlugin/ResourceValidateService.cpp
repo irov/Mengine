@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, &ResourceValidateService::visitableResources_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, &ResourceValidateService::notifyEnablePackages_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -69,7 +69,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceValidateService::visitableResources_() const
+    void ResourceValidateService::notifyEnablePackages_() const
     {
         bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
@@ -84,6 +84,8 @@ namespace Mengine
         {
             return;
         }
+
+        LOGGER_MESSAGE_WN( "Validate Resources... " );
         
         bool successful = true;
 
@@ -100,8 +102,21 @@ namespace Mengine
 
         if( successful == false )
         {
-            throw ExceptionNotificationFailed();
+            LOGGER_MESSAGE( "[FAILURE]" );
+
+            bool OPTION_resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
+
+            if( OPTION_resourceCheckCritical == false )
+            {
+                LOGGER_CRITICAL( "Please fix [resources] and restart application!" );
+
+                throw ExceptionNotificationFailed();
+            }
         }
+        else
+        {
+            LOGGER_MESSAGE( "[OK]" );
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
 }

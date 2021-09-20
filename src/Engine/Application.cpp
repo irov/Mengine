@@ -924,24 +924,12 @@ namespace Mengine
             }
         }
 
-#ifndef MENGINE_MASTER_RELEASE
-        bool developmentMode = Helper::isDevelopmentMode();
-        bool windowsDebug = Helper::isWindowsDebug();
-        bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
-
-        if( developmentMode == true && windowsDebug == true && OPTION_noresourceCheck == false )
-        {
-            if( TEXT_SERVICE()
-                ->validate() == false )
-            {
-                LOGGER_ERROR( "invalid validate!" );
-            }
-        }
-#endif
-
         m_initailizeGame = true;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
+        if( NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

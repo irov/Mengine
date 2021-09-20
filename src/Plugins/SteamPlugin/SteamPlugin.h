@@ -6,7 +6,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class SteamPlugin
         : public PluginBase
     {
@@ -20,5 +19,4 @@ namespace Mengine
         bool _initializePlugin() override;
         void _finalizePlugin() override;
     };
-    //////////////////////////////////////////////////////////////////////////
 }

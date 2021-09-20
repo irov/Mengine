@@ -7,5 +7,6 @@ namespace Mengine
         bool isDevelopmentMode();
         bool isBuildPublish();
         bool isBuildMaster();
+        bool isWindowsDebug();
     }
 }

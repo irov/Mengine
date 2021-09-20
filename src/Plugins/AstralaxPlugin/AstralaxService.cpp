@@ -71,22 +71,6 @@ namespace Mengine
 
         Magic_SetAxis( MAGIC_pXnYpZ );
 
-        const char * version = Magic_GetVersion();
-
-        if( MENGINE_STRSTR( version, MAGIC_API ) == nullptr )
-        {
-            LOGGER_ERROR( "Astralax Magic Particles Version: '%s' but need '%s'"
-                , version
-                , MAGIC_API
-            );
-
-            return false;
-        }
-
-        LOGGER_MESSAGE( "Astralax Magic Particles Version: %s"
-            , version
-        );
-
         if( SERVICE_EXIST( RenderSystemInterface ) == true )
         {
             m_renderPlatform = RENDER_SYSTEM()

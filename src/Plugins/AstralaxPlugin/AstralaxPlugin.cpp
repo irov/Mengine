@@ -1,6 +1,7 @@
 #include "AstralaxPlugin.h"
 
 #include "AstralaxInterface.h"
+#include "AstralaxIncluder.h"
 
 #include "AstralaxModule.h"
 
@@ -10,6 +11,8 @@
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConverterFactory.h"
+
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AstralaxService );
@@ -30,6 +33,22 @@ namespace Mengine
     bool AstralaxPlugin::_initializePlugin()
     {
         LOGGER_INFO( "astralax", "Initializing Astralax System..." );
+
+        const char * version = Magic_GetVersion();
+
+        if( MENGINE_STRSTR( version, MAGIC_API ) == nullptr )
+        {
+            LOGGER_ERROR( "Astralax Magic Particles Version: '%s' but need '%s'"
+                , version
+                , MAGIC_API
+            );
+
+            return false;
+        }
+
+        LOGGER_MESSAGE( "Astralax Magic Particles Version: %s"
+            , version
+        );
 
         SERVICE_CREATE( AstralaxService, MENGINE_DOCUMENT_FACTORABLE );
 

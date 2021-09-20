@@ -34,5 +34,10 @@ namespace Mengine
             return MENGINE_MASTER_VALUE( true, false );
         }
         //////////////////////////////////////////////////////////////////////////
+        bool isWindowsDebug()
+        {
+            return MENGINE_WINDOWS_DEBUG_VALUE( true, false );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

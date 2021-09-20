@@ -1,7 +1,5 @@
 #include "AndroidLogger.h"
 
-#include <iostream>
-
 #include <android/log.h>
 
 namespace Mengine
@@ -23,8 +21,11 @@ namespace Mengine
         int prio;
         switch( _level )
         {
+        case LM_SILENT:
+            return;
         case LM_FATAL:
         case LM_CRITICAL:
+        case LM_MESSAGE_RELEASE:
             prio = ANDROID_LOG_FATAL;
             break;
         case LM_ERROR:
@@ -33,11 +34,14 @@ namespace Mengine
         case LM_PERFOMANCE:
         case LM_STATISTIC:
         case LM_WARNING:
+        case LM_MESSAGE:
             prio = ANDROID_LOG_WARN;
             break;
-        case LM_MESSAGE:
         case LM_INFO:
             prio = ANDROID_LOG_INFO;
+            break;
+        case LM_DEBUG:
+            prio = ANDROID_LOG_DEBUG;
             break;
         case LM_VERBOSE:
             prio = ANDROID_LOG_VERBOSE;
@@ -53,4 +57,5 @@ namespace Mengine
     {
         //Empty
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -926,9 +926,10 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE
         bool developmentMode = Helper::isDevelopmentMode();
+        bool windowsDebug = Helper::isWindowsDebug();
         bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
-        if( developmentMode == true && OPTION_noresourceCheck == false )
+        if( developmentMode == true && windowsDebug == true && OPTION_noresourceCheck == false )
         {
             if( TEXT_SERVICE()
                 ->validate() == false )

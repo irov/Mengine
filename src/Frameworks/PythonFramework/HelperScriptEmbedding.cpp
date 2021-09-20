@@ -3929,7 +3929,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "hasOption", helperScriptMethod, &HelperScriptMethod::s_hasOption );
         pybind::def_functor( _kernel, "getOptionValue", helperScriptMethod, &HelperScriptMethod::s_getOptionValue );
-        pybind::def_functor_kernel( _kernel, "getOptionValue", helperScriptMethod, &HelperScriptMethod::s_getOptionValues );
+        pybind::def_functor_kernel( _kernel, "getOptionValues", helperScriptMethod, &HelperScriptMethod::s_getOptionValues );
         pybind::def_functor( _kernel, "getOptionUInt32", helperScriptMethod, &HelperScriptMethod::s_getOptionUInt32 );
 
         pybind::def_functor( _kernel, "crashEngine", helperScriptMethod, &HelperScriptMethod::s_crashEngine );

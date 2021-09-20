@@ -1479,9 +1479,6 @@ namespace Mengine
         pybind::def_function( _kernel, "hasMovieSocket", &Detail::s_hasMovieSocket );
         pybind::def_function( _kernel, "hasMovieEvent", &Detail::s_hasMovieEvent );
 
-        pybind::def_function_kernel( _kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
-        pybind::def_function_kernel( _kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
-
         Helper::registerScriptWrapping<Movie>( _kernel, STRINGIZE_STRING_LOCAL( "Movie" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<MovieSlot>( _kernel, STRINGIZE_STRING_LOCAL( "MovieSlot" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<MovieSceneEffect>( _kernel, STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), MENGINE_DOCUMENT_FACTORABLE );

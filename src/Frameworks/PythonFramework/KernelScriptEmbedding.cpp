@@ -2617,15 +2617,11 @@ namespace Mengine
             .def( "getViewport", &RenderViewportInterface::getViewport )
             ;
 
-        pybind::interface_<RenderScissorInterface, pybind::bases<Mixin>>( _kernel, "RenderScissorInterface" )
-            .def( "getScissorViewport", &RenderScissorInterface::getScissorViewport )
-            ;
-
         pybind::interface_<RenderCameraInterface, pybind::bases<Mixin>>( _kernel, "RenderCameraInterface" )
             ;
 
         pybind::interface_<RenderScissorInterface, pybind::bases<Mixin>>( _kernel, "RenderScissorInterface", false )
-            .def( "getScissorRect", &RenderScissorInterface::getScissorViewport )
+            .def( "getScissorViewport", &RenderScissorInterface::getScissorViewport )
             ;
 
         pybind::interface_<RenderTargetInterface, pybind::bases<Mixin>>( _kernel, "RenderTargetInterface", false )

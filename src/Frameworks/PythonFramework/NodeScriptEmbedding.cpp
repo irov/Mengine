@@ -836,9 +836,6 @@ namespace Mengine
             .def( "isFixedHorizont", &RenderCameraOrthogonalTarget::isFixedHorizont )
             ;
 
-        pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface>>( _kernel, "RenderScissor", false )
-            ;
-
         {
             pybind::interface_<SoundEmitter, pybind::bases<Node>>( _kernel, "SoundEmitter", false )
                 .def( "setSurfaceSound", &SoundEmitter::setSurfaceSound )

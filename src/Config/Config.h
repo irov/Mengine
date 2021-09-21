@@ -50,6 +50,12 @@
 #   define MENGINE_TOOLCHAIN_MSVC
 #endif
 
+#ifndef NDEBUG
+#   define MENGINE_DEBUG
+#else
+#   define MENGINE_RELEASE
+#endif
+
 #ifdef MENGINE_DEBUG
 #   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #       define MENGINE_WINDOWS_DEBUG
@@ -76,12 +82,6 @@
 #   else
 #       define MENGINE_CODE_FUNCTION __FUNCTION__
 #   endif
-#endif
-
-#ifndef NDEBUG
-#   define MENGINE_DEBUG
-#else
-#   define MENGINE_RELEASE
 #endif
 
 #ifndef MENGINE_UNUSED

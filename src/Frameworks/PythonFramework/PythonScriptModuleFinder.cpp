@@ -152,11 +152,11 @@ namespace Mengine
             return nullptr;
         }
 
-        PyObject * py_code = loader->load_module( _kernel, _module );
+        PyObject * module = loader->load_module( _kernel, _module );
 
         loader->finalize();
 
-        return py_code;
+        return module;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::convertDotToSlash_( pybind::kernel_interface * _kernel, Char * const _cache, size_t _cacheSize, PyObject * _module, size_t * const _modulePathCacheLen )

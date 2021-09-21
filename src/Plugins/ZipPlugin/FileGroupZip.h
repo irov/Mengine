@@ -8,6 +8,7 @@
 #include "Kernel/BaseFileGroup.h"
 #include "Kernel/VectorFilePath.h"
 #include "Kernel/UnorderedMap.h"
+#include "Kernel/List.h"
 
 namespace Mengine
 {
@@ -61,15 +62,24 @@ namespace Mengine
         bool closeMappedFile( const MappedInterfacePtr & _stream ) override;
 
     protected:
-        bool loadHeader_();
+        bool loadHeaders_();
+        bool loadHeader_( const FilePath & _folderPath );
+
+        bool loadMappedFile( const FilePath & _folderPath, FileMappedInterfacePtr * const _mappedFile ) const;
 
     protected:
-        InputStreamInterfacePtr m_zipFile;
-        FileMappedInterfacePtr m_mappedFile;
-
         uint32_t m_mappedThreshold;
 
-        ThreadMutexInterfacePtr m_mutex;
+        struct ZipInfo
+        {
+            FilePath folderPath;
+            InputStreamInterfacePtr zipFile;
+            FileMappedInterfacePtr mappedFile;
+            ThreadMutexInterfacePtr mutex;
+        };
+
+        typedef List<ZipInfo> ListZipInfo;
+        ListZipInfo m_zips;
 
         struct FileInfo
         {
@@ -77,10 +87,12 @@ namespace Mengine
             size_t file_size;
             size_t unz_size;
             uint32_t compr_method;
+
+            const ZipInfo * zip;
         };
 
-        typedef UnorderedMap<FilePath, FileInfo, Hashgen<FilePath>> MapFileInfo;
-        MapFileInfo m_files;
+        typedef UnorderedMap<FilePath, FileInfo, Hashgen<FilePath>> UnorderedMapFileInfo;
+        UnorderedMapFileInfo m_files;
 
         VectorFilePath m_indexes;
     };

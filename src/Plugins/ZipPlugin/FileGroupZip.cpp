@@ -19,6 +19,9 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/PathString.h"
+#include "Kernel/StringFormat.h"
+
+#include "Config/StdIO.h"
 
 #include "zlib.h"
 
@@ -152,22 +155,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::_initialize()
     {
-        if( m_baseFileGroup->isAvailableMappedFile() == true )
-        {
-            m_mappedThreshold = CONFIG_VALUE( "Engine", "ZipMappedThreshold", 262144U );
+        uint32_t FileGroupZipReserveFiles = CONFIG_VALUE( "Engine", "FileGroupZipReserveFiles", 16 * 1024 );
 
-            FileGroupInterface * mappedFileGroup;
-            FileMappedInterfacePtr mappedFile = m_baseFileGroup->createMappedFile( m_folderPath, &mappedFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+        m_files.reserve( FileGroupZipReserveFiles );
+        m_indexes.reserve( FileGroupZipReserveFiles );
 
-            if( mappedFileGroup->openMappedFile( m_folderPath, mappedFile, false ) == false )
-            {
-                return false;
-            }
+        m_mappedThreshold = CONFIG_VALUE( "Engine", "ZipMappedThreshold", 262144U );
 
-            m_mappedFile = mappedFile;
-        }
-
-        if( this->loadHeader_() == false )
+        if( this->loadHeaders_() == false )
         {
             LOGGER_ERROR( "can't load header '%s'"
                 , m_folderPath.c_str()
@@ -176,37 +171,94 @@ namespace Mengine
             return false;
         }
 
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
-
-        m_mutex = mutex;
-
-        uint32_t FileGroupZipReserveFiles = CONFIG_VALUE( "Engine", "FileGroupZipReserveFiles", 16 * 1024 );
-
-        m_files.reserve( FileGroupZipReserveFiles );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FileGroupZip::_finalize()
     {
         m_files.clear();
+        m_zips.clear();
         m_indexes.clear();
-
-        m_zipFile = nullptr;
-        m_mappedFile = nullptr;
-
-        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::loadHeader_()
+    bool FileGroupZip::loadHeaders_()
     {
-        InputStreamInterfacePtr zipFile = Helper::openInputStreamFile( m_baseFileGroup, m_folderPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        if( Helper::getStringFormatExpectedArgs( m_folderPath.c_str(), m_folderPath.size() ) == 0 )
+        {
+            if( this->loadHeader_( m_folderPath ) == false )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            uint32_t enumerator = 0;
+            for( ;; ++enumerator )
+            {
+                Char folderPathSplit[MENGINE_MAX_PATH];
+                int32_t size_sprintf = MENGINE_SPRINTF( folderPathSplit, m_folderPath.c_str(), enumerator );
+
+                if( size_sprintf < 0 )
+                {
+                    return false;
+                }
+
+                FilePath folderPathSplit_fp = Helper::stringizeFilePath( folderPathSplit );
+
+                if( m_baseFileGroup->existFile( folderPathSplit_fp, false ) == false )
+                {
+                    break;
+                }
+
+                if( this->loadHeader_( folderPathSplit_fp ) == false )
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::loadMappedFile( const FilePath & _folderPath, FileMappedInterfacePtr * const _mappedFile ) const
+    {
+        if( m_baseFileGroup->isAvailableMappedFile() == false )
+        {
+            *_mappedFile = nullptr;
+
+            return true;
+        }        
+
+        FileGroupInterface * mappedFileGroup;
+        FileMappedInterfacePtr mappedFile = m_baseFileGroup->createMappedFile( _folderPath, &mappedFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( mappedFileGroup->openMappedFile( _folderPath, mappedFile, false ) == false )
+        {
+            return false;
+        }
+
+        *_mappedFile = mappedFile;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::loadHeader_( const FilePath & _folderPath )
+    {
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+
+        FileMappedInterfacePtr mappedFile;
+        if( this->loadMappedFile( _folderPath, &mappedFile ) == false )
+        {
+            return false;
+        }
+
+        InputStreamInterfacePtr zipFile = Helper::openInputStreamFile( m_baseFileGroup, _folderPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( zipFile, "can't open input stream for path '%s'"
-            , m_folderPath.c_str()
+            , _folderPath.c_str()
         );
 
         if( zipFile->rseek( ZIP_END_CENTRAL_DIR_SIZE ) == false )
@@ -214,11 +266,19 @@ namespace Mengine
             return false;
         }
 
+        ZipInfo zinfo;
+        zinfo.folderPath = _folderPath;
+        zinfo.mappedFile = mappedFile;
+        zinfo.zipFile = zipFile;
+        zinfo.mutex = mutex;
+
+        const ZipInfo & pzinfo = m_zips.emplace_back( zinfo );
+
         uint32_t eocd_signature;
         zipFile->read( &eocd_signature, sizeof( eocd_signature ) );
 
         MENGINE_ASSERTION_FATAL( eocd_signature == ZIP_END_HEADER_SIGNATURE, "bad 'End of Central Dir' signature zip '%s'"
-            , m_folderPath.c_str()
+            , _folderPath.c_str()
         );
 
         ZipEndOfCentralDirectoryFileHeader eocd;
@@ -301,7 +361,7 @@ namespace Mengine
             FilePath filePath = Helper::stringizeFilePathSize( fileNameBuffer, header.fileNameLen );
 
             MENGINE_ASSERTION_FATAL( header.compressionMethod == Z_NO_COMPRESSION || header.compressionMethod == Z_DEFLATED, "zip '%s' file '%s' invalid compress method [%u]"
-                , m_folderPath.c_str()
+                , _folderPath.c_str()
                 , filePath.c_str()
                 , header.compressionMethod
             );
@@ -311,12 +371,11 @@ namespace Mengine
             fi.file_size = (size_t)compressedSize;
             fi.unz_size = (size_t)uncompressedSize;
             fi.compr_method = header.compressionMethod;
+            fi.zip = &pzinfo;
 
             m_files.emplace( filePath, fi );
             m_indexes.push_back( filePath );
         }
-
-        m_zipFile = zipFile;
 
         return true;
     }
@@ -336,7 +395,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        MapFileInfo::const_iterator it_found = m_files.find( _filePath );
+        UnorderedMapFileInfo::const_iterator it_found = m_files.find( _filePath );
 
         bool result = (it_found != m_files.end());
 
@@ -478,21 +537,25 @@ namespace Mengine
             }
         }
 
-        MENGINE_ASSERTION_FATAL( m_files.find( _filePath ) != m_files.end(), "'%s' invalid found file '%s'"
-            , this->getName().c_str()
-            , _filePath.c_str()
-        );
-
         if( _fileGroup != nullptr )
         {
             *_fileGroup = this;
         }
 
+        UnorderedMapFileInfo::const_iterator it_found = m_files.find( _filePath );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_files.end(), "'%s' invalid found file '%s'"
+            , this->getName().c_str()
+            , _filePath.c_str()
+        );
+
+        const FileInfo & fi = it_found->second;
+
         if( _streaming == true )
         {
-            if( m_mappedFile != nullptr )
+            if( fi.zip->mappedFile != nullptr )
             {
-                InputStreamInterfacePtr stream = m_mappedFile->createInputStream( _doc );
+                InputStreamInterfacePtr stream = fi.zip->mappedFile->createInputStream( _doc );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
@@ -508,11 +571,7 @@ namespace Mengine
             }
         }
 
-        MapFileInfo::const_iterator it_found = m_files.find( _filePath );
-
-        const FileInfo & fi = it_found->second;
-
-        if( fi.file_size < m_mappedThreshold || fi.compr_method != Z_NO_COMPRESSION || m_mappedFile == nullptr )
+        if( fi.file_size < m_mappedThreshold || fi.compr_method != Z_NO_COMPRESSION || fi.zip->mappedFile == nullptr )
         {
             MemoryInputInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryInput( _doc );
@@ -522,7 +581,7 @@ namespace Mengine
             return memory;
         }
 
-        InputStreamInterfacePtr stream = m_mappedFile->createInputStream( _doc );
+        InputStreamInterfacePtr stream = fi.zip->mappedFile->createInputStream( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
@@ -536,7 +595,7 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        MapFileInfo::const_iterator it_found = m_files.find( _filePath );
+        UnorderedMapFileInfo::const_iterator it_found = m_files.find( _filePath );
 
         MENGINE_ASSERTION_FATAL( it_found != m_files.end(), "zip '%s' file '%s' not found"
             , m_folderPath.c_str()
@@ -549,7 +608,7 @@ namespace Mengine
         size_t file_size = _size == ~0U ? fi.file_size : _size;
 
         MENGINE_ASSERTION_FATAL( _offset + file_size <= fi.file_size, "zip '%s' file '%s' invalid open range %zu:%zu (file size is low %zu:%zu)"
-            , m_folderPath.c_str()
+            , fi.zip->folderPath.c_str()
             , _filePath.c_str()
             , _offset
             , _size
@@ -560,23 +619,23 @@ namespace Mengine
         if( _streaming == true )
         {
             MENGINE_ASSERTION_FATAL( fi.compr_method == Z_NO_COMPRESSION, "zip '%s' file '%s' invalid open, not support compress + stream"
-                , m_folderPath.c_str()
+                , fi.zip->folderPath.c_str()
                 , _filePath.c_str()
             );
 
-            if( m_mappedFile != nullptr )
+            if( fi.zip->mappedFile != nullptr )
             {
-                if( m_mappedFile->openInputStream( _stream, file_offset, fi.file_size ) == false )
+                if( fi.zip->mappedFile->openInputStream( _stream, file_offset, fi.file_size ) == false )
                 {
                     return false;
                 }
             }
             else
             {
-                if( m_baseFileGroup->openInputFile( m_folderPath, _stream, file_offset, file_size, true, _share ) == false )
+                if( m_baseFileGroup->openInputFile( fi.zip->folderPath, _stream, file_offset, file_size, true, _share ) == false )
                 {
                     LOGGER_ERROR( "zip '%s' file '%s' invalid open range %zu:%zu"
-                        , m_folderPath.c_str()
+                        , fi.zip->folderPath.c_str()
                         , _filePath.c_str()
                         , fi.seek_pos
                         , fi.file_size
@@ -591,26 +650,26 @@ namespace Mengine
 
         if( fi.compr_method == Z_NO_COMPRESSION )
         {
-            if( fi.file_size < m_mappedThreshold || m_mappedFile == nullptr )
+            if( fi.file_size < m_mappedThreshold || fi.zip->mappedFile == nullptr )
             {
                 MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
 
                 void * buffer = memory->newBuffer( fi.file_size );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
-                    , m_folderPath.c_str()
+                    , fi.zip->folderPath.c_str()
                     , _filePath.c_str()
                     , fi.unz_size
                 );
 
-                m_mutex->lock();
-                m_zipFile->seek( file_offset );
-                m_zipFile->read( buffer, fi.file_size );
-                m_mutex->unlock();
+                fi.zip->mutex->lock();
+                fi.zip->zipFile->seek( file_offset );
+                fi.zip->zipFile->read( buffer, fi.file_size );
+                fi.zip->mutex->unlock();
             }
             else
             {
-                if( m_mappedFile->openInputStream( _stream, file_offset, fi.file_size ) == false )
+                if( fi.zip->mappedFile->openInputStream( _stream, file_offset, fi.file_size ) == false )
                 {
                     return false;
                 }
@@ -623,7 +682,7 @@ namespace Mengine
             void * buffer = memory->newBuffer( fi.unz_size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
-                , m_folderPath.c_str()
+                , fi.zip->folderPath.c_str()
                 , _filePath.c_str()
                 , fi.unz_size
             );
@@ -631,7 +690,7 @@ namespace Mengine
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "zip '%s' file '%s' failed cache memory %zu"
-                , m_folderPath.c_str()
+                , fi.zip->folderPath.c_str()
                 , _filePath.c_str()
                 , fi.file_size
             );
@@ -640,15 +699,15 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( compress_memory );
 
-            m_mutex->lock();
-            m_zipFile->seek( file_offset );
-            m_zipFile->read( compress_memory, fi.file_size );
-            m_mutex->unlock();
+            fi.zip->mutex->lock();
+            fi.zip->zipFile->seek( file_offset );
+            fi.zip->zipFile->read( compress_memory, fi.file_size );
+            fi.zip->mutex->unlock();
 
             if( Detail::zip_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
             {
                 LOGGER_ERROR( "zip '%s' file '%s' failed inflate"
-                    , m_folderPath.c_str()
+                    , fi.zip->folderPath.c_str()
                     , _filePath.c_str()
                 );
 

@@ -17,6 +17,7 @@ import com.mar.sdk.gg.control.MggControl;
 import com.mar.sdk.platform.MARExitListener;
 import com.mar.sdk.platform.MARInitListener;
 import com.mar.sdk.platform.MARPlatform;
+import com.mar.sdk.plugin.MARUser;
 import com.mar.sdk.utils.ResourceHelper;
 import com.mar.sdk.verify.UToken;
 
@@ -29,11 +30,14 @@ import android.util.Log;
 public class MarSDKInteractionLayer implements MARInitListener {
 
     private static final String TAG = "MarSDK";
-    
-    private boolean logined = false;
+
+    private boolean m_logined = false;
+    private Activity m_activity;
 
     public MarSDKInteractionLayer(Activity _activity) {
-        MARPlatform.getInstance().init(_activity, this);
+        m_activity = _activity;
+
+        MARPlatform.getInstance().init(m_activity, this);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -47,6 +51,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
     public void onPause(){
         MARSDK.getInstance().onPause();
     }
+
     public void onResume(){
         MARSDK.getInstance().onResume();
     }
@@ -83,8 +88,6 @@ public class MarSDKInteractionLayer implements MARInitListener {
                 Log.d(MarSDKInteractionLayer.TAG, "marsdk init fail");
                 break;
         }
-
-        //login();
     }
     
     @Override
@@ -94,8 +97,8 @@ public class MarSDKInteractionLayer implements MARInitListener {
         switch(code){
             case MARCode.CODE_LOGIN_SUCCESS:
                 Log.d(MarSDKInteractionLayer.TAG, "marsdk login success");
-            
-                logined = true;
+
+                m_logined = true;
                 //get control info
                 int gameType = MARSDK.getInstance().getGameType();
 
@@ -117,15 +120,14 @@ public class MarSDKInteractionLayer implements MARInitListener {
     public void onSwitchAccount(UToken uToken) {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onSwitchAccount uToken: " + uToken);
         if(uToken != null){
-            logined = true;
+            m_logined = true;
         }
     }
     
     @Override
-    public void onLogout() {        
+    public void onLogout() {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onLogout");
         
-        //login();
     }    
     
     @Override
@@ -158,6 +160,10 @@ public class MarSDKInteractionLayer implements MARInitListener {
         if(MARCode.CODE_AD_VIDEO_CALLBACK == code){
             //play video callback msg : 1 suc 0 fail
         }
+    }
+
+    private void login(){
+        MARPlatform.getInstance().login(m_activity);
     }
 
 	private void submitExtraData(final int dataType){

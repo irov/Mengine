@@ -195,7 +195,7 @@ namespace Mengine
             uint32_t enumerator = 0;
             for( ;; ++enumerator )
             {
-                Char folderPathSplit[MENGINE_MAX_PATH];
+                Char folderPathSplit[MENGINE_MAX_PATH] = {'\0'};
                 int32_t size_sprintf = MENGINE_SPRINTF( folderPathSplit, m_folderPath.c_str(), enumerator );
 
                 if( size_sprintf < 0 )

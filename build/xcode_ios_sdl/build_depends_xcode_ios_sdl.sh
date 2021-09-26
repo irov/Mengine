@@ -12,6 +12,6 @@ CONFIGURATION=$1
 
 mkdir -p ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
 pushd ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
-$CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION
+$CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_SYSTEM_NAME=iOS
 $CMAKE --build ./ --config $CONFIGURATION
 popd

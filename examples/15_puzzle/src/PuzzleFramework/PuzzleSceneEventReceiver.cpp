@@ -30,6 +30,8 @@
 #include "Kernel/Vector.h"
 #include "Kernel/Color.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/NodeCast.h"
+#include "Kernel/ColorHelper.h"
 
 #include "math/uv4_inline.h"
 
@@ -386,7 +388,7 @@ namespace Mengine
             ->findCodecType( _filePath );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder );
 
@@ -510,8 +512,8 @@ namespace Mengine
             , imagePartSize.y / imageSize.y
         );
 
-        Color colorLine( Helper::makeRGBA8( 0, 255, 0, 255 ) );
-        Color colorFill( Helper::makeRGBA8( 0, 0, 255, 50 ) );
+        Color colorLine = Helper::makeColor( 0, 255, 0, 255 );
+        Color colorFill = Helper::makeColor( 0, 0, 255, 50 );
 
         for( int row = 0; row != PUZZLE_ROWS; row++ )
         {

@@ -11,4 +11,4 @@ include(./../../../../cmake/download_template.cmake)
 
 DOWNLOAD_FILE(assets https://pixel-grass.preventslimbaugh.fun/img/248047.png grass.png)
 DOWNLOAD_FILE(assets https://art.pixilart.com/86f56a77d8e1c5f.png stone.png)
-DOWNLOAD_FILE(fonts https://github.com/google/fonts/blob/master/apache/roboto/Roboto-Black.ttf?raw=true Roboto-Black.ttf)
+DOWNLOAD_FILE(fonts https://github.com/google/fonts/blob/master/apache/roboto/static/Roboto-Black.ttf?raw=true Roboto-Black.ttf)

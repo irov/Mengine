@@ -11,4 +11,4 @@ include(./../../../../cmake/download_template.cmake)
 
 DOWNLOAD_FILE(assets http://www.pngmart.com/files/11/Trollface-PNG-Image.png image_0.png)
 DOWNLOAD_FILE(assets http://pngimg.com/uploads/trollface/trollface_PNG23.png image_1.png)
-DOWNLOAD_FILE(fonts https://github.com/google/fonts/raw/main/apache/robotomono/static/RobotoMono-Bold.ttf Roboto-Black.ttf)
+DOWNLOAD_FILE(fonts https://github.com/google/fonts/raw/main/apache/roboto/static/Roboto-Black.ttf Roboto-Black.ttf)

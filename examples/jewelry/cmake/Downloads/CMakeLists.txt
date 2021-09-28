@@ -9,4 +9,4 @@ SET(MENGINE_DOWNLOADS_PATH "${PROJECT_DIR}/resources/.downloads" CACHE STRING "M
 
 include(./../../../../cmake/download_template.cmake)
 
-DOWNLOAD_FILE(fonts https://github.com/google/fonts/blob/master/apache/roboto/Roboto-Black.ttf?raw=true Roboto-Black.ttf)
+DOWNLOAD_FILE(fonts https://github.com/google/fonts/raw/main/apache/roboto/static/Roboto-Black.ttf Roboto-Black.ttf)

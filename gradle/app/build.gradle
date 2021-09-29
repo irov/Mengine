@@ -221,7 +221,7 @@ android {
 
                 res.srcDirs = [ASSETS_RES_DIR]
             } else {
-                res.srcDirs = ['res']
+                res.srcDirs = ['res', 'res_marsdk']
             }
 
 			if (project.hasProperty("ASSETS_SRC_DIR")) {

@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.mar.sdk.SDKParams;
+import com.mar.sdk.IAction;
 import com.mar.sdk.MARCode;
 import com.mar.sdk.MARSDK;
 import com.mar.sdk.PayParams;
@@ -21,6 +23,7 @@ import com.mar.sdk.plugin.MARUser;
 import com.mar.sdk.utils.ResourceHelper;
 import com.mar.sdk.verify.UToken;
 
+import org.Mengine.Build.MengineActivity;
 import org.Mengine.Build.ThreadUtil;
 
 import org.json.JSONObject;
@@ -83,13 +86,19 @@ public class MarSDKInteractionLayer implements MARInitListener {
         switch(code){
             case MARCode.CODE_INIT_SUCCESS:
                 Log.d(MarSDKInteractionLayer.TAG, "marsdk init success");
+                onInitSuccess();
                 break;
             case MARCode.CODE_INIT_FAIL:
                 Log.d(MarSDKInteractionLayer.TAG, "marsdk init fail");
                 break;
         }
     }
-    
+
+    public void onInitSuccess()
+    {
+        ((MengineActivity)m_activity).login();
+    }
+
     @Override
     public void onLoginResult(int code, UToken uToken) {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onLoginResult code: " + code + " uToken: " + uToken);
@@ -114,6 +123,8 @@ public class MarSDKInteractionLayer implements MARInitListener {
         }
 
         submitExtraData(UserExtraData.TYPE_ENTER_GAME);
+
+        ((MengineActivity)m_activity).getData(1);
     }
     
     @Override
@@ -138,10 +149,16 @@ public class MarSDKInteractionLayer implements MARInitListener {
             JSONObject json = new JSONObject(msg);
             if (json.getInt("payResult") == 0){
                 Log.d("MarSDKInteractionLayer.TAG", "pay complete orderId: " + json.getString("orderId"));
-                
                 setPropDeliveredComplete(json.getString("orderId"));
+                ((MengineActivity)m_activity).pythonCall("onPaySuccess","("+json.getString("productId")+")");
+            }
+            else
+            {
+                Log.d("MAR: ", "pay fail");
+                ((MengineActivity)m_activity).pythonCall("onPayFail","("+json.getString("productId")+")");
             }
         }catch (Exception e){
+            Log.d("MAR: ", "pay error");
             e.printStackTrace();
         }
     }
@@ -159,6 +176,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
         
         if(MARCode.CODE_AD_VIDEO_CALLBACK == code){
             //play video callback msg : 1 suc 0 fail
+            Log.d("Video callback: ", msg);
         }
     }
 
@@ -184,4 +202,9 @@ public class MarSDKInteractionLayer implements MARInitListener {
     public void setPropDeliveredComplete(String orderID){
 		MARPlatform.getInstance().setPropDeliveredComplete(orderID);
 	}
+
+	public void getAdShowsPerDay()
+    {
+
+    }
 }

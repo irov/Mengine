@@ -8,9 +8,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.provider.Settings.Secure;
+import android.view.View;
+import android.widget.Button;
 
 import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
+import com.mar.sdk.IUser;
+import com.mar.sdk.PayParams;
+import com.mar.sdk.base.PluginFactory;
+import com.mar.sdk.gg.IAdListener;
+import com.mar.sdk.gg.MARGgPlatform;
+import com.mar.sdk.platform.MARPlatform;
+import com.mar.sdk.MARCallBack;
+import com.mar.sdk.utils.ResourceHelper;
 
 import org.Mengine.Build.AdMob.AdMobInteractionLayer;
 import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
@@ -226,6 +236,14 @@ public class MengineActivity extends SDLActivity {
         return android_id;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Python Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void pythonCall(String method, String args)
+    {
+        // args example: "(arg1,arg2,arg3)" - string
+        AndroidNativePython_call(method, args);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     //MarSDK Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static void marSDKInitializePlugin() {
@@ -234,10 +252,83 @@ public class MengineActivity extends SDLActivity {
             public void run() {
                 if (_instance != null && _instance.marSDKInteractionLayer == null) {
                     _instance.marSDKInteractionLayer = new MarSDKInteractionLayer(_instance);
+                    Log.d("MarSDK", "SDK START INIT...");
                 }
             }
         });
     }
+
+    public static void login(){
+        if (_instance != null && _instance.marSDKInteractionLayer != null) {
+            MARPlatform.getInstance().login(_instance);
+        }
+    }
+
+    public static void loginCustom(final String loginType){
+        if (_instance != null && _instance.marSDKInteractionLayer != null) {
+            MARPlatform.getInstance().loginCustom(_instance, loginType);
+        }
+    }
+
+    public static void pay(int coinNum, String productID,
+                           String productName, String productDesc, int price){
+        if (_instance != null && _instance.marSDKInteractionLayer != null) {
+
+            PayParams params = new PayParams();
+            params.setCoinNum(coinNum);        //当前玩家身上拥有的游戏币数量
+
+            params.setPrice(price);        //单位 元
+            params.setProductId(productID);    //产品ID
+            params.setProductName(productName);    //产品名称
+            params.setProductDesc(productDesc);    //产品描述
+
+            params.setBuyNum(1);		//购买数量，固定1
+
+            params.setExtension(System.currentTimeMillis()+"");	//游戏自定义数据，充值成功，回调游戏服的时候，会原封不动返回
+            params.setRoleId("100");		//角色ID
+            params.setRoleLevel(10);		//角色等级
+            params.setRoleName("test_112");	//角色名称
+            params.setServerId("10");		//服务器ID
+            params.setServerName("测试");		//服务器名称
+            params.setVip("1");			//角色VIP等级
+
+            // params.setPayNotifyUrl("http://www.game.com/pay/callback");
+            MARPlatform.getInstance().pay(_instance, params);
+        }
+    }
+
+    public static void showAd(){
+        if (_instance != null && _instance.marSDKInteractionLayer != null) {
+            if (MARGgPlatform.getInstance().getVideoFlag()) {
+                MARGgPlatform.getInstance().showVideo();
+            }
+        }
+    }
+
+    public static void updateData(String json_str)
+    {
+        MARPlatform.getInstance().updateGameArchive(json_str,1);
+    }
+
+    public static void getData(int serialNumber)
+    {
+        final String[] json_str = {null};
+        MARCallBack callback = s -> {
+            Log.d("MAR: ", s);
+            json_str[0] = s;
+        };
+        MARPlatform.getInstance().getGameArchive(serialNumber, callback);
+        if (json_str[0] != null)
+        {
+            AndroidNativePython_call("getData", "(\""+ json_str[0] +"\")");
+        }
+    }
+
+    public static void androidMarSDKTest(int code, String msg, float value, boolean check){
+        AndroidNativePython_call("marTest", "(1,\"test\", 50.0)");
+        Log.d("MARSDK", "OK");
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Facebook Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -356,10 +447,9 @@ public class MengineActivity extends SDLActivity {
     public static boolean unityShowAd(final String placementId) {
         if (_instance != null && _instance.unityAdsInteractionLayer != null) {
             _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
-            
+
             return true;
         }
-        
         return false;
     }
 

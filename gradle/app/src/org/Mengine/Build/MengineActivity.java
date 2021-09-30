@@ -273,7 +273,6 @@ public class MengineActivity extends SDLActivity {
     public static void pay(int coinNum, String productID,
                            String productName, String productDesc, int price){
         if (_instance != null && _instance.marSDKInteractionLayer != null) {
-
             PayParams params = new PayParams();
             params.setCoinNum(coinNum);        //当前玩家身上拥有的游戏币数量
 

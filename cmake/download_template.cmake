@@ -122,5 +122,5 @@ macro(GIT_CLONE NAME REPOSITORY)
     
     add_library(${NAME} STATIC IMPORTED)
     
-    execute_process(COMMAND ${GIT_EXECUTABLE} -C ${THIRDPARTY_DIR}/${NAME} reset --hard --recurse-submodule)
+    #execute_process(COMMAND ${GIT_EXECUTABLE} -C ${THIRDPARTY_DIR}/${NAME} reset --hard --recurse-submodule)
 endmacro()

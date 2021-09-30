@@ -35,12 +35,12 @@ public class MarSDKInteractionLayer implements MARInitListener {
     private static final String TAG = "MarSDK";
 
     private boolean m_logined = false;
-    private Activity m_activity;
+    private MengineActivity m_activity;
 
-    public MarSDKInteractionLayer(Activity _activity) {
+    public MarSDKInteractionLayer(MengineActivity _activity) {
         m_activity = _activity;
 
-        MARPlatform.getInstance().init(m_activity, this);
+        MARPlatform.getInstance().init((Activity) m_activity, this);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -96,7 +96,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
     public void onInitSuccess()
     {
-        ((MengineActivity)m_activity).login();
+        m_activity.login();
     }
 
     @Override
@@ -124,7 +124,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
         submitExtraData(UserExtraData.TYPE_ENTER_GAME);
 
-        ((MengineActivity)m_activity).getData(1);
+        m_activity.getData(1);
     }
     
     @Override
@@ -147,15 +147,18 @@ public class MarSDKInteractionLayer implements MARInitListener {
         
         try {
             JSONObject json = new JSONObject(msg);
+
+            String resultArgs = "(\""+json.getString("productId")+"\")";
+
             if (json.getInt("payResult") == 0){
                 Log.d("MarSDKInteractionLayer.TAG", "pay complete orderId: " + json.getString("orderId"));
                 setPropDeliveredComplete(json.getString("orderId"));
-                ((MengineActivity)m_activity).pythonCall("onPaySuccess","("+json.getString("productId")+")");
+                m_activity.pythonCall("onPaySuccess", resultArgs);
             }
             else
             {
                 Log.d("MAR: ", "pay fail");
-                ((MengineActivity)m_activity).pythonCall("onPayFail","("+json.getString("productId")+")");
+                m_activity.pythonCall("onPayFail", resultArgs);
             }
         }catch (Exception e){
             Log.d("MAR: ", "pay error");

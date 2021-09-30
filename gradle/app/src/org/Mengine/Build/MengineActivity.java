@@ -252,7 +252,7 @@ public class MengineActivity extends SDLActivity {
             public void run() {
                 if (_instance != null && _instance.marSDKInteractionLayer == null) {
                     _instance.marSDKInteractionLayer = new MarSDKInteractionLayer(_instance);
-                    Log.d("MarSDK", "SDK START INIT...");
+                    Log.d(TAG, "SDK START INIT...");
                 }
             }
         });
@@ -306,26 +306,25 @@ public class MengineActivity extends SDLActivity {
 
     public static void updateData(String json_str)
     {
+        Log.d(TAG, "MAR update server data: " + json_str);
+
         MARPlatform.getInstance().updateGameArchive(json_str,1);
     }
 
     public static void getData(int serialNumber)
     {
-        final String[] json_str = {null};
-        MARCallBack callback = s -> {
-            Log.d("MAR: ", s);
-            json_str[0] = s;
-        };
-        MARPlatform.getInstance().getGameArchive(serialNumber, callback);
-        if (json_str[0] != null)
-        {
-            AndroidNativePython_call("getData", "(\""+ json_str[0] +"\")");
-        }
+        MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
+            @Override
+            public void onCallBack(String var1) {
+                Log.d(TAG, "get data from server, start...");
+                AndroidNativePython_call("getData", "(\"" + var1 + "\",)");
+            }
+        });
     }
 
     public static void androidMarSDKTest(int code, String msg, float value, boolean check){
         AndroidNativePython_call("marTest", "(1,\"test\", 50.0)");
-        Log.d("MARSDK", "OK");
+        Log.d(TAG, "OK");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

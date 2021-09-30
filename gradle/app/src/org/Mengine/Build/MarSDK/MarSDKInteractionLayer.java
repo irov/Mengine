@@ -40,7 +40,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
     public MarSDKInteractionLayer(MengineActivity _activity) {
         m_activity = _activity;
 
-        MARPlatform.getInstance().init((Activity) m_activity, this);
+        MARPlatform.getInstance().init( m_activity, this);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -116,15 +116,19 @@ public class MarSDKInteractionLayer implements MARInitListener {
                 if ((gameType == 1 || gameType == 3) && !MggControl.getInstance().getFreeFlag()){
                     MggControl.getInstance().reqAdControlInfo();
                 }
+
+                submitExtraData(UserExtraData.TYPE_ENTER_GAME);
+
+                m_activity.getData(1);
                 break;
             case MARCode.CODE_LOGIN_FAIL:
                 Log.d(MarSDKInteractionLayer.TAG, "marsdk login fail");
+
+                if (MARSDK.getInstance().getGameType() == 1){
+                    MARPlatform.getInstance().visitorLogin();
+                }
                 break;
         }
-
-        submitExtraData(UserExtraData.TYPE_ENTER_GAME);
-
-        m_activity.getData(1);
     }
     
     @Override
@@ -148,7 +152,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
         try {
             JSONObject json = new JSONObject(msg);
 
-            String resultArgs = "(\""+json.getString("productId")+"\")";
+            String resultArgs = "(\""+json.getString("productId")+"\",)";
 
             if (json.getInt("payResult") == 0){
                 Log.d("MarSDKInteractionLayer.TAG", "pay complete orderId: " + json.getString("orderId"));

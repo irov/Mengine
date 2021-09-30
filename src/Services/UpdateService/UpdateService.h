@@ -6,6 +6,8 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -37,7 +39,7 @@ namespace Mengine
         void onTimepipe( const UpdateContext * _context ) override;
 
     protected:
-        uint32_t m_timepipe;
+        UniqueId m_timepipeId;
 
         struct UpdatableProxy
         {

@@ -4,7 +4,6 @@
 #include "Interface/RenderImageProviderInterface.h"
 #include "Interface/RenderImageLockedInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
 #include "Kernel/Rect.h"
 #include "Kernel/PixelFormat.h"

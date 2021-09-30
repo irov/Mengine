@@ -108,22 +108,28 @@ namespace Mengine
             _child->setParent_( parentNode );
         }
 
-        Node * self = static_cast<Node *>(this);
+        const Node * self = static_cast<const Node *>(this);
 
-        if( self->isFreeze() == false && _child->isFreeze() == true )
+        bool self_freeze = self->isFreeze();
+        bool child_freeze = _child->isFreeze();
+
+        if( self_freeze == false && child_freeze == true )
         {
             _child->freeze( false );
         }
-        else if( self->isFreeze() == true && _child->isFreeze() == false )
+        else if( self_freeze == true && child_freeze == false )
         {
             _child->freeze( true );
         }
 
-        if( self->isActivate() == false && _child->isActivate() == true )
+        bool self_activate = self->isActivate();
+        bool child_activate = _child->isActivate();
+
+        if( self_activate == false && child_activate == true )
         {
             _child->deactivate();
         }
-        else if( self->isActivate() == true && _child->isActivate() == false )
+        else if( self_activate == true && child_activate == false )
         {
             _child->activate();
         }

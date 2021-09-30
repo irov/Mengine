@@ -4,8 +4,6 @@
 
 #include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
-#include "Kernel/Mixin.h"
-
 namespace Mengine
 {
     class DX9RenderImageExtensionInterface

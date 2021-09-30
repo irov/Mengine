@@ -3,7 +3,6 @@
 #include "Interface/UnknownInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Compilable.h"
 #include "Kernel/Unknowable.h"

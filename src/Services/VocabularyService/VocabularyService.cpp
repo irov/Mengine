@@ -44,7 +44,7 @@ namespace Mengine
         m_mixins.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VocabularyService::setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable, const DocumentPtr & _document )
+    void VocabularyService::setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable, const DocumentPtr & _document )
     {
         MENGINE_UNUSED( _document );
 
@@ -54,8 +54,6 @@ namespace Mengine
             , _category.c_str()
             , _type.c_str()
         );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     MixinPointer VocabularyService::removeFactorable( const ConstString & _category, const ConstString & _type )
@@ -87,21 +85,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VocabularyService::foreachVocabulary( const ConstString & _category, const LambdaVocabulary & _lambda ) const
+    void VocabularyService::foreachVocabulary( const LambdaVocabulary & _lambda ) const
     {
         for( const HashtableMixins::value_type & value : m_mixins )
         {
             const ConstString & category = value.key1;
             const ConstString & type = value.key2;
-
-            if( category != _category )
-            {
-                continue;
-            }
-
             const MixinPtr & factorable = value.element;
 
-            _lambda( type, factorable );
+            _lambda( category, type, factorable );
         }
     }
     //////////////////////////////////////////////////////////////////////////

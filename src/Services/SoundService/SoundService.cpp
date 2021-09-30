@@ -31,7 +31,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundService::SoundService()
-        : m_timepipeId( 0 )
+        : m_timepipeId( INVALID_UNIQUE_ID )
         , m_supportStream( true )
         , m_muted( false )
         , m_turnStream( true )
@@ -82,7 +82,7 @@ namespace Mengine
         m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>( MENGINE_DOCUMENT_FACTORABLE );
         m_factorySoundIdentity = Helper::makeFactoryPool<SoundIdentity, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
-        uint32_t timepipe = TIMEPIPE_SERVICE()
+        UniqueId timepipe = TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_timepipeId = timepipe;
@@ -123,12 +123,12 @@ namespace Mengine
 
         m_soundVolumeProviders.clear();
 
-        if( m_timepipeId != 0 )
+        if( m_timepipeId != INVALID_UNIQUE_ID )
         {
             TIMEPIPE_SERVICE()
                 ->removeTimepipe( m_timepipeId );
 
-            m_timepipeId = 0;
+            m_timepipeId = INVALID_UNIQUE_ID;
         }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundIdentity );

@@ -41,11 +41,9 @@ namespace Mengine
         virtual void _update( bool _focus );
 
     public:
-        void tick( const UpdateContext * _context ) override;
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     protected:
-        virtual void _tick( const UpdateContext * _context );
         virtual void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context );
 
     public:

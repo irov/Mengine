@@ -3,7 +3,6 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/ServiceProviderInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/FactorablePlugin.h"
 #include "Kernel/MemoryAllocator.h"
 

@@ -18,7 +18,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ModuleService::ModuleService()
-        : m_timepipe( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,10 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::_initializeService()
     {
-        uint32_t timepipe = TIMEPIPE_SERVICE()
-            ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
-
-        m_timepipe = timepipe;
+        //Empty
 
         return true;
     }
@@ -51,11 +47,6 @@ namespace Mengine
 
         m_waits.clear();
         m_leaves.clear();
-
-        TIMEPIPE_SERVICE()
-            ->removeTimepipe( m_timepipe );
-
-        m_timepipe = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::hasModule( const ConstString & _name ) const
@@ -243,14 +234,6 @@ namespace Mengine
         for( const ModuleInterfacePtr & module : m_modules )
         {
             module->update( _focus );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ModuleService::onTimepipe( const UpdateContext * _context )
-    {
-        for( const ModuleInterfacePtr & module : m_modules )
-        {
-            module->tick( _context );
         }
     }
     //////////////////////////////////////////////////////////////////////////

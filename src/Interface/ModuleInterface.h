@@ -30,7 +30,6 @@ namespace Mengine
         virtual void update( bool _focus ) = 0;
 
     public:
-        virtual void tick( const UpdateContext * _context ) = 0;
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) = 0;
 
     public:

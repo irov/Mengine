@@ -152,20 +152,20 @@ public class MarSDKInteractionLayer implements MARInitListener {
         try {
             JSONObject json = new JSONObject(msg);
 
-            String resultArgs = "(\""+json.getString("productId")+"\",)";
+            String productId = json.getString("productId");
 
             if (json.getInt("payResult") == 0){
-                Log.d("MarSDKInteractionLayer.TAG", "pay complete orderId: " + json.getString("orderId"));
+                Log.d(MarSDKInteractionLayer.TAG, "pay complete orderId: " + json.getString("orderId"));
                 setPropDeliveredComplete(json.getString("orderId"));
-                m_activity.pythonCall("onPaySuccess", resultArgs);
+                m_activity.pythonCall("onPaySuccess", productId);
             }
             else
             {
-                Log.d("MAR: ", "pay fail");
-                m_activity.pythonCall("onPayFail", resultArgs);
+                Log.d(MarSDKInteractionLayer.TAG, "pay fail");
+                m_activity.pythonCall("onPayFail", productId);
             }
         }catch (Exception e){
-            Log.d("MAR: ", "pay error");
+            Log.d(MarSDKInteractionLayer.TAG, "pay error");
             e.printStackTrace();
         }
     }
@@ -183,7 +183,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
         
         if(MARCode.CODE_AD_VIDEO_CALLBACK == code){
             //play video callback msg : 1 suc 0 fail
-            Log.d("Video callback: ", msg);
+            Log.d(MarSDKInteractionLayer.TAG, "Video callback: " + msg);
         }
     }
 

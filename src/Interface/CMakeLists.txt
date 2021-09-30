@@ -60,6 +60,9 @@ src
     ConverterInterface.h
     ConverterFactoryInterface.h
     ConverterServiceInterface.h
+    ComponentInterface.h
+    ComponentHubInterface.h
+    ComponentServiceInterface.h
     StringizeServiceInterface.h
     GameEventReceiverInterface.h
     GameServiceInterface.h

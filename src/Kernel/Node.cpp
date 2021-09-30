@@ -19,12 +19,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Node::Node()
-        : m_active( false )
-        , m_deactivating( false )
-        , m_afterActive( false )
-        , m_enable( true )
-        , m_dispose( false )
-        , m_freeze( false )
+        : m_state( EN_STATE_ENABLE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -34,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::dispose()
     {
-        m_dispose = true;
+        m_state |= EN_STATE_DISPOSE;
 
         this->removeFromParent();
         this->disable();
@@ -100,7 +95,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_active == true )
+        if( this->isActivate() == true )
         {
             return true;
         }
@@ -114,7 +109,7 @@ namespace Mengine
 
         IntrusivePtrScope ankh( this );
 
-        m_active = true;
+        m_state |= EN_STATE_ACTIVE;
 
         if( this->foreachChildrenSlugBreak( []( const NodePtr & _child )
         {
@@ -123,26 +118,25 @@ namespace Mengine
             return result;
         } ) == false )
         {
-            m_active = false;
+            m_state &= ~EN_STATE_ACTIVE;
 
             this->release();
 
             return false;
         }
 
-        if( m_active == false )
+        if( this->isActivate() == false )
         {
             this->release();
 
             return false;
         }
 
-        m_afterActive = true;
+        m_state |= EN_STATE_AFTER_ACTIVE;
 
         if( this->_afterActivate() == false )
         {
-            m_afterActive = false;
-            m_active = false;
+            m_state &= ~(EN_STATE_AFTER_ACTIVE | EN_STATE_ACTIVE);
 
             this->release();
 
@@ -154,28 +148,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::deactivate()
     {
-        if( m_active == false )
+        if( this->isActivate() == false )
         {
             return;
         }
 
-        if( m_deactivating == true )
+        if( this->isDeactivating() == true )
         {
             return;
         }
 
         IntrusivePtrScope ankh( this );
 
-        m_deactivating = true;
+        m_state |= EN_STATE_DEACTIVATING;
 
-        if( m_afterActive == false )
+        if( this->isAfterActive() == false )
         {
             LOGGER_ERROR( "node '%s' invalid deactivate in 'activate state'"
                 , this->getName().c_str()
             );
         }
 
-        m_afterActive = false;
+        m_state &= ~EN_STATE_AFTER_ACTIVE;
 
         this->_deactivate();
 
@@ -184,8 +178,7 @@ namespace Mengine
             _child->deactivate();
         } );
 
-        m_active = false;
-        m_deactivating = false;
+        m_state &= ~(EN_STATE_ACTIVE | EN_STATE_DEACTIVATING);
 
         this->_afterDeactivate();
     }
@@ -197,7 +190,7 @@ namespace Mengine
             return true;
         }
 
-        m_enable = true;
+        m_state |= EN_STATE_ENABLE;
 
         Node * parent = this->getParent();
 
@@ -217,7 +210,7 @@ namespace Mengine
 
         if( this->activate() == false )
         {
-            m_enable = false;
+            m_state &= ~EN_STATE_ENABLE;
 
             return false;
         }
@@ -239,7 +232,7 @@ namespace Mengine
             return true;
         }
 
-        m_enable = true;
+        m_state |= EN_STATE_ENABLE;
 
         Node * parent = this->getParent();
 
@@ -255,7 +248,7 @@ namespace Mengine
 
         if( this->activate() == false )
         {
-            m_enable = false;
+            m_state &= ~EN_STATE_ENABLE;
 
             return false;
         }
@@ -276,7 +269,7 @@ namespace Mengine
 
         this->deactivate();
 
-        m_enable = false;
+        m_state &= ~EN_STATE_ENABLE;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::removeRelationRender_()
@@ -462,8 +455,15 @@ namespace Mengine
         {
             return;
         }
-
-        m_freeze = _value;
+        
+        if( _value == true )
+        {
+            m_state |= EN_STATE_FREEZE;
+        }
+        else
+        {
+            m_state &= ~EN_STATE_FREEZE;
+        }
 
         this->_freeze( _value );
     }
@@ -585,12 +585,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_recompile()
     {
-        if( m_enable == false )
+        if( this->isEnable() == false )
         {
             return;
         }
 
-        if( m_active == true )
+        if( this->isActivate() == true )
         {
             return;
         }
@@ -600,12 +600,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_uncompile()
     {
-        if( m_enable == false )
+        if( this->isEnable() == false )
         {
             return;
         }
 
-        if( m_active == false )
+        if( this->isActivate() == false )
         {
             return;
         }

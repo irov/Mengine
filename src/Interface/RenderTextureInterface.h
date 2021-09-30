@@ -4,7 +4,6 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/RenderImageInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/Rect.h"
 
 #include "math/uv4.h"

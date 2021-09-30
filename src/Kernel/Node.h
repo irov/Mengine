@@ -22,17 +22,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
+    enum ENodeState
+    {
+        EN_STATE_ACTIVE = 1 << 0,
+        EN_STATE_DEACTIVATING = 1 << 1,
+        EN_STATE_AFTER_ACTIVE = 1 << 2,
+        EN_STATE_ENABLE = 1 << 3,
+        EN_STATE_DISPOSE = 1 << 4,
+        EN_STATE_FREEZE = 1 << 5,
+    };
+    //////////////////////////////////////////////////////////////////////////
     class Node
         : public Factorable
         , public Identity
         , public Compilable
         , public Hierarchy
+        , public Visitable
         , public Affectorable
         , public AffectorHubProviderInterface
         , public Updatable
         , public Renderable
-        , public Transformable
-        , public Visitable
+        , public Transformable        
         , public Animatable
         , public Eventable
         , public Pickerable
@@ -141,13 +151,7 @@ namespace Mengine
         uint32_t getAffectorableUpdatableLeafDeep() const override;
 
     protected:
-        bool m_active;
-        bool m_deactivating;
-        bool m_afterActive;
-        bool m_enable;
-        bool m_dispose;
-
-        bool m_freeze;
+        uint32_t m_state;
 
     protected:
         friend class Hierarchy;
@@ -157,32 +161,32 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Node::isDispose() const
     {
-        return m_dispose;
+        return m_state & EN_STATE_DISPOSE;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Node::isActivate() const
     {
-        return m_active;
+        return m_state & EN_STATE_ACTIVE;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Node::isAfterActive() const
     {
-        return m_afterActive;
+        return m_state & EN_STATE_AFTER_ACTIVE;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Node::isDeactivating() const
     {
-        return m_deactivating;
+        return m_state & EN_STATE_DEACTIVATING;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Node::isFreeze() const
     {
-        return m_freeze;
+        return m_state & EN_STATE_FREEZE;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Node::isEnable() const
     {
-        return m_enable;
+        return m_state & EN_STATE_ENABLE;
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>

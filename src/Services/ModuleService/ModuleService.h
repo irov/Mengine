@@ -11,7 +11,6 @@ namespace Mengine
 {
     class ModuleService
         : public ServiceBase<ModuleServiceInterface>
-        , public TimepipeInterface
     {
     public:
         ModuleService();
@@ -38,7 +37,6 @@ namespace Mengine
         void update( bool _focus ) override;
 
     public:
-        void onTimepipe( const UpdateContext * _context ) override;
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     public:
@@ -50,8 +48,6 @@ namespace Mengine
         ModuleInterfacePtr popModule_( const ConstString & _name );
 
     protected:
-        uint32_t m_timepipe;
-
         typedef Vector<ModuleInterfacePtr> VectorModules;
         VectorModules m_modules;
 

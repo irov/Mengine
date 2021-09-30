@@ -238,10 +238,34 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Python Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void pythonCall(String method, String args)
+    public void pythonCall(String method, Object ... args)
     {
+        String py_args = "";
+
+        py_args += "(";
+
+        for( int i = 0; i != args.length; ++i )
+        {
+            Object a = args[i];
+
+            if( a instanceof String )
+            {
+                py_args += "\"";
+                py_args += a;
+                py_args += "\"";
+            }
+            else
+            {
+                py_args += a;
+            }
+
+            py_args += ",";
+        }
+
+        py_args += ")";
+
         // args example: "(arg1,arg2,arg3)" - string
-        AndroidNativePython_call(method, args);
+        AndroidNativePython_call(method, py_args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //MarSDK Methods
@@ -317,13 +341,14 @@ public class MengineActivity extends SDLActivity {
             @Override
             public void onCallBack(String var1) {
                 Log.d(TAG, "get data from server, start...");
-                AndroidNativePython_call("getData", "(\"" + var1 + "\",)");
+                _instance.pythonCall("getData", var1);
             }
         });
     }
 
     public static void androidMarSDKTest(int code, String msg, float value, boolean check){
-        AndroidNativePython_call("marTest", "(1,\"test\", 50.0)");
+        _instance.pythonCall("marTest",1, "test", 50.0);
+
         Log.d(TAG, "OK");
     }
 

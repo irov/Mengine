@@ -4,7 +4,6 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/RenderPipelineInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Params.h"
 

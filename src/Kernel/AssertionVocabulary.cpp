@@ -22,10 +22,15 @@ namespace Mengine
             uint32_t count = 0;
 
             VOCABULARY_SERVICE()
-                ->foreachVocabulary( _category, [_category, &count]( const ConstString & _type, const MixinPtr & _mixin )
+                ->foreachVocabulary( [filter_category = _category, &count]( const ConstString & _category, const ConstString & _type, const MixinPtr & _mixin )
             {
                 MENGINE_UNUSED( _type );
                 MENGINE_UNUSED( _mixin );
+
+                if( filter_category != _category )
+                {
+                    return;
+                }
 
                 LOGGER_ERROR( "Vocabulary '%s' type '%s'"
                     , _category.c_str()

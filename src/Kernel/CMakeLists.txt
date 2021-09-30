@@ -800,6 +800,9 @@ Core
     
     FileContent.h
     FileContent.cpp
+    
+    BaseComponentHub.h
+    BaseComponentHub.cpp
 )
 
 ADD_FILTER(

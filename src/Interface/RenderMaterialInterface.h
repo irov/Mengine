@@ -5,8 +5,6 @@
 #include "Interface/RenderProgramInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
-#include "Kernel/Mixin.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

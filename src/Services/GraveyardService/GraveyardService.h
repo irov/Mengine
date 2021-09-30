@@ -6,6 +6,8 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
@@ -36,7 +38,7 @@ namespace Mengine
         void onEngineTextureDestroy( RenderTextureInterface * _texture );
 
     protected:
-        uint32_t m_timepipe;
+        UniqueId m_timepipeId;
 
         uint32_t m_count;
         float m_graveyardTime;

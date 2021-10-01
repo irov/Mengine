@@ -1398,6 +1398,13 @@ namespace Mengine
         SDL_StopTextInput();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::isShowKeyboard() const
+    {
+        SDL_bool active = SDL_IsTextInputActive();
+
+        return active;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
         if( m_sdlWindow == nullptr )

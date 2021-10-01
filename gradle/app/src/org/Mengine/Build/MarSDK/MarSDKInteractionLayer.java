@@ -92,6 +92,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
     public void redeemCode(String code)
     {
+        Log.d(TAG, "try redeem code " + code);
         MARPlatform.getInstance().exchangeGift(code);
     }
 
@@ -253,8 +254,24 @@ public class MarSDKInteractionLayer implements MARInitListener {
     public void onRedeemResult(String msg) {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onRedeemResult msg: " + msg);
 
-        m_activity.pythonCall("onMarSDKRedeemResult", msg);
-        //ToDo
+        int result;
+        try {
+            result = 0;
+
+            JSONObject json = new JSONObject(msg);
+
+            int propNumber = json.getInt("propNumber");
+            String propType = json.getString("propType");
+            String message = json.getString("msg");
+
+            m_activity.pythonCall("onMarSDKRedeemResult", result, propNumber, propType, message);
+        }
+        catch(Exception e) {
+            result = -1;
+            Log.d(MarSDKInteractionLayer.TAG, "redeem error");
+            m_activity.pythonCall("onMarSDKRedeemResult", result, 0, 0, "");
+            e.printStackTrace();
+        }
     }
 
     @Override

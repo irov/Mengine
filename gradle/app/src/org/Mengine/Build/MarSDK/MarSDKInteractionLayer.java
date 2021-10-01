@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.mar.sdk.MARCallBack;
 import com.mar.sdk.SDKParams;
 import com.mar.sdk.IAction;
 import com.mar.sdk.MARCode;
@@ -31,16 +32,84 @@ import org.json.JSONObject;
 import android.util.Log;
 
 public class MarSDKInteractionLayer implements MARInitListener {
-
     private static final String TAG = "MarSDK";
+
+    private static MarSDKInteractionLayer _instance;
 
     private boolean m_logined = false;
     private MengineActivity m_activity;
 
     public MarSDKInteractionLayer(MengineActivity _activity) {
-        m_activity = _activity;
+        _instance = this;
 
-        MARPlatform.getInstance().init( m_activity, this);
+        m_activity = _activity;
+    }
+
+    public void onPythonEmbedding(){
+        m_activity.addPythonPlugin("MarSDK", this);
+    }
+
+    public void initialize() {
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                MARPlatform.getInstance().init( _instance.m_activity, _instance);
+            }
+        });
+    }
+
+    public void login(){
+        MARPlatform.getInstance().login(m_activity);
+    }
+
+    public void loginCustom(final String loginType){
+        MARPlatform.getInstance().loginCustom(m_activity, loginType);
+    }
+
+    public void pay(int coinNum, String productID,
+                                 String productName, String productDesc, int price){
+        PayParams params = new PayParams();
+        params.setCoinNum(coinNum);        //当前玩家身上拥有的游戏币数量
+
+        params.setPrice(price);        //单位 元
+        params.setProductId(productID);    //产品ID
+        params.setProductName(productName);    //产品名称
+        params.setProductDesc(productDesc);    //产品描述
+
+        params.setBuyNum(1);		//购买数量，固定1
+
+        params.setExtension(System.currentTimeMillis()+"");	//游戏自定义数据，充值成功，回调游戏服的时候，会原封不动返回
+        params.setRoleId("100");		//角色ID
+        params.setRoleLevel(10);		//角色等级
+        params.setRoleName("test_112");	//角色名称
+        params.setServerId("10");		//服务器ID
+        params.setServerName("测试");		//服务器名称
+        params.setVip("1");			//角色VIP等级
+
+        // params.setPayNotifyUrl("http://www.game.com/pay/callback");
+        MARPlatform.getInstance().pay(m_activity, params);
+    }
+
+    public void showAd(){
+        if (MARGgPlatform.getInstance().getVideoFlag()) {
+            MARGgPlatform.getInstance().showVideo();
+        }
+    }
+
+    public void updateData(String json_str){
+        Log.d(TAG, "MAR update server data: " + json_str);
+
+        MARPlatform.getInstance().updateGameArchive(json_str,1);
+    }
+
+    public void marSDKGetData(int serialNumber){
+        MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
+            @Override
+            public void onCallBack(String var1) {
+                Log.d(TAG, "get data from server, start...");
+                _instance.m_activity.pythonCall("onMarSDKGetData", var1);
+            }
+        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -86,17 +155,15 @@ public class MarSDKInteractionLayer implements MARInitListener {
         switch(code){
             case MARCode.CODE_INIT_SUCCESS:
                 Log.d(MarSDKInteractionLayer.TAG, "marsdk init success");
-                onInitSuccess();
+
+                m_activity.pythonCall("onMarSDKInitSuccess");
                 break;
             case MARCode.CODE_INIT_FAIL:
                 Log.d(MarSDKInteractionLayer.TAG, "marsdk init fail");
+
+                m_activity.pythonCall("onMarSDKInitFail");
                 break;
         }
-    }
-
-    public void onInitSuccess()
-    {
-        m_activity.login();
     }
 
     @Override
@@ -119,7 +186,9 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
                 submitExtraData(UserExtraData.TYPE_ENTER_GAME);
 
-                m_activity.getData(1);
+                m_activity.pythonCall("onMarSDKLoginSuccess");
+
+                //m_activity.getData(1);
                 break;
             case MARCode.CODE_LOGIN_FAIL:
                 Log.d(MarSDKInteractionLayer.TAG, "marsdk login fail");
@@ -127,6 +196,8 @@ public class MarSDKInteractionLayer implements MARInitListener {
                 if (MARSDK.getInstance().getGameType() == 1){
                     MARPlatform.getInstance().visitorLogin();
                 }
+
+                m_activity.pythonCall("onMarSDKLoginFail");
                 break;
         }
     }
@@ -136,13 +207,16 @@ public class MarSDKInteractionLayer implements MARInitListener {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onSwitchAccount uToken: " + uToken);
         if(uToken != null){
             m_logined = true;
+
+            m_activity.pythonCall("onMarSDKSwitchAccount");
         }
     }
     
     @Override
     public void onLogout() {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onLogout");
-        
+
+        m_activity.pythonCall("onMarSDKLogout");
     }    
     
     @Override
@@ -157,12 +231,14 @@ public class MarSDKInteractionLayer implements MARInitListener {
             if (json.getInt("payResult") == 0){
                 Log.d(MarSDKInteractionLayer.TAG, "pay complete orderId: " + json.getString("orderId"));
                 setPropDeliveredComplete(json.getString("orderId"));
-                m_activity.pythonCall("onPaySuccess", productId);
+
+                m_activity.pythonCall("onMarSDKPaySuccess", productId);
             }
             else
             {
                 Log.d(MarSDKInteractionLayer.TAG, "pay fail");
-                m_activity.pythonCall("onPayFail", productId);
+
+                m_activity.pythonCall("onMarSDKPayFail", productId);
             }
         }catch (Exception e){
             Log.d(MarSDKInteractionLayer.TAG, "pay error");
@@ -173,7 +249,8 @@ public class MarSDKInteractionLayer implements MARInitListener {
     @Override
     public void onRedeemResult(String msg) {
         Log.d(MarSDKInteractionLayer.TAG, "marsdk.onRedeemResult msg: " + msg);
-        
+
+        m_activity.pythonCall("onMarSDKRedeemResult", msg);
         //ToDo
     }
 
@@ -185,10 +262,8 @@ public class MarSDKInteractionLayer implements MARInitListener {
             //play video callback msg : 1 suc 0 fail
             Log.d(MarSDKInteractionLayer.TAG, "Video callback: " + msg);
         }
-    }
 
-    private void login(){
-        MARPlatform.getInstance().login(m_activity);
+        m_activity.pythonCall("onMarSDKResult", code, msg);
     }
 
 	private void submitExtraData(final int dataType){

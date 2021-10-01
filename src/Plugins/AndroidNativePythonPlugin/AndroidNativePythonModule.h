@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidEventation.h"
 
 #include "Kernel/ModuleBase.h"
@@ -15,6 +16,7 @@ namespace Mengine
     {
     public:
         virtual void pythonMethod( const String & _method, const String & _args ) = 0;
+        virtual void addPlugin( const String & _name, const jobject & _plugin ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonEventHandler> PythonEventHandlerPtr;
@@ -45,10 +47,11 @@ namespace Mengine
 
     public:
         void pythonMethod( const String & _method, const String & _args ) override;
+        void addPlugin( const String & _name, const jobject & _plugin ) override;
 
     public:
         void setAndroidCallback( const ConstString & _method, const pybind::object & _cb );
-        void androidMethod( const ConstString & _method, const pybind::args & _args ) const;
+        void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
 
     protected:
         pybind::kernel_interface * m_kernel;
@@ -58,7 +61,10 @@ namespace Mengine
         typedef Map<ConstString, pybind::object> MapAndroidCallbacks;
         MapAndroidCallbacks m_callbacks;
 
-        PythonEventation m_eventation;
+        typedef Map<ConstString, jobject> MapAndroidPlugins;
+        MapAndroidPlugins m_plugins;
+
+        mutable PythonEventation m_eventation;
     };
     //////////////////////////////////////////////////////////////////////////
 }

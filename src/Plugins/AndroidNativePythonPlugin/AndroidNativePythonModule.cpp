@@ -15,6 +15,7 @@
 static Mengine::AndroidNativePythonModule * s_androidNativePythonModule = nullptr;
 //////////////////////////////////////////////////////////////////////////
 static jclass mActivityClass;
+static jmethodID jmethodID_initializePlugin;
 //////////////////////////////////////////////////////////////////////////
 extern "C" {
     //////////////////////////////////////////////////////////////////////////
@@ -22,6 +23,8 @@ extern "C" {
         MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1setupPythonJNI )(JNIEnv * env, jclass cls)
     {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
+
+        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "pythonInitializePlugin", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -44,6 +47,27 @@ extern "C" {
                                                        } );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
+    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
+    {
+        if( s_androidNativePythonModule != nullptr )
+        {
+            const char * name_str = env->GetStringUTFChars( _name, nullptr );
+
+            Mengine::String name = name_str;
+
+            env->ReleaseStringUTFChars( _name, name_str );
+
+            jobject new_plugin = env->NewGlobalRef(_plugin);
+
+            s_androidNativePythonModule->addCommand( [name, new_plugin]( const Mengine::PythonEventHandlerPtr & _handler )
+                                                     {
+                                                         _handler->addPlugin( name, new_plugin );
+                                                     } );
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -82,11 +106,28 @@ namespace Mengine
 
         m_eventation.setEventHandler( PythonEventHandlerPtr::from(this) );
 
+        JNIEnv * env = Mengine_JNI_GetEnv();
+
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin );
+
+        m_eventation.invoke();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::_finalizeModule()
     {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+
+        for( auto && [name, plugin] : m_plugins )
+        {
+            env->DeleteGlobalRef(plugin);
+        }
+
+        m_plugins.clear();
+
+        env->DeleteGlobalRef( mActivityClass );
+
         m_globals.reset();
 
         s_androidNativePythonModule = nullptr;
@@ -131,12 +172,17 @@ namespace Mengine
         m_kernel->decref( py_args );
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonModule::addPlugin( const String & _name, const jobject & _plugin )
+    {
+        m_plugins.emplace( Helper::stringizeString( _name ), _plugin );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::setAndroidCallback( const ConstString & _method, const pybind::object & _cb )
     {
         m_callbacks.emplace( _method, _cb );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::androidMethod( const ConstString & _method, const pybind::args & _args ) const
+    void AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
@@ -203,9 +249,25 @@ namespace Mengine
 
         MENGINE_STRCAT(signature, ")V");
 
-        jmethodID jmethodID_method = env->GetStaticMethodID( mActivityClass, _method.c_str(), signature );
+        MapAndroidPlugins::const_iterator it_found = m_plugins.find( _plugin );
 
-        env->CallStaticVoidMethodA( mActivityClass, jmethodID_method, jargs );
+        if( it_found == m_plugins.end() )
+        {
+            return;
+        }
+
+        jobject plugin = it_found->second;
+
+        jclass plugin_class = env->GetObjectClass( plugin );
+
+        jmethodID jmethodID_method = env->GetMethodID( plugin_class, _method.c_str(), signature );
+
+        if( jmethodID_method == 0 )
+        {
+            return;
+        }
+
+        env->CallVoidMethodA( plugin, jmethodID_method, jargs );
 
         for(uint32_t index = 0; index != index_free; ++index )
         {
@@ -213,6 +275,8 @@ namespace Mengine
 
             env->DeleteLocalRef(j);
         }
+
+        m_eventation.invoke();
     }
     //////////////////////////////////////////////////////////////////////////
 }

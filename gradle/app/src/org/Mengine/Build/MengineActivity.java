@@ -49,6 +49,7 @@ public class MengineActivity extends SDLActivity {
 
     private static native void AndroidNativeKernel_setupKernelJNI();
     private static native void AndroidNativePython_setupPythonJNI();
+    private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String method, String args);
     private static native void AndroidNativeFacebook_setupFacebookJNI();
     private static native void AndroidNativeFacebook_onSDKInitialized();
@@ -74,8 +75,11 @@ public class MengineActivity extends SDLActivity {
     protected void initPlugins() {
         AppEventsLogger.activateApp(getApplication());
 
+        this.marSDKInteractionLayer = new MarSDKInteractionLayer(this);
+
         AndroidNativeKernel_setupKernelJNI();
         AndroidNativePython_setupPythonJNI();
+
         AndroidNativeFacebook_setupFacebookJNI();
         AndroidNativeUnity_setupUnityJNI();
         AndroidNativeAdMob_setupAdMobJNI();
@@ -238,6 +242,12 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Python Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void pythonInitializePlugin() {
+        _instance.addPythonPlugin("Activity", _instance);
+
+        _instance.marSDKInteractionLayer.onPythonEmbedding();
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonCall(String method, Object ... args)
     {
         String py_args = "";
@@ -268,90 +278,10 @@ public class MengineActivity extends SDLActivity {
         AndroidNativePython_call(method, py_args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //MarSDK Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void marSDKInitializePlugin() {
-        ThreadUtil.performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (_instance != null && _instance.marSDKInteractionLayer == null) {
-                    _instance.marSDKInteractionLayer = new MarSDKInteractionLayer(_instance);
-                    Log.d(TAG, "SDK START INIT...");
-                }
-            }
-        });
-    }
-
-    public static void login(){
-        if (_instance != null && _instance.marSDKInteractionLayer != null) {
-            MARPlatform.getInstance().login(_instance);
-        }
-    }
-
-    public static void loginCustom(final String loginType){
-        if (_instance != null && _instance.marSDKInteractionLayer != null) {
-            MARPlatform.getInstance().loginCustom(_instance, loginType);
-        }
-    }
-
-    public static void pay(int coinNum, String productID,
-                           String productName, String productDesc, int price){
-        if (_instance != null && _instance.marSDKInteractionLayer != null) {
-            PayParams params = new PayParams();
-            params.setCoinNum(coinNum);        //当前玩家身上拥有的游戏币数量
-
-            params.setPrice(price);        //单位 元
-            params.setProductId(productID);    //产品ID
-            params.setProductName(productName);    //产品名称
-            params.setProductDesc(productDesc);    //产品描述
-
-            params.setBuyNum(1);		//购买数量，固定1
-
-            params.setExtension(System.currentTimeMillis()+"");	//游戏自定义数据，充值成功，回调游戏服的时候，会原封不动返回
-            params.setRoleId("100");		//角色ID
-            params.setRoleLevel(10);		//角色等级
-            params.setRoleName("test_112");	//角色名称
-            params.setServerId("10");		//服务器ID
-            params.setServerName("测试");		//服务器名称
-            params.setVip("1");			//角色VIP等级
-
-            // params.setPayNotifyUrl("http://www.game.com/pay/callback");
-            MARPlatform.getInstance().pay(_instance, params);
-        }
-    }
-
-    public static void showAd(){
-        if (_instance != null && _instance.marSDKInteractionLayer != null) {
-            if (MARGgPlatform.getInstance().getVideoFlag()) {
-                MARGgPlatform.getInstance().showVideo();
-            }
-        }
-    }
-
-    public static void updateData(String json_str)
+    public void addPythonPlugin(String name, Object plugin)
     {
-        Log.d(TAG, "MAR update server data: " + json_str);
-
-        MARPlatform.getInstance().updateGameArchive(json_str,1);
+        AndroidNativePython_addPlugin(name, plugin);
     }
-
-    public static void getData(int serialNumber)
-    {
-        MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
-            @Override
-            public void onCallBack(String var1) {
-                Log.d(TAG, "get data from server, start...");
-                _instance.pythonCall("getData", var1);
-            }
-        });
-    }
-
-    public static void androidMarSDKTest(int code, String msg, float value, boolean check){
-        _instance.pythonCall("marTest",1, "test", 50.0);
-
-        Log.d(TAG, "OK");
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Facebook Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////

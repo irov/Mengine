@@ -3092,6 +3092,14 @@ namespace Mengine
                     ->hideKeyboard();
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_isShowKeyboard()
+            {
+                bool result = PLATFORM_SERVICE()
+                    ->isShowKeyboard();
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_hasResource( const ConstString & _name )
             {
                 bool result = RESOURCE_SERVICE()
@@ -4099,6 +4107,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "showKeyboard", nodeScriptMethod, &EngineScriptMethod::s_showKeyboard );
         pybind::def_functor( _kernel, "hideKeyboard", nodeScriptMethod, &EngineScriptMethod::s_hideKeyboard );
+        pybind::def_functor( _kernel, "isShowKeyboard", nodeScriptMethod, &EngineScriptMethod::s_isShowKeyboard );
 
         pybind::def_functor( _kernel, "hasResource", nodeScriptMethod, &EngineScriptMethod::s_hasResource );
 

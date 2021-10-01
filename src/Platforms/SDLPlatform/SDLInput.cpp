@@ -219,13 +219,6 @@ namespace Mengine
         m_widthInv = 1.f / m_width;
         m_heightInv = 1.f / m_height;
     }
-    //////////////////////////////////////////////////////////////////////////    
-    void SDLInput::showKeyboard( bool _value )
-    {
-        MENGINE_UNUSED( _value );
-
-        //Empty
-    }
     //////////////////////////////////////////////////////////////////////////
     bool SDLInput::isKeyDown( EKeyCode _code ) const
     {

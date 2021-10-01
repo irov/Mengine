@@ -29,9 +29,6 @@ namespace Mengine
         void updateSurfaceResolution( float _width, float _height );
 
     public:
-        void showKeyboard( bool _value );
-
-    public:
         bool isKeyDown( EKeyCode _code ) const;
         bool isAnyKeyDown() const;
 

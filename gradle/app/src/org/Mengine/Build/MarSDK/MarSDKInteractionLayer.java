@@ -90,6 +90,11 @@ public class MarSDKInteractionLayer implements MARInitListener {
         MARPlatform.getInstance().pay(m_activity, params);
     }
 
+    public void redeemCode(String code)
+    {
+        MARPlatform.getInstance().exchangeGift(code);
+    }
+
     public void showAd(){
         if (MARGgPlatform.getInstance().getVideoFlag()) {
             MARGgPlatform.getInstance().showVideo();
@@ -97,8 +102,6 @@ public class MarSDKInteractionLayer implements MARInitListener {
     }
 
     public void updateData(String json_str){
-        Log.d(TAG, "MAR update server data: " + json_str);
-
         MARPlatform.getInstance().updateGameArchive(json_str,1);
     }
 

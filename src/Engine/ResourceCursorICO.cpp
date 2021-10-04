@@ -2,6 +2,7 @@
 
 #include "Interface/FileServiceInterface.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
@@ -24,7 +25,11 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        m_buffer = Helper::createMemoryFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr buffer = Helper::createMemoryFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+
+        m_buffer = buffer;
 
         return true;
     }

@@ -412,9 +412,6 @@ namespace Mengine
         {
             batch->deviceLostPrepare();
         }
-
-        m_nullTexture = nullptr;
-        m_whiteTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::onDeviceLostRestore()
@@ -422,16 +419,6 @@ namespace Mengine
         if( m_windowCreated == false )
         {
             return true;
-        }
-
-        if( this->createNullTexture_() == false )
-        {
-            return false;
-        }
-
-        if( this->createWhitePixelTexture_() == false )
-        {
-            return false;
         }
 
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )

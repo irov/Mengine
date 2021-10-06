@@ -146,20 +146,22 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
 
-        LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s'"
+        LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s' locale '%s' group '%s'"
             , _name.c_str()
             , _groupName.c_str()
             , _type.c_str()
+            , _locale.c_str()
+            , _groupName.c_str()
         );
 
         ResourcePtr resource = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
-            , _locale.c_str()
-            , _groupName.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource name '%s' type '%s' locale '%s' group '%s' doc '%s'"
             , _name.c_str()
             , _type.c_str()
+            , _locale.c_str()
+            , _groupName.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 

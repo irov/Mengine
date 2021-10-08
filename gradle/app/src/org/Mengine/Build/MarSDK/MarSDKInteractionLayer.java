@@ -1,7 +1,10 @@
 package org.Mengine.Build.MarSDK;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -269,7 +272,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
         catch(Exception e) {
             result = -1;
             Log.d(MarSDKInteractionLayer.TAG, "redeem error");
-            m_activity.pythonCall("onMarSDKRedeemResult", result, 0, 0, "");
+            m_activity.pythonCall("onMarSDKRedeemResult", result, 0, "", "");
             e.printStackTrace();
         }
     }
@@ -305,8 +308,21 @@ public class MarSDKInteractionLayer implements MARInitListener {
 		MARPlatform.getInstance().setPropDeliveredComplete(orderID);
 	}
 
-	public void getAdShowsPerDay()
-    {
+	public void pasteCode() {
+        String code = null;
 
+        /////////////////////////////////
+        ClipboardManager clipboard = (ClipboardManager) _instance.m_activity.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard.hasPrimaryClip())
+        {
+            ClipData clip = clipboard.getPrimaryClip();
+
+            // or you may coerce the data to the text representation:
+            code = clip.getItemAt(0).coerceToText(_instance.m_activity.getContext()).toString();
+        }
+        /////////////////////////////////
+
+        Log.d(TAG, "try to paste code: \""+code+"\"");
+        _instance.m_activity.pythonCall("onMarSDKSaveClipboard", code);
     }
 }

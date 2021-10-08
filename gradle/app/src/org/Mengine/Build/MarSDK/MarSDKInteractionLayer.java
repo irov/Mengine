@@ -7,6 +7,7 @@ import android.content.Context;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -309,20 +310,30 @@ public class MarSDKInteractionLayer implements MARInitListener {
 	}
 
 	public void pasteCode() {
-        String code = null;
+        try {
+            String code = null;
 
-        /////////////////////////////////
-        ClipboardManager clipboard = (ClipboardManager) _instance.m_activity.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        if (clipboard.hasPrimaryClip())
-        {
-            ClipData clip = clipboard.getPrimaryClip();
+            /////////////////////////////////
+            ClipboardManager clipboard = (ClipboardManager) _instance.m_activity.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            if (clipboard.hasPrimaryClip()) {
+                ClipData clip = clipboard.getPrimaryClip();
+                ClipData.Item item = clip.getItemAt(0);
 
-            // or you may coerce the data to the text representation:
-            code = clip.getItemAt(0).coerceToText(_instance.m_activity.getContext()).toString();
+                Object data = item.getText();
+                if (data == null) {
+                    code = null;
+                } else
+                    code = data.toString();
+            }
+            /////////////////////////////////
+
+            Log.d(MarSDKInteractionLayer.TAG, "try to paste code: \"" + code + "\"");
+            _instance.m_activity.pythonCall("onMarSDKSaveClipboard", code);
         }
-        /////////////////////////////////
-
-        Log.d(TAG, "try to paste code: \""+code+"\"");
-        _instance.m_activity.pythonCall("onMarSDKSaveClipboard", code);
+        catch (Exception e)
+        {
+            Log.d(MarSDKInteractionLayer.TAG, "paste code error");
+            e.printStackTrace();
+        }
     }
 }

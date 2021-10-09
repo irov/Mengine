@@ -285,6 +285,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
         if(MARCode.CODE_AD_VIDEO_CALLBACK == code){
             //play video callback msg : 1 suc 0 fail
             Log.d(MarSDKInteractionLayer.TAG, "Video callback: " + msg);
+
         }
 
         m_activity.pythonCall("onMarSDKResult", code, msg);

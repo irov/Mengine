@@ -35,6 +35,9 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 public class MarSDKInteractionLayer implements MARInitListener {
     private static final String TAG = "MarSDK";
 
@@ -64,6 +67,8 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
     public void login(){
         MARPlatform.getInstance().login(m_activity);
+
+        getCurrentDate();
     }
 
     public void loginCustom(final String loginType){
@@ -336,5 +341,14 @@ public class MarSDKInteractionLayer implements MARInitListener {
             Log.d(MarSDKInteractionLayer.TAG, "paste code error");
             e.printStackTrace();
         }
+    }
+
+    public String getCurrentDate()
+    {
+        TimeZone tz = TimeZone.getTimeZone("Asia/Beijing");
+        Calendar calendar = Calendar.getInstance(tz);
+        String date = String.valueOf(calendar.get(Calendar.DATE));
+        Log.d(TAG, "China (Beijing) time (date): " + date);
+        return date;
     }
 }

@@ -198,6 +198,7 @@ namespace Mengine
 
         bool old_play = m_play;
         m_play = true;
+        m_pause = false;
 
         if( old_play == true )
         {
@@ -257,7 +258,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseAnimation::resume( float _time )
     {
-        if( m_play == true )
+        if( m_play == false )
         {
             return;
         }
@@ -286,6 +287,7 @@ namespace Mengine
         }
 
         m_interrupt = true;
+        m_pause = false;
 
         if( this->_interrupt( m_playId ) == false )
         {
@@ -328,6 +330,7 @@ namespace Mengine
         }
 
         m_play = false;
+        m_pause = false;
         m_interrupt = false;
 
         this->_end( m_playId );

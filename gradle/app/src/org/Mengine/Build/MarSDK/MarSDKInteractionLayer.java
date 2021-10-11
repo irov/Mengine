@@ -67,8 +67,6 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
     public void login(){
         MARPlatform.getInstance().login(m_activity);
-
-        getCurrentTime();
     }
 
     public void loginCustom(final String loginType){
@@ -115,7 +113,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
         MARPlatform.getInstance().updateGameArchive(json_str,1);
     }
 
-    public void marSDKGetData(int serialNumber){
+    public void marSDKGetData(int serialNumber = 1){
         MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
             @Override
             public void onCallBack(String var1) {
@@ -290,7 +288,8 @@ public class MarSDKInteractionLayer implements MARInitListener {
         if(MARCode.CODE_AD_VIDEO_CALLBACK == code){
             //play video callback msg : 1 suc 0 fail
             Log.d(MarSDKInteractionLayer.TAG, "Video callback: " + msg);
-            m_activity.pythonCall("onMarSDKAdVideoCallback", msg);
+            String watchAdTime = getCurrentTime();
+            m_activity.pythonCall("onMarSDKAdVideoCallback", msg, watchAdTime);
         }
 
         m_activity.pythonCall("onMarSDKResult", code, msg);
@@ -349,7 +348,6 @@ public class MarSDKInteractionLayer implements MARInitListener {
         Calendar calendar = Calendar.getInstance(tz);
         String time = String.valueOf(calendar.get(Calendar.DATE)) + "/" + String.valueOf(calendar.get(Calendar.MONTH)) + "/" + String.valueOf(calendar.get(Calendar.YEAR));
         Log.d(TAG, "China (Beijing) time: " + time);
-        _instance.m_activity.pythonCall("onMarSDKGetTime", time);
         return time;
     }
 }

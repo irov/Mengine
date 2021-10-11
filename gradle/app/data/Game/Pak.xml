@@ -1,0 +1,5 @@
+ <Pak>	
+	<Scripts>
+        <Script Path = "Scripts/" Module = "GOAP4" Initializer = "onInitialize" Finalizer = "onFinalize"/>
+    </Scripts>
+</Pak>

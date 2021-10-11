@@ -74,7 +74,7 @@ namespace Mengine
     public:
         void onWindowClose() override;
         void onDeviceLostPrepare() override;
-        void onDeviceLostRestore() override;
+        bool onDeviceLostRestore() override;
 
     public:
         void setRenderViewport( const Viewport & _renderViewport ) override;

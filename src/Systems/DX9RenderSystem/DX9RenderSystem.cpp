@@ -1361,8 +1361,11 @@ namespace Mengine
             }
         }
 
-        RENDER_SERVICE()
-            ->onDeviceLostRestore();
+        if( RENDER_SERVICE()
+            ->onDeviceLostRestore() == false )
+        {
+            return false;
+        }
 
         return true;
     }

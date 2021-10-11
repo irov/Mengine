@@ -531,7 +531,7 @@ if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX OR MENGINE_TARGET_MACOS)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/cpu_context_win.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/snapshot/win/cpu_context_win.cc COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/process_memory.h ${THIRDPARTY_DIR}/sentry/external/crashpad/util/process/process_memory.h COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/util_CMakeLists.txt ${THIRDPARTY_DIR}/sentry/external/crashpad/util/CMakeLists.txt COPYONLY)
-        
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/sentry_sync.h ${THIRDPARTY_DIR}/sentry/src/sentry_sync.h COPYONLY)
 
         set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
         set(SENTRY_BUILD_TESTS OFF CACHE BOOL "SENTRY_BUILD_TESTS" FORCE)

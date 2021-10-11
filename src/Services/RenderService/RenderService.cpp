@@ -182,15 +182,11 @@ namespace Mengine
 
         if( this->createNullTexture_() == false )
         {
-            LOGGER_ERROR( "invalid create __null__ texture" );
-
             return false;
         }
 
         if( this->createWhitePixelTexture_() == false )
         {
-            LOGGER_ERROR( "invalid create WhitePixel texture" );
-
             return false;
         }
 
@@ -416,16 +412,13 @@ namespace Mengine
         {
             batch->deviceLostPrepare();
         }
-
-        m_nullTexture = nullptr;
-        m_whiteTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::onDeviceLostRestore()
+    bool RenderService::onDeviceLostRestore()
     {
         if( m_windowCreated == false )
         {
-            return;
+            return true;
         }
 
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
@@ -436,6 +429,8 @@ namespace Mengine
         this->restoreRenderSystemStates_();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::clearFrameBuffer_()

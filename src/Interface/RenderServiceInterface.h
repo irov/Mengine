@@ -109,7 +109,7 @@ namespace Mengine
     public:
         virtual void onWindowClose() = 0;
         virtual void onDeviceLostPrepare() = 0;
-        virtual void onDeviceLostRestore() = 0;
+        virtual bool onDeviceLostRestore() = 0;
         virtual bool isWindowCreated() const = 0;
 
     public:

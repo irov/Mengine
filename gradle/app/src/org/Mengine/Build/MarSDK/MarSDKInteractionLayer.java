@@ -113,7 +113,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
         MARPlatform.getInstance().updateGameArchive(json_str,1);
     }
 
-    public void marSDKGetData(int serialNumber = 1){
+    public void marSDKGetData(int serialNumber){
         MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
             @Override
             public void onCallBack(String var1) {

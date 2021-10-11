@@ -24,6 +24,19 @@ namespace Mengine
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
+        bool isQualityAssuranceMode()
+        {
+            if( SERVICE_IS_INITIALIZE( OptionsServiceInterface ) == true )
+            {
+                if( HAS_OPTION( "qa" ) == true )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool isBuildPublish()
         {
             return MENGINE_PUBLISH_VALUE( true, false );

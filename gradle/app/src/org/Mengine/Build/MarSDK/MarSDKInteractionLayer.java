@@ -68,7 +68,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
     public void login(){
         MARPlatform.getInstance().login(m_activity);
 
-        getCurrentDate();
+        getCurrentTime();
     }
 
     public void loginCustom(final String loginType){
@@ -343,12 +343,13 @@ public class MarSDKInteractionLayer implements MARInitListener {
         }
     }
 
-    public String getCurrentDate()
+    public String getCurrentTime()
     {
         TimeZone tz = TimeZone.getTimeZone("Asia/Beijing");
         Calendar calendar = Calendar.getInstance(tz);
-        String date = String.valueOf(calendar.get(Calendar.DATE));
-        Log.d(TAG, "China (Beijing) time (date): " + date);
-        return date;
+        String time = String.valueOf(calendar.get(Calendar.DATE)) + "/" + String.valueOf(calendar.get(Calendar.MONTH)) + "/" + String.valueOf(calendar.get(Calendar.YEAR));
+        Log.d(TAG, "China (Beijing) time: " + time);
+        _instance.m_activity.pythonCall("onMarSDKGetTime", time);
+        return time;
     }
 }

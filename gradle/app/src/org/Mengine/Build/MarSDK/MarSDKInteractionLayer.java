@@ -1,6 +1,8 @@
 package org.Mengine.Build.MarSDK;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -34,6 +36,7 @@ import org.Mengine.Build.ThreadUtil;
 import org.json.JSONObject;
 
 import android.util.Log;
+import android.view.KeyEvent;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -153,6 +156,47 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
     public void onConfigurationChanged(Configuration newConfig){
         MARSDK.getInstance().onConfigurationChanged(newConfig);
+    }
+
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+
+        if(keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN ) {
+            MARPlatform.getInstance().exitSDK(new MARExitListener() {
+                @Override
+                public void onGameExit() {
+                    //游戏自己的退出确认框
+                    AlertDialog.Builder builder = new AlertDialog.Builder(m_activity);
+                    builder.setTitle("退出确认");
+                    builder.setMessage("主公，现在还早，要不要再玩一会？");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("好吧",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    //这里什么都不用做
+                                }
+                            });
+                    builder.setNeutralButton("一会再玩",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    //退出游戏
+                                    m_activity.finish();
+
+                                    System.exit(0);
+                                }
+                            });
+                    builder.show();
+
+                }
+            });
+
+            return true;
+        }
+
+        return false;
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.provider.Settings.Secure;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -225,6 +226,18 @@ public class MengineActivity extends SDLActivity {
         if (marSDKInteractionLayer != null) {
             marSDKInteractionLayer.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event){
+        if (marSDKInteractionLayer != null) {
+            if( marSDKInteractionLayer.dispatchKeyEvent(event) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

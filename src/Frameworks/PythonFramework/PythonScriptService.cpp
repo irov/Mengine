@@ -379,6 +379,10 @@ namespace Mengine
 
         this->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
 
+        bool qualityAssuranceMode = Helper::isQualityAssuranceMode();
+
+        this->addGlobalModuleT( "_QUALITYASSURANCE", qualityAssuranceMode );
+
         const Char * option_globals[MENGINE_OPTIONS_VALUE_COUNT];
         uint32_t option_globals_count;
         if( OPTIONS_SERVICE()

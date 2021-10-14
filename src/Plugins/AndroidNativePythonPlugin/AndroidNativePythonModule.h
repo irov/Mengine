@@ -54,6 +54,9 @@ namespace Mengine
         void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
 
     protected:
+        JNIEnv * m_jenv;
+        jclass m_jclassActivity;
+
         pybind::kernel_interface * m_kernel;
 
         pybind::dict m_globals;

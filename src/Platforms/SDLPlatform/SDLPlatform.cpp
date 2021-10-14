@@ -16,10 +16,10 @@
 #endif
 
 #if defined(MENGINE_PLATFORM_OSX)
-extern "C" {
 #   include "OSX/OSXSetDesktopWallpaper.h"
 #   include "OSX/OSXOpenUrlInDefaultBrowser.h"
-}
+#elif defined(MENGINE_PLATFORM_ANDROID)
+#   include "Android/AndroidOpenUrlInDefaultBrowser.h"
 #endif
 
 #include "SDLDynamicLibrary.h"
@@ -79,6 +79,23 @@ extern "C" {
 PLUGIN_EXPORT( SDLFileGroup );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::SDLPlatform );
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+//////////////////////////////////////////////////////////////////////////
+static jclass jclass_activity;
+static jobject jobject_activity;
+//////////////////////////////////////////////////////////////////////////
+extern "C" {
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
+    {
+        jclass_activity = (jclass)(env->NewGlobalRef( cls ));
+        jobject_activity = (jclass)(env->NewGlobalRef( obj ));
+    }
+}
+//////////////////////////////////////////////////////////////////////////
+#endif
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -630,6 +647,12 @@ namespace Mengine
             this->finalizeFileService_();
         } );
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+        JNIEnv * env = Mengine_JNI_GetEnv();
+
+        m_jenv = env;
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -927,9 +950,22 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_OSX)
         if( OSXOpenUrlInDefaultBrowser( _url ) == -1 )
         {
-            LOGGER_ERROR( "error set desktop wallpaper '%s'"
+            LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url
             );
+
+            return false;
+        }
+
+        return true;
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        if( AndroidOpenUrlInDefaultBrowser( m_jenv, jclass_activity, jobject_activity, _url ) == false )
+        {
+            LOGGER_ERROR( "error open url in default browser '%s'"
+                , _url
+            );
+
+            return false;
         }
 
         return true;
@@ -2106,7 +2142,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
         MENGINE_SNPRINTF( path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer );
 
@@ -2115,14 +2151,14 @@ namespace Mengine
 
         if( OSXSetDesktopWallpaper( path_file ) == -1 )
         {
-            LOGGER_ERROR("error set desktop wallpaper '%s'"
-                        , path_file
-                         );
+            LOGGER_ERROR( "error set desktop wallpaper '%s'"
+                , path_file
+            );
         }
 #endif
 
         //MENGINE_ASSERTION_NOT_IMPLEMENTED();
-        
+
 
         return false;
     }
@@ -2331,12 +2367,30 @@ namespace Mengine
 
         return hwnd;
 #elif defined(SDL_VIDEO_DRIVER_WINRT)
-        IInspectable * iwindow = wmInfo.info.winrt.window;        
+        IInspectable * iwindow = wmInfo.info.winrt.window;
 
         return iwindow;
 #else
         return NULL;
 #endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+    JNIEnv * SDLPlatform::getJENV() const
+    {
+        return m_jenv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jclass SDLPlatform::getJClassActivity() const
+    {
+        return jclass_activity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jobject SDLPlatform::getJObjectActivity() const
+    {
+        return jobject_activity;
     }
     //////////////////////////////////////////////////////////////////////////
 #endif
@@ -2664,7 +2718,7 @@ namespace Mengine
                 , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
-    }
+        }
 #endif
 
         LOGGER_MESSAGE_RELEASE( "num video displays: %d"
@@ -2740,7 +2794,7 @@ namespace Mengine
         m_sdlWindow = window;
 
         return true;
-}
+    }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::destroyWindow_()
     {
@@ -2774,7 +2828,7 @@ namespace Mengine
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_EXPOSED, "Window has been exposed and should be redrawn" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MOVED, "Window has been moved to data1, data2" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_RESIZED, "Window has been resized to data1xdata2" );
-                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_SIZE_CHANGED, "The window size has changed, either as a result of an API call or through the system or user changing the window size." );           
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_SIZE_CHANGED, "The window size has changed, either as a result of an API call or through the system or user changing the window size." );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MINIMIZED, "Window has been minimized" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_MAXIMIZED, "Window has been maximized" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_RESTORED, "Window has been restored to normal size and position" );
@@ -2843,7 +2897,7 @@ namespace Mengine
 
                     LOGGER_INFO( "platform", "window event: %s"
                         , Helper::getWindowEventMessage( windowEventId )
-                        );
+                    );
 
                     switch( windowEventId )
                     {

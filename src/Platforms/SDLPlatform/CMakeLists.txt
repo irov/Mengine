@@ -22,6 +22,14 @@ OSX
 )
 ENDIF()
 
+IF(MENGINE_TARGET_ANDROID)
+ADD_FILTER(
+OSX
+    Android/AndroidOpenUrlInDefaultBrowser.h
+    Android/AndroidOpenUrlInDefaultBrowser.cpp
+)
+ENDIF()
+
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 

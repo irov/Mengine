@@ -7,7 +7,7 @@
 namespace Mengine
 {
     class SDLPlatformExtensionInterface
-        : public UnknownInterface
+        : virtual public UnknownInterface
     {
     public:
         virtual SDL_Window * getWindow() const = 0;

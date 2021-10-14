@@ -237,11 +237,8 @@ android {
             }
         }
     }
-    
-    aaptOptions {
-        noCompress 'pak', 'bin'
-    }
-    
+
+
     packagingOptions {
         pickFirst 'lib/**/libc++_shared.so'
         pickFirst 'lib/**/libopenal.so'
@@ -253,6 +250,9 @@ android {
         if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
             build.finalizedBy(uploadCrashlyticsSymbolFileRelease)
         }
+    }
+    androidResources {
+        noCompress 'pak', 'bin'
     }
 }
 

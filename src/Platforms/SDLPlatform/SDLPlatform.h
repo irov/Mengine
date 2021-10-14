@@ -21,6 +21,10 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/SDLPlatformExtensionInterface.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Interface/AndroidPlatformExtensionInterface.h"
+#endif
+
 #include "Kernel/FileLogger.h"
 #include "Kernel/Factory.h"
 #include "Kernel/ServiceBase.h"
@@ -29,11 +33,19 @@
 
 #include "Environment/SDL2/SDL2Includer.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Environment/Android/AndroidIncluder.h"
+#   include "Environment/Android/AndroidUtils.h"
+#endif
+
 namespace Mengine
 {
     class SDLPlatform
         : public ServiceBase<PlatformInterface>
         , public SDLPlatformExtensionInterface
+#if defined(MENGINE_PLATFORM_ANDROID)
+        , public AndroidPlatformExtensionInterface
+#endif
     {
         DECLARE_UNKNOWABLE();
 
@@ -168,6 +180,13 @@ namespace Mengine
         IInspectable * getWindowHandle() const override;
 #endif
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+        JNIEnv * getJENV() const override;
+
+        jclass getJClassActivity() const override;
+        jobject getJObjectActivity() const override;
+#endif
+
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
     public:
         SDL_GLContext getGLContext() const override;
@@ -239,6 +258,10 @@ namespace Mengine
 
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         SDL_GLContext m_glContext;
+#endif
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        JNIEnv * m_jenv;
 #endif
 
         SDLInputPtr m_sdlInput;

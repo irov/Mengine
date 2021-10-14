@@ -2,6 +2,8 @@
 
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/PlatformInterface.h"
+#include "Interface/AndroidPlatformExtensionInterface.h"
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
@@ -14,7 +16,6 @@
 //////////////////////////////////////////////////////////////////////////
 static Mengine::AndroidNativePythonModule * s_androidNativePythonModule = nullptr;
 //////////////////////////////////////////////////////////////////////////
-static jclass mActivityClass;
 static jmethodID jmethodID_initializePlugin;
 //////////////////////////////////////////////////////////////////////////
 extern "C" {
@@ -22,9 +23,7 @@ extern "C" {
     JNIEXPORT void JNICALL
         MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1setupPythonJNI )(JNIEnv * env, jclass cls)
     {
-        mActivityClass = (jclass)(env->NewGlobalRef( cls ));
-
-        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "pythonInitializePlugin", "()V" );
+        jmethodID_initializePlugin = env->GetStaticMethodID( cls, "pythonInitializePlugin", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -74,7 +73,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AndroidNativePythonModule::AndroidNativePythonModule()
-        : m_kernel(nullptr)
+        : m_jenv(nullptr)
+        , m_kernel(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -106,9 +106,13 @@ namespace Mengine
 
         m_eventation.setEventHandler( PythonEventHandlerPtr::from(this) );
 
-        JNIEnv * env = Mengine_JNI_GetEnv();
+        AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin );
+        m_jenv = extension->getJENV();
+        m_jclassActivity = extension->getJClassActivity();
+
+        m_jenv->CallStaticVoidMethod( m_jclassActivity, jmethodID_initializePlugin );
 
         m_eventation.invoke();
 
@@ -117,16 +121,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::_finalizeModule()
     {
-        JNIEnv * env = Mengine_JNI_GetEnv();
-
-        for( auto && [name, plugin] : m_plugins )
-        {
-            env->DeleteGlobalRef(plugin);
-        }
-
-        m_plugins.clear();
-
-        env->DeleteGlobalRef( mActivityClass );
+        m_jenv->DeleteGlobalRef( m_jclassActivity );
 
         m_globals.reset();
 
@@ -184,8 +179,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
-        JNIEnv * env = Mengine_JNI_GetEnv();
-
         Char signature[1024] = {'\0'};
 
         MENGINE_STRCAT(signature, "(");
@@ -238,7 +231,7 @@ namespace Mengine
             {
                 const Char * value_str = (const Char *)arg.extract();
 
-                jstring jvalue = env->NewStringUTF( value_str );
+                jstring jvalue = m_jenv->NewStringUTF( value_str );
 
                 jargs[index_args++].l = jvalue;
                 jfree[index_free++] = jvalue;
@@ -258,22 +251,22 @@ namespace Mengine
 
         jobject plugin = it_found->second;
 
-        jclass plugin_class = env->GetObjectClass( plugin );
+        jclass plugin_class = m_jenv->GetObjectClass( plugin );
 
-        jmethodID jmethodID_method = env->GetMethodID( plugin_class, _method.c_str(), signature );
+        jmethodID jmethodID_method = m_jenv->GetMethodID( plugin_class, _method.c_str(), signature );
 
         if( jmethodID_method == 0 )
         {
             return;
         }
 
-        env->CallVoidMethodA( plugin, jmethodID_method, jargs );
+        m_jenv->CallVoidMethodA( plugin, jmethodID_method, jargs );
 
         for(uint32_t index = 0; index != index_free; ++index )
         {
             jstring j = jfree[index];
 
-            env->DeleteLocalRef(j);
+            m_jenv->DeleteLocalRef(j);
         }
 
         m_eventation.invoke();

@@ -383,8 +383,8 @@ namespace Mengine
 
         this->addGlobalModuleT( "_QUALITYASSURANCE", qualityAssuranceMode );
 
-        const Char * option_globals[MENGINE_OPTIONS_VALUE_COUNT];
-        uint32_t option_globals_count;
+        const Char * option_globals[MENGINE_OPTIONS_VALUE_COUNT] = {nullptr};
+        uint32_t option_globals_count = 0;
         if( OPTIONS_SERVICE()
             ->getOptionValues( "globals", option_globals, &option_globals_count ) == true )
         {

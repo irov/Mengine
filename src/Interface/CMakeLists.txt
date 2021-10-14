@@ -31,6 +31,7 @@ src
     MemoryServiceInterface.h
     PlatformInterface.h
     Win32PlatformExtensionInterface.h
+    AndroidPlatformExtensionInterface.h
     SDLPlatformExtensionInterface.h
     ImageCodecInterface.h
     PickCodecInterface.h

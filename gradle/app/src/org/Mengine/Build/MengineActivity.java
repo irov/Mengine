@@ -47,6 +47,7 @@ public class MengineActivity extends SDLActivity {
 
     private static MengineActivity _instance;
 
+    private static native void AndroidNativeMengine_setMengineAndroidActivityJNI(Object Activity);
     private static native void AndroidNativeKernel_setupKernelJNI();
     private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
@@ -95,6 +96,8 @@ public class MengineActivity extends SDLActivity {
         super.onCreate(savedInstanceState);
 
         Log.i(TAG, "MengineActivity.onCreate()");
+
+        AndroidNativeMengine_setMengineAndroidActivityJNI(this);
 
         initPlugins();
 

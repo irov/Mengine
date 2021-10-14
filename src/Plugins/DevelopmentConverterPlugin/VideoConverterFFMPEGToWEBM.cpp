@@ -34,7 +34,7 @@ namespace Mengine
     bool VideoConverterFFMPEGToWEBM::convert()
     {
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         const ConstString & folderPath = m_options.fileGroup->getFolderPath();
 

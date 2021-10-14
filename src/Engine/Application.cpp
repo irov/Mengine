@@ -353,20 +353,6 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE( "Build Info: %s %s", MENGINE_BUILD_USERNAME, MENGINE_BUILD_TIMESTAMP );
         }
 
-        bool fullscreen = this->getFullscreenMode();
-
-        if( this->calcWindowResolution( fullscreen, &m_currentResolution ) == false )
-        {
-            LOGGER_ERROR( "invalid calc window resolution" );
-
-            return false;
-        }
-
-        LOGGER_MESSAGE( "current resolution [%u:%u]"
-            , m_currentResolution.getWidth()
-            , m_currentResolution.getHeight()
-        );
-
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
@@ -793,12 +779,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::createRenderWindow()
     {
+        bool vsync = this->getVSync();
         bool fullscreen = this->getFullscreenMode();
 
-        bool vsync = this->getVSync();
+        Resolution currentResolution;
+        if( this->calcWindowResolution( fullscreen, &currentResolution ) == false )
+        {
+            LOGGER_ERROR( "invalid calc window resolution" );
 
-        RENDER_SERVICE()
-            ->setVSync( vsync );
+            return false;
+        }
+
+        m_currentResolution = currentResolution;
 
         LOGGER_MESSAGE( "current resolution [%u:%u] %s"
             , m_currentResolution.getWidth()
@@ -806,7 +798,10 @@ namespace Mengine
             , fullscreen ? "Fullscreen" : "Window"
         );
 
-        this->calcRenderViewport_( m_currentResolution, &m_renderViewport );
+        Viewport renderViewport;
+        this->calcRenderViewport_( m_currentResolution, &renderViewport );
+
+        m_renderViewport = renderViewport;
 
         LOGGER_MESSAGE( "render viewport %f %f - %f %f"
             , m_renderViewport.begin.x
@@ -815,10 +810,12 @@ namespace Mengine
             , m_renderViewport.getHeight()
         );
 
+
         bool result = RENDER_SERVICE()
             ->createRenderWindow( m_currentResolution
                 , m_contentResolution
                 , m_renderViewport
+                , vsync
                 , m_bits
                 , fullscreen
                 , m_FSAAType
@@ -1893,6 +1890,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Resolution & Application::getCurrentResolution() const
     {
+        MENGINE_ASSERTION_FATAL( m_currentResolution.getWidth() != 0 && m_currentResolution.getHeight() != 0 );
+
         return m_currentResolution;
     }
     //////////////////////////////////////////////////////////////////////////

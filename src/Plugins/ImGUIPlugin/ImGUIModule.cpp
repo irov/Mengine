@@ -122,7 +122,7 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         uint32_t handlerId = win32Platform->addWin32ProcessHandler( []( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )
         {
@@ -138,7 +138,7 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
         SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         uint32_t handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
         {
@@ -194,14 +194,14 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         win32Platform->removeWin32ProcessHandler( m_handlerId );
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
         SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         sdlPlatform->removeSDLEventHandler( m_handlerId );
 #endif
@@ -211,7 +211,7 @@ namespace Mengine
     {
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         SDL_Window * window = sdlPlatform->getWindow();
         SDL_GLContext gl_context = sdlPlatform->getGLContext();
@@ -223,7 +223,7 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         HWND hWnd = win32Platform->getWindowHandle();
 

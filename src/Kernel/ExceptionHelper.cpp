@@ -56,7 +56,7 @@ namespace Mengine
         if( SERVICE_EXIST( PlatformInterface ) == true )
         {
             Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
-                ->getUnknown();
+                ->getDynamicUnknown();
 
             Char stack_msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
             extension->getCallstack( ~0U, stack_msg, MENGINE_LOGGER_MAX_MESSAGE, nullptr );

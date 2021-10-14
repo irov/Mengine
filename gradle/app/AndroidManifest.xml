@@ -22,6 +22,7 @@
 
     <application
         android:label="${app_name_gradle}"
+        android:screenOrientation="@string/screen_orientation"
         android:name="org.Mengine.Build.MengineApplication"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
@@ -92,9 +93,6 @@
             tools:replace="android:launchMode"
             android:launchMode="standard">
         </activity>
-        
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/publish_facebook_app_id"/>
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -115,7 +113,8 @@
 
         <provider android:authorities="@string/fb_content_provider_id"
             android:name="com.facebook.FacebookContentProvider"
-            android:exported="true"/>
+            android:exported="true">
+        </provider>
 
         <receiver android:name="org.Mengine.Build.LocalNotifications.NotificationPublisher"/>
         <service android:name="org.Mengine.Build.LocalNotifications.NotificationJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>

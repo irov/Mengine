@@ -38,7 +38,7 @@ namespace Mengine
     bool ShaderConverterTextToVSO::convert()
     {
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         FilePath fxcPath = CONFIG_VALUE( "Engine", "FxcPath", STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) );
 

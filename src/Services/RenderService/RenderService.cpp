@@ -128,23 +128,20 @@ namespace Mengine
         this->restoreRenderSystemStates_();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen, int32_t _FSAAType, int32_t _FSAAQuality )
+    bool RenderService::createRenderWindow( const Resolution & _windowResolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _vsync, uint32_t _bits, bool _fullscreen, int32_t _FSAAType, int32_t _FSAAQuality )
     {
-        m_windowResolution = _resolution;
+        m_windowResolution = _windowResolution;
         m_contentResolution = _contentResolution;
         m_renderViewport = _renderViewport;
-
+        m_vsync = _vsync;
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %u"
+        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nvsync %u\nfullscreen %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
             , m_contentResolution.getHeight()
-            , m_renderViewport.begin.x
-            , m_renderViewport.begin.y
-            , m_renderViewport.end.x
-            , m_renderViewport.end.y
+            , m_vsync
             , m_fullscreen
         );
 
@@ -383,8 +380,6 @@ namespace Mengine
         }
 
         m_renderSystem->changeWindowMode( m_windowResolution, m_fullscreen );
-
-        //this->restoreRenderSystemStates_();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::onWindowClose()
@@ -820,8 +815,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::calcRenderViewport_( const Viewport & _viewport, Viewport * const _renderViewport ) const
     {
-        float renderWidth = m_renderViewport.getWidth();
-        float renderHeight = m_renderViewport.getHeight();
+        const Viewport & renderViewport = this->getRenderViewport();
+
+        float renderWidth = renderViewport.getWidth();
+        float renderHeight = renderViewport.getHeight();
 
         uint32_t contentWidth = m_contentResolution.getWidth();
         uint32_t contentHeight = m_contentResolution.getHeight();
@@ -829,22 +826,22 @@ namespace Mengine
         float scale_width = renderWidth / float( contentWidth );
         float scale_height = renderHeight / float( contentHeight );
 
-        Viewport renderViewport;
-        renderViewport.begin.x = _viewport.begin.x * scale_width;
-        renderViewport.begin.y = _viewport.begin.y * scale_height;
-        renderViewport.end.x = _viewport.end.x * scale_width;
-        renderViewport.end.y = _viewport.end.y * scale_height;
+        Viewport scaleViewport;
+        scaleViewport.begin.x = _viewport.begin.x * scale_width;
+        scaleViewport.begin.y = _viewport.begin.y * scale_height;
+        scaleViewport.end.x = _viewport.end.x * scale_width;
+        scaleViewport.end.y = _viewport.end.y * scale_height;
 
-        renderViewport.begin += m_renderViewport.begin;
-        renderViewport.end += m_renderViewport.begin;
+        scaleViewport.begin += renderViewport.begin;
+        scaleViewport.end += renderViewport.begin;
 
-        float vp_x = MT_floorf( renderViewport.begin.x + 0.5f );
-        float vp_y = MT_floorf( renderViewport.begin.y + 0.5f );
+        float vp_x = MT_floorf( scaleViewport.begin.x + 0.5f );
+        float vp_y = MT_floorf( scaleViewport.begin.y + 0.5f );
         //float vp_x = renderViewport.begin.x;
         //float vp_y = renderViewport.begin.y;
 
-        float width = renderViewport.getWidth();
-        float height = renderViewport.getHeight();
+        float width = scaleViewport.getWidth();
+        float height = scaleViewport.getHeight();
 
         float vp_width = MT_floorf( width + 0.5f );
         float vp_height = MT_floorf( height + 0.5f );
@@ -859,35 +856,35 @@ namespace Mengine
             vp_x + vp_width <= 0.f ||
             vp_y + vp_height <= 0.f )
         {
-            renderViewport.begin.x = 0.f;
-            renderViewport.begin.y = 0.f;
-            renderViewport.end.x = 0.f;
-            renderViewport.end.y = 0.f;
+            scaleViewport.begin.x = 0.f;
+            scaleViewport.begin.y = 0.f;
+            scaleViewport.end.x = 0.f;
+            scaleViewport.end.y = 0.f;
         }
         else
         {
             if( vp_x < 0.f )
             {
-                renderViewport.begin.x = 0.f;
+                scaleViewport.begin.x = 0.f;
             }
 
             if( vp_x + vp_width > windowSize.x )
             {
-                renderViewport.end.x = windowSize.x;
+                scaleViewport.end.x = windowSize.x;
             }
 
             if( vp_y < 0.f )
             {
-                renderViewport.begin.y = 0.f;
+                scaleViewport.begin.y = 0.f;
             }
 
             if( vp_y + vp_height > windowSize.y )
             {
-                renderViewport.end.y = windowSize.y;
+                scaleViewport.end.y = windowSize.y;
             }
         }
 
-        *_renderViewport = renderViewport;
+        *_renderViewport = scaleViewport;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderServiceDebugInfo & RenderService::getDebugInfo() const
@@ -1221,10 +1218,19 @@ namespace Mengine
     void RenderService::setRenderViewport( const Viewport & _renderViewport )
     {
         m_renderViewport = _renderViewport;
+
+        LOGGER_INFO( "render", "set render viewport [%f %f %f %f]"
+            , m_renderViewport.begin.x
+            , m_renderViewport.begin.y
+            , m_renderViewport.end.x
+            , m_renderViewport.end.y
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     const Viewport & RenderService::getRenderViewport() const
     {
+        MENGINE_ASSERTION_FATAL( m_renderViewport.end.x != 0.f && m_renderViewport.end.y != 0.f );
+
         return m_renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////

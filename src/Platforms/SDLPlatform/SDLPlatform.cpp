@@ -101,8 +101,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLPlatform::SDLPlatform()
-        : m_fullscreen( false )
-        , m_sdlWindow( nullptr )
+        : m_sdlWindow( nullptr )
         , m_sdlAccelerometer( nullptr )
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
@@ -1051,18 +1050,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
+    bool SDLPlatform::createWindow( const Resolution & _windowResolution, bool _fullscreen )
     {
-        m_windowResolution = _resolution;
-        m_fullscreen = _fullscreen;
-
         LOGGER_MESSAGE( "create window size %u:%u fullscreen %d"
-            , _resolution.getWidth()
-            , _resolution.getHeight()
+            , _windowResolution.getWidth()
+            , _windowResolution.getHeight()
             , _fullscreen
         );
 
-        if( this->createWindow_( m_windowResolution, m_fullscreen ) == false )
+        if( this->createWindow_( _windowResolution, _fullscreen ) == false )
         {
             return false;
         }
@@ -2481,9 +2477,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
+    bool SDLPlatform::createWindow_( const Resolution & _windowResolution, bool _fullscreen )
     {
-        MENGINE_UNUSED( _resolution );
+        MENGINE_UNUSED( _windowResolution );
         MENGINE_UNUSED( _fullscreen );
 
         uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_RED_SIZE", 8 );
@@ -2614,6 +2610,7 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+
 #elif defined(MENGINE_PLATFORM_ANDROID)
         windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_SHOWN;
@@ -2670,6 +2667,7 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+
 #elif defined(MENGINE_WINDOWS_UNIVERSAL)
         windowFlags |= SDL_WINDOW_SHOWN;
 
@@ -2679,6 +2677,7 @@ namespace Mengine
         }
 
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "direct3d11" );
+
 #else
         windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_HIDDEN;
@@ -2756,8 +2755,8 @@ namespace Mengine
 
         if( _fullscreen == false )
         {
-            int width = static_cast<int>(_resolution.getWidth());
-            int height = static_cast<int>(_resolution.getHeight());
+            int width = static_cast<int>(_windowResolution.getWidth());
+            int height = static_cast<int>(_windowResolution.getHeight());
 
             uint32_t window_x_mode = (mode.w > width) ? SDL_WINDOWPOS_CENTERED : 50;
             uint32_t window_y_mode = (mode.h > height) ? SDL_WINDOWPOS_CENTERED : 50;

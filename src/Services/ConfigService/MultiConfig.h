@@ -8,24 +8,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class MemoryConfig
+    class MultiConfig
         : public ConfigInterface
     {
-        DECLARE_FACTORABLE( MemoryConfig );
+        DECLARE_FACTORABLE( MultiConfig );
 
     public:
-        MemoryConfig();
-        ~MemoryConfig() override;
+        MultiConfig();
+        ~MultiConfig() override;
 
     public:
-        struct RecordDesc
-        {
-            String section;
-            String key;
-            String value;
-        };
-
-        typedef Vector<RecordDesc> VectorRecords;
+        void addConfig( const ConfigInterfacePtr & _config );
 
     public:
         void setPlatformTags( const Tags & _platformTags ) override;
@@ -86,10 +79,11 @@ namespace Mengine
     protected:
         Tags m_platformTags;
 
-        VectorRecords m_records;
+        typedef Vector<ConfigInterfacePtr> VectorConfigs;
+        VectorConfigs m_configs;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MemoryConfig, ConfigInterface> MemoryConfigPtr;
+    typedef IntrusivePtr<MultiConfig, ConfigInterface> MultiConfigPtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

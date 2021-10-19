@@ -5,7 +5,6 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Hashtable2.h"
-#include "Kernel/Vector.h"
 
 namespace Mengine
 {

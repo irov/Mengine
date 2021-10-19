@@ -62,7 +62,7 @@ namespace Mengine
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, _doc );
+            ->loadConfig( _fileGroup, _filePath, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load packages '%s'"
             , _filePath.c_str()

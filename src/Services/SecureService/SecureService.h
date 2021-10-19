@@ -18,7 +18,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        HashType getSequreHash() const override;
+        HashType getSecureHash() const override;
 
     public:
         void protectData( void * const _buffer, size_t _size ) const override;

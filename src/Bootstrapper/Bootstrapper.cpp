@@ -110,6 +110,10 @@ PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_INI_STATIC
+PLUGIN_EXPORT( INI );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_IMAGE_CODEC_STATIC
 PLUGIN_EXPORT( ImageCodec );
 #endif
@@ -484,7 +488,7 @@ namespace Mengine
         if( defaultFileGroup->existFile( applicationPath, true ) == true )
         {
             ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
-                ->loadConfig( defaultFileGroup, applicationPath, MENGINE_DOCUMENT_FACTORABLE );
+                ->loadConfig( defaultFileGroup, applicationPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, "invalid open application settings '%s'"
                 , applicationPath.c_str()
@@ -496,7 +500,7 @@ namespace Mengine
             for( const FilePath & filePath : configsPaths )
             {
                 if( CONFIG_SERVICE()
-                    ->loadDefaultConfig( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                    ->loadDefaultConfig( defaultFileGroup, filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     LOGGER_ERROR( "invalid load config '%s'"
                         , filePath.c_str()
@@ -512,7 +516,7 @@ namespace Mengine
             for( const FilePath & filePath : credentialsPaths )
             {
                 if( CONFIG_SERVICE()
-                    ->loadDefaultConfig( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                    ->loadDefaultConfig( defaultFileGroup, filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     LOGGER_ERROR( "invalid load credential '%s'"
                         , filePath.c_str()
@@ -537,7 +541,7 @@ namespace Mengine
         if( option_config != nullptr )
         {
             if( CONFIG_SERVICE()
-                ->loadDefaultConfig( defaultFileGroup, Helper::stringizeFilePath( option_config ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadDefaultConfig( defaultFileGroup, Helper::stringizeFilePath( option_config ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load config '%s'"
                     , option_config
@@ -664,6 +668,7 @@ namespace Mengine
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
@@ -706,6 +711,10 @@ namespace Mengine
 
 #if MENGINE_DOCUMENT_ENABLE == 1
         LOGGER_MESSAGE_RELEASE( "enable document debug [ON]" );
+#endif
+
+#ifdef MENGINE_PLUGIN_INI_STATIC
+        MENGINE_ADD_PLUGIN( INI, "initialize Plugin INI...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
@@ -791,9 +800,7 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_LZ4_STATIC
         MENGINE_ADD_PLUGIN( LZ4, "initialize Plugin LZ4...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-        BOOTSTRAPPER_SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
+#endif        
 
         bool OPTION_norenderMode = HAS_OPTION( "norender" );
 

@@ -23,7 +23,7 @@
 
 namespace Mengine
 {
-    namespace IniUtil
+    namespace INIUtil
     {
         //////////////////////////////////////////////////////////////////////////
         struct IniStore
@@ -51,6 +51,7 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint8_t * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t * const _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int64_t * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double * const _value );

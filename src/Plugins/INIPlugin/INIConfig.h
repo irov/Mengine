@@ -3,30 +3,30 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/InputStreamInterface.h"
 
-#include "IniUtil.h"
+#include "INIUtil.h"
 
 #include "Kernel/Tags.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<IniUtil::IniStore> VectorIniStores;
+    typedef Vector<INIUtil::IniStore> VectorIniStores;
     //////////////////////////////////////////////////////////////////////////
-    class IniConfig
+    class INIConfig
         : public ConfigInterface
     {
-        DECLARE_FACTORABLE( IniConfig );
+        DECLARE_FACTORABLE( INIConfig );
 
     public:
-        IniConfig();
-        ~IniConfig() override;
+        INIConfig();
+        ~INIConfig() override;
 
     public:
         void setPlatformTags( const Tags & _platformTags ) override;
         const Tags & getPlatformTags() const override;
 
     public:
-        bool load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc );
+        bool load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) override;
 
     public:
         bool existValue( const Char * _section, const Char * _key ) const override;
@@ -37,6 +37,7 @@ namespace Mengine
         bool hasValue( const Char * _section, const Char * _key, uint8_t * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, int32_t * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, uint32_t * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, int64_t * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, uint64_t * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, float * const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, double * const _value ) const override;
@@ -56,6 +57,7 @@ namespace Mengine
         uint8_t getValue( const Char * _section, const Char * _key, uint8_t _default ) const override;
         int32_t getValue( const Char * _section, const Char * _key, int32_t _default ) const override;
         uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const override;
+        int64_t getValue( const Char * _section, const Char * _key, int64_t _default ) const override;
         uint64_t getValue( const Char * _section, const Char * _key, uint64_t _default ) const override;
         float getValue( const Char * _section, const Char * _key, float _default ) const override;
         double getValue( const Char * _section, const Char * _key, double _default ) const override;
@@ -77,11 +79,11 @@ namespace Mengine
 
     protected:
         Tags m_platformTags;
-
+                
         VectorIniStores m_stores;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<IniConfig, ConfigInterface> INIConfigPtr;
+    typedef IntrusivePtr<INIConfig, ConfigInterface> INIConfigPtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

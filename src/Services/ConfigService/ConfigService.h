@@ -2,8 +2,8 @@
 
 #include "Interface/ConfigServiceInterface.h"
 
-#include "IniConfig.h"
 #include "MemoryConfig.h"
+#include "MultiConfig.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -27,20 +27,17 @@ namespace Mengine
         ConfigInterfacePtr createMemoryConfig( const DocumentPtr & _doc ) override;
 
     public:
-        ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) override;
+        ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc ) override;
 
     public:
-        bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) override;
+        bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc ) override;
 
     public:
         const ConfigInterfacePtr & getDefaultConfig() const override;
 
     protected:
-        Tags m_platformTags;
-
-        INIConfigPtr m_defaultConfig;
+        MultiConfigPtr m_defaultConfig;
 
         FactoryPtr m_factoryMemoryConfig;
-        FactoryPtr m_factoryIniConfig;
     };
 }

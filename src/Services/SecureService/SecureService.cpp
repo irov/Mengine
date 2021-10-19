@@ -42,7 +42,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    HashType SecureService::getSequreHash() const
+    HashType SecureService::getSecureHash() const
     {
         return m_secureHash;
     }

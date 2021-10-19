@@ -118,9 +118,9 @@ namespace Mengine
             , SENTRY_SDK_USER_AGENT
         );
 
-        const Char * sentryDSN = CONFIG_VALUE( "Sentry", "DSN", "" );
+        const Char * SENTRY_DSN = CONFIG_VALUE( "Sentry", "DSN", "" );
 
-        if( MENGINE_STRCMP( sentryDSN, "" ) == 0 )
+        if( MENGINE_STRCMP( SENTRY_DSN, "" ) == 0 )
         {
             LOGGER_WARNING( "Sentry don't setup DSN" );
 
@@ -128,17 +128,17 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "Sentry DSN: %s"
-            , sentryDSN
+            , SENTRY_DSN
         );
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-        const Char * sentryHandler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
+        const Char * SENTRY_HANDLER = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
 #else
-        const Char * sentryHandler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler" );
+        const Char * SENTRY_HANDLER = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler" );
 #endif
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
-            , sentryHandler
+            , SENTRY_HANDLER
         );
 
         sentry_options_t * options = sentry_options_new();
@@ -174,7 +174,7 @@ namespace Mengine
         
         PathString sentryHandlerPath;
         sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );
-        sentryHandlerPath.append( sentryHandler );
+        sentryHandlerPath.append( SENTRY_HANDLER );
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
             , sentryHandlerPath.c_str()
@@ -191,11 +191,13 @@ namespace Mengine
         sentry_options_set_handler_path( options, str_sentryHandlerPath );
 #endif
 
-        sentry_options_set_dsn( options, sentryDSN ); 
+        sentry_options_set_dsn( options, SENTRY_DSN ); 
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
         sentry_options_set_debug( options, MENGINE_DEBUG_VALUE( 1, 0 ) );
 
-        sentry_options_set_release( options, MENGINE_BUILD_VERSION );
+        const Char * BUILD_VERSION = Helper::getBuildVersion();
+
+        sentry_options_set_release( options, BUILD_VERSION );
 
         if( sentry_init( options ) != 0 )
         {
@@ -281,20 +283,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyCreateApplication_()
     {
-        sentry_value_t screen = sentry_value_new_object();
-        sentry_value_set_by_key( screen, "width", sentry_value_new_int32( 1920 ) );
-        sentry_value_set_by_key( screen, "height", sentry_value_new_int32( 1080 ) );
-        sentry_set_extra( "screen_size", screen );
-
-        const Char * sentryApplication = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
+        const Char * SENTRY_APPLICATION = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
 
         LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
-            , sentryApplication
+            , SENTRY_APPLICATION
         );
 
-        sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
+        sentry_set_extra( "Application", sentry_value_new_string( SENTRY_APPLICATION ) );
 
-        Char companyName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
+        Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
 
@@ -347,7 +344,7 @@ namespace Mengine
             sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
         }
 
-        bool debugMode = MENGINE_DEBUG_VALUE( true, false );
+        bool debugMode = Helper::isDebugMode();
 
         LOGGER_MESSAGE( "Sentry set extra [Debug: %u]"
             , debugMode
@@ -363,7 +360,7 @@ namespace Mengine
 
         sentry_set_extra( "Development", sentry_value_new_bool( developmentMode ) );
 
-        bool masterMode = MENGINE_MASTER_VALUE( true, false );
+        bool masterMode = Helper::isBuildMaster();
 
         LOGGER_MESSAGE( "Sentry set extra [Master: %u]"
             , masterMode
@@ -371,7 +368,7 @@ namespace Mengine
 
         sentry_set_extra( "Master", sentry_value_new_bool( masterMode ) );
 
-        bool publishMode = MENGINE_PUBLISH_VALUE( true, false );
+        bool publishMode = Helper::isBuildPublish();
 
         LOGGER_MESSAGE( "Sentry set extra [Publish: %u]"
             , publishMode
@@ -379,31 +376,36 @@ namespace Mengine
 
         sentry_set_extra( "Publish", sentry_value_new_bool( publishMode ) );
 
-#ifdef MENGINE_ENGINE_GIT_SHA1
-        const Char * ENGINE_GIT_SHA1 = MENGINE_ENGINE_GIT_SHA1;
+        const Char * ENGINE_GIT_SHA1 = Helper::getEngineGITSHA1();
 
         LOGGER_MESSAGE( "Sentry set extra [Engine Commit: %s]"
             , ENGINE_GIT_SHA1
         );
 
         sentry_set_extra( "Engine Commit", sentry_value_new_string( ENGINE_GIT_SHA1 ) );
-#endif
 
-#ifdef MENGINE_BUILD_TIMESTAMP
-        const Char * BUILD_TIMESTAMP = MENGINE_BUILD_TIMESTAMP;
+        const Char * BUILD_TIMESTAMP = Helper::getBuildTimestamp();
 
         LOGGER_MESSAGE( "Sentry set extra [Build Timestamp: %s]"
             , BUILD_TIMESTAMP
         );
 
         sentry_set_extra( "Build Timestamp", sentry_value_new_string( BUILD_TIMESTAMP ) );
-#endif
+
+        const Char * BUILD_USERNAME = Helper::getBuildUsername();
+
+        LOGGER_MESSAGE( "Sentry set extra [Build Username: %s]"
+            , BUILD_USERNAME
+        );
+
+        sentry_set_extra( "Build Username", sentry_value_new_string( BUILD_USERNAME ) );
 
         const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
 
         LOGGER_MESSAGE( "Sentry set extra [Resource Commit: %s]"
             , Info_ResourceCommit
         );
+
 
         sentry_set_extra( "Resource Commit", sentry_value_new_string( Info_ResourceCommit ) );
 

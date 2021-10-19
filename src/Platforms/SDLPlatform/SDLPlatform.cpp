@@ -93,6 +93,144 @@ extern "C" {
         jclass_activity = (jclass)(env->NewGlobalRef( cls ));
         jobject_activity = (jclass)(env->NewGlobalRef( obj ));
     }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getCompanyName )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
+        APPLICATION_SERVICE()
+            ->getCompanyName( companyName );
+
+        jstring result = env->NewStringUTF( companyName );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getProjectName )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
+        APPLICATION_SERVICE()
+            ->getProjectName( projectName );
+
+        jstring result = env->NewStringUTF( projectName );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getProjectVersion )(JNIEnv * env, jclass cls)
+    {
+        uint32_t projectVersion = APPLICATION_SERVICE()
+            ->getProjectVersion();
+
+        jint result = (jint)projectVersion;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isDebugMode )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isDebugMode();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isDevelopmentMode )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isDevelopmentMode();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isBuildMaster )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isBuildMaster();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isBuildPublish )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isBuildPublish();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();
+
+        jstring result = env->NewStringUTF( ENGINE_GIT_SHA1 );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildTimestamp )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * BUILD_TIMESTAMP = Mengine::Helper::getBuildTimestamp();
+
+        jstring result = env->NewStringUTF( BUILD_TIMESTAMP );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildUsername )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * BUILD_USERNAME = Mengine::Helper::getBuildUsername();
+
+        jstring result = env->NewStringUTF( BUILD_USERNAME );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildVersion )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();
+
+        jstring result = env->NewStringUTF( BUILD_VERSION );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getConfigValue )(JNIEnv * env, jclass cls, jstring _section, jstring _key, jstring _default)
+    {
+        const Mengine::ConfigInterfacePtr & defaultConfig = CONFIG_SERVICE()
+            ->getDefaultConfig();
+
+        const Mengine::Char * section_str = env->GetStringUTFChars( _section, nullptr );
+        const Mengine::Char * key_str = env->GetStringUTFChars( _key, nullptr );
+        const Mengine::Char * default_str = env->GetStringUTFChars( _default, nullptr );
+
+        const Mengine::Char * value_str = defaultConfig->getValue( section_str, key_str, default_str );
+
+        env->ReleaseStringUTFChars( _section, section_str );
+        env->ReleaseStringUTFChars( _key, key_str );
+        env->ReleaseStringUTFChars( _default, default_str );
+
+        jstring result = env->NewStringUTF( value_str );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+
 }
 //////////////////////////////////////////////////////////////////////////
 #endif
@@ -600,15 +738,37 @@ namespace Mengine
             m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
 
+        LOGGER_MESSAGE_RELEASE( "Platform Tags: %s"
+            , [this]()
+        {
+            static Char cache_value[1024] = {'\0'};
+
+            for( const ConstString & tag : m_platformTags.getValues() )
+            {
+                MENGINE_STRCAT( cache_value, tag.c_str() );
+                MENGINE_STRCAT( cache_value, "-" );
+            }
+
+            return cache_value;
+        }() );
+
         if( HAS_OPTION( "touchpad" ) == true )
         {
             m_touchpad = true;
         }
 
+        LOGGER_MESSAGE_RELEASE( "Touchpad: %u"
+            , m_touchpad
+        );
+
         if( HAS_OPTION( "desktop" ) == true )
         {
             m_desktop = true;
         }
+
+        LOGGER_MESSAGE_RELEASE( "Desktop: %u"
+            , m_desktop
+        );
 
         SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -651,6 +811,9 @@ namespace Mengine
 
         m_jenv = env;
 #endif
+
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &SDLPlatform::notifyInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &SDLPlatform::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -786,6 +949,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+
         m_active = false;
 
         this->destroyWindow_();
@@ -3065,6 +3231,29 @@ namespace Mengine
 
         FILE_SERVICE()
             ->unmountFileGroup( ConstString::none() );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::notifyInitializeBaseServices_()
+    {
+#if defined(MENGINE_PLATFORM_ANDROID)
+        static jmethodID jmethodID_onMengineInitializeBaseServices = m_jenv->GetMethodID( jclass_activity, "onMengineInitializeBaseServices", "()V" );
+
+        if( jmethodID_onMengineInitializeBaseServices != NULL ) {
+            m_jenv->CallVoidMethod(jobject_activity, jmethodID_onMengineInitializeBaseServices);
+        }
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::notifyCreateApplication_()
+    {
+#if defined(MENGINE_PLATFORM_ANDROID)
+        static jmethodID jmethodID_onMengineCreateApplication = m_jenv->GetMethodID( jclass_activity, "onMengineCreateApplication", "()V" );
+
+        if( jmethodID_onMengineCreateApplication != NULL )
+        {
+            m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineCreateApplication );
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -31,8 +31,8 @@ extern "C" {
     {
         if( s_androidNativePythonModule != nullptr )
         {
-            const char * method_str = env->GetStringUTFChars( _method, nullptr );
-            const char * kwds_str = env->GetStringUTFChars( _kwds, nullptr );
+            const Mengine::Char * method_str = env->GetStringUTFChars( _method, nullptr );
+            const Mengine::Char * kwds_str = env->GetStringUTFChars( _kwds, nullptr );
 
             Mengine::String method = method_str;
             Mengine::String kwds = kwds_str;
@@ -52,7 +52,7 @@ extern "C" {
     {
         if( s_androidNativePythonModule != nullptr )
         {
-            const char * name_str = env->GetStringUTFChars( _name, nullptr );
+            const Mengine::Char * name_str = env->GetStringUTFChars( _name, nullptr );
 
             Mengine::String name = name_str;
 

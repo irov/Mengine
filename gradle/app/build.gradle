@@ -387,7 +387,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
     apply plugin: 'io.sentry.android.gradle'
 
     dependencies {
-        implementation 'io.sentry:sentry-android:5.1.2'
+        implementation 'io.sentry:sentry-android:5.2.3'
     }
 }
 else

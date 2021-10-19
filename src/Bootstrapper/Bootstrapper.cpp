@@ -732,6 +732,8 @@ namespace Mengine
 
         Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
+
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
         MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );
 #endif

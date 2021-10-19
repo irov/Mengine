@@ -1,5 +1,23 @@
 package org.Mengine.Build;
 
+import org.Mengine.Build.AdMob.AdMobInteractionLayer;
+import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
+import org.Mengine.Build.Facebook.FacebookInteractionLayer;
+import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
+import org.Mengine.Build.LocalNotifications.NotificationPublisher;
+import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
+import org.Mengine.Build.MarSDK.MarSDKInteractionLayer;
+
+import org.libsdl.app.SDLActivity;
+import org.libsdl.app.SDLSurface;
+
+import com.facebook.CallbackManager;
+import com.facebook.appevents.AppEventsLogger;
+
+import io.sentry.Sentry;
+import io.sentry.CustomSamplingContext;
+import io.sentry.android.core.SentryAndroid;
+
 import android.app.Notification;
 import android.content.*;
 import android.content.res.Configuration;
@@ -11,28 +29,6 @@ import android.provider.Settings.Secure;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-
-import com.facebook.CallbackManager;
-import com.facebook.appevents.AppEventsLogger;
-import com.mar.sdk.IUser;
-import com.mar.sdk.PayParams;
-import com.mar.sdk.base.PluginFactory;
-import com.mar.sdk.gg.IAdListener;
-import com.mar.sdk.gg.MARGgPlatform;
-import com.mar.sdk.platform.MARPlatform;
-import com.mar.sdk.MARCallBack;
-import com.mar.sdk.utils.ResourceHelper;
-
-import org.Mengine.Build.AdMob.AdMobInteractionLayer;
-import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
-import org.Mengine.Build.Facebook.FacebookInteractionLayer;
-import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
-import org.Mengine.Build.LocalNotifications.NotificationPublisher;
-import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
-import org.Mengine.Build.MarSDK.MarSDKInteractionLayer;
-
-import org.libsdl.app.SDLActivity;
-import org.libsdl.app.SDLSurface;
 
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MENGINE";
@@ -49,6 +45,19 @@ public class MengineActivity extends SDLActivity {
     private static MengineActivity _instance;
 
     private static native void AndroidNativeMengine_setMengineAndroidActivityJNI(Object Activity);
+    private static native String AndroidNativeMengine_getCompanyName();
+    private static native String AndroidNativeMengine_getProjectName();
+    private static native int AndroidNativeMengine_getProjectVersion();
+    private static native boolean AndroidNativeMengine_isDebugMode();
+    private static native boolean AndroidNativeMengine_isDevelopmentMode();
+    private static native boolean AndroidNativeMengine_isBuildMaster();
+    private static native boolean AndroidNativeMengine_isBuildPublish();
+    private static native String AndroidNativeMengine_getEngineGITSHA1();
+    private static native String AndroidNativeMengine_getBuildTimestamp();
+    private static native String AndroidNativeMengine_getBuildUsername();
+    private static native String AndroidNativeMengine_getBuildVersion();
+    private static native String AndroidNativeMengine_getConfigValue(String section, String key, String default_value);
+
     private static native void AndroidNativeKernel_setupKernelJNI();
     private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
@@ -105,6 +114,49 @@ public class MengineActivity extends SDLActivity {
         if (_instance.getIntent().hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
             AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
         }
+    }
+
+    public void onMengineInitializeBaseServices() {
+        Log.i(TAG, "MengineActivity.onMengineInitializeBaseServices()");
+
+        SentryAndroid.init(this, options -> {
+            String SENTRY_DNS = AndroidNativeMengine_getConfigValue("Sentry", "DSN", "");
+            options.setDsn(SENTRY_DNS);
+            Log.i(TAG, "Sentry DNS:" + SENTRY_DNS);
+
+            String buildVersion = AndroidNativeMengine_getBuildVersion();
+            options.setRelease(buildVersion);
+            Log.i(TAG, "Sentry Build Version:" + buildVersion);
+        });
+    }
+
+    public void onMengineCreateApplication() {
+        Sentry.configureScope(scope -> {
+            String SENTRY_APPLICATION = AndroidNativeMengine_getConfigValue( "Sentry", "Application", "Mengine" );
+
+            String companyName = AndroidNativeMengine_getCompanyName();
+            String projectName = AndroidNativeMengine_getProjectName();
+            int projectVersion = AndroidNativeMengine_getProjectVersion();
+            boolean isDebugMode = AndroidNativeMengine_isDebugMode();
+            boolean isDevelopmentMode = AndroidNativeMengine_isDevelopmentMode();
+            boolean isBuildMaster = AndroidNativeMengine_isBuildMaster();
+            boolean isBuildPublish = AndroidNativeMengine_isBuildPublish();
+            String engineGITSHA1 = AndroidNativeMengine_getEngineGITSHA1();
+            String buildTimestamp = AndroidNativeMengine_getBuildTimestamp();
+            String buildUsername = AndroidNativeMengine_getBuildUsername();
+
+            scope.setExtra("Application", SENTRY_APPLICATION);
+            scope.setExtra("Company", companyName);
+            scope.setExtra("Project", projectName);
+            scope.setExtra("Version", String.valueOf(projectVersion));
+            scope.setExtra("Debug", String.valueOf(isDebugMode));
+            scope.setExtra("Development", String.valueOf(isDevelopmentMode));
+            scope.setExtra("Master", String.valueOf(isBuildMaster));
+            scope.setExtra("Publish", String.valueOf(isBuildPublish));
+            scope.setExtra("Engine Commit", engineGITSHA1);
+            scope.setExtra("Build Timestamp", buildTimestamp);
+            scope.setExtra("Build Username", buildUsername);
+        });
     }
 
     @Override

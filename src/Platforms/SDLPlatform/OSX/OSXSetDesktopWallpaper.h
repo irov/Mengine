@@ -1,8 +1,8 @@
 #ifndef OSXSetDesktopWallpaper_H_
 #define OSXSetDesktopWallpaper_H_
 
-extern "C" {
-    int OSXSetDesktopWallpaper(const char *_url);
-}
+#include "Config/Config.h"
+
+int OSXSetDesktopWallpaper(const char *_url);
 
 #endif

@@ -3,8 +3,6 @@
 
 #include "Config/Config.h"
 
-extern "C" {
-    int OSXOpenUrlInDefaultBrowser(const char *_url);
-}
+int OSXOpenUrlInDefaultBrowser(const char *_url);
 
 #endif

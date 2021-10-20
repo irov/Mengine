@@ -40,17 +40,9 @@ IF(MENGINE_TARGET_ANDROID)
     ENDIF()
     
     add_library(OpenAL32 SHARED IMPORTED)
-
-    set_target_properties(
-            # Specifies the target library.
-            OpenAL32
-
-            # Specifies the parameter you want to define.
-            PROPERTIES IMPORTED_LOCATION
-
-            # Provides the path to the library you want to import.
-            ${MENGINE_REPOSITORY}/gradle/libraries/OpenAL32/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libopenal.so
-            )
+    SET(OPENAL_IMPORTED_LOCATION_PATH ${MENGINE_REPOSITORY}/gradle/libraries/OpenAL32/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libopenal.so)
+    set_target_properties(OpenAL32 PROPERTIES IMPORTED_LOCATION ${OPENAL_IMPORTED_LOCATION_PATH})
+    MESSAGE("OPENAL_IMPORTED_LOCATION_PATH: ${OPENAL_IMPORTED_LOCATION_PATH}")
 
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} OpenAL32)
 ENDIF()

@@ -3,6 +3,7 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/InputStreamInterface.h"
 
+#include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/VectorConstString.h"

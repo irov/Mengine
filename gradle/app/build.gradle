@@ -244,13 +244,14 @@ android {
         }
     }
 
-
     packagingOptions {
         pickFirst 'lib/**/libc++_shared.so'
         pickFirst 'lib/**/libopenal.so'
         pickFirst 'lib/**/libSDL2.so'
         pickFirst 'lib/**/libhidapi.so'
     }
+
+    preBuild.dependsOn ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
     afterEvaluate {
         if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
@@ -278,8 +279,6 @@ android.applicationVariants.all { variant ->
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.core:core:1.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
@@ -293,6 +292,7 @@ dependencies {
 
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
+
     implementation fileTree(dir: '../../dependencies/externals-android', include: ['*.jar'])
 }
 

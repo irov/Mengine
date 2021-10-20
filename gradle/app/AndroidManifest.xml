@@ -22,7 +22,6 @@
 
     <application
         android:label="${app_name_gradle}"
-        android:screenOrientation="@string/screen_orientation"
         android:name="org.Mengine.Build.MengineApplication"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"

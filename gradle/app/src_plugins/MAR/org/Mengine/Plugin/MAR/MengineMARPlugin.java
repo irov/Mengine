@@ -1,4 +1,6 @@
-package org.Mengine.Build.MarSDK;
+package org.Mengine.Plugin.MAR;
+
+import org.Mengine.Build.MenginePlugin;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,6 +13,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -41,15 +44,15 @@ import android.view.KeyEvent;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class MarSDKInteractionLayer implements MARInitListener {
+public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     private static final String TAG = "MarSDK";
 
-    private static MarSDKInteractionLayer _instance;
+    private static MengineMARPlugin _instance;
 
     private boolean m_logined = false;
     private MengineActivity m_activity;
 
-    public MarSDKInteractionLayer(MengineActivity _activity) {
+    public MengineMARPlugin(MengineActivity _activity) {
         _instance = this;
 
         m_activity = _activity;
@@ -126,38 +129,60 @@ public class MarSDKInteractionLayer implements MARInitListener {
         });
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+    }
+    @Override
+    public void onMengineInitializeBaseServices()
+    {
+    }
+    @Override
+    public void onMengineCreateApplication()
+    {
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         MARSDK.getInstance().onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
     public void onStart(){
         MARSDK.getInstance().onStart();
     }
 
+    @Override
     public void onPause(){
         MARSDK.getInstance().onPause();
     }
 
+    @Override
     public void onResume(){
         MARSDK.getInstance().onResume();
     }
 
+    @Override
     public void onNewIntent(Intent intent) {
         MARSDK.getInstance().onNewIntent(intent);
     }
 
+    @Override
     public void onDestroy() {
         MARSDK.getInstance().onDestroy();
     }
 
+    @Override
     public void onRestart() {
         MARSDK.getInstance().onRestart();
     }
 
+    @Override
     public void onConfigurationChanged(Configuration newConfig){
         MARSDK.getInstance().onConfigurationChanged(newConfig);
     }
 
+    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int action = event.getAction();
         int keyCode = event.getKeyCode();
@@ -199,22 +224,23 @@ public class MarSDKInteractionLayer implements MARInitListener {
         return false;
     }
 
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         MARSDK.getInstance().onRequestPermissionResult(requestCode, permissions, grantResults);
     }
 
     @Override
     public void onInitResult(int code, String msg) {
-        Log.d(MarSDKInteractionLayer.TAG, "marsdk.onInitResult code: " + code + " msg:" + msg);
+        Log.d(TAG, "marsdk.onInitResult code: " + code + " msg:" + msg);
 
         switch(code){
             case MARCode.CODE_INIT_SUCCESS:
-                Log.d(MarSDKInteractionLayer.TAG, "marsdk init success");
+                Log.d(TAG, "marsdk init success");
 
                 m_activity.pythonCall("onMarSDKInitSuccess");
                 break;
             case MARCode.CODE_INIT_FAIL:
-                Log.d(MarSDKInteractionLayer.TAG, "marsdk init fail");
+                Log.d(TAG, "marsdk init fail");
 
                 m_activity.pythonCall("onMarSDKInitFail");
                 break;
@@ -223,17 +249,17 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
     @Override
     public void onLoginResult(int code, UToken uToken) {
-        Log.d(MarSDKInteractionLayer.TAG, "marsdk.onLoginResult code: " + code + " uToken: " + uToken);
+        Log.d(TAG, "marsdk.onLoginResult code: " + code + " uToken: " + uToken);
         
         switch(code){
             case MARCode.CODE_LOGIN_SUCCESS:
-                Log.d(MarSDKInteractionLayer.TAG, "marsdk login success");
+                Log.d(TAG, "marsdk login success");
 
                 m_logined = true;
                 //get control info
                 int gameType = MARSDK.getInstance().getGameType();
 
-                Log.d(MarSDKInteractionLayer.TAG, "marsdk login game type: " + gameType);
+                Log.d(TAG, "marsdk login game type: " + gameType);
                 
                 if ((gameType == 1 || gameType == 3) && !MggControl.getInstance().getFreeFlag()){
                     MggControl.getInstance().reqAdControlInfo();
@@ -246,7 +272,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
                 //m_activity.getData(1);
                 break;
             case MARCode.CODE_LOGIN_FAIL:
-                Log.d(MarSDKInteractionLayer.TAG, "marsdk login fail");
+                Log.d(TAG, "marsdk login fail");
 
                 if (MARSDK.getInstance().getGameType() == 1){
                     MARPlatform.getInstance().visitorLogin();
@@ -259,7 +285,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
     
     @Override
     public void onSwitchAccount(UToken uToken) {
-        Log.d(MarSDKInteractionLayer.TAG, "marsdk.onSwitchAccount uToken: " + uToken);
+        Log.d(TAG, "marsdk.onSwitchAccount uToken: " + uToken);
         if(uToken != null){
             m_logined = true;
 
@@ -269,14 +295,14 @@ public class MarSDKInteractionLayer implements MARInitListener {
     
     @Override
     public void onLogout() {
-        Log.d(MarSDKInteractionLayer.TAG, "marsdk.onLogout");
+        Log.d(TAG, "marsdk.onLogout");
 
         m_activity.pythonCall("onMarSDKLogout");
     }    
     
     @Override
     public void onPayResult(int code, String msg) {
-        Log.d(MarSDKInteractionLayer.TAG, "marsdk.onPayResult code: " + code + " msg: " + msg);
+        Log.d(TAG, "marsdk.onPayResult code: " + code + " msg: " + msg);
         
         try {
             JSONObject json = new JSONObject(msg);
@@ -284,26 +310,26 @@ public class MarSDKInteractionLayer implements MARInitListener {
             String productId = json.getString("productId");
 
             if (json.getInt("payResult") == 0){
-                Log.d(MarSDKInteractionLayer.TAG, "pay complete orderId: " + json.getString("orderId"));
+                Log.d(TAG, "pay complete orderId: " + json.getString("orderId"));
                 setPropDeliveredComplete(json.getString("orderId"));
 
                 m_activity.pythonCall("onMarSDKPaySuccess", productId);
             }
             else
             {
-                Log.d(MarSDKInteractionLayer.TAG, "pay fail");
+                Log.d(TAG, "pay fail");
 
                 m_activity.pythonCall("onMarSDKPayFail", productId);
             }
         }catch (Exception e){
-            Log.d(MarSDKInteractionLayer.TAG, "pay error");
+            Log.d(TAG, "pay error");
             e.printStackTrace();
         }
     }
 
     @Override
     public void onRedeemResult(String msg) {
-        Log.d(MarSDKInteractionLayer.TAG, "marsdk.onRedeemResult msg: " + msg);
+        Log.d(TAG, "marsdk.onRedeemResult msg: " + msg);
 
         int result;
         try {
@@ -319,7 +345,7 @@ public class MarSDKInteractionLayer implements MARInitListener {
         }
         catch(Exception e) {
             result = -1;
-            Log.d(MarSDKInteractionLayer.TAG, "redeem error");
+            Log.d(TAG, "redeem error");
             m_activity.pythonCall("onMarSDKRedeemResult", result, 0, "", "");
             e.printStackTrace();
         }
@@ -327,11 +353,11 @@ public class MarSDKInteractionLayer implements MARInitListener {
 
     @Override
     public void onResult(int code, String msg) {
-        Log.d(MarSDKInteractionLayer.TAG, "marsdk.onResult code: " + code + " msg: " + msg);
+        Log.d(TAG, "marsdk.onResult code: " + code + " msg: " + msg);
         
         if(MARCode.CODE_AD_VIDEO_CALLBACK == code){
             //play video callback msg : 1 suc 0 fail
-            Log.d(MarSDKInteractionLayer.TAG, "Video callback: " + msg);
+            Log.d(TAG, "Video callback: " + msg);
             String watchAdTime = getCurrentTime();
             m_activity.pythonCall("onMarSDKAdVideoCallback", msg, watchAdTime);
         }
@@ -376,12 +402,12 @@ public class MarSDKInteractionLayer implements MARInitListener {
             }
             /////////////////////////////////
 
-            Log.d(MarSDKInteractionLayer.TAG, "try to paste code: \"" + code + "\"");
+            Log.d(TAG, "try to paste code: \"" + code + "\"");
             _instance.m_activity.pythonCall("onMarSDKSaveClipboard", code);
         }
         catch (Exception e)
         {
-            Log.d(MarSDKInteractionLayer.TAG, "paste code error");
+            Log.d(TAG, "paste code error");
             e.printStackTrace();
         }
     }

@@ -3,6 +3,7 @@ package org.Mengine.Build.Facebook;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.content.Intent;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -16,7 +17,9 @@ import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.facebook.appevents.AppEventsLogger;
 
+import org.Mengine.Build.MengineActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,6 +37,7 @@ public class FacebookInteractionLayer {
     private static final String EMAIL = "email";
     private static final String PROFILE = "public_profile";
 
+    private MengineActivity _activity;
     private CallbackManager _callbackManager;
     private AccessToken _accessToken;
     private String _userId;
@@ -50,10 +54,17 @@ public class FacebookInteractionLayer {
     static native void AndroidNativeFacebook_onShareError(String exception);
     static native void AndroidNativeFacebook_onProfilePictureLinkGet(String pictureURL);
 
-    public FacebookInteractionLayer(CallbackManager callbackManager) {
-        _callbackManager = callbackManager;
+    public FacebookInteractionLayer(MengineActivity activity) {
+        _activity = activity;
+        _callbackManager = CallbackManager.Factory.create();
         _accessToken = AccessToken.getCurrentAccessToken();
         _userId = "";
+
+        AppEventsLogger.activateApp(_activity.getApplication());
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        _callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public boolean isLoggedIn() {

@@ -1,22 +1,19 @@
 package org.Mengine.Build;
 
-import org.Mengine.Build.AdMob.AdMobInteractionLayer;
-import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
-import org.Mengine.Build.Facebook.FacebookInteractionLayer;
-import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
-import org.Mengine.Build.LocalNotifications.NotificationPublisher;
-import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
-import org.Mengine.Build.MarSDK.MarSDKInteractionLayer;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+
+import org.Mengine.Build.MenginePlugin;
+//import org.Mengine.Build.AdMob.AdMobInteractionLayer;
+//import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
+//import org.Mengine.Build.Facebook.FacebookInteractionLayer;
+//import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
+//import org.Mengine.Build.LocalNotifications.NotificationPublisher;
+//import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
-
-import com.facebook.CallbackManager;
-import com.facebook.appevents.AppEventsLogger;
-
-import io.sentry.Sentry;
-import io.sentry.CustomSamplingContext;
-import io.sentry.android.core.SentryAndroid;
 
 import android.app.Notification;
 import android.content.*;
@@ -27,20 +24,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.provider.Settings.Secure;
 import android.view.KeyEvent;
-import android.view.View;
-import android.widget.Button;
 
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MENGINE";
 
-    public FacebookInteractionLayer facebookInteractionLayer;
-    public UnityAdsInteractionLayer unityAdsInteractionLayer;
-    public MarSDKInteractionLayer marSDKInteractionLayer;
-    public AdMobInteractionLayer adMobInteractionLayer;
-    public DevToDevInteractionLayer devToDevInteractionLayer;
-    public LocalNotificationsInteractionLayer localNotificationsInteractionLayer;
+    public ArrayList<MenginePlugin> plugins;
 
-    public CallbackManager callbackManager;
+    //public FacebookInteractionLayer facebookInteractionLayer;
+    //public UnityAdsInteractionLayer unityAdsInteractionLayer;
+
+    //public AdMobInteractionLayer adMobInteractionLayer;
+    //public DevToDevInteractionLayer devToDevInteractionLayer;
+    //public LocalNotificationsInteractionLayer localNotificationsInteractionLayer;
 
     private static MengineActivity _instance;
 
@@ -83,20 +78,98 @@ public class MengineActivity extends SDLActivity {
         };
     }
 
-    protected void initPlugins() {
-        AppEventsLogger.activateApp(getApplication());
+    protected boolean createPlugin(String name) {
+        ClassLoader cl = MengineActivity.class.getClassLoader();
 
-        this.marSDKInteractionLayer = new MarSDKInteractionLayer(this);
+        try{
+            Class<?> clazz = cl.loadClass(name);
+            Constructor<?> ctr = clazz.getConstructor(MengineActivity.class);
+            MenginePlugin plugin = (MenginePlugin)ctr.newInstance(new Object[] {this});
+
+            this.plugins.add(plugin);
+
+            Log.i(TAG, "MengineActivity add plugin: " + name);
+
+            return true;
+        } catch (ClassNotFoundException ex) {
+            Log.e(TAG, "MengineActivity not found plugin: " + name);
+        } catch (NoSuchMethodException ex) {
+            Log.e(TAG, "MengineActivity not found plugin: " + name);
+        } catch (IllegalAccessException ex) {
+            Log.e(TAG, "MengineActivity not found plugin: " + name);
+        } catch (InstantiationException ex) {
+            Log.e(TAG, "MengineActivity not found plugin: " + name);
+        } catch (InvocationTargetException ex) {
+            Log.e(TAG, "MengineActivity not found plugin: " + name);
+        }
+
+        return false;
+    }
+
+    protected void initPlugins() {
+        this.plugins = new ArrayList<MenginePlugin>();
+
+        this.createPlugin("org.Mengine.Plugin.Sentry.MengineSentryPlugin");
+        this.createPlugin("org.Mengine.Plugin.MAR.MengineMARPlugin");
 
         AndroidNativeKernel_setupKernelJNI();
         AndroidNativePython_setupPythonJNI();
 
-        AndroidNativeFacebook_setupFacebookJNI();
-        AndroidNativeUnity_setupUnityJNI();
-        AndroidNativeAdMob_setupAdMobJNI();
-        AndroidNativeDevToDev_setupDevToDevJNI();
-        AndroidNativeLinking_setupLinkingJNI();
-        AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
+        //AndroidNativeFacebook_setupFacebookJNI();
+        //AndroidNativeUnity_setupUnityJNI();
+        //AndroidNativeAdMob_setupAdMobJNI();
+        //AndroidNativeDevToDev_setupDevToDevJNI();
+        //AndroidNativeLinking_setupLinkingJNI();
+        //AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
+    }
+
+    public static String getCompanyName()
+    {
+       return AndroidNativeMengine_getCompanyName();
+    }
+    public static String getProjectName()
+    {
+        return AndroidNativeMengine_getProjectName();
+    }
+    public static int getProjectVersion()
+    {
+        return AndroidNativeMengine_getProjectVersion();
+    }
+    public static boolean isDebugMode()
+    {
+        return AndroidNativeMengine_isDebugMode();
+    }
+    public static boolean isDevelopmentMode()
+    {
+        return AndroidNativeMengine_isDevelopmentMode();
+    }
+    public static boolean isBuildMaster()
+    {
+        return AndroidNativeMengine_isBuildMaster();
+    }
+    public static boolean isBuildPublish()
+    {
+        return AndroidNativeMengine_isBuildPublish();
+    }
+    public static String getEngineGITSHA1()
+    {
+        return AndroidNativeMengine_getEngineGITSHA1();
+    }
+    public static String getBuildTimestamp()
+    {
+        return AndroidNativeMengine_getBuildTimestamp();
+    }
+    public static String getBuildUsername()
+    {
+        return AndroidNativeMengine_getBuildUsername();
+    }
+    public static String getBuildVersion()
+    {
+        return AndroidNativeMengine_getBuildVersion();
+    }
+    public static String getConfigValue(String section, String key, String default_value)
+    {
+        return AndroidNativeMengine_getConfigValue(section, key, default_value);
     }
 
     @Override
@@ -111,52 +184,19 @@ public class MengineActivity extends SDLActivity {
 
         initPlugins();
 
-        if (_instance.getIntent().hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
-            AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
-        }
+        this.plugins.forEach((p) -> p.onCreate(savedInstanceState));
     }
 
     public void onMengineInitializeBaseServices() {
         Log.i(TAG, "MengineActivity.onMengineInitializeBaseServices()");
 
-        SentryAndroid.init(this, options -> {
-            String SENTRY_DNS = AndroidNativeMengine_getConfigValue("Sentry", "DSN", "");
-            options.setDsn(SENTRY_DNS);
-            Log.i(TAG, "Sentry DNS:" + SENTRY_DNS);
-
-            String buildVersion = AndroidNativeMengine_getBuildVersion();
-            options.setRelease(buildVersion);
-            Log.i(TAG, "Sentry Build Version:" + buildVersion);
-        });
+        this.plugins.forEach((p) -> p.onMengineInitializeBaseServices());
     }
 
     public void onMengineCreateApplication() {
-        Sentry.configureScope(scope -> {
-            String SENTRY_APPLICATION = AndroidNativeMengine_getConfigValue( "Sentry", "Application", "Mengine" );
+        Log.i(TAG, "MengineActivity.onMengineCreateApplication()");
 
-            String companyName = AndroidNativeMengine_getCompanyName();
-            String projectName = AndroidNativeMengine_getProjectName();
-            int projectVersion = AndroidNativeMengine_getProjectVersion();
-            boolean isDebugMode = AndroidNativeMengine_isDebugMode();
-            boolean isDevelopmentMode = AndroidNativeMengine_isDevelopmentMode();
-            boolean isBuildMaster = AndroidNativeMengine_isBuildMaster();
-            boolean isBuildPublish = AndroidNativeMengine_isBuildPublish();
-            String engineGITSHA1 = AndroidNativeMengine_getEngineGITSHA1();
-            String buildTimestamp = AndroidNativeMengine_getBuildTimestamp();
-            String buildUsername = AndroidNativeMengine_getBuildUsername();
-
-            scope.setExtra("Application", SENTRY_APPLICATION);
-            scope.setExtra("Company", companyName);
-            scope.setExtra("Project", projectName);
-            scope.setExtra("Version", String.valueOf(projectVersion));
-            scope.setExtra("Debug", String.valueOf(isDebugMode));
-            scope.setExtra("Development", String.valueOf(isDevelopmentMode));
-            scope.setExtra("Master", String.valueOf(isBuildMaster));
-            scope.setExtra("Publish", String.valueOf(isBuildPublish));
-            scope.setExtra("Engine Commit", engineGITSHA1);
-            scope.setExtra("Build Timestamp", buildTimestamp);
-            scope.setExtra("Build Username", buildUsername);
-        });
+        this.plugins.forEach((p) -> p.onMengineCreateApplication());
     }
 
     @Override
@@ -165,13 +205,7 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onActivityResult()");
 
-        if (marSDKInteractionLayer != null) {
-            marSDKInteractionLayer.onActivityResult(requestCode, resultCode, data);
-        }
-
-        if (callbackManager != null) {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-        }
+        this.plugins.forEach((p) -> p.onActivityResult(requestCode, resultCode, data));
     }
 
     @Override
@@ -180,9 +214,7 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onStart()");
 
-        if( marSDKInteractionLayer != null ) {
-            marSDKInteractionLayer.onStart();
-        }
+        this.plugins.forEach((p) -> p.onStart());
     }
 
     @Override
@@ -190,6 +222,8 @@ public class MengineActivity extends SDLActivity {
         super.onStop();
 
         Log.i(TAG, "MengineActivity.onStop()");
+
+        this.plugins.forEach((p) -> p.onStop());
 
         _instance = null;
     }
@@ -200,9 +234,7 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onPause()");
 
-        if( marSDKInteractionLayer != null ) {
-            marSDKInteractionLayer.onPause();
-        }
+        this.plugins.forEach((p) -> p.onPause());
     }
 
     @Override
@@ -219,9 +251,7 @@ public class MengineActivity extends SDLActivity {
             initPlugins();
         }
         else {
-            if (marSDKInteractionLayer != null) {
-                marSDKInteractionLayer.onResume();
-            }
+            this.plugins.forEach((p) -> p.onResume());
         }
     }
 
@@ -231,13 +261,7 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onNewIntent()");
 
-        if (marSDKInteractionLayer != null) {
-            marSDKInteractionLayer.onNewIntent(intent);
-        }
-
-        if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
-            AndroidNativeLocalNotifications_onLocalNotificationsPress(intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
-        }
+        this.plugins.forEach((p) -> p.onNewIntent(intent));
     }
 
     @Override
@@ -246,9 +270,7 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onDestroy()");
 
-        if (marSDKInteractionLayer != null) {
-            marSDKInteractionLayer.onDestroy();
-        }
+        this.plugins.forEach((p) -> p.onDestroy());
     }
 
     @Override
@@ -257,34 +279,29 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onRestart()");
 
-        if (marSDKInteractionLayer != null) {
-            marSDKInteractionLayer.onRestart();
-        }
+        this.plugins.forEach((p) -> p.onRestart());
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
 
-        if (marSDKInteractionLayer != null) {
-            marSDKInteractionLayer.onRestart();
-        }
+        this.plugins.forEach((p) -> p.onConfigurationChanged(newConfig));
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (marSDKInteractionLayer != null) {
-            marSDKInteractionLayer.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+        this.plugins.forEach((p) -> p.onRequestPermissionsResult(requestCode, permissions, grantResults));
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event){
-        if (marSDKInteractionLayer != null) {
-            if( marSDKInteractionLayer.dispatchKeyEvent(event) == true )
-            {
+        Log.i(TAG, "MengineActivity.dispatchKeyEvent() action: " + event.getAction() + " code: " + event.getKeyCode());
+
+        for(MenginePlugin p : this.plugins) {
+            if (p.dispatchKeyEvent(event) == true) {
                 return true;
             }
         }
@@ -313,7 +330,7 @@ public class MengineActivity extends SDLActivity {
     public static void pythonInitializePlugin() {
         _instance.addPythonPlugin("Activity", _instance);
 
-        _instance.marSDKInteractionLayer.onPythonEmbedding();
+        _instance.plugins.forEach((p) -> p.onPythonEmbedding());
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonCall(String method, Object ... args)
@@ -350,6 +367,30 @@ public class MengineActivity extends SDLActivity {
     {
         AndroidNativePython_addPlugin(name, plugin);
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Linking Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static boolean linkingOpenURL(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
+        _instance.startActivity(Intent.createChooser(intent, ""));
+
+        return true;
+    }
+
+    public static boolean linkingOpenMail(String email, String subject, String body) {
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(email));
+        _instance.startActivity(Intent.createChooser(intent, ""));
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+        _instance.startActivity(Intent.createChooser(intent, ""));
+
+        return true;
+    }
+
+    /***********************************************************************************************
+    //OLD PLugins: TODO
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Facebook Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,8 +399,7 @@ public class MengineActivity extends SDLActivity {
             @Override
             public void run() {
                 if (_instance != null && _instance.facebookInteractionLayer == null) {
-                    _instance.callbackManager = CallbackManager.Factory.create();
-                    _instance.facebookInteractionLayer = new FacebookInteractionLayer(_instance.callbackManager);
+                    _instance.facebookInteractionLayer = new FacebookInteractionLayer(_instance);
                     AndroidNativeFacebook_onSDKInitialized();
                 }
             }
@@ -613,29 +653,6 @@ public class MengineActivity extends SDLActivity {
 
         return false;
     }
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Linking Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static boolean linkingOpenURL(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
-        _instance.startActivity(Intent.createChooser(intent, ""));
-        
-        return true;
-    }
-
-    public static boolean linkingOpenMail(String email, String subject, String body) {
-//        Intent intent = new Intent(Intent.ACTION_SEND);
-//        intent.setType("plain/text");
-//        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(email));
-        _instance.startActivity(Intent.createChooser(intent, ""));
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, body);
-        _instance.startActivity(Intent.createChooser(intent, ""));
-        
-        return true;
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Local Notifications Methods
@@ -688,4 +705,5 @@ public class MengineActivity extends SDLActivity {
 
         return false;
     }
+    ***********************************************************************************************/
 }

@@ -15,11 +15,8 @@ import org.Mengine.Build.MengineActivity;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class NotificationJobService extends JobService {
-
     public static final String KEY_TITLE = "title";
-
     public static final String KEY_CONTENT = "content";
-
     public static final String KEY_ID = "id";
 
     public static PersistableBundle notificationBundle(int id, String title, String content){
@@ -38,7 +35,7 @@ public class NotificationJobService extends JobService {
         String content = bundle.getString(KEY_CONTENT);
         int id = bundle.getInt(KEY_ID);
 
-        Notification notification = LocalNotificationsInteractionLayer.getNotification(getApplicationContext(), id, title, content);
+        Notification notification = MengineLocalNotificationsPlugin.getNotification(getApplicationContext(), id, title, content);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, notification);
 

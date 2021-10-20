@@ -1,4 +1,6 @@
-package org.Mengine.Build.LocalNotifications;
+package org.Mengine.Plugin.LocalNotifications;
+
+import org.Mengine.Build.MenginePlugin;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -22,16 +24,16 @@ import androidx.core.app.NotificationCompat;
 import org.Mengine.Build.MengineActivity;
 import org.Mengine.Build.R;
 
-public class LocalNotificationsInteractionLayer {
+public class MengineLocalNotificationsPlugin extends MenginePlugin {
     private static Context _currentContext;
     private static final String channelId = "mengine_channel_id";
     private static final CharSequence channelName = "Mengine Channel";
 
-    public LocalNotificationsInteractionLayer(Context context) {
-        _currentContext = context;
+    public MengineLocalNotificationsPlugin(MengineActivity activity) {
+        _currentContext = activity;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) _currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
@@ -41,6 +43,20 @@ public class LocalNotificationsInteractionLayer {
             notificationChannel.setVibrationPattern(new long[]{1000, 2000});
             notificationManager.createNotificationChannel(notificationChannel);
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        //if (_instance.getIntent().hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
+        //    AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
+        //}
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        //if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
+        //    AndroidNativeLocalNotifications_onLocalNotificationsPress(intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
+        //}
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

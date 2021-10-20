@@ -2169,7 +2169,7 @@ namespace Mengine
 
         if( result == 0 )
         {
-            LOGGER_ERROR( "Can't register window class %s"
+            LOGGER_ERROR( "can't register window class %s"
                 , Helper::Win32GetLastErrorMessage()
             );
 

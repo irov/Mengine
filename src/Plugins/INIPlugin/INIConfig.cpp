@@ -1,4 +1,4 @@
-#include "IniConfig.h"
+#include "INIConfig.h"
 
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -15,7 +15,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool hasValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** const _value )
+        static bool hasValueString2( const INIUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** const _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _prefix );
@@ -28,7 +28,7 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
+                if( INIUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
                 {
                     return true;
                 }
@@ -38,7 +38,7 @@ namespace Mengine
             section.append( _prefix );
             section.append( _section );
 
-            if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
+            if( INIUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
             {
                 return true;
             }
@@ -48,7 +48,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool hasValueString( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, const Char ** const _value )
         {
-            for( const IniUtil::IniStore & ini : _stores )
+            for( const INIUtil::IniStore & ini : _stores )
             {
 #ifdef MENGINE_BUILD_PUBLISH
                 if( Detail::hasValueString2( ini, "Publish-", _platform, _section, _key, _value ) == true )
@@ -79,7 +79,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool hasValueT2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
+        static bool hasValueT2( const INIUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _prefix );
@@ -92,7 +92,7 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
+                if( INIUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
                 {
                     return true;
                 }
@@ -102,7 +102,7 @@ namespace Mengine
             section.append( _prefix );
             section.append( _section );
 
-            if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
+            if( INIUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
             {
                 return true;
             }
@@ -113,7 +113,7 @@ namespace Mengine
         template<class T>
         static bool hasValueT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
         {
-            for( const IniUtil::IniStore & ini : _stores )
+            for( const INIUtil::IniStore & ini : _stores )
             {
 #ifdef MENGINE_BUILD_PUBLISH
                 if( Detail::hasValueT2( ini, "Publish-", _platform, _section, _key, _value ) == true )
@@ -143,7 +143,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool getValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** const _value )
+        static bool getValueString2( const INIUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** const _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _prefix );
@@ -156,7 +156,7 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
+                if( INIUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
                 {
                     return true;
                 }
@@ -166,7 +166,7 @@ namespace Mengine
             section.append( _prefix );
             section.append( _section );
 
-            if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
+            if( INIUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
             {
                 return true;
             }
@@ -176,7 +176,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static const Char * getValueString( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, const Char * _default )
         {
-            for( const IniUtil::IniStore & ini : _stores )
+            for( const INIUtil::IniStore & ini : _stores )
             {
                 const Char * value;
 
@@ -209,7 +209,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool getValueT2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
+        static bool getValueT2( const INIUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _prefix );
@@ -222,7 +222,7 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
+                if( INIUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
                 {
                     return true;
                 }
@@ -232,7 +232,7 @@ namespace Mengine
             section.append( _prefix );
             section.append( _section );
 
-            if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
+            if( INIUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
             {
                 return true;
             }
@@ -243,7 +243,7 @@ namespace Mengine
         template<class T>
         static T getValueT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T _default )
         {
-            for( const IniUtil::IniStore & ini : _stores )
+            for( const INIUtil::IniStore & ini : _stores )
             {
                 T value;
 
@@ -276,7 +276,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static void calcValuesT2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
+        static void calcValuesT2( const INIUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _prefix );
@@ -289,12 +289,12 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                if( IniUtil::hasIniValue( _ini, platform_section.c_str(), _key ) == false )
+                if( INIUtil::hasIniValue( _ini, platform_section.c_str(), _key ) == false )
                 {
                     continue;
                 }
 
-                if( IniUtil::getIniValues( _ini, platform_section.c_str(), _key, _value ) == true )
+                if( INIUtil::getIniValues( _ini, platform_section.c_str(), _key, _value ) == true )
                 {
                     break;
                 }
@@ -304,13 +304,13 @@ namespace Mengine
             section.append( _prefix );
             section.append( _section );
 
-            IniUtil::getIniValues( _ini, section.c_str(), _key, _value );
+            INIUtil::getIniValues( _ini, section.c_str(), _key, _value );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         static void calcValuesT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
         {
-            for( const IniUtil::IniStore & ini : _stores )
+            for( const INIUtil::IniStore & ini : _stores )
             {
 #ifdef MENGINE_BUILD_PUBLISH
                 Detail::calcValuesT2( ini, "Publish-", _platform, _section, _key, _value );
@@ -328,32 +328,32 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    IniConfig::IniConfig()
+    INIConfig::INIConfig()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    IniConfig::~IniConfig()
+    INIConfig::~INIConfig()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::setPlatformTags( const Tags & _platformTags )
+    void INIConfig::setPlatformTags( const Tags & _platformTags )
     {
         m_platformTags = _platformTags;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Tags & IniConfig::getPlatformTags() const
+    const Tags & INIConfig::getPlatformTags() const
     {
         return m_platformTags;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    bool INIConfig::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 
-        IniUtil::IniStore store;
+        INIUtil::IniStore store;
         store.path = Helper::getInputStreamDebugFilePath( _stream );
 
-        if( IniUtil::loadIni( store, _stream, _doc ) == false )
+        if( INIUtil::loadIni( store, _stream, _doc ) == false )
         {
             LOGGER_ERROR( "invalid load config" );
 
@@ -365,9 +365,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::existValue( const Char * _section, const Char * _key ) const
+    bool INIConfig::existValue( const Char * _section, const Char * _key ) const
     {
-        for( const IniUtil::IniStore & ini : m_stores )
+        for( const INIUtil::IniStore & ini : m_stores )
         {
             ArrayString<128> platform_section;
             platform_section.append( _section );
@@ -379,13 +379,13 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                if( IniUtil::hasIniValue( ini, platform_section.c_str(), _key ) == true )
+                if( INIUtil::hasIniValue( ini, platform_section.c_str(), _key ) == true )
                 {
                     return true;
                 }
             }
 
-            if( IniUtil::hasIniValue( ini, _section, _key ) == true )
+            if( INIUtil::hasIniValue( ini, _section, _key ) == true )
             {
                 return true;
             }
@@ -394,171 +394,181 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, bool * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, bool * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, int8_t * const  _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, int8_t * const  _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, uint8_t * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, uint8_t * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, int32_t * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, int32_t * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, uint32_t * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, uint32_t * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, uint64_t * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, int64_t * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, float * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, uint64_t * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, double * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, float * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, const Char ** const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, double * const _value ) const
+    {
+        return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, const Char ** const _value ) const
     {
         return Detail::hasValueString( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, ConstString * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, ConstString * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, FilePath * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, FilePath * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, Tags * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, Tags * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, Resolution * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, Resolution * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, Color * const _value ) const
+    bool INIConfig::hasValue( const Char * _section, const Char * _key, Color * const _value ) const
     {
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::getValue( const Char * _section, const Char * _key, bool _default ) const
+    bool INIConfig::getValue( const Char * _section, const Char * _key, bool _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    int8_t IniConfig::getValue( const Char * _section, const Char * _key, int8_t _default ) const
+    int8_t INIConfig::getValue( const Char * _section, const Char * _key, int8_t _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint8_t IniConfig::getValue( const Char * _section, const Char * _key, uint8_t _default ) const
+    uint8_t INIConfig::getValue( const Char * _section, const Char * _key, uint8_t _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t IniConfig::getValue( const Char * _section, const Char * _key, int32_t _default ) const
+    int32_t INIConfig::getValue( const Char * _section, const Char * _key, int32_t _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t IniConfig::getValue( const Char * _section, const Char * _key, uint32_t _default ) const
+    uint32_t INIConfig::getValue( const Char * _section, const Char * _key, uint32_t _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t IniConfig::getValue( const Char * _section, const Char * _key, uint64_t _default ) const
+    int64_t INIConfig::getValue( const Char * _section, const Char * _key, int64_t _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    float IniConfig::getValue( const Char * _section, const Char * _key, float _default ) const
+    uint64_t INIConfig::getValue( const Char * _section, const Char * _key, uint64_t _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    double IniConfig::getValue( const Char * _section, const Char * _key, double _default ) const
+    float INIConfig::getValue( const Char * _section, const Char * _key, float _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * IniConfig::getValue( const Char * _section, const Char * _key, const Char * _default ) const
+    double INIConfig::getValue( const Char * _section, const Char * _key, double _default ) const
+    {
+        return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Char * INIConfig::getValue( const Char * _section, const Char * _key, const Char * _default ) const
     {
         return Detail::getValueString( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstString IniConfig::getValue( const Char * _section, const Char * _key, const ConstString & _default ) const
+    ConstString INIConfig::getValue( const Char * _section, const Char * _key, const ConstString & _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    FilePath IniConfig::getValue( const Char * _section, const Char * _key, const FilePath & _default ) const
+    FilePath INIConfig::getValue( const Char * _section, const Char * _key, const FilePath & _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    Tags IniConfig::getValue( const Char * _section, const Char * _key, const Tags & _default ) const
+    Tags INIConfig::getValue( const Char * _section, const Char * _key, const Tags & _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    Resolution IniConfig::getValue( const Char * _section, const Char * _key, const Resolution & _default ) const
+    Resolution INIConfig::getValue( const Char * _section, const Char * _key, const Resolution & _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    Color IniConfig::getValue( const Char * _section, const Char * _key, const Color & _default ) const
+    Color INIConfig::getValue( const Char * _section, const Char * _key, const Color & _default ) const
     {
         return Detail::getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const
+    void INIConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const
     {
         Detail::calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getValues( const Char * _section, const Char * _key, VectorFilePath * const _values ) const
+    void INIConfig::getValues( const Char * _section, const Char * _key, VectorFilePath * const _values ) const
     {
         Detail::calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getValues( const Char * _section, const Char * _key, VectorConstString * const _values ) const
+    void INIConfig::getValues( const Char * _section, const Char * _key, VectorConstString * const _values ) const
     {
         Detail::calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getValues( const Char * _section, const Char * _key, VectorString * const _values ) const
+    void INIConfig::getValues( const Char * _section, const Char * _key, VectorString * const _values ) const
     {
         Detail::calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasSection( const Char * _section ) const
+    bool INIConfig::hasSection( const Char * _section ) const
     {
-        for( const IniUtil::IniStore & ini : m_stores )
+        for( const INIUtil::IniStore & ini : m_stores )
         {
-            if( IniUtil::hasIniSection( ini, _section ) == true )
+            if( INIUtil::hasIniSection( ini, _section ) == true )
             {
                 return true;
             }
@@ -567,7 +577,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
+    void INIConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
     {
         MENGINE_UNUSED( _section );
         MENGINE_UNUSED( _key );

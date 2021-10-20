@@ -23,17 +23,17 @@ android {
 
     signingConfigs {
         config {
-            if (project.hasProperty("RELEASE_STORE_FILE")) {
-                print 'RELEASE_STORE_FILE = '
-                println RELEASE_STORE_FILE
+            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE")) {
+                print 'ANDROID_APP_RELEASE_STORE_FILE = '
+                println ANDROID_APP_RELEASE_STORE_FILE
 
-                print 'RELEASE_KEY_ALIAS = '
-                println RELEASE_KEY_ALIAS
+                print 'ANDROID_APP_RELEASE_KEY_ALIAS = '
+                println ANDROID_APP_RELEASE_KEY_ALIAS
 
-                storeFile file(RELEASE_STORE_FILE)
-                storePassword RELEASE_STORE_PASSWORD
-                keyAlias RELEASE_KEY_ALIAS
-                keyPassword RELEASE_KEY_PASSWORD
+                storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
+                storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
+                keyAlias ANDROID_APP_RELEASE_KEY_ALIAS
+                keyPassword ANDROID_APP_RELEASE_KEY_PASSWORD
             }
         }
     }
@@ -186,51 +186,57 @@ android {
 
     sourceSets {
         main {
-            if (project.hasProperty("MANIFEST_SRC_FILE")) {
-                print 'MANIFEST_SRC_FILE = '
-                println MANIFEST_SRC_FILE
+            if (project.hasProperty("ANDROID_APP_MANIFEST_SRC_FILE")) {
+                print 'ANDROID_APP_MANIFEST_SRC_FILE = '
+                println ANDROID_APP_MANIFEST_SRC_FILE
 
-                manifest.srcFile MANIFEST_SRC_FILE
+                manifest.srcFile ANDROID_APP_MANIFEST_SRC_FILE
             } else if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) == true) {
-                println 'MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
+                println 'ANDROID_APP_MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
 
                 manifest.srcFile 'AndroidManifestPublish.xml'
             } else {
-                println 'MANIFEST_SRC_FILE = AndroidManifest.xml'
+                println 'ANDROID_APP_MANIFEST_SRC_FILE = AndroidManifest.xml [Default]'
 
                 manifest.srcFile 'AndroidManifest.xml'
             }
 
-            if (project.hasProperty("ASSETS_JAVA_NO_SRC_DIR")) {
-                println 'ASSETS_JAVA_SRC_DIR = [No]'
+            if (project.hasProperty("ANDROID_APP_ASSETS_JAVA_NO_SRC_DIR")) {
+                println 'ANDROID_APP_ASSETS_JAVA_SRC_DIR = [No]'
 
-                java.srcDirs = ['../../dependencies/SDL2/android-project/app/src/main/java/']
-            } else if (project.hasProperty("ASSETS_JAVA_SRC_DIR")) {
-                print 'ASSETS_JAVA_SRC_DIR = '
-                println ASSETS_JAVA_SRC_DIR
+                java.srcDirs += ['../../dependencies/SDL2/android-project/app/src/main/java/']
+            } else if (project.hasProperty("ANDROID_APP_ASSETS_JAVA_SRC_DIR")) {
+                print 'ANDROID_APP_ASSETS_JAVA_SRC_DIR = '
+                println ANDROID_APP_ASSETS_JAVA_SRC_DIR
 
-                java.srcDirs = [ASSETS_JAVA_SRC_DIR, '../../dependencies/SDL2/android-project/app/src/main/java/']
+                java.srcDirs += [ANDROID_APP_ASSETS_JAVA_SRC_DIR, '../../dependencies/SDL2/android-project/app/src/main/java']
             }
             else {
-                java.srcDirs = ['src', '../../dependencies/SDL2/android-project/app/src/main/java/']
+                println 'ANDROID_APP_ASSETS_JAVA_SRC_DIR = src [Default]'
+                println 'ANDROID_APP_ASSETS_JAVA_SRC_DIR = ../../dependencies/SDL2/android-project/app/src/main/java [Default]'
+            
+                java.srcDirs += ['src']
+                java.srcDirs += ['../../dependencies/SDL2/android-project/app/src/main/java/']
             }
 
-            if (project.hasProperty("ASSETS_RES_DIR")) {
-                print 'ASSETS_RES_DIR = '
-                println ASSETS_RES_DIR
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                print 'ANDROID_APP_ASSETS_RES_DIR = '
+                println ANDROID_APP_ASSETS_RES_DIR
 
-                res.srcDirs = [ASSETS_RES_DIR]
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
-                res.srcDirs = ['res', 'res_marsdk']
+                println 'ANDROID_APP_ASSETS_RES_DIR = res [Default]'
+                
+                res.srcDirs += ['res']
             }
 
-			if (project.hasProperty("ASSETS_SRC_DIR")) {
-                print 'ASSETS_SRC_DIR = '
-                println ASSETS_SRC_DIR
+			if (project.hasProperty("ANDROID_APP_ASSETS_SRC_DIR")) {
+                print 'ANDROID_APP_ASSETS_SRC_DIR = '
+                println ANDROID_APP_ASSETS_SRC_DIR
 
-                assets.srcDirs = [ASSETS_SRC_DIR]
+                assets.srcDirs = [ANDROID_APP_ASSETS_SRC_DIR]
             } else {
-                print 'ASSETS_SRC_DIR = '
+                print 'ANDROID_APP_ASSETS_SRC_DIR = '
                 println 'data'
 
                 assets.srcDirs = ['data']
@@ -238,13 +244,14 @@ android {
         }
     }
 
-
     packagingOptions {
         pickFirst 'lib/**/libc++_shared.so'
         pickFirst 'lib/**/libopenal.so'
         pickFirst 'lib/**/libSDL2.so'
         pickFirst 'lib/**/libhidapi.so'
     }
+
+    preBuild.dependsOn ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
     afterEvaluate {
         if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
@@ -272,8 +279,6 @@ android.applicationVariants.all { variant ->
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.core:core:1.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
@@ -287,6 +292,7 @@ dependencies {
 
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
+
     implementation fileTree(dir: '../../dependencies/externals-android', include: ['*.jar'])
 }
 
@@ -384,13 +390,36 @@ else
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
     println 'ANDROID_APP_ENABLE_SENTRY: TRUE'
 
+    android.sourceSets.main.java.srcDirs += ['src_plugins/Sentry']
+
     apply plugin: 'io.sentry.android.gradle'
 
     dependencies {
-        implementation 'io.sentry:sentry-android:5.1.2'
+        implementation 'io.sentry:sentry-android:5.2.3'
     }
 }
 else
 {
     println 'ANDROID_APP_ENABLE_SENTRY: FALSE'
+}
+
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_MAR", true) == true ) {
+    println 'ANDROID_APP_ENABLE_MAR: TRUE'
+
+    android.sourceSets.main.java.srcDirs += ['src_plugins/MAR']
+    
+    if (project.hasProperty("ANDROID_APP_PLUGIN_MAR_RES_DIR")) {
+        print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: '
+        println ANDROID_APP_PLUGIN_MAR_RES_DIR
+        
+        android.sourceSets.main.res.srcDirs += [ANDROID_APP_PLUGIN_MAR_RES_DIR]
+    } else {
+        print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: res_marsdk [Default]'
+        
+        android.sourceSets.main.res.srcDirs += ['res_marsdk']
+    }    
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_MAR: FALSE'
 }

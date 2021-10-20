@@ -190,7 +190,7 @@ extern "C" {
     JNIEXPORT void JNICALL
         ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewarded )(JNIEnv * env, jclass cls, jstring rewardType_, jint rewardAmount_)
     {
-        const char * rewardType = env->GetStringUTFChars( rewardType_, 0 );
+        const char * rewardType = env->GetStringUTFChars( rewardType_, nullptr );
         int rewardAmount = static_cast<int>(rewardAmount_);
 
         if( s_androidNativeAdMobModule != nullptr )

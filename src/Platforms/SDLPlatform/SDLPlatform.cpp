@@ -95,6 +95,144 @@ extern "C" {
         jclass_activity = (jclass)(env->NewGlobalRef( cls ));
         jobject_activity = (jclass)(env->NewGlobalRef( obj ));
     }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getCompanyName )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
+        APPLICATION_SERVICE()
+            ->getCompanyName( companyName );
+
+        jstring result = env->NewStringUTF( companyName );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getProjectName )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
+        APPLICATION_SERVICE()
+            ->getProjectName( projectName );
+
+        jstring result = env->NewStringUTF( projectName );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getProjectVersion )(JNIEnv * env, jclass cls)
+    {
+        uint32_t projectVersion = APPLICATION_SERVICE()
+            ->getProjectVersion();
+
+        jint result = (jint)projectVersion;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isDebugMode )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isDebugMode();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isDevelopmentMode )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isDevelopmentMode();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isBuildMaster )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isBuildMaster();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isBuildPublish )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isBuildPublish();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();
+
+        jstring result = env->NewStringUTF( ENGINE_GIT_SHA1 );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildTimestamp )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * BUILD_TIMESTAMP = Mengine::Helper::getBuildTimestamp();
+
+        jstring result = env->NewStringUTF( BUILD_TIMESTAMP );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildUsername )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * BUILD_USERNAME = Mengine::Helper::getBuildUsername();
+
+        jstring result = env->NewStringUTF( BUILD_USERNAME );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildVersion )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();
+
+        jstring result = env->NewStringUTF( BUILD_VERSION );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getConfigValue )(JNIEnv * env, jclass cls, jstring _section, jstring _key, jstring _default)
+    {
+        const Mengine::ConfigInterfacePtr & defaultConfig = CONFIG_SERVICE()
+            ->getDefaultConfig();
+
+        const Mengine::Char * section_str = env->GetStringUTFChars( _section, nullptr );
+        const Mengine::Char * key_str = env->GetStringUTFChars( _key, nullptr );
+        const Mengine::Char * default_str = env->GetStringUTFChars( _default, nullptr );
+
+        const Mengine::Char * value_str = defaultConfig->getValue( section_str, key_str, default_str );
+
+        env->ReleaseStringUTFChars( _section, section_str );
+        env->ReleaseStringUTFChars( _key, key_str );
+        env->ReleaseStringUTFChars( _default, default_str );
+
+        jstring result = env->NewStringUTF( value_str );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+
 }
 //////////////////////////////////////////////////////////////////////////
 #endif
@@ -602,15 +740,37 @@ namespace Mengine
             m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
 
+        LOGGER_MESSAGE_RELEASE( "Platform Tags: %s"
+            , [this]()
+        {
+            static Char cache_value[1024] = {'\0'};
+
+            for( const ConstString & tag : m_platformTags.getValues() )
+            {
+                MENGINE_STRCAT( cache_value, tag.c_str() );
+                MENGINE_STRCAT( cache_value, "-" );
+            }
+
+            return cache_value;
+        }() );
+
         if( HAS_OPTION( "touchpad" ) == true )
         {
             m_touchpad = true;
         }
 
+        LOGGER_MESSAGE_RELEASE( "Touchpad: %u"
+            , m_touchpad
+        );
+
         if( HAS_OPTION( "desktop" ) == true )
         {
             m_desktop = true;
         }
+
+        LOGGER_MESSAGE_RELEASE( "Desktop: %u"
+            , m_desktop
+        );
 
         SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -653,6 +813,9 @@ namespace Mengine
 
         m_jenv = env;
 #endif
+
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &SDLPlatform::notifyInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &SDLPlatform::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -788,6 +951,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+
         m_active = false;
 
         this->destroyWindow_();
@@ -1190,30 +1356,89 @@ namespace Mengine
         );
 
         m_glContext = glContext;
-#endif
 
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
-        Resolution resoultion;
-        if( this->getDesktopResolution( &resoultion ) == false )
-        {
-            SDL_DestroyWindow( m_sdlWindow );
-            m_sdlWindow = nullptr;
+        int drawable_width;
+        int drawable_height;
+        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
 
-            return false;
-        }
-
-        APPLICATION_SERVICE()
-            ->changeWindowResolution( resoultion );
+        LOGGER_MESSAGE_RELEASE( "SDL drawable size [%d, %d]"
+            , drawable_width
+            , drawable_height
+        );
 #endif
 
         int win_width;
         int win_height;
         SDL_GetWindowSize( m_sdlWindow, &win_width, &win_height );
 
+        LOGGER_MESSAGE_RELEASE( "SDL window size [%d, %d]"
+            , win_width
+            , win_height
+        );
+
         float dwf = static_cast<float>(win_width);
         float dhf = static_cast<float>(win_height);
 
         m_sdlInput->updateSurfaceResolution( dwf, dhf );
+
+        int win_top;
+        int win_left;
+        int win_bottom;
+        int win_right;
+        if( SDL_GetWindowBordersSize( m_sdlWindow, &win_top, &win_left, &win_bottom, &win_right ) == 0 )
+        {
+            LOGGER_MESSAGE_RELEASE( "SDL window borders [%d, %d] - [%d, %d]"
+                , win_left
+                , win_top
+                , win_right
+                , win_bottom
+            );
+        }
+
+        int win_min_width;
+        int win_min_height;
+        SDL_GetWindowMinimumSize( m_sdlWindow, &win_min_width, &win_min_height );
+
+        LOGGER_MESSAGE_RELEASE( "SDL window min size [%d, %d]"
+            , win_min_width
+            , win_min_height
+        );
+
+        int win_max_width;
+        int win_max_height;
+        SDL_GetWindowMaximumSize( m_sdlWindow, &win_max_width, &win_max_height );
+
+        LOGGER_MESSAGE_RELEASE( "SDL window min size [%d, %d]"
+            , win_max_width
+            , win_max_height
+        );
+
+        int displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
+
+        if( displayIndex >= 0 )
+        {
+            SDL_Rect displayBounds;
+            if( SDL_GetDisplayBounds( displayIndex, &displayBounds ) == 0 )
+            {
+                LOGGER_MESSAGE_RELEASE( "SDL display bounds [%d, %d] size [%d, %d]"
+                    , displayBounds.x
+                    , displayBounds.y
+                    , displayBounds.w
+                    , displayBounds.h
+                );
+            }
+
+            SDL_Rect usableBounds;
+            if( SDL_GetDisplayUsableBounds( displayIndex, &usableBounds ) == 0 )
+            {
+                LOGGER_MESSAGE_RELEASE( "SDL display bounds [%d, %d] size [%d, %d]"
+                    , usableBounds.x
+                    , usableBounds.y
+                    , usableBounds.w
+                    , usableBounds.h
+                );
+            }
+        }
 
         return true;
     }
@@ -2484,6 +2709,8 @@ namespace Mengine
         MENGINE_UNUSED( _windowResolution );
         MENGINE_UNUSED( _fullscreen );
 
+#if defined(MENGINE_WINDOWS_UNIVERSAL)
+#else
         uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_RED_SIZE", 8 );
 
         if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
@@ -2543,6 +2770,7 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+#endif
 
         Uint32 windowFlags = 0;
 
@@ -2720,6 +2948,16 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+
+        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
+
+        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
+        {
+            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
+                , Engine_SDL_HINT_RENDER_SCALE_QUALITY
+                , SDL_GetError()
+            );
+        }
 #endif
 
         LOGGER_MESSAGE_RELEASE( "num video displays: %d"
@@ -2793,6 +3031,49 @@ namespace Mengine
         }
 
         m_sdlWindow = window;
+        
+        LOGGER_MESSAGE_RELEASE( "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
+        LOGGER_MESSAGE_RELEASE( "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
+        LOGGER_MESSAGE_RELEASE( "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
+
+#if defined(MENGINE_WINDOWS_UNIVERSAL)
+#else
+        int GL_CONTEXT_PROFILE_MASK;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &GL_CONTEXT_PROFILE_MASK ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
+                , SDL_GetError()
+            );
+        }
+        else
+        {
+            LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_PROFILE_MASK: %u", GL_CONTEXT_PROFILE_MASK );
+        }
+
+        int GL_CONTEXT_MAJOR_VERSION;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &GL_CONTEXT_MAJOR_VERSION ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
+                , SDL_GetError()
+            );
+        }
+        else
+        {
+            LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MAJOR_VERSION: %u", GL_CONTEXT_MAJOR_VERSION );
+        }
+
+        int GL_CONTEXT_MINOR_VERSION;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &GL_CONTEXT_MINOR_VERSION ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
+                , SDL_GetError()
+            );
+        }
+        else
+        {
+            LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MINOR_VERSION: %u", GL_CONTEXT_MINOR_VERSION );
+        }
+#endif
 
         return true;
     }
@@ -2902,6 +3183,33 @@ namespace Mengine
 
                     switch( windowEventId )
                     {
+                    case SDL_WINDOWEVENT_SHOWN:
+                        {
+                            //TODO
+                        }break;
+                    case SDL_WINDOWEVENT_HIDDEN:
+                        {
+                            //TODO
+                        }break;
+                    case SDL_WINDOWEVENT_EXPOSED:
+                        {
+                            //TODO
+                        }break;
+                    case SDL_WINDOWEVENT_MOVED:
+                        {
+                            //TODO
+                        }break;
+                    case SDL_WINDOWEVENT_RESIZED:
+                        {
+                            Resolution windowResolution( sdlEvent.window.data1, sdlEvent.window.data2 );
+
+                            APPLICATION_SERVICE()
+                                ->changeWindowResolution( windowResolution );
+                        }break;
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        {
+                            //TODO
+                        }break;
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
                     case SDL_WINDOWEVENT_MAXIMIZED:
                     case SDL_WINDOWEVENT_RESTORED:
@@ -2928,6 +3236,10 @@ namespace Mengine
                                     , SDL_GetError()
                                 );
                             }
+                        }break;
+                    case SDL_WINDOWEVENT_TAKE_FOCUS:
+                        {
+                            //TODO
                         }break;
                     default:
                         break;
@@ -3067,6 +3379,29 @@ namespace Mengine
 
         FILE_SERVICE()
             ->unmountFileGroup( ConstString::none() );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::notifyInitializeBaseServices_()
+    {
+#if defined(MENGINE_PLATFORM_ANDROID)
+        static jmethodID jmethodID_onMengineInitializeBaseServices = m_jenv->GetMethodID( jclass_activity, "onMengineInitializeBaseServices", "()V" );
+
+        if( jmethodID_onMengineInitializeBaseServices != NULL ) {
+            m_jenv->CallVoidMethod(jobject_activity, jmethodID_onMengineInitializeBaseServices);
+        }
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::notifyCreateApplication_()
+    {
+#if defined(MENGINE_PLATFORM_ANDROID)
+        static jmethodID jmethodID_onMengineCreateApplication = m_jenv->GetMethodID( jclass_activity, "onMengineCreateApplication", "()V" );
+
+        if( jmethodID_onMengineCreateApplication != NULL )
+        {
+            m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineCreateApplication );
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

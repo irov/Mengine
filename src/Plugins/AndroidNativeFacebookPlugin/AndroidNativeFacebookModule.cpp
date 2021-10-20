@@ -63,7 +63,7 @@ extern "C"
     JNIEXPORT void JNICALL
         FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginSuccess )(JNIEnv * env, jclass cls, jstring accessToken_)
     {
-        const char * accessToken = env->GetStringUTFChars( accessToken_, 0 );
+        const Mengine::Char * accessToken = env->GetStringUTFChars( accessToken_, nullptr );
 
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -93,7 +93,7 @@ extern "C"
     JNIEXPORT void JNICALL
         FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginError )(JNIEnv * env, jclass cls, jstring exception_)
     {
-        const char * exception = env->GetStringUTFChars( exception_, 0 );
+        const Mengine::Char * exception = env->GetStringUTFChars( exception_, nullptr );
 
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -135,7 +135,7 @@ extern "C"
     JNIEXPORT void JNICALL
         FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutError )(JNIEnv * env, jclass cls, jstring exception_)
     {
-        const char * exception = env->GetStringUTFChars( exception_, 0 );
+        const Mengine::Char * exception = env->GetStringUTFChars( exception_, nullptr );
 
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -153,8 +153,8 @@ extern "C"
     JNIEXPORT void JNICALL
         FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onUserFetchSuccess )(JNIEnv * env, jclass cls, jstring object_, jstring response_)
     {
-        const char * object = env->GetStringUTFChars( object_, 0 );
-        const char * response = env->GetStringUTFChars( response_, 0 );
+        const Mengine::Char * object = env->GetStringUTFChars( object_, nullptr );
+        const Mengine::Char * response = env->GetStringUTFChars( response_, nullptr );
 
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -174,7 +174,7 @@ extern "C"
     JNIEXPORT void JNICALL
         FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareSuccess )(JNIEnv * env, jclass cls, jstring postId_)
     {
-        const char * postId = env->GetStringUTFChars( postId_, 0 );
+        const Mengine::Char * postId = env->GetStringUTFChars( postId_, nullptr );
 
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -204,7 +204,7 @@ extern "C"
     JNIEXPORT void JNICALL
         FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv * env, jclass cls, jstring exception_)
     {
-        const char * exception = env->GetStringUTFChars( exception_, 0 );
+        const Mengine::Char * exception = env->GetStringUTFChars( exception_, nullptr );
 
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -222,7 +222,7 @@ extern "C"
     JNIEXPORT void JNICALL
         FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onProfilePictureLinkGet )(JNIEnv * env, jclass cls, jstring pictureURL_)
     {
-        const char * pictureURL = env->GetStringUTFChars( pictureURL_, 0 );
+        const Mengine::Char * pictureURL = env->GetStringUTFChars( pictureURL_, nullptr );
 
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -465,7 +465,7 @@ namespace Mengine
 
         jstring jReturnValue = (jstring)env->CallStaticObjectMethod( mActivityClass, jmethodID_getAccessToken );
 
-        const Char * jStringValue = env->GetStringUTFChars( jReturnValue, 0 );
+        const Char * jStringValue = env->GetStringUTFChars( jReturnValue, nullptr );
 
         String stringValue = jStringValue;
 

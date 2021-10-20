@@ -119,7 +119,7 @@ namespace Mengine
     bool FontService::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( _fileGroup, _filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , _filePath.c_str()
@@ -237,7 +237,7 @@ namespace Mengine
     bool FontService::unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( _fileGroup, _filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , _filePath.c_str()

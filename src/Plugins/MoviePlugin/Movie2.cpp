@@ -2233,8 +2233,6 @@ namespace Mengine
             return false;
         }
 
-        const aeMovieData * movieData = data->getMovieData();
-
         aeMovieCompositionProviders providers;
         ae_initialize_movie_composition_providers( &providers );
 
@@ -2265,7 +2263,7 @@ namespace Mengine
         providers.subcomposition_deleter = &__movie_subcomposition_deleter;
         providers.subcomposition_state = &__movie_subcomposition_state;
 
-        const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
+        const aeMovieComposition * composition = ae_create_movie_composition( compositionData, AE_TRUE, &providers, this );
 
         MENGINE_ASSERTION_MEMORY_PANIC( composition, "name '%s' resource '%s' invalid create composition '%s'"
             , this->getName().c_str()

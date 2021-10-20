@@ -38,7 +38,7 @@ extern "C" {
             return false;
         }
 
-        const char * name_str = env->GetStringUTFChars( name, 0 );
+        const Mengine::Char * name_str = env->GetStringUTFChars( name, nullptr );
 
         bool exist = g_pluginService->hasPlugin(name_str);
 
@@ -46,8 +46,9 @@ extern "C" {
 
         return (jboolean)exist;
     }
+    //////////////////////////////////////////////////////////////////////////
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -95,7 +96,7 @@ namespace Mengine
 
         jstring jReturnValue = (jstring)env->CallStaticObjectMethod( mActivityClass, jmethodID_getAndroidId );
 
-        const Char * jStringValue = env->GetStringUTFChars( jReturnValue, 0 );
+        const Char * jStringValue = env->GetStringUTFChars( jReturnValue, nullptr );
 
         String stringValue = jStringValue;
 

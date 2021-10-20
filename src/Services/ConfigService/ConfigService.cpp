@@ -1,6 +1,7 @@
 #include "ConfigService.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/Exception.h"
 #include "Kernel/FileStreamHelper.h"
@@ -10,6 +11,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -30,36 +32,19 @@ namespace Mengine
     bool ConfigService::_initializeService()
     {
         m_factoryMemoryConfig = Helper::makeFactoryPool<MemoryConfig, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryIniConfig = Helper::makeFactoryPool<IniConfig, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_defaultConfig = m_factoryIniConfig->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-        SERVICE_WAIT( PlatformInterface, [this]()
-        {
-            const Tags & platformTags = PLATFORM_SERVICE()
-                ->getPlatformTags();
-
-            m_platformTags = platformTags;
-
-            m_defaultConfig->setPlatformTags( m_platformTags );
-
-            return true;
-        } );
+        m_defaultConfig = Helper::makeFactorableUnique<MultiConfig>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ConfigService::_finalizeService()
     {
-        m_platformTags.clear();
-
         m_defaultConfig = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryConfig );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIniConfig );
 
         m_factoryMemoryConfig = nullptr;
-        m_factoryIniConfig = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     ConfigInterfacePtr ConfigService::createMemoryConfig( const DocumentPtr & _doc )
@@ -68,12 +53,15 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( config );
 
-        config->setPlatformTags( m_platformTags );
+        const Tags & platformTags = PLATFORM_SERVICE()
+            ->getPlatformTags();
+
+        config->setPlatformTags( platformTags );
 
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+    ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "config", "load config '%s' (doc: %s)"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )
@@ -82,20 +70,33 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s'"
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s' (doc: %s)"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        INIConfigPtr config = m_factoryIniConfig->createObject( _doc );
+        ConstString configType = _configType;
+
+        if( _configType == ConstString::none() )
+        {
+            configType = Helper::getFilePathExt( _filePath );
+        }
+
+        ConfigInterfacePtr config = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config );
 
-        config->setPlatformTags( m_platformTags );
+        const Tags & platformTags = PLATFORM_SERVICE()
+            ->getPlatformTags();
+
+        config->setPlatformTags( platformTags );
 
         if( config->load( stream, _doc ) == false )
         {
-            LOGGER_ERROR( "invalid load config '%s'"
-                , _filePath.c_str()
+            LOGGER_ERROR( "invalid load config '%s' (doc: %s)"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -104,26 +105,19 @@ namespace Mengine
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+    bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "config", "load default config '%s'"
-            , _filePath.c_str()
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
+        ConfigInterfacePtr config = this->loadConfig( _fileGroup, _filePath, _configType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s'"
-            , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load default config '%s'"
+            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
-        if( m_defaultConfig->load( stream, _doc ) == false )
-        {
-            LOGGER_ERROR( "invalid load config '%s'"
-                , _filePath.c_str()
-            );
-
-            return false;
-        }
+        m_defaultConfig->addConfig( config );
 
         return true;
     }

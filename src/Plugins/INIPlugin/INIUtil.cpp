@@ -1,4 +1,4 @@
-#include "IniUtil.h"
+#include "INIUtil.h"
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
@@ -22,7 +22,7 @@
 
 namespace Mengine
 {
-    namespace IniUtil
+    namespace INIUtil
     {
         //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
@@ -37,7 +37,7 @@ namespace Mengine
 
             _ini.path = _filePath;
 
-            bool successful = IniUtil::loadIni( _ini, stream, _doc );
+            bool successful = INIUtil::loadIni( _ini, stream, _doc );
 
             return successful;
         }
@@ -60,10 +60,10 @@ namespace Mengine
             {
                 memory_buffer += 4;
 
-                HashType sequreHash = SECURE_SERVICE()
-                    ->getSequreHash();
+                HashType secureHash = SECURE_SERVICE()
+                    ->getSecureHash();
 
-                uint32_t parrot = (uint32_t)sequreHash;
+                uint32_t parrot = (uint32_t)secureHash;
 
                 Helper::ravingcode( parrot, memory_buffer, size - 4, memory_buffer );
             }
@@ -343,6 +343,26 @@ namespace Mengine
             }
 
             uint32_t tmp_value;
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
+            {
+                return false;
+            }
+
+            *_value = tmp_value;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int64_t * const _value )
+        {
+            const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
+
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
+
+            int64_t tmp_value;
             if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;

@@ -12,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "SecureService" );
 
     public:
-        virtual HashType getSequreHash() const = 0;
+        virtual HashType getSecureHash() const = 0;
 
     public:
         virtual void protectData( void * const _buffer, size_t _size ) const = 0;

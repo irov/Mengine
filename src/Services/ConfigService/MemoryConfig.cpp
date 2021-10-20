@@ -2,6 +2,7 @@
 
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Stringalized.h"
@@ -201,6 +202,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool MemoryConfig::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _stream );
+        MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, bool * const _value ) const
     {
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
@@ -222,6 +233,11 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, uint32_t * const _value ) const
+    {
+        return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, int64_t * const  _value ) const
     {
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
@@ -292,6 +308,11 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MemoryConfig::getValue( const Char * _section, const Char * _key, uint32_t _default ) const
+    {
+        return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t MemoryConfig::getValue( const Char * _section, const Char * _key, int64_t _default ) const
     {
         return Detail::getValueT( m_records, m_platformTags, _section, _key, _default );
     }

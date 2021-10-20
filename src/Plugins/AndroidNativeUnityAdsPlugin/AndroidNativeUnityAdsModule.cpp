@@ -51,7 +51,7 @@ extern "C" {
     JNIEXPORT void JNICALL
         UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsClick )(JNIEnv * env, jclass cls, jstring placementId_)
     {
-        const char * placementId = env->GetStringUTFChars( placementId_, 0 );
+        const Mengine::Char * placementId = env->GetStringUTFChars( placementId_, nullptr );
 
         if( s_androidNativeUnityModule != nullptr )
         {
@@ -70,7 +70,7 @@ extern "C" {
         UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsPlacementStateChanged )(JNIEnv * env,
             jclass cls, jstring placementId_, jint placementState_, jint placementState1_)
     {
-        const char * placementId = env->GetStringUTFChars( placementId_, 0 );
+        const Mengine::Char * placementId = env->GetStringUTFChars( placementId_, nullptr );
         int placementState = static_cast<int>(placementState_);
         int placementState1 = static_cast<int>(placementState1_);
 
@@ -90,7 +90,7 @@ extern "C" {
     JNIEXPORT void JNICALL
         UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsReady )(JNIEnv * env, jclass cls, jstring placementId_)
     {
-        const char * placementId = env->GetStringUTFChars( placementId_, 0 );
+        const Mengine::Char * placementId = env->GetStringUTFChars( placementId_, nullptr );
 
         if( s_androidNativeUnityModule != nullptr )
         {
@@ -108,7 +108,7 @@ extern "C" {
     JNIEXPORT void JNICALL
         UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsStart )(JNIEnv * env, jclass cls, jstring placementId_)
     {
-        const char * placementId = env->GetStringUTFChars( placementId_, 0 );
+        const Mengine::Char * placementId = env->GetStringUTFChars( placementId_, nullptr );
 
         if( s_androidNativeUnityModule != nullptr )
         {
@@ -126,7 +126,7 @@ extern "C" {
     JNIEXPORT void JNICALL
         UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsFinish )(JNIEnv * env, jclass cls, jstring placementId_, jint finishState_)
     {
-        const char * placementId = env->GetStringUTFChars( placementId_, 0 );
+        const Mengine::Char * placementId = env->GetStringUTFChars( placementId_, nullptr );
         int finishState = static_cast<int>(finishState_);
 
         if( s_androidNativeUnityModule != nullptr )
@@ -147,7 +147,7 @@ extern "C" {
             jint unityAdsError_, jstring message_)
     {
         int unityAdsError = static_cast<int>(unityAdsError_);
-        const char * message = env->GetStringUTFChars( message_, 0 );
+        const Mengine::Char * message = env->GetStringUTFChars( message_, nullptr );
 
         if( s_androidNativeUnityModule != nullptr )
         {

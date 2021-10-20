@@ -311,14 +311,16 @@ namespace Mengine
                 ->messageBox( "Mengine", "author: IROV\nemail for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
+        const Char * ENGINE_GIT_SHA1 = Helper::getEngineGITSHA1();
+
         if( HAS_OPTION( "buildcommit" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
+                ->messageBox( "Mengine", "build commit: %s", ENGINE_GIT_SHA1 );
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "Build Commit: %s", MENGINE_ENGINE_GIT_SHA1 );
+            LOGGER_MESSAGE_RELEASE( "Build Commit: %s", ENGINE_GIT_SHA1 );
         }
 
         const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );

@@ -502,7 +502,7 @@ namespace Mengine
         }
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( m_fileGroup, accountsPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         if( config == nullptr )
         {

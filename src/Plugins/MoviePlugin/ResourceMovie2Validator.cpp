@@ -320,12 +320,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_composition_data_visitor( const aeMovieData * _movieData, const aeMovieCompositionData * _compositionData, ae_userdata_t _ud )
     {
+        AE_UNUSED( _movieData );
+
         aeMovieCompositionProviders composition_providers;
         ae_initialize_movie_composition_providers( &composition_providers );
 
         composition_providers.node_provider = &__movie_composition_node_provider;
 
-        const aeMovieComposition * composition = ae_create_movie_composition( _movieData, _compositionData, AE_TRUE, &composition_providers, _ud );
+        const aeMovieComposition * composition = ae_create_movie_composition( _compositionData, AE_TRUE, &composition_providers, _ud );
 
         if( composition == AE_NULLPTR )
         {

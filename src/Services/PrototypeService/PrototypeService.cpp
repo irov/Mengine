@@ -1,10 +1,12 @@
 #include "PrototypeService.h"
 
-#include "Interface/ConfigServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
+
+#ifndef MENGINE_PROTOTYPE_HASHTABLE_PRESIZE
+#define MENGINE_PROTOTYPE_HASHTABLE_PRESIZE 1024
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PrototypeService, Mengine::PrototypeService );
@@ -22,9 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::_initializeService()
     {
-        uint32_t PrototypeHashTableSize = CONFIG_VALUE( "Engine", "PrototypeHashTableSize", 1024 );
-
-        m_generators.reserve( PrototypeHashTableSize );
+        m_generators.reserve( MENGINE_PROTOTYPE_HASHTABLE_PRESIZE );
 
         return true;
     }
@@ -38,7 +38,7 @@ namespace Mengine
             const ConstString & category = value.key1;
             const ConstString & prototype = value.key1;
 
-            LOGGER_ERROR( "Forgot remove '%s' generator '%s'"
+            LOGGER_ERROR( "forgot remove '%s' generator '%s'"
                 , category.c_str()
                 , prototype.c_str()
             );

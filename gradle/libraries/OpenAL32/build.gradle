@@ -25,6 +25,13 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
 
+        ndk {
+            if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            } else {
+                abiFilters "arm64-v8a", "armeabi-v7a"
+            }
+        }
     }
     
     splits {
@@ -36,7 +43,7 @@ android {
             }
             
             reset() //reset the list of ABIs to be included to an empty string
-            
+
             include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             
             universalApk false
@@ -48,7 +55,7 @@ android {
             version "3.10.2"
         }
     }
-    
+
     buildTypes {
         debug {
 

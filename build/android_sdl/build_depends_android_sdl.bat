@@ -27,8 +27,6 @@ set CMAKE_TOOLCHAIN_FILE=%ANDROID_NDK%\build\cmake\android.toolchain.cmake
 set CMAKELIST_PATH=%CD%\..\..\cmake\Depends_Android_SDL
 set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
 
-set ABI = "x86 x86_64 armeabi-v7a arm64-v8a"
-
 for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
     @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A
     @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A

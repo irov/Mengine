@@ -25,11 +25,13 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
 
-        ndk {
-            if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
-                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
-            } else {
-                abiFilters "arm64-v8a", "armeabi-v7a"
+        if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
+            ndk {
+                if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                    abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                } else {
+                    abiFilters "arm64-v8a", "armeabi-v7a"
+                }
             }
         }
     }
@@ -44,7 +46,11 @@ android {
 
             reset() //reset the list of ABIs to be included to an empty string
 
-            include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            } else {
+                include "arm64-v8a", "armeabi-v7a"
+            }
             
             universalApk false
         }

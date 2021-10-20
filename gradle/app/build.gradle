@@ -122,16 +122,18 @@ android {
         print 'ANDROID_APP_EMULATOR_ENABLE = '
         println getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false)
 
-        ndk {
-            if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
-                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
-            } else {
-                abiFilters "arm64-v8a", "armeabi-v7a"
+        if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
+            ndk {
+                if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                    abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                } else {
+                    abiFilters "arm64-v8a", "armeabi-v7a"
+                }
             }
-
-            print 'ANDROID_APP_ARCH_86_64_ENABLE = '
-            println getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true)
         }
+
+        print 'ANDROID_APP_ARCH_86_64_ENABLE = '
+        println getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true)
     }
 
     splits {
@@ -144,7 +146,11 @@ android {
 
             reset()
 
-            include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            } else {
+                include "arm64-v8a", "armeabi-v7a"
+            }
 
             universalApk false
         }

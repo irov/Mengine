@@ -9,4 +9,6 @@
 /wrapper
 /build
 /captures
+/daemon
+/native
 .externalNativeBuild

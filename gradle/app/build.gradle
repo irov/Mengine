@@ -227,8 +227,7 @@ android {
                 println ANDROID_APP_ASSETS_JAVA_SRC_DIR
 
                 java.srcDirs += [ANDROID_APP_ASSETS_JAVA_SRC_DIR, '../../dependencies/SDL2/android-project/app/src/main/java']
-            }
-            else {
+            } else {
                 println 'ANDROID_APP_ASSETS_JAVA_SRC_DIR = src [Default]'
                 println 'ANDROID_APP_ASSETS_JAVA_SRC_DIR = ../../dependencies/SDL2/android-project/app/src/main/java [Default]'
             
@@ -434,7 +433,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_MAR", true) == true ) {
         print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: res_marsdk [Default]'
         
         android.sourceSets.main.res.srcDirs += ['res_marsdk']
-    }    
+    }
 }
 else
 {

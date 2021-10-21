@@ -5,7 +5,8 @@
 .gradle
 /local.properties
 .DS_Store
+/caches
+/wrapper
 /build
 /captures
 .externalNativeBuild
-

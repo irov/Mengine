@@ -8,6 +8,7 @@
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
+#include "Kernel/Logger.h"
 
 #include "Environment/Android/AndroidUtils.h"
 
@@ -177,7 +178,7 @@ namespace Mengine
         m_callbacks.emplace( _method, _cb );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    bool AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         Char signature[1024] = {'\0'};
 
@@ -238,6 +239,17 @@ namespace Mengine
 
                 MENGINE_STRCAT(signature, "Ljava/lang/String;");
             }
+            else
+            {
+                LOGGER_ERROR("android plugin '%s' method '%s' unsupported arg [%u] type [%s]"
+                    , _plugin.c_str()
+                    , _method.c_str()
+                    , index_args
+                    , m_kernel->object_repr_type( arg.ptr() ).c_str()
+                );
+
+                return false;
+            }
         }
 
         MENGINE_STRCAT(signature, ")V");
@@ -246,7 +258,11 @@ namespace Mengine
 
         if( it_found == m_plugins.end() )
         {
-            return;
+            LOGGER_ERROR("android not found plugin '%s'"
+                , _plugin.c_str()
+            );
+
+            return false;
         }
 
         jobject plugin = it_found->second;
@@ -257,7 +273,13 @@ namespace Mengine
 
         if( jmethodID_method == 0 )
         {
-            return;
+            LOGGER_ERROR("android plugin '%s' not found method '%s' with signature '%s'"
+                , _plugin.c_str()
+                , _method.c_str()
+                , signature
+            );
+
+            return false;
         }
 
         m_jenv->CallVoidMethodA( plugin, jmethodID_method, jargs );
@@ -270,6 +292,8 @@ namespace Mengine
         }
 
         m_eventation.invoke();
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -817,7 +817,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         np.xmlComposition = &xmlDataResourceComposition;
         strcpy( np.movie_name, utf8_movie_name );
 
-        const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &composition_providers, &np );
+        const aeMovieComposition * composition = ae_create_movie_composition( compositionData, AE_TRUE, &composition_providers, &np );
 
         ae_visit_movie_sub_composition( composition, __visit_sub_composition, &np );
 

@@ -306,7 +306,7 @@ public class MengineActivity extends SDLActivity {
             }
         }
 
-        return false;
+        return super.dispatchKeyEvent(event);
     }
 
     @Override

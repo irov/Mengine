@@ -51,7 +51,7 @@ namespace Mengine
 
     public:
         void setAndroidCallback( const ConstString & _method, const pybind::object & _cb );
-        void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
+        bool androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
 
     protected:
         JNIEnv * m_jenv;

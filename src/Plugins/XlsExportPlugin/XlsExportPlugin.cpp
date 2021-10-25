@@ -229,9 +229,9 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        ConstString projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
+        ConstString Project_Codename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
 
-        if( projectCodename.empty() == true )
+        if( Project_Codename.empty() == true )
         {
             return false;
         }
@@ -245,7 +245,7 @@ namespace Mengine
         }
 
         kernel->call_method( py_xlsxExporter, "export", "(s)"
-            , projectCodename.c_str()
+            , Project_Codename.c_str()
         );
 
         kernel->decref( py_xlsxExporter );

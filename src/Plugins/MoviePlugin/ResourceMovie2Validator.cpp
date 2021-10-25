@@ -1,6 +1,7 @@
 #include "ResourceMovie2Validator.h"
 
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -12,6 +13,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+
+#include "Config/Abs.h"
 
 #include "stdex/memorycopy.h"
 
@@ -221,6 +224,34 @@ namespace Mengine
 
                 desc->successful = false;
             }break;
+        case AE_MOVIE_LAYER_TYPE_IMAGE:
+            {
+                ae_float_t immutable_scale_x;
+                ae_float_t immutable_scale_y;
+                ae_float_t immutable_scale_z;
+                if( ae_get_movie_layer_data_immutable_scale( _layerData, &immutable_scale_x, &immutable_scale_y, &immutable_scale_z ) == AE_FALSE )
+                {
+                    break;
+                }
+
+                float Limit_Movie2ImageImmutableScale = CONFIG_VALUE( "Limit", "Movie2ImageImmutableScale", 0.8f );
+
+                if( MENGINE_ABS( immutable_scale_x ) >= Limit_Movie2ImageImmutableScale && MENGINE_ABS( immutable_scale_y ) >= Limit_Movie2ImageImmutableScale && MENGINE_ABS( immutable_scale_z ) >= Limit_Movie2ImageImmutableScale )
+                {
+                    break;
+                }
+
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' image layer '%s' scale [%f - %f - %f]"
+                    , desc->resource->getName().c_str()
+                    , compositionDataName
+                    , layerDataName
+                    , immutable_scale_x
+                    , immutable_scale_y
+                    , immutable_scale_z
+                );
+
+                desc->successful = false;
+            }
         case AE_MOVIE_LAYER_TYPE_VIDEO:
             {
                 ae_float_t immutable_scale_x;
@@ -231,7 +262,9 @@ namespace Mengine
                     break;
                 }
 
-                if( immutable_scale_x >= 0.9f && immutable_scale_y >= 0.9f && immutable_scale_z >= 0.9f )
+                float Limit_Movie2VideoImmutableScale = CONFIG_VALUE( "Limit", "Movie2VideoImmutableScale", 0.9f );
+
+                if( MENGINE_ABS( immutable_scale_x ) >= Limit_Movie2VideoImmutableScale && MENGINE_ABS( immutable_scale_y ) >= Limit_Movie2VideoImmutableScale && MENGINE_ABS( immutable_scale_z ) >= Limit_Movie2VideoImmutableScale )
                 {
                     break;
                 }

@@ -233,11 +233,11 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
-        const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
-        MENGINE_STRCPY( m_companyName, companyName );
-        MENGINE_STRCPY( m_projectName, projectName );
+        MENGINE_STRCPY( m_companyName, Project_Company );
+        MENGINE_STRCPY( m_projectName, Project_Name );
 
         m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );

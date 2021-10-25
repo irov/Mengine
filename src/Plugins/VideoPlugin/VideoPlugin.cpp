@@ -41,9 +41,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_availablePlugin() const
     {
-        bool available = CONFIG_VALUE( "Engine", "VideoPluginAvailable", true );
+        bool Engine_VideoPluginAvailable = CONFIG_VALUE( "Engine", "VideoPluginAvailable", true );
 
-        return available;
+        return Engine_VideoPluginAvailable;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_initializePlugin()

@@ -430,21 +430,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::clearFrameBuffer_()
     {
-        bool RenderFrameClear = CONFIG_VALUE( "Engine", "RenderFrameClear", true );
+        bool Engine_RenderFrameClear = CONFIG_VALUE( "Engine", "RenderFrameClear", true );
 
-        if( RenderFrameClear == true )
+        if( Engine_RenderFrameClear == true )
         {
-            uint8_t RenderFrameClearColorR = CONFIG_VALUET( "Engine", "RenderFrameClearColorR", 0U, uint8_t );
-            uint8_t RenderFrameClearColorG = CONFIG_VALUET( "Engine", "RenderFrameClearColorG", 0U, uint8_t );
-            uint8_t RenderFrameClearColorB = CONFIG_VALUET( "Engine", "RenderFrameClearColorB", 0U, uint8_t );
+            uint8_t Engine_RenderFrameClearColorR = CONFIG_VALUET( "Engine", "RenderFrameClearColorR", 0U, uint8_t );
+            uint8_t Engine_RenderFrameClearColorG = CONFIG_VALUET( "Engine", "RenderFrameClearColorG", 0U, uint8_t );
+            uint8_t Engine_RenderFrameClearColorB = CONFIG_VALUET( "Engine", "RenderFrameClearColorB", 0U, uint8_t );
 
-            Color argb = Helper::makeColor( RenderFrameClearColorR, RenderFrameClearColorG, RenderFrameClearColorB, 255U );
+            Color argb = Helper::makeColor( Engine_RenderFrameClearColorR, Engine_RenderFrameClearColorG, Engine_RenderFrameClearColorB, 255U );
 
             uint32_t frameBufferTypes = FBT_COLOR;
 
-            bool RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
+            bool Engine_RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
 
-            if( RenderEnableAutoDepthStencil == true )
+            if( Engine_RenderEnableAutoDepthStencil == true )
             {
                 frameBufferTypes |= FBT_DEPTH;
             }

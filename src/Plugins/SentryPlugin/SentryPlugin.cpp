@@ -118,9 +118,9 @@ namespace Mengine
             , SENTRY_SDK_USER_AGENT
         );
 
-        const Char * SENTRY_DSN = CONFIG_VALUE( "Sentry", "DSN", "" );
+        const Char * Sentry_DSN = CONFIG_VALUE( "Sentry", "DSN", "" );
 
-        if( MENGINE_STRCMP( SENTRY_DSN, "" ) == 0 )
+        if( MENGINE_STRCMP( Sentry_DSN, "" ) == 0 )
         {
             LOGGER_WARNING( "Sentry don't setup DSN" );
 
@@ -128,17 +128,17 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "Sentry DSN: %s"
-            , SENTRY_DSN
+            , Sentry_DSN
         );
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-        const Char * SENTRY_HANDLER = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
+        const Char * Sentry_Handler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
 #else
-        const Char * SENTRY_HANDLER = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler" );
+        const Char * Sentry_Handler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler" );
 #endif
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
-            , SENTRY_HANDLER
+            , Sentry_Handler
         );
 
         sentry_options_t * options = sentry_options_new();
@@ -174,7 +174,7 @@ namespace Mengine
         
         PathString sentryHandlerPath;
         sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );
-        sentryHandlerPath.append( SENTRY_HANDLER );
+        sentryHandlerPath.append( Sentry_Handler );
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
             , sentryHandlerPath.c_str()
@@ -191,7 +191,7 @@ namespace Mengine
         sentry_options_set_handler_path( options, str_sentryHandlerPath );
 #endif
 
-        sentry_options_set_dsn( options, SENTRY_DSN ); 
+        sentry_options_set_dsn( options, Sentry_DSN ); 
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
         sentry_options_set_debug( options, MENGINE_DEBUG_VALUE( 1, 0 ) );
 
@@ -283,13 +283,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyCreateApplication_()
     {
-        const Char * SENTRY_APPLICATION = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
+        const Char * Sentry_Application = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
 
         LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
-            , SENTRY_APPLICATION
+            , Sentry_Application
         );
 
-        sentry_set_extra( "Application", sentry_value_new_string( SENTRY_APPLICATION ) );
+        sentry_set_extra( "Application", sentry_value_new_string( Sentry_Application ) );
 
         Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()

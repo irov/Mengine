@@ -60,17 +60,17 @@ namespace Mengine
                 ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate );
         }
 
-        float commonVolume = CONFIG_VALUE( "Engine", "CommonVolume", 1.f );
-        this->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), commonVolume, 0.f );
+        float Engine_CommonVolume = CONFIG_VALUE( "Engine", "CommonVolume", 1.f );
+        this->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_CommonVolume, 0.f );
 
-        float soundVolume = CONFIG_VALUE( "Engine", "SoundVolume", 1.f );
-        this->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), soundVolume, 0.f );
+        float Engine_SoundVolume = CONFIG_VALUE( "Engine", "SoundVolume", 1.f );
+        this->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_SoundVolume, 0.f );
 
-        float musicVolume = CONFIG_VALUE( "Engine", "MusicVolume", 1.f );
-        this->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), musicVolume, 0.f );
+        float Engine_MusicVolume = CONFIG_VALUE( "Engine", "MusicVolume", 1.f );
+        this->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_MusicVolume, 0.f );
 
-        float voiceVolume = CONFIG_VALUE( "Engine", "VoiceVolume", 1.f );
-        this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), voiceVolume, 0.f );
+        float Engine_VoiceVolume = CONFIG_VALUE( "Engine", "VoiceVolume", 1.f );
+        this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_VoiceVolume, 0.f );
 
         bool OPTION_musicoff = HAS_OPTION( "musicoff" ) || HAS_OPTION( "nomusic" );
 
@@ -1477,12 +1477,12 @@ namespace Mengine
             return _Identity->state == ESS_PLAY;
         } );
 
-        uint32_t MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
+        uint32_t Limit_MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
 
-        if( playCount > MaxSoundPlay )
+        if( playCount > Limit_MaxSoundPlay )
         {
             LOGGER_ERROR( "Sound play exceeded max count '%u'"
-                , MaxSoundPlay
+                , Limit_MaxSoundPlay
             );
 
 #ifdef MENGINE_DEBUG

@@ -69,19 +69,19 @@ namespace Mengine
             total_memory += textureSize;
         }
 
-        uint32_t AnimationMemoryLimit = CONFIG_VALUE( "Limit", "AnimationMemoryLimit", 4194304U ); //4mb
-        float AnimationMemoryLimitThresholdCoeff = CONFIG_VALUE( "Limit", "AnimationMemoryLimitThresholdCoeff", 4.f );
+        uint32_t Limit_AnimationMemoryLimit = CONFIG_VALUE( "Limit", "AnimationMemoryLimit", 4194304U ); //4mb
+        float Limit_AnimationMemoryLimitThresholdCoeff = CONFIG_VALUE( "Limit", "AnimationMemoryLimitThresholdCoeff", 4.f );
 
-        if( total_memory > AnimationMemoryLimit && AnimationMemoryLimit != 0U )
+        if( total_memory > Limit_AnimationMemoryLimit && Limit_AnimationMemoryLimit != 0U )
         {
-            if( float( total_memory ) / float( AnimationMemoryLimit ) > AnimationMemoryLimitThresholdCoeff )
+            if( float( total_memory ) / float( Limit_AnimationMemoryLimit ) > Limit_AnimationMemoryLimitThresholdCoeff )
             {
                 LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %.2f)"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , float( total_memory ) / (1024.f * 1024.f)
-                    , float( AnimationMemoryLimit ) / (1024.f * 1024.f)
-                    , float( total_memory ) / float( AnimationMemoryLimit )
+                    , float( Limit_AnimationMemoryLimit ) / (1024.f * 1024.f)
+                    , float( total_memory ) / float( Limit_AnimationMemoryLimit )
                 );
 
                 successful = false;
@@ -92,8 +92,8 @@ namespace Mengine
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , float( total_memory ) / (1024.f * 1024.f)
-                    , float( AnimationMemoryLimit ) / (1024.f * 1024.f)
-                    , float( total_memory ) / float( AnimationMemoryLimit )
+                    , float( Limit_AnimationMemoryLimit ) / (1024.f * 1024.f)
+                    , float( total_memory ) / float( Limit_AnimationMemoryLimit )
                 );
             }
         }

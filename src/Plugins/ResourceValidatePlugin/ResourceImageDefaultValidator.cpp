@@ -179,20 +179,20 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-        uint32_t limitTextureWidth = CONFIG_VALUE( "Limit", "TextureWidth", 2048U );
-        uint32_t limitTextureHeight = CONFIG_VALUE( "Limit", "TextureHeight", 2048U );
+        uint32_t Limit_TextureWidth = CONFIG_VALUE( "Limit", "TextureWidth", 2048U );
+        uint32_t Limit_TextureHeight = CONFIG_VALUE( "Limit", "TextureHeight", 2048U );
 
         uint32_t width = dataInfo->width;
         uint32_t height = dataInfo->height;
 
-        if( (width > limitTextureWidth && limitTextureWidth != 0U) || (height > limitTextureHeight && limitTextureHeight != 0U) )
+        if( (width > Limit_TextureWidth && Limit_TextureWidth != 0U) || (height > Limit_TextureHeight && Limit_TextureHeight != 0U) )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' invalid limit [%u:%u] texture size [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
-                , limitTextureWidth
-                , limitTextureHeight
+                , Limit_TextureWidth
+                , Limit_TextureHeight
                 , dataInfo->width
                 , dataInfo->height
             );
@@ -230,11 +230,11 @@ namespace Mengine
             successful = false;
         }
 
-        bool check_imageTransparency = CONFIG_VALUE( "Check", "ImageTransparency", false );
+        bool Check_ImageTransparency = CONFIG_VALUE( "Check", "ImageTransparency", false );
 
         uint32_t dataChannels = Helper::getPixelFormatChannels( dataInfo->format );
 
-        if( check_imageTransparency == true && dataChannels == 4 )
+        if( Check_ImageTransparency == true && dataChannels == 4 )
         {
             uint32_t texture_size = Helper::getImageCodecDataSize( dataInfo );
 
@@ -274,9 +274,9 @@ namespace Mengine
                 successful = false;
             }
 
-            bool check_imageRowColumnTransparency = CONFIG_VALUE( "Check", "ImageRowColumnTransparency", false );
+            bool Check_ImageRowColumnTransparency = CONFIG_VALUE( "Check", "ImageRowColumnTransparency", false );
 
-            if( check_imageRowColumnTransparency == true )
+            if( Check_ImageRowColumnTransparency == true )
             {
                 if( Detail::s_checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
                 {

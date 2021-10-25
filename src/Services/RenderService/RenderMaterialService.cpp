@@ -137,33 +137,33 @@ namespace Mengine
             m_defaultStagesEnum[name] = (EMaterial)i;
         }
 
-        uint32_t defaultTextureFilterMipmap = CONFIG_VALUE( "Engine", "DefaultTextureFilterMipmap", 0U );
-        uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMagnification", 2U );
-        uint32_t defaultTextureFilterMinification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMinification", 2U );
+        uint32_t Engine_DefaultTextureFilterMipmap = CONFIG_VALUE( "Engine", "DefaultTextureFilterMipmap", 0U );
+        uint32_t Engine_DefaultTextureFilterMagnification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMagnification", 2U );
+        uint32_t Engine_DefaultTextureFilterMinification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMinification", 2U );
 
-        if( defaultTextureFilterMipmap >= __MAX_TEXTURE_FILTER__ )
+        if( Engine_DefaultTextureFilterMipmap >= __MAX_TEXTURE_FILTER__ )
         {
             LOGGER_ERROR( "[DefaultTextureFilterMipmap] undefined great %u current '%u'"
                 , __MAX_TEXTURE_FILTER__
-                , defaultTextureFilterMipmap
+                , Engine_DefaultTextureFilterMipmap
             );
 
             return false;
         }
 
-        if( defaultTextureFilterMagnification >= __MAX_TEXTURE_FILTER__ )
+        if( Engine_DefaultTextureFilterMagnification >= __MAX_TEXTURE_FILTER__ )
         {
             LOGGER_ERROR( "[DefaultTextureFilterMagnification] undefined great %u current '%u'"
                 , __MAX_TEXTURE_FILTER__
-                , defaultTextureFilterMagnification
+                , Engine_DefaultTextureFilterMagnification
             );
 
             return false;
         }
 
-        m_defaultTextureFilterMipmap = Detail::parseConfigTextureFilterValue( defaultTextureFilterMipmap );
-        m_defaultTextureFilterMagnification = Detail::parseConfigTextureFilterValue( defaultTextureFilterMagnification );
-        m_defaultTextureFilterMinification = Detail::parseConfigTextureFilterValue( defaultTextureFilterMinification );
+        m_defaultTextureFilterMipmap = Detail::parseConfigTextureFilterValue( Engine_DefaultTextureFilterMipmap );
+        m_defaultTextureFilterMagnification = Detail::parseConfigTextureFilterValue( Engine_DefaultTextureFilterMagnification );
+        m_defaultTextureFilterMinification = Detail::parseConfigTextureFilterValue( Engine_DefaultTextureFilterMinification );
 
         m_factoryMaterial = Helper::makeFactoryPoolWithListener<RenderMaterial, 256>( this, &RenderMaterialService::onRenderMaterialDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 

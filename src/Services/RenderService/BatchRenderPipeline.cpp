@@ -47,20 +47,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::initialize()
     {
-        uint32_t maxObjects = CONFIG_VALUE( "Engine", "RenderMaxObject", 8000U );
-        uint32_t maxPasses = CONFIG_VALUE( "Engine", "RenderMaxPass", 200U );
+        uint32_t Engine_RenderMaxObject = CONFIG_VALUE( "Engine", "RenderMaxObject", 8000U );
+        uint32_t Engine_RenderMaxPass = CONFIG_VALUE( "Engine", "RenderMaxPass", 200U );
 
-        m_renderObjects.reserve( maxObjects );
-        m_renderPrimitives.reserve( maxObjects );
-        m_renderPasses.reserve( maxPasses );
+        m_renderObjects.reserve( Engine_RenderMaxObject );
+        m_renderPrimitives.reserve( Engine_RenderMaxObject );
+        m_renderPasses.reserve( Engine_RenderMaxPass );
 
-        uint32_t maxQuadBatch = CONFIG_VALUE( "Engine", "RenderMaxQuadBatch", 2000U );
-        uint32_t maxLineBatch = CONFIG_VALUE( "Engine", "RenderMaxLineBatch", 4000U );
+        uint32_t Engine_RenderMaxQuadBatch = CONFIG_VALUE( "Engine", "RenderMaxQuadBatch", 2000U );
+        uint32_t Engine_RenderMaxLineBatch = CONFIG_VALUE( "Engine", "RenderMaxLineBatch", 4000U );
 
-        m_indicesQuad.resize( maxQuadBatch * 6 );
-        m_indicesLine.resize( maxLineBatch * 1 );
+        m_indicesQuad.resize( Engine_RenderMaxQuadBatch * 6 );
+        m_indicesLine.resize( Engine_RenderMaxLineBatch * 1 );
 
-        for( uint32_t i = 0; i != maxQuadBatch; ++i )
+        for( uint32_t i = 0; i != Engine_RenderMaxQuadBatch; ++i )
         {
             uint32_t indexOffset = i * 6;
 
@@ -74,16 +74,16 @@ namespace Mengine
             m_indicesQuad[indexOffset + 5] = vertexOffset + 2;
         }
 
-        for( uint32_t i = 0; i != maxLineBatch; ++i )
+        for( uint32_t i = 0; i != Engine_RenderMaxLineBatch; ++i )
         {
             RenderIndex vertexOffset = (RenderIndex)i;
 
             m_indicesLine[i] = vertexOffset;
         }
 
-        uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 1 );
+        uint32_t Engine_RenderServiceBatchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 1 );
 
-        switch( batchMode )
+        switch( Engine_RenderServiceBatchMode )
         {
         case 0U:
             {

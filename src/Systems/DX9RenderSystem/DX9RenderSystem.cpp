@@ -106,15 +106,15 @@ namespace Mengine
     {
         m_frames = 0;
 
-        const Char * d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", MENGINE_D3D9_DLL_NAME );
+        const Char * Render_D3D9_DLL = CONFIG_VALUE( "Render", "D3D9_DLL", MENGINE_D3D9_DLL_NAME );
 
         DynamicLibraryInterfacePtr d3d9Library = PLATFORM_SERVICE()
-            ->loadDynamicLibrary( d3d9DLL, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadDynamicLibrary( Render_D3D9_DLL, MENGINE_DOCUMENT_FACTORABLE );
 
         if( d3d9Library == nullptr )
         {
             LOGGER_ERROR( "Failed to load d3d9 dll '%s'"
-                , d3d9DLL
+                , Render_D3D9_DLL
             );
 
             return false;

@@ -44,21 +44,21 @@ namespace Mengine
             return false;
         }
 
-        uint32_t limitMovieWidth = CONFIG_VALUE( "Limit", "MovieWidth", 16384U );
-        uint32_t limitMovieHeight = CONFIG_VALUE( "Limit", "MovieHeight", 16384U );
+        uint32_t Limit_MovieWidth = CONFIG_VALUE( "Limit", "MovieWidth", 16384U );
+        uint32_t Limit_MovieHeight = CONFIG_VALUE( "Limit", "MovieHeight", 16384U );
 
         const mt::vec2f & size = _resource->getSize();
 
         uint32_t width = (uint32_t)(size.x + 0.5f);
         uint32_t height = (uint32_t)(size.y + 0.5f);
 
-        if( (width > limitMovieWidth && limitMovieWidth != 0U) || (height > limitMovieHeight && limitMovieHeight != 0U) )
+        if( (width > Limit_MovieWidth && Limit_MovieWidth != 0U) || (height > Limit_MovieHeight && Limit_MovieHeight != 0U) )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid limit %u:%u size %u:%u"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , limitMovieWidth
-                , limitMovieHeight
+                , Limit_MovieWidth
+                , Limit_MovieHeight
                 , width
                 , height
             );
@@ -202,7 +202,7 @@ namespace Mengine
                 }
             }
 
-            float MovieImageScale = CONFIG_VALUE( "Limit", "MovieImageScale", 0.75f );
+            float Limit_MovieImageScale = CONFIG_VALUE( "Limit", "MovieImageScale", 0.75f );
 
             if( layer.type == STRINGIZE_STRING_LOCAL( "Image" )
                 || layer.type == STRINGIZE_STRING_LOCAL( "Animation" )
@@ -213,8 +213,8 @@ namespace Mengine
 
                 if( layerFrame.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_SCALE || layerFrame.immutable == true )
                 {
-                    if( MT_fabsf( layerFrame.source.scale.x ) < MovieImageScale ||
-                        MT_fabsf( layerFrame.source.scale.y ) < MovieImageScale )
+                    if( MT_fabsf( layerFrame.source.scale.x ) < Limit_MovieImageScale ||
+                        MT_fabsf( layerFrame.source.scale.y ) < Limit_MovieImageScale )
                     {
                         LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer [%u] name '%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
                             , _resource->getName().c_str()
@@ -249,7 +249,7 @@ namespace Mengine
                         }
                     }
 
-                    if( scale_max_x < MovieImageScale || scale_max_y < MovieImageScale )
+                    if( scale_max_x < Limit_MovieImageScale || scale_max_y < Limit_MovieImageScale )
                     {
                         LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer [%u] name '%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
                             , _resource->getName().c_str()

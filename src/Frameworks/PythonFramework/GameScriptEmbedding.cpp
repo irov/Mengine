@@ -88,13 +88,13 @@ namespace Mengine
             return false;
         }
 
-        ConstString personality = CONFIG_VALUE( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
+        ConstString Game_PersonalityModule = CONFIG_VALUE( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
 
         ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
-            ->importModule( personality );
+            ->importModule( Game_PersonalityModule );
 
         MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid import module '%s'"
-            , personality.c_str()
+            , Game_PersonalityModule.c_str()
         );
 
         Detail::registerGameEventMethods( _kernel, module, MENGINE_DOCUMENT_FACTORABLE );

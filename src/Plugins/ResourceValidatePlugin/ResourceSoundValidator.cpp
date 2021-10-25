@@ -72,15 +72,15 @@ namespace Mengine
 
         const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-        float limitMinimalStreamSoundDuration = CONFIG_VALUE( "Limit", "MinimalStreamSoundDuration", 500.f ); //4kb
+        float Limit_MinimalStreamSoundDuration = CONFIG_VALUE( "Limit", "MinimalStreamSoundDuration", 500.f ); //4kb
 
-        if( (dataInfo->length <= limitMinimalStreamSoundDuration && limitMinimalStreamSoundDuration != 0.f) && streamable == true )
+        if( (dataInfo->length <= Limit_MinimalStreamSoundDuration && Limit_MinimalStreamSoundDuration != 0.f) && streamable == true )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s'\nAdd <IsStreamable Value=\"0\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
-                , limitMinimalStreamSoundDuration
+                , Limit_MinimalStreamSoundDuration
                 , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
             );
 
@@ -100,15 +100,15 @@ namespace Mengine
             );
         }
 
-        float limitNoStreamSoundDurationError = CONFIG_VALUE( "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
+        float Limit_NoStreamSoundDurationError = CONFIG_VALUE( "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
 
-        if( (dataInfo->length > limitNoStreamSoundDurationError && limitNoStreamSoundDurationError != 0.f) && streamable == false )
+        if( (dataInfo->length > Limit_NoStreamSoundDurationError && Limit_NoStreamSoundDurationError != 0.f) && streamable == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s'\nAdd <IsStreamable Value=\"1\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
-                , limitNoStreamSoundDurationError
+                , Limit_NoStreamSoundDurationError
                 , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
             );
 

@@ -55,9 +55,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleSteam::_availableModule() const
     {
-        bool avaliable = CONFIG_VALUE( "Steam", "Avaliable", true );
+        bool Steam_Avaliable = CONFIG_VALUE( "Steam", "Avaliable", true );
 
-        if( avaliable == false )
+        if( Steam_Avaliable == false )
         {
             return false;
         }
@@ -67,13 +67,13 @@ namespace Mengine
             return false;
         }
 
-        uint32_t appId = CONFIG_VALUE( "Steam", "AppId", k_uAppIdInvalid );
+        uint32_t Steam_AppId = CONFIG_VALUE( "Steam", "AppId", k_uAppIdInvalid );
 
         if( HAS_OPTION( "steamappid" ) == true )
         {
             const Char * str_steamappid = GET_OPTION_VALUE( "steamappid", "" );
 
-            if( MENGINE_SSCANF( str_steamappid, "%u", &appId ) != 0 )
+            if( MENGINE_SSCANF( str_steamappid, "%u", &Steam_AppId ) != 0 )
             {
                 LOGGER_ERROR( "invalid option steamappid '%s'"
                     , str_steamappid
@@ -85,10 +85,10 @@ namespace Mengine
 
         if( HAS_OPTION( "norestartsteamapp" ) == false )
         {
-            if( SteamAPI_RestartAppIfNecessary( appId ) == true )
+            if( SteamAPI_RestartAppIfNecessary( Steam_AppId ) == true )
             {
                 LOGGER_ERROR( "invalid SteamAPI_RestartAppIfNecessary [Id = %u]"
-                    , appId
+                    , Steam_AppId
                 );
 
                 return false;

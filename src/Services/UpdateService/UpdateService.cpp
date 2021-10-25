@@ -52,14 +52,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UpdateService::_initializeService()
     {
-        uint32_t DefaultUpdateProxies = CONFIG_VALUE( "Engine", "DefaultUpdateProxies", 16384U );
-        uint32_t DefaultUpdateLeafs = CONFIG_VALUE( "Engine", "DefaultUpdateLeafs", 256U );
+        uint32_t Engine_DefaultUpdateProxies = CONFIG_VALUE( "Engine", "DefaultUpdateProxies", 16384U );
+        uint32_t Engine_DefaultUpdateLeafs = CONFIG_VALUE( "Engine", "DefaultUpdateLeafs", 256U );
 
-        m_proxies.reserve( DefaultUpdateProxies );
-        m_proxyFrees.reserve( DefaultUpdateProxies );
+        m_proxies.reserve( Engine_DefaultUpdateProxies );
+        m_proxyFrees.reserve( Engine_DefaultUpdateProxies );
 
         m_beforeLeaf.resize( 16 );
-        m_leafs.resize( DefaultUpdateLeafs );
+        m_leafs.resize( Engine_DefaultUpdateLeafs );
         m_afterLeaf.resize( 16 );
 
         uint32_t timepipe = TIMEPIPE_SERVICE()

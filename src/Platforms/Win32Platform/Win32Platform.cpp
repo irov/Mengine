@@ -281,9 +281,9 @@ namespace Mengine
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDateTimeProviders = Helper::makeFactoryPool<Win32DateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-        const Char * windowClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
+        const Char * Window_ClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
-        Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH );
+        Helper::utf8ToUnicode( Window_ClassName, m_windowClassName, MENGINE_MAX_PATH );
 
         SERVICE_WAIT( FileServiceInterface, [this]()
         {
@@ -4394,9 +4394,9 @@ namespace Mengine
 
         ::CoTaskMemFree( itemIDList );
 
-        const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
 
-        if( MENGINE_STRLEN( companyName ) == 0 )
+        if( MENGINE_STRLEN( Project_Company ) == 0 )
         {
             LOGGER_ERROR( "invalid get company name" );
 
@@ -4404,10 +4404,10 @@ namespace Mengine
         }
 
         WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME] = {L'\0'};
-        if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
+        if( Helper::utf8ToUnicode( Project_Company, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
         {
             LOGGER_ERROR( "invalid convert company name from utf8 to unicode '%s'"
-                , companyName
+                , Project_Company
             );
 
             return 0;
@@ -4416,9 +4416,9 @@ namespace Mengine
         WChar roamingPath[MENGINE_MAX_PATH] = {L'\0'};
         ::PathCombine( roamingPath, currentPath, companyNameW );
 
-        const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
-        if( MENGINE_STRLEN( projectName ) == 0 )
+        if( MENGINE_STRLEN( Project_Name ) == 0 )
         {
             LOGGER_ERROR( "invalid get project name" );
 
@@ -4426,10 +4426,10 @@ namespace Mengine
         }
 
         WChar projectNameW[MENGINE_APPLICATION_PROJECT_MAXNAME] = {L'\0'};
-        if( Helper::utf8ToUnicode( projectName, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME ) == false )
+        if( Helper::utf8ToUnicode( Project_Name, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME ) == false )
         {
             LOGGER_ERROR( "invalid convert project name from utf8 to unicode '%s'"
-                , projectName
+                , Project_Name
             );
 
             return 0;

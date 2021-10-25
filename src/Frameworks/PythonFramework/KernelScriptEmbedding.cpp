@@ -464,7 +464,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_Node_removeAllChild( Node * _node )
+            void s_Node_removeChildren( Node * _node )
             {
                 _node->removeChildren( []( const NodePtr & _child )
                 {
@@ -482,7 +482,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_Node_destroyAllChild( Node * _node )
+            void s_Node_destroyChildren( Node * _node )
             {
                 _node->removeChildren( []( const NodePtr & _child )
                 {
@@ -527,15 +527,21 @@ namespace Mengine
                 return String( debugId );
             }
             //////////////////////////////////////////////////////////////////////////
-            NodePtr s_Node_createChildren( Node * _node, ConstString _type )
+            NodePtr s_Node_createChild( Node * _node, const ConstString & _type )
             {
-                if( _type == STRINGIZE_STRING_LOCAL( "Node" ) )
+                ConstString correct_type = _type;
+
+                if( correct_type == STRINGIZE_STRING_LOCAL( "Node" ) )
                 {
-                    _type = STRINGIZE_STRING_LOCAL( "Interender" );
+                    LOGGER_WARNING( "type 'Node' is old deprecated type, use 'Interender' or other\ntraceback:\n%s"
+                        , MENGINE_PYBIND_TRACEBACK()
+                    );
+
+                    correct_type = STRINGIZE_STRING_LOCAL( "Interender" );
                 }
 
                 NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), correct_type, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -2522,14 +2528,20 @@ namespace Mengine
             ;
 
         pybind::interface_<Hierarchy, pybind::bases<Mixin>>( _kernel, "Hierarchy" )
-            .def( "addChildren", &Hierarchy::addChild )
-            .def( "addChildrenFront", &Hierarchy::addChildFront )
-            .def( "addChildrenAfter", &Hierarchy::addChildAfter )
-            .def( "findChildren", &Hierarchy::findChild )
+            .def( "addChild", &Hierarchy::addChild )
+            .def( "addChildFront", &Hierarchy::addChildFront )
+            .def( "addChildAfter", &Hierarchy::addChildAfter )
+            .def( "findChild", &Hierarchy::findChild )
+            .def( "emptyChildren", &Hierarchy::emptyChildren )
+            .def( "hasChild", &Hierarchy::hasChild )
+            .def_deprecated( "addChildren", &Hierarchy::addChild, "use addChild")
+            .def_deprecated( "addChildrenFront", &Hierarchy::addChildFront, "use addChildFront" )
+            .def_deprecated( "addChildrenAfter", &Hierarchy::addChildAfter, "use addChildAfter" )
+            .def_deprecated( "findChildren", &Hierarchy::findChild, "use findChild" )
+            .def_deprecated( "emptyChild", &Hierarchy::emptyChildren, "use emptyChildren" )
+            .def_deprecated( "hasChildren", &Hierarchy::hasChild, "use hasChild" )
             .def( "getSiblingPrev", &Hierarchy::getSiblingPrev )
             .def( "getSiblingNext", &Hierarchy::getSiblingNext )
-            .def( "emptyChild", &Hierarchy::emptyChildren )
-            .def( "hasChildren", &Hierarchy::hasChild )
             .def( "getParent", &Hierarchy::getParent )
             .def( "hasParent", &Hierarchy::hasParent )
             ;
@@ -2542,10 +2554,13 @@ namespace Mengine
             .def( "freeze", &Node::freeze )
             .def( "isFreeze", &Node::isFreeze )
             .def( "findUniqueChild", &Node::findUniqueChild )
-            .def_proxy_static( "removeChildren", scriptMethod, &KernelScriptMethod::s_Node_removeChild )
-            .def_proxy_static( "removeAllChild", scriptMethod, &KernelScriptMethod::s_Node_removeAllChild )
+            .def_proxy_static( "removeChild", scriptMethod, &KernelScriptMethod::s_Node_removeChild )
+
+            .def_proxy_static_deprecated( "removeAllChild", scriptMethod, &KernelScriptMethod::s_Node_removeChildren, "use removeChildren")
+            .def_proxy_static( "removeChildren", scriptMethod, &KernelScriptMethod::s_Node_removeChildren )
             .def_proxy_static( "removeFromParent", scriptMethod, &KernelScriptMethod::s_Node_removeFromParent )
-            .def_proxy_static( "destroyAllChild", scriptMethod, &KernelScriptMethod::s_Node_destroyAllChild )
+            .def_proxy_static_deprecated( "destroyAllChild", scriptMethod, &KernelScriptMethod::s_Node_destroyChildren, "use destroyChildren" )
+            .def_proxy_static( "destroyChildren", scriptMethod, &KernelScriptMethod::s_Node_destroyChildren )
             .def_proxy_static( "isHomeless", scriptMethod, &KernelScriptMethod::s_Node_isHomeless )
 
             //.def( "getWorldDirection", &Node::getWorldDirection )
@@ -2554,7 +2569,8 @@ namespace Mengine
 
             .def_proxy_static( "getDebugId", scriptMethod, &KernelScriptMethod::s_Node_getDebugId )
 
-            .def_proxy_static( "createChildren", scriptMethod, &KernelScriptMethod::s_Node_createChildren )
+            .def_proxy_static_deprecated( "createChildren", scriptMethod, &KernelScriptMethod::s_Node_createChild, "use createChild" )
+            .def_proxy_static( "createChild", scriptMethod, &KernelScriptMethod::s_Node_createChild )
             .def_proxy_static_kernel( "getAllChildren", scriptMethod, &KernelScriptMethod::s_Node_getAllChildren )
 
             .def_proxy_static_args( "colorTo", scriptMethod, &KernelScriptMethod::s_Node_colorTo )
@@ -2648,7 +2664,8 @@ namespace Mengine
             .def( "getTimeLeft", &SchedulerInterface::getTimeLeft )
             .def( "setSpeedFactor", &SchedulerInterface::setSpeedFactor )
             .def( "getSpeedFactor", &SchedulerInterface::getSpeedFactor )
-            .def( "getTiming", &SchedulerInterface::getTime )
+            .def( "getTime", &SchedulerInterface::getTime )
+            .def_deprecated( "getTiming", &SchedulerInterface::getTime, "use getTime")
             ;
 
         m_implement = scriptMethod;

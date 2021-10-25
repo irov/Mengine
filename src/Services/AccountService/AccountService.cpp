@@ -490,24 +490,24 @@ namespace Mengine
             return true;
         }
 
-        FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
+        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
-        if( m_fileGroup->existFile( accountsPath, true ) == false )
+        if( m_fileGroup->existFile( Game_AccountsPath, true ) == false )
         {
             LOGGER_WARNING( "not exist accounts '%s'"
-                , accountsPath.c_str()
+                , Game_AccountsPath.c_str()
             );
 
             return true;
         }
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( m_fileGroup, accountsPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( m_fileGroup, Game_AccountsPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         if( config == nullptr )
         {
             LOGGER_ERROR( "parsing accounts failed '%s'"
-                , accountsPath.c_str()
+                , Game_AccountsPath.c_str()
             );
 
             return false;
@@ -516,7 +516,7 @@ namespace Mengine
         if( config->hasValue( "SETTINGS", "AccountEnumerator", &m_playerEnumerator ) == false )
         {
             LOGGER_ERROR( "get AccountEnumerator failed '%s'"
-                , accountsPath.c_str()
+                , Game_AccountsPath.c_str()
             );
 
             return false;
@@ -525,14 +525,14 @@ namespace Mengine
         if( config->hasValue( "SETTINGS", "GlobalAccountID", &m_globalAccountID ) == false )
         {
             LOGGER_INFO( "account", "get GlobalAccountID failed '%s'"
-                , accountsPath.c_str()
+                , Game_AccountsPath.c_str()
             );
         }
 
         if( config->hasValue( "SETTINGS", "DefaultAccountID", &m_defaultAccountID ) == false )
         {
             LOGGER_INFO( "account", "get DefaultAccountID failed '%s'"
-                , accountsPath.c_str()
+                , Game_AccountsPath.c_str()
             );
         }
 
@@ -540,7 +540,7 @@ namespace Mengine
         if( config->hasValue( "SETTINGS", "SelectAccountID", &selectAccountID ) == false )
         {
             LOGGER_INFO( "account", "get SelectAccountID failed '%s'"
-                , accountsPath.c_str()
+                , Game_AccountsPath.c_str()
             );
         }
 
@@ -654,12 +654,12 @@ namespace Mengine
             return true;
         }
 
-        FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
+        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, accountsPath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, Game_AccountsPath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file, "can't open file for writing. Accounts '%s' settings not saved"
-            , accountsPath.c_str()
+            , Game_AccountsPath.c_str()
         );
 
         Helper::writeIniSection( file, "[SETTINGS]" );

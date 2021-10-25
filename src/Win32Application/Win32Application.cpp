@@ -287,17 +287,17 @@ namespace Mengine
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 
-        ConstString APPLICATION_TITLE = CONFIG_VALUE( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
+        ConstString Window_ApplicationTitleTextId = CONFIG_VALUE( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
 
         const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
-            ->hasTextEntry( APPLICATION_TITLE, &entry ) == false )
+            ->hasTextEntry( Window_ApplicationTitleTextId, &entry ) == false )
         {
             LOGGER_INFO( "system", "Application not setup title '%s'"
-                , APPLICATION_TITLE.c_str()
+                , Window_ApplicationTitleTextId.c_str()
             );
         }
         else

@@ -108,7 +108,7 @@ namespace Mengine
             return false;
         }
 
-        uint32_t cURLServiceThreadCount = CONFIG_VALUE( "cURLService", "ThreadCount", 4 );
+        uint32_t cURLService_ThreadCount = CONFIG_VALUE( "cURLService", "ThreadCount", 4 );
 
         ThreadQueueInterfacePtr threadQueue = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FACTORABLE );
@@ -117,7 +117,7 @@ namespace Mengine
 
         m_threadQueue = threadQueue;
 
-        for( uint32_t index = 0; index != cURLServiceThreadCount; ++index )
+        for( uint32_t index = 0; index != cURLService_ThreadCount; ++index )
         {
             Stringstream ss;
             ss << "ThreadcURLService_" << index;

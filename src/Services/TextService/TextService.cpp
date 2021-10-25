@@ -51,9 +51,9 @@ namespace Mengine
         m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTextLocalePackage = Helper::makeFactoryPool<TextLocalePackage, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
-        uint32_t TextServiceReserveTexts = CONFIG_VALUE( "Engine", "TextServiceReserveTexts", 1024U );
+        uint32_t Engine_TextServiceReserveTexts = CONFIG_VALUE( "Engine", "TextServiceReserveTexts", 1024U );
 
-        m_texts.reserve( TextServiceReserveTexts );
+        m_texts.reserve( Engine_TextServiceReserveTexts );
 
         m_lineDelims.emplace_back( U"\n" );
         m_lineDelims.emplace_back( U"\r\n" );

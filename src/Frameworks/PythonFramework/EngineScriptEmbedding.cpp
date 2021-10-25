@@ -1102,15 +1102,21 @@ namespace Mengine
                 _node->dispose();
             }
             //////////////////////////////////////////////////////////////////////////
-            NodePtr s_createNode( ConstString _type )
+            NodePtr s_createNode( const ConstString & _type )
             {
-                if( _type == STRINGIZE_STRING_LOCAL( "Node" ) )
+                ConstString correct_type = _type;
+
+                if( correct_type == STRINGIZE_STRING_LOCAL( "Node" ) )
                 {
-                    _type = STRINGIZE_STRING_LOCAL( "Interender" );
+                    LOGGER_WARNING( "type 'Node' is old deprecated type, use 'Interender' or other\ntraceback:\n%s"
+                        , MENGINE_PYBIND_TRACEBACK()
+                    );
+
+                    correct_type = STRINGIZE_STRING_LOCAL( "Interender" );
                 }
 
                 NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), correct_type, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 

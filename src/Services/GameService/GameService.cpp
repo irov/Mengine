@@ -243,14 +243,14 @@ namespace Mengine
         const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
             ->getDebugInfo();
 
-        float limitFillrate = CONFIG_VALUE( "Limit", "Fillrate", 100.f );
+        float Limit_Fillrate = CONFIG_VALUE( "Limit", "Fillrate", 100.f );
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
         double sreenFillrate = debugInfo.fillrate / double( (uint64_t)contentResolution.getWidth() * (uint64_t)contentResolution.getHeight() );
 
-        if( sreenFillrate > limitFillrate )
+        if( sreenFillrate > Limit_Fillrate )
         {
             EVENTABLE_METHOD( EVENT_GAME_OVER_FILLRATE )
                 ->onGameOverFillrate( sreenFillrate );
@@ -307,16 +307,16 @@ namespace Mengine
             }
         }
 
-        ConstString defaultArrowPrototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );
+        ConstString DefaultArrow_Prototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );
 
         ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FACTORABLE );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), DefaultArrow_Prototype, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, "failed create defaultArrow 'Default'" );
 
-        ConstString defaultArrowName = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
+        ConstString DefaultArrow_Name = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
 
-        defaultArrow->setName( defaultArrowName );
+        defaultArrow->setName( DefaultArrow_Name );
 
         PLAYER_SERVICE()
             ->setArrow( defaultArrow );

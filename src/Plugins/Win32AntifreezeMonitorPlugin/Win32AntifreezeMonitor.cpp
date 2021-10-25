@@ -40,21 +40,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitor::initialize()
     {
-        bool enable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
+        bool Engine_AntifreezeMonitorEnable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
 
-        if( enable == false )
+        if( Engine_AntifreezeMonitorEnable == false )
         {
             return true;
         }
 
-        uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
+        uint32_t Engine_AntifreezeMonitorSeconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
 
-        if( seconds == 0U )
+        if( Engine_AntifreezeMonitorSeconds == 0U )
         {
             return true;
         }
 
-        m_seconds = seconds;
+        m_seconds = Engine_AntifreezeMonitorSeconds;
 
         ThreadJobPtr threadJob = THREAD_SERVICE()
             ->createJob( m_seconds * 1000, MENGINE_DOCUMENT_FACTORABLE );
@@ -97,16 +97,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::finalize()
     {
-        bool enable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
+        bool Engine_AntifreezeMonitorEnable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
 
-        if( enable == false )
+        if( Engine_AntifreezeMonitorEnable == false )
         {
             return;
         }
 
-        uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
+        uint32_t Engine_AntifreezeMonitorSeconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
 
-        if( seconds == 0U )
+        if( Engine_AntifreezeMonitorSeconds == 0U )
         {
             return;
         }

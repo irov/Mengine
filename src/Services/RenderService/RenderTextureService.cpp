@@ -48,9 +48,9 @@ namespace Mengine
         m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDecoderRenderImageLoader = Helper::makeFactoryPool<DecoderRenderImageLoader, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
-        uint32_t TextureHashTableSize = CONFIG_VALUE( "Engine", "TextureHashTableSize", 1024 * 8 );
+        uint32_t Engine_TextureHashTableSize = CONFIG_VALUE( "Engine", "TextureHashTableSize", 1024 * 8 );
 
-        m_textures.reserve( TextureHashTableSize );
+        m_textures.reserve( Engine_TextureHashTableSize );
 
         return true;
     }

@@ -9,7 +9,7 @@ SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../download_template.cmake)
 
-DOWNLOAD_URL_HASH(boost https://boostorg.jfrog.io/artifactory/main/release/1.76.0/source/boost_1_76_0.7z SHA256 88782714f8701b6965f3fce087a66a1262601dd5ccd5b2e5305021beb53042a1)
+DOWNLOAD_URL_HASH(boost https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.7z SHA256 f2dd9722b21450daf5ce8ef82c2d99c7ec304f913ee6c6b7f047d5639503dda1)
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
 DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip)
 DOWNLOAD_URL(unity-ads-android https://github.com/Unity-Technologies/unity-ads-android/releases/download/3.6.0/UnityAds.aar.zip)

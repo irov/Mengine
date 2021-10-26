@@ -229,7 +229,6 @@ namespace Mengine
         KC_ZOOM = 0xFB,
         KC_NONAME = 0xFC,
         KC_PA1 = 0xFD,
-        KC_OEM_CLEAR = 0xFE,
-        KC_MAX_CODE = 0xFF
+        KC_OEM_CLEAR = 0xFE
     };
 }

@@ -62,6 +62,7 @@
 #include "Kernel/ShapePacMan.h"
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeQuadFlex.h"
+#include "Kernel/ShapeQuadSize.h"
 
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
@@ -1089,6 +1090,11 @@ namespace Mengine
                 .def( "getTextureUVOffset", &ShapeQuadFlex::getTextureUVOffset )
                 .def( "setTextureUVScale", &ShapeQuadFlex::setTextureUVScale )
                 .def( "getTextureUVScale", &ShapeQuadFlex::getTextureUVScale )
+                ;
+
+            pybind::interface_<ShapeQuadSize, pybind::bases<ShapeQuad>>( _kernel, "ShapeQuadSize", false )
+                .def( "setSize", &ShapeQuadSize::setSize )
+                .def( "getSize", &ShapeQuadSize::getSize )
                 ;
 
             pybind::interface_<Landscape2D, pybind::bases<Node, Materialable>>( _kernel, "Landscape2D", false )

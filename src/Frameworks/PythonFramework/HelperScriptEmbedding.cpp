@@ -3573,14 +3573,14 @@ namespace Mengine
             .def( "KC_PROCESSKEY", KC_PROCESSKEY )
             .def( "KC_PACKET", KC_PACKET )
             .def( "KC_ATTN", KC_ATTN )
-            .def( "KC_CRSEL", KC_EXSEL )
-            .def( "KC_EXSEL", KC_EREOF )
+            .def( "KC_CRSEL", KC_CRSEL )
+            .def( "KC_EXSEL", KC_EXSEL )
+            .def( "KC_EREOF", KC_EREOF )
             .def( "KC_PLAY", KC_PLAY )
             .def( "KC_ZOOM", KC_ZOOM )
             .def( "KC_NONAME", KC_NONAME )
             .def( "KC_PA1", KC_PA1 )
             .def( "KC_OEM_CLEAR", KC_OEM_CLEAR )
-            .def( "KC_MAX_CODE", KC_MAX_CODE )
             ;
 
         pybind::enum_<EMouseCode>( _kernel, "MouseCode" )

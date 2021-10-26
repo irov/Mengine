@@ -945,6 +945,57 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
     }
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void printChildren2( const NodePtr & _node, uint32_t _tab )
+        {
+            _node->foreachChildren( [_tab]( const NodePtr & child )
+            {
+                bool enable = child->isEnable();
+
+                TransformationInterface * transformation = child->getTransformation();
+
+                LOGGER_MESSAGE_RELEASE( "%.*s-%s %s[%s] |%p| lp (%.2f, %.2f, %.2f) lo (%.2f, %.2f, %.2f) wp (%.2f, %.2f, %.2f) %s"
+                    , _tab
+                    , "                                         "
+                    , (enable == false) ? "[DISABLE] " : ""
+                    , child->getName().c_str()
+                    , child->getType().c_str()
+                    , child.get()
+                    , transformation->getLocalPosition().x
+                    , transformation->getLocalPosition().y
+                    , transformation->getLocalPosition().z
+                    , transformation->getLocalOrientation().x
+                    , transformation->getLocalOrientation().y
+                    , transformation->getLocalOrientation().z
+                    , transformation->getWorldPosition().x
+                    , transformation->getWorldPosition().y
+                    , transformation->getWorldPosition().z
+                    , child->getAnimation() == nullptr ? "" : (child->getAnimation()->isPlay() == true ? "[Play]" : "[Stop]")
+                );
+
+                if( enable == false )
+                {
+                    return;
+                }
+                
+                Detail::printChildren2( child, _tab + 1 );
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void printChildren( const NodePtr & _node )
+        {
+            if( _node == nullptr )
+            {
+                return;
+            }
+
+            Detail::printChildren2( _node, 0 );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Application::handleKeyEvent( const InputKeyEvent & _event )
     {
 #ifdef MENGINE_PLATFORM_DESKTOP
@@ -1315,9 +1366,13 @@ namespace Mengine
             //    }
             //}
 
-            //if( _event.code == KC_F2 && _event.isDown == true )
-            //{
-            //}
+            if( _event.code == KC_F7 && _event.isDown == true )
+            {
+                const ScenePtr & scene = SCENE_SERVICE()
+                    ->getCurrentScene();
+
+                Detail::printChildren( scene );
+            }
         }
 #endif
 

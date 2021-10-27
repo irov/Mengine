@@ -47,12 +47,12 @@ namespace Mengine
         ETouchCode getFingerIndex_( SDL_FingerID _fingerId ) const;
 
     protected:
-        bool m_keyDown[MENGINE_INPUT_MAX_KEY_CODE] = {false};
+        bool m_keyDown[MENGINE_INPUT_MAX_KEY_CODE];
 
-        EKeyCode m_keys[MENGINE_INPUT_MAX_KEY_CODE] = {KC_UNASSIGNED};
-        SDL_Scancode m_codes[SDL_NUM_SCANCODES] = {SDL_SCANCODE_UNKNOWN};
+        EKeyCode m_keys[MENGINE_INPUT_MAX_KEY_CODE];
+        SDL_Scancode m_codes[SDL_NUM_SCANCODES];
 
-        SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH] = {-1};
+        SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH];
 
         float m_width;
         float m_height;

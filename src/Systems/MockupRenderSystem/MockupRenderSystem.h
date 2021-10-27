@@ -176,7 +176,7 @@ namespace Mengine
         bool m_vertexBufferEnable;
         bool m_indexBufferEnable;
 
-        bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES] = {false};
+        bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES];
 
         bool m_waitForVSync;
     };

@@ -6,6 +6,8 @@
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/String.h"
 
+#include "Config/Algorithm.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -15,6 +17,10 @@ namespace Mengine
         , m_widthInv( 0.f )
         , m_heightInv( 0.f )
     {
+        Algorithm::fill_n( m_keyDown, MENGINE_INPUT_MAX_KEY_CODE, false );
+        Algorithm::fill_n( m_keys, MENGINE_INPUT_MAX_KEY_CODE, KC_UNASSIGNED );
+        Algorithm::fill_n( m_codes, MENGINE_INPUT_MAX_KEY_CODE, SDL_SCANCODE_UNKNOWN );
+        Algorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
     }
     //////////////////////////////////////////////////////////////////////////
     SDLInput::~SDLInput()

@@ -1861,7 +1861,7 @@ namespace Mengine
             MENGINE_STRCPY( parameter.uniform, _callbackData->parameter_uniforms[index] );
             parameter.type = _callbackData->parameter_types[index];
 
-            float shader_values[4] = {0.f};
+            float shader_values[4] = {0.f, 0.f, 0.f, 0.f};
 
             switch( parameter.type )
             {
@@ -1925,7 +1925,7 @@ namespace Mengine
 
         const RenderProgramVariableInterfacePtr & programVariable = desc->programVariable;
 
-        float shader_values[4] = {0.f};
+        float shader_values[4] = {0.f, 0.f, 0.f, 0.f};
 
         switch( _callbackData->type )
         {

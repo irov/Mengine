@@ -2,9 +2,7 @@
 
 #include "Config/Typedef.h"
 
-#ifndef MENGINE_INPUT_MAX_MOUSE_CODE
 #define MENGINE_INPUT_MAX_MOUSE_CODE (3)
-#endif
 
 namespace Mengine
 {

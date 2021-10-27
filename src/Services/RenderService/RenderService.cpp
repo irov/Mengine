@@ -58,6 +58,7 @@ namespace Mengine
         , m_currentDepthBufferTestEnable( false )
         , m_currentDepthBufferWriteEnable( false )
     {
+        Algorithm::fill_n( m_currentTexturesID, MENGINE_MAX_TEXTURE_STAGES, 0u );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderService::~RenderService()

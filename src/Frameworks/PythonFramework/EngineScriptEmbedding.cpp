@@ -3550,7 +3550,22 @@ namespace Mengine
             protected:
                 bool handleKeyEvent( const InputKeyEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( (uint32_t)_event.code, _event.x, _event.y, _event.isDown, _event.isRepeat, m_args );
+                    pybind::dict py_special( m_cb.kernel() );
+                    py_special["isAlt"] = _event.special.isAlt;
+                    py_special["isShift"] = _event.special.isShift;
+                    py_special["isControl"] = _event.special.isControl;
+                    py_special["isSpecial"] = _event.special.isSpecial;
+
+                    pybind::dict py_event( m_cb.kernel() );
+                    py_event["special"] = py_special;
+                    py_event["code"] = _event.code;
+                    py_event["x"] = _event.x;
+                    py_event["y"] = _event.y;
+                    py_event["isDown"] = _event.isDown;
+                    py_event["isRepeat"] = _event.isRepeat;
+                    py_event["isRepeat"] = _event.isRepeat;
+
+                    pybind::object py_result = m_cb.call_args( py_event, m_args );
 
                     if( py_result.is_none() == false )
                     {

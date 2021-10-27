@@ -65,7 +65,7 @@ namespace Mengine
         size_t m_capacity;
         size_t m_reading;
 
-        uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE] = {0};
+        uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE];
 
 #ifdef MENGINE_DEBUG
         FilePath m_relationPath;

@@ -7,6 +7,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdString.h"
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_FACTORY( ServiceProvider, Mengine::ServiceProvider );
@@ -23,6 +24,7 @@ namespace Mengine
         , m_initializeServiceName( nullptr )
 #endif
     {
+        Algorithm::fill_n( m_services, MENGINE_SERVICE_PROVIDER_COUNT, ServiceDesc() );
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProvider::~ServiceProvider()

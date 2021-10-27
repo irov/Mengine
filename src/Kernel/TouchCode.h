@@ -3,9 +3,7 @@
 #include "Config/Config.h"
 #include "Config/Typedef.h"
 
-#ifndef MENGINE_INPUT_MAX_TOUCH
 #define MENGINE_INPUT_MAX_TOUCH 16
-#endif
 
 namespace Mengine
 {

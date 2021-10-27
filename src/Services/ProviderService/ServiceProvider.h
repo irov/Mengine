@@ -72,7 +72,7 @@ namespace Mengine
             bool initialize = false;
         };
 
-        ServiceDesc m_services[MENGINE_SERVICE_PROVIDER_COUNT] = {0};
+        ServiceDesc m_services[MENGINE_SERVICE_PROVIDER_COUNT];
 
         uint32_t m_servicesCount;
 

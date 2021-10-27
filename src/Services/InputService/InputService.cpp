@@ -19,6 +19,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputService::InputService()
     {
+        Algorithm::fill_n( m_cursorPosition, MENGINE_INPUT_MAX_TOUCH, mt::vec2f( 0.f, 0.f ) );
+        Algorithm::fill_n( m_cursorPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
+        Algorithm::fill_n( m_keyBuffer, MENGINE_INPUT_MAX_KEY_CODE, false );
+        Algorithm::fill_n( m_mouseBuffer, MENGINE_INPUT_MAX_MOUSE_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
     InputService::~InputService()
@@ -431,7 +435,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )
     {
-        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
+        if( _event.touchId == TC_TOUCH_INVALID )
+        {
+            return;
+        }
+
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH);
         MENGINE_ASSERTION_FATAL( _event.code < MENGINE_INPUT_MAX_MOUSE_CODE );
 
         LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] code [%u] down [%u] pressed [%u] pressure [%f]"
@@ -460,6 +469,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseMoveEvent_( const InputMouseMoveEvent & _event )
     {
+        if( _event.touchId == TC_TOUCH_INVALID )
+        {
+            return;
+        }
+
         MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
 
         LOGGER_INFO( "input", "handle mouse move touch [%u] pos [%.4f:%.4f] delta [%.8f:%.8f] pressure [%f]"

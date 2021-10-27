@@ -76,7 +76,7 @@ namespace Mengine
         typedef Vector<BresenhamPoint> VectorFunnelSteps;
         mutable VectorFunnelSteps m_steps[8];
 
-        mutable uint16_t m_iterators[8] = {0};
+        mutable uint16_t m_iterators[8];
 
         mutable uint32_t m_finalCost;
 

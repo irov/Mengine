@@ -54,7 +54,7 @@ namespace Mengine
 
         RenderExternalInterfacePtr external;
 
-        const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX] = {nullptr};
+        const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 
         uint32_t flags;
     };

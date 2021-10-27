@@ -80,8 +80,8 @@ namespace Mengine
 
         uint32_t m_samplerCount;
 
-        GLint m_matrixLocation[EPML_MAX_COUNT] = {-1};
-        GLint m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES] = {-1};
+        GLint m_matrixLocation[EPML_MAX_COUNT];
+        GLint m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES];
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenGLRenderProgram, RenderProgramInterface> OpenGLRenderProgramPtr;

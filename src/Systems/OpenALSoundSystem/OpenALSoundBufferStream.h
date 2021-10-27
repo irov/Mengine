@@ -53,7 +53,7 @@ namespace Mengine
         void removeBuffers_();
 
     protected:
-        ALuint m_alBuffersId[MENGINE_OPENAL_STREAM_BUFFER_COUNT] = {0};
+        ALuint m_alBuffersId[MENGINE_OPENAL_STREAM_BUFFER_COUNT];
 
         ALuint m_sourceId;
 

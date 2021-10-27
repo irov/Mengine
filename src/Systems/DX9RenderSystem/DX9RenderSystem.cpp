@@ -86,6 +86,8 @@ namespace Mengine
         mt::ident_m4( m_modelViewMatrix );
         mt::ident_m4( m_worldMatrix );
         mt::ident_m4( m_totalWVPInvMatrix );
+
+        Algorithm::fill_n( m_textureEnable, MENGINE_MAX_TEXTURE_STAGES, false );
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderSystem::~DX9RenderSystem()

@@ -5,6 +5,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdIO.h"
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {
@@ -47,6 +48,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::initialize( const ConstString & _name, const OpenGLRenderVertexShaderPtr & _vertexShader, const OpenGLRenderFragmentShaderPtr & _fragmentShader, const OpenGLRenderVertexAttributePtr & _vertexAttribute, uint32_t _samplerCount )
     {
+        Algorithm::fill_n( m_matrixLocation, EPML_MAX_COUNT, -1 );
+        Algorithm::fill_n( m_samplerLocation, MENGINE_MAX_TEXTURE_STAGES, -1 );
+
         m_name = _name;
         m_vertexShader = _vertexShader;
         m_fragmentShader = _fragmentShader;
@@ -177,15 +181,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::_release()
     {
-        for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
-        {
-            m_matrixLocation[i] = -1;
-        }
-
-        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
-        {
-            m_samplerLocation[i] = -1;
-        }
+        Algorithm::fill_n( m_matrixLocation, EPML_MAX_COUNT, -1 );
+        Algorithm::fill_n( m_samplerLocation, MENGINE_MAX_TEXTURE_STAGES, -1 );
 
         if( m_programId != 0 )
         {

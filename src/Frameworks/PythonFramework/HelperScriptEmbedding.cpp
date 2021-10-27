@@ -1320,7 +1320,7 @@ namespace Mengine
                 return s;
             }
             //////////////////////////////////////////////////////////////////////////
-            pybind::object s_getDateStruct( pybind::kernel_interface * _kernel )
+            PlatformDateTime s_getDateStruct()
             {
                 DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
                     ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
@@ -1328,17 +1328,7 @@ namespace Mengine
                 PlatformDateTime dateTime;
                 dateTimeProvider->getLocalDateTime( &dateTime );
 
-                pybind::dict d( _kernel );
-
-                d["year"] = dateTime.year;
-                d["month"] = dateTime.month;
-                d["day"] = dateTime.day;
-                d["hour"] = dateTime.hour;
-                d["minute"] = dateTime.minute;
-                d["second"] = dateTime.second;
-                d["milliseconds"] = dateTime.milliseconds;
-
-                return d;
+                return dateTime;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getDatePathTimestamp()
@@ -3643,6 +3633,16 @@ namespace Mengine
             .def( "clear", &Tags::clear )
             ;
 
+        pybind::struct_<PlatformDateTime>( _kernel, "PlatformDateTime" )
+            .def_member( "year", &PlatformDateTime::year )
+            .def_member( "month", &PlatformDateTime::month )
+            .def_member( "day", &PlatformDateTime::day )
+            .def_member( "hour", &PlatformDateTime::hour )
+            .def_member( "minute", &PlatformDateTime::minute )
+            .def_member( "second", &PlatformDateTime::second )
+            .def_member( "milliseconds", &PlatformDateTime::milliseconds )
+            ;
+
         HelperScriptMethodPtr helperScriptMethod = Helper::makeFactorableUnique<HelperScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
         pybind::def_functor( _kernel, "logger", helperScriptMethod, &HelperScriptMethod::s_logger );
@@ -3702,7 +3702,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
 
         pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
-        pybind::def_functor_kernel( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getDateStruct );
+        pybind::def_functor( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getDateStruct );
         pybind::def_functor( _kernel, "getDatePathTimestamp", helperScriptMethod, &HelperScriptMethod::s_getDatePathTimestamp );
         pybind::def_functor( _kernel, "getLoggerTimestamp", helperScriptMethod, &HelperScriptMethod::s_getLoggerTimestamp );
 

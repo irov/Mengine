@@ -87,6 +87,10 @@
 #define MENGINE_MEMCMP(a, b, n) ::memcmp((a), (b), (n))
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ISUPPER
+#define MENGINE_ISUPPER(c) ::isupper((c))
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_TOUPPER
 #define MENGINE_TOUPPER(c) ::toupper((c))
 #endif

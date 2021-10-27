@@ -136,7 +136,14 @@ namespace Mengine
                         return false;
                     }
 
-                    MENGINE_STRCPY( op.value[0], option_value_str + 1 );
+                    const Char * op_value = option_value_str + 1;
+
+                    MENGINE_ASSERTION_FATAL( Algorithm::count_if( op_value, op_value + MENGINE_STRLEN( op_value ), []( Char _ch )
+                    {
+                        return MENGINE_ISUPPER( _ch ) != 0;
+                    } ) == 0 );
+
+                    MENGINE_STRCPY( op.value[0], op_value );
                     op.value_count = 1;
                 }
                 else
@@ -169,7 +176,14 @@ namespace Mengine
                             return false;
                         }
 
-                        MENGINE_STRCPY( op.value[op.value_count], option_delim_str + 1 );
+                        const Char * op_value = option_delim_str + 1;
+
+                        MENGINE_ASSERTION_FATAL( Algorithm::count_if( op_value, op_value + MENGINE_STRLEN( op_value ), []( Char _ch )
+                        {
+                            return MENGINE_ISUPPER( _ch ) != 0;
+                        } ) == 0 );
+
+                        MENGINE_STRCPY( op.value[op.value_count], op_value );
                         ++op.value_count;
 
                         break;
@@ -180,7 +194,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_FATAL( Algorithm::count_if( op.key, op.key + MENGINE_STRLEN( op.key ), []( Char _ch )
             {
-                return ::isupper( _ch ) != 0;
+                return MENGINE_ISUPPER( _ch ) != 0;
             } ) == 0 );
 
             m_options.push_back( op );
@@ -193,7 +207,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return ::isupper( _ch ) != 0;
+            return MENGINE_ISUPPER( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -209,11 +223,54 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool OptionsService::setOptionValue( const Char * _key, const Char * _value )
+    {
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _key ) < MENGINE_OPTIONS_KEY_SIZE );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _value ) < MENGINE_OPTIONS_VALUE_SIZE );
+
+        MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return MENGINE_ISUPPER( _ch ) != 0;
+        } ) == 0 );
+
+        MENGINE_ASSERTION_FATAL( Algorithm::count_if( _value, _value + MENGINE_STRLEN( _value ), []( Char _ch )
+        {
+            return MENGINE_ISUPPER( _ch ) != 0;
+        } ) == 0 );
+
+        for( const Option & op : m_options )
+        {
+            if( MENGINE_STRCMP( op.key, _key ) == 0 )
+            {
+                return false;
+            }
+        }
+
+        Option op;
+        MENGINE_STRCPY( op.key, _key );
+
+        if( MENGINE_STRLEN( _value ) == 0 )
+        {
+            op.value[0][0] = '\0';
+            op.value_count = 0;
+        }
+        else
+        {
+            MENGINE_STRCPY( op.value[0], _value );
+            
+            op.value_count = 1;
+        }        
+
+        m_options.push_back( op );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const Char * OptionsService::getOptionValue( const Char * _key, const Char * _default ) const
     {
         MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return ::isupper( _ch ) != 0;
+            return MENGINE_ISUPPER( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -233,7 +290,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return ::isupper( _ch ) != 0;
+            return MENGINE_ISUPPER( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -260,7 +317,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return ::isupper( _ch ) != 0;
+            return MENGINE_ISUPPER( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -291,7 +348,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return ::isupper( _ch ) != 0;
+            return MENGINE_ISUPPER( _ch ) != 0;
         } ) == 0 );
 
         if( this->hasOption( _key ) == false )

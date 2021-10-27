@@ -29,6 +29,7 @@ namespace Mengine
 
     public:
         virtual bool hasOption( const Char * _key ) const = 0;
+        virtual bool setOptionValue( const Char * _key, const Char * _value ) = 0;
         virtual const Char * getOptionValue( const Char * _key, const Char * _default ) const = 0;
         virtual bool getOptionValues( const Char * _key, const Char ** _values, uint32_t * _count ) const = 0;
         virtual uint32_t getOptionUInt32( const Char * _key, uint32_t ) const = 0;

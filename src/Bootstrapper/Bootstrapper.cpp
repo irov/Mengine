@@ -551,6 +551,15 @@ namespace Mengine
             }
         }
 
+        VectorString options;
+        CONFIG_VALUES( "Engine", "Option", &options );
+
+        for( const String & option : options )
+        {
+            OPTIONS_SERVICE()
+                ->setOptionValue( option.c_str(), "" );
+        }
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_CONFIGS_LOAD );
 
         return true;

@@ -23,6 +23,7 @@ namespace Mengine
 
     public:
         bool hasOption( const Char * _key ) const override;
+        bool setOptionValue( const Char * _key, const Char * _value ) override;
         const Char * getOptionValue( const Char * _key, const Char * _default ) const override;
         bool getOptionValues( const Char * _key, const Char ** _values, uint32_t * _count ) const override;
         uint32_t getOptionUInt32( const Char * _key, uint32_t _default ) const override;
@@ -32,7 +33,7 @@ namespace Mengine
         struct Option
         {
             Char key[MENGINE_OPTIONS_KEY_SIZE] = {'\0'};
-            Char value[MENGINE_OPTIONS_VALUE_SIZE][MENGINE_OPTIONS_VALUE_COUNT] = {'\0'};
+            Char value[MENGINE_OPTIONS_VALUE_COUNT][MENGINE_OPTIONS_VALUE_SIZE] = {'\0'};
             uint32_t value_count;
         };
 

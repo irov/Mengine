@@ -227,7 +227,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLInput::isAnyKeyDown() const
     {
-        for( uint32_t i = 0; i != KC_MAX_CODE; ++i )
+        for( uint32_t i = 0; i != MENGINE_INPUT_MAX_KEY_CODE; ++i )
         {
             if( m_keyDown[i] == true )
             {
@@ -354,7 +354,7 @@ namespace Mengine
 
         m_keys[SDL_SCANCODE_NUMLOCKCLEAR] = Mengine::KC_NUMLOCK;
 
-        for( uint32_t i = 0; i != KC_MAX_CODE; ++i )
+        for( uint32_t i = 0; i != MENGINE_INPUT_MAX_KEY_CODE; ++i )
         {
             EKeyCode code = m_keys[i];
 
@@ -381,11 +381,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDL_Scancode SDLInput::getSDLKey_( EKeyCode _code ) const
     {
-        if( _code >= KC_MAX_CODE )
-        {
-            return SDL_SCANCODE_UNKNOWN;
-        }
-
         SDL_Scancode key = m_codes[_code];
 
         return key;

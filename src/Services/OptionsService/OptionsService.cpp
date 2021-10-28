@@ -138,11 +138,6 @@ namespace Mengine
 
                     const Char * op_value = option_value_str + 1;
 
-                    MENGINE_ASSERTION_FATAL( Algorithm::count_if( op_value, op_value + MENGINE_STRLEN( op_value ), []( Char _ch )
-                    {
-                        return MENGINE_ISUPPER( _ch ) != 0;
-                    } ) == 0 );
-
                     MENGINE_STRCPY( op.value[0], op_value );
                     op.value_count = 1;
                 }
@@ -229,11 +224,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _value ) < MENGINE_OPTIONS_VALUE_SIZE );
 
         MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
-        {
-            return MENGINE_ISUPPER( _ch ) != 0;
-        } ) == 0 );
-
-        MENGINE_ASSERTION_FATAL( Algorithm::count_if( _value, _value + MENGINE_STRLEN( _value ), []( Char _ch )
         {
             return MENGINE_ISUPPER( _ch ) != 0;
         } ) == 0 );

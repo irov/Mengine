@@ -1,9 +1,9 @@
 #include "RenderMaterialService.h"
 
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"

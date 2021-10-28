@@ -22,6 +22,30 @@ SERVICE_FACTORY( PackageService, Mengine::PackageService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void configPackageDesc( const ConfigInterfacePtr & _config, const String & _name, PackageDesc * const _pack, bool _immediately )
+        {
+            _config->hasValue( _name.c_str(), "Name", ConstString::none(), &_pack->name );
+            _config->hasValue( _name.c_str(), "Type", STRINGIZE_STRING_LOCAL( "dir" ), &_pack->type );
+            _config->hasValue( _name.c_str(), "Locale", ConstString::none(), &_pack->locale );
+            _config->hasValue( _name.c_str(), "Platform", Tags(), &_pack->platform );
+            _config->hasValue( _name.c_str(), "Tag", Tags(), &_pack->tags );
+            _config->hasValue( _name.c_str(), "Category", ConstString::none(), &_pack->fileGroupName ); //deprecated
+            _config->hasValue( _name.c_str(), "FileGroup", ConstString::none(), &_pack->fileGroupName );
+            _config->hasValue( _name.c_str(), "Parent", ConstString::none(), &_pack->parent );
+            _config->hasValue( _name.c_str(), "Description", FilePath::none(), &_pack->descriptionPath );
+            _config->hasValue( _name.c_str(), "Path", FilePath::none(), &_pack->path );
+            _config->hasValue( _name.c_str(), "Fonts", FilePath::none(), &_pack->fontsPath );
+            _config->hasValue( _name.c_str(), "Texts", FilePath::none(), &_pack->textsPath );
+            _config->hasValue( _name.c_str(), "Dev", false, &_pack->dev );
+            _config->hasValue( _name.c_str(), "PreLoad", true, &_pack->preload );
+            _config->hasValue( _name.c_str(), "Immediately", _immediately, &_pack->immediately );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     PackageService::PackageService()
     {
     }
@@ -77,13 +101,6 @@ namespace Mengine
                 , frameworkPack.c_str()
             );
 
-            PackageDesc pack;
-
-            pack.dev = false;
-            pack.immediately = true;
-            pack.preload = true;
-            pack.type = STRINGIZE_STRING_LOCAL( "dir" );
-
             if( config->hasSection( frameworkPack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' framework package no found section for '%s'"
@@ -94,17 +111,8 @@ namespace Mengine
                 return false;
             }
 
-            config->hasValue( frameworkPack.c_str(), "Name", &pack.name );
-            config->hasValue( frameworkPack.c_str(), "Type", &pack.type );
-            config->hasValue( frameworkPack.c_str(), "Locale", &pack.locale );
-            config->hasValue( frameworkPack.c_str(), "Platform", &pack.platform );
-            config->hasValue( frameworkPack.c_str(), "Tag", &pack.tags );
-            config->hasValue( frameworkPack.c_str(), "Category", &pack.fileGroupName );
-            config->hasValue( frameworkPack.c_str(), "Parent", &pack.parent );
-            config->hasValue( frameworkPack.c_str(), "Description", &pack.descriptionPath );
-            config->hasValue( frameworkPack.c_str(), "Path", &pack.path );
-            config->hasValue( frameworkPack.c_str(), "Dev", &pack.dev );
-            config->hasValue( frameworkPack.c_str(), "PreLoad", &pack.preload );
+            PackageDesc pack;
+            Detail::configPackageDesc( config, frameworkPack, &pack, true );
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", frameworkPack.c_str() ) ) == false )
             {
@@ -125,13 +133,6 @@ namespace Mengine
                 , resourcePack.c_str()
             );
 
-            PackageDesc pack;
-
-            pack.dev = false;
-            pack.immediately = false;
-            pack.preload = true;
-            pack.type = STRINGIZE_STRING_LOCAL( "dir" );
-
             if( config->hasSection( resourcePack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' resource package no found section for '%s'"
@@ -142,18 +143,8 @@ namespace Mengine
                 return false;
             }
 
-            config->hasValue( resourcePack.c_str(), "Name", &pack.name );
-            config->hasValue( resourcePack.c_str(), "Type", &pack.type );
-            config->hasValue( resourcePack.c_str(), "Locale", &pack.locale );
-            config->hasValue( resourcePack.c_str(), "Platform", &pack.platform );
-            config->hasValue( resourcePack.c_str(), "Tag", &pack.tags );
-            config->hasValue( resourcePack.c_str(), "Category", &pack.fileGroupName );
-            config->hasValue( resourcePack.c_str(), "FileGroup", &pack.fileGroupName );
-            config->hasValue( resourcePack.c_str(), "Parent", &pack.parent );
-            config->hasValue( resourcePack.c_str(), "Description", &pack.descriptionPath );
-            config->hasValue( resourcePack.c_str(), "Path", &pack.path );
-            config->hasValue( resourcePack.c_str(), "Dev", &pack.dev );
-            config->hasValue( resourcePack.c_str(), "PreLoad", &pack.preload );
+            PackageDesc pack;
+            Detail::configPackageDesc( config, resourcePack, &pack, false );
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", resourcePack.c_str() ) ) == false )
             {
@@ -174,13 +165,6 @@ namespace Mengine
                 , languagePack.c_str()
             );
 
-            PackageDesc pack;
-
-            pack.dev = false;
-            pack.immediately = false;
-            pack.preload = true;
-            pack.type = STRINGIZE_STRING_LOCAL( "dir" );
-
             if( config->hasSection( languagePack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' language package no found section for '%s'"
@@ -191,20 +175,8 @@ namespace Mengine
                 return false;
             }
 
-            config->hasValue( languagePack.c_str(), "Name", &pack.name );
-            config->hasValue( languagePack.c_str(), "Type", &pack.type );
-            config->hasValue( languagePack.c_str(), "Locale", &pack.locale );
-            config->hasValue( languagePack.c_str(), "Platform", &pack.platform );
-            config->hasValue( languagePack.c_str(), "Tag", &pack.tags );
-            config->hasValue( languagePack.c_str(), "Category", &pack.fileGroupName );
-            config->hasValue( languagePack.c_str(), "FileGroup", &pack.fileGroupName );
-            config->hasValue( languagePack.c_str(), "Parent", &pack.parent );
-            config->hasValue( languagePack.c_str(), "Description", &pack.descriptionPath );
-            config->hasValue( languagePack.c_str(), "Path", &pack.path );
-            config->hasValue( languagePack.c_str(), "Dev", &pack.dev );
-            config->hasValue( languagePack.c_str(), "PreLoad", &pack.preload );
-            config->hasValue( languagePack.c_str(), "Fonts", &pack.fontsPath );
-            config->hasValue( languagePack.c_str(), "Texts", &pack.textsPath );
+            PackageDesc pack;
+            Detail::configPackageDesc( config, languagePack, &pack, false );
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", languagePack.c_str() ) ) == false )
             {
@@ -225,9 +197,9 @@ namespace Mengine
     {
         for( const PackagePtr & package : m_packages )
         {
-            const ConstString & packName = package->getName();
+            const PackageDesc & desc = package->getPackageDesc();
 
-            if( packName != _name )
+            if( desc.name != _name )
             {
                 continue;
             }
@@ -260,17 +232,7 @@ namespace Mengine
 
         PackagePtr package = m_factoryPackage->createObject( _doc );
 
-        if( package->initialize( _desc.name
-            , _desc.type
-            , _desc.locale
-            , _desc.platform
-            , _desc.tags
-            , _desc.descriptionPath
-            , baseFileGroup
-            , _desc.path
-            , _desc.fontsPath
-            , _desc.textsPath
-            , _desc.preload ) == false )
+        if( package->initialize( baseFileGroup, _desc ) == false )
         {
             LOGGER_ERROR( "invalid initialize package '%s' path '%s'"
                 , _desc.name.c_str()
@@ -290,15 +252,17 @@ namespace Mengine
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
 
-        const Tags & packageTags = package->getPlatfromTags();
+        const PackageDesc & desc = package->getPackageDesc();
+
+        const Tags & packageTags = desc.platform;
         
         if( packageTags.empty() == true || platformTags.hasTags( packageTags ) )
         {
             if( package->load( _doc ) == false )
             {
                 LOGGER_ERROR( "invalid load package '%s' path '%s'"
-                    , package->getName().c_str()
-                    , package->getPathPath().c_str()
+                    , package->getPackageDesc().name.c_str()
+                    , package->getPackageDesc().path.c_str()
                 );
 
                 package->finalize();
@@ -333,9 +297,9 @@ namespace Mengine
         {
             const PackagePtr & package = *it;
 
-            const ConstString & packName = package->getName();
+            const PackageDesc & desc = package->getPackageDesc();
 
-            if( packName != _name )
+            if( desc.name != _name )
             {
                 continue;
             }
@@ -356,9 +320,9 @@ namespace Mengine
     {
         for( const PackagePtr & package : m_packages )
         {
-            const ConstString & packName = package->getName();
+            const PackageDesc & desc = package->getPackageDesc();
 
-            if( packName != _name )
+            if( desc.name != _name )
             {
                 continue;
             }
@@ -373,9 +337,9 @@ namespace Mengine
     {
         for( const PackagePtr & package : m_packages )
         {
-            const Tags & packPlatform = package->getPlatfromTags();
+            const PackageDesc & desc = package->getPackageDesc();
 
-            if( _platformTags.hasTags( packPlatform ) == false )
+            if( _platformTags.hasTags( desc.platform ) == false )
             {
                 continue;
             }
@@ -385,14 +349,12 @@ namespace Mengine
                 return true;
             }
 
-            const ConstString & packageLocale = package->getLocale();
-
-            if( packageLocale.empty() == true )
+            if( desc.locale.empty() == true )
             {
                 continue;
             }
 
-            if( packageLocale != _locale )
+            if( desc.locale != _locale )
             {
                 continue;
             }
@@ -417,16 +379,14 @@ namespace Mengine
 
         for( const PackagePtr & package : m_packages )
         {
-            const ConstString & packageLocale = package->getLocale();
+            const PackageDesc & desc = package->getPackageDesc();
 
-            if( packageLocale != _locale )
+            if( desc.locale != _locale )
             {
                 continue;
             }
 
-            const Tags & packagePlatform = package->getPlatfromTags();
-
-            if( _platformTags.hasTags( packagePlatform ) == false )
+            if( _platformTags.hasTags( desc.platform ) == false )
             {
                 continue;
             }
@@ -447,16 +407,14 @@ namespace Mengine
 
         for( const PackagePtr & package : m_packages )
         {
-            const Tags & packPlatform = package->getPlatfromTags();
+            const PackageDesc & desc = package->getPackageDesc();
 
-            if( _platformTags.hasTags( packPlatform ) == false )
+            if( _platformTags.hasTags( desc.platform ) == false )
             {
                 continue;
             }
 
-            const ConstString & locale = package->getLocale();
-
-            if( locale.empty() == false )
+            if( desc.locale.empty() == false )
             {
                 continue;
             }
@@ -474,7 +432,9 @@ namespace Mengine
 
         for( const PackagePtr & package : packages )
         {
-            if( package->isPreload() == false )
+            const PackageDesc & desc = package->getPackageDesc();
+
+            if( desc.preload == false )
             {
                 continue;
             }
@@ -513,16 +473,14 @@ namespace Mengine
 
         for( const PackagePtr & package : m_packages )
         {
-            const Tags & platformTags = package->getPlatfromTags();
+            const PackageDesc & desc = package->getPackageDesc();
 
-            if( _platformTag.hasTags( platformTags ) == false )
+            if( _platformTag.hasTags( desc.platform ) == false )
             {
                 continue;
             }
 
-            const ConstString & locale = package->getLocale();
-
-            if( locale != _locale )
+            if( desc.locale != _locale )
             {
                 continue;
             }
@@ -547,16 +505,14 @@ namespace Mengine
 
         for( const PackagePtr & package : m_packages )
         {
-            const Tags & platformTags = package->getPlatfromTags();
+            const PackageDesc & desc = package->getPackageDesc();
 
-            if( _platformTag.hasTags( platformTags ) == false )
+            if( _platformTag.hasTags( desc.platform ) == false )
             {
                 continue;
             }
 
-            const ConstString & locale = package->getLocale();
-
-            if( locale != _locale )
+            if( desc.locale != _locale )
             {
                 continue;
             }

@@ -3,7 +3,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
@@ -18,6 +17,7 @@
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"

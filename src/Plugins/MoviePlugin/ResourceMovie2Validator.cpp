@@ -1,7 +1,6 @@
 #include "ResourceMovie2Validator.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -13,6 +12,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/Abs.h"
 

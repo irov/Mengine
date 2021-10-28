@@ -2,7 +2,6 @@
 
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
@@ -24,6 +23,7 @@
 
 #include "DX9RenderImageLockedFactoryStorage.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"

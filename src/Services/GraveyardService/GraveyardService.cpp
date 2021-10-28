@@ -4,9 +4,10 @@
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
+
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/Algorithm.h"
 

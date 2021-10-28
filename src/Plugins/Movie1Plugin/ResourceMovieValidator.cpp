@@ -1,7 +1,6 @@
 #include "ResourceMovieValidator.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
@@ -16,6 +15,8 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/ConfigHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/Algorithm.h"
 

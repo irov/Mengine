@@ -5,7 +5,6 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -20,6 +19,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/StringFormat.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdIO.h"
 

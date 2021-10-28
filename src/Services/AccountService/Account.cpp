@@ -196,7 +196,7 @@ namespace Mengine
         }
 
         const Char * projectVersion_s;
-        if( config->hasValue( "ACCOUNT", "PROJECT_VERSION", &projectVersion_s ) == false )
+        if( config->hasValue( "ACCOUNT", "PROJECT_VERSION", "", &projectVersion_s) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found project version"
                 , m_id.c_str()
@@ -228,7 +228,7 @@ namespace Mengine
         }
 
         const Char * uid;
-        if( config->hasValue( "ACCOUNT", "UID", &uid ) == false )
+        if( config->hasValue( "ACCOUNT", "UID", "", & uid) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found uid"
                 , m_id.c_str()
@@ -242,7 +242,7 @@ namespace Mengine
         for( auto && [key, st] : m_settings )
         {
             const Char * value;
-            if( config->hasValue( "SETTINGS", key.c_str(), &value ) == false )
+            if( config->hasValue( "SETTINGS", key.c_str(), "", &value ) == false )
             {
                 LOGGER_MESSAGE( "account '%s' failed get setting '%s'"
                     , m_id.c_str()

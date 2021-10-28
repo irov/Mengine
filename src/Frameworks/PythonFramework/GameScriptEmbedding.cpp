@@ -2,7 +2,6 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/GameServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ScriptModuleInterface.h"
 
@@ -11,6 +10,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 namespace Mengine
 {

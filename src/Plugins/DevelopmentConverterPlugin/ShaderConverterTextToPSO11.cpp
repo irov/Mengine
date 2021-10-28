@@ -2,13 +2,13 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdIO.h"
 

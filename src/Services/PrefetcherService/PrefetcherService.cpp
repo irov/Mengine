@@ -1,7 +1,6 @@
 #include "PrefetcherService.h"
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -17,7 +16,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileGroupHelper.h"
-
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Stringstream.h"
 
 //////////////////////////////////////////////////////////////////////////

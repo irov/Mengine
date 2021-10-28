@@ -17,7 +17,6 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/SDLPlatformExtensionInterface.h"
 

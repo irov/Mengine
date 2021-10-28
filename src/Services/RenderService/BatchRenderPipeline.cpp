@@ -1,7 +1,6 @@
 #include "BatchRenderPipeline.h"
 
-#include "Interface/ConfigServiceInterface.h"
-
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/RenderUtils.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"

@@ -1,9 +1,8 @@
 #include "cURLGetAssetThreadTask.h"
 
-#include "Interface/ConfigServiceInterface.h"
-
 #include "cURLErrorHelper.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"

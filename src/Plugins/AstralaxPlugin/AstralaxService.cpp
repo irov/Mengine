@@ -1,7 +1,6 @@
 #include "AstralaxService.h"
 
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
 #include "Kernel/FactoryPool.h"
@@ -11,9 +10,9 @@
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/ConstStringHelper.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -30,6 +29,7 @@ namespace Mengine
         , m_renderPlatform( RP_UNKNOWN )
         , m_stageCount( 0 )
     {
+        Algorithm::fill_n( m_stages, 256, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     AstralaxService::~AstralaxService()

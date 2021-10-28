@@ -1,7 +1,6 @@
 #include "ResourceImageSequence.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Logger.h"

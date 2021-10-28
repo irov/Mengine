@@ -2,11 +2,11 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
 #include "Interface/Win32PlatformExtensionInterface.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/Logger.h"
 

@@ -3,7 +3,6 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
@@ -20,6 +19,7 @@
 
 #include "LoaderResourceVideo.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"

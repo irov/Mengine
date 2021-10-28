@@ -21,39 +21,11 @@ namespace Mengine
         ~Package() override;
 
     public:
-        bool initialize( const ConstString & _name
-            , const ConstString & _type
-            , const ConstString & _locale
-            , const Tags & _platform
-            , const Tags & _tags
-            , const FilePath & _descriptionPath
-            , const FileGroupInterfacePtr & _baseFileGroup
-            , const FilePath & _filePath
-            , const FilePath & _fontsPath
-            , const FilePath & _textsPath
-            , bool _preload );
-
+        bool initialize( const FileGroupInterfacePtr & _baseFileGroup, const PackageDesc & _desc );
         void finalize();
 
     public:
-        void setName( const ConstString & _name ) override;
-        const ConstString & getName() const override;
-
-    public:
-        void setPreload( bool _value ) override;
-        bool isPreload() const override;
-
-        void setLocale( const ConstString & _locale ) override;
-        const ConstString & getLocale() const override;
-
-        void setPlatfromTags( const Tags & _tags ) override;
-        const Tags & getPlatfromTags() const override;
-
-        void setTags( const Tags & _tags ) override;
-        const Tags & getTags() const override;
-
-        void setPathPath( const FilePath & _filePath ) override;
-        const FilePath & getPathPath() const override;
+        const PackageDesc & getPackageDesc() const override;
 
     public:
         void setParent( const PackageInterfacePtr & _package ) override;
@@ -112,22 +84,12 @@ namespace Mengine
         typedef Vector<PackageResourceDesc> VectorPackageResourceDesc;
         VectorPackageResourceDesc m_resourcesDesc;
 
-        ConstString m_name;
-        ConstString m_type;
-        ConstString m_locale;
-
         PackageInterfacePtr m_parentPackage;
 
         FileGroupInterfacePtr m_baseFileGroup;
 
-        Tags m_platform;
-        Tags m_tags;
-        FilePath m_descriptionPath;
-
         FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
-        FilePath m_fontsPath;
-        FilePath m_textsPath;
+        PackageDesc m_desc;
 
         VectorScriptModulePack m_scriptsPackages;
 
@@ -178,7 +140,6 @@ namespace Mengine
         typedef Vector<PackageSettingDesc> VectorPackageSettingDesc;
         VectorPackageSettingDesc m_settingsDesc;
 
-        bool m_preload;
         bool m_load;
         bool m_enable;
     };

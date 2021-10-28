@@ -3,14 +3,14 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/InputStreamInterface.h"
 
-#include "INIUtil.h"
+#include "INIUtils.h"
 
 #include "Kernel/Tags.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<INIUtil::IniStore> VectorIniStores;
+    typedef Vector<INIUtils::IniStore> VectorIniStores;
     //////////////////////////////////////////////////////////////////////////
     class INIConfig
         : public ConfigInterface
@@ -32,41 +32,24 @@ namespace Mengine
         bool existValue( const Char * _section, const Char * _key ) const override;
 
     public:
-        bool hasValue( const Char * _section, const Char * _key, bool * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, int8_t * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, uint8_t * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, int32_t * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, uint32_t * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, int64_t * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, uint64_t * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, float * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, double * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, const Char ** const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, ConstString * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, FilePath * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, Tags * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, Resolution * const _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, Color * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, bool _default, bool * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, int8_t _default, int8_t * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, uint8_t _default, uint8_t * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, int32_t _default, int32_t * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, uint32_t _default, uint32_t * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, int64_t _default, int64_t * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, uint64_t _default, uint64_t * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, float _default, float * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, double _default, double * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, const Char * _default, const Char ** const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, const FilePath & _default, FilePath * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, const Tags & _default, Tags * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, const Resolution & _default, Resolution * const _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, const Color & _default, Color * const _value ) const override;
 
     public:
         bool hasSection( const Char * _section ) const override;
-
-    public:
-        bool getValue( const Char * _section, const Char * _key, bool _default ) const override;
-        int8_t getValue( const Char * _section, const Char * _key, int8_t _default ) const override;
-        uint8_t getValue( const Char * _section, const Char * _key, uint8_t _default ) const override;
-        int32_t getValue( const Char * _section, const Char * _key, int32_t _default ) const override;
-        uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const override;
-        int64_t getValue( const Char * _section, const Char * _key, int64_t _default ) const override;
-        uint64_t getValue( const Char * _section, const Char * _key, uint64_t _default ) const override;
-        float getValue( const Char * _section, const Char * _key, float _default ) const override;
-        double getValue( const Char * _section, const Char * _key, double _default ) const override;
-        const Char * getValue( const Char * _section, const Char * _key, const Char * _default ) const override;
-        ConstString getValue( const Char * _section, const Char * _key, const ConstString & _default ) const override;
-        FilePath getValue( const Char * _section, const Char * _key, const FilePath & _default ) const override;
-        Tags getValue( const Char * _section, const Char * _key, const Tags & _default ) const override;
-        Resolution getValue( const Char * _section, const Char * _key, const Resolution & _default ) const override;
-        Color getValue( const Char * _section, const Char * _key, const Color & _default ) const override;
 
     public:
         void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const override;
@@ -74,12 +57,9 @@ namespace Mengine
         void getValues( const Char * _section, const Char * _key, VectorConstString * const _values ) const override;
         void getValues( const Char * _section, const Char * _key, VectorString * const _values ) const override;
 
-    public:
-        void setValue( const Char * _section, const Char * _key, const Char * _value ) override;
-
     protected:
         Tags m_platformTags;
-                
+
         VectorIniStores m_stores;
     };
     //////////////////////////////////////////////////////////////////////////

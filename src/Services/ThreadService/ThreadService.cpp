@@ -1,6 +1,5 @@
 #include "ThreadService.h"
 
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
@@ -11,7 +10,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 

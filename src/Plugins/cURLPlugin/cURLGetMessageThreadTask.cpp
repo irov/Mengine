@@ -1,9 +1,8 @@
 #include "cURLGetMessageThreadTask.h"
 
-#include "Interface/ConfigServiceInterface.h"
-
 #include "cURLErrorHelper.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

@@ -6,8 +6,8 @@ src
     INIPlugin.def
     INIPlugin.cpp
 
-    INIUtil.h
-    INIUtil.cpp
+    INIUtils.h
+    INIUtils.cpp
     INIConfig.h
     INIConfig.cpp
 )

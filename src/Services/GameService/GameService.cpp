@@ -12,7 +12,6 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/GameEventReceiverInterface.h"
@@ -28,6 +27,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );

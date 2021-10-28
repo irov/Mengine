@@ -46,6 +46,7 @@ extern "C" {
 #include "Kernel/BuildMode.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/InputServiceHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -221,7 +222,8 @@ extern "C" {
         const Mengine::Char * key_str = env->GetStringUTFChars( _key, nullptr );
         const Mengine::Char * default_str = env->GetStringUTFChars( _default, nullptr );
 
-        const Mengine::Char * value_str = defaultConfig->getValue( section_str, key_str, default_str );
+        const Mengine::Char * value_str;
+        defaultConfig->hasValue( section_str, key_str, default_str, &value_str );
 
         env->ReleaseStringUTFChars( _section, section_str );
         env->ReleaseStringUTFChars( _key, key_str );

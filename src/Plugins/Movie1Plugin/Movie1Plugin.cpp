@@ -4,7 +4,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -22,6 +21,7 @@
 #include "Engine/HotSpotResourceShape.h"
 #include "Engine/ResourceShape.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"

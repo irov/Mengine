@@ -1,10 +1,10 @@
 #include "Win32AntifreezeMonitorPlugin.h"
 
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 

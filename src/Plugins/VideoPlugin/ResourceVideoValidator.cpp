@@ -1,8 +1,8 @@
 #include "ResourceVideoValidator.h"
 
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"

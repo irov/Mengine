@@ -3,7 +3,6 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/MemoryStreamHelper.h"
@@ -12,6 +11,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 namespace Mengine
 {

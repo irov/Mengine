@@ -7,7 +7,6 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/TextFontConfigLoaderInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -24,6 +23,7 @@
 #include "Kernel/String.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

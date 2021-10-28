@@ -9,12 +9,12 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Win32MessageBoxLogger.h"
 #include "Win32OutputDebugLogger.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"

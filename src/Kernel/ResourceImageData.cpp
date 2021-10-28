@@ -2,7 +2,6 @@
 
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"

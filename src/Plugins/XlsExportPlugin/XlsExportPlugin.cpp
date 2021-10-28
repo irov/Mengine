@@ -3,13 +3,13 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
 #define MENGINE_WINDOWS_VERSION_WIN8
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
 

@@ -1,10 +1,10 @@
 #include "cURLThreadTask.h"
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "cURLErrorHelper.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdIntTypes.h"

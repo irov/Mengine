@@ -8,7 +8,6 @@
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UserdataServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
@@ -20,6 +19,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/Assertion.h"
@@ -2227,9 +2227,10 @@ namespace Mengine
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
 
-                bool result = config->getValue( _section, _key, _default );
+                bool value;
+                config->hasValue( _section, _key, _default, &value );
 
-                return result;
+                return value;
             }
             //////////////////////////////////////////////////////////////////////////
             int32_t s_getConfigInt( const Char * _section, const Char * _key, int32_t _default )
@@ -2237,9 +2238,10 @@ namespace Mengine
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
 
-                int32_t result = config->getValue( _section, _key, _default );
+                int32_t value;
+                config->hasValue( _section, _key, _default, &value );
 
-                return result;
+                return value;
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_getConfigUInt( const Char * _section, const Char * _key, uint32_t _default )
@@ -2247,9 +2249,10 @@ namespace Mengine
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
 
-                uint32_t result = config->getValue( _section, _key, _default );
+                uint32_t value;
+                config->hasValue( _section, _key, _default, &value );
 
-                return result;
+                return value;
             }
             //////////////////////////////////////////////////////////////////////////
             uint64_t s_getConfigUInt64( const Char * _section, const Char * _key, uint64_t _default )
@@ -2257,9 +2260,11 @@ namespace Mengine
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
 
-                uint64_t result = config->getValue( _section, _key, _default );
+                int64_t value;
+                config->hasValue( _section, _key, _default, &value );
 
-                return result;
+                return value;
+
             }
             //////////////////////////////////////////////////////////////////////////
             float s_getConfigFloat( const Char * _section, const Char * _key, float _default )
@@ -2267,9 +2272,11 @@ namespace Mengine
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
 
-                float result = config->getValue( _section, _key, _default );
+                float value;
+                config->hasValue( _section, _key, _default, &value );
 
-                return result;
+                return value;
+
             }
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getConfigString( const Char * _section, const Char * _key, const Char * _default )
@@ -2277,9 +2284,10 @@ namespace Mengine
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
 
-                const Char * result = config->getValue( _section, _key, _default );
+                const Char * value;
+                config->hasValue( _section, _key, _default, &value );
 
-                return result;
+                return value;                
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getAccountUID( pybind::kernel_interface * _kernel, const ConstString & _accountID )

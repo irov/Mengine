@@ -3,7 +3,6 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
@@ -23,6 +22,7 @@
 #include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"

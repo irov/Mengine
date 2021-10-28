@@ -2,8 +2,8 @@
 
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/GlobalInputHandlerHelper.h"
 
 //////////////////////////////////////////////////////////////////////////

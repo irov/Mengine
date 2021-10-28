@@ -1,12 +1,12 @@
 #include "FactoryService.h"
 
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/CRC32.h"
+#include "Kernel/Map.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -14,7 +14,6 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
-
 #include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////

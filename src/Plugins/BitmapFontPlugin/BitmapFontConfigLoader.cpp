@@ -27,25 +27,25 @@ namespace Mengine
         const ConstString & name = _font->getName();
 
         Color colorFont;
-        if( _config->hasValue( name.c_str(), "ColorFont", &colorFont ) == true )
+        if( _config->hasValue( name.c_str(), "ColorFont", Color(), &colorFont ) == true )
         {
             _font->setFontColor( colorFont );
         }
 
         float lineOffset;
-        if( _config->hasValue( name.c_str(), "LineOffset", &lineOffset ) == true )
+        if( _config->hasValue( name.c_str(), "LineOffset", 0.f, &lineOffset ) == true )
         {
             _font->setLineOffset( lineOffset );
         }
 
         float charOffset;
-        if( _config->hasValue( name.c_str(), "CharOffset", &charOffset ) == true )
+        if( _config->hasValue( name.c_str(), "CharOffset", 0.f, &charOffset ) == true )
         {
             _font->setCharOffset( charOffset );
         }
 
         FilePath glyphPath;
-        if( _config->hasValue( name.c_str(), "Glyph", &glyphPath ) == false )
+        if( _config->hasValue( name.c_str(), "Glyph", FilePath::none(), &glyphPath ) == false )
         {
             LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
                 , name.c_str()
@@ -69,7 +69,7 @@ namespace Mengine
         font->setHeight( height );
 
         FilePath pathFontImage;
-        if( _config->hasValue( name.c_str(), "Image", &pathFontImage ) == false )
+        if( _config->hasValue( name.c_str(), "Image", FilePath::none(), &pathFontImage ) == false )
         {
             LOGGER_ERROR( "invalid font '%s' dont setup Image"
                 , name.c_str()

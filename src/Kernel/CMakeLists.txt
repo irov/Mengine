@@ -803,6 +803,8 @@ Core
     
     BaseComponentHub.h
     BaseComponentHub.cpp
+    
+    ConfigHelper.h
 )
 
 ADD_FILTER(

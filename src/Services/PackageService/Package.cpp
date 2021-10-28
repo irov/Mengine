@@ -28,8 +28,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Package::Package()
-        : m_preload( false )
-        , m_load( false )
+        : m_load( false )
         , m_enable( false )
     {
     }
@@ -38,29 +37,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::initialize( const ConstString & _name
-        , const ConstString & _type
-        , const ConstString & _locale
-        , const Tags & _platform
-        , const Tags & _tags
-        , const FilePath & _descriptionPath
-        , const FileGroupInterfacePtr & _baseFileGroup
-        , const FilePath & _filePath
-        , const FilePath & _fontsPath
-        , const FilePath & _textsPath
-        , bool _preload )
+    bool Package::initialize( const FileGroupInterfacePtr & _baseFileGroup, const PackageDesc & _desc )
     {
-        m_name = _name;
-        m_type = _type;
-        m_locale = _locale;
-        m_platform = _platform;
-        m_tags = _tags;
-        m_descriptionPath = _descriptionPath;
         m_baseFileGroup = _baseFileGroup;
-        m_filePath = _filePath;
-        m_fontsPath = _fontsPath;
-        m_textsPath = _textsPath;
-        m_preload = _preload;
+        m_desc = _desc;
 
         return true;
     }
@@ -82,64 +62,9 @@ namespace Mengine
         m_settingsDesc.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::setPreload( bool _value )
+    const PackageDesc & Package::getPackageDesc() const
     {
-        m_preload = _value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Package::isPreload() const
-    {
-        return m_preload;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Package::setName( const ConstString & _name )
-    {
-        m_name = _name;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & Package::getName() const
-    {
-        return m_name;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Package::setLocale( const ConstString & _locale )
-    {
-        m_locale = _locale;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & Package::getLocale() const
-    {
-        return m_locale;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Package::setPlatfromTags( const Tags & _platform )
-    {
-        m_platform = _platform;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Tags & Package::getPlatfromTags() const
-    {
-        return m_platform;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Package::setTags( const Tags & _tags )
-    {
-        m_tags = _tags;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Tags & Package::getTags() const
-    {
-        return m_tags;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Package::setPathPath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & Package::getPathPath() const
-    {
-        return m_filePath;
+        return m_desc;
     }
     //////////////////////////////////////////////////////////////////////////
     void Package::setParent( const PackageInterfacePtr & _package )
@@ -186,11 +111,11 @@ namespace Mengine
 
         FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE()
-            ->mountFileGroup( m_name, m_baseFileGroup, parentFileGroup, m_filePath, m_type, &fileGroup, false, _doc ) == false )
+            ->mountFileGroup( m_desc.name, m_baseFileGroup, parentFileGroup, m_desc.path, m_desc.type, &fileGroup, false, _doc ) == false )
         {
             LOGGER_ERROR( "failed to mount package '%s' path '%s'"
-                , m_name.c_str()
-                , m_filePath.c_str()
+                , m_desc.name.c_str()
+                , m_desc.path.c_str()
             );
 
             return false;
@@ -204,21 +129,21 @@ namespace Mengine
     void Package::unmountFileGroup_()
     {
         FILE_SERVICE()
-            ->unmountFileGroup( m_name );
+            ->unmountFileGroup( m_desc.name );
 
         m_fileGroup = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadPackage_()
     {
-        if( m_fontsPath.empty() == false )
+        if( m_desc.fontsPath.empty() == false )
         {
-            this->addFontPath_( m_fontsPath, Tags() );
+            this->addFontPath_( m_desc.fontsPath, Tags() );
         }
 
-        if( m_textsPath.empty() == false )
+        if( m_desc.textsPath.empty() == false )
         {
-            this->addTextPath_( m_textsPath, Tags() );
+            this->addTextPath_( m_desc.textsPath, Tags() );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == false )
@@ -226,7 +151,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_descriptionPath.empty() == true )
+        if( m_desc.descriptionPath.empty() == true )
         {
             return true;
         }
@@ -235,12 +160,12 @@ namespace Mengine
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( m_fileGroup, m_descriptionPath, &pak, Metacode::Meta_Data::getVersion(), &exist ) == false )
+            ->load( m_fileGroup, m_desc.descriptionPath, &pak, Metacode::Meta_Data::getVersion(), &exist ) == false )
         {
             LOGGER_ERROR( "invalid resource file '%s' name '%s' description '%s'"
-                , m_filePath.c_str()
-                , m_name.c_str()
-                , m_descriptionPath.c_str()
+                , m_desc.path.c_str()
+                , m_desc.name.c_str()
+                , m_desc.descriptionPath.c_str()
             );
 
             return false;
@@ -393,15 +318,15 @@ namespace Mengine
     bool Package::enable()
     {
         LOGGER_MESSAGE( "Package enable... '%s'"
-            , m_name.c_str()
+            , m_desc.name.c_str()
         );
 
         if( m_enable == true )
         {
             LOGGER_ERROR( "already enable file '%s' name '%s' description '%s'"
-                , m_filePath.c_str()
-                , m_name.c_str()
-                , m_descriptionPath.c_str()
+                , m_desc.path.c_str()
+                , m_desc.name.c_str()
+                , m_desc.descriptionPath.c_str()
             );
 
             return false;
@@ -423,11 +348,11 @@ namespace Mengine
                 continue;
             }
 
-            if( this->loadResources_( m_locale, m_fileGroup, desc.path, desc.tags, desc.ignored ) == false )
+            if( this->loadResources_( m_desc.locale, m_fileGroup, desc.path, desc.tags, desc.ignored ) == false )
             {
                 LOGGER_ERROR( "invalid load file '%s' name '%s' resource '%s'"
-                    , m_filePath.c_str()
-                    , m_name.c_str()
+                    , m_desc.path.c_str()
+                    , m_desc.name.c_str()
                     , desc.path.c_str()
                 );
 
@@ -445,8 +370,8 @@ namespace Mengine
             if( this->loadFont_( desc.path ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load font '%s'"
-                    , m_filePath.c_str()
-                    , m_name.c_str()
+                    , m_desc.path.c_str()
+                    , m_desc.name.c_str()
                     , desc.path.c_str()
                 );
 
@@ -464,8 +389,8 @@ namespace Mengine
             if( this->loadText_( desc.path ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load text '%s'"
-                    , m_filePath.c_str()
-                    , m_name.c_str()
+                    , m_desc.path.c_str()
+                    , m_desc.name.c_str()
                     , desc.path.c_str()
                 );
 
@@ -483,8 +408,8 @@ namespace Mengine
             if( this->loadData_( desc.name, desc.path ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load userdata '%s' path '%s'"
-                    , m_filePath.c_str()
-                    , m_name.c_str()
+                    , m_desc.path.c_str()
+                    , m_desc.name.c_str()
                     , desc.name.c_str()
                     , desc.path.c_str()
                 );
@@ -503,8 +428,8 @@ namespace Mengine
             if( this->loadMaterials_( m_fileGroup, desc.path ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load material '%s'"
-                    , m_filePath.c_str()
-                    , m_name.c_str()
+                    , m_desc.path.c_str()
+                    , m_desc.name.c_str()
                     , desc.path.c_str()
                 );
 
@@ -522,8 +447,8 @@ namespace Mengine
             if( this->loadSetting_( desc.name, desc.path ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load setting '%s' path '%s'"
-                    , m_filePath.c_str()
-                    , m_name.c_str()
+                    , m_desc.path.c_str()
+                    , m_desc.name.c_str()
                     , desc.name.c_str()
                     , desc.path.c_str()
                 );
@@ -542,9 +467,9 @@ namespace Mengine
         if( m_enable == false )
         {
             LOGGER_ERROR( "file '%s' package '%s' already disable '%s'"
-                , m_filePath.c_str()
-                , m_name.c_str()
-                , m_descriptionPath.c_str()
+                , m_desc.path.c_str()
+                , m_desc.name.c_str()
+                , m_desc.descriptionPath.c_str()
             );
 
             return false;
@@ -568,7 +493,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->unloadResources_( m_locale, m_fileGroup, desc.path ) == false )
+            if( this->unloadResources_( m_desc.locale, m_fileGroup, desc.path ) == false )
             {
                 return false;
             }
@@ -650,7 +575,7 @@ namespace Mengine
     bool Package::loadText_( const FilePath & _filePath )
     {
         bool successful = TEXT_SERVICE()
-            ->loadTextEntry( m_locale, m_fileGroup, _filePath );
+            ->loadTextEntry( m_desc.locale, m_fileGroup, _filePath );
 
         return successful;
     }
@@ -658,7 +583,7 @@ namespace Mengine
     bool Package::unloadText_( const FilePath & _filePath )
     {
         bool successful = TEXT_SERVICE()
-            ->unloadTextEntry( m_locale, m_fileGroup, _filePath );
+            ->unloadTextEntry( m_desc.locale, m_fileGroup, _filePath );
 
         return successful;
     }

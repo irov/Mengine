@@ -2,7 +2,6 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/MemoryStreamHelper.h"
@@ -12,6 +11,7 @@
 #include "Kernel/ImageCodecHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 namespace Mengine
 {

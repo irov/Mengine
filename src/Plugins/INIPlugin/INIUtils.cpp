@@ -1,4 +1,4 @@
-#include "INIUtil.h"
+#include "INIUtils.h"
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
@@ -22,7 +22,7 @@
 
 namespace Mengine
 {
-    namespace INIUtil
+    namespace INIUtils
     {
         //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
@@ -37,7 +37,7 @@ namespace Mengine
 
             _ini.path = _filePath;
 
-            bool successful = INIUtil::loadIni( _ini, stream, _doc );
+            bool successful = INIUtils::loadIni( _ini, stream, _doc );
 
             return successful;
         }
@@ -433,7 +433,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString * const _values )
+        void getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString * const _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -443,11 +443,9 @@ namespace Mengine
 
                 _values->emplace_back( String( value ) );
             }
-
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString * const _values )
+        void getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString * const _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -459,11 +457,9 @@ namespace Mengine
 
                 _values->emplace_back( cs );
             }
-
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath * const _values )
+        void getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath * const _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -475,11 +471,9 @@ namespace Mengine
 
                 _values->emplace_back( cs );
             }
-
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values )
+        void getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -488,7 +482,6 @@ namespace Mengine
                 const Char * ini_value = tinyini_get_property_values( &_ini.ini, _section, _key, index );
 
                 AspectRatioViewport arv;
-
                 if( MENGINE_SSCANF( ini_value, "%f %f %f %f %f %f"
                     , &arv.width
                     , &arv.height
@@ -504,34 +497,11 @@ namespace Mengine
                         , ini_value
                     );
 
-                    return false;
+                    return;
                 }
 
                 _values->emplace_back( arv );
             }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams * const _values )
-        {
-            uint32_t count = tinyini_count_properties( &_ini.ini, _section );
-
-            for( uint32_t index = 0; index != count; ++index )
-            {
-                const Char * key;
-                const Char * value;
-                if( tinyini_get_properties( &_ini.ini, _section, index, &key, &value ) == TINYINI_RESULT_FAILURE )
-                {
-                    return false;
-                }
-
-                ConstString c_key = Helper::stringizeString( key );
-
-                _values->emplace( c_key, value );
-            }
-
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
     }

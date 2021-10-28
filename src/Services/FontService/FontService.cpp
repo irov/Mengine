@@ -7,7 +7,6 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/TextFontConfigLoaderInterface.h"
 #include "Interface/FontValidatorInterface.h"
@@ -24,6 +23,7 @@
 #include "Kernel/String.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -147,8 +147,8 @@ namespace Mengine
                 , fontName.c_str()
             );
 
-            ConstString fontType = STRINGIZE_STRING_LOCAL( "Bitmap" );
-            config->hasValue( fontName.c_str(), "Type", &fontType );
+            ConstString fontType;
+            config->hasValue( fontName.c_str(), "Type", STRINGIZE_STRING_LOCAL( "Bitmap" ), &fontType );
 
             TextFontInterfacePtr font = this->createFont( fontName, fontType, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -216,7 +216,7 @@ namespace Mengine
 #endif
 
         ConstString defaultFontName;
-        if( config->hasValue( "GAME_FONTS", "Default", &defaultFontName ) == true )
+        if( config->hasValue( "GAME_FONTS", "Default", ConstString::none(), &defaultFontName ) == true )
         {
             TextFontInterfacePtr defaultFont;
             if( this->existFont( defaultFontName, &defaultFont ) == false )

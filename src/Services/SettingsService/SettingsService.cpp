@@ -122,8 +122,8 @@ namespace Mengine
 
             ConstString name;
             FilePath filePath;
-            config->hasValue( setting.c_str(), "Name", &name );
-            config->hasValue( setting.c_str(), "Path", &filePath );
+            config->hasValue( setting.c_str(), "Name", ConstString::none(), &name );
+            config->hasValue( setting.c_str(), "Path", FilePath::none(), &filePath );
 
             if( this->loadSetting( name, _fileGroup, filePath, _doc ) == false )
             {

@@ -4,10 +4,10 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificatorInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Crash.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/UnicodeHelper.h"

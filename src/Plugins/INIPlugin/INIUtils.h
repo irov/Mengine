@@ -1,8 +1,5 @@
 #pragma once
 
-#include "tinyini/tinyini.hpp"
-
-#include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/MemoryInterface.h"
@@ -21,9 +18,11 @@
 #include "Kernel/String.h"
 #include "Kernel/VectorString.h"
 
+#include "tinyini/tinyini.hpp"
+
 namespace Mengine
 {
-    namespace INIUtil
+    namespace INIUtils
     {
         //////////////////////////////////////////////////////////////////////////
         struct IniStore
@@ -55,12 +54,10 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float * const _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double * const _value );
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString * const  _values );
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString * const _values );
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath * const _values );
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values );
-        //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams * _values );
+        void getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString * const  _values );
+        void getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString * const _values );
+        void getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath * const _values );
+        void getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values );
         //////////////////////////////////////////////////////////////////////////
     }
 }

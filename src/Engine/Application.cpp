@@ -10,7 +10,6 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
@@ -73,6 +72,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"

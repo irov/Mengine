@@ -4,7 +4,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -14,6 +13,7 @@
 #include "Kernel/StringRegex.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/LoggerHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdIO.h"
 

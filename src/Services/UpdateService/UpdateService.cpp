@@ -1,6 +1,5 @@
 #include "UpdateService.h"
 
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 
 #include "Kernel/Updatable.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/Algorithm.h"
 

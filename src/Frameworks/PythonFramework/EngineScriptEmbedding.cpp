@@ -23,7 +23,6 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PickerServiceInterface.h"
@@ -56,6 +55,7 @@
 #include "Engine/Point.h"
 #include "Engine/Line.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
@@ -3696,7 +3696,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 const Char * param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), &param_value ) == false )
+                if( config->hasValue( "Params", _paramName.c_str(), "", & param_value) == false )
                 {
                     return _kernel->ret_none();
                 }
@@ -3712,7 +3712,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 float param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), &param_value ) == false )
+                if( config->hasValue( "Params", _paramName.c_str(), 0.f, &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }
@@ -3726,7 +3726,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 int32_t param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), &param_value ) == false )
+                if( config->hasValue( "Params", _paramName.c_str(), 0, &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }
@@ -3740,7 +3740,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 bool param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), &param_value ) == false )
+                if( config->hasValue( "Params", _paramName.c_str(), false, &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }

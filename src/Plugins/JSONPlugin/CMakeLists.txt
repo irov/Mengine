@@ -24,6 +24,9 @@ src
     JSONSetting.h
     JSONSettingPrototypeGenerator.cpp
     JSONSettingPrototypeGenerator.h
+    
+    JSONConfig.cpp
+    JSONConfig.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

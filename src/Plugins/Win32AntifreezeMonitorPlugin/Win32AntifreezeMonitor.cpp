@@ -2,7 +2,6 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
@@ -11,6 +10,7 @@
 #   include "Interface/Win32PlatformExtensionInterface.h"
 #endif
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/DocumentHelper.h"

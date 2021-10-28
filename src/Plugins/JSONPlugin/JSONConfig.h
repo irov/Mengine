@@ -3,22 +3,23 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/InputStreamInterface.h"
 
+#include "JSONInterface.h"
+
 #include "Kernel/Tags.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class MultiConfig
+    typedef Vector<JSONStorageInterfacePtr> VectorJSONStorages;
+    //////////////////////////////////////////////////////////////////////////
+    class JSONConfig
         : public ConfigInterface
     {
-        DECLARE_FACTORABLE( MultiConfig );
+        DECLARE_FACTORABLE( JSONConfig );
 
     public:
-        MultiConfig();
-        ~MultiConfig() override;
-
-    public:
-        void addConfig( const ConfigInterfacePtr & _config );
+        JSONConfig();
+        ~JSONConfig() override;
 
     public:
         void setPlatformTags( const Tags & _platformTags ) override;
@@ -48,22 +49,21 @@ namespace Mengine
         bool hasValue( const Char * _section, const Char * _key, const Color & _default, Color * const _value ) const override;
 
     public:
+        bool hasSection( const Char * _section ) const override;
+
+    public:
         void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const override;
         void getValues( const Char * _section, const Char * _key, VectorFilePath * const _values ) const override;
         void getValues( const Char * _section, const Char * _key, VectorConstString * const _values ) const override;
         void getValues( const Char * _section, const Char * _key, VectorString * const _values ) const override;
 
-    public:
-        bool hasSection( const Char * _section ) const override;
-
     protected:
         Tags m_platformTags;
-
-        typedef Vector<ConfigInterfacePtr> VectorConfigs;
-        VectorConfigs m_configs;
+                
+        VectorJSONStorages m_storages;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MultiConfig, ConfigInterface> MultiConfigPtr;
+    typedef IntrusivePtr<JSONConfig, ConfigInterface> JSONConfigPtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

@@ -2,7 +2,6 @@
 
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
 #include "MockupRenderImage.h"
@@ -30,10 +29,11 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/PixelFormatHelper.h"
-
-#include "math/uv4.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/Algorithm.h"
+
+#include "math/uv4.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( MockupRenderSystem, Mengine::MockupRenderSystem );

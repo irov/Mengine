@@ -8,6 +8,7 @@
 
 #include "TTFFont.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -30,29 +31,30 @@ namespace Mengine
         const ConstString & name = font->getName();
 
         Color colorFont;
-        if( _config->hasValue( name.c_str(), "ColorFont", &colorFont ) == true )
+        if( _config->hasValue( name.c_str(), "ColorFont", Color(), &colorFont ) == true )
         {
             _font->setFontColor( colorFont );
         }
 
         float lineOffset;
-        if( _config->hasValue( name.c_str(), "LineOffset", &lineOffset ) == true )
+        if( _config->hasValue( name.c_str(), "LineOffset", 0.f, &lineOffset ) == true )
         {
             _font->setLineOffset( lineOffset );
         }
 
         float charOffset;
-        if( _config->hasValue( name.c_str(), "CharOffset", &charOffset ) == true )
+        if( _config->hasValue( name.c_str(), "CharOffset", 0.f, &charOffset ) == true )
         {
             _font->setCharOffset( charOffset );
         }
 
-        bool system = _config->getValue( name.c_str(), "System", false );
+        bool system;
+        _config->hasValue( name.c_str(), "System", false, &system );
 
         if( system == false )
         {
             FilePath ttfPath;
-            if( _config->hasValue( name.c_str(), "Path", &ttfPath ) == false )
+            if( _config->hasValue( name.c_str(), "Path", FilePath::none(), &ttfPath ) == false )
             {
                 LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
                     , name.c_str()
@@ -72,7 +74,7 @@ namespace Mengine
         else
         {
             const Char * ttfName = nullptr;
-            if( _config->hasValue( name.c_str(), "Name", &ttfName ) == false )
+            if( _config->hasValue( name.c_str(), "Name", "", & ttfName) == false )
             {
                 LOGGER_ERROR( "invalid font '%s' don't setup Name"
                     , name.c_str()
@@ -109,7 +111,7 @@ namespace Mengine
         }
 
         uint32_t height;
-        if( _config->hasValue( name.c_str(), "Height", &height ) == false )
+        if( _config->hasValue( name.c_str(), "Height", 0u, &height ) == false )
         {
             LOGGER_ERROR( "invalid font '%s' don't setup Height"
                 , name.c_str()
@@ -121,7 +123,7 @@ namespace Mengine
         _font->setHeight( height );
 
         FilePath FEPath;
-        if( _config->hasValue( name.c_str(), "FEPath", &FEPath ) == true )
+        if( _config->hasValue( name.c_str(), "FEPath", FilePath::none(), &FEPath ) == true )
         {
             TextFontEffectInterfacePtr textFontEffet = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -137,7 +139,7 @@ namespace Mengine
             UnknownFEFileInterface * unknownFE = textFontEffet->getDynamicUnknown();
 
             ConstString FEName;
-            if( _config->hasValue( name.c_str(), "FEName", &FEName ) == false )
+            if( _config->hasValue( name.c_str(), "FEName", ConstString::none(), &FEName ) == false )
             {
                 LOGGER_ERROR( "invalid font '%s' don't setup FEName"
                     , name.c_str()
@@ -149,7 +151,7 @@ namespace Mengine
             unknownFE->setEffectName( FEName );
 
             uint32_t FESample;
-            if( _config->hasValue( name.c_str(), "FESample", &FESample ) == true )
+            if( _config->hasValue( name.c_str(), "FESample", 0u, &FESample ) == true )
             {
                 textFontEffet->setEffectSample( FESample );
             }

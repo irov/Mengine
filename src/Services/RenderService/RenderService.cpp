@@ -4,13 +4,13 @@
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "BatchRenderPipeline.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"

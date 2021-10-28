@@ -9,7 +9,6 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "SDLMessageBoxLogger.h"
 
@@ -23,6 +22,7 @@
 #   include "SDLOutputDebugLogger.h"
 #endif
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"

@@ -2,7 +2,6 @@
 
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
@@ -20,6 +19,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #ifndef MENGINE_MASTER_RELEASE
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"

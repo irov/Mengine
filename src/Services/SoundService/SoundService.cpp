@@ -4,7 +4,6 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
@@ -19,6 +18,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/Algorithm.h"
 

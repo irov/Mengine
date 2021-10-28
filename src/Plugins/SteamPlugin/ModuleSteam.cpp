@@ -5,7 +5,6 @@
 
 #include "ModuleSteam.h"
 
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -14,6 +13,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdIO.h"
 

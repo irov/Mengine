@@ -20,6 +20,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/PathString.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AccountService, Mengine::AccountService );
@@ -513,7 +514,7 @@ namespace Mengine
             return false;
         }
 
-        if( config->hasValue( "SETTINGS", "AccountEnumerator", &m_playerEnumerator ) == false )
+        if( config->hasValue( "SETTINGS", "AccountEnumerator", 0u, &m_playerEnumerator ) == false )
         {
             LOGGER_ERROR( "get AccountEnumerator failed '%s'"
                 , Game_AccountsPath.c_str()
@@ -522,14 +523,14 @@ namespace Mengine
             return false;
         }
 
-        if( config->hasValue( "SETTINGS", "GlobalAccountID", &m_globalAccountID ) == false )
+        if( config->hasValue( "SETTINGS", "GlobalAccountID", ConstString::none(), &m_globalAccountID ) == false )
         {
             LOGGER_INFO( "account", "get GlobalAccountID failed '%s'"
                 , Game_AccountsPath.c_str()
             );
         }
 
-        if( config->hasValue( "SETTINGS", "DefaultAccountID", &m_defaultAccountID ) == false )
+        if( config->hasValue( "SETTINGS", "DefaultAccountID", ConstString::none(), &m_defaultAccountID ) == false )
         {
             LOGGER_INFO( "account", "get DefaultAccountID failed '%s'"
                 , Game_AccountsPath.c_str()
@@ -537,7 +538,7 @@ namespace Mengine
         }
 
         ConstString selectAccountID;
-        if( config->hasValue( "SETTINGS", "SelectAccountID", &selectAccountID ) == false )
+        if( config->hasValue( "SETTINGS", "SelectAccountID", ConstString::none(), &selectAccountID ) == false )
         {
             LOGGER_INFO( "account", "get SelectAccountID failed '%s'"
                 , Game_AccountsPath.c_str()

@@ -1,9 +1,8 @@
 #include "cURLHeaderDataThreadTask.h"
 
-#include "Interface/ConfigServiceInterface.h"
-
 #include "cURLErrorHelper.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Kernel/Stringstream.h"

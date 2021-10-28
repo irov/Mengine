@@ -6,7 +6,6 @@
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 

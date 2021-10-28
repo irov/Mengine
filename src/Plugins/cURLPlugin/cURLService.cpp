@@ -3,7 +3,6 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "cURLGetMessageThreadTask.h"
@@ -11,6 +10,7 @@
 #include "cURLHeaderDataThreadTask.h"
 #include "cURLGetAssetThreadTask.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionFactory.h"
@@ -25,10 +25,9 @@
 #include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Algorithm.h"
 
 #include "curl/curl.h"
-
-#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( cURLService, Mengine::cURLService );

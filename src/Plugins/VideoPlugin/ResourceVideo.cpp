@@ -4,8 +4,8 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"

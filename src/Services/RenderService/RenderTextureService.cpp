@@ -3,7 +3,6 @@
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
@@ -13,6 +12,7 @@
 #include "DecoderRenderImageProvider.h"
 #include "DecoderRenderImageLoader.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"

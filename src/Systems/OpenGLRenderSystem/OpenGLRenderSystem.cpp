@@ -1,7 +1,6 @@
 #include "OpenGLRenderSystem.h"
 
 #include "Interface/PlatformInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "OpenGLRenderImageLockedFactoryStorage.h"
 
@@ -17,6 +16,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Kernel/Logger.h"
 

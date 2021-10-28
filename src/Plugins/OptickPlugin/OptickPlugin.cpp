@@ -7,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ProfilerSystem );

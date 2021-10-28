@@ -1,7 +1,8 @@
 #include "SentryLoggerCapture.h"
 
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+
+#include "Kernel/ConfigHelper.h"
 
 #include "sentry.h"
 

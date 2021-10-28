@@ -326,6 +326,21 @@ namespace Mengine
                     ->isControlDown();
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_isShiftKeyCode( EKeyCode _keyCode ) const
+            {
+                return _keyCode == KC_SHIFT || _keyCode == KC_LSHIFT || _keyCode == KC_RSHIFT;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_isAltKeyCode( EKeyCode _keyCode ) const
+            {
+                return _keyCode == KC_MENU || _keyCode == KC_LMENU || _keyCode == KC_RMENU;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_isControlKeyCode( EKeyCode _keyCode ) const
+            {
+                return _keyCode == KC_CONTROL || _keyCode == KC_LCONTROL || _keyCode == KC_RCONTROL;
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_isKeyDown( EKeyCode _keyCode ) const
             {
                 return INPUT_SERVICE()
@@ -3900,6 +3915,9 @@ namespace Mengine
         pybind::def_functor( _kernel, "isShiftDown", helperScriptMethod, &HelperScriptMethod::s_isShiftDown );
         pybind::def_functor( _kernel, "isCtrlDown", helperScriptMethod, &HelperScriptMethod::s_isCtrlDown );
 
+        pybind::def_functor( _kernel, "isShiftKeyCode", helperScriptMethod, &HelperScriptMethod::s_isShiftKeyCode );
+        pybind::def_functor( _kernel, "isAltKeyCode", helperScriptMethod, &HelperScriptMethod::s_isAltKeyCode );
+        pybind::def_functor( _kernel, "isControlKeyCode", helperScriptMethod, &HelperScriptMethod::s_isControlKeyCode );
         pybind::def_functor( _kernel, "isKeyDown", helperScriptMethod, &HelperScriptMethod::s_isKeyDown );
         pybind::def_functor( _kernel, "isExclusiveKeyDown", helperScriptMethod, &HelperScriptMethod::s_isExclusiveKeyDown );
         pybind::def_functor( _kernel, "isAnyKeyDown", helperScriptMethod, &HelperScriptMethod::s_isAnyKeyDown );

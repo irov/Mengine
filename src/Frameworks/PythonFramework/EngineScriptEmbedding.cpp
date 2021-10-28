@@ -3734,18 +3734,15 @@ namespace Mengine
                 return pybind::ptr( _kernel, param_value );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getGameParamBool( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+            bool s_getGameParamBool( const ConstString & _paramName, bool _default )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
 
                 bool param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), false, &param_value ) == false )
-                {
-                    return _kernel->ret_none();
-                }
+                config->hasValue( "Params", _paramName.c_str(), _default, &param_value );
 
-                return _kernel->ret_bool( param_value );
+                return param_value;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_openUrlInDefaultBrowser( const WString & _url )
@@ -4167,7 +4164,7 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "getGameParam", nodeScriptMethod, &EngineScriptMethod::s_getGameParam );
         pybind::def_functor_kernel( _kernel, "getGameParamFloat", nodeScriptMethod, &EngineScriptMethod::s_getGameParamFloat );
         pybind::def_functor_kernel( _kernel, "getGameParamInt", nodeScriptMethod, &EngineScriptMethod::s_getGameParamInt );
-        pybind::def_functor_kernel( _kernel, "getGameParamBool", nodeScriptMethod, &EngineScriptMethod::s_getGameParamBool );
+        pybind::def_functor( _kernel, "getGameParamBool", nodeScriptMethod, &EngineScriptMethod::s_getGameParamBool );
 
         pybind::def_functor( _kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
 

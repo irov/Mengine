@@ -46,15 +46,22 @@ namespace Mengine
 
             m_scriptWrapper = scriptWrapper;
         }, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, [this]()
+        {
+            m_scriptWrapper = nullptr;
+        }, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseScriptablePrototypeGenerator::unregisterScriptWrapperObserver()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING_END );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseScriptablePrototypeGenerator::setupScriptable( const ScriptablePtr & _scriptable )
     {
         _scriptable->setScriptWrapper( m_scriptWrapper );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

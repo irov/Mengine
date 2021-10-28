@@ -1,5 +1,7 @@
 #include "JSONConfig.h"
 
+#include "JSONCast.h"
+
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
@@ -97,7 +99,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool hasJSONValueT( const VectorJSONStorages & _storages, const Tags & _platform, const Char * _section, const Char * _key, T _default, T * const _value )
+        static bool hasJSONValueT( const VectorJSONStorages & _storages, const Tags & _platform, const Char * _section, const Char * _key, const T & _default, T * const _value )
         {
             for( const JSONStorageInterfacePtr & storage : _storages )
             {

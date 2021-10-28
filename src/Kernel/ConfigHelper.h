@@ -14,7 +14,8 @@ namespace Mengine
                 return _default;
             }
 
-            const ConfigInterfacePtr & configDefault = CONFIG_SERVICE()->getDefaultConfig();
+            const ConfigInterfacePtr & configDefault = CONFIG_SERVICE()
+                ->getDefaultConfig();
 
             T value;
             configDefault->hasValue( _section, _key, _default, &value );

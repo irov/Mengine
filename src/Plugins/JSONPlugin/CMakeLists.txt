@@ -27,6 +27,9 @@ src
     
     JSONConfig.cpp
     JSONConfig.h
+    
+    JSONCast.cpp
+    JSONCast.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

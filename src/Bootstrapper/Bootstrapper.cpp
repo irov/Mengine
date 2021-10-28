@@ -726,6 +726,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( INI, "initialize Plugin INI...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#ifdef MENGINE_PLUGIN_JSON_STATIC
+        MENGINE_ADD_PLUGIN( JSON, "initialize Plugin JSON...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
@@ -917,10 +921,6 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_OZZ_ANIMATION_STATIC
         MENGINE_ADD_PLUGIN( OzzAnimation, "initialize Plugin OzzAnimation...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_JSON_STATIC
-        MENGINE_ADD_PLUGIN( JSON, "initialize Plugin JSON...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_BOX2D_STATIC
@@ -1594,7 +1594,7 @@ namespace Mengine
         SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
-        SERVICE_FINALIZE( RenderSystem );        
+        SERVICE_FINALIZE( RenderSystem );
         SERVICE_FINALIZE( ConfigService );
         SERVICE_FINALIZE( ArchiveService );
         SERVICE_FINALIZE( MemoryService );
@@ -1608,7 +1608,7 @@ namespace Mengine
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( TimepipeService );
-        
+
         if( m_loggerFile != nullptr )
         {
             LOGGER_SERVICE()
@@ -1625,7 +1625,7 @@ namespace Mengine
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( Platform );
         SERVICE_FINALIZE( LoggerService );
-        SERVICE_FINALIZE( NotificationService );        
+        SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
 
@@ -1661,7 +1661,7 @@ namespace Mengine
         SERVICE_DESTROY( PrototypeService );
         SERVICE_DESTROY( RenderMaterialService );
         SERVICE_DESTROY( RenderTextureService );
-        SERVICE_DESTROY( RenderSystem );        
+        SERVICE_DESTROY( RenderSystem );
         SERVICE_DESTROY( ConfigService );
         SERVICE_DESTROY( SettingsService );
         SERVICE_DESTROY( ArchiveService );

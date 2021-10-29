@@ -40,12 +40,7 @@ namespace Mengine
         v_wvpn.x = (1.f + v_clip.x) * 0.5f;
         v_wvpn.y = (1.f - v_clip.y) * 0.5f;
 
-        Viewport vp;
-        this->makeViewport_( &vp );
-
-        mt::vec2f vpSize = (vp.end - vp.begin);
-
-        *_screenPosition = vp.begin + vpSize * v_wvpn;
+        *_screenPosition = v_wvpn;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraOrthogonal::fromScreenToWorldPosition( const mt::vec2f & _screenPoint, float _deep, mt::vec3f * const _worldPosition ) const

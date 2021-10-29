@@ -9,6 +9,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionUnique.h"
+#include "Kernel/ResolutionHelper.h"
 
 namespace Mengine
 {
@@ -147,7 +148,7 @@ namespace Mengine
     void Arrow::calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const
     {
         mt::vec2f adaptScreenPoint;
-        this->adaptScreenPosition_( _screenPoint, &adaptScreenPoint );
+        Helper::adaptScreenPosition( _screenPoint, &adaptScreenPoint );
 
         const RenderViewportInterface * renderViewport = _context->viewport;
 
@@ -274,68 +275,9 @@ namespace Mengine
         mt::vec2f sp = vp_begin + p_screen * vp_size;
 
         mt::vec2f adapt_sp;
-        this->adaptWorldPosition_( sp, &adapt_sp );
+        Helper::adaptWorldPosition( sp, &adapt_sp );
 
         *_screenPoint = adapt_sp;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const
-    {
-        const Viewport & renderViewport = APPLICATION_SERVICE()
-            ->getRenderViewport();
-
-        const Resolution & currentResolution = APPLICATION_SERVICE()
-            ->getCurrentResolution();
-
-        mt::vec2f renderViewportSize;
-        renderViewport.calcSize( renderViewportSize );
-
-        mt::vec2f currentResolutionSize;
-        currentResolution.calcSize( &currentResolutionSize );
-
-        mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
-        mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
-
-        *_adaptScreenPoint = (_screenPoint - windowOffset) / windowScale;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f * const _adaptScreenDeltha ) const
-    {
-        const Viewport & renderViewport = APPLICATION_SERVICE()
-            ->getRenderViewport();
-
-        const Resolution & currentResolution = APPLICATION_SERVICE()
-            ->getCurrentResolution();
-
-        mt::vec2f renderViewportSize;
-        renderViewport.calcSize( renderViewportSize );
-
-        mt::vec2f currentResolutionSize;
-        currentResolution.calcSize( &currentResolutionSize );
-
-        mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
-
-        *_adaptScreenDeltha = _screenDeltha / windowScale;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const
-    {
-        const Viewport & renderViewport = APPLICATION_SERVICE()
-            ->getRenderViewport();
-
-        const Resolution & currentResolution = APPLICATION_SERVICE()
-            ->getCurrentResolution();
-
-        mt::vec2f renderViewportSize;
-        renderViewport.calcSize( renderViewportSize );
-
-        mt::vec2f currentResolutionSize;
-        currentResolution.calcSize( &currentResolutionSize );
-
-        mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
-        mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
-
-        *_adaptScreenPoint = _screenPoint * windowScale + windowOffset;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -53,6 +53,7 @@
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/ResolutionHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -129,13 +130,10 @@ namespace Mengine
             const ScenePtr & currentScene = SCENE_SERVICE()
                 ->getCurrentScene();
 
-            const ArrowPtr & arrow = PLAYER_SERVICE()
-                ->getArrow();
-
             mt::vec2f point = {_event.x, _event.y};
 
             mt::vec2f adapt_screen_position;
-            arrow->adaptScreenPosition_( point, &adapt_screen_position );
+            Helper::adaptScreenPosition( point, &adapt_screen_position );
 
             mt::vec2f cursorWorldPosition;
             PLAYER_SERVICE()

@@ -48,11 +48,6 @@ namespace Mengine
         void calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const;
 
     public:
-        void adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const;
-        void adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f * const _adaptScreenDeltha ) const;
-        void adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const;
-
-    public:
         void onAppMouseLeave();
         void onAppMouseEnter();
 

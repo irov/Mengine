@@ -18,6 +18,13 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
+
+#include "Environment/Python/PythonDocumentTraceback.h"
+
+#include "Engine/HotSpotResourceShape.h"
+#include "Engine/HotSpotSurface.h"
+#include "Engine/ResourceCursorICO.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Node.h"
@@ -34,13 +41,6 @@
 #include "Kernel/Optional.h"
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/LoggerHelper.h"
-
-#include "Config/BuildVersion.h"
-#include "Config/GitSHA1.h"
-
-#include "math/vec2.h"
-#include "math/vec3.h"
-
 #include "Kernel/Polygon.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/Color.h"
@@ -48,38 +48,30 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/UID.h"
 #include "Kernel/VectorRenderIndex.h"
-
-#include "Engine/HotSpotResourceShape.h"
-#include "Engine/HotSpotSurface.h"
-
-#include "Kernel/Logger.h"
-
-#include "Kernel/ResourceImageSequence.h"
-
-#include "Environment/Python/PythonDocumentTraceback.h"
-
-#include <ctime>
-#include <iomanip>
-
-#include "Kernel/ResourceImage.h"
-#include "Kernel/VectorResourceImages.h"
-#include "Engine/ResourceCursorICO.h"
-
-#include "Kernel/CRC32.h"
-
-#include "math/angle.h"
-
-#include "Interface/ScriptServiceInterface.h"
-
+#include "Kernel/ResolutionHelper.h"
 #include "Kernel/Blobject.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/Logger.h"
+#include "Kernel/ResourceImageSequence.h"
+#include "Kernel/ResourceImage.h"
+#include "Kernel/VectorResourceImages.h"
+#include "Kernel/CRC32.h"
 
 #include "Config/Typedef.h"
 #include "Config/StdString.h"
+#include "Config/BuildVersion.h"
+#include "Config/GitSHA1.h"
+
+#include "math/angle.h"
+#include "math/vec2.h"
+#include "math/vec3.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/pickle.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
+
+#include <ctime>
+#include <iomanip>
 
 namespace Mengine
 {
@@ -3095,7 +3087,27 @@ namespace Mengine
                 mt::vec2f screen;
                 camera->fromWorldToScreenPosition( wm, &screen );
 
-                return screen;
+                mt::vec2f adaptSceen;
+                Helper::adaptWorldPosition( screen, &adaptSceen );
+
+                return adaptSceen;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec2f s_fromWorldToScreenPosition( const mt::vec3f & _wp )
+            {
+                const RenderCameraInterfacePtr & camera = PLAYER_SERVICE()
+                    ->getRenderCamera();
+
+                mt::mat4f wm;
+                mt::make_translation_m4_v3( wm, _wp );
+
+                mt::vec2f screen;
+                camera->fromWorldToScreenPosition( wm, &screen );
+
+                mt::vec2f adaptSceen;
+                Helper::adaptWorldPosition( screen, &adaptSceen );
+
+                return adaptSceen;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_hasTextByKey( const ConstString & _key )
@@ -3835,6 +3847,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
 
         pybind::def_functor( _kernel, "getNodeScreenPosition", helperScriptMethod, &HelperScriptMethod::s_getNodeScreenPosition );
+        pybind::def_functor( _kernel, "fromWorldToScreenPosition", helperScriptMethod, &HelperScriptMethod::s_fromWorldToScreenPosition );
 
         pybind::def_functor( _kernel, "hasTextByKey", helperScriptMethod, &HelperScriptMethod::s_hasTextByKey );
         pybind::def_functor( _kernel, "getTextByKey", helperScriptMethod, &HelperScriptMethod::s_getTextByKey );

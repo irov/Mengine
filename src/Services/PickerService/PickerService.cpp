@@ -14,6 +14,7 @@
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/MixinDebug.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/ResolutionHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -891,7 +892,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f adapt_screen_position;
-        m_arrow->adaptScreenPosition_( mt::vec2f( _x, _y ), &adapt_screen_position );
+        Helper::adaptScreenPosition( mt::vec2f( _x, _y ), &adapt_screen_position );
 
         bool handle = false;
 
@@ -1046,7 +1047,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f adapt_screen_position;
-        m_arrow->adaptScreenPosition_( mt::vec2f( _x, _y ), &adapt_screen_position );
+        Helper::adaptScreenPosition( mt::vec2f( _x, _y ), &adapt_screen_position );
 
         for( const PickerStateDesc & desc : statesAux )
         {

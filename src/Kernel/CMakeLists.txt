@@ -805,6 +805,9 @@ Core
     BaseComponentHub.cpp
     
     ConfigHelper.h
+    
+    ResolutionHelper.cpp
+    ResolutionHelper.h
 )
 
 ADD_FILTER(

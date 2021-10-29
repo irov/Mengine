@@ -7,6 +7,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/ConfigHelper.h"
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #   include <crtdbg.h>
@@ -107,9 +108,11 @@ namespace Mengine
         int32_t crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
 #endif
 
+        bool Debug_Pybind = CONFIG_VALUE( "Debug", "Pybind", MENGINE_DEBUG_VALUE( true, false ) );
+
         pybind::allocator_interface * allocator = Helper::newT<Detail::MyPythonAllocator>();
 
-        pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, MENGINE_DEBUG_VALUE( true, false ), false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, Debug_Pybind, false, true );
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         _CrtSetReportMode( _CRT_WARN, crt_warn );

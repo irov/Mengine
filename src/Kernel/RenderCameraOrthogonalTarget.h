@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class RenderCameraOrthogonalTarget
         : public Node
         , protected BaseUpdation

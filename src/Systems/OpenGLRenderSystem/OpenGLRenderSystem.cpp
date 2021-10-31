@@ -285,10 +285,17 @@ namespace Mengine
 
         m_viewport = _viewport;
 
+        float windowHeight = m_windowResolution.getHeightF();
+
+        float viewportWidth = m_viewport.getWidth();
+        float viewportHeight = m_viewport.getHeight();
+
+        float correct_y = windowHeight - m_viewport.begin.y - viewportHeight;
+
         GLint x = static_cast<GLint>(m_viewport.begin.x + 0.5f);
-        GLint y = static_cast<GLint>(m_viewport.getHeight() - m_viewport.end.y + 0.5f);
-        GLsizei w = static_cast<GLsizei>(m_viewport.getWidth() + 0.5f);
-        GLsizei h = static_cast<GLsizei>(m_viewport.getHeight() + 0.5f);
+        GLint y = static_cast<GLint>(correct_y + 0.5f);
+        GLsizei w = static_cast<GLsizei>(viewportWidth + 0.5f);
+        GLsizei h = static_cast<GLsizei>(viewportHeight + 0.5f);
 
         GLCALL( glViewport, (x, y, w, h) );
     }

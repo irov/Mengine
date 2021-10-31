@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class RenderCamera
         : public Node
         , public Observable
@@ -157,4 +158,5 @@ namespace Mengine
         m_invalidateProjectionMatrix = true;
         m_invalidateViewProjectionMatrix = true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class RenderCameraProxy
         : public Factorable
         , public RenderCameraInterface
@@ -72,4 +73,5 @@ namespace Mengine
     {
         return m_viewProjectionMatrixInv;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

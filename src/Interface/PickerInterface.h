@@ -26,6 +26,7 @@ namespace Mengine
 
     public:
         virtual void setRelationPicker( PickerInterface * _relationPicker ) = 0;
+        virtual void setRelationPickerFront( PickerInterface * _relationPicker ) = 0;
         virtual void removeRelationPicker() = 0;
         virtual PickerInterface * getRelationPicker() const = 0;
 

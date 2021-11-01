@@ -16,6 +16,7 @@ namespace Mengine
 
     public:
         void setRelationPicker( PickerInterface * _relationPicker ) override;
+        void setRelationPickerFront( PickerInterface * _relationPicker ) override;
         void removeRelationPicker() override;
         MENGINE_INLINE BasePicker * getRelationPicker() const override;
 

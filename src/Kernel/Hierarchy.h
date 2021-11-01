@@ -10,6 +10,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum class EHierarchyInsert
+    {
+        EHI_BACK,
+        EHI_FRONT,
+        EHI_UNKNOWN,
+    };
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveSlugListSize<Node> IntrusiveSlugListHierarchyChild;
@@ -60,10 +67,10 @@ namespace Mengine
     protected:
         void removeChild_( const NodePtr & _node );
         void removeParent_();
-        void setParent_( Node * _parent );
+        void setParent_( Node * _parent, EHierarchyInsert _hint );
 
     protected:
-        void addChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _node, bool _end );
+        void addChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _node, EHierarchyInsert _hint );
 
     protected:
         void insertChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _node );
@@ -82,10 +89,10 @@ namespace Mengine
         bool foreachChildrenReverseBreak( const LambdaHierarchyBreak & _lambda ) const;
 
     protected:
-        virtual void _hierarchySetParent( Node * _newParent ) = 0;
+        virtual void _hierarchySetParent( Node * _newParent, EHierarchyInsert _hint ) = 0;
         virtual void _hierarchyRemoveParent( Node * _oldParent ) = 0;
         virtual void _hierarchyChangeParent( Node * _oldParent, Node * _newParent ) = 0;
-        virtual void _hierarchyRefreshChild( const NodePtr & _hierarchy ) = 0;
+        virtual void _hierarchyRefreshChild( const NodePtr & _hierarchy, EHierarchyInsert _hint ) = 0;
         virtual void _hierarchyAddChild( const NodePtr & _hierarchy ) = 0;
         virtual void _hierarchyRemoveChild( const NodePtr & _hierarchy ) = 0;
 

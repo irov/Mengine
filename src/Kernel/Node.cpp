@@ -272,7 +272,95 @@ namespace Mengine
         m_state &= ~EN_STATE_ENABLE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::removeRelationRender_()
+    void Node::addTransformationRelation_( Node * _parent, EHierarchyInsert _hint )
+    {
+        MENGINE_UNUSED( _hint );
+
+        TransformationInterface * transformation = this->getTransformation();
+
+        if( transformation != nullptr )
+        {
+            TransformationInterface * newParentTransformation = _parent->getTransformation();
+
+            transformation->setRelationTransformation( newParentTransformation );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::refreshTransformationRelation_( EHierarchyInsert _hint )
+    {
+        MENGINE_UNUSED( _hint );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::removeTransformationRelation_()
+    {
+        TransformationInterface * transformation = this->getTransformation();
+
+        if( transformation != nullptr )
+        {
+            transformation->removeRelationTransformation();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::addRenderRelation_( Node * _parent, EHierarchyInsert _hint )
+    {
+        if( _hint != Mengine::EHierarchyInsert::EHI_UNKNOWN )
+        {
+            RenderInterface * renderSelf = this->getRender();
+            RenderInterface * renderParent = _parent->getRender();
+
+            if( renderSelf != nullptr && renderParent != nullptr )
+            {
+                switch( _hint )
+                {
+                case Mengine::EHierarchyInsert::EHI_BACK:
+                    renderSelf->setRelationRender( renderParent );
+                    break;
+                case Mengine::EHierarchyInsert::EHI_FRONT:
+                    renderSelf->setRelationRenderFront( renderParent );
+                    break;
+                default:
+                    break;
+                }
+
+                return;
+            }
+        }
+
+        Node * nodeRenderRelative;
+        RenderInterface * renderRelative = Helper::getNodeRenderInheritance( _parent, &nodeRenderRelative );
+
+        if( renderRelative != nullptr )
+        {
+            renderRelative->clearRenderChildren();
+
+            nodeRenderRelative->foreachRenderCloseChildren_( [renderRelative]( RenderInterface * _render )
+            {
+                _render->setRelationRender( renderRelative );
+            } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::refreshRenderRelation_( EHierarchyInsert _hint )
+    {
+        MENGINE_UNUSED( _hint );
+
+        Node * nodeRenderRelative;
+        RenderInterface * renderRelative = Helper::getNodeRenderInheritance( this, &nodeRenderRelative );
+
+        if( renderRelative != nullptr )
+        {
+            renderRelative->clearRenderChildren();
+
+            nodeRenderRelative->foreachRenderCloseChildren_( [renderRelative]( RenderInterface * _render )
+            {
+                _render->setRelationRender( renderRelative );
+            } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::removeRenderRelation_()
     {
         RenderInterface * render = this->getRender();
 
@@ -294,24 +382,31 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::refreshRenderRelation_( Node * _parent )
+    void Node::addPickerRelation_( Node * _parent, EHierarchyInsert _hint )
     {
-        Node * nodeRenderParent;
-        RenderInterface * renderParent = Helper::getNodeRenderInheritance( _parent, &nodeRenderParent );
-
-        if( renderParent != nullptr )
+        if( _hint != Mengine::EHierarchyInsert::EHI_UNKNOWN )
         {
-            renderParent->clearRenderChildren();
+            PickerInterface * pickerSelf = this->getPicker();
+            PickerInterface * pickerParent = _parent->getPicker();
 
-            nodeRenderParent->foreachRenderCloseChildren_( [renderParent]( RenderInterface * _render )
+            if( pickerSelf != nullptr && pickerParent != nullptr )
             {
-                _render->setRelationRender( renderParent );
-            } );
+                switch( _hint )
+                {
+                case Mengine::EHierarchyInsert::EHI_BACK:
+                    pickerSelf->setRelationPicker( pickerParent );
+                    break;
+                case Mengine::EHierarchyInsert::EHI_FRONT:
+                    pickerSelf->setRelationPickerFront( pickerParent );
+                    break;
+                default:
+                    break;
+                }
+
+                return;
+            }
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::refreshPickerRelation_( Node * _parent )
-    {
+
         Node * nodePickerParent;
         PickerInterface * pickerParent = Helper::getNodePickerInheritance( _parent, &nodePickerParent );
 
@@ -326,10 +421,49 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::refreshPickerRelation_( EHierarchyInsert _hint )
+    {
+        MENGINE_UNUSED( _hint );
+
+        Node * nodePickerParent;
+        PickerInterface * pickerParent = Helper::getNodePickerInheritance( this, &nodePickerParent );
+
+        if( pickerParent != nullptr )
+        {
+            pickerParent->clearPickerChildren();
+
+            nodePickerParent->foreachPickerCloseChildren_( [pickerParent]( PickerInterface * _picker )
+            {
+                _picker->setRelationPicker( pickerParent );
+            } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::removePickerRelation_()
+    {
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            picker->removeRelationPicker();
+        }
+        else
+        {
+            Node * parent = this->getParent();
+
+            if( Helper::hasNodePickerInheritance( parent ) == true )
+            {
+                this->foreachPickerCloseChildren_( []( PickerInterface * _childPicker )
+                {
+                    _childPicker->removeRelationPicker();
+                } );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     NodePtr Node::findUniqueChild( UniqueId _uniqueIdentity ) const
     {
         NodePtr found;
-
         this->foreachChildrenUnslugBreak( [&found, _uniqueIdentity]( const NodePtr & _child )
         {
             UniqueId childUID = _child->getUniqueIdentity();
@@ -379,28 +513,6 @@ namespace Mengine
                 _child->foreachRenderReverseCloseChildren_( _lambda );
             }
         } );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::removeRelationPicker_()
-    {
-        PickerInterface * picker = this->getPicker();
-
-        if( picker != nullptr )
-        {
-            picker->removeRelationPicker();
-        }
-        else
-        {
-            Node * parent = this->getParent();
-
-            if( Helper::hasNodePickerInheritance( parent ) == true )
-            {
-                this->foreachPickerCloseChildren_( []( PickerInterface * _childPicker )
-                {
-                    _childPicker->removeRelationPicker();
-                } );
-            }
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda )
@@ -613,19 +725,11 @@ namespace Mengine
         this->deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_hierarchySetParent( Node * _newParent )
+    void Node::_hierarchySetParent( Node * _newParent, EHierarchyInsert _hint )
     {
-        TransformationInterface * transformation = this->getTransformation();
-
-        if( transformation != nullptr )
-        {
-            TransformationInterface * newParentTransformation = _newParent->getTransformation();
-
-            transformation->setRelationTransformation( newParentTransformation );
-        }
-
-        this->refreshRenderRelation_( _newParent );
-        this->refreshPickerRelation_( _newParent );
+        this->addTransformationRelation_( _newParent, _hint );
+        this->addRenderRelation_( _newParent, _hint );
+        this->addPickerRelation_( _newParent, _hint );
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -641,23 +745,18 @@ namespace Mengine
     {
         MENGINE_UNUSED( _oldParent );
 
-        TransformationInterface * transformation = this->getTransformation();
-
-        if( transformation != nullptr )
-        {
-            transformation->removeRelationTransformation();
-        }
-
-        this->removeRelationRender_();
-        this->removeRelationPicker_();
+        this->removeTransformationRelation_();
+        this->removeRenderRelation_();
+        this->removePickerRelation_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_hierarchyRefreshChild( const NodePtr & _node )
+    void Node::_hierarchyRefreshChild( const NodePtr & _node, EHierarchyInsert _hint )
     {
         MENGINE_UNUSED( _node );
 
-        this->refreshRenderRelation_( this );
-        this->refreshPickerRelation_( this );
+        this->refreshTransformationRelation_( _hint );
+        this->refreshRenderRelation_( _hint );
+        this->refreshPickerRelation_( _hint );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_hierarchyChangeParent( Node * _oldParent, Node * _newParent )

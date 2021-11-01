@@ -22,6 +22,7 @@ namespace Mengine
 
     public:
         void setRelationRender( RenderInterface * _relationRender ) override;
+        void setRelationRenderFront( RenderInterface * _relationRender ) override;
         void removeRelationRender() override;
         MENGINE_INLINE BaseRender * getRelationRender() const override;
 
@@ -59,6 +60,7 @@ namespace Mengine
 
     protected:
         void addRelationRenderChildrenBack_( BaseRender * _childRender );
+        void addRelationRenderChildrenFront_( BaseRender * _childRender );
         void removeRelationRenderChildren_( BaseRender * _childRender );
 
     public:

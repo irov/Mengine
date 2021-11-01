@@ -53,6 +53,31 @@ namespace Mengine
         this->invalidateRendering();
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRelationRenderFront( RenderInterface * _relationRender )
+    {
+        MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
+        MENGINE_ASSERTION( _relationRender != this, "set this relation" );
+
+        if( m_extraRelationRender != nullptr )
+        {
+            m_relationRender = static_cast<BaseRender *>(_relationRender);
+
+            return;
+        }
+
+        if( m_relationRender != nullptr )
+        {
+            m_relationRender->removeRelationRenderChildren_( this );
+        }
+
+        m_relationRender = static_cast<BaseRender *>(_relationRender);
+        m_relationRender->addRelationRenderChildrenFront_( this );
+
+        this->invalidateColor();
+
+        this->invalidateRendering();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRender()
     {
         if( m_extraRelationRender != nullptr )
@@ -210,6 +235,11 @@ namespace Mengine
     void BaseRender::addRelationRenderChildrenBack_( BaseRender * _childRender )
     {
         m_renderChildren.push_back( _childRender );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::addRelationRenderChildrenFront_( BaseRender * _childRender )
+    {
+        m_renderChildren.insert( m_renderChildren.begin(), _childRender );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRenderChildren_( BaseRender * _childRender )

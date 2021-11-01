@@ -37,6 +37,20 @@ namespace Mengine
         m_relationPicker->addRelationPickerChildrenBack_( this );
     }
     //////////////////////////////////////////////////////////////////////////
+    void BasePicker::setRelationPickerFront( PickerInterface * _relationPicker )
+    {
+        MENGINE_ASSERTION( _relationPicker != nullptr, "set nullptr relation" );
+        MENGINE_ASSERTION( _relationPicker != this, "set this relation" );
+
+        if( m_relationPicker != nullptr )
+        {
+            m_relationPicker->removeRelationPickerChildren_( this );
+        }
+
+        m_relationPicker = static_cast<BasePicker *>(_relationPicker);
+        m_relationPicker->addRelationPickerChildrenFront_( this );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BasePicker::removeRelationPicker()
     {
         if( m_relationPicker == nullptr )

@@ -27,7 +27,7 @@ namespace Mengine
             , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
-        this->addChild_( m_children.end(), _node, true );
+        this->addChild_( m_children.end(), _node, EHierarchyInsert::EHI_BACK );
     }
     //////////////////////////////////////////////////////////////////////////
     void Hierarchy::addChildFront( const NodePtr & _node )
@@ -40,7 +40,9 @@ namespace Mengine
             , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
-        this->addChild_( m_children.begin(), _node, m_children.empty() );
+        EHierarchyInsert hint = m_children.empty() == true ? EHierarchyInsert::EHI_BACK : EHierarchyInsert::EHI_FRONT;
+
+        this->addChild_( m_children.begin(), _node, hint );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Hierarchy::addChildAfter( const NodePtr & _node, const NodePtr & _after )
@@ -65,12 +67,12 @@ namespace Mengine
 
         IntrusiveSlugListHierarchyChild::iterator it_after( NodePtr::from( _after ) );
 
-        this->addChild_( it_after, _node, false );
+        this->addChild_( it_after, _node, EHierarchyInsert::EHI_UNKNOWN );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Hierarchy::addChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _child, bool _end )
+    void Hierarchy::addChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _child, EHierarchyInsert _hint )
     {
         IntrusivePtrScope ankh( this );
 
@@ -78,7 +80,7 @@ namespace Mengine
 
         if( child_parent == this )
         {
-            if( _end == false )
+            if( _hint != EHierarchyInsert::EHI_BACK )
             {
                 const NodePtr & insert_hierarchy = *_insert;
 
@@ -92,7 +94,7 @@ namespace Mengine
 
             this->insertChild_( _insert, _child );
 
-            this->_hierarchyRefreshChild( _child );
+            this->_hierarchyRefreshChild( _child, _hint );
         }
         else
         {
@@ -105,7 +107,7 @@ namespace Mengine
 
             Node * parentNode = static_cast<Node *>(this);
 
-            _child->setParent_( parentNode );
+            _child->setParent_( parentNode, _hint );
         }
 
         const Node * self = static_cast<const Node *>(this);
@@ -396,9 +398,9 @@ namespace Mengine
         this->_hierarchyChangeParent( oldparent, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Hierarchy::setParent_( Node * _parent )
+    void Hierarchy::setParent_( Node * _parent, EHierarchyInsert _hint )
     {
-        this->_hierarchySetParent( _parent );
+        this->_hierarchySetParent( _parent, _hint );
 
         Node * oldparent = m_parent;
         m_parent = _parent;

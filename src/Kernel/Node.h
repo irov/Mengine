@@ -61,8 +61,14 @@ namespace Mengine
         NodePtr findUniqueChild( UniqueId _uniqueIdentity ) const;
 
     protected:
-        void refreshRenderRelation_( Node * _parent );
-        void removeRelationRender_();
+        void addTransformationRelation_( Node * _parent, EHierarchyInsert _hint );
+        void refreshTransformationRelation_( EHierarchyInsert _hint );
+        void removeTransformationRelation_();
+
+    protected:
+        void addRenderRelation_( Node * _parent, EHierarchyInsert _hint );
+        void refreshRenderRelation_( EHierarchyInsert _hint );
+        void removeRenderRelation_();
 
     protected:
         typedef const Lambda<void( RenderInterface * )> LambdaRenderCloseChildren;
@@ -70,8 +76,9 @@ namespace Mengine
         void foreachRenderReverseCloseChildren_( const LambdaRenderCloseChildren & _lambda );
 
     protected:
-        void refreshPickerRelation_( Node * _parent );
-        void removeRelationPicker_();
+        void addPickerRelation_( Node * _parent, EHierarchyInsert _hint );
+        void refreshPickerRelation_( EHierarchyInsert _hint );
+        void removePickerRelation_();
 
     protected:
         typedef const Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
@@ -136,10 +143,10 @@ namespace Mengine
         virtual void _freeze( bool _value );
 
     public:
-        void _hierarchySetParent( Node * _newParent ) override;
+        void _hierarchySetParent( Node * _newParent, EHierarchyInsert _hint ) override;
         void _hierarchyRemoveParent( Node * _oldParent ) override;
         void _hierarchyChangeParent( Node * _oldParent, Node * _newParent ) override;
-        void _hierarchyRefreshChild( const NodePtr & _node ) override;
+        void _hierarchyRefreshChild( const NodePtr & _node, EHierarchyInsert _hint ) override;
         void _hierarchyAddChild( const NodePtr & _node ) override;
         void _hierarchyRemoveChild( const NodePtr & _node ) override;
 

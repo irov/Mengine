@@ -30,6 +30,7 @@ namespace Mengine
 
     public:
         void run() override;
+        void interruption() override;
         void stop() override;
 
     public:

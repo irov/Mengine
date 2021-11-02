@@ -1505,6 +1505,12 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP );
         }
 
+        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        {
+            GAME_SERVICE()
+                ->interruption();
+        }
+
         SERVICE_FINALIZE( SceneService );
 
         if( SERVICE_EXIST( GameServiceInterface ) == true )

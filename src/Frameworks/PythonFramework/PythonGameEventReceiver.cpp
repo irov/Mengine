@@ -96,6 +96,11 @@ namespace Mengine
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
+    void PythonGameEventReceiver::onGameInterruption()
+    {
+        m_cb.call();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameStop()
     {
         m_cb.call();

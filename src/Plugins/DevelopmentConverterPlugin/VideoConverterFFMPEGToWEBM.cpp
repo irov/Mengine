@@ -44,7 +44,7 @@ namespace Mengine
         String full_output = folderPath.c_str();
         full_output += m_options.outputFilePath.c_str();
 
-        String buffer = "-loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 -max_muxing_queue_size 1024 \"" + full_output + "\"";
+        String buffer = "-loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 8 -max_muxing_queue_size 1024 \"" + full_output + "\"";
 
         LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()

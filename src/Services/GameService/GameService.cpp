@@ -428,6 +428,14 @@ namespace Mengine
             ->onGameRun();
     }
     //////////////////////////////////////////////////////////////////////////
+    void GameService::interruption()
+    {
+        LOGGER_MESSAGE( "Interruption game" );
+
+        EVENTABLE_METHOD( EVENT_GAME_INTERRUPTION )
+            ->onGameInterruption();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void GameService::stop()
     {
         LOGGER_MESSAGE( "Stop game" );

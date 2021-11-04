@@ -1,4 +1,5 @@
-#include "SecureValue.h"
+#include "SecureUnsignedValue.h"
+
 #include "CRC32.h"
 
 #include "Config/StdIO.h"
@@ -9,17 +10,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SecureValue::SecureValue()
+    SecureUnsignedValue::SecureUnsignedValue()
         : m_value( 0 )
         , m_hash( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SecureValue::~SecureValue()
+    SecureUnsignedValue::~SecureUnsignedValue()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureValue::setUnprotectedValue( uint32_t _value )
+    void SecureUnsignedValue::setUnprotectedValue( uint32_t _value )
     {
         uint32_t hash = Helper::makeCRC32Pod( _value );
         m_hash = hash;
@@ -28,7 +29,7 @@ namespace Mengine
         MENGINE_SPRINTF( m_buffer, "%x%x", m_value, hash );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::getUnprotectedValue( uint32_t * const _value ) const
+    bool SecureUnsignedValue::getUnprotectedValue( uint32_t * const _value ) const
     {
         uint32_t hash = Helper::makeCRC32Pod( m_value ^ m_hash );
 
@@ -52,7 +53,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::setupSecureValue( const SecureValuePtr & _setup )
+    bool SecureUnsignedValue::setupSecureValue( const SecureUnsignedValuePtr & _setup )
     {
         uint32_t setup_unprotected_value;
         if( _setup->getUnprotectedValue( &setup_unprotected_value ) == false )
@@ -76,7 +77,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::additiveSecureValue( const SecureValuePtr & _add )
+    bool SecureUnsignedValue::additiveSecureValue( const SecureUnsignedValuePtr & _add )
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )
@@ -106,7 +107,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::substractSecureValue( const SecureValuePtr & _sub )
+    bool SecureUnsignedValue::substractSecureValue( const SecureUnsignedValuePtr & _sub )
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )
@@ -136,7 +137,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::additive2SecureValue( const SecureValuePtr & _add, const SecureValuePtr & _pow )
+    bool SecureUnsignedValue::additive2SecureValue( const SecureUnsignedValuePtr & _add, const SecureUnsignedValuePtr & _pow )
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )
@@ -172,7 +173,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::cmpSecureValue( const SecureValuePtr & _value, int32_t * const _result ) const
+    bool SecureUnsignedValue::cmpSecureValue( const SecureUnsignedValuePtr & _value, int32_t * const _result ) const
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )

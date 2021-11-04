@@ -8,29 +8,29 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class SecureValue> SecureValuePtr;
+    typedef IntrusivePtr<class SecureUnsignedValue> SecureUnsignedValuePtr;
     //////////////////////////////////////////////////////////////////////////
-    class SecureValue
+    class SecureUnsignedValue
         : public Factorable
     {
-        DECLARE_FACTORABLE( SecureValue );
+        DECLARE_FACTORABLE( SecureUnsignedValue );
 
     public:
-        SecureValue();
-        ~SecureValue() override;
+        SecureUnsignedValue();
+        ~SecureUnsignedValue() override;
 
     public:
         void setUnprotectedValue( uint32_t _value );
         bool getUnprotectedValue( uint32_t * const _value ) const;
 
     public:
-        bool setupSecureValue( const SecureValuePtr & _value );
-        bool additiveSecureValue( const SecureValuePtr & _add );
-        bool substractSecureValue( const SecureValuePtr & _sub );
+        bool setupSecureValue( const SecureUnsignedValuePtr & _value );
+        bool additiveSecureValue( const SecureUnsignedValuePtr & _add );
+        bool substractSecureValue( const SecureUnsignedValuePtr & _sub );
 
-        bool additive2SecureValue( const SecureValuePtr & _add, const SecureValuePtr & _pow );
+        bool additive2SecureValue( const SecureUnsignedValuePtr & _add, const SecureUnsignedValuePtr & _pow );
 
-        bool cmpSecureValue( const SecureValuePtr & _value, int32_t * const _result ) const;
+        bool cmpSecureValue( const SecureUnsignedValuePtr & _value, int32_t * const _result ) const;
 
     public:
         uint32_t m_value;
@@ -38,6 +38,6 @@ namespace Mengine
         Char m_buffer[20] = {'\0'};
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SecureValue> SecureValuePtr;
+    typedef IntrusivePtr<SecureUnsignedValue> SecureUnsignedValuePtr;
     //////////////////////////////////////////////////////////////////////////
 }

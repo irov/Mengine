@@ -746,8 +746,10 @@ Core
     Ravingcode.h
     Ravingcode.cpp
     
-    SecureValue.h
-    SecureValue.cpp
+    SecureUnsignedValue.h
+    SecureUnsignedValue.cpp
+    SecureStringValue.h
+    SecureStringValue.cpp
     
     Stringalized.h
     Stringalized.cpp

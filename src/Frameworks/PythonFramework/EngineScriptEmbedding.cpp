@@ -126,7 +126,8 @@
 #include "Kernel/Polygon.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
-#include "Kernel/SecureValue.h"
+#include "Kernel/SecureUnsignedValue.h"
+#include "Kernel/SecureStringValue.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -2909,7 +2910,7 @@ namespace Mengine
                 affectorHub->stopAffector( id );
             }
             //////////////////////////////////////////////////////////////////////////
-            pybind::tuple s_SecureValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureValue * _secure )
+            pybind::tuple s_SecureUnsignedValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureUnsignedValue * _secure )
             {
                 uint32_t unprotected_value;
                 if( _secure->getUnprotectedValue( &unprotected_value ) == false )
@@ -2920,10 +2921,33 @@ namespace Mengine
                 return pybind::make_tuple_t( _kernel, true, unprotected_value );
             }
             //////////////////////////////////////////////////////////////////////////
-            SecureValuePtr s_makeSecureValue( uint32_t _value )
+            SecureUnsignedValuePtr s_makeSecureUnsignedValue( uint32_t _value )
             {
-                SecureValuePtr secureValue = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+                SecureUnsignedValuePtr secureValue = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( secureValue );
+
+                secureValue->setUnprotectedValue( _value );
+
+                return secureValue;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::tuple s_SecureStringValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureStringValue * _secure )
+            {
+                String unprotected_value;
+                if( _secure->getUnprotectedValue( &unprotected_value ) == false )
+                {
+                    return pybind::make_tuple_t( _kernel, false, "" );
+                }
+
+                return pybind::make_tuple_t( _kernel, true, unprotected_value );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            SecureStringValuePtr s_makeSecureStringValue( const String & _value )
+            {
+                SecureStringValuePtr secureValue = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue );
 
@@ -4356,18 +4380,26 @@ namespace Mengine
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
             ;
 
-        pybind::interface_<SecureValue, pybind::bases<Mixin>>( _kernel, "SecureValue" )
-            .def( "setupSecureValue", &SecureValue::setupSecureValue )
-            .def( "setUnprotectedValue", &SecureValue::setUnprotectedValue )
-            .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureValue_getUnprotectedValue )
-            .def( "additiveSecureValue", &SecureValue::additiveSecureValue )
-            .def( "substractSecureValue", &SecureValue::substractSecureValue )
-            .def( "additive2SecureValue", &SecureValue::additive2SecureValue )
-            .def( "cmpSecureValue", &SecureValue::cmpSecureValue )
+        pybind::interface_<SecureUnsignedValue, pybind::bases<Mixin>>( _kernel, "SecureUnsignedValue" )
+            .def( "setupSecureValue", &SecureUnsignedValue::setupSecureValue )
+            .def( "setUnprotectedValue", &SecureUnsignedValue::setUnprotectedValue )
+            .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureUnsignedValue_getUnprotectedValue )
+            .def( "additiveSecureValue", &SecureUnsignedValue::additiveSecureValue )
+            .def( "substractSecureValue", &SecureUnsignedValue::substractSecureValue )
+            .def( "additive2SecureValue", &SecureUnsignedValue::additive2SecureValue )
+            .def( "cmpSecureValue", &SecureUnsignedValue::cmpSecureValue )
             ;
 
-        pybind::def_functor( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureValue );
+        pybind::def_functor_deprecated( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue, "use makeSecureUnsignedValue" );
+        pybind::def_functor( _kernel, "makeSecureUnsignedValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue );
 
+        pybind::interface_<SecureStringValue, pybind::bases<Mixin>>( _kernel, "SecureStringValue" )
+            .def( "setUnprotectedValue", &SecureStringValue::setUnprotectedValue )
+            .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureStringValue_getUnprotectedValue )
+            .def( "cmpSecureValue", &SecureStringValue::cmpSecureValue )
+            ;
+
+        pybind::def_functor( _kernel, "makeSecureStringValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureStringValue );
 
         pybind::interface_<PythonFileLogger, pybind::bases<Mixin>>( _kernel, "PythonFileLogger" )
             .def_call( &PythonFileLogger::write )

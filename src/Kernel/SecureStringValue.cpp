@@ -31,7 +31,7 @@ namespace Mengine
         };
 
         hash32 = Helper::makeCRC32( value_str, value_size );
-        
+
         m_value.resize( value_size );
 
         for( String::size_type index = 0; index != value_size; ++index )
@@ -65,14 +65,18 @@ namespace Mengine
             uint8_t hash8[4];
         };
 
-        hash32 = m_hash;       
+        hash32 = m_hash;
 
         _value->resize( value_size );
 
+        Char * value_data = _value->data();
+
         for( String::size_type index = 0; index != value_size; ++index )
         {
-            _value[index] = m_value[index] ^ hash8[index % 4];
+            value_data[index] = m_value[index] ^ hash8[index % 4];
         }
+
+        value_data[value_size] = '\0';
 
         const Char * value_str = _value->c_str();
 
@@ -84,7 +88,7 @@ namespace Mengine
         }
 
         return true;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool SecureStringValue::cmpSecureValue( const SecureStringValuePtr & _value, int32_t * const _result ) const
     {

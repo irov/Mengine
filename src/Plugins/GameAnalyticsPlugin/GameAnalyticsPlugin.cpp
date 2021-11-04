@@ -6,6 +6,7 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "GameAnalytics.h"
 
@@ -25,6 +26,39 @@ PLUGIN_FACTORY( GameAnalytics, Mengine::GameAnalyticsPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void logHandler( const char * _message, gameanalytics::EGALoggerMessageType _type )
+        {
+            ELoggerLevel level = LM_SILENT;
+
+            switch( _type )
+            {
+            case gameanalytics::LogError:
+                level = LM_ERROR;
+                break;
+            case gameanalytics::LogWarning:
+                level = LM_WARNING;
+                break;
+            case gameanalytics::LogInfo:
+                level = LM_INFO;
+                break;
+            case gameanalytics::LogDebug:
+                level = LM_DEBUG;
+                break;
+            default:
+                break;
+            }
+
+            size_t message_len = MENGINE_STRLEN( _message );
+
+            LOGGER_SERVICE()
+                ->logMessage( level, 0, LCOLOR_GREEN, _message, message_len );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     GameAnalyticsPlugin::GameAnalyticsPlugin()
     {
@@ -74,6 +108,8 @@ namespace Mengine
 
         MENGINE_STRCPY( m_gameKey, GameAnalytics_GameKey );
         MENGINE_STRCPY( m_gameSecret, GameAnalytics_GameSecret );
+
+        gameanalytics::GameAnalytics::configureCustomLogHandler( &Detail::logHandler );
 
         Char analyticsPath[MENGINE_MAX_PATH] = {'\0'};
 

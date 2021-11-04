@@ -50,4 +50,9 @@ namespace Mengine
         gameanalytics::GameAnalytics::addProgressionEvent( gameanalytics::EGAProgressionStatus::Fail, _name, "", "" );
     }
     //////////////////////////////////////////////////////////////////////////
+    void GameAnalyticsSystem::addDesignEvent( const Char * _event )
+    {
+        gameanalytics::GameAnalytics::addDesignEvent( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

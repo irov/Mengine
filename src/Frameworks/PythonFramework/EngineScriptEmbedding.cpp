@@ -2864,6 +2864,15 @@ namespace Mengine
                 }
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_analyticsDesignEvent( const Char * _event )
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->addDesignEvent( _event );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
             {
                 PythonValueFollowerLinearPtr follower = PROTOTYPE_SERVICE()
@@ -2921,6 +2930,17 @@ namespace Mengine
                 return pybind::make_tuple_t( _kernel, true, unprotected_value );
             }
             //////////////////////////////////////////////////////////////////////////
+            pybind::tuple s_SecureUnsignedValue_cmpSecureValue( pybind::kernel_interface * _kernel, const SecureUnsignedValue * _secure, const SecureUnsignedValuePtr & _test )
+            {
+                int32_t result;
+                if( _secure->cmpSecureValue( _test, &result ) == false )
+                {
+                    return pybind::make_tuple_t( _kernel, false, 0 );
+                }
+
+                return pybind::make_tuple_t( _kernel, true, result );
+            }
+            //////////////////////////////////////////////////////////////////////////
             SecureUnsignedValuePtr s_makeSecureUnsignedValue( uint32_t _value )
             {
                 SecureUnsignedValuePtr secureValue = PROTOTYPE_SERVICE()
@@ -2942,6 +2962,17 @@ namespace Mengine
                 }
 
                 return pybind::make_tuple_t( _kernel, true, unprotected_value );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::tuple s_SecureStringValue_cmpSecureValue( pybind::kernel_interface * _kernel, const SecureStringValue * _secure, const SecureStringValuePtr & _test )
+            {
+                int32_t result;
+                if( _secure->cmpSecureValue( _test, &result ) == false )
+                {
+                    return pybind::make_tuple_t( _kernel, false, 0 );
+                }
+
+                return pybind::make_tuple_t( _kernel, true, result );
             }
             //////////////////////////////////////////////////////////////////////////
             SecureStringValuePtr s_makeSecureStringValue( const String & _value )
@@ -3766,7 +3797,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 const Char * param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), "", & param_value) == false )
+                if( config->hasValue( "Params", _paramName.c_str(), "", &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }
@@ -4309,6 +4340,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "analitycsStartProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analitycsStartProgressionEvent );
         pybind::def_functor( _kernel, "analitycsCompleteProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCompleteProgressionEvent );
         pybind::def_functor( _kernel, "analitycsFailProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsFailProgressionEvent );
+        pybind::def_functor( _kernel, "analyticsDesignEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsDesignEvent );
 
         pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable>>( _kernel, "PythonValueFollower" )
             ;
@@ -4387,7 +4419,7 @@ namespace Mengine
             .def( "additiveSecureValue", &SecureUnsignedValue::additiveSecureValue )
             .def( "substractSecureValue", &SecureUnsignedValue::substractSecureValue )
             .def( "additive2SecureValue", &SecureUnsignedValue::additive2SecureValue )
-            .def( "cmpSecureValue", &SecureUnsignedValue::cmpSecureValue )
+            .def_proxy_static_kernel( "cmpSecureValue", nodeScriptMethod, &EngineScriptMethod::s_SecureUnsignedValue_cmpSecureValue )
             ;
 
         pybind::def_functor_deprecated( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue, "use makeSecureUnsignedValue" );
@@ -4396,7 +4428,7 @@ namespace Mengine
         pybind::interface_<SecureStringValue, pybind::bases<Mixin>>( _kernel, "SecureStringValue" )
             .def( "setUnprotectedValue", &SecureStringValue::setUnprotectedValue )
             .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureStringValue_getUnprotectedValue )
-            .def( "cmpSecureValue", &SecureStringValue::cmpSecureValue )
+            .def_proxy_static_kernel( "cmpSecureValue", nodeScriptMethod, &EngineScriptMethod::s_SecureStringValue_cmpSecureValue )
             ;
 
         pybind::def_functor( _kernel, "makeSecureStringValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureStringValue );

@@ -123,6 +123,10 @@ macro(GIT_CLONE NAME REPOSITORY)
     add_library(${NAME} STATIC IMPORTED)
     
     if(EXISTS ${THIRDPARTY_DIR}/${NAME})
-        execute_process(COMMAND ${GIT_EXECUTABLE} -C ${THIRDPARTY_DIR}/${NAME} reset --hard --recurse-submodule)
+        execute_process( COMMAND git -C ${THIRDPARTY_DIR}/${NAME} config --get remote.origin.url OUTPUT_VARIABLE THIRDPARTY_REMOTE_URL)
+        
+        if(REPOSITORY STREQUAL THIRDPARTY_REMOTE_URL)
+            execute_process(COMMAND ${GIT_EXECUTABLE} -C ${THIRDPARTY_DIR}/${NAME} reset --hard --recurse-submodule)
+        endif()
     endif()
 endmacro()

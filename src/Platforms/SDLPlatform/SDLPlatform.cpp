@@ -47,6 +47,7 @@ extern "C" {
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/RandomDevice.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -61,13 +62,20 @@ extern "C" {
 #   include <sysdir.h>
 #endif
 
-#include <cstdio>
 #include <clocale>
 #include <ctime>
 #include <iomanip>
 
 #include <sys/stat.h>
 
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_SETLOCALE_ENABLE
+#define MENGINE_SETLOCALE_ENABLE 1
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_SETLOCALE_VALUE
+#define MENGINE_SETLOCALE_VALUE "C"
+#endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DEVELOPMENT_USER_FOLDER_NAME
 #define MENGINE_DEVELOPMENT_USER_FOLDER_NAME "User"
@@ -563,7 +571,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
-        ::setlocale( LC_ALL, "C" );
+#if MENGINE_SETLOCALE_ENABLE
+        ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
+#endif
 
         SDL_version ver;
         SDL_GetVersion( &ver );
@@ -818,6 +828,12 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &SDLPlatform::notifyInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &SDLPlatform::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+
+        uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
+
+        LOGGER_MESSAGE_RELEASE( "Device Seed: %u"
+            , deviceSeed
+        );
 
         return true;
     }

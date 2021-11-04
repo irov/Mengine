@@ -40,10 +40,6 @@
 #define MENGINE_APPLICATION_INI_PATH "application.ini"
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_SETLOCALE
-#define MENGINE_SETLOCALE "C"
-#endif
-//////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );

@@ -571,14 +571,15 @@ if(MENGINE_TARGET_WINDOWS AND MENGINE_TOOLCHAIN_MSVC)
     endif()
 endif()
 
-if(MENGINE_DEPENDENCE_GAMEANALYTICS)
-    message("================gameanalytics================")
-    
-    SET(PLATFORM "win32-vc141-static" CACHE STRING "PLATFORM" FORCE)
-    SET(NO_SQLITE_SRC "NO" CACHE STRING "NO_SQLITE_SRC" FORCE)
-                
-    
-    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/gameanalytics/build/cmake/gameanalytics ${CMAKE_TEMP_DIR}/gameanalytics)
+if(MENGINE_TARGET_WINDOWS AND MENGINE_TOOLCHAIN_MSVC)
+    if(MENGINE_DEPENDENCE_GAMEANALYTICS)
+        message("================gameanalytics================")
+        
+        SET(PLATFORM "win32-vc141-static" CACHE STRING "PLATFORM" FORCE)
+        SET(NO_SQLITE_SRC "NO" CACHE STRING "NO_SQLITE_SRC" FORCE)
+        
+        ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/gameanalytics/build/cmake/gameanalytics ${CMAKE_TEMP_DIR}/gameanalytics)
+    endif()
 endif()
 
 if(MENGINE_DEPENDENCE_SDL2)

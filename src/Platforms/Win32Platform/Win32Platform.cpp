@@ -63,8 +63,12 @@
 #include <cerrno>
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_SETLOCALE
-#define MENGINE_SETLOCALE "C"
+#ifndef MENGINE_SETLOCALE_ENABLE
+#define MENGINE_SETLOCALE_ENABLE 1
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_SETLOCALE_VALUE
+#define MENGINE_SETLOCALE_VALUE "C"
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DEVELOPMENT_USER_FOLDER_NAME
@@ -113,7 +117,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
-        ::setlocale( LC_ALL, MENGINE_SETLOCALE );
+#if MENGINE_SETLOCALE_ENABLE
+        ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
+#endif
 
         HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
 

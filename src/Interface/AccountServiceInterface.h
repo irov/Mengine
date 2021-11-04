@@ -8,6 +8,10 @@
 
 #include "Kernel/ConstString.h"
 
+#ifndef MENGINE_ACCOUNT_UUID_SIZE
+#define MENGINE_ACCOUNT_UUID_SIZE 21
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -52,6 +56,9 @@ namespace Mengine
         virtual bool hasDefaultAccount() const = 0;
 
         virtual bool selectDefaultAccount() = 0;
+
+    public:
+        virtual void getGlobalUUID( Char * const _globalUUID ) = 0;
 
     public:
         virtual void setGlobalAccount( const ConstString & _accountID ) = 0;

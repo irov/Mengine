@@ -808,6 +808,9 @@ Core
     
     ResolutionHelper.cpp
     ResolutionHelper.h
+    
+    SHA1.cpp
+    SHA1.h
 )
 
 ADD_FILTER(

@@ -13,6 +13,8 @@
 #include "Interface/PluginInterface.h"
 #include "Interface/ServiceInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
@@ -35,10 +37,9 @@
 #include "Kernel/StringArguments.h"
 #include "Kernel/Win32Helper.h"
 #include "Kernel/ProfilerHelper.h"
-
-#include "Environment/Windows/WindowsIncluder.h"
-
+#include "Kernel/SHA1.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/RandomDevice.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -329,6 +330,12 @@ namespace Mengine
             }
         }
 #endif
+
+        uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
+
+        LOGGER_MESSAGE_RELEASE( "Device Seed: %u"
+            , deviceSeed
+        );
 
         return true;
     }

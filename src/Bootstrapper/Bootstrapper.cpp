@@ -317,6 +317,10 @@ PLUGIN_EXPORT( AndroidNativeLocalNotifications );
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
 PLUGIN_EXPORT( Optick );
 #endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
+PLUGIN_EXPORT( GameAnalytics );
+#endif
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -1083,6 +1087,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
+        MENGINE_ADD_PLUGIN( GameAnalytics, "initialize Game Analytics...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1617,6 +1625,8 @@ namespace Mengine
 
         if( m_loggerFile != nullptr )
         {
+            LOGGER_MESSAGE_RELEASE( "Finish log successful" );
+
             LOGGER_SERVICE()
                 ->unregisterLogger( m_loggerFile );
 

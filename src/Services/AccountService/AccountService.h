@@ -53,6 +53,9 @@ namespace Mengine
         bool selectDefaultAccount() override;
 
     public:
+        void getGlobalUUID( Char * const _globalUUID ) override;
+
+    public:
         void setGlobalAccount( const ConstString & _accountID ) override;
         const ConstString & getGlobalAccountID() const override;
 
@@ -79,6 +82,8 @@ namespace Mengine
         void unselectCurrentAccount_();
 
     protected:
+        Char m_globalUUID[MENGINE_ACCOUNT_UUID_SIZE] = {'\0'};
+
         AccountProviderInterfacePtr m_accountProvider;
 
         FileGroupInterfacePtr m_fileGroup;

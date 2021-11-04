@@ -27,6 +27,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
+#include "Interface/AnalyticsSystemInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
@@ -2817,6 +2818,51 @@ namespace Mengine
                 return wp_screen;
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_analitycsStartSession()
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->startSession();
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analitycsEndSession()
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->endSession();
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analitycsStartProgressionEvent( const Char * _name )
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->startProgressionEvent( _name );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsCompleteProgressionEvent( const Char * _name )
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->completeProgressionEvent( _name );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsFailProgressionEvent( const Char * _name )
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->failProgressionEvent( _name );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
             {
                 PythonValueFollowerLinearPtr follower = PROTOTYPE_SERVICE()
@@ -4232,6 +4278,13 @@ namespace Mengine
         pybind::def_functor( _kernel, "moduleMessage", nodeScriptMethod, &EngineScriptMethod::s_moduleMessage );
         pybind::def_functor( _kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
         pybind::def_functor( _kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
+
+
+        pybind::def_functor( _kernel, "analitycsStartSession", nodeScriptMethod, &EngineScriptMethod::s_analitycsStartSession );
+        pybind::def_functor( _kernel, "analitycsEndSession", nodeScriptMethod, &EngineScriptMethod::s_analitycsEndSession );
+        pybind::def_functor( _kernel, "analitycsStartProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analitycsStartProgressionEvent );
+        pybind::def_functor( _kernel, "analitycsCompleteProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCompleteProgressionEvent );
+        pybind::def_functor( _kernel, "analitycsFailProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsFailProgressionEvent );
 
         pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable>>( _kernel, "PythonValueFollower" )
             ;

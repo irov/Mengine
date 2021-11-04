@@ -9,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::MT19937Randomizer()
     {
-        uint32_t seed = Helper::generateRandomDeviceSeed();
+        uint32_t seed = Helper::generateRandomLocaleSeed();
 
         m_engineRandomize = std::mt19937{seed};
 

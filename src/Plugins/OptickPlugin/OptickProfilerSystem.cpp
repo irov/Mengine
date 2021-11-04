@@ -9,6 +9,7 @@
 #include "OptickCategoryProfiler.h"
 #include "OptickProfilerDescription.h"
 
+#include "Kernel/ArrayString.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionFactory.h"
@@ -102,14 +103,7 @@ namespace Mengine
         Optick::UnRegisterThread( false );
         Optick::StopCapture();
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
-
-        Char userPath[MENGINE_MAX_PATH] = {'\0'};
-        PLATFORM_SERVICE()
-            ->getUserPath( userPath );
-
-        String optPath;
+        ArrayString<256> optPath;
         optPath += "Optick";
         optPath += "_";
 
@@ -123,6 +117,9 @@ namespace Mengine
         optPath += ".opt";
 
         FilePath cs_optPath = Helper::stringizeFilePath( optPath );
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
         OutputStreamInterfacePtr outputFile = fileGroup->createOutputFile( MENGINE_DOCUMENT_FACTORABLE );
 

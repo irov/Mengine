@@ -131,7 +131,10 @@ namespace Mengine
                 if( j < totalsize ) data_u8[j++] = (triple >> 0 * 8) & 0xFF;
             }
 
-            *_outsize = totalsize;
+            if( _outsize != nullptr )
+            {
+                *_outsize = totalsize;
+            }
 
             return true;
         }

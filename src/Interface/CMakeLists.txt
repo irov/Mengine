@@ -130,6 +130,7 @@ src
     AffectorHubInterface.h
     DebuggerBoundingBoxInterface.h
     AnalyticsSystemInterface.h
+    SecureValueInterface.h
 )
 
 ADD_FILTER(

@@ -34,7 +34,6 @@ namespace Mengine
         void setUID( const AccountUID & _uid ) override;
         const AccountUID & getUID() const override;
 
-
     public:
         bool addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) override;
         bool changeSetting( const ConstString & _setting, const Char * _value ) override;

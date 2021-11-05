@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Kernel/Factorable.h"
-#include "Kernel/String.h"
+#include "Interface/SecureValueInterface.h"
 
 #include "Config/Char.h"
 
@@ -11,7 +10,7 @@ namespace Mengine
     typedef IntrusivePtr<class SecureStringValue> SecureStringValuePtr;
     //////////////////////////////////////////////////////////////////////////
     class SecureStringValue
-        : public Factorable
+        : public SecureValueInterface
     {
         DECLARE_FACTORABLE( SecureStringValue );
 
@@ -25,6 +24,10 @@ namespace Mengine
 
     public:
         bool cmpSecureValue( const SecureStringValuePtr & _value, int32_t * const _result ) const;
+
+    public:
+        void saveBase64( String * const _base64 ) const override;
+        void loadBase64( const String & _base64 ) override;
 
     public:
         String m_value;

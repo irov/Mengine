@@ -1,6 +1,13 @@
 #include "SecureUnsignedValue.h"
 
-#include "CRC32.h"
+#include "Interface/SecureServiceInterface.h"
+
+#include "Kernel/CRC32.h"
+#include "Kernel/Blobject.h"
+#include "Kernel/ContainerReader.h"
+#include "Kernel/ContainerWriter.h"
+#include "Kernel/Ravingcode.h"
+#include "Kernel/Base64.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"
@@ -190,6 +197,54 @@ namespace Mengine
         *_result = test_unprotected_value - base_unprotected_value;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SecureUnsignedValue::saveBase64( String * const _base64 ) const
+    {
+        Blobject blob;
+        ContainerWriter<Blobject> writer( blob );
+
+        writer.writePOD( m_hash );
+        writer.writePOD( m_value );
+        writer.writeBuffer( m_buffer, sizeof( Char ) * 20 );
+
+        HashType secureHash = SECURE_SERVICE()
+            ->getSecureHash();
+
+        uint32_t parrot = (uint32_t)secureHash;
+
+        Blobject blob_raving;
+        blob_raving.resize( blob.size() );
+
+        Helper::ravingcode( parrot, blob.data(), blob.size(), blob_raving.data() );
+
+        _base64->resize( blob.size() * 2 );
+
+        Helper::encodeBase64( blob_raving.data(), blob_raving.size(), true, _base64->data(), _base64->size(), nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SecureUnsignedValue::loadBase64( const String & _base64 )
+    {
+        Blobject blob_raving;
+        blob_raving.resize( _base64.size() );
+
+        Helper::decodeBase64( _base64.c_str(), _base64.size(), blob_raving.data(), blob_raving.size(), nullptr );
+
+        Blobject blob;
+        blob.resize( _base64.size() );
+
+        HashType secureHash = SECURE_SERVICE()
+            ->getSecureHash();
+
+        uint32_t parrot = (uint32_t)secureHash;
+
+        Helper::ravingcode( parrot, blob_raving.data(), blob_raving.size(), blob.data() );
+
+        ContainerReader<Blobject> reader( blob );
+
+        reader.readPOD( m_hash );
+        reader.readPOD( m_value );
+        reader.readBuffer( m_buffer, 20 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -1,6 +1,13 @@
 #include "SecureStringValue.h"
 
-#include "CRC32.h"
+#include "Interface/SecureServiceInterface.h"
+
+#include "Kernel/CRC32.h"
+#include "Kernel/Blobject.h"
+#include "Kernel/ContainerReader.h"
+#include "Kernel/ContainerWriter.h"
+#include "Kernel/Ravingcode.h"
+#include "Kernel/Base64.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"
@@ -107,6 +114,64 @@ namespace Mengine
         *_result = MENGINE_STRCMP( test_unprotected_value.c_str(), base_unprotected_value.c_str() );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SecureStringValue::saveBase64( String * const _base64 ) const
+    {
+        uint32_t value_size = (uint32_t)m_value.size();
+
+        Blobject blob;
+        ContainerWriter<Blobject> writer( blob );
+
+        writer.writePOD( m_hash );
+        writer.writePOD( value_size );
+        writer.writeBuffer( m_value.c_str(), m_value.size() );
+        writer.writeBuffer( m_buffer.c_str(), m_buffer.size() );
+
+        HashType secureHash = SECURE_SERVICE()
+            ->getSecureHash();
+
+        uint32_t parrot = (uint32_t)secureHash;
+        
+        Blobject blob_raving;
+        blob_raving.resize( blob.size() );
+
+        Helper::ravingcode( parrot, blob.data(), blob.size(), blob_raving.data() );
+
+        _base64->resize( blob.size() * 2 );
+
+        Helper::encodeBase64( blob_raving.data(), blob_raving.size(), true, _base64->data(), _base64->size(), nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SecureStringValue::loadBase64( const String & _base64 )
+    {
+        Blobject blob_raving;
+        blob_raving.resize( _base64.size() );
+
+        Helper::decodeBase64( _base64.c_str(), _base64.size(), blob_raving.data(), blob_raving.size(), nullptr );
+
+        Blobject blob;
+        blob.resize( _base64.size() );
+
+        HashType secureHash = SECURE_SERVICE()
+            ->getSecureHash();
+
+        uint32_t parrot = (uint32_t)secureHash;
+
+        Helper::ravingcode( parrot, blob_raving.data(), blob_raving.size(), blob.data() );
+
+        ContainerReader<Blobject> reader( blob );
+
+        reader.readPOD( m_hash );
+
+        uint32_t value_size;
+        reader.readPOD( value_size );
+
+        m_value.resize( value_size );
+        reader.readBuffer( m_value.data(), m_value.size() );
+
+        m_buffer.resize( value_size );
+        reader.readBuffer( m_buffer.data(), m_buffer.size() );        
     }
     //////////////////////////////////////////////////////////////////////////
 }

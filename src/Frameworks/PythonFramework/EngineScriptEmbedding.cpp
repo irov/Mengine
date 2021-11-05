@@ -2919,6 +2919,19 @@ namespace Mengine
                 affectorHub->stopAffector( id );
             }
             //////////////////////////////////////////////////////////////////////////
+            String s_SecureValueInterface_saveBase64( const SecureValueInterface * _secure )
+            {
+                String base64;
+                _secure->saveBase64( &base64 );
+
+                return base64;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_SecureValueInterface_loadBase64( SecureValueInterface * _secure, const String & _base64 )
+            {
+                _secure->loadBase64( _base64 );
+            }
+            //////////////////////////////////////////////////////////////////////////
             pybind::tuple s_SecureUnsignedValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureUnsignedValue * _secure )
             {
                 uint32_t unprotected_value;
@@ -4412,7 +4425,12 @@ namespace Mengine
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
             ;
 
-        pybind::interface_<SecureUnsignedValue, pybind::bases<Mixin>>( _kernel, "SecureUnsignedValue" )
+        pybind::interface_<SecureValueInterface, pybind::bases<Mixin>>( _kernel, "SecureValueInterface" )
+            .def_proxy_static( "saveBase64", nodeScriptMethod, &EngineScriptMethod::s_SecureValueInterface_saveBase64 )
+            .def_proxy_static( "loadBase64", nodeScriptMethod, &EngineScriptMethod::s_SecureValueInterface_loadBase64 )
+            ;
+
+        pybind::interface_<SecureUnsignedValue, pybind::bases<SecureValueInterface>>( _kernel, "SecureUnsignedValue" )
             .def( "setupSecureValue", &SecureUnsignedValue::setupSecureValue )
             .def( "setUnprotectedValue", &SecureUnsignedValue::setUnprotectedValue )
             .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureUnsignedValue_getUnprotectedValue )
@@ -4425,7 +4443,7 @@ namespace Mengine
         pybind::def_functor_deprecated( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue, "use makeSecureUnsignedValue" );
         pybind::def_functor( _kernel, "makeSecureUnsignedValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue );
 
-        pybind::interface_<SecureStringValue, pybind::bases<Mixin>>( _kernel, "SecureStringValue" )
+        pybind::interface_<SecureStringValue, pybind::bases<SecureValueInterface>>( _kernel, "SecureStringValue" )
             .def( "setUnprotectedValue", &SecureStringValue::setUnprotectedValue )
             .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureStringValue_getUnprotectedValue )
             .def_proxy_static_kernel( "cmpSecureValue", nodeScriptMethod, &EngineScriptMethod::s_SecureStringValue_cmpSecureValue )

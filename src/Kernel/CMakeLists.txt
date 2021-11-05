@@ -697,6 +697,7 @@ Core
     
     VectorAuxScope.h
     
+    ContainerReader.h
     ContainerWriter.h
     
     BezierHelper.h

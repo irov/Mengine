@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Factorable.h"
+#include "Interface/SecureValueInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
@@ -11,7 +11,7 @@ namespace Mengine
     typedef IntrusivePtr<class SecureUnsignedValue> SecureUnsignedValuePtr;
     //////////////////////////////////////////////////////////////////////////
     class SecureUnsignedValue
-        : public Factorable
+        : public SecureValueInterface
     {
         DECLARE_FACTORABLE( SecureUnsignedValue );
 
@@ -31,6 +31,10 @@ namespace Mengine
         bool additive2SecureValue( const SecureUnsignedValuePtr & _add, const SecureUnsignedValuePtr & _pow );
 
         bool cmpSecureValue( const SecureUnsignedValuePtr & _value, int32_t * const _result ) const;
+
+    public:
+        void saveBase64( String * const _base64 ) const override;
+        void loadBase64( const String & _base64 ) override;
 
     public:
         uint32_t m_value;

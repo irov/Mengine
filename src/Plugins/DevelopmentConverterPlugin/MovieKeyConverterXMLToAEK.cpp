@@ -149,7 +149,7 @@ namespace Mengine
             return false;
         }
 
-        stdex::container_writer<Blobject> aw( _buffer );
+        ContainerWriter<Blobject> aw( _buffer );
 
         uint32_t true_metacode_version = Metacode::get_metacode_version();
 

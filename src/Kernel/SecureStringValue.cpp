@@ -97,6 +97,30 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SecureStringValue::setupSecureValue( const SecureStringValuePtr & _setup )
+    {
+        String setup_unprotected_value;
+        if( _setup->getUnprotectedValue( &setup_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        this->setUnprotectedValue( setup_unprotected_value );
+
+        String total_unprotected_value;
+        if( this->getUnprotectedValue( &total_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        if( total_unprotected_value != setup_unprotected_value )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SecureStringValue::cmpSecureValue( const SecureStringValuePtr & _value, int32_t * const _result ) const
     {
         String base_unprotected_value;

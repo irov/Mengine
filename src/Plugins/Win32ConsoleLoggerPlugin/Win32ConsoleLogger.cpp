@@ -1,6 +1,7 @@
 #include "Win32ConsoleLogger.h"
 
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -80,6 +81,17 @@ namespace Mengine
             ::GetConsoleScreenBufferInfo( output_handle, &coninfo );
             coninfo.dwSize.Y = 1000;
             ::SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
+        }
+
+        uint32_t OPTION_consolex = GET_OPTION_VALUE_UINT32( "consolex", ~0u );
+        uint32_t OPTION_consoley = GET_OPTION_VALUE_UINT32( "consoley", ~0u );
+
+        if( OPTION_consolex != ~0u && OPTION_consoley != ~0u )
+        {
+            HWND hWnd = ::GetConsoleWindow();
+            RECT rect;
+            ::GetWindowRect( hWnd, &rect );
+            ::MoveWindow( hWnd, OPTION_consolex, OPTION_consoley, rect.right - rect.left, rect.bottom - rect.top, TRUE );
         }
 
         m_CONOUT = ::freopen( "CONOUT$", "w", stdout );

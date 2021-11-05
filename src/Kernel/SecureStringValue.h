@@ -23,6 +23,9 @@ namespace Mengine
         bool getUnprotectedValue( String * const _value ) const;
 
     public:
+        bool setupSecureValue( const SecureStringValuePtr & _setup );
+
+    public:
         bool cmpSecureValue( const SecureStringValuePtr & _value, int32_t * const _result ) const;
 
     public:

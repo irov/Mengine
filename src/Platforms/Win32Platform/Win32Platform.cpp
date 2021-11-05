@@ -2529,54 +2529,70 @@ namespace Mengine
 
         if( _fullsreen == false )
         {
-            DWORD dwStyle = this->getWindowStyle_( _fullsreen );
-            DWORD dwStyleEx = this->getWindowExStyle_( _fullsreen );
+            uint32_t OPTION_winx = GET_OPTION_VALUE_UINT32( "winx", ~0u );
+            uint32_t OPTION_winy = GET_OPTION_VALUE_UINT32( "winy", ~0u );
 
-            if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
+            if( OPTION_winx != ~0u && OPTION_winy != ~0u )
             {
-                LOGGER_ERROR( "invalid adjust window rect %s"
-                    , Helper::Win32GetLastErrorMessage()
-                );
+                uint32_t width = rc.right - rc.left;
+                uint32_t height = rc.bottom - rc.top;
 
-                return false;
-            }
-
-            RECT workArea;
-            if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
-            {
-                LOGGER_ERROR( "invalid system parameters info %s"
-                    , Helper::Win32GetLastErrorMessage()
-                );
-
-                return false;
-            }
-
-            LONG width = rc.right - rc.left;
-            LONG height = rc.bottom - rc.top;
-
-            LONG left = (workArea.left + workArea.right - width) / 2;
-            LONG top = (workArea.top + workArea.bottom - height) / 2;
-
-            if( top > 0 )
-            {
-                rc.top = (workArea.top + workArea.bottom - height) / 2;
+                rc.left = OPTION_winx;
+                rc.top = OPTION_winy;
+                rc.right = rc.left + width;
+                rc.bottom = rc.top + height;
             }
             else
             {
-                rc.top = 0;
-            }
+                DWORD dwStyle = this->getWindowStyle_( _fullsreen );
+                DWORD dwStyleEx = this->getWindowExStyle_( _fullsreen );
 
-            if( left > 0 )
-            {
-                rc.left = (workArea.left + workArea.right - width) / 2;
-            }
-            else
-            {
-                rc.left = 0;
-            }
+                if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
+                {
+                    LOGGER_ERROR( "invalid adjust window rect %s"
+                        , Helper::Win32GetLastErrorMessage()
+                    );
 
-            rc.right = rc.left + width;
-            rc.bottom = rc.top + height;
+                    return false;
+                }
+
+                RECT workArea;
+                if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
+                {
+                    LOGGER_ERROR( "invalid system parameters info %s"
+                        , Helper::Win32GetLastErrorMessage()
+                    );
+
+                    return false;
+                }
+
+                LONG width = rc.right - rc.left;
+                LONG height = rc.bottom - rc.top;
+
+                LONG left = (workArea.left + workArea.right - width) / 2;
+                LONG top = (workArea.top + workArea.bottom - height) / 2;
+
+                if( top > 0 )
+                {
+                    rc.top = (workArea.top + workArea.bottom - height) / 2;
+                }
+                else
+                {
+                    rc.top = 0;
+                }
+
+                if( left > 0 )
+                {
+                    rc.left = (workArea.left + workArea.right - width) / 2;
+                }
+                else
+                {
+                    rc.left = 0;
+                }
+
+                rc.right = rc.left + width;
+                rc.bottom = rc.top + height;
+            }
         }
 
         *_rect = rc;

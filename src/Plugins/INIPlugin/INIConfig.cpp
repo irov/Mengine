@@ -64,13 +64,6 @@ namespace Mengine
                     return true;
                 }
 
-#ifdef MENGINE_MASTER_RELEASE
-                if( Detail::hasValueT2( ini, "Master-", _platform, _section, _key, _value ) == true )
-                {
-                    return true;
-                }
-#endif
-
                 if( Detail::hasValueT2( ini, "", _platform, _section, _key, _value ) == true )
                 {
                     return true;
@@ -116,10 +109,6 @@ namespace Mengine
 #endif
 
                 Detail::calcValuesT2( ini, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value );
-
-#ifdef MENGINE_MASTER_RELEASE
-                Detail::calcValuesT2( ini, "Master-", _platform, _section, _key, _value );
-#endif
 
                 Detail::calcValuesT2( ini, "", _platform, _section, _key, _value );
             }

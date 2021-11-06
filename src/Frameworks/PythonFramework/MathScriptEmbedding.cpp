@@ -4,8 +4,14 @@
 
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/Color.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/Rect.h"
 
 #include "pybind/pybind.hpp"
+#include "pybind/stl/stl_type_cast.hpp"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -15,14 +21,6 @@
 #include "math/plane.h"
 #include "math/uv4.h"
 #include "math/utils.h"
-
-#include "Kernel/Color.h"
-#include "Kernel/Resolution.h"
-#include "Kernel/Viewport.h"
-#include "Kernel/Polygon.h"
-#include "Kernel/Rect.h"
-
-#include "pybind/stl/stl_type_cast.hpp"
 
 namespace Mengine
 {

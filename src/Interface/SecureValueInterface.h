@@ -11,8 +11,8 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void saveBase64( String * const _base64 ) const = 0;
-        virtual void loadBase64( const String & _base64 ) = 0;
+        virtual void saveHexadecimal( String * const _hexadecimal ) const = 0;
+        virtual void loadHexadecimal( const String & _hexadecimal ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SecureValueInterface> SecureValueInterfacePtr;

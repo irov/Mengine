@@ -463,11 +463,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::getGlobalUUID( Char * const _globalUUID )
-    {
-        MENGINE_STRCPY( _globalUUID, m_globalUUID );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AccountService::loadAccount_( const AccountInterfacePtr & _account )
     {
         const ConstString & accountID = _account->getID();
@@ -521,35 +516,6 @@ namespace Mengine
             );
 
             return false;
-        }
-
-        const Char * SETTINGS_UUID = nullptr;
-        if( config->hasValue( "SETTINGS", "UUID", "", &SETTINGS_UUID ) == true )
-        {
-            MENGINE_ASSERTION( MENGINE_STRLEN( SETTINGS_UUID ) <= 20 );
-
-            if( MENGINE_STRLEN( SETTINGS_UUID ) > 20 )
-            {
-                LOGGER_ERROR( "get [SETTINGS] UUID invalid '%s'"
-                    , SETTINGS_UUID
-                );
-
-                return false;
-            }
-
-            MENGINE_STRCPY( m_globalUUID, SETTINGS_UUID );
-
-            LOGGER_INFO( "account", "load global UUID '%s'"
-                , m_globalUUID
-            );
-        }
-        else
-        {
-            Helper::makeUID( 20, m_globalUUID );
-
-            LOGGER_INFO( "account", "make global UUID '%s'"
-                , m_globalUUID
-            );
         }
 
         if( config->hasValue( "SETTINGS", "AccountEnumerator", 0u, &m_playerEnumerator ) == false )
@@ -704,11 +670,6 @@ namespace Mengine
         );
 
         Helper::writeIniSection( file, "[SETTINGS]" );
-
-        if( MENGINE_STRLEN( m_globalUUID ) != 0 )
-        {
-            Helper::writeIniSetting( file, "UUID", m_globalUUID );
-        }
 
         if( m_globalAccountID.empty() == false )
         {

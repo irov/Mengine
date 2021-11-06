@@ -29,14 +29,30 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AnalyticsSystemInterface.h"
 
+#include "Environment/Python/PythonEventReceiver.h"
+#include "Environment/Python/PythonScriptWrapper.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
+
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
-#include "Plugins/MoviePlugin/ResourceMovie2.h"
+#include "Services/SecureService/SecureUnsignedValue.h"
+#include "Services/SecureService/SecureStringValue.h"
+
+#include "ScriptHolder.h"
+
+#include "PythonValueFollowerLinear.h"
+#include "PythonValueFollowerAcceleration.h"
+
+#include "PythonEntityBehavior.h"
+#include "PythonScheduleTiming.h"
+#include "PythonSchedulePipe.h"
+#include "PythonScheduleEvent.h"
+#include "DelaySchedulePipe.h"
+#include "PythonFileLogger.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
-
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotCircle.h"
@@ -46,16 +62,17 @@
 #include "Engine/HotSpotSurface.h"
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
-
-#include "Kernel/ShapeQuadFixed.h"
-#include "Kernel/ShapeQuadFlex.h"
-
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
 #include "Engine/Point.h"
 #include "Engine/Line.h"
+#include "Engine/Meshget.h"
+#include "Engine/Isometric.h"
+#include "Engine/Window.h"
 
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -69,7 +86,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/ResourceSound.h"
-
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
 #include "Kernel/ResourceImageSubstract.h"
@@ -77,65 +93,29 @@
 #include "Kernel/ResourceImageSolid.h"
 #include "Kernel/ResourceImageData.h"
 #include "Kernel/ResourceImage.h"
-
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
-
-#include "ScriptHolder.h"
-
 #include "Kernel/SurfaceSound.h"
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceImageSequence.h"
 #include "Kernel/SurfaceSolidColor.h"
-
-#include "Engine/Meshget.h"
-#include "Engine/Isometric.h"
-#include "Engine/Window.h"
-
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
 #include "Kernel/Layer.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
-#include "Environment/Python/PythonEventReceiver.h"
-#include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
-
-#include "PythonValueFollowerLinear.h"
-#include "PythonValueFollowerAcceleration.h"
-
-#include "PythonEntityBehavior.h"
-#include "PythonScheduleTiming.h"
-#include "PythonSchedulePipe.h"
-#include "PythonScheduleEvent.h"
-#include "DelaySchedulePipe.h"
-#include "PythonFileLogger.h"
-
 #include "Kernel/Polygon.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
-#include "Kernel/SecureUnsignedValue.h"
-#include "Kernel/SecureStringValue.h"
-
-#include "math/angle.h"
-#include "math/vec4.h"
-#include "math/mat3.h"
-#include "math/mat4.h"
-#include "math/quat.h"
-#include "math/utils.h"
-
 #include "Kernel/Rect.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/ValueFollower.h"
@@ -147,6 +127,13 @@
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
+
+#include "math/angle.h"
+#include "math/vec4.h"
+#include "math/mat3.h"
+#include "math/mat4.h"
+#include "math/quat.h"
+#include "math/utils.h"
 
 #include "pybind/stl/stl_type_cast.hpp"
 
@@ -2919,17 +2906,17 @@ namespace Mengine
                 affectorHub->stopAffector( id );
             }
             //////////////////////////////////////////////////////////////////////////
-            String s_SecureValueInterface_saveBase64( const SecureValueInterface * _secure )
+            String s_SecureValueInterface_saveHexadecimal( const SecureValueInterface * _secure )
             {
-                String base64;
-                _secure->saveBase64( &base64 );
+                String hexadecimal;
+                _secure->saveHexadecimal( &hexadecimal );
 
-                return base64;
+                return hexadecimal;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_SecureValueInterface_loadBase64( SecureValueInterface * _secure, const String & _base64 )
+            void s_SecureValueInterface_loadHexadecimal( SecureValueInterface * _secure, const String & _hexadecimal )
             {
-                _secure->loadBase64( _base64 );
+                _secure->loadHexadecimal( _hexadecimal );
             }
             //////////////////////////////////////////////////////////////////////////
             pybind::tuple s_SecureUnsignedValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureUnsignedValue * _secure )
@@ -4426,8 +4413,8 @@ namespace Mengine
             ;
 
         pybind::interface_<SecureValueInterface, pybind::bases<Mixin>>( _kernel, "SecureValueInterface" )
-            .def_proxy_static( "saveBase64", nodeScriptMethod, &EngineScriptMethod::s_SecureValueInterface_saveBase64 )
-            .def_proxy_static( "loadBase64", nodeScriptMethod, &EngineScriptMethod::s_SecureValueInterface_loadBase64 )
+            .def_proxy_static( "saveHexadecimal", nodeScriptMethod, &EngineScriptMethod::s_SecureValueInterface_saveHexadecimal )
+            .def_proxy_static( "loadHexadecimal", nodeScriptMethod, &EngineScriptMethod::s_SecureValueInterface_loadHexadecimal )
             ;
 
         pybind::interface_<SecureUnsignedValue, pybind::bases<SecureValueInterface>>( _kernel, "SecureUnsignedValue" )

@@ -33,8 +33,8 @@ namespace Mengine
         bool cmpSecureValue( const SecureUnsignedValuePtr & _value, int32_t * const _result ) const;
 
     public:
-        void saveBase64( String * const _base64 ) const override;
-        void loadBase64( const String & _base64 ) override;
+        void saveHexadecimal( String * const _hexadecimal ) const override;
+        void loadHexadecimal( const String & _hexadecimal ) override;
 
     public:
         uint32_t m_value;

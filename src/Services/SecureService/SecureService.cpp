@@ -1,9 +1,14 @@
 #include "SecureService.h"
 
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
+
+#include "SecureUnsignedValue.h"
+#include "SecureStringValue.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/HashHelper.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
 
 #include "Config/StdString.h"
 
@@ -34,12 +39,28 @@ namespace Mengine
 
         m_secureHash = Helper::makeHash( secure, secure_len );
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureUnsignedValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureStringValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SecureService::_finalizeService()
     {
-        //Empty
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     HashType SecureService::getSecureHash() const

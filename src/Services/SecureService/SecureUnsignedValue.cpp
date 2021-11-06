@@ -7,7 +7,7 @@
 #include "Kernel/ContainerReader.h"
 #include "Kernel/ContainerWriter.h"
 #include "Kernel/Ravingcode.h"
-#include "Kernel/Base64.h"
+#include "Kernel/Hexadecimal.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"
@@ -199,7 +199,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureUnsignedValue::saveBase64( String * const _base64 ) const
+    void SecureUnsignedValue::saveHexadecimal( String * const _hexadecimal ) const
     {
         Blobject blob;
         ContainerWriter<Blobject> writer( blob );
@@ -218,20 +218,20 @@ namespace Mengine
 
         Helper::ravingcode( parrot, blob.data(), blob.size(), blob_raving.data() );
 
-        _base64->resize( blob.size() * 2 );
+        _hexadecimal->resize( blob.size() * 2 );
 
-        Helper::encodeBase64( blob_raving.data(), blob_raving.size(), true, _base64->data(), _base64->size(), nullptr );
+        Helper::encodeHexadecimal( blob_raving.data(), blob_raving.size(), _hexadecimal->data(), _hexadecimal->size(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureUnsignedValue::loadBase64( const String & _base64 )
+    void SecureUnsignedValue::loadHexadecimal( const String & _hexadecimal )
     {
         Blobject blob_raving;
-        blob_raving.resize( _base64.size() );
+        blob_raving.resize( _hexadecimal.size() );
 
-        Helper::decodeBase64( _base64.c_str(), _base64.size(), blob_raving.data(), blob_raving.size(), nullptr );
+        Helper::decodeHexadecimal( _hexadecimal.c_str(), _hexadecimal.size(), blob_raving.data(), blob_raving.size(), nullptr );
 
         Blobject blob;
-        blob.resize( _base64.size() );
+        blob.resize( _hexadecimal.size() );
 
         HashType secureHash = SECURE_SERVICE()
             ->getSecureHash();

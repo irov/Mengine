@@ -20,9 +20,12 @@ namespace Mengine
         void _destroyPlugin() override;
 
     protected:
-        void notifyAccountsLoad_();
+        bool loadUserId_();
+        bool saveUserId_();
+        const Char * getUserId_();
 
     protected:
+        Char m_userId[21];
         Char m_gameKey[256];
         Char m_gameSecret[256];
     };

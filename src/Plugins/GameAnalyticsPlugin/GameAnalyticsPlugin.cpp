@@ -4,8 +4,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
-#include "Interface/AccountServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #include "GameAnalytics.h"
@@ -16,8 +14,16 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/ArrayString.h"
+#include "Kernel/FilePathHelper.h"
+#include "Kernel/FileStreamHelper.h"
+#include "Kernel/IniHelper.h"
+#include "Kernel/UID.h"
 
 #include "Config/StdString.h"
+
+#ifndef MENGINE_GAMEANALYTICS_FOLDER
+#define MENGINE_GAMEANALYTICS_FOLDER ".game-analytics"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AnalyticsSystem );
@@ -52,10 +58,14 @@ namespace Mengine
                 break;
             }
 
-            size_t message_len = MENGINE_STRLEN( _message );
+            Char messageln[4096];
+            MENGINE_STRCPY( messageln, _message );
+            MENGINE_STRCAT( messageln, "\n" );
+
+            size_t messageln_len = MENGINE_STRLEN( messageln );
 
             LOGGER_SERVICE()
-                ->logMessage( level, 0, LCOLOR_GREEN, _message, message_len );
+                ->logMessage( level, 0, LCOLOR_GREEN, messageln, messageln_len );
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -118,7 +128,7 @@ namespace Mengine
             ->getUserPath( userPath );
 
         MENGINE_STRCAT( analyticsPath, userPath );
-        MENGINE_STRCAT( analyticsPath, ".game-analytics" );
+        MENGINE_STRCAT( analyticsPath, MENGINE_GAMEANALYTICS_FOLDER );
 
         gameanalytics::GameAnalytics::configureWritablePath( analyticsPath );
 
@@ -134,12 +144,15 @@ namespace Mengine
         const Char * buildVersion = Helper::getBuildVersion();
         gameanalytics::GameAnalytics::configureGameEngineVersion( buildVersion );
 
+        const Char * userId = this->getUserId_();
+        gameanalytics::GameAnalytics::configureUserId( userId );
+
+        gameanalytics::GameAnalytics::initialize( m_gameKey, m_gameSecret );
+
         LOGGER_INFO( "plugin", "plugin '%s' create system: %s"
             , this->getPluginName()
             , "AnalyticsSystem"
         );
-
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ACCOUNTS_LOAD, &GameAnalyticsPlugin::notifyAccountsLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
         if( SERVICE_CREATE( AnalyticsSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
@@ -149,21 +162,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameAnalyticsPlugin::notifyAccountsLoad_()
-    {
-        Char globalUUID[MENGINE_ACCOUNT_UUID_SIZE] = {'\0'};
-        ACCOUNT_SERVICE()
-            ->getGlobalUUID( globalUUID );
-
-        gameanalytics::GameAnalytics::configureUserId( globalUUID );
-
-        gameanalytics::GameAnalytics::initialize( m_gameKey, m_gameSecret );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void GameAnalyticsPlugin::_finalizePlugin()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ACCOUNTS_LOAD );
-
         SERVICE_FINALIZE( AnalyticsSystem );
 
         gameanalytics::GameAnalytics::onQuit();
@@ -172,6 +172,93 @@ namespace Mengine
     void GameAnalyticsPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( AnalyticsSystem );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GameAnalyticsPlugin::loadUserId_()
+    {
+        const FileGroupInterfacePtr & fileGroupUser = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+        Char configPath[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_STRCAT( configPath, MENGINE_GAMEANALYTICS_FOLDER );
+        MENGINE_STRCAT( configPath, "/" );
+
+        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalytics", "Config", "config.ini" );
+
+        MENGINE_STRCAT( configPath, GameAnalytics_Config );
+
+        FilePath configPath_f = Helper::stringizeFilePath( configPath );
+
+        if( fileGroupUser->existFile( configPath_f, false ) == false )
+        {
+            return false;
+        }
+
+        ConfigInterfacePtr analyticsConfig = CONFIG_SERVICE()
+            ->loadConfig( fileGroupUser, configPath_f, STRINGIZE_STRING_LOCAL( "ini" ), MENGINE_DOCUMENT_FACTORABLE );
+
+        const Char * Config_UserId;
+        if( analyticsConfig->hasValue( "Config", "UserId", "", &Config_UserId ) == false )
+        {
+            return false;
+        }
+
+        if( MENGINE_STRLEN( Config_UserId ) != 20 )
+        {
+            return false;
+        }
+
+        MENGINE_STRCPY( m_userId, Config_UserId );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GameAnalyticsPlugin::saveUserId_()
+    {
+        const FileGroupInterfacePtr & fileGroupUser = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+        Char configPath[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_STRCAT( configPath, MENGINE_GAMEANALYTICS_FOLDER );
+        MENGINE_STRCAT( configPath, "/" );
+
+        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalytics", "Config", "config.ini" );
+
+        MENGINE_STRCAT( configPath, GameAnalytics_Config );
+
+        FilePath configPath_f = Helper::stringizeFilePath( configPath );
+
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( fileGroupUser, configPath_f, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( file == nullptr )
+        {
+            return false;
+        }
+
+        Helper::writeIniSection( file, "[Config]" );
+        Helper::writeIniSetting( file, "UserId", m_userId );
+
+        if( fileGroupUser->closeOutputFile( file ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Char * GameAnalyticsPlugin::getUserId_()
+    {
+        if( this->loadUserId_() == true )
+        { 
+            return m_userId;
+        }
+
+        Helper::makeUID( 20, m_userId );
+        m_userId[20] = '\0';
+
+        this->saveUserId_();
+
+        return m_userId;
     }
     //////////////////////////////////////////////////////////////////////////
 }

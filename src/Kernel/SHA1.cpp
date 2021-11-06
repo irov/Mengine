@@ -1,6 +1,7 @@
 #include "SHA1.h"
 
 #include "Kernel/Base64.h"
+#include "Kernel/Hexadecimal.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -161,20 +162,6 @@ namespace Mengine
                 MENGINE_MEMSET( finalcount, 0, 8 );
             }
             //////////////////////////////////////////////////////////////////////////
-            void SHA1_Hex( const uint8_t _digest[SHA1_DIGEST_SIZE], Char * const _output )
-            {
-                Char * c = _output;
-
-                for( uint32_t i = 0; i != SHA1_DIGEST_SIZE; ++i )
-                {
-                    MENGINE_SPRINTF( c, "%02x", _digest[i] );
-
-                    c += 2;
-                }
-
-                *(c - 1) = '\0';
-            }
-            //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1( const void * _buffer, size_t _size, uint8_t * const _sha1 )
@@ -191,7 +178,7 @@ namespace Mengine
             uint8_t sha1[SHA1_DIGEST_SIZE];
             Helper::makeSHA1( _buffer, _size, sha1 );
 
-            Detail::SHA1_Hex( sha1, _hex );
+            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1Base64( const void * _buffer, size_t _size, Char * const _base64 )

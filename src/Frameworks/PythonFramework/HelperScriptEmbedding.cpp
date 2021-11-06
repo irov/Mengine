@@ -22,9 +22,7 @@
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 
-#include "Engine/HotSpotResourceShape.h"
-#include "Engine/HotSpotSurface.h"
-#include "Engine/ResourceCursorICO.h"
+#include "Engine/HotSpotPolygon.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Node.h"

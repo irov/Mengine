@@ -746,12 +746,7 @@ Core
     
     Ravingcode.h
     Ravingcode.cpp
-    
-    SecureUnsignedValue.h
-    SecureUnsignedValue.cpp
-    SecureStringValue.h
-    SecureStringValue.cpp
-    
+
     Stringalized.h
     Stringalized.cpp
     
@@ -814,6 +809,9 @@ Core
     
     SHA1.cpp
     SHA1.h
+    
+    Hexadecimal.cpp
+    Hexadecimal.h
 )
 
 ADD_FILTER(

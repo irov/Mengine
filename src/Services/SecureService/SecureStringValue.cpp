@@ -170,19 +170,20 @@ namespace Mengine
     void SecureStringValue::loadHexadecimal( const String & _hexadecimal )
     {
         Blobject blob_raving;
-        blob_raving.resize( _hexadecimal.size() );
+        blob_raving.resize( _hexadecimal.size() / 2 );
 
-        Helper::decodeHexadecimal( _hexadecimal.c_str(), _hexadecimal.size(), blob_raving.data(), blob_raving.size(), nullptr );
+        size_t blob_raving_size;
+        Helper::decodeHexadecimal( _hexadecimal.c_str(), _hexadecimal.size(), blob_raving.data(), blob_raving.size(), &blob_raving_size );
 
         Blobject blob;
-        blob.resize( _hexadecimal.size() );
+        blob.resize( blob_raving_size );
 
         HashType secureHash = SECURE_SERVICE()
             ->getSecureHash();
 
         uint32_t parrot = (uint32_t)secureHash;
 
-        Helper::ravingcode( parrot, blob_raving.data(), blob_raving.size(), blob.data() );
+        Helper::ravingcode( parrot, blob_raving.data(), blob_raving_size, blob.data() );
 
         ContainerReader<Blobject> reader( blob );
 

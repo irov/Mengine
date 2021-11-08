@@ -49,16 +49,16 @@ namespace Mengine
             }
 
             Char * c = _hexadecimal;
-            const uint8_t * d = reinterpret_cast<const uint8_t *>(_data);
+            const uint8_t * data_u8 = reinterpret_cast<const uint8_t *>(_data);
 
             for( size_t i = 0; i != _datasize; ++i )
             {
-                MENGINE_SPRINTF( c, "%02x", d[i] );
+                uint8_t d = data_u8[i];
+
+                MENGINE_SPRINTF( c, "%02x", d );
 
                 c += 2;
             }
-
-            *(c - 1) = '\0';
 
             if( _outsize != nullptr )
             {
@@ -99,7 +99,7 @@ namespace Mengine
                     return false;
                 }
 
-                *(d++) = u0 + (u1 << 8);
+                *(d++) = (u0 << 4) + u1;
             }
 
             if( _outsize != nullptr )

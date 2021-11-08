@@ -498,6 +498,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::_finalizeService()
     {
+        m_availablePlugins = nullptr;
+
 #ifdef MENGINE_DEBUG
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 

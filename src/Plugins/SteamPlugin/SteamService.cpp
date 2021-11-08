@@ -182,25 +182,6 @@ namespace Mengine
         SteamAPI_Shutdown();
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static WString printWParams( const MapWParams & _params )
-        {
-            WString msg;
-            for( auto && [key, value] : _params )
-            {
-                msg += WString( key.c_str(), key.c_str() + key.size() );
-                msg += L" = \"";
-                msg += value;
-                msg += L"\";";
-            }
-
-            return msg;
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SteamService::setAchievement( const ConstString & _name )
     {
         if( m_steamInitialize == false )

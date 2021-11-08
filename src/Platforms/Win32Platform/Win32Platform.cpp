@@ -91,9 +91,9 @@ namespace Mengine
         , m_hWnd( NULL )
         , m_performanceSupport( false )
         , m_active( false )
-        , m_update( false )
         , m_hIcon( NULL )
         , m_close( false )
+        , m_sleepMode( true )
         , m_pauseUpdatingTime( -1.f )
         , m_prevTime( 0 )
         , m_cursorInArea( false )
@@ -385,13 +385,29 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "forgot remove win32 timer (doc: %s)"
+            LOGGER_ERROR( "forgot remove platform timer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }
 #endif
 
         m_timers.clear();
+
+#ifdef MENGINE_DEBUG
+        for( const UpdateDesc & desc : m_updates )
+        {
+            if( desc.id == INVALID_UNIQUE_ID )
+            {
+                continue;
+            }
+
+            LOGGER_ERROR( "forgot remove platform update (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_updates.clear();
 
         if( m_hIcon != NULL )
         {
@@ -674,6 +690,43 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    UniqueId Win32Platform::addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _doc );
+
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
+
+        UpdateDesc desc;
+        desc.id = new_id;
+        desc.lambda = _lambda;
+
+#ifdef MENGINE_DEBUG
+        desc.doc = _doc;
+#endif
+
+        m_updates.emplace_back( desc );
+
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::removeUpdate( UniqueId _id )
+    {
+        VectorUpdates::iterator it_found = Algorithm::find_if( m_updates.begin(), m_updates.end(), [_id]( const UpdateDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_updates.end(), "not found update '%u'"
+            , _id
+        );
+
+        UpdateDesc & desc = *it_found;
+
+        desc.id = INVALID_UNIQUE_ID;
+        desc.lambda = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     UniqueId Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
@@ -694,6 +747,16 @@ namespace Mengine
         m_timers.emplace_back( desc );
 
         return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::setSleepMode( bool _sleepMode )
+    {
+        m_sleepMode = _sleepMode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getSleepMode() const
+    {
+        return m_sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::removeTimer( UniqueId _id )
@@ -793,6 +856,21 @@ namespace Mengine
                     continue;
                 }
 
+                for( const UpdateDesc & desc : m_updates )
+                {
+                    if( desc.id == INVALID_UNIQUE_ID )
+                    {
+                        continue;
+                    }
+
+                    desc.lambda( desc.id );
+                }
+
+                m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
+                {
+                    return _desc.id == INVALID_UNIQUE_ID;
+                } ), m_updates.end() );
+
                 for( TimerDesc & desc : m_timers )
                 {
                     if( desc.id == INVALID_UNIQUE_ID )
@@ -816,8 +894,6 @@ namespace Mengine
                 {
                     return _desc.id == INVALID_UNIQUE_ID;
                 } ), m_timers.end() );
-
-                m_update = true;
 
                 bool updating = APPLICATION_SERVICE()
                     ->beginUpdate();
@@ -849,8 +925,6 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->endUpdate();
 
-                m_update = false;
-
                 if( updating == false )
                 {
                     if( m_pauseUpdatingTime < 0.f )
@@ -858,7 +932,14 @@ namespace Mengine
                         m_pauseUpdatingTime = frameTime;
                     }
 
-                    ::Sleep( 100 );
+                    if( m_sleepMode == true )
+                    {
+                        ::Sleep( 100 );
+                    }
+                    else
+                    {
+                        ::Sleep( 1 );
+                    }
                 }
                 else
                 {

@@ -32,6 +32,10 @@ namespace Mengine
         ~LoggerOperator();
 
     public:
+        LoggerOperator & setTimestamp( bool _timestamp );
+        bool getTimestamp() const;
+
+    public:
         LoggerOperator & setNewline( bool _newline );
         bool getNewline() const;
 
@@ -57,6 +61,7 @@ namespace Mengine
         const Char * m_file;
         uint32_t m_line;
 
+        bool m_timestamp;
         bool m_newline;
     };
 }
@@ -68,7 +73,7 @@ namespace Mengine
 #define LOGGER_CRITICAL( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_CRITICAL, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
 #define LOGGER_ERROR( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_ERROR, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
 #define LOGGER_MESSAGE_RELEASE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
-#define LOGGER_MESSAGE_RELEASE_WN( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 ).setNewline(false)( __VA_ARGS__ )
+#define LOGGER_MESSAGE_RELEASE_WN( NL, TS, ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 ).setNewline(NL).setTimestamp(TS)( __VA_ARGS__ )
 #define LOGGER_MESSAGE_RELEASE_ERROR( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LCOLOR_RED, nullptr, 0 )( __VA_ARGS__ )
 #define LOGGER_MESSAGE_RELEASE_WARNING( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0 )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////

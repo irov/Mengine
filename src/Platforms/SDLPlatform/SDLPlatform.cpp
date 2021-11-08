@@ -260,6 +260,7 @@ namespace Mengine
         , m_prevTime( 0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
+        , m_sleepMode( true )
         , m_shouldQuit( false )
         , m_running( false )
         , m_desktop( false )
@@ -974,6 +975,38 @@ namespace Mengine
 
         m_active = false;
 
+#ifdef MENGINE_DEBUG
+        for( const TimerDesc & desc : m_timers )
+        {
+            if( desc.id == INVALID_UNIQUE_ID )
+            {
+                continue;
+            }
+
+            LOGGER_ERROR( "forgot remove platform timer (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_timers.clear();
+
+#ifdef MENGINE_DEBUG
+        for( const UpdateDesc & desc : m_updates )
+        {
+            if( desc.id == INVALID_UNIQUE_ID )
+            {
+                continue;
+            }
+
+            LOGGER_ERROR( "forgot remove platform update (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_updates.clear();
+
         this->destroyWindow_();
 
         SDL_Quit();
@@ -1035,6 +1068,30 @@ namespace Mengine
 
             float frameTime = (float)(currentTime - m_prevTime);
 
+            m_prevTime = currentTime;
+
+            bool quitRequest = this->processEvents_();
+
+            if( quitRequest == true )
+            {
+                break;
+            }
+
+            for( const UpdateDesc & desc : m_updates )
+            {
+                if( desc.id == INVALID_UNIQUE_ID )
+                {
+                    continue;
+                }
+
+                desc.lambda( desc.id );
+            }
+
+            m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
+            {
+                return _desc.id == INVALID_UNIQUE_ID;
+            } ), m_updates.end() );
+
             for( TimerDesc & desc : m_timers )
             {
                 if( desc.id == INVALID_UNIQUE_ID )
@@ -1054,14 +1111,10 @@ namespace Mengine
                 desc.lambda( desc.id );
             }
 
-            m_prevTime = currentTime;
-
-            bool quitRequest = this->processEvents_();
-
-            if( quitRequest == true )
+            m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
             {
-                break;
-            }
+                return _desc.id == INVALID_UNIQUE_ID;
+            } ), m_timers.end() );
 
             bool updating = APPLICATION_SERVICE()
                 ->beginUpdate();
@@ -1110,7 +1163,14 @@ namespace Mengine
                     m_pauseUpdatingTime = frameTime;
                 }
 
-                SDL_Delay( 100 );
+                if( m_sleepMode == true )
+                {
+                    SDL_Delay( 100 );
+                }
+                else
+                {
+                    SDL_Delay( 1 );
+                }
             }
             else
             {
@@ -1165,6 +1225,43 @@ namespace Mengine
         m_shouldQuit = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    UniqueId SDLPlatform::addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _doc );
+
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
+
+        UpdateDesc desc;
+        desc.id = new_id;
+        desc.lambda = _lambda;
+
+#ifdef MENGINE_DEBUG
+        desc.doc = _doc;
+#endif
+
+        m_updates.emplace_back( desc );
+
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::removeUpdate( UniqueId _id )
+    {
+        VectorUpdates::iterator it_found = Algorithm::find_if( m_updates.begin(), m_updates.end(), [_id]( const UpdateDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_updates.end(), "not found update '%u'"
+            , _id
+        );
+
+        UpdateDesc & desc = *it_found;
+
+        desc.id = INVALID_UNIQUE_ID;
+        desc.lambda = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t SDLPlatform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
@@ -1199,6 +1296,16 @@ namespace Mengine
         TimerDesc & desc = *it_found;
 
         desc.id = INVALID_UNIQUE_ID;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::setSleepMode( bool _sleepMode )
+    {
+        m_sleepMode = _sleepMode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::getSleepMode() const
+    {
+        return m_sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t SDLPlatform::getTicks() const

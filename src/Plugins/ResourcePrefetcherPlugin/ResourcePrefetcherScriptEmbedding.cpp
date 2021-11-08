@@ -181,6 +181,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( "ResourcePrefetcher", true );
+
         pybind::def_function_args( _kernel, "prefetchResources", &Detail::s_prefetchResources );
         pybind::def_function( _kernel, "unfetchResources", &Detail::s_unfetchResources );
         pybind::def_function_args( _kernel, "prefetchFonts", &Detail::s_prefetchFonts );

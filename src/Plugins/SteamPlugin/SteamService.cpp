@@ -3,7 +3,7 @@
 #   pragma warning(disable:4127)  
 #   endif
 
-#include "ModuleSteam.h"
+#include "SteamService.h"
 
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
@@ -17,6 +17,8 @@
 
 #include "Config/StdIO.h"
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( SteamService, Mengine::SteamService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -37,7 +39,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    ModuleSteam::ModuleSteam()
+    SteamService::SteamService()
         : m_client( nullptr )
         , m_user( nullptr )
         , m_userStats( nullptr )
@@ -49,56 +51,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ModuleSteam::~ModuleSteam()
+    SteamService::~SteamService()
     {
     } 
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleSteam::_availableModule() const
-    {
-        bool Steam_Avaliable = CONFIG_VALUE( "Steam", "Avaliable", true );
-
-        if( Steam_Avaliable == false )
-        {
-            return false;
-        }
-
-        if( HAS_OPTION( "nosteam" ) == true )
-        {
-            return false;
-        }
-
-        uint32_t Steam_AppId = CONFIG_VALUE( "Steam", "AppId", k_uAppIdInvalid );
-
-        if( HAS_OPTION( "steamappid" ) == true )
-        {
-            const Char * str_steamappid = GET_OPTION_VALUE( "steamappid", "" );
-
-            if( MENGINE_SSCANF( str_steamappid, "%u", &Steam_AppId ) != 0 )
-            {
-                LOGGER_ERROR( "invalid option steamappid '%s'"
-                    , str_steamappid
-                );
-
-                return false;
-            }
-        }
-
-        if( HAS_OPTION( "norestartsteamapp" ) == false )
-        {
-            if( SteamAPI_RestartAppIfNecessary( Steam_AppId ) == true )
-            {
-                LOGGER_ERROR( "invalid SteamAPI_RestartAppIfNecessary [Id = %u]"
-                    , Steam_AppId
-                );
-
-                return false;
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleSteam::_initializeModule()
+    bool SteamService::_initializeService()
     {
         m_iso639_1["brazilian"] = STRINGIZE_STRING_LOCAL( "pt-br" );
         m_iso639_1["bulgarian"] = STRINGIZE_STRING_LOCAL( "bg" );
@@ -140,7 +97,7 @@ namespace Mengine
 
         m_steamInitialize = true;
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PACKAGES_LOAD, &ModuleSteam::notifyPackagesLoad_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PACKAGES_LOAD, &SteamService::notifyPackagesLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
         ISteamClient * client = SteamClient();
 
@@ -211,7 +168,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleSteam::_finalizeModule()
+    void SteamService::_finalizeService()
     {
         if( m_steamInitialize == false )
         {
@@ -223,13 +180,6 @@ namespace Mengine
         m_userStats->StoreStats();
 
         SteamAPI_Shutdown();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ModuleSteam::_update( bool _focus )
-    {
-        MENGINE_UNUSED( _focus );
-
-        //bool status = m_userStats->RequestCurrentStats();
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
@@ -251,181 +201,121 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleSteam::_message( const ConstString & _messageName, const MapWParams & _params )
+    bool SteamService::setAchievement( const ConstString & _name )
     {
         if( m_steamInitialize == false )
         {
-            LOGGER_MESSAGE( "Steam not initialize [message '%s' params [%ls]]"
-                , _messageName.c_str()
-                , Detail::printWParams( _params ).c_str()
-                );
+            LOGGER_MESSAGE( "Steam not initialize" );
 
-            return;
+            return false;
         }
 
         m_userStats->RequestCurrentStats();
 
-        if( _messageName == "SetAchievement" )
+        if( m_userStats->SetAchievement( _name.c_str() ) == false )
         {
-            MapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( "Value" ) );
-
-            if( it_value_found == _params.end() )
-            {
-                LOGGER_ERROR( "invalid message '%s' params [not found Value]"
-                    , _messageName.c_str()
-                );
-
-                return;
-            }
-
-            const WString & unicode_value = it_value_found->second;
-
-            String utf8_value;
-            Helper::unicodeToUtf8( unicode_value, &utf8_value );
-
-            const Char * str_value = utf8_value.c_str();
-
-            if( m_userStats->SetAchievement( str_value ) == false )
-            {
-                LOGGER_ERROR( "invalid set achievement '%s'"
-                    , str_value
-                );
-
-                return;
-            }
-
-            LOGGER_MESSAGE_RELEASE( "Steam set achievement '%s'"
-                , str_value
+            LOGGER_ERROR( "invalid set achievement '%s'"
+                , _name.c_str()
             );
-        }
-        else if( _messageName == "SetStat" )
-        {
-            MapWParams::const_iterator it_name_found = _params.find( STRINGIZE_STRING_LOCAL( "Name" ) );
 
-            if( it_name_found == _params.end() )
-            {
-                LOGGER_ERROR( "invalid message '%s' params [not found Name]"
-                    , _messageName.c_str()
-                );
-
-                return;
-            }
-
-            const WString & unicode_name = it_name_found->second;
-
-            String utf8_name;
-            Helper::unicodeToUtf8( unicode_name, &utf8_name );
-
-            const Char * str_name = utf8_name.c_str();
-
-            MapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( "Value" ) );
-
-            if( it_value_found == _params.end() )
-            {
-                LOGGER_ERROR( "invalid message '%s' params [not found Value]"
-                    , _messageName.c_str()
-                );
-
-                return;
-            }
-
-            const WString & unicode_value = it_value_found->second;
-
-            String utf8_value;
-            Helper::unicodeToUtf8( unicode_value, &utf8_value );
-
-            const Char * str_value = utf8_value.c_str();
-
-            MapWParams::const_iterator it_type_found = _params.find( STRINGIZE_STRING_LOCAL( "Type" ) );
-
-            if( it_type_found == _params.end() )
-            {
-                LOGGER_ERROR( "invalid message '%s' params [not found Type]"
-                    , _messageName.c_str()
-                );
-
-                return;
-            }
-
-            const WString & unicode_type = it_type_found->second;
-
-            if( unicode_type == L"float" )
-            {
-                float f_value;
-                if( MENGINE_SSCANF( str_value, "%f", &f_value ) != 1 )
-                {
-                    LOGGER_ERROR( "invalid stat '%s' float value '%s'"
-                        , str_name
-                        , str_value
-                    );
-
-                    return;
-                }
-
-                if( m_userStats->SetStat( str_name, f_value ) == false )
-                {
-                    LOGGER_ERROR( "invalid set stat '%s' float value '%f'"
-                        , str_value
-                        , f_value
-                    );
-
-                    return;
-                }
-
-                LOGGER_MESSAGE_RELEASE( "Steam stat '%s' set %f"
-                    , str_name
-                    , f_value
-                );
-            }
-            else if( unicode_type == L"int" )
-            {
-                int32_t i_value;
-                if( MENGINE_SSCANF( str_value, "%d", &i_value ) != 1 )
-                {
-                    LOGGER_ERROR( "invalid stat '%s' int value '%s'"
-                        , str_name
-                        , str_value
-                    );
-
-                    return;
-                }
-
-                if( m_userStats->SetStat( str_name, i_value ) == false )
-                {
-                    LOGGER_ERROR( "invalid set stat '%s' int value '%d'"
-                        , str_value
-                        , i_value
-                    );
-
-                    return;
-                }
-
-                LOGGER_MESSAGE_RELEASE( "Steam stat '%s' set %d"
-                    , str_name
-                    , i_value
-                );
-            }
-            else
-            {
-                LOGGER_ERROR( "invalid set stat '%s' invalid type '%ls'"
-                    , str_value
-                    , unicode_type.c_str()
-                );
-
-                return;
-            }
-        }
-        else
-        {
-            LOGGER_ERROR( "unknown steam message '%s'"
-                , _messageName.c_str()
-            );
+            return false;
         }
 
         m_userStats->StoreStats();
+
+        LOGGER_MESSAGE_RELEASE( "Steam set achievement '%s'"
+            , _name.c_str()
+        );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleSteam::notifyPackagesLoad_()
+    bool SteamService::getAchievement( const ConstString & _name, bool * const _achieved ) const
+    {
+        if( m_steamInitialize == false )
+        {
+            LOGGER_MESSAGE( "Steam not initialize" );
+
+            return false;
+        }
+
+        m_userStats->RequestCurrentStats();
+
+        if( m_userStats->GetAchievement( _name.c_str(), _achieved ) == false )
+        {
+            LOGGER_ERROR( "invalid get achievement '%s'"
+                , _name.c_str()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SteamService::setStateInteger( const ConstString & _name, int32_t _value )
+    {
+        if( m_steamInitialize == false )
+        {
+            LOGGER_MESSAGE( "Steam not initialize" );
+
+            return false;
+        }
+
+        m_userStats->RequestCurrentStats();
+
+        if( m_userStats->SetStat( _name.c_str(), _value ) == false )
+        {
+            LOGGER_ERROR( "invalid set stat '%s' int32_t value '%d'"
+                , _name.c_str()
+                , _value
+            );
+
+            return false;
+        }
+
+        m_userStats->StoreStats();
+
+        LOGGER_MESSAGE_RELEASE( "Steam set state '%s' value '%u'"
+            , _name.c_str()
+            , _value
+        );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SteamService::setStateFloat( const ConstString & _name, float _value )
+    {
+        if( m_steamInitialize == false )
+        {
+            LOGGER_MESSAGE( "Steam not initialize" );
+
+            return false;
+        }
+
+        m_userStats->RequestCurrentStats();
+
+        if( m_userStats->SetStat( _name.c_str(), _value ) == false )
+        {
+            LOGGER_ERROR( "invalid set stat '%s' int32_t value '%f'"
+                , _name.c_str()
+                , _value
+            );
+
+            return false;
+        }
+
+        m_userStats->StoreStats();
+
+        LOGGER_MESSAGE_RELEASE( "Steam set state '%s' value '%f'"
+            , _name.c_str()
+            , _value
+        );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SteamService::notifyPackagesLoad_()
     {
         if( m_steamInitialize == false )
         {
@@ -480,21 +370,6 @@ namespace Mengine
                 ->setLocale( STRINGIZE_STRING_LOCAL( "en" ) );
         }
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void ModuleSteam::OnUserStatsReceived( UserStatsReceived_t * _pCallback )
-    //{
-
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void ModuleSteam::OnUserStatsStored( UserStatsStored_t * _pCallback )
-    //{
-
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void ModuleSteam::OnAchievementStored( UserAchievementStored_t * _pCallback )
-    //{
-
-    //}
 }
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING

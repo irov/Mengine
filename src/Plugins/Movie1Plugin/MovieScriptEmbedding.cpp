@@ -1384,6 +1384,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( "Movie", true );
+
         pybind::interface_<Movie, pybind::bases<Node>>( _kernel, "Movie", false )
             .def( "setResourceMovie", &Movie::setResourceMovie )
             .def( "getResourceMovie", &Movie::getResourceMovie )

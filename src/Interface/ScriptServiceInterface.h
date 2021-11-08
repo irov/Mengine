@@ -58,7 +58,12 @@ namespace Mengine
     public:
         virtual void setCurrentModule( PyObject * _module ) = 0;
         virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
+        virtual PyObject * getGlobalModule( const Char * _name ) const = 0;
         virtual void removeGlobalModule( const Char * _name ) = 0;
+
+    public:
+        virtual void setAvailablePlugin( const Char * _name, bool _available ) = 0;
+        virtual bool isAvailablePlugin( const Char * _name ) const = 0;
 
     public:
         virtual bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) = 0;

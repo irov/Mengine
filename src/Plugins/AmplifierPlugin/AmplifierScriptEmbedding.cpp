@@ -5,6 +5,7 @@
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 
@@ -367,6 +368,9 @@ namespace Mengine
         {
             return false;
         }
+
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( "Amplifier", true );
 
         pybind::def_functor_args( _kernel, "musicPlay", scriptMethod, &AmplifierScriptMethod::musicPlay );
         pybind::def_functor( _kernel, "musicSetVolume", scriptMethod, &AmplifierScriptMethod::musicSetVolume );

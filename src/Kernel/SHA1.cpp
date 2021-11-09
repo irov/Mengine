@@ -133,7 +133,7 @@ namespace Mengine
                 MENGINE_MEMCPY( &context->buffer[j], &data[i], len - i );
             }
             //////////////////////////////////////////////////////////////////////////
-            static void SHA1_Final( SHA1_CTX * context, uint8_t digest[SHA1_DIGEST_SIZE] )
+            static void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, uint32_t _size )
             {
                 uint8_t finalcount[8];
 
@@ -151,7 +151,7 @@ namespace Mengine
 
                 SHA1_Update( context, finalcount, 8 );
 
-                for( uint32_t i = 0; i < SHA1_DIGEST_SIZE; i++ )
+                for( uint32_t i = 0; i != _size; i++ )
                 {
                     digest[i] = (uint8_t)((context->state[i >> 2] >> ((3 - (i & 3)) * 8)) & 255);
                 }
@@ -170,7 +170,16 @@ namespace Mengine
 
             Detail::SHA1_Init( &context );
             Detail::SHA1_Update( &context, (uint8_t *)_buffer, _size );
-            Detail::SHA1_Final( &context, _sha1 );
+            Detail::SHA1_Final( &context, _sha1, SHA1_DIGEST_SIZE );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void makeSHA1u64( const void * _buffer, size_t _size, uint64_t * const _u64 )
+        {
+            Detail::SHA1_CTX context;
+
+            Detail::SHA1_Init( &context );
+            Detail::SHA1_Update( &context, (uint8_t *)_buffer, _size );
+            Detail::SHA1_Final( &context, (uint8_t *)_u64, sizeof( uint64_t ) );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1HEX( const void * _buffer, size_t _size, Char * const _hex )

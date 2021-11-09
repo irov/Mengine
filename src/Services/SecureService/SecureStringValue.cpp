@@ -152,15 +152,13 @@ namespace Mengine
         writer.writeBuffer( m_value.c_str(), m_value.size() );
         writer.writeBuffer( m_buffer.c_str(), m_buffer.size() );
 
-        HashType secureHash = SECURE_SERVICE()
+        uint64_t secureHash = SECURE_SERVICE()
             ->getSecureHash();
-
-        uint32_t parrot = (uint32_t)secureHash;
         
         Blobject blob_raving;
         blob_raving.resize( blob.size() );
 
-        Helper::ravingcode( parrot, blob.data(), blob.size(), blob_raving.data() );
+        Helper::ravingcode( secureHash, blob.data(), blob.size(), blob_raving.data() );
 
         _hexadecimal->resize( blob.size() * 2 );
 
@@ -178,12 +176,10 @@ namespace Mengine
         Blobject blob;
         blob.resize( blob_raving_size );
 
-        HashType secureHash = SECURE_SERVICE()
+        uint64_t secureHash = SECURE_SERVICE()
             ->getSecureHash();
 
-        uint32_t parrot = (uint32_t)secureHash;
-
-        Helper::ravingcode( parrot, blob_raving.data(), blob_raving_size, blob.data() );
+        Helper::ravingcode( secureHash, blob_raving.data(), blob_raving_size, blob.data() );
 
         ContainerReader<Blobject> reader( blob );
 
@@ -196,7 +192,7 @@ namespace Mengine
         reader.readBuffer( m_value.data(), m_value.size() );
 
         m_buffer.resize( value_size );
-        reader.readBuffer( m_buffer.data(), m_buffer.size() );        
+        reader.readBuffer( m_buffer.data(), m_buffer.size() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

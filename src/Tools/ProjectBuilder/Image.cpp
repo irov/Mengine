@@ -117,7 +117,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getGlobalFileGroup();
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, _path, true, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

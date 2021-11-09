@@ -34,6 +34,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/SHA1.h"
 
 #include "ToolUtils/ToolUtils.h"
 #include "ToolUtils/ToolLogger.h"
@@ -56,6 +57,7 @@ SERVICE_EXTERN( AllocatorService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
+SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( ArchiveService );
@@ -90,6 +92,7 @@ namespace Mengine
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
 
@@ -197,9 +200,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     size_t utf8_secure_len;
     Mengine::Helper::unicodeToUtf8( secure, utf8_secure, 1024, &utf8_secure_len );
 
-    Mengine::HashType sequreHash = Mengine::Helper::makeHash( utf8_secure, utf8_secure_len );
+    uint64_t sequreHash;
+    Mengine::Helper::makeSHA1u64( utf8_secure, utf8_secure_len, &sequreHash );
 
-    Mengine::Helper::ravingcode( (uint32_t)sequreHash, memoryBuffer, memorySize, memoryBuffer );
+    Mengine::Helper::ravingcode( sequreHash, memoryBuffer, memorySize, memoryBuffer );
 
     Mengine::OutputStreamInterfacePtr outputStream = Mengine::Helper::openOutputStreamFile( fileGroup, fp_out, true, MENGINE_DOCUMENT_FUNCTION );
 

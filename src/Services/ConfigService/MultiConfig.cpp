@@ -68,6 +68,8 @@ namespace Mengine
             }
         }
 
+        *_value = _default;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -80,6 +82,8 @@ namespace Mengine
                 return true;
             }
         }
+
+        *_value = _default;
 
         return false;
     }
@@ -94,6 +98,8 @@ namespace Mengine
             }
         }
 
+        *_value = _default;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -106,6 +112,8 @@ namespace Mengine
                 return true;
             }
         }
+
+        *_value = _default;
 
         return false;
     }
@@ -120,10 +128,12 @@ namespace Mengine
             }
         }
 
+        *_value = _default;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MultiConfig::hasValue( const Char * _section, const Char * _key, int64_t _default, int64_t * const  _value ) const
+    bool MultiConfig::hasValue( const Char * _section, const Char * _key, int64_t _default, int64_t * const _value ) const
     {
         for( const ConfigInterfacePtr & config : m_configs )
         {
@@ -133,10 +143,12 @@ namespace Mengine
             }
         }
 
+        *_value = _default;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MultiConfig::hasValue( const Char * _section, const Char * _key, uint64_t _default, uint64_t * const  _value ) const
+    bool MultiConfig::hasValue( const Char * _section, const Char * _key, uint64_t _default, uint64_t * const _value ) const
     {
         for( const ConfigInterfacePtr & config : m_configs )
         {
@@ -145,6 +157,8 @@ namespace Mengine
                 return true;
             }
         }
+
+        *_value = _default;
 
         return false;
     }
@@ -159,6 +173,8 @@ namespace Mengine
             }
         }
 
+        *_value = _default;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -171,6 +187,8 @@ namespace Mengine
                 return true;
             }
         }
+
+        *_value = _default;
 
         return false;
     }
@@ -185,6 +203,8 @@ namespace Mengine
             }
         }
 
+        *_value = _default;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -197,6 +217,8 @@ namespace Mengine
                 return true;
             }
         }
+
+        *_value = _default;
 
         return false;
     }
@@ -211,6 +233,8 @@ namespace Mengine
             }
         }
 
+        *_value = _default;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -223,6 +247,8 @@ namespace Mengine
                 return true;
             }
         }
+
+        *_value = _default;
 
         return false;
     }
@@ -237,6 +263,8 @@ namespace Mengine
             }
         }
 
+        *_value = _default;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -249,6 +277,8 @@ namespace Mengine
                 return true;
             }
         }
+
+        *_value = _default;
 
         return false;
     }

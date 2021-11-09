@@ -242,6 +242,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             Polygon s_polygon_wm( Node * _node, const Polygon & _polygon )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.polygon_wm send None object" );
+
                 const TransformationInterface * transformation = _node->getTransformation();
 
                 const mt::mat4f & wm = transformation->getWorldMatrix();
@@ -648,12 +650,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_addHomeless( Node * _node )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.addHomeless send None object" );
+
                 _node->removeFromParent();
                 _node->disable();
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_isHomeless( Node * _node )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.isHomeless send None object" );
+
                 return _node->hasParent() == false;
             }
             //////////////////////////////////////////////////////////////////////////
@@ -3869,6 +3875,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_visitChild( Node * _node, const pybind::object & _cb )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.visitChild send None object" );
+
                 _node->foreachChildrenSlug( [_cb]( const NodePtr & _node )
                 {
                     _cb.call( _node );

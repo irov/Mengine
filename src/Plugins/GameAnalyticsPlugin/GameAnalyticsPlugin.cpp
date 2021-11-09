@@ -80,9 +80,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameAnalyticsPlugin::_availablePlugin() const
     {
-        bool Engine_VideoPluginAvailable = CONFIG_VALUE( "Engine", "GameAnalyticsPluginAvailable", true );
+        bool Engine_GameAnalyticsPluginAvailable = CONFIG_VALUE( "Engine", "GameAnalyticsPluginAvailable", true );
 
-        if( Engine_VideoPluginAvailable == false )
+        if( Engine_GameAnalyticsPluginAvailable == false )
         {
             return false;
         }

@@ -33,14 +33,14 @@ namespace Mengine
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, //255
         };
         //////////////////////////////////////////////////////////////////////////
-        size_t base64_encode_size( size_t _size )
+        size_t getBase64EncodeSize( size_t _size )
         {
             size_t totalsize = 4 * ((_size + 2) / 3);
 
             return totalsize;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t base64_decode_size( const Char * _base64, size_t _size )
+        size_t getBase64DecodeSize( const Char * _base64, size_t _size )
         {
             size_t totalsize = _size / 4 * 3;
 
@@ -57,20 +57,22 @@ namespace Mengine
             return totalsize;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool base64_encode( const uint8_t * _data, size_t _datasize, bool _mod, Char * const _base64, size_t _capacity, size_t * const _outsize )
+        bool encodeBase64( const void * _data, size_t _datasize, bool _mod, Char * const _base64, size_t _capacity, size_t * const _outsize )
         {
-            size_t totalsize = base64_encode_size( _datasize );
+            size_t totalsize = getBase64EncodeSize( _datasize );
 
             if( totalsize > _capacity )
             {
                 return false;
             }
 
+            const uint8_t * data_u8 = static_cast<const uint8_t *>(_data);
+
             for( uint32_t i = 0, j = 0; i != _datasize;)
             {
-                uint32_t octet_a = i < _datasize ? _data[i++] : 0;
-                uint32_t octet_b = i < _datasize ? _data[i++] : 0;
-                uint32_t octet_c = i < _datasize ? _data[i++] : 0;
+                uint32_t octet_a = i < _datasize ? data_u8[i++] : 0;
+                uint32_t octet_b = i < _datasize ? data_u8[i++] : 0;
+                uint32_t octet_c = i < _datasize ? data_u8[i++] : 0;
 
                 uint32_t triple = (octet_a << 0x10) + (octet_b << 0x08) + octet_c;
 
@@ -96,19 +98,24 @@ namespace Mengine
                 totalsize -= mod;
             }
 
-            *_outsize = totalsize;
+            if( _outsize != nullptr )
+            {
+                *_outsize = totalsize;
+            }
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool base64_decode( const Char * _base64, size_t _base64size, uint8_t * const _data, size_t _capacity, size_t * const _outsize )
+        bool decodeBase64( const Char * _base64, size_t _base64size, void * const _data, size_t _capacity, size_t * const _outsize )
         {
-            size_t totalsize = base64_decode_size( _base64, _base64size );
+            size_t totalsize = getBase64DecodeSize( _base64, _base64size );
 
             if( totalsize > _capacity )
             {
                 return false;
             }
+
+            uint8_t * const data_u8 = static_cast<uint8_t * const>(_data);
 
             for( uint32_t i = 0, j = 0; i != _base64size;)
             {
@@ -119,12 +126,15 @@ namespace Mengine
 
                 uint32_t triple = (sextet_a << 3 * 6) + (sextet_b << 2 * 6) + (sextet_c << 1 * 6) + (sextet_d << 0 * 6);
 
-                if( j < totalsize ) _data[j++] = (triple >> 2 * 8) & 0xFF;
-                if( j < totalsize ) _data[j++] = (triple >> 1 * 8) & 0xFF;
-                if( j < totalsize ) _data[j++] = (triple >> 0 * 8) & 0xFF;
+                if( j < totalsize ) data_u8[j++] = (triple >> 2 * 8) & 0xFF;
+                if( j < totalsize ) data_u8[j++] = (triple >> 1 * 8) & 0xFF;
+                if( j < totalsize ) data_u8[j++] = (triple >> 0 * 8) & 0xFF;
             }
 
-            *_outsize = totalsize;
+            if( _outsize != nullptr )
+            {
+                *_outsize = totalsize;
+            }
 
             return true;
         }

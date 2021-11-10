@@ -1,10 +1,13 @@
 #include "Win32ConsoleLogger.h"
 
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/DocumentHelper.h"
 
 #include <clocale>
 #include <iostream>
@@ -16,8 +19,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ConsoleLogger::Win32ConsoleLogger()
-        : m_CONOUT( nullptr )
-        , m_createConsole( false )
+        : m_createConsole( false )
+        , m_CONOUT( nullptr )
+        , m_CONERR( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -29,7 +33,10 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "initialize windows console" );
 
-        this->createConsole_();
+        if( this->createConsole_() == false )
+        {
+            return false;
+        }
 
         LOGGER_SERVICE()
             ->writeHistory( LoggerInterfacePtr::from( this ) );
@@ -42,54 +49,44 @@ namespace Mengine
         this->removeConsole_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::createConsole_()
-    {        
-#if !defined(MENGINE_WINDOWS_UNIVERSAL)
-        HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
-#else
-        HMODULE hKernel32 = ::LoadPackagedLibrary( L"Kernel32.dll", 0 );
-#endif
-
-        if( hKernel32 == nullptr )
+    bool Win32ConsoleLogger::createConsole_()
+    {
+        if( ::AllocConsole() == FALSE )
         {
-            return;
+            return false;
         }
 
-        FARPROC proc = ::GetProcAddress( hKernel32, "AttachConsole" );
+        m_createConsole = true;
+    
+        m_CONOUT = ::freopen( "CONOUT$", "w", stdout );
+        m_CONERR = ::freopen( "CONOUT$", "w", stderr );
 
-        typedef BOOL( WINAPI * PATTACHCONSOLE )(DWORD);
-        PATTACHCONSOLE pAttachConsole = reinterpret_cast<PATTACHCONSOLE>(proc);
+        uint32_t OPTION_consolex = GET_OPTION_VALUE_UINT32( "consolex", ~0u );
+        uint32_t OPTION_consoley = GET_OPTION_VALUE_UINT32( "consoley", ~0u );
 
-        if( pAttachConsole == nullptr )
+        if( OPTION_consolex != ~0u && OPTION_consoley != ~0u )
         {
-            ::FreeLibrary( hKernel32 );
-
-            return;
+            HWND hWnd = ::GetConsoleWindow();
+            RECT rect;
+            ::GetWindowRect( hWnd, &rect );
+            ::MoveWindow( hWnd, OPTION_consolex, OPTION_consoley, rect.right - rect.left, rect.bottom - rect.top, TRUE );
         }
+
+        HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
 
         CONSOLE_SCREEN_BUFFER_INFO coninfo;
+        ::GetConsoleScreenBufferInfo( output_handle, &coninfo );
+        coninfo.dwSize.Y = 1000;
+        ::SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
 
-        // try to attach to calling console first
-        if( (*pAttachConsole)((DWORD)-1) == FALSE )
-        {
-            // allocate a console for this app
-            m_createConsole = (::AllocConsole() != FALSE);
+        std::wcout.clear();
+        std::cout.clear();
+        std::wcerr.clear();
+        std::cerr.clear();
 
-            // set the screen buffer to be big enough to let us scroll text
-            HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
-            ::GetConsoleScreenBufferInfo( output_handle, &coninfo );
-            coninfo.dwSize.Y = 1000;
-            ::SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
-        }
-
-        m_CONOUT = ::freopen( "CONOUT$", "w", stdout );
-
-        //::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
-        // make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
-        // point to console as well
         std::ios::sync_with_stdio();
 
-        ::FreeLibrary( hKernel32 );
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::removeConsole_()
@@ -101,6 +98,9 @@ namespace Mengine
 
         ::fclose( m_CONOUT );
         m_CONOUT = nullptr;
+
+        ::fclose( m_CONERR );
+        m_CONERR = nullptr;
 
         ::FreeConsole();
 
@@ -144,14 +144,15 @@ namespace Mengine
 
         ::SetConsoleTextAttribute( output_handle, textColor );
 
-        std::cout.write( _data, _size );
+        DWORD dWritten;
+        ::WriteConsoleA( output_handle, _data, _size, &dWritten, NULL );
 
         ::SetConsoleTextAttribute( output_handle, consoleInfo.wAttributes );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::flush()
     {
-        std::cout.flush();
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
 }

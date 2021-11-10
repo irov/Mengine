@@ -22,9 +22,7 @@
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 
-#include "Engine/HotSpotResourceShape.h"
-#include "Engine/HotSpotSurface.h"
-#include "Engine/ResourceCursorICO.h"
+#include "Engine/HotSpotPolygon.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Node.h"
@@ -724,38 +722,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_generateUniqueIdentity( uint32_t _length )
             {
-                MENGINE_UNUSED( _length );
-
-                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
-
-                uint64_t milliseconds = dateTimeProvider->getLocalDateMilliseconds();
-
-                uint64_t ticks = PLATFORM_SERVICE()
-                    ->getTicks();
-
-                uint64_t total = (uint32_t)milliseconds + (ticks << 32);
-
-                size_t total_base64_size;
-                Char total_base64[16] = {'\0'};
-                Helper::base64_encode( (const uint8_t *)&total, sizeof( total ), false, total_base64, 16, &total_base64_size );
-                total_base64[total_base64_size] = '\0';
+                MENGINE_ASSERTION( _length < 1024 );
 
                 Stringstream ss;
 
-                ss << total_base64;
+                Char uid[1024] = {'\0'};
+                Helper::makeUID( _length, uid );
+                uid[_length] = '\0';
 
-                if( _length > total_base64_size )
-                {
-                    uint32_t uid_size = _length - (uint32_t)total_base64_size;
-
-                    Char uid[40] = {'\0'};
-                    Helper::makeUID( uid_size, uid );
-                    uid[uid_size] = '\0';
-
-                    ss << uid;
-                }
-
+                ss << uid;
+                
                 String str = ss.str();
 
                 return str;

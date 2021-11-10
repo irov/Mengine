@@ -48,6 +48,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TexturepackerScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( "Texturepacker", true );
+
         pybind::interface_<ResourceTexturepacker, pybind::bases<Resource>>( _kernel, "ResourceTexturepacker", false )
             .def_static( "getFrame", &Detail::ResourceTexturepacker_getFrame )
             ;

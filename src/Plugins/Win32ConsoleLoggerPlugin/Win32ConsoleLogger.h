@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Kernel/LoggerBase.h"
-#include "Kernel/String.h"
+
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -22,13 +23,14 @@ namespace Mengine
         void flush() override;
 
     protected:
-        void createConsole_();
+        bool createConsole_();
         void removeConsole_();
 
     protected:
         bool m_createConsole;
 
         FILE * m_CONOUT;
+        FILE * m_CONERR;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32ConsoleLogger, LoggerInterface> Win32ConsoleLoggerPtr;

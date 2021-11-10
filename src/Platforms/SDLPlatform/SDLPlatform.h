@@ -63,8 +63,16 @@ namespace Mengine
         void stopPlatform()	override;
 
     public:
+        UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        void removeUpdate( UniqueId _id ) override;
+
+    public:
         uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
         void removeTimer( uint32_t _id ) override;
+
+    public:
+        void setSleepMode( bool _sleepMode ) override;
+        bool getSleepMode() const override;
 
     public:
         uint64_t getTicks() const override;
@@ -254,6 +262,19 @@ namespace Mengine
         typedef Vector<TimerDesc> VectorTimers;
         VectorTimers m_timers;
 
+        struct UpdateDesc
+        {
+            UniqueId id;
+            LambdaUpdate lambda;
+
+#ifdef MENGINE_DEBUG
+            DocumentPtr doc;
+#endif
+        };
+
+        typedef Vector<UpdateDesc> VectorUpdates;
+        VectorUpdates m_updates;
+
         FactoryPtr m_factoryDynamicLibraries;
         FactoryPtr m_factoryDateTimeProviders;
 
@@ -274,6 +295,7 @@ namespace Mengine
         float m_pauseUpdatingTime;
 
         bool m_active;
+        bool m_sleepMode;
         bool m_shouldQuit;
         bool m_running;
 

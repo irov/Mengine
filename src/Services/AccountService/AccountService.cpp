@@ -6,6 +6,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Assertion.h"
@@ -21,6 +22,9 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/PathString.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/UID.h"
+
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AccountService, Mengine::AccountService );
@@ -516,7 +520,7 @@ namespace Mengine
 
         if( config->hasValue( "SETTINGS", "AccountEnumerator", 0u, &m_playerEnumerator ) == false )
         {
-            LOGGER_ERROR( "get AccountEnumerator failed '%s'"
+            LOGGER_ERROR( "get [SETTINGS] AccountEnumerator failed '%s'"
                 , Game_AccountsPath.c_str()
             );
 
@@ -525,14 +529,14 @@ namespace Mengine
 
         if( config->hasValue( "SETTINGS", "GlobalAccountID", ConstString::none(), &m_globalAccountID ) == false )
         {
-            LOGGER_INFO( "account", "get GlobalAccountID failed '%s'"
+            LOGGER_INFO( "account", "get [SETTINGS] GlobalAccountID failed '%s'"
                 , Game_AccountsPath.c_str()
             );
         }
 
         if( config->hasValue( "SETTINGS", "DefaultAccountID", ConstString::none(), &m_defaultAccountID ) == false )
         {
-            LOGGER_INFO( "account", "get DefaultAccountID failed '%s'"
+            LOGGER_INFO( "account", "get [SETTINGS] DefaultAccountID failed '%s'"
                 , Game_AccountsPath.c_str()
             );
         }
@@ -540,7 +544,7 @@ namespace Mengine
         ConstString selectAccountID;
         if( config->hasValue( "SETTINGS", "SelectAccountID", ConstString::none(), &selectAccountID ) == false )
         {
-            LOGGER_INFO( "account", "get SelectAccountID failed '%s'"
+            LOGGER_INFO( "account", "get [SETTINGS] SelectAccountID failed '%s'"
                 , Game_AccountsPath.c_str()
             );
         }
@@ -642,6 +646,8 @@ namespace Mengine
         }
 
         m_invalidateAccounts = true;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_ACCOUNTS_LOAD );
 
         return true;
     }

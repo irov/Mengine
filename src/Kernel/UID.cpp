@@ -28,7 +28,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void makeUID( uint32_t _length, Char * const _uid )
         {
-            uint32_t seed = Helper::generateRandomDeviceSeed();
+            uint32_t device_seed = Helper::generateRandomDeviceSeed();
+            uint32_t locale_seed = Helper::generateRandomLocaleSeed();
+
+            uint32_t seed = device_seed + locale_seed;
 
             Helper::makeUIDSeed( seed, _length, _uid );
         }

@@ -63,7 +63,6 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/MT19937Randomizer.h"
-#include "Kernel/SecureValue.h"
 #include "Kernel/BaseAffectorHub.h"
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
@@ -493,12 +492,6 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<BaseAffectorHub, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
@@ -519,9 +512,6 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), nullptr );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), nullptr );

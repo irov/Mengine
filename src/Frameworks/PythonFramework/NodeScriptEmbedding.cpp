@@ -19,11 +19,21 @@
 #include "Interface/FontServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
-#include "Plugins/MoviePlugin/ResourceMovie2.h"
-
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonScriptWrapper.h"
+
+#include "Plugins/MoviePlugin/ResourceMovie2.h"
+
+#include "ScriptHolder.h"
+#include "ScriptableAffectorCallback.h"
+#include "PythonEntityBehavior.h"
+#include "PythonHotSpotEventReceiver.h"
+#include "PythonScheduleTiming.h"
+#include "PythonSchedulePipe.h"
+#include "PythonScheduleEvent.h"
+#include "DelaySchedulePipe.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceMusic.h"
@@ -32,6 +42,25 @@
 #include "Engine/ResourceShape.h"
 #include "Engine/ResourceCursorICO.h"
 #include "Engine/ResourceCursorSystem.h"
+#include "Engine/HotSpot.h"
+#include "Engine/HotSpotPolygon.h"
+#include "Engine/HotSpotGlobal.h"
+#include "Engine/HotSpotCircle.h"
+#include "Engine/HotSpotBubbles.h"
+#include "Engine/HotSpotImage.h"
+#include "Engine/HotSpotResourceShape.h"
+#include "Engine/HotSpotSurface.h"
+#include "Engine/Landscape2D.h"
+#include "Engine/Grid2D.h"
+#include "Engine/Gyroscope.h"
+#include "Engine/TextField.h"
+#include "Engine/SoundEmitter.h"
+#include "Engine/Point.h"
+#include "Engine/Line.h"
+#include "Engine/Layer2D.h"
+#include "Engine/Meshget.h"
+#include "Engine/Isometric.h"
+#include "Engine/Window.h"
 
 #include "Kernel/Reference.h"
 #include "Kernel/Eventable.h"
@@ -46,38 +75,16 @@
 #include "Kernel/ResourceSound.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderContextHelper.h"
-
-#include "Engine/HotSpot.h"
-#include "Engine/HotSpotPolygon.h"
-#include "Engine/HotSpotGlobal.h"
-#include "Engine/HotSpotCircle.h"
-#include "Engine/HotSpotBubbles.h"
-#include "Engine/HotSpotImage.h"
-#include "Engine/HotSpotResourceShape.h"
-#include "Engine/HotSpotSurface.h"
-#include "Engine/Landscape2D.h"
-#include "Engine/Grid2D.h"
-
 #include "Kernel/ShapeCircle.h"
 #include "Kernel/ShapePacMan.h"
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeQuadFlex.h"
 #include "Kernel/ShapeQuadSize.h"
-
-#include "Engine/Gyroscope.h"
-#include "Engine/TextField.h"
-#include "Engine/SoundEmitter.h"
-#include "Engine/Point.h"
-#include "Engine/Line.h"
-
-#include "ScriptHolder.h"
-
 #include "Kernel/SurfaceSound.h"
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceImageSequence.h"
 #include "Kernel/SurfaceTrackMatte.h"
 #include "Kernel/SurfaceSolidColor.h"
-
 #include "Kernel/Interender.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
@@ -92,36 +99,22 @@
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
 #include "Kernel/ResourceImageSubstract.h"
-
-#include "Engine/Layer2D.h"
-#include "Engine/Meshget.h"
-#include "Engine/Isometric.h"
-#include "Engine/Window.h"
-
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
 #include "Kernel/Logger.h"
-
-#include "Interface/RenderSystemInterface.h"
-
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/ThreadTask.h"
-
-#include "Environment/Python/PythonScriptWrapper.h"
-
-#include "ScriptableAffectorCallback.h"
-#include "PythonEntityBehavior.h"
-#include "PythonHotSpotEventReceiver.h"
-#include "PythonScheduleTiming.h"
-#include "PythonSchedulePipe.h"
-#include "PythonScheduleEvent.h"
-#include "DelaySchedulePipe.h"
-
 #include "Kernel/Polygon.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
+#include "Kernel/Rect.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/ValueFollower.h"
+#include "Kernel/ValueInterpolatorParabolic.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -129,14 +122,6 @@
 #include "math/mat4.h"
 #include "math/quat.h"
 #include "math/utils.h"
-
-#include "Kernel/Rect.h"
-#include "Kernel/Polygon.h"
-#include "Kernel/ValueFollower.h"
-#include "Kernel/ValueInterpolatorParabolic.h"
-
-#include "Kernel/FactoryPool.h"
-#include "Kernel/AssertionFactory.h"
 
 #include "utf8.h"
 
@@ -168,7 +153,7 @@ namespace Mengine
 
         public:
             //////////////////////////////////////////////////////////////////////////
-            VectorString cs_args;
+            VectorString cache_args;
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
             {
@@ -176,8 +161,8 @@ namespace Mengine
 
                 size_t args_count = _kernel->tuple_size( _args );
 
-                cs_args.clear();
-                cs_args.reserve( args_count );
+                cache_args.clear();
+                cache_args.reserve( args_count );
 
                 for( uint32_t it = 0; it != args_count; ++it )
                 {
@@ -196,7 +181,7 @@ namespace Mengine
                             return _kernel->ret_false();
                         }
 
-                        cs_args.emplace_back( key );
+                        cache_args.emplace_back( key );
                     }
                     else if( _kernel->unicode_check( py_string ) == true )
                     {
@@ -214,7 +199,7 @@ namespace Mengine
                         String utf8_arg;
                         Helper::unicodeToUtf8( key, &utf8_arg );
 
-                        cs_args.emplace_back( utf8_arg );
+                        cache_args.emplace_back( utf8_arg );
                     }
                     else
                     {
@@ -232,11 +217,11 @@ namespace Mengine
 
                         const Char * value_str = py_value_str.c_str();
 
-                        cs_args.emplace_back( value_str );
+                        cache_args.emplace_back( value_str );
                     }
                 }
 
-                _textField->setTextFormatArgs( cs_args );
+                _textField->setTextFormatArgs( cache_args );
 
                 return _kernel->ret_true();
             }

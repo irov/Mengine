@@ -697,6 +697,7 @@ Core
     
     VectorAuxScope.h
     
+    ContainerReader.h
     ContainerWriter.h
     
     BezierHelper.h
@@ -745,10 +746,7 @@ Core
     
     Ravingcode.h
     Ravingcode.cpp
-    
-    SecureValue.h
-    SecureValue.cpp
-    
+
     Stringalized.h
     Stringalized.cpp
     
@@ -808,6 +806,12 @@ Core
     
     ResolutionHelper.cpp
     ResolutionHelper.h
+    
+    SHA1.cpp
+    SHA1.h
+    
+    Hexadecimal.cpp
+    Hexadecimal.h
 )
 
 ADD_FILTER(

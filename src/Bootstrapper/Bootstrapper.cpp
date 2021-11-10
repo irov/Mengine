@@ -40,10 +40,6 @@
 #define MENGINE_APPLICATION_INI_PATH "application.ini"
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_SETLOCALE
-#define MENGINE_SETLOCALE "C"
-#endif
-//////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
@@ -316,6 +312,10 @@ PLUGIN_EXPORT( AndroidNativeLocalNotifications );
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
 PLUGIN_EXPORT( Optick );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
+PLUGIN_EXPORT( GameAnalytics );
 #endif
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
@@ -678,11 +678,11 @@ namespace Mengine
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FACTORABLE );
@@ -759,24 +759,6 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
         MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
-
-        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
-
-        if( this->createDynamicSystemPlugins_() == false )
-        {
-            LOGGER_ERROR( "invalid create dynamic priority plugins" );
-
-            return false;
-        }
-
-        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority dev plugins" );
-
-        if( this->createDynamicSystemDevPlugins_() == false )
-        {
-            LOGGER_ERROR( "invalid create dynamic priority dev plugins" );
-
-            return false;
-        }
 
         LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
 
@@ -869,6 +851,24 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( PlayerService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( AccountService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( GameService, MENGINE_DOCUMENT_FACTORABLE );
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
+
+        if( this->createDynamicSystemPlugins_() == false )
+        {
+            LOGGER_ERROR( "invalid create dynamic priority plugins" );
+
+            return false;
+        }
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority dev plugins" );
+
+        if( this->createDynamicSystemDevPlugins_() == false )
+        {
+            LOGGER_ERROR( "invalid create dynamic priority dev plugins" );
+
+            return false;
+        }
 
 #undef BOOTSTRAPPER_SERVICE_CREATE
 
@@ -1081,6 +1081,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
+        MENGINE_ADD_PLUGIN( GameAnalytics, "initialize Game Analytics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;
@@ -1617,6 +1621,8 @@ namespace Mengine
 
         if( m_loggerFile != nullptr )
         {
+            LOGGER_MESSAGE_RELEASE( "Finish log successful" );
+
             LOGGER_SERVICE()
                 ->unregisterLogger( m_loggerFile );
 

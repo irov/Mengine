@@ -1,9 +1,14 @@
 #include "SecureService.h"
 
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
+
+#include "SecureUnsignedValue.h"
+#include "SecureStringValue.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/HashHelper.h"
+#include "Kernel/SHA1.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
 
 #include "Config/StdString.h"
 
@@ -32,17 +37,33 @@ namespace Mengine
 
         size_t secure_len = MENGINE_STRLEN( secure );
 
-        m_secureHash = Helper::makeHash( secure, secure_len );
+        Helper::makeSHA1u64( secure, secure_len, &m_secureHash );
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureUnsignedValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureStringValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SecureService::_finalizeService()
     {
-        //Empty
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    HashType SecureService::getSecureHash() const
+    uint64_t SecureService::getSecureHash() const
     {
         return m_secureHash;
     }
@@ -54,20 +75,25 @@ namespace Mengine
 
         for( size_t index = 0; index != head; index += 8 )
         {
-            *(int64_t *)_buffer ^= m_secureHash;
+            *(uint64_t *)_buffer ^= m_secureHash;
         }
 
-        union
+        if( tail != 0 )
         {
-            int8_t tail_buffer[8];
-            int64_t tail64;
-        };
+            union
+            {
+                uint8_t tail_buffer[8];
+                uint64_t tail64;
+            };
 
-        MENGINE_MEMCPY( tail_buffer, (int8_t *)_buffer + head, tail );
+            tail64 = 0;
 
-        tail64 ^= m_secureHash;
+            MENGINE_MEMCPY( tail_buffer, (uint8_t *)_buffer + head, tail );
 
-        MENGINE_MEMCPY( (int8_t *)_buffer + head, tail_buffer, tail );
+            tail64 ^= m_secureHash;
+
+            MENGINE_MEMCPY( (uint8_t *)_buffer + head, tail_buffer, tail );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void SecureService::unprotectData( void * const _buffer, size_t _size ) const
@@ -77,20 +103,25 @@ namespace Mengine
 
         for( size_t index = 0; index != head; index += 8 )
         {
-            *(int64_t *)_buffer ^= m_secureHash;
+            *(uint64_t *)_buffer ^= m_secureHash;
         }
 
-        union
+        if( tail != 0 )
         {
-            int8_t tail_buffer[8];
-            int64_t tail64;
-        };
+            union
+            {
+                uint8_t tail_buffer[8];
+                uint64_t tail64;
+            };
 
-        MENGINE_MEMCPY( tail_buffer, (int8_t *)_buffer + head, tail );
+            tail64 = 0;
 
-        tail64 ^= m_secureHash;
+            MENGINE_MEMCPY( tail_buffer, (uint8_t *)_buffer + head, tail );
 
-        MENGINE_MEMCPY( (int8_t *)_buffer + head, tail_buffer, tail );
+            tail64 ^= m_secureHash;
+
+            MENGINE_MEMCPY( (uint8_t *)_buffer + head, tail_buffer, tail );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

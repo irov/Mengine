@@ -50,13 +50,13 @@ namespace Mengine
                     }
                     else
                     {
-                        LOGGER_MESSAGE_RELEASE_WN( "option: -%s="
+                        LOGGER_MESSAGE_RELEASE_WN( false, true, "option: -%s="
                             , option.key
                         );
 
                         for( uint32_t index = 0; index != option.value_count; ++index )
                         {
-                            LOGGER_MESSAGE_RELEASE_WN( "%s|"
+                            LOGGER_MESSAGE_RELEASE_WN( false, true, "%s|"
                                 , option.value[index]
                             );
                         }

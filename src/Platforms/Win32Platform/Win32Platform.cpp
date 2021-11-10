@@ -13,6 +13,8 @@
 #include "Interface/PluginInterface.h"
 #include "Interface/ServiceInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
@@ -35,10 +37,9 @@
 #include "Kernel/StringArguments.h"
 #include "Kernel/Win32Helper.h"
 #include "Kernel/ProfilerHelper.h"
-
-#include "Environment/Windows/WindowsIncluder.h"
-
+#include "Kernel/SHA1.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/RandomDevice.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -62,8 +63,12 @@
 #include <cerrno>
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_SETLOCALE
-#define MENGINE_SETLOCALE "C"
+#ifndef MENGINE_SETLOCALE_ENABLE
+#define MENGINE_SETLOCALE_ENABLE 1
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_SETLOCALE_VALUE
+#define MENGINE_SETLOCALE_VALUE "C"
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DEVELOPMENT_USER_FOLDER_NAME
@@ -86,9 +91,9 @@ namespace Mengine
         , m_hWnd( NULL )
         , m_performanceSupport( false )
         , m_active( false )
-        , m_update( false )
         , m_hIcon( NULL )
         , m_close( false )
+        , m_sleepMode( true )
         , m_pauseUpdatingTime( -1.f )
         , m_prevTime( 0 )
         , m_cursorInArea( false )
@@ -112,7 +117,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
-        ::setlocale( LC_ALL, MENGINE_SETLOCALE );
+#if MENGINE_SETLOCALE_ENABLE
+        ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
+#endif
 
         HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
 
@@ -330,6 +337,12 @@ namespace Mengine
         }
 #endif
 
+        uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
+
+        LOGGER_MESSAGE_RELEASE( "Device Seed: %u"
+            , deviceSeed
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -372,13 +385,29 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "forgot remove win32 timer (doc: %s)"
+            LOGGER_ERROR( "forgot remove platform timer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }
 #endif
 
         m_timers.clear();
+
+#ifdef MENGINE_DEBUG
+        for( const UpdateDesc & desc : m_updates )
+        {
+            if( desc.id == INVALID_UNIQUE_ID )
+            {
+                continue;
+            }
+
+            LOGGER_ERROR( "forgot remove platform update (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_updates.clear();
 
         if( m_hIcon != NULL )
         {
@@ -661,6 +690,43 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    UniqueId Win32Platform::addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _doc );
+
+        UniqueId new_id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
+
+        UpdateDesc desc;
+        desc.id = new_id;
+        desc.lambda = _lambda;
+
+#ifdef MENGINE_DEBUG
+        desc.doc = _doc;
+#endif
+
+        m_updates.emplace_back( desc );
+
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::removeUpdate( UniqueId _id )
+    {
+        VectorUpdates::iterator it_found = Algorithm::find_if( m_updates.begin(), m_updates.end(), [_id]( const UpdateDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_updates.end(), "not found update '%u'"
+            , _id
+        );
+
+        UpdateDesc & desc = *it_found;
+
+        desc.id = INVALID_UNIQUE_ID;
+        desc.lambda = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     UniqueId Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
@@ -681,6 +747,16 @@ namespace Mengine
         m_timers.emplace_back( desc );
 
         return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::setSleepMode( bool _sleepMode )
+    {
+        m_sleepMode = _sleepMode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getSleepMode() const
+    {
+        return m_sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::removeTimer( UniqueId _id )
@@ -780,6 +856,21 @@ namespace Mengine
                     continue;
                 }
 
+                for( const UpdateDesc & desc : m_updates )
+                {
+                    if( desc.id == INVALID_UNIQUE_ID )
+                    {
+                        continue;
+                    }
+
+                    desc.lambda( desc.id );
+                }
+
+                m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
+                {
+                    return _desc.id == INVALID_UNIQUE_ID;
+                } ), m_updates.end() );
+
                 for( TimerDesc & desc : m_timers )
                 {
                     if( desc.id == INVALID_UNIQUE_ID )
@@ -803,8 +894,6 @@ namespace Mengine
                 {
                     return _desc.id == INVALID_UNIQUE_ID;
                 } ), m_timers.end() );
-
-                m_update = true;
 
                 bool updating = APPLICATION_SERVICE()
                     ->beginUpdate();
@@ -836,8 +925,6 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->endUpdate();
 
-                m_update = false;
-
                 if( updating == false )
                 {
                     if( m_pauseUpdatingTime < 0.f )
@@ -845,7 +932,14 @@ namespace Mengine
                         m_pauseUpdatingTime = frameTime;
                     }
 
-                    ::Sleep( 100 );
+                    if( m_sleepMode == true )
+                    {
+                        ::Sleep( 100 );
+                    }
+                    else
+                    {
+                        ::Sleep( 1 );
+                    }
                 }
                 else
                 {
@@ -2516,54 +2610,70 @@ namespace Mengine
 
         if( _fullsreen == false )
         {
-            DWORD dwStyle = this->getWindowStyle_( _fullsreen );
-            DWORD dwStyleEx = this->getWindowExStyle_( _fullsreen );
+            uint32_t OPTION_winx = GET_OPTION_VALUE_UINT32( "winx", ~0u );
+            uint32_t OPTION_winy = GET_OPTION_VALUE_UINT32( "winy", ~0u );
 
-            if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
+            if( OPTION_winx != ~0u && OPTION_winy != ~0u )
             {
-                LOGGER_ERROR( "invalid adjust window rect %s"
-                    , Helper::Win32GetLastErrorMessage()
-                );
+                uint32_t width = rc.right - rc.left;
+                uint32_t height = rc.bottom - rc.top;
 
-                return false;
-            }
-
-            RECT workArea;
-            if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
-            {
-                LOGGER_ERROR( "invalid system parameters info %s"
-                    , Helper::Win32GetLastErrorMessage()
-                );
-
-                return false;
-            }
-
-            LONG width = rc.right - rc.left;
-            LONG height = rc.bottom - rc.top;
-
-            LONG left = (workArea.left + workArea.right - width) / 2;
-            LONG top = (workArea.top + workArea.bottom - height) / 2;
-
-            if( top > 0 )
-            {
-                rc.top = (workArea.top + workArea.bottom - height) / 2;
+                rc.left = OPTION_winx;
+                rc.top = OPTION_winy;
+                rc.right = rc.left + width;
+                rc.bottom = rc.top + height;
             }
             else
             {
-                rc.top = 0;
-            }
+                DWORD dwStyle = this->getWindowStyle_( _fullsreen );
+                DWORD dwStyleEx = this->getWindowExStyle_( _fullsreen );
 
-            if( left > 0 )
-            {
-                rc.left = (workArea.left + workArea.right - width) / 2;
-            }
-            else
-            {
-                rc.left = 0;
-            }
+                if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
+                {
+                    LOGGER_ERROR( "invalid adjust window rect %s"
+                        , Helper::Win32GetLastErrorMessage()
+                    );
 
-            rc.right = rc.left + width;
-            rc.bottom = rc.top + height;
+                    return false;
+                }
+
+                RECT workArea;
+                if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
+                {
+                    LOGGER_ERROR( "invalid system parameters info %s"
+                        , Helper::Win32GetLastErrorMessage()
+                    );
+
+                    return false;
+                }
+
+                LONG width = rc.right - rc.left;
+                LONG height = rc.bottom - rc.top;
+
+                LONG left = (workArea.left + workArea.right - width) / 2;
+                LONG top = (workArea.top + workArea.bottom - height) / 2;
+
+                if( top > 0 )
+                {
+                    rc.top = (workArea.top + workArea.bottom - height) / 2;
+                }
+                else
+                {
+                    rc.top = 0;
+                }
+
+                if( left > 0 )
+                {
+                    rc.left = (workArea.left + workArea.right - width) / 2;
+                }
+                else
+                {
+                    rc.left = 0;
+                }
+
+                rc.right = rc.left + width;
+                rc.bottom = rc.top + height;
+            }
         }
 
         *_rect = rc;

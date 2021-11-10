@@ -27,15 +27,32 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
+#include "Interface/AnalyticsSystemInterface.h"
+
+#include "Environment/Python/PythonEventReceiver.h"
+#include "Environment/Python/PythonScriptWrapper.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
-#include "Plugins/MoviePlugin/ResourceMovie2.h"
+#include "Services/SecureService/SecureUnsignedValue.h"
+#include "Services/SecureService/SecureStringValue.h"
+
+#include "ScriptHolder.h"
+
+#include "PythonValueFollowerLinear.h"
+#include "PythonValueFollowerAcceleration.h"
+
+#include "PythonEntityBehavior.h"
+#include "PythonScheduleTiming.h"
+#include "PythonSchedulePipe.h"
+#include "PythonScheduleEvent.h"
+#include "DelaySchedulePipe.h"
+#include "PythonFileLogger.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
-
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotCircle.h"
@@ -45,16 +62,17 @@
 #include "Engine/HotSpotSurface.h"
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
-
-#include "Kernel/ShapeQuadFixed.h"
-#include "Kernel/ShapeQuadFlex.h"
-
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
 #include "Engine/Point.h"
 #include "Engine/Line.h"
+#include "Engine/Meshget.h"
+#include "Engine/Isometric.h"
+#include "Engine/Window.h"
 
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -68,7 +86,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/ResourceSound.h"
-
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
 #include "Kernel/ResourceImageSubstract.h"
@@ -76,64 +93,29 @@
 #include "Kernel/ResourceImageSolid.h"
 #include "Kernel/ResourceImageData.h"
 #include "Kernel/ResourceImage.h"
-
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
-
-#include "ScriptHolder.h"
-
 #include "Kernel/SurfaceSound.h"
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceImageSequence.h"
 #include "Kernel/SurfaceSolidColor.h"
-
-#include "Engine/Meshget.h"
-#include "Engine/Isometric.h"
-#include "Engine/Window.h"
-
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
 #include "Kernel/Layer.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
-#include "Environment/Python/PythonEventReceiver.h"
-#include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
-
-#include "PythonValueFollowerLinear.h"
-#include "PythonValueFollowerAcceleration.h"
-
-#include "PythonEntityBehavior.h"
-#include "PythonScheduleTiming.h"
-#include "PythonSchedulePipe.h"
-#include "PythonScheduleEvent.h"
-#include "DelaySchedulePipe.h"
-#include "PythonFileLogger.h"
-
 #include "Kernel/Polygon.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
-#include "Kernel/SecureValue.h"
-
-#include "math/angle.h"
-#include "math/vec4.h"
-#include "math/mat3.h"
-#include "math/mat4.h"
-#include "math/quat.h"
-#include "math/utils.h"
-
 #include "Kernel/Rect.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/ValueFollower.h"
@@ -145,6 +127,13 @@
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
+
+#include "math/angle.h"
+#include "math/vec4.h"
+#include "math/mat3.h"
+#include "math/mat4.h"
+#include "math/quat.h"
+#include "math/utils.h"
 
 #include "pybind/stl/stl_type_cast.hpp"
 
@@ -253,6 +242,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             Polygon s_polygon_wm( Node * _node, const Polygon & _polygon )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.polygon_wm send None object" );
+
                 const TransformationInterface * transformation = _node->getTransformation();
 
                 const mt::mat4f & wm = transformation->getWorldMatrix();
@@ -659,12 +650,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_addHomeless( Node * _node )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.addHomeless send None object" );
+
                 _node->removeFromParent();
                 _node->disable();
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_isHomeless( Node * _node )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.isHomeless send None object" );
+
                 return _node->hasParent() == false;
             }
             //////////////////////////////////////////////////////////////////////////
@@ -2817,6 +2812,60 @@ namespace Mengine
                 return wp_screen;
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_analitycsStartSession()
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->startSession();
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analitycsEndSession()
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->endSession();
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analitycsStartProgressionEvent( const Char * _name )
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->startProgressionEvent( _name );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsCompleteProgressionEvent( const Char * _name )
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->completeProgressionEvent( _name );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsFailProgressionEvent( const Char * _name )
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->failProgressionEvent( _name );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsDesignEvent( const Char * _event )
+            {
+                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
+                {
+                    ANALYTICS_SYSTEM()
+                        ->addDesignEvent( _event );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
             {
                 PythonValueFollowerLinearPtr follower = PROTOTYPE_SERVICE()
@@ -2863,7 +2912,20 @@ namespace Mengine
                 affectorHub->stopAffector( id );
             }
             //////////////////////////////////////////////////////////////////////////
-            pybind::tuple s_SecureValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureValue * _secure )
+            String s_SecureValueInterface_saveHexadecimal( const SecureValueInterface * _secure )
+            {
+                String hexadecimal;
+                _secure->saveHexadecimal( &hexadecimal );
+
+                return hexadecimal;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_SecureValueInterface_loadHexadecimal( SecureValueInterface * _secure, const String & _hexadecimal )
+            {
+                _secure->loadHexadecimal( _hexadecimal );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::tuple s_SecureUnsignedValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureUnsignedValue * _secure )
             {
                 uint32_t unprotected_value;
                 if( _secure->getUnprotectedValue( &unprotected_value ) == false )
@@ -2874,10 +2936,55 @@ namespace Mengine
                 return pybind::make_tuple_t( _kernel, true, unprotected_value );
             }
             //////////////////////////////////////////////////////////////////////////
-            SecureValuePtr s_makeSecureValue( uint32_t _value )
+            pybind::tuple s_SecureUnsignedValue_cmpSecureValue( pybind::kernel_interface * _kernel, const SecureUnsignedValue * _secure, const SecureUnsignedValuePtr & _test )
             {
-                SecureValuePtr secureValue = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+                int32_t result;
+                if( _secure->cmpSecureValue( _test, &result ) == false )
+                {
+                    return pybind::make_tuple_t( _kernel, false, 0 );
+                }
+
+                return pybind::make_tuple_t( _kernel, true, result );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            SecureUnsignedValuePtr s_makeSecureUnsignedValue( uint32_t _value )
+            {
+                SecureUnsignedValuePtr secureValue = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( secureValue );
+
+                secureValue->setUnprotectedValue( _value );
+
+                return secureValue;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::tuple s_SecureStringValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureStringValue * _secure )
+            {
+                String unprotected_value;
+                if( _secure->getUnprotectedValue( &unprotected_value ) == false )
+                {
+                    return pybind::make_tuple_t( _kernel, false, "" );
+                }
+
+                return pybind::make_tuple_t( _kernel, true, unprotected_value );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::tuple s_SecureStringValue_cmpSecureValue( pybind::kernel_interface * _kernel, const SecureStringValue * _secure, const SecureStringValuePtr & _test )
+            {
+                int32_t result;
+                if( _secure->cmpSecureValue( _test, &result ) == false )
+                {
+                    return pybind::make_tuple_t( _kernel, false, 0 );
+                }
+
+                return pybind::make_tuple_t( _kernel, true, result );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            SecureStringValuePtr s_makeSecureStringValue( const String & _value )
+            {
+                SecureStringValuePtr secureValue = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue );
 
@@ -3696,7 +3803,7 @@ namespace Mengine
                     ->getDefaultConfig();
 
                 const Char * param_value;
-                if( config->hasValue( "Params", _paramName.c_str(), "", & param_value) == false )
+                if( config->hasValue( "Params", _paramName.c_str(), "", &param_value ) == false )
                 {
                     return _kernel->ret_none();
                 }
@@ -3768,6 +3875,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_visitChild( Node * _node, const pybind::object & _cb )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.visitChild send None object" );
+
                 _node->foreachChildrenSlug( [_cb]( const NodePtr & _node )
                 {
                     _cb.call( _node );
@@ -4233,6 +4342,14 @@ namespace Mengine
         pybind::def_functor( _kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
         pybind::def_functor( _kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 
+
+        pybind::def_functor( _kernel, "analitycsStartSession", nodeScriptMethod, &EngineScriptMethod::s_analitycsStartSession );
+        pybind::def_functor( _kernel, "analitycsEndSession", nodeScriptMethod, &EngineScriptMethod::s_analitycsEndSession );
+        pybind::def_functor( _kernel, "analitycsStartProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analitycsStartProgressionEvent );
+        pybind::def_functor( _kernel, "analitycsCompleteProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCompleteProgressionEvent );
+        pybind::def_functor( _kernel, "analitycsFailProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsFailProgressionEvent );
+        pybind::def_functor( _kernel, "analyticsDesignEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsDesignEvent );
+
         pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable>>( _kernel, "PythonValueFollower" )
             ;
 
@@ -4303,18 +4420,31 @@ namespace Mengine
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
             ;
 
-        pybind::interface_<SecureValue, pybind::bases<Mixin>>( _kernel, "SecureValue" )
-            .def( "setupSecureValue", &SecureValue::setupSecureValue )
-            .def( "setUnprotectedValue", &SecureValue::setUnprotectedValue )
-            .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureValue_getUnprotectedValue )
-            .def( "additiveSecureValue", &SecureValue::additiveSecureValue )
-            .def( "substractSecureValue", &SecureValue::substractSecureValue )
-            .def( "additive2SecureValue", &SecureValue::additive2SecureValue )
-            .def( "cmpSecureValue", &SecureValue::cmpSecureValue )
+        pybind::interface_<SecureValueInterface, pybind::bases<Mixin>>( _kernel, "SecureValueInterface" )
+            .def_proxy_static( "saveHexadecimal", nodeScriptMethod, &EngineScriptMethod::s_SecureValueInterface_saveHexadecimal )
+            .def_proxy_static( "loadHexadecimal", nodeScriptMethod, &EngineScriptMethod::s_SecureValueInterface_loadHexadecimal )
             ;
 
-        pybind::def_functor( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureValue );
+        pybind::interface_<SecureUnsignedValue, pybind::bases<SecureValueInterface>>( _kernel, "SecureUnsignedValue" )
+            .def( "setupSecureValue", &SecureUnsignedValue::setupSecureValue )
+            .def( "setUnprotectedValue", &SecureUnsignedValue::setUnprotectedValue )
+            .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureUnsignedValue_getUnprotectedValue )
+            .def( "additiveSecureValue", &SecureUnsignedValue::additiveSecureValue )
+            .def( "substractSecureValue", &SecureUnsignedValue::substractSecureValue )
+            .def( "additive2SecureValue", &SecureUnsignedValue::additive2SecureValue )
+            .def_proxy_static_kernel( "cmpSecureValue", nodeScriptMethod, &EngineScriptMethod::s_SecureUnsignedValue_cmpSecureValue )
+            ;
 
+        pybind::def_functor_deprecated( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue, "use makeSecureUnsignedValue" );
+        pybind::def_functor( _kernel, "makeSecureUnsignedValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureUnsignedValue );
+
+        pybind::interface_<SecureStringValue, pybind::bases<SecureValueInterface>>( _kernel, "SecureStringValue" )
+            .def( "setUnprotectedValue", &SecureStringValue::setUnprotectedValue )
+            .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureStringValue_getUnprotectedValue )
+            .def_proxy_static_kernel( "cmpSecureValue", nodeScriptMethod, &EngineScriptMethod::s_SecureStringValue_cmpSecureValue )
+            ;
+
+        pybind::def_functor( _kernel, "makeSecureStringValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureStringValue );
 
         pybind::interface_<PythonFileLogger, pybind::bases<Mixin>>( _kernel, "PythonFileLogger" )
             .def_call( &PythonFileLogger::write )

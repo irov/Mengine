@@ -25,12 +25,25 @@ namespace Mengine
         , m_color( _color )
         , m_file( _file )
         , m_line( _line )
+        , m_timestamp( true )
         , m_newline( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     LoggerOperator::~LoggerOperator()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LoggerOperator & LoggerOperator::setTimestamp( bool _timestamp )
+    {
+        m_timestamp = _timestamp;
+
+        return *this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerOperator::getTimestamp() const
+    {
+        return m_timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
     LoggerOperator & LoggerOperator::setNewline( bool _newline )
@@ -75,34 +88,37 @@ namespace Mengine
 
         size_t size = 0;
 
-        if( m_level > LM_CRITICAL )
+        if( m_timestamp == true )
         {
-            size_t size_timestamp = LOGGER_SERVICE()
-                ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
-
-            if( size_timestamp > 0 )
+            if( m_level > LM_CRITICAL )
             {
-                size += size_timestamp;
-            }
+                size_t size_timestamp = LOGGER_SERVICE()
+                    ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
 
-            if( m_category.empty() == false )
-            {
-                size_t size_category = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "[%s] "
-                    , m_category.c_str()
-                );
-
-                if( size_category > 0 )
+                if( size_timestamp > 0 )
                 {
-                    size += size_category;
+                    size += size_timestamp;
                 }
-            }
 
-            size_t size_functionstamp = LOGGER_SERVICE()
-                ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+                if( m_category.empty() == false )
+                {
+                    size_t size_category = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "[%s] "
+                        , m_category.c_str()
+                    );
 
-            if( size_functionstamp > 0 )
-            {
-                size += size_functionstamp;
+                    if( size_category > 0 )
+                    {
+                        size += size_category;
+                    }
+                }
+
+                size_t size_functionstamp = LOGGER_SERVICE()
+                    ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+
+                if( size_functionstamp > 0 )
+                {
+                    size += size_functionstamp;
+                }
             }
         }
 

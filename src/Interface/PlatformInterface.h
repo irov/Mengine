@@ -41,9 +41,18 @@ namespace Mengine
         virtual void stopPlatform() = 0;
 
     public:
+        typedef Lambda<void( UniqueId _id )> LambdaUpdate;
+        virtual UniqueId addUpdate( const LambdaUpdate & _update, const DocumentPtr & _doc ) = 0;
+        virtual void removeUpdate( UniqueId _id ) = 0;
+
+    public:
         typedef Lambda<void( UniqueId _id )> LambdaTimer;
         virtual UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) = 0;
         virtual void removeTimer( UniqueId _id ) = 0;
+
+    public:
+        virtual void setSleepMode( bool _sleepMode ) = 0;
+        virtual bool getSleepMode() const = 0;
 
     public:
         virtual uint64_t getTicks() const = 0;

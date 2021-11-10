@@ -129,6 +129,8 @@ src
     DocumentServiceInterface.h
     AffectorHubInterface.h
     DebuggerBoundingBoxInterface.h
+    AnalyticsSystemInterface.h
+    SecureValueInterface.h
 )
 
 ADD_FILTER(

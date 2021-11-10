@@ -56,12 +56,15 @@ namespace Mengine
         );
 #endif
 
-        LOGGER_INFO( "plugin", "plugin '%s' create service: %s"
+        LOGGER_INFO( "plugin", "plugin '%s' create system: %s"
             , this->getPluginName()
             , "ProfilerSystem" 
         );
 
-        SERVICE_CREATE( ProfilerSystem, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( ProfilerSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

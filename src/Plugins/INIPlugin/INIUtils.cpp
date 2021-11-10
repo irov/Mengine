@@ -60,12 +60,10 @@ namespace Mengine
             {
                 memory_buffer += 4;
 
-                HashType secureHash = SECURE_SERVICE()
+                uint64_t secureHash = SECURE_SERVICE()
                     ->getSecureHash();
 
-                uint32_t parrot = (uint32_t)secureHash;
-
-                Helper::ravingcode( parrot, memory_buffer, size - 4, memory_buffer );
+                Helper::ravingcode( secureHash, memory_buffer, size - 4, memory_buffer );
             }
 
             if( tinyini_load( &_ini.ini, memory_buffer ) == TINYINI_RESULT_FAILURE )

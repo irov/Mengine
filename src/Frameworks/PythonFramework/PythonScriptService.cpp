@@ -273,13 +273,17 @@ namespace Mengine
             , m_moduleMengine
         );
 
-        uint32_t python_version = kernel->get_python_version();
-
-        this->addGlobalModule( "_PYTHON_VERSION"
-            , pybind::ptr( m_kernel, python_version )
-        );
-
         kernel->set_currentmodule( m_moduleMengine );
+
+        uint32_t python_version = kernel->get_python_version();
+        this->addGlobalModuleT( "_PYTHON_VERSION", python_version );
+
+        m_availablePlugins = pybind::make_dict_t( kernel );
+
+        this->addGlobalModule( "_PLUGINS", m_availablePlugins.ptr() );
+
+        pybind::def_functor( m_kernel, "setAvailablePlugin", this, &PythonScriptService::setAvailablePlugin );
+        pybind::def_functor( m_kernel, "isAvailablePlugin", this, &PythonScriptService::isAvailablePlugin );
 
         pybind::def_functor( m_kernel, "setTracebackOffset", this, &PythonScriptService::setTracebackOffset );
 
@@ -494,6 +498,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::_finalizeService()
     {
+        m_availablePlugins = nullptr;
+
 #ifdef MENGINE_DEBUG
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 
@@ -946,6 +952,17 @@ namespace Mengine
         pybind::dict_set_t( m_kernel, dir_bltin, _name, _module );
     }
     //////////////////////////////////////////////////////////////////////////
+    PyObject * PythonScriptService::getGlobalModule( const Char * _name ) const
+    {
+        PyObject * builtins = m_kernel->get_builtins();
+
+        PyObject * dir_bltin = m_kernel->module_dict( builtins );
+
+        PyObject * module = pybind::dict_get_t( m_kernel, dir_bltin, _name );
+
+        return module;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::removeGlobalModule( const Char * _name )
     {
         PyObject * builtins = m_kernel->get_builtins();
@@ -953,6 +970,23 @@ namespace Mengine
         PyObject * dir_bltin = m_kernel->module_dict( builtins );
 
         pybind::dict_remove_t( m_kernel, dir_bltin, _name );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptService::setAvailablePlugin( const Char * _name, bool _available )
+    {
+        m_availablePlugins[_name] = _available;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonScriptService::isAvailablePlugin( const Char * _name ) const
+    {
+        if( m_availablePlugins.exist( _name ) == false )
+        {
+            return false;
+        }
+
+        bool available = m_availablePlugins.get( _name );
+
+        return available;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::stringize( PyObject * _object, ConstString * const _cstr )

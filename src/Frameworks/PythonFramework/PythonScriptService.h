@@ -47,7 +47,12 @@ namespace Mengine
         void setCurrentModule( PyObject * _module ) override;
 
         void addGlobalModule( const Char * _name, PyObject * _module ) override;
+        PyObject * getGlobalModule( const Char * _name ) const override;
         void removeGlobalModule( const Char * _name ) override;
+
+    public:
+        void setAvailablePlugin( const Char * _name, bool _available ) override;
+        bool isAvailablePlugin( const Char * _name ) const override;
 
     public:
         void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) override;
@@ -105,6 +110,8 @@ namespace Mengine
         ScriptModuleFinderPtr m_moduleFinder;
 
         PyObject * m_moduleMengine;
+
+        pybind::dict m_availablePlugins;
 
         VectorScriptModulePack m_bootstrapperModules;
 

@@ -17,7 +17,7 @@ namespace Mengine
             {
                 if( SERVICE_EXIST( ProfilerSystemInterface ) == true )
                 {
-                    m_profiler = PROFILER_SYSTEM()\
+                    m_profiler = PROFILER_SYSTEM()
                         ->addFrame( _description );
                 }
             }
@@ -37,7 +37,7 @@ namespace Mengine
             {
                 if( SERVICE_EXIST( ProfilerSystemInterface ) == true )
                 {
-                    m_profiler = PROFILER_SYSTEM()\
+                    m_profiler = PROFILER_SYSTEM()
                         ->addCategory( _description );
                 }
             }

@@ -1,6 +1,7 @@
 #include "cURLScriptEmbedding.h"
 
 #include "Interface/FileServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "PyCURLReceiver.h"
 
@@ -106,6 +107,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( "cURL", true );
+
         pybind::enum_<CURLcode>( _kernel, "CURLcode" )
             .def( "CURLE_OK", CURLE_OK )
             .def( "CURLE_UNSUPPORTED_PROTOCOL", CURLE_UNSUPPORTED_PROTOCOL )

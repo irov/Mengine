@@ -1,5 +1,13 @@
-#include "SecureValue.h"
-#include "CRC32.h"
+#include "SecureUnsignedValue.h"
+
+#include "Interface/SecureServiceInterface.h"
+
+#include "Kernel/CRC32.h"
+#include "Kernel/Blobject.h"
+#include "Kernel/ContainerReader.h"
+#include "Kernel/ContainerWriter.h"
+#include "Kernel/Ravingcode.h"
+#include "Kernel/Hexadecimal.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"
@@ -9,17 +17,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SecureValue::SecureValue()
+    SecureUnsignedValue::SecureUnsignedValue()
         : m_value( 0 )
         , m_hash( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SecureValue::~SecureValue()
+    SecureUnsignedValue::~SecureUnsignedValue()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureValue::setUnprotectedValue( uint32_t _value )
+    void SecureUnsignedValue::setUnprotectedValue( uint32_t _value )
     {
         uint32_t hash = Helper::makeCRC32Pod( _value );
         m_hash = hash;
@@ -28,7 +36,7 @@ namespace Mengine
         MENGINE_SPRINTF( m_buffer, "%x%x", m_value, hash );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::getUnprotectedValue( uint32_t * const _value ) const
+    bool SecureUnsignedValue::getUnprotectedValue( uint32_t * const _value ) const
     {
         uint32_t hash = Helper::makeCRC32Pod( m_value ^ m_hash );
 
@@ -52,7 +60,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::setupSecureValue( const SecureValuePtr & _setup )
+    bool SecureUnsignedValue::setupSecureValue( const SecureUnsignedValuePtr & _setup )
     {
         uint32_t setup_unprotected_value;
         if( _setup->getUnprotectedValue( &setup_unprotected_value ) == false )
@@ -76,7 +84,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::additiveSecureValue( const SecureValuePtr & _add )
+    bool SecureUnsignedValue::additiveSecureValue( const SecureUnsignedValuePtr & _add )
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )
@@ -106,7 +114,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::substractSecureValue( const SecureValuePtr & _sub )
+    bool SecureUnsignedValue::substractSecureValue( const SecureUnsignedValuePtr & _sub )
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )
@@ -136,7 +144,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::additive2SecureValue( const SecureValuePtr & _add, const SecureValuePtr & _pow )
+    bool SecureUnsignedValue::additive2SecureValue( const SecureUnsignedValuePtr & _add, const SecureUnsignedValuePtr & _pow )
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )
@@ -172,7 +180,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::cmpSecureValue( const SecureValuePtr & _value, int32_t * const _result ) const
+    bool SecureUnsignedValue::cmpSecureValue( const SecureUnsignedValuePtr & _value, int32_t * const _result ) const
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )
@@ -189,6 +197,51 @@ namespace Mengine
         *_result = test_unprotected_value - base_unprotected_value;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SecureUnsignedValue::saveHexadecimal( String * const _hexadecimal ) const
+    {
+        Blobject blob;
+        ContainerWriter<Blobject> writer( blob );
+
+        writer.writePOD( m_hash );
+        writer.writePOD( m_value );
+        writer.writeBuffer( m_buffer, sizeof( Char ) * 20 );
+
+        uint64_t secureHash = SECURE_SERVICE()
+            ->getSecureHash();
+
+        Blobject blob_raving;
+        blob_raving.resize( blob.size() );
+
+        Helper::ravingcode( secureHash, blob.data(), blob.size(), blob_raving.data() );
+
+        _hexadecimal->resize( blob.size() * 2 );
+
+        Helper::encodeHexadecimal( blob_raving.data(), blob_raving.size(), _hexadecimal->data(), _hexadecimal->size(), nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SecureUnsignedValue::loadHexadecimal( const String & _hexadecimal )
+    {
+        Blobject blob_raving;
+        blob_raving.resize( _hexadecimal.size() / 2 );
+
+        size_t blob_raving_size;
+        Helper::decodeHexadecimal( _hexadecimal.c_str(), _hexadecimal.size(), blob_raving.data(), blob_raving.size(), &blob_raving_size );
+
+        Blobject blob;
+        blob.resize( blob_raving_size );
+
+        uint64_t secureHash = SECURE_SERVICE()
+            ->getSecureHash();
+
+        Helper::ravingcode( secureHash, blob_raving.data(), blob_raving_size, blob.data() );
+
+        ContainerReader<Blobject> reader( blob );
+
+        reader.readPOD( m_hash );
+        reader.readPOD( m_value );
+        reader.readBuffer( m_buffer, 20 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

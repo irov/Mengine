@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #include "stdex/container_writer.h"
 
 namespace Mengine

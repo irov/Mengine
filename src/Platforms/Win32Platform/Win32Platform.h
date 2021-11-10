@@ -31,8 +31,16 @@ namespace Mengine
         bool _runService() override;
 
     public:
+        UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        void removeUpdate( UniqueId _id ) override;
+
+    public:
         UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
         void removeTimer( UniqueId _id ) override;
+
+    public:
+        void setSleepMode( bool _sleepMode ) override;
+        bool getSleepMode() const override;
 
     public:
         uint64_t getTicks() const override;
@@ -256,8 +264,21 @@ namespace Mengine
         typedef Vector<TimerDesc> VectorTimers;
         VectorTimers m_timers;
 
+        struct UpdateDesc
+        {
+            UniqueId id;
+            LambdaUpdate lambda;
+
+#ifdef MENGINE_DEBUG
+            DocumentPtr doc;
+#endif
+        };
+
+        typedef Vector<UpdateDesc> VectorUpdates;
+        VectorUpdates m_updates;
+
         HICON m_hIcon;
-        WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
+        WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {L'\0'};
 
         uint64_t m_prevTime;
 
@@ -266,8 +287,9 @@ namespace Mengine
         bool m_fullscreen;
 
         bool m_active;
-        bool m_update;
         bool m_close;
+
+        bool m_sleepMode;
 
         float m_pauseUpdatingTime;
 

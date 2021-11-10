@@ -102,7 +102,7 @@ namespace Mengine
         }
 
     protected:
-        void notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message );
+        void notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message );
 
     protected:
         pybind::kernel_interface * m_kernel;

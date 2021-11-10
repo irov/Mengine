@@ -1036,7 +1036,7 @@ namespace Mengine
         return m_tracebackOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
+    void PythonScriptService::notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _test );

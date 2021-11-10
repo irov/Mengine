@@ -668,8 +668,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
         {if( PLUGIN_CREATE(Name, Doc) == false ){\
-        LOGGER_ERROR( "Invalid %s", Info ); return false;}else{\
-        LOGGER_MESSAGE_RELEASE( "Successful %s", Info );}}
+        LOGGER_ERROR( "Invalid initialize %s", Info ); return false;}else{\
+        LOGGER_MESSAGE_RELEASE( "%s", Info );}}
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
@@ -723,11 +723,11 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_INI_STATIC
-        MENGINE_ADD_PLUGIN( INI, "initialize Plugin INI...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( INI, "Plugin INI...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_JSON_STATIC
-        MENGINE_ADD_PLUGIN( JSON, "initialize Plugin JSON...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( JSON, "Plugin JSON...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
@@ -790,11 +790,11 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_PLUGIN_ZIP_STATIC
-        MENGINE_ADD_PLUGIN( Zip, "initialize Plugin Zip...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Zip, "Plugin Zip...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_LZ4_STATIC
-        MENGINE_ADD_PLUGIN( LZ4, "initialize Plugin LZ4...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( LZ4, "Plugin LZ4...", MENGINE_DOCUMENT_FACTORABLE );
 #endif        
 
         bool OPTION_norenderMode = HAS_OPTION( "norender" );
@@ -877,10 +877,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createStaticPlugins_()
     {
-        LOGGER_MESSAGE( "initialize Plugins..." );
+        LOGGER_MESSAGE( "Plugins..." );
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
-        MENGINE_ADD_PLUGIN( Sentry, "initialize Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Sentry, "Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_EXTERNAL_SOURCE
@@ -888,203 +888,203 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
-        MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin Python Framework...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( PythonFramework, "Plugin Python Framework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_UIFRAMEWORK_STATIC
-        MENGINE_ADD_PLUGIN( UIFramework, "initialize Plugin UI Framework...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( UIFramework, "Plugin UI Framework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
-        MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( NodeDebugRender, "Plugin Node Debug Render...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
-        MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( ResourcePrefetcher, "Plugin Resource Prefetcher...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
-        MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( ResourceConvert, "Plugin Resource Convert...", MENGINE_DOCUMENT_FACTORABLE );
 #endif        
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE_STATIC
-        MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( ResourceValidate, "Plugin Resource Validate...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEDEBUGGER_STATIC
-        MENGINE_ADD_PLUGIN( ResourceDebugger, "initialize Plugin Resource Debugger...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( ResourceDebugger, "Plugin Resource Debugger...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
-        MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( NodeDebugger, "Plugin NodeDebugger...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_OZZ_ANIMATION_STATIC
-        MENGINE_ADD_PLUGIN( OzzAnimation, "initialize Plugin OzzAnimation...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( OzzAnimation, "Plugin OzzAnimation...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_BOX2D_STATIC
-        MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Box2D, "Plugin Box2D...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_TEXTUREPACKER_STATIC
-        MENGINE_ADD_PLUGIN( Texturepacker, "initialize Plugin Texturepacker...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Texturepacker, "Plugin Texturepacker...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_GRAPHICS_STATIC
-        MENGINE_ADD_PLUGIN( Graphics, "initialize Plugin Graphics...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Graphics, "Plugin Graphics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
-        MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( MetabufLoader, "Plugin Metabuf Loader...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_IMAGE_CODEC_STATIC
-        MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( ImageCodec, "Plugin Image Codec...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_WAV_STATIC
-        MENGINE_ADD_PLUGIN( WAV, "initialize Plugin WAV Codec...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( WAV, "Plugin WAV Codec...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_OGG_VORBIS_STATIC
-        MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( OggVorbis, "Plugin Ogg Vorbis Codec...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_AMPLIFIER_STATIC
-        MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Amplifier, "Plugin Amplifier...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_PVRTC_STATIC
-        MENGINE_ADD_PLUGIN( PVRTC, "initialize Plugin PVRTC...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( PVRTC, "Plugin PVRTC...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ETC1_STATIC
-        MENGINE_ADD_PLUGIN( ETC1, "initialize Plugin ETC1...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( ETC1, "Plugin ETC1...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_DDS_STATIC
-        MENGINE_ADD_PLUGIN( DDS, "initialize Plugin DDS...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( DDS, "Plugin DDS...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_JPEG_STATIC
-        MENGINE_ADD_PLUGIN( JPEG, "initialize Plugin JPEG...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( JPEG, "Plugin JPEG...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_PNG_STATIC
-        MENGINE_ADD_PLUGIN( PNG, "initialize Plugin PNG...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( PNG, "Plugin PNG...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_WEBP_STATIC
-        MENGINE_ADD_PLUGIN( WebP, "initialize Plugin WebP...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( WebP, "Plugin WebP...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_VIDEO_STATIC
-        MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Video, "Plugin Video...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_THEORA_STATIC
-        MENGINE_ADD_PLUGIN( Theora, "initialize Plugin Theora...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Theora, "Plugin Theora...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_CURL_STATIC
-        MENGINE_ADD_PLUGIN( cURL, "initialize Plugin cURL...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( cURL, "Plugin cURL...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_SPINE_STATIC
-        MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Spine, "Plugin Spine...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_MOVIE_STATIC
-        MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Movie, "Plugin Movie...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_MOVIE1_STATIC
-        MENGINE_ADD_PLUGIN( Movie1, "initialize Plugin Movie1...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Movie1, "Plugin Movie1...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
-        MENGINE_ADD_PLUGIN( Astralax, "initialize Plugin Astralax...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Astralax, "Plugin Astralax...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_DAZZLE_STATIC
-        MENGINE_ADD_PLUGIN( Dazzle, "initialize Plugin Dazzle...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Dazzle, "Plugin Dazzle...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC
-        MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin Bitmap Font...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( BitmapFont, "Plugin Bitmap Font...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_TTF_STATIC
-        MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( TTF, "Plugin TTF...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_FE_STATIC
-        MENGINE_ADD_PLUGIN( FE, "initialize Plugin FE...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( FE, "Plugin FE...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_STEAM_STATIC
-        MENGINE_ADD_PLUGIN( Steam, "initialize Plugin Steam...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Steam, "Plugin Steam...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_WIN32_SOCKET_STATIC
-        MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Win32Socket, "Plugin Win32Socket...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_GOAP_STATIC
-        MENGINE_ADD_PLUGIN( GOAP, "initialize Plugin GOAP...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( GOAP, "Plugin GOAP...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_IMGUI_STATIC
-        MENGINE_ADD_PLUGIN( ImGUI, "initialize Plugin ImGUI...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( ImGUI, "Plugin ImGUI...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_CAMERADEBUGGIZMO_STATIC
-        MENGINE_ADD_PLUGIN( CameraDebugGizmo, "initialize Plugin Camera Debug Gizmo...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( CameraDebugGizmo, "Plugin Camera Debug Gizmo...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_WIN32_CONSOLELOGGER_STATIC
-        MENGINE_ADD_PLUGIN( Win32ConsoleLogger, "initialize Plugin Win32 Console Logger...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Win32ConsoleLogger, "Plugin Win32 Console Logger...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC
-        MENGINE_ADD_PLUGIN( Win32AntifreezeMonitor, "initialize Plugin Win32 Antifreeze Monitor...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Win32AntifreezeMonitor, "Plugin Win32 Antifreeze Monitor...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeKernel, "initialize Android Kernel Native...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativeKernel, "Plugin Android Kernel Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativePython, "initialize Android Kernel Python...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativePython, "Plugin Android Kernel Python...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "Plugin Android Facebook Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "Plugin Android Unity Ads Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "initialize Android AdMob Native...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "Plugin Android AdMob Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "Plugin Android DevToDev Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeLinking, "initialize Android Linking Native...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativeLinking, "Plugin Android Linking Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "Plugin Android Local Notifications Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
-        MENGINE_ADD_PLUGIN( GameAnalytics, "initialize Game Analytics...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( GameAnalytics, "Plugin Game Analytics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;

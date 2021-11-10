@@ -262,7 +262,7 @@ namespace Mengine
         sentry_close();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SentryPlugin::notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
+    void SentryPlugin::notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
     {
         if( _level < ASSERTION_LEVEL_FATAL )
         {
@@ -273,7 +273,7 @@ namespace Mengine
         sentry_set_extra( "Assetion Function", sentry_value_new_string( _file ) );
         sentry_set_extra( "Assetion Line", sentry_value_new_int32( _line ) );
 
-        sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Assertion", _message );
+        sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_WARNING, "Assertion", _message );
 
         sentry_capture_event( event );
     }

@@ -1,19 +1,12 @@
 #pragma once
 
+#include "Kernel/AssertionLevel.h"
+
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    enum EAssertionLevel
-    {
-        ASSERTION_LEVEL_WARNING = 1,
-        ASSERTION_LEVEL_ERROR = 2,
-        ASSERTION_LEVEL_FATAL = 3,
-        ASSERTION_LEVEL_EXCEPTION = 4,
-        ASSERTION_LEVEL_CRITICAL = 5
-    };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
@@ -21,13 +14,13 @@ namespace Mengine
         void AssertionSetNotDebugBreak( bool _debugBreak );
         bool AssertionGetNotDebugBreak();
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line );
-        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 5, 6 );
+        void Assertion( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line );
+        void Assertion( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 5, 6 );
         //////////////////////////////////////////////////////////////////////////
         class AssertionOperator
         {
         public:
-            AssertionOperator( uint32_t _level, const Char * _test, const Char * _file, uint32_t _line );
+            AssertionOperator( EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line );
             ~AssertionOperator();
 
         public:
@@ -39,7 +32,7 @@ namespace Mengine
             const AssertionOperator & operator()( T, ... ) const = delete;
 
         protected:
-            uint32_t m_level;
+            EAssertionLevel m_level;
             const Char * m_test;
             const Char * m_file;
             uint32_t m_line;

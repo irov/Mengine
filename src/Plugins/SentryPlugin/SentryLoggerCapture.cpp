@@ -38,7 +38,7 @@ namespace Mengine
          
         m_message.append( _data, _size );
 
-        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "Sentry", "MaxLogSize", 10240 );
+        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "Sentry", "MaxLogSize", 9240 );
 
         String::size_type message_size = m_message.size();
 
@@ -50,15 +50,16 @@ namespace Mengine
         }
         else
         {
-            String begin_message = m_message.substr( 0, Sentry_MaxLogSize * 70 / 100 );
-            String end_message = m_message.substr( Sentry_MaxLogSize * 70 / 100, Sentry_MaxLogSize * 30 / 100 );
+            String begin_message = m_message.substr( 0, Sentry_MaxLogSize * 60 / 100 );
+            String end_message = m_message.substr( message_size - Sentry_MaxLogSize * 40 / 100 );
 
             String total_message;
             total_message += begin_message;
             total_message += "\n";
-            total_message += "...";
-            total_message += "...";
-            total_message += "...";
+            total_message += "\n";
+            total_message += "...\n";
+            total_message += "...\n";
+            total_message += "...\n";
             total_message += "\n";
             total_message += end_message;
 

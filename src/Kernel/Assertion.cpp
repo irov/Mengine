@@ -35,7 +35,7 @@ namespace Mengine
             return Assertion_NotDebugBreak;
         }
         //////////////////////////////////////////////////////////////////////////
-        AssertionOperator::AssertionOperator( uint32_t _level, const Char * _test, const Char * _file, uint32_t _line )
+        AssertionOperator::AssertionOperator( EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line )
             : m_level( _level )
             , m_test( _test )
             , m_file( _file )
@@ -71,12 +71,12 @@ namespace Mengine
             return *this;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line )
+        void Assertion( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line )
         {
             Helper::Assertion( _level, _test, _file, _line, "Unknown" );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
+        void Assertion( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
         {
             Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
 

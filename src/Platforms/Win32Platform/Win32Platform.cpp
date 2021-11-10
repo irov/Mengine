@@ -484,9 +484,9 @@ namespace Mengine
         {
             uint32_t color = (is_supported == true ? Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE : Mengine::LCOLOR_RED);
 
-            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, color, nullptr, 0 )("  %s: %s"
+            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, color, nullptr, 0 )("%s: %s"
                 , isa_feature
-                , is_supported == true ? " supported" : " not supported"
+                , is_supported == true ? "+" : "-"
                 );
         };
 

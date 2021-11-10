@@ -442,6 +442,7 @@ ADD_FILTER(
 Assertion
     Assertion.h
     Assertion.cpp
+    AssertionLevel.h
     AssertionFactory.h
     AssertionFactory.cpp
     AssertionContainer.h

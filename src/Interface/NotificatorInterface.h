@@ -9,6 +9,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/LoggerLevel.h"
+#include "Kernel/AssertionLevel.h"
 #include "Kernel/ErrorLevel.h"
 
 #include "Config/Typedef.h"
@@ -43,7 +44,7 @@ namespace Mengine
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_CLOSE_FILE, const Char *, const Char *, bool );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, Factory *, Factorable *, const DocumentPtr & );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, Factory *, Factorable * );
-    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_ASSERTION, uint32_t, const Char *, const Char *, int32_t, const Char * );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_ASSERTION, EAssertionLevel, const Char *, const Char *, int32_t, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_ABORT, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CRASH, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_ERROR, EErrorLevel, const Char *, int32_t, const Char * );

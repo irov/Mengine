@@ -15,10 +15,6 @@ namespace Mengine
         SERVICE_DECLARE( "AnalyticsSystem" )
 
     public:
-        virtual void startSession() = 0;
-        virtual void endSession() = 0;
-
-    public:
         virtual void startProgressionEvent( const Char * _name ) = 0;
         virtual void completeProgressionEvent( const Char * _name ) = 0;
         virtual void failProgressionEvent( const Char * _name ) = 0;

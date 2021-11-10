@@ -18,15 +18,15 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void startSession() override;
-        void endSession() override;
-
-    public:
         void startProgressionEvent( const Char * _name ) override;
         void completeProgressionEvent( const Char * _name ) override;
         void failProgressionEvent( const Char * _name ) override;
 
     public:
         void addDesignEvent( const Char * _event ) override;
+
+    protected:
+        void notifyBootstrapperInitializeGame_();
+        void notifyBootstrapperFinalizeGame_();
     };
 }

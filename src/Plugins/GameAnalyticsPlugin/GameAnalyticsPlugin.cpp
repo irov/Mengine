@@ -80,18 +80,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameAnalyticsPlugin::_availablePlugin() const
     {
-        bool Engine_GameAnalyticsPluginAvailable = CONFIG_VALUE( "Engine", "GameAnalyticsPluginAvailable", true );
-
-        if( Engine_GameAnalyticsPluginAvailable == false )
+        if( HAS_OPTION( "noanalytics" ) == true )
         {
             return false;
         }
 
-        bool Engine_Analytics = CONFIG_VALUE( "Engine", "Analytics", true );
-
-        if( Engine_Analytics == false )
+        if( HAS_OPTION( "analytics" ) == false )
         {
-            return false;
+            bool Engine_GameAnalyticsPluginAvailable = CONFIG_VALUE( "Engine", "GameAnalyticsPluginAvailable", true );
+
+            if( Engine_GameAnalyticsPluginAvailable == false )
+            {
+                return false;
+            }
+
+            bool GameAnalytics_Enable = CONFIG_VALUE( "GameAnalytics", "Enable", true );
+
+            if( GameAnalytics_Enable == false )
+            {
+                return false;
+            }
         }
 
         return true;
@@ -146,6 +154,8 @@ namespace Mengine
 
         const Char * userId = this->getUserId_();
         gameanalytics::GameAnalytics::configureUserId( userId );
+
+        gameanalytics::GameAnalytics::setEnabledManualSessionHandling( true );
 
         gameanalytics::GameAnalytics::initialize( m_gameKey, m_gameSecret );
 

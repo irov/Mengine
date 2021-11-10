@@ -1,5 +1,7 @@
 #include "GameAnalyticsSystem.h"
 
+#include "Interface/NotificationServiceInterface.h"
+
 #include "GameAnalytics.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,21 +20,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameAnalyticsSystem::_initializeService()
     {
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME, &GameAnalyticsSystem::notifyBootstrapperInitializeGame_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &GameAnalyticsSystem::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void GameAnalyticsSystem::_finalizeService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void GameAnalyticsSystem::startSession()
-    {
-        gameanalytics::GameAnalytics::startSession();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void GameAnalyticsSystem::endSession()
-    {
-        gameanalytics::GameAnalytics::endSession();
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameAnalyticsSystem::startProgressionEvent( const Char * _name )
@@ -53,6 +50,16 @@ namespace Mengine
     void GameAnalyticsSystem::addDesignEvent( const Char * _event )
     {
         gameanalytics::GameAnalytics::addDesignEvent( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameAnalyticsSystem::notifyBootstrapperInitializeGame_()
+    {
+        gameanalytics::GameAnalytics::startSession();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameAnalyticsSystem::notifyBootstrapperFinalizeGame_()
+    {
+        gameanalytics::GameAnalytics::endSession();
     }
     //////////////////////////////////////////////////////////////////////////
 }

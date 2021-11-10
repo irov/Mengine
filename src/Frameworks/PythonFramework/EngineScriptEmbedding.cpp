@@ -2812,24 +2812,6 @@ namespace Mengine
                 return wp_screen;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_analitycsStartSession()
-            {
-                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
-                {
-                    ANALYTICS_SYSTEM()
-                        ->startSession();
-                }
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analitycsEndSession()
-            {
-                if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
-                {
-                    ANALYTICS_SYSTEM()
-                        ->endSession();
-                }
-            }
-            //////////////////////////////////////////////////////////////////////////
             void s_analitycsStartProgressionEvent( const Char * _name )
             {
                 if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
@@ -4343,8 +4325,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 
 
-        pybind::def_functor( _kernel, "analitycsStartSession", nodeScriptMethod, &EngineScriptMethod::s_analitycsStartSession );
-        pybind::def_functor( _kernel, "analitycsEndSession", nodeScriptMethod, &EngineScriptMethod::s_analitycsEndSession );
         pybind::def_functor( _kernel, "analitycsStartProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analitycsStartProgressionEvent );
         pybind::def_functor( _kernel, "analitycsCompleteProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCompleteProgressionEvent );
         pybind::def_functor( _kernel, "analitycsFailProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsFailProgressionEvent );

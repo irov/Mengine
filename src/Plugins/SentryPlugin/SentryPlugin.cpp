@@ -94,18 +94,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SentryPlugin::_initializePlugin()
+    bool SentryPlugin::_availablePlugin() const
     {
-        if( CONFIG_VALUE( "Sentry", "Enable", true ) == false )
-        {
-            return true;
-        }
-
         if( HAS_OPTION( "nosentry" ) == true )
         {
-            return true;
+            return false;
         }
 
+        if( HAS_OPTION( "sentry" ) == false )
+        {
+            if( CONFIG_VALUE( "Sentry", "Enable", true ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SentryPlugin::_initializePlugin()
+    {
 #ifdef MENGINE_DEBUG
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )

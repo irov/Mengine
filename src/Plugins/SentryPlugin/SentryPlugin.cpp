@@ -234,21 +234,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::_finalizePlugin()
     {
-        if( CONFIG_VALUE( "Sentry", "Enable", true ) == false )
-        {
-            return;
-        }
-
-        if( HAS_OPTION( "nosentry" ) == true )
-        {
-            return;
-        }
-
+#ifdef MENGINE_DEBUG
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
         {
             return;
         }
+#endif
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );

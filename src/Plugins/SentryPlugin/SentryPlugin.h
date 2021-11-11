@@ -4,6 +4,7 @@
 
 #include "Kernel/PluginBase.h"
 #include "Kernel/ErrorLevel.h"
+#include "Kernel/AssertionLevel.h"
 
 namespace Mengine
 {    

@@ -135,7 +135,7 @@ namespace Mengine
 #if defined(MENGINE_WINDOWS_DEBUG)
         Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
 
-        loggerOutputDebug->setVerboseFlag( LM_ERROR );
+        loggerOutputDebug->setVerboseLevel( LM_MESSAGE );
 
         LOGGER_SERVICE()
             ->registerLogger( loggerOutputDebug );

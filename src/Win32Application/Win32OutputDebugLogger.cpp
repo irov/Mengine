@@ -15,10 +15,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32OutputDebugLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _count )
+    void Win32OutputDebugLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _count )
     {
         MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _filter );
         MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _count );
 

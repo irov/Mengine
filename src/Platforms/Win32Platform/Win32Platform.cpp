@@ -339,7 +339,7 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_MESSAGE_RELEASE( "Device Seed: %u"
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Device Seed: %u"
             , deviceSeed
         );
 
@@ -482,9 +482,9 @@ namespace Mengine
 
         auto support_message = []( const Char * isa_feature, bool is_supported )
         {
-            uint32_t color = (is_supported == true ? Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE : Mengine::LCOLOR_RED);
+            uint32_t color = (is_supported == true ? LCOLOR_GREEN | LCOLOR_BLUE : LCOLOR_RED);
 
-            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, color, nullptr, 0 )("%s: %s"
+            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), LM_MESSAGE_RELEASE, LFILTER_NONE, color, nullptr, 0 )("%s: %s"
                 , isa_feature
                 , is_supported == true ? "+" : "-"
                 );
@@ -2745,9 +2745,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existDirectory( const Char * _path, const Char * _directory ) const
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/' || _path[MENGINE_STRLEN( _path ) - 1] == '\\') );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/' || _directory[MENGINE_STRLEN( _directory ) - 1] == '\\') );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -2796,9 +2796,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _path, const Char * _directory )
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/' || _path[MENGINE_STRLEN( _path ) - 1] == '\\') );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/' || _directory[MENGINE_STRLEN( _directory ) - 1] == '\\' ) );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -3171,7 +3171,7 @@ namespace Mengine
                     WChar nextPath[MENGINE_MAX_PATH] = {L'\0'};
                     ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
-                    MENGINE_WCSCAT( nextPath, L"\\" );
+                    ::PathAddBackslash( nextPath );
 
                     bool stop;
                     if( Detail::listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
@@ -3361,7 +3361,8 @@ namespace Mengine
         }
 
         Helper::pathCorrectBackslashW( _path );
-        MENGINE_WCSCAT( _path, L"/" );
+
+        ::PathAddBackslash( _path );
 
         return true;
     }
@@ -4270,13 +4271,13 @@ namespace Mengine
 
                 if( successful == TRUE )
                 {
-                    LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("%s"
+                    LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("%s"
                         , tempFileBuffer
                         );
                 }
                 else
                 {
-                    LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("invalid read file '%ls'"
+                    LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("invalid read file '%ls'"
                         , tempFileNameBuffer
                         );
                 }
@@ -4446,8 +4447,8 @@ namespace Mengine
             Helper::pathCorrectBackslashW( currentPath );
 
             ::PathRemoveBackslash( currentPath );
+            ::PathAddBackslash( currentPath );
 
-            MENGINE_WCSCAT( currentPath, L"/" );
             MENGINE_WCSCAT( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
 
             uint32_t Engine_BotId = CONFIG_VALUE( "Engine", "BotId", ~0U );
@@ -4462,7 +4463,7 @@ namespace Mengine
                 MENGINE_WCSCAT( currentPath, botId_suffix );
             }
 
-            MENGINE_WCSCAT( currentPath, L"/" );
+            ::PathAddBackslash( currentPath );
 
             size_t currentPathLen;
             if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
@@ -4549,7 +4550,7 @@ namespace Mengine
 
         ::PathCombine( roamingPath, roamingPath, projectNameW );
 
-        MENGINE_WCSCAT( roamingPath, L"/" );
+        ::PathAddBackslash( roamingPath );
 
         size_t currentPathLen;
         if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
@@ -4989,7 +4990,7 @@ namespace Mengine
 
         Helper::pathCorrectBackslashW( winDir );
         ::PathRemoveBackslash( winDir );
-        MENGINE_WCSCAT( winDir, L"/" );
+        ::PathAddBackslash( winDir );
 
         Utf8 utf8_winDir[MENGINE_MAX_PATH] = {'\0'};
         Helper::unicodeToUtf8( winDir, utf8_winDir, MENGINE_MAX_PATH );

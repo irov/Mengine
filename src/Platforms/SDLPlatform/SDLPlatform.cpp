@@ -105,6 +105,13 @@ extern "C" {
         jobject_activity = (jclass)(env->NewGlobalRef( obj ));
     }
     //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
+    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1quitMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
+    {
+        PLATFORM_SERVICE()
+            ->closeWindow();
+    }
+    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL
         MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getCompanyName )(JNIEnv * env, jclass cls)
     {
@@ -262,7 +269,6 @@ namespace Mengine
         , m_active( false )
         , m_sleepMode( true )
         , m_shouldQuit( false )
-        , m_running( false )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -533,7 +539,7 @@ namespace Mengine
 
             ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
 
-            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )("SDL [%s]: %s"
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )("SDL [%s]: %s"
                 , Detail::SDL_GetCategoryName( category )
                 , message
                 );
@@ -968,6 +974,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::_stopService()
+    {
+        if( m_sdlAccelerometer != nullptr )
+        {
+            if( SDL_JoystickGetAttached( m_sdlAccelerometer ) == SDL_TRUE )
+            {
+                SDL_JoystickClose( m_sdlAccelerometer );
+            }
+
+            m_sdlAccelerometer = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
@@ -1018,16 +1037,6 @@ namespace Mengine
         }
 
         m_platformTags.clear();
-
-        if( m_sdlAccelerometer != nullptr )
-        {
-            if( SDL_JoystickGetAttached( m_sdlAccelerometer ) == SDL_TRUE )
-            {
-                SDL_JoystickClose( m_sdlAccelerometer );
-            }
-
-            m_sdlAccelerometer = nullptr;
-        }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDateTimeProviders );
@@ -1166,6 +1175,7 @@ namespace Mengine
                 if( m_sleepMode == true )
                 {
                     SDL_Delay( 100 );
+                    SDL_Delay( 100 );
                 }
                 else
                 {
@@ -1221,7 +1231,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::stopPlatform()
     {
-        m_running = false;
         m_shouldQuit = true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1729,7 +1738,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::closeWindow()
     {
-        m_running = false;
         m_shouldQuit = true;
     }
     //////////////////////////////////////////////////////////////////////////

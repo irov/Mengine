@@ -65,11 +65,11 @@ namespace Mengine
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, 256, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, color, function, lineno ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, color, function, lineno ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, color, nullptr, 0 ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, color, nullptr, 0 ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
         }
 
         m_messageCache.clear();
@@ -87,10 +87,10 @@ namespace Mengine
         return m_softspace;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )
+    void PythonScriptLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
     {
         MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _filter );
         MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _data );
         MENGINE_UNUSED( _size );

@@ -6,7 +6,7 @@ namespace Mengine
     LoggerBase::LoggerBase()
         : m_color( LCOLOR_NONE )
         , m_verboseLevel( LM_VERBOSE )
-        , m_verboseFlag( 0xFFFFFFFF )
+        , m_verboseFilter( 0xFFFFFFFF )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -45,29 +45,29 @@ namespace Mengine
         return m_verboseLevel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerBase::setVerboseFlag( uint32_t _flag )
+    void LoggerBase::setVerboseFilter( uint32_t _filter )
     {
-        m_verboseFlag = _flag;
+        m_verboseFilter = _filter;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t LoggerBase::getVerboseFlag() const
+    uint32_t LoggerBase::getVerboseFilter() const
     {
-        return m_verboseFlag;
+        return m_verboseFilter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerBase::validMessage( ELoggerLevel _level, uint32_t _flag ) const
+    bool LoggerBase::validMessage( ELoggerLevel _level, uint32_t _filter ) const
     {
         if( m_verboseLevel < _level )
         {
             return false;
         }
 
-        if( _flag == 0 )
+        if( _filter == 0 )
         {
             return true;
         }
 
-        if( (m_verboseFlag & _flag) == 0 )
+        if( (m_verboseFilter & _filter) == 0 )
         {
             return false;
         }

@@ -19,7 +19,7 @@ namespace Mengine
         void finalize() override;
 
     public:
-        void log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size ) override;
+        void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) override;
         void flush() override;
 
     protected:

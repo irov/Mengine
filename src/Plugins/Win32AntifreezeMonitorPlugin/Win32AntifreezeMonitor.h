@@ -40,8 +40,8 @@ namespace Mengine
     protected:
         void notifyChangeLocalePrepare( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyChangeLocalePost( const ConstString & _prevLocale, const ConstString & _currentlocale );
-        void notifyLoggerBegin( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size );
-        void notifyLoggerEnd( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size );
+        void notifyLoggerBegin( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size );
+        void notifyLoggerEnd( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size );
         void notifyAbort( const Char * _doc );
 
     protected:

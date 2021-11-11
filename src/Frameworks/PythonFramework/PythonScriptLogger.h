@@ -27,7 +27,7 @@ namespace Mengine
         int32_t getSoftspace() const;
 
     protected:
-        void log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size ) override;
+        void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) override;
 
     protected:
         String m_messageCache;

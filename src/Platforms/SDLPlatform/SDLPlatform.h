@@ -56,6 +56,7 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
         bool _runService() override;
+        void _stopService() override;
 
     public:
         bool runPlatform()	override;
@@ -297,7 +298,6 @@ namespace Mengine
         bool m_active;
         bool m_sleepMode;
         bool m_shouldQuit;
-        bool m_running;
 
         bool m_desktop;
         bool m_touchpad;

@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoggerService::LoggerService()
         : m_verboseLevel( LM_ERROR )
-        , m_verboseFlag( 0 )
+        , m_verboseFilter( 0xFFFFFFFF )
         , m_silent( false )
         , m_historically( true )
         , m_historyLimit( MENGINE_LOGGER_HISTORY_MAX )
@@ -106,16 +106,9 @@ namespace Mengine
 
         this->setVerboseLevel( logLevel );
 
-        uint32_t verboseFlag = 0;
+        uint32_t verboseFilter = 0xFFFFFFFF;
 
-        bool OPTION_profiler = HAS_OPTION( "profiler" );
-
-        if( OPTION_profiler == true )
-        {
-            verboseFlag |= 0x00000001;
-        }
-
-        this->setVerboseFlag( verboseFlag );
+        this->setVerboseFilter( verboseFilter );
 
         const Char * verboses[MENGINE_OPTIONS_VALUE_COUNT];
         uint32_t verboses_count;
@@ -226,14 +219,14 @@ namespace Mengine
         return m_verboseLevel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::setVerboseFlag( uint32_t _flag )
+    void LoggerService::setVerboseFilter( uint32_t _filter )
     {
-        m_verboseFlag = _flag;
+        m_verboseFilter = _filter;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t LoggerService::getVerboseFlag() const
+    uint32_t LoggerService::getVerboseFilter() const
     {
-        return m_verboseFlag;
+        return m_verboseFilter;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::setSilent( bool _silent )
@@ -312,7 +305,7 @@ namespace Mengine
         return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerService::validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _flag ) const
+    bool LoggerService::validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const
     {
         if( m_silent == true )
         {
@@ -332,12 +325,12 @@ namespace Mengine
             }
         }
 
-        if( _flag == 0 )
+        if( _filter == 0 )
         {
             return true;
         }
 
-        if( (m_verboseFlag & _flag) == 0 )
+        if( (m_verboseFilter & _filter) == 0 )
         {
             return false;
         }
@@ -345,11 +338,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::logMessage( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
+    void LoggerService::logMessage( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
     {
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level, _flag, _color, _message, _size );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level, _filter, _color, _message, _size );
         }
 
         {
@@ -359,24 +352,24 @@ namespace Mengine
 
             for( const LoggerInterfacePtr & logger : m_loggers )
             {
-                if( logger->validMessage( _level, _flag ) == false )
+                if( logger->validMessage( _level, _filter ) == false )
                 {
                     continue;
                 }
 
-                logger->log( _level, _flag, _color, _message, _size );
+                logger->log( _level, _filter, _color, _message, _size );
             }
 
-            this->logHistory_( _level, _flag, _color, _message, _size );
+            this->logHistory_( _level, _filter, _color, _message, _size );
         }
 
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level, _flag, _color, _message, _size );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level, _filter, _color, _message, _size );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::logHistory_( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
+    void LoggerService::logHistory_( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
     {
         if( m_historically == true )
         {
@@ -387,7 +380,7 @@ namespace Mengine
 
             Record history;
             history.level = _level;
-            history.flag = _flag;
+            history.filter = _filter;
             history.color = _color;
             history.message.assign( _message, _size );
 
@@ -428,7 +421,7 @@ namespace Mengine
             const Char * record_message_str = record.message.c_str();
             String::size_type record_message_size = record.message.size();
 
-            _logger->log( record.level, record.flag, record.color, record_message_str, record_message_size );
+            _logger->log( record.level, record.filter, record.color, record_message_str, record_message_size );
         }
     }
     //////////////////////////////////////////////////////////////////////////

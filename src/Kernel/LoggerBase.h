@@ -26,11 +26,11 @@ namespace Mengine
         void setVerboseLevel( ELoggerLevel _level ) override;
         ELoggerLevel getVerboseLevel() const override;
 
-        void setVerboseFlag( uint32_t _flag ) override;
-        uint32_t getVerboseFlag() const override;
+        void setVerboseFilter( uint32_t _filter ) override;
+        uint32_t getVerboseFilter() const override;
 
     public:
-        bool validMessage( ELoggerLevel _level, uint32_t _flag ) const override;
+        bool validMessage( ELoggerLevel _level, uint32_t _filter ) const override;
 
     public:
         void flush() override;
@@ -39,6 +39,6 @@ namespace Mengine
         uint32_t m_color;
 
         ELoggerLevel m_verboseLevel;
-        uint32_t m_verboseFlag;
+        uint32_t m_verboseFilter;
     };
 }

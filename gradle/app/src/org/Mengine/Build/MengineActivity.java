@@ -40,6 +40,7 @@ public class MengineActivity extends SDLActivity {
     private static MengineActivity _instance;
 
     private static native void AndroidNativeMengine_setMengineAndroidActivityJNI(Object Activity);
+    private static native void AndroidNativeMengine_quitMengineAndroidActivityJNI();
     private static native String AndroidNativeMengine_getCompanyName();
     private static native String AndroidNativeMengine_getProjectName();
     private static native int AndroidNativeMengine_getProjectVersion();
@@ -180,11 +181,25 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onCreate()");
 
+        if(mBrokenLibraries == true)
+        {
+            Log.e(TAG, "MengineActivity.onCreate: broken libraries");
+
+            AndroidNativeMengine_quitMengineAndroidActivityJNI();
+
+            return;
+        }
+
         AndroidNativeMengine_setMengineAndroidActivityJNI(this);
 
         initPlugins();
 
         this.plugins.forEach((p) -> p.onCreate(savedInstanceState));
+    }
+
+    public void quitMengineApplication()
+    {
+        AndroidNativeMengine_quitMengineAndroidActivityJNI();
     }
 
     public void onMengineInitializeBaseServices() {

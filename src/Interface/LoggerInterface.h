@@ -25,14 +25,14 @@ namespace Mengine
         virtual void setVerboseLevel( ELoggerLevel _level ) = 0;
         virtual ELoggerLevel getVerboseLevel() const = 0;
 
-        virtual void setVerboseFlag( uint32_t _flag ) = 0;
-        virtual uint32_t getVerboseFlag() const = 0;
+        virtual void setVerboseFilter( uint32_t _filter ) = 0;
+        virtual uint32_t getVerboseFilter() const = 0;
 
     public:
-        virtual bool validMessage( ELoggerLevel _level, uint32_t _flag ) const = 0;
+        virtual bool validMessage( ELoggerLevel _level, uint32_t _filter ) const = 0;
 
     public:
-        virtual void log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size ) = 0;
+        virtual void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) = 0;
         virtual void flush() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

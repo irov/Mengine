@@ -26,6 +26,13 @@ public class MengineApplication extends Application {
     }
 
     @Override
+    public void onTerminate() {
+        super.onTerminate();
+
+        MARSDK.getInstance().onTerminate();
+    }
+
+    @Override
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 
@@ -37,12 +44,5 @@ public class MengineApplication extends Application {
         super.onConfigurationChanged(newConfig);
 
         MARSDK.getInstance().onAppConfigurationChanged(this, newConfig);
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-
-        MARSDK.getInstance().onTerminate();
     }
 }

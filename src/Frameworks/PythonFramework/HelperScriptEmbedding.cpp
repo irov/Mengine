@@ -769,12 +769,12 @@ namespace Mengine
                     ->addGlobalModule( _name, _module );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logger( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message )
+            void s_logger( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message )
             {
                 size_t messagelen = MENGINE_STRLEN( _message );
 
                 LOGGER_SERVICE()
-                    ->logMessage( _level, _flag, _color, _message, messagelen );
+                    ->logMessage( _level, _filter, _color, _message, messagelen );
             }
             //////////////////////////////////////////////////////////////////////////
             float filterpowf( const pybind::list & l, float _pow )

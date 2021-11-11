@@ -109,7 +109,7 @@ namespace Mengine
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
-                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("File %s [line:%d] Assertion [%s]: %s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("File %s [line:%d] Assertion [%s]: %s"
                     , _file
                     , _line
                     , _test

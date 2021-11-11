@@ -63,10 +63,10 @@ namespace Mengine
         m_fileGroup = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )
+    void FileLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
     {
         MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _filter );
         MENGINE_UNUSED( _color );
 
         m_stream->write( _data, _size );

@@ -104,7 +104,7 @@ namespace Mengine
 #if defined(MENGINE_WINDOWS_DEBUG)
         SDLOutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<SDLOutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
 
-        loggerOutputDebug->setVerboseFlag( LM_ERROR );
+        loggerOutputDebug->setVerboseLevel( LM_ERROR );
 
         LOGGER_SERVICE()
             ->registerLogger( loggerOutputDebug );

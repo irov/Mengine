@@ -10,18 +10,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        bool loggerValidMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _flag )
+        bool loggerValidMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter )
         {
             bool result = LOGGER_SERVICE()
-                ->validMessage( _category, _level, _flag );
+                ->validMessage( _category, _level, _filter );
 
             return result;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _file, uint32_t _line )
+    LoggerOperator::LoggerOperator( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line )
         : m_level( _level )
-        , m_flag( _flag )
+        , m_filter( _filter )
         , m_color( _color )
         , m_file( _file )
         , m_line( _line )
@@ -180,7 +180,7 @@ namespace Mengine
     void LoggerOperator::logMessage( const Char * _msg, size_t _size ) const
     {
         LOGGER_SERVICE()
-            ->logMessage( m_level, m_flag, m_color, _msg, _size );
+            ->logMessage( m_level, m_filter, m_color, _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -55,7 +55,7 @@ namespace Mengine
         WCHAR dllFilename[MENGINE_MAX_PATH] = {L'\0'};
         ::GetModuleFileName( hInstance, dllFilename, MENGINE_MAX_PATH );
 
-        LOGGER_MESSAGE_RELEASE( "load dll: %ls"
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "load dll: %ls"
             , dllFilename
         );
 

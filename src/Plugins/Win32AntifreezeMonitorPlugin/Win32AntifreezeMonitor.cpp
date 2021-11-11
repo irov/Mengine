@@ -251,10 +251,10 @@ namespace Mengine
         m_refalive++;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
+    void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
     {
         MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _filter );
         MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _message );
         MENGINE_UNUSED( _size );
@@ -262,10 +262,10 @@ namespace Mengine
         ++m_reflogger;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyLoggerEnd( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
+    void Win32AntifreezeMonitor::notifyLoggerEnd( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
     {
         MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _filter );
         MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _message );
         MENGINE_UNUSED( _size );

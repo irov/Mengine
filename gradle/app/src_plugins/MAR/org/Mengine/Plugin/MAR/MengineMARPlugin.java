@@ -49,7 +49,6 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
 
     private static MengineMARPlugin _instance;
 
-    private boolean m_logined = false;
     private MengineActivity m_activity;
 
     public MengineMARPlugin(MengineActivity _activity) {
@@ -188,10 +187,14 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         int keyCode = event.getKeyCode();
 
         if(keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN ) {
+            m_activity.quitMengineApplication();
+
+            /*
             MARPlatform.getInstance().exitSDK(new MARExitListener() {
                 @Override
                 public void onGameExit() {
                     //游戏自己的退出确认框
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(m_activity);
                     builder.setTitle("退出确认");
                     builder.setMessage("主公，现在还早，要不要再玩一会？");
@@ -208,15 +211,18 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
                                     //退出游戏
-                                    m_activity.finish();
+                                    m_activity.quitMengineApplication();
+                                    //m_activity.finish();
 
-                                    System.exit(0);
+                                    //System.exit(0);
                                 }
                             });
+
                     builder.show();
 
                 }
             });
+             */
 
             return true;
         }
@@ -255,7 +261,6 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
             case MARCode.CODE_LOGIN_SUCCESS:
                 Log.d(TAG, "marsdk login success");
 
-                m_logined = true;
                 //get control info
                 int gameType = MARSDK.getInstance().getGameType();
 
@@ -287,8 +292,6 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     public void onSwitchAccount(UToken uToken) {
         Log.d(TAG, "marsdk.onSwitchAccount uToken: " + uToken);
         if(uToken != null){
-            m_logined = true;
-
             m_activity.pythonCall("onMarSDKSwitchAccount");
         }
     }

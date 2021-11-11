@@ -319,7 +319,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "Build Commit: %s", ENGINE_GIT_SHA1 );
+            LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Commit: %s", ENGINE_GIT_SHA1 );
         }
 
         const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
@@ -331,7 +331,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "Content Commit: %s", Info_ResourceCommit );
+            LOGGER_MESSAGE_RELEASE_PROTECTED( "Content Commit: %s", Info_ResourceCommit );
         }
 
         if( HAS_OPTION( "buildversion" ) == true )
@@ -341,7 +341,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "Build Version: %s", MENGINE_BUILD_VERSION );
+            LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Version: %s", MENGINE_BUILD_VERSION );
         }
 
         if( HAS_OPTION( "buildinfo" ) == true )
@@ -351,7 +351,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "Build Info: %s %s", MENGINE_BUILD_USERNAME, MENGINE_BUILD_TIMESTAMP );
+            LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Info: %s %s", MENGINE_BUILD_USERNAME, MENGINE_BUILD_TIMESTAMP );
         }
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
@@ -1462,14 +1462,14 @@ namespace Mengine
         {
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0 )("open %s%s"
                     , _folder
                     , _filePath
                     );
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0 )("streaming %s%s"
                     , _folder
                     , _filePath
                     );
@@ -1482,7 +1482,7 @@ namespace Mengine
 
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%" PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%" PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1490,7 +1490,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%" PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%" PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1501,7 +1501,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugResourceCompile_( Resource * _resource )
     {
-        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("compile %s type %s"
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0 )("compile %s type %s"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             );
@@ -1509,7 +1509,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugResourceRelease_( Resource * _resource )
     {
-        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("release %s type %s"
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0 )("release %s type %s"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             );

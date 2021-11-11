@@ -224,6 +224,10 @@ namespace Mengine
 
         loggerCapture->setVerboseLevel( LM_ERROR );
 
+        uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
+
+        loggerCapture->setVerboseFilter( loggerFilter );
+
         LOGGER_SERVICE()
             ->registerLogger( loggerCapture );
 

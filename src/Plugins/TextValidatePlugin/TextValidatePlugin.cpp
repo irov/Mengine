@@ -56,7 +56,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE_WN( "Validate Texts... " );
+        LOGGER_MESSAGE_WN( false, true, "Validate Texts... " );
 
         bool successful = true;
 

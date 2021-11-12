@@ -28,7 +28,7 @@ namespace Mengine
             switch( type )
             {
             case CURLINFO_TEXT:
-                LOGGER_MESSAGE_WN( "== Info: %s", data );
+                LOGGER_MESSAGE_WN( false, true, "== Info: %s", data );
             case CURLINFO_HEADER_OUT:
                 text = "=> Send header";
                 break;

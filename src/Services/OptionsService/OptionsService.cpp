@@ -29,45 +29,7 @@ namespace Mengine
     bool OptionsService::_initializeService()
     {
         //Empty
-        SERVICE_WAIT( LoggerServiceInterface, [this]()
-        {
-            for( const Option & option : m_options )
-            {
-                if( option.value_count == 0 )
-                {
-                    LOGGER_MESSAGE_RELEASE( "option: -%s"
-                        , option.key
-                    );
-                }
-                else
-                {
-                    if( option.value_count == 1 )
-                    {
-                        LOGGER_MESSAGE_RELEASE( "option: -%s=%s"
-                            , option.key
-                            , option.value[0]
-                        );
-                    }
-                    else
-                    {
-                        LOGGER_MESSAGE_RELEASE_WN( false, true, "option: -%s="
-                            , option.key
-                        );
-
-                        for( uint32_t index = 0; index != option.value_count; ++index )
-                        {
-                            LOGGER_MESSAGE_RELEASE_WN( false, true, "%s|"
-                                , option.value[index]
-                            );
-                        }
-
-                        LOGGER_MESSAGE_RELEASE( "\n" );
-                    }
-                }
-            }
-
-            return true;
-        } );
+        SERVICE_WAIT_METHOD( LoggerServiceInterface, this, logOptions_ );
 
         return true;
     }
@@ -351,6 +313,53 @@ namespace Mengine
         if( MENGINE_STRCMP( value, _value ) != 0 )
         {
             return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OptionsService::logOptions_()
+    {
+        LOGGER_MESSAGE_RELEASE_WN( false, true, "options:" );
+
+        if( m_options.empty() == true )
+        {
+            LOGGER_MESSAGE_RELEASE_WN( false, true, " [none]" );
+        }
+
+        for( const Option & option : m_options )
+        {
+            if( option.value_count == 0 )
+            {
+                LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s"
+                    , option.key
+                );
+            }
+            else
+            {
+                if( option.value_count == 1 )
+                {
+                    LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s=%s"
+                        , option.key
+                        , option.value[0]
+                    );
+                }
+                else
+                {
+                    LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s="
+                        , option.key
+                    );
+
+                    for( uint32_t index = 0; index != option.value_count; ++index )
+                    {
+                        LOGGER_MESSAGE_RELEASE_WN( false, true, "%s|"
+                            , option.value[index]
+                        );
+                    }
+                }
+            }
+
+            LOGGER_MESSAGE_RELEASE_WN( false, true, "\n" );
         }
 
         return true;

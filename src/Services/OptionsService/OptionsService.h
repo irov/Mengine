@@ -30,6 +30,9 @@ namespace Mengine
         bool testOptionValue( const Char * _key, const Char * _value ) const override;
 
     protected:
+        bool logOptions_();
+
+    protected:
         struct Option
         {
             Char key[MENGINE_OPTIONS_KEY_SIZE] = {'\0'};

@@ -199,6 +199,12 @@ namespace Mengine
 #define SERVICE_WAIT( Type, Lambda )\
     SERVICE_PROVIDER_GET()->waitService(this->getServiceID(), Type::getStaticServiceID(), Lambda)
 //////////////////////////////////////////////////////////////////////////
+#define SERVICE_WAIT_METHOD( Type, Self, Method )\
+    SERVICE_PROVIDER_GET()->waitService(this->getServiceID(), Type::getStaticServiceID(), [Self](){return Self->Method();})
+//////////////////////////////////////////////////////////////////////////
 #define SERVICE_LEAVE( Type, Lambda )\
     SERVICE_PROVIDER_GET()->leaveService(this->getServiceID(), Type::getStaticServiceID(), Lambda)
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_LEAVE_METHOD( Type, Self, Method )\
+    SERVICE_PROVIDER_GET()->leaveService(this->getServiceID(), Type::getStaticServiceID(), [Self](){Self->Method();})
 //////////////////////////////////////////////////////////////////////////

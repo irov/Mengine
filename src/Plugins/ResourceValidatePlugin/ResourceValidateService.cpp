@@ -85,7 +85,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE_WN( "Validate Resources... " );
+        LOGGER_MESSAGE( "Validate Resources... " );
         
         bool successful = true;
 

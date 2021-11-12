@@ -31,7 +31,7 @@
             android:label="${app_name_gradle}"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:clearTaskOnLaunch="true"
-            android:exported="false"
+            android:exported="true"
             android:launchMode="singleTop"
             android:keepScreenOn="true"
             android:screenOrientation="fullSensor">

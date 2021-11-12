@@ -24,7 +24,6 @@
 #   include "Interface/AndroidPlatformExtensionInterface.h"
 #endif
 
-#include "Kernel/FileLogger.h"
 #include "Kernel/Factory.h"
 #include "Kernel/ServiceBase.h"
 

@@ -437,7 +437,7 @@ namespace Mengine
             return false;
         }
 
-        if( _logger->initialize() == false )
+        if( _logger->initializeLogger() == false )
         {
             return false;
         }
@@ -461,7 +461,7 @@ namespace Mengine
 
         _logger->flush();
 
-        _logger->finalize();
+        _logger->finalizeLogger();
 
         m_loggers.erase( it_find );
 

@@ -228,6 +228,8 @@ namespace Mengine
 
         loggerCapture->setVerboseFilter( loggerFilter );
 
+        loggerCapture->setWriteHistory( true );
+
         LOGGER_SERVICE()
             ->registerLogger( loggerCapture );
 

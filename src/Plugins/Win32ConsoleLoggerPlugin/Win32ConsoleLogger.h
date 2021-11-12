@@ -15,8 +15,8 @@ namespace Mengine
         ~Win32ConsoleLogger() override;
 
     public:
-        bool initialize() override;
-        void finalize() override;
+        bool _initializeLogger() override;
+        void _finalizeLogger() override;
 
     public:
         void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) override;

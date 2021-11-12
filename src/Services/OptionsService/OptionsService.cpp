@@ -358,9 +358,9 @@ namespace Mengine
                     }
                 }
             }
-
-            LOGGER_MESSAGE_RELEASE_WN( false, true, "\n" );
         }
+
+        LOGGER_MESSAGE_RELEASE_WN( false, true, "\n" );
 
         return true;
     }

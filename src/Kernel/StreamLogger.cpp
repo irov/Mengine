@@ -1,7 +1,5 @@
 #include "StreamLogger.h"
 
-#include "Interface/LoggerServiceInterface.h"
-
 #include "Kernel/Assertion.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -29,17 +27,14 @@ namespace Mengine
         return m_stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool StreamLogger::initialize()
+    bool StreamLogger::_initializeLogger()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_stream );
-
-        LOGGER_SERVICE()
-            ->writeHistory( LoggerInterfacePtr::from( this ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StreamLogger::finalize()
+    void StreamLogger::_finalizeLogger()
     {
         if( m_stream != nullptr )
         {

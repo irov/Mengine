@@ -14,9 +14,17 @@ namespace Mengine
         LoggerBase();
         ~LoggerBase() override;
 
+    private:
+        bool initializeLogger() override;
+        void finalizeLogger() override;
+
+    protected:
+        virtual bool _initializeLogger();
+        virtual void _finalizeLogger();
+
     public:
-        bool initialize() override;
-        void finalize() override;
+        void setWriteHistory( bool _writeHistory ) override;
+        bool getWriteHistory() const override;
 
     public:
         void setColor( uint32_t _color ) override;
@@ -36,6 +44,8 @@ namespace Mengine
         void flush() override;
 
     protected:
+        bool m_writeHistory;
+
         uint32_t m_color;
 
         ELoggerLevel m_verboseLevel;

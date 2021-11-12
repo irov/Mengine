@@ -27,7 +27,6 @@ extern "C" {
 #include "SDLDynamicLibrary.h"
 #include "SDLDateTimeProvider.h"
 
-#include "Kernel/FileLogger.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/AssertionNotImplemented.h"
@@ -3233,6 +3232,96 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #if MENGINE_LOGGER_DEBUG
         //////////////////////////////////////////////////////////////////////////
+        static const Char * getPlatformEventMessage( Uint32 _eventId )
+        {
+            switch( _eventId )
+            {
+                MENGINE_MESSAGE_CASE( SDL_QUIT, "User - requested quit" );
+                MENGINE_MESSAGE_CASE( SDL_APP_TERMINATING, "The application is being terminated by the OS Called on iOS in applicationWillTerminate Called on Android in onDestroy" );
+                MENGINE_MESSAGE_CASE( SDL_APP_LOWMEMORY, "The application is low on memory, free memory if possible.Called on iOS in applicationDidReceiveMemoryWarning Called on Android in onLowMemory" );
+                MENGINE_MESSAGE_CASE( SDL_APP_WILLENTERBACKGROUND, "The application is about to enter the background Called on iOS in applicationWillResignActive Called on Android in onPause" );
+                MENGINE_MESSAGE_CASE( SDL_APP_DIDENTERBACKGROUND, "The application did enter the background and may not get CPU for some time Called on iOS in applicationDidEnterBackground Called on Android in onPause" );
+                MENGINE_MESSAGE_CASE( SDL_APP_WILLENTERFOREGROUND, "The application is about to enter the foreground Called on iOS in applicationWillEnterForeground Called on Android in onResume" );
+                MENGINE_MESSAGE_CASE( SDL_APP_DIDENTERFOREGROUND, "The application is now interactive Called on iOS in applicationDidBecomeActive Called on Android in onResume" );
+                MENGINE_MESSAGE_CASE( SDL_LOCALECHANGED, "The user's locale preferences have changed." );
+
+                MENGINE_MESSAGE_CASE( SDL_DISPLAYEVENT, "Display state change" );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT, "Window state change" );
+                MENGINE_MESSAGE_CASE( SDL_SYSWMEVENT, "System specific event" );
+
+                /* Keyboard events */
+                MENGINE_MESSAGE_CASE( SDL_KEYDOWN, "Key pressed" );
+                MENGINE_MESSAGE_CASE( SDL_KEYUP, "Key released" );
+                MENGINE_MESSAGE_CASE( SDL_TEXTEDITING, "Keyboard text editing( composition )" );
+                MENGINE_MESSAGE_CASE( SDL_TEXTINPUT, "Keyboard text input" );
+                MENGINE_MESSAGE_CASE( SDL_KEYMAPCHANGED, "Keymap changed due to a system event such as an input language or keyboard layout change." );
+                MENGINE_MESSAGE_CASE( SDL_MOUSEMOTION, "Mouse moved" );
+                MENGINE_MESSAGE_CASE( SDL_MOUSEBUTTONDOWN, "Mouse button pressed" );
+                MENGINE_MESSAGE_CASE( SDL_MOUSEBUTTONUP, "Mouse button released" );
+                MENGINE_MESSAGE_CASE( SDL_MOUSEWHEEL, "Mouse wheel motion" );
+
+                /* Joystick events */
+                MENGINE_MESSAGE_CASE( SDL_JOYAXISMOTION, "Joystick axis motion" );
+                MENGINE_MESSAGE_CASE( SDL_JOYBALLMOTION, "Joystick trackball motion" );
+                MENGINE_MESSAGE_CASE( SDL_JOYHATMOTION, "Joystick hat position change" );
+                MENGINE_MESSAGE_CASE( SDL_JOYBUTTONDOWN, "Joystick button pressed" );
+                MENGINE_MESSAGE_CASE( SDL_JOYBUTTONUP, "Joystick button released" );
+                MENGINE_MESSAGE_CASE( SDL_JOYDEVICEADDED, "A new joystick has been inserted into the system" );
+                MENGINE_MESSAGE_CASE( SDL_JOYDEVICEREMOVED, "An opened joystick has been removed" );
+
+                /* Game controller events */
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERAXISMOTION, "Game controller axis motion" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERBUTTONDOWN, "Game controller button pressed" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERBUTTONUP, "Game controller button released" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERDEVICEADDED, "A new Game controller has been inserted into the system" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERDEVICEREMOVED, "An opened Game controller has been removed" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERDEVICEREMAPPED, "The controller mapping was updated" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERTOUCHPADDOWN, "Game controller touchpad was touched" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERTOUCHPADMOTION, "Game controller touchpad finger was moved" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERTOUCHPADUP, "Game controller touchpad finger was lifted" );
+                MENGINE_MESSAGE_CASE( SDL_CONTROLLERSENSORUPDATE, "Game controller sensor was updated" );
+
+                /* Touch events */
+                MENGINE_MESSAGE_CASE( SDL_FINGERDOWN, "SDL_FINGERDOWN" );
+                MENGINE_MESSAGE_CASE( SDL_FINGERUP, "SDL_FINGERUP" );
+                MENGINE_MESSAGE_CASE( SDL_FINGERMOTION, "SDL_FINGERMOTION" );
+
+                /* Gesture events */
+                MENGINE_MESSAGE_CASE( SDL_DOLLARGESTURE, "SDL_DOLLARGESTURE" );
+                MENGINE_MESSAGE_CASE( SDL_DOLLARRECORD, "SDL_DOLLARRECORD" );
+                MENGINE_MESSAGE_CASE( SDL_MULTIGESTURE, "SDL_MULTIGESTURE" );
+
+                /* Clipboard events */
+                MENGINE_MESSAGE_CASE( SDL_CLIPBOARDUPDATE, "The clipboard changed" );
+
+                /* Drag and drop events */
+                MENGINE_MESSAGE_CASE( SDL_DROPFILE, "The system requests a file open" );
+                MENGINE_MESSAGE_CASE( SDL_DROPTEXT, "text/plain drag-and-drop event" );
+                MENGINE_MESSAGE_CASE( SDL_DROPBEGIN, "A new set of drops is beginning (NULL filename)" );
+                MENGINE_MESSAGE_CASE( SDL_DROPCOMPLETE, "Current set of drops is now complete (NULL filename)" );
+
+                /* Audio hotplug events */
+                MENGINE_MESSAGE_CASE( SDL_AUDIODEVICEADDED, "A new audio device is available" );
+                MENGINE_MESSAGE_CASE( SDL_AUDIODEVICEREMOVED, "An audio device has been removed" );
+
+                /* Sensor events */
+                MENGINE_MESSAGE_CASE( SDL_SENSORUPDATE, "A sensor was updated" );
+
+                /* Render events */
+                MENGINE_MESSAGE_CASE( SDL_RENDER_TARGETS_RESET, "The render targets have been reset and their contents need to be updated" );
+                MENGINE_MESSAGE_CASE( SDL_RENDER_DEVICE_RESET, "The device has been reset and all textures need to be recreated" );
+
+                /** Events ::SDL_USEREVENT through ::SDL_LASTEVENT are for your use,
+                 *  and should be allocated with SDL_RegisterEvents()
+                 */
+                MENGINE_MESSAGE_CASE( SDL_USEREVENT, "SDL_USEREVENT" );
+            default:
+                break;
+            }
+
+            return "UNKNOWN";
+        }
+        //////////////////////////////////////////////////////////////////////////
         static const Char * getWindowEventMessage( SDL_WindowEventID _eventId )
         {
             switch( _eventId )
@@ -3268,11 +3357,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents_()
     {
-        Uint32 windowID = SDL_GetWindowID( m_sdlWindow );
+        SDL_PumpEvents();
 
         SDL_Event sdlEvent;
         while( SDL_PollEvent( &sdlEvent ) != 0 )
         {
+            LOGGER_INFO( "platform", "platform event: %s (%u)"
+                , Helper::getPlatformEventMessage( sdlEvent.type )
+                , sdlEvent.type
+            );
+
             for( const SDLEventHandlerDesc & desc : m_sdlEventHandlers )
             {
                 desc.handler( &sdlEvent );
@@ -3303,6 +3397,8 @@ namespace Mengine
                 }break;
             case SDL_WINDOWEVENT:
                 {
+                    Uint32 windowID = SDL_GetWindowID( m_sdlWindow );
+
                     if( sdlEvent.window.windowID != windowID )
                     {
                         continue;
@@ -3310,8 +3406,9 @@ namespace Mengine
 
                     SDL_WindowEventID windowEventId = (SDL_WindowEventID)sdlEvent.window.event;
 
-                    LOGGER_INFO( "platform", "window event: %s"
+                    LOGGER_INFO( "platform", "window event: %s (%u)"
                         , Helper::getWindowEventMessage( windowEventId )
+                        , windowEventId
                     );
 
                     switch( windowEventId )
@@ -3380,7 +3477,7 @@ namespace Mengine
                 }break;
             case SDL_QUIT:
                 {
-                    return true;
+                    m_shouldQuit = true;
                 }break;
             default:
                 break;

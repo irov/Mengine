@@ -45,6 +45,8 @@ namespace Mengine
     {
         Win32ConsoleLoggerPtr loggerConsole = Helper::makeFactorableUnique<Win32ConsoleLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
+        loggerConsole->setWriteHistory( true );
+
         LOGGER_SERVICE()
             ->registerLogger( loggerConsole );
 

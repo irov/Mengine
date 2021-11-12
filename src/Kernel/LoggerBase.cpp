@@ -1,10 +1,13 @@
 #include "LoggerBase.h"
 
+#include "Interface/LoggerServiceInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     LoggerBase::LoggerBase()
-        : m_color( LCOLOR_NONE )
+        : m_writeHistory( false )
+        , m_color( LCOLOR_NONE )
         , m_verboseLevel( LM_VERBOSE )
         , m_verboseFilter( 0xFFFFFFFF )
     {
@@ -14,15 +17,47 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerBase::initialize()
+    bool LoggerBase::initializeLogger()
+    {
+        if( this->_initializeLogger() == false )
+        {
+            return false;
+        }
+
+        if( m_writeHistory == true )
+        {
+            LOGGER_SERVICE()
+                ->writeHistory( LoggerInterfacePtr::from( this ) );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerBase::finalizeLogger()
+    {
+        this->_finalizeLogger();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerBase::_initializeLogger()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerBase::finalize()
+    void LoggerBase::_finalizeLogger()
     {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerBase::setWriteHistory( bool _writeHistory )
+    {
+        m_writeHistory = _writeHistory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerBase::getWriteHistory() const
+    {
+        return m_writeHistory;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerBase::setColor( uint32_t _color )

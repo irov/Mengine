@@ -14,8 +14,8 @@ namespace Mengine
         ~SentryLoggerCapture() override;
 
     protected:
-        bool initialize() override;
-        void finalize() override;
+        bool _initializeLogger() override;
+        void _finalizeLogger() override;
 
     protected:
         void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) override;
@@ -24,6 +24,6 @@ namespace Mengine
         String m_message;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SentryLoggerCapture> SentryLoggerCapturePtr;
+    typedef IntrusivePtr<SentryLoggerCapture, LoggerInterface> SentryLoggerCapturePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -4,6 +4,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLMessageBoxLogger
         : public LoggerBase
     {
@@ -15,4 +16,7 @@ namespace Mengine
         void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) override;
         void flush() override;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<SDLMessageBoxLogger, LoggerInterface> SDLMessageBoxLoggerPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

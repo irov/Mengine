@@ -1,7 +1,5 @@
 #include "FileLogger.h"
 
-#include "Interface/LoggerServiceInterface.h"
-
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -38,7 +36,7 @@ namespace Mengine
         return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileLogger::initialize()
+    bool FileLogger::_initializeLogger()
     {
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -46,13 +44,10 @@ namespace Mengine
 
         m_stream = stream;
 
-        LOGGER_SERVICE()
-            ->writeHistory( LoggerInterfacePtr::from( this ) );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileLogger::finalize()
+    void FileLogger::_finalizeLogger()
     {
         if( m_stream != nullptr )
         {

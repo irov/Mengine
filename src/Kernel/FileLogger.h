@@ -23,8 +23,8 @@ namespace Mengine
         const FilePath & getFilePath() const;
 
     public:
-        bool initialize() override;
-        void finalize() override;
+        bool _initializeLogger() override;
+        void _finalizeLogger() override;
 
     public:
         const OutputStreamInterfacePtr & getStream() const;

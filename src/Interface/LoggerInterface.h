@@ -14,8 +14,12 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
+        virtual bool initializeLogger() = 0;
+        virtual void finalizeLogger() = 0;
+
+    public:
+        virtual void setWriteHistory( bool _writeHistory ) = 0;
+        virtual bool getWriteHistory() const = 0;
 
     public:
         virtual void setColor( uint32_t _color ) = 0;

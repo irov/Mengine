@@ -1,6 +1,5 @@
 #include "Win32ConsoleLogger.h"
 
-#include "Interface/LoggerServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
@@ -29,7 +28,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ConsoleLogger::initialize()
+    bool Win32ConsoleLogger::_initializeLogger()
     {
         LOGGER_MESSAGE( "initialize windows console" );
 
@@ -38,13 +37,10 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_SERVICE()
-            ->writeHistory( LoggerInterfacePtr::from( this ) );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::finalize()
+    void Win32ConsoleLogger::_finalizeLogger()
     {
         this->removeConsole_();
     }

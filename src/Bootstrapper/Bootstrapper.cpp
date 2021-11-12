@@ -644,6 +644,8 @@ namespace Mengine
         fileLog->setFileGroup( userFileGroup );
         fileLog->setFilePath( logFilename );
 
+        fileLog->setWriteHistory( true );
+
         if( LOGGER_SERVICE()
             ->registerLogger( fileLog ) == false )
         {

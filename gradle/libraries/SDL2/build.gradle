@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 
 android {
     ndkVersion '22.0.7026061'
-    buildToolsVersion '30.0.3'
-    compileSdkVersion 30
+    buildToolsVersion '31.0.0'
+    compileSdkVersion 31
     
     ext.getBooleanProperty = { name, d ->
         def p = project.getProperties().get(name, null)
@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
 
         if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {

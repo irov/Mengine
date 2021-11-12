@@ -667,9 +667,14 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
-        {if( PLUGIN_CREATE(Name, Doc) == false ){\
-        LOGGER_ERROR( "Invalid initialize %s", Info ); return false;}else{\
-        LOGGER_MESSAGE_RELEASE( "%s", Info );}}
+        {\
+            LOGGER_MESSAGE_RELEASE( "%s", Info );\
+            if( PLUGIN_CREATE(Name, Doc) == false )\
+            {\
+                LOGGER_ERROR( "[invalid initialize]" );\
+            return false;\
+            }\
+        }
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {

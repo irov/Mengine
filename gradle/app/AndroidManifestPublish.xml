@@ -47,6 +47,7 @@
             android:label="${app_name_gradle}"
             android:theme="@style/AppTheme"
             android:clearTaskOnLaunch="true"
+            android:exported="true"
             android:launchMode="singleTop"
             android:keepScreenOn="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

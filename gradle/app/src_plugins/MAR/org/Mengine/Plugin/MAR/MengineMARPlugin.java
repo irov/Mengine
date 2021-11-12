@@ -187,9 +187,6 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         int keyCode = event.getKeyCode();
 
         if(keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN ) {
-            m_activity.quitMengineApplication();
-
-            /*
             MARPlatform.getInstance().exitSDK(new MARExitListener() {
                 @Override
                 public void onGameExit() {
@@ -211,18 +208,14 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
                                     //退出游戏
-                                    m_activity.quitMengineApplication();
-                                    //m_activity.finish();
 
-                                    //System.exit(0);
+                                    m_activity.quitMengineApplication();
                                 }
                             });
 
                     builder.show();
-
                 }
             });
-             */
 
             return true;
         }

@@ -87,6 +87,8 @@ namespace Mengine
         LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 
+        loggerStdio->setWriteHistory( true );
+
         LOGGER_SERVICE()
             ->registerLogger( loggerStdio );
 

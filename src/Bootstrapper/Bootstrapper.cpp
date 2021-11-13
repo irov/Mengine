@@ -802,7 +802,7 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_LZ4_STATIC
         MENGINE_ADD_PLUGIN( LZ4, "Plugin LZ4...", MENGINE_DOCUMENT_FACTORABLE );
-#endif        
+#endif
 
         bool OPTION_norenderMode = HAS_OPTION( "norender" );
 

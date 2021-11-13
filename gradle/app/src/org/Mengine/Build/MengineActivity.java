@@ -386,12 +386,10 @@ public class MengineActivity extends SDLActivity {
 
         py_args.append("(");
 
-        for( int i = 0; i != args.length; ++i )
-        {
+        for(int i = 0; i != args.length; ++i) {
             Object a = args[i];
 
-            if( a instanceof String )
-            {
+            if(a instanceof String) {
                 py_args.append("\"");
                 py_args.append(a);
                 py_args.append("\"");

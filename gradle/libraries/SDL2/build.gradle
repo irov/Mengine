@@ -19,7 +19,7 @@ android {
         }
 
         return true
-    }    
+    }
 
     defaultConfig {
         minSdkVersion 19

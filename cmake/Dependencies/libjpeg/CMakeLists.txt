@@ -5,18 +5,18 @@ project(jpeg)
 SET(SOURCE_DIR ${THIRDPARTY_DIR}/libjpeg)
 
 IF(MENGINE_RENDER_DIRECTX9)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx9.h ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/jmorecfg.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx9.h ${THIRDPARTY_CONFIG_DIR}/libjpeg/jmorecfg.h COPYONLY)
 ELSEIF(MENGINE_RENDER_DIRECTX11)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx11.h ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/jmorecfg.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx11.h ${THIRDPARTY_CONFIG_DIR}/libjpeg/jmorecfg.h COPYONLY)
 ELSE()
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/jmorecfg.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${THIRDPARTY_CONFIG_DIR}/libjpeg/jmorecfg.h COPYONLY)
 ENDIF()
 
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemansi.c ${SOURCE_DIR}/jmemansi.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemsys.h ${SOURCE_DIR}/jmemsys.h COPYONLY)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/jconfig.h COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${THIRDPARTY_CONFIG_DIR}/libjpeg/jconfig.h COPYONLY)
 
 if(EXISTS ${SOURCE_DIR}/jmorecfg.h)
     message("jpeg remove jmorecfg.h form: ${SOURCE_DIR}") 
@@ -74,6 +74,6 @@ ${SOURCE_DIR}/jmemansi.c
 )
 
 include_directories(${SOURCE_DIR})
-include_directories(${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME})
+include_directories(${THIRDPARTY_CONFIG_DIR}/libjpeg)
 
 add_library(${PROJECT_NAME} STATIC ${jpeg_sources})

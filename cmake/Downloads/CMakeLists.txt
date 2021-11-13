@@ -38,7 +38,7 @@ GIT_CLONE(libfe https://github.com/frankinshtein/font-effects-lib.git)
 GIT_CLONE(libmath https://github.com/irov/libmath.git)
 GIT_CLONE(jansson https://github.com/akheron/jansson.git "v2.14")
 GIT_CLONE(jpp https://github.com/irov/jpp.git)
-GIT_CLONE(libpng https://github.com/glennrp/libpng.git "v1.6.37")
+GIT_CLONE(libpng https://github.com/glennrp/libpng.git "a37d4836519517bdce6cb9d956092321eca3e73b") #v1.6.38
 GIT_CLONE(libjpeg https://github.com/winlibs/libjpeg.git "libjpeg-9c")
 GIT_CLONE(libtheora https://github.com/xiph/theora.git "v1.1.1")
 GIT_CLONE(openal-soft https://github.com/kcat/openal-soft.git "1.21.1")

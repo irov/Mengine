@@ -41,6 +41,10 @@ if(MENGINE_TARGET_IOS)
     add_definitions(-DGLES_SILENCE_DEPRECATION)
 endif()
 
+if(MENGINE_TARGET_IOS_SIMULATOR)
+    add_definitions(-DGLES_SILENCE_DEPRECATION)
+endif()
+
 include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
 include_directories(${THIRDPARTY_DIR}/SDL2/include)
 

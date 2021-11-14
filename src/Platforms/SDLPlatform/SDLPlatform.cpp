@@ -1514,6 +1514,7 @@ namespace Mengine
 
         m_sdlInput->updateSurfaceResolution( dwf, dhf );
 
+#ifdef MENGINE_PLATFORM_DESKTOP
         int win_top;
         int win_left;
         int win_bottom;
@@ -1527,6 +1528,7 @@ namespace Mengine
                 , win_bottom
             );
         }
+#endif
 
         int win_min_width;
         int win_min_height;

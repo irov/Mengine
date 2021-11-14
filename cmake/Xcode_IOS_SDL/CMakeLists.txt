@@ -1,8 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-IF(COMMAND cmake_policy)
-    cmake_policy(SET CMP0008 NEW)
-ENDIF()
+SET(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../xcode_ios_toolchains.cmake")
 
 SET(MENGINE_PROJECT_NAME "Mengine_Xcode_IOS_SDL" CACHE STRING "Mengine project name" FORCE)
 

@@ -305,7 +305,7 @@ namespace Mengine
 
         return pathLen;
 #elif defined(MENGINE_PLATFORM_IOS)
-        const char deploy_mac_data[] = "deploy-ios-data/";
+        const char deploy_mac_data[] = "";
         MENGINE_STRCPY( _currentPath, deploy_mac_data );
 
         return sizeof( deploy_mac_data ) - 1;

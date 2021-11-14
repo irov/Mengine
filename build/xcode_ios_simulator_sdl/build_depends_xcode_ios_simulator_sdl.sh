@@ -10,8 +10,8 @@ fi
 
 CONFIGURATION=$1
 
-mkdir -p ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
-pushd ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
-$CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION
+mkdir -p ../../solutions/dependencies_xcode_ios_simulator_sdl/$CONFIGURATION
+pushd ../../solutions/dependencies_xcode_ios_simulator_sdl/$CONFIGURATION
+$CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_IOS_Simulator_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION
 $CMAKE --build ./ --config $CONFIGURATION
 popd

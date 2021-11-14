@@ -1824,6 +1824,17 @@ namespace Mengine
 
         if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
         {
+            int profile;
+            if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &profile ) == -1 )
+            {
+                return;
+            }
+
+            if( profile == SDL_GL_CONTEXT_PROFILE_ES )
+            {
+                return;
+            }
+
             if( _vsync == false )
             {
                 if( SDL_GL_SetSwapInterval( 0 ) != 0 )

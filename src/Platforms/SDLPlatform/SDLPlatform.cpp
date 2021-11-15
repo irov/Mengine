@@ -1543,7 +1543,7 @@ namespace Mengine
         int win_max_height;
         SDL_GetWindowMaximumSize( m_sdlWindow, &win_max_width, &win_max_height );
 
-        LOGGER_MESSAGE_RELEASE( "SDL window min size [%d, %d]"
+        LOGGER_MESSAGE_RELEASE( "SDL window max size [%d, %d]"
             , win_max_width
             , win_max_height
         );
@@ -1566,7 +1566,7 @@ namespace Mengine
             SDL_Rect usableBounds;
             if( SDL_GetDisplayUsableBounds( displayIndex, &usableBounds ) == 0 )
             {
-                LOGGER_MESSAGE_RELEASE( "SDL display bounds [%d, %d] size [%d, %d]"
+                LOGGER_MESSAGE_RELEASE( "SDL display usable bounds [%d, %d] size [%d, %d]"
                     , usableBounds.x
                     , usableBounds.y
                     , usableBounds.w
@@ -3180,45 +3180,6 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
         LOGGER_MESSAGE_RELEASE( "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
         LOGGER_MESSAGE_RELEASE( "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
-
-#if defined(MENGINE_WINDOWS_UNIVERSAL)
-#else
-        int GL_CONTEXT_PROFILE_MASK;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &GL_CONTEXT_PROFILE_MASK ) != 0 )
-        {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
-                , SDL_GetError()
-            );
-        }
-        else
-        {
-            LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_PROFILE_MASK: %u", GL_CONTEXT_PROFILE_MASK );
-        }
-
-        int GL_CONTEXT_MAJOR_VERSION;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &GL_CONTEXT_MAJOR_VERSION ) != 0 )
-        {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
-                , SDL_GetError()
-            );
-        }
-        else
-        {
-            LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MAJOR_VERSION: %u", GL_CONTEXT_MAJOR_VERSION );
-        }
-
-        int GL_CONTEXT_MINOR_VERSION;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &GL_CONTEXT_MINOR_VERSION ) != 0 )
-        {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
-                , SDL_GetError()
-            );
-        }
-        else
-        {
-            LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MINOR_VERSION: %u", GL_CONTEXT_MINOR_VERSION );
-        }
-#endif
 
         return true;
     }

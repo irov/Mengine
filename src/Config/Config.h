@@ -36,6 +36,9 @@
 #   elif TARGET_OS_IPHONE
 #       define MENGINE_PLATFORM_IOS
 #       define MENGINE_PLATFORM_MOBILE
+#       if TARGET_OS_SIMULATOR
+#           define MENGINE_PLATFORM_IOS_SIMULATOR
+#       endif
 #   endif
 #elif defined(__ANDROID__)
 #   define MENGINE_PLATFORM_ANDROID

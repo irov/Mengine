@@ -474,6 +474,12 @@ namespace Mengine
             this->addGlobalModuleT( "_IOS", false );
 #endif
 
+#if defined(MENGINE_PLATFORM_IOS_SIMULATOR)
+            this->addGlobalModuleT( "_IOS_SIMULATOR", true );
+#else
+            this->addGlobalModuleT( "_IOS_SIMULATOR", false );
+#endif
+
 #if defined(MENGINE_PLATFORM_MOBILE)
             this->addGlobalModuleT( "_MOBILE", true );
 #else

@@ -14,8 +14,6 @@ ENDIF()
 
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemansi.c ${SOURCE_DIR}/jmemansi.c COPYONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemsys.h ${SOURCE_DIR}/jmemsys.h COPYONLY)
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${THIRDPARTY_CONFIG_DIR}/libjpeg/jconfig.h COPYONLY)
 
 if(EXISTS ${SOURCE_DIR}/jmorecfg.h)

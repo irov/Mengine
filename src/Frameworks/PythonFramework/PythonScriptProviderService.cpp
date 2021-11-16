@@ -89,6 +89,21 @@ namespace Mengine
                     ->free( _ptr, "pybind" );
             }
         };
+        //////////////////////////////////////////////////////////////////////////
+        static bool getPybindDebugMode()
+        {
+            bool OPTION_pybinddebug = HAS_OPTION( "pybinddebug" );
+
+            if( OPTION_pybinddebug == true )
+            {
+                return true;
+            }
+
+            bool Debug_Pybind = CONFIG_VALUE( "Debug", "Pybind", MENGINE_DEBUG_VALUE( true, false ) );
+
+            return Debug_Pybind;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     PythonScriptProviderService::PythonScriptProviderService()
@@ -108,11 +123,11 @@ namespace Mengine
         int32_t crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
 #endif
 
-        bool Debug_Pybind = CONFIG_VALUE( "Debug", "Pybind", MENGINE_DEBUG_VALUE( true, false ) );
-
         pybind::allocator_interface * allocator = Helper::newT<Detail::MyPythonAllocator>();
 
-        pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, Debug_Pybind, false, true );
+        bool debugMode = Detail::getPybindDebugMode();
+
+        pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, debugMode, false, true );
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         _CrtSetReportMode( _CRT_WARN, crt_warn );

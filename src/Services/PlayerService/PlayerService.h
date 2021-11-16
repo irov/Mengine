@@ -89,7 +89,7 @@ namespace Mengine
         void finalizeRenderResources() override;
 
     public:
-        bool update() override;
+        void update() override;
 
     public:
         void render( const RenderPipelineInterfacePtr & _renderPipeline ) override;

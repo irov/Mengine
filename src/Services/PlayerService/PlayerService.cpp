@@ -586,7 +586,7 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::update()
+    void PlayerService::update()
     {
         PICKER_SERVICE()
             ->update();
@@ -595,8 +595,6 @@ namespace Mengine
         {
             m_globalInputHandler->update();
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderCameraOrthogonalPtr & PlayerService::getDefaultCamera2D() const

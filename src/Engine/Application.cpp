@@ -1697,13 +1697,8 @@ namespace Mengine
         CHRONOMETER_SERVICE()
             ->update();
 
-        if( PLAYER_SERVICE()
-            ->update() == false )
-        {
-            this->quit();
-
-            return false;
-        }
+        PLAYER_SERVICE()
+            ->update();
 
         if( (m_focus == false || m_freeze == true) && m_update == true )
         {

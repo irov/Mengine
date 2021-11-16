@@ -573,9 +573,15 @@ namespace Mengine
 
         FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, (FilePath::size_type)userPathLen );
 
-        LOGGER_MESSAGE( "User Folder: %s"
-            , cs_userPath.c_str()
-        );
+        if( HAS_OPTION( "showuserfolder" ) == true )
+        {
+            PLATFORM_SERVICE()
+                ->messageBox( "Mengine", "user folder: %s", cs_userPath.c_str() );
+        }
+        else
+        {
+            LOGGER_MESSAGE_RELEASE_PROTECTED( "User Folder: %s", cs_userPath.c_str() );
+        }
 
         // mount user directory
         if( FILE_SERVICE()

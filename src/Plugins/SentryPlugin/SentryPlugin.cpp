@@ -139,16 +139,6 @@ namespace Mengine
             , Sentry_DSN
         );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
-        const Char * Sentry_Handler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
-#else
-        const Char * Sentry_Handler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler" );
-#endif
-
-        LOGGER_MESSAGE( "Sentry Handler: %s"
-            , Sentry_Handler
-        );
-
         sentry_options_t * options = sentry_options_new();
 
         sentry_options_set_logger( options, &Detail::sentry_logger_func, nullptr );
@@ -182,6 +172,17 @@ namespace Mengine
         
         PathString sentryHandlerPath;
         sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+        const Char * Sentry_Handler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
+#else
+        const Char * Sentry_Handler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler" );
+#endif
+
+        LOGGER_MESSAGE( "Sentry Handler: %s"
+            , Sentry_Handler
+        );
+
         sentryHandlerPath.append( Sentry_Handler );
 
         LOGGER_MESSAGE( "Sentry Handler: %s"

@@ -418,10 +418,19 @@ namespace Mengine
 
         for( const Record & record : m_history )
         {
+            ELoggerLevel record_level = record.level;
+            uint32_t record_filter = record.filter;
+
+            if( _logger->validMessage( record_level, record_filter ) == false )
+            {
+                continue;
+            }
+
+            uint32_t record_color = record.color;
             const Char * record_message_str = record.message.c_str();
             String::size_type record_message_size = record.message.size();
 
-            _logger->log( record.level, record.filter, record.color, record_message_str, record_message_size );
+            _logger->log( record_level, record_filter, record_color, record_message_str, record_message_size );
         }
     }
     //////////////////////////////////////////////////////////////////////////

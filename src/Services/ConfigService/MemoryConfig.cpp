@@ -205,6 +205,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MemoryConfig::unload()
+    {
+        m_records.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, bool _default, bool * const _value ) const
     {
         return Detail::hasValueT( m_records, m_platformTags, _section, _key, _default, _value );

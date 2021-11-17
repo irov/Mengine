@@ -25,6 +25,14 @@ namespace Mengine
         m_configs.push_back( _config );
     }
     //////////////////////////////////////////////////////////////////////////
+    void MultiConfig::foreachConfig( const LambdaConfigs & _lambda )
+    {
+        for( const ConfigInterfacePtr & config : m_configs )
+        {
+            _lambda( config );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MultiConfig::setPlatformTags( const Tags & _platformTags )
     {
         m_platformTags = _platformTags;
@@ -56,6 +64,11 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MultiConfig::unload()
+    {
+        m_configs.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool MultiConfig::hasValue( const Char * _section, const Char * _key, bool _default, bool * const _value ) const

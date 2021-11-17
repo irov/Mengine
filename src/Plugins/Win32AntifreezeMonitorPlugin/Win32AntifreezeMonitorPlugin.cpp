@@ -29,6 +29,13 @@ namespace Mengine
             return false;
         }
 
+        bool Engine_AntifreezeMonitorEnable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
+
+        if( Engine_AntifreezeMonitorEnable == false )
+        {
+            return false;
+        }
+
         if( HAS_OPTION( "noantifreezemonitor" ) == true )
         {
             return false;

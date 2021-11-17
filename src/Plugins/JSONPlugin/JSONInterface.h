@@ -48,8 +48,8 @@ namespace Mengine
     public:
         virtual JSONStorageInterfacePtr loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) const = 0;
         virtual JSONStorageInterfacePtr loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) const = 0;
-        virtual JSONStorageInterfacePtr createJSON( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) const = 0;
-        virtual JSONStorageInterfacePtr createJSONBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc ) const = 0;
+        virtual JSONStorageInterfacePtr loadJSONStreamFromMemory( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) const = 0;
+        virtual JSONStorageInterfacePtr loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

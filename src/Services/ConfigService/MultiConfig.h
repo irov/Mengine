@@ -5,6 +5,8 @@
 
 #include "Kernel/Tags.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -21,11 +23,16 @@ namespace Mengine
         void addConfig( const ConfigInterfacePtr & _config );
 
     public:
+        typedef Lambda<void(const ConfigInterfacePtr &)> LambdaConfigs;
+        void foreachConfig( const LambdaConfigs & _lambda );
+
+    public:
         void setPlatformTags( const Tags & _platformTags ) override;
         const Tags & getPlatformTags() const override;
 
     public:
         bool load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) override;
+        void unload() override;
 
     public:
         bool existValue( const Char * _section, const Char * _key ) const override;

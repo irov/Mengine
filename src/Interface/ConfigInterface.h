@@ -28,6 +28,7 @@ namespace Mengine
 
     public:
         virtual bool load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) = 0;
+        virtual void unload() = 0;
 
     public:
         virtual bool existValue( const Char * _section, const Char * _key ) const = 0;

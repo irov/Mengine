@@ -33,6 +33,7 @@ namespace Mengine
 
     public:
         bool load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) override;
+        void unload() override;
 
     public:
         bool existValue( const Char * _section, const Char * _key ) const override;

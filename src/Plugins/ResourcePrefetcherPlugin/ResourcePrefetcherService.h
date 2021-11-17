@@ -6,8 +6,7 @@
 #include "Kernel/Hashtable.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class ResourcePrefetcherService
         : public ServiceBase<ResourcePrefetcherServiceInterface>
     {

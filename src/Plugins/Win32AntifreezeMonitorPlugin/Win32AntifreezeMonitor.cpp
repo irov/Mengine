@@ -40,19 +40,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitor::initialize()
     {
-        bool Engine_AntifreezeMonitorEnable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
-
-        if( Engine_AntifreezeMonitorEnable == false )
-        {
-            return true;
-        }
-
         uint32_t Engine_AntifreezeMonitorSeconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
 
-        if( Engine_AntifreezeMonitorSeconds == 0U )
-        {
-            return true;
-        }
+        MENGINE_ASSERTION_FATAL( Engine_AntifreezeMonitorSeconds != 0 );
 
         m_seconds = Engine_AntifreezeMonitorSeconds;
 
@@ -97,20 +87,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::finalize()
     {
-        bool Engine_AntifreezeMonitorEnable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
-
-        if( Engine_AntifreezeMonitorEnable == false )
-        {
-            return;
-        }
-
-        uint32_t Engine_AntifreezeMonitorSeconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
-
-        if( Engine_AntifreezeMonitorSeconds == 0U )
-        {
-            return;
-        }
-
         if( m_workerId != 0 )
         {
             m_threadJob->removeWorker( m_workerId );

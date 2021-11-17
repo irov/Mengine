@@ -43,8 +43,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( ResourcePrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
-
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
@@ -82,6 +80,8 @@ namespace Mengine
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), prefetcherImageDecoder, MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ), prefetcherSoundDecoder, MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ), prefetcherDefault, MENGINE_DOCUMENT_FACTORABLE );
+
+        SERVICE_CREATE( ResourcePrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

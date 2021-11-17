@@ -1,11 +1,15 @@
 #include "JSONConfig.h"
 
+#include "Interface/MemoryServiceInterface.h"
+#include "Interface/SecureServiceInterface.h"
+
 #include "JSONCast.h"
 
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Ravingcode.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/FileStreamHelper.h"
@@ -189,14 +193,39 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 
+        size_t size = _stream->size();
+
+        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryBuffer( _doc );
+
+        Char * memory_buffer = memory->newBuffer( size + 1 );
+
+        _stream->read( memory_buffer, size );
+        memory_buffer[size] = '\0';
+
+        if( memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
+        {
+            memory_buffer += 4;
+
+            uint64_t secureHash = SECURE_SERVICE()
+                ->getSecureHash();
+
+            Helper::ravingcode( secureHash, memory_buffer, size - 4, memory_buffer );
+        }
+
         JSONStorageInterfacePtr storage = JSON_SERVICE()
-            ->loadJSONStream( _stream, _doc );
+            ->loadJSONStreamFromMemory( memory, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( storage );
 
         m_storages.emplace_back( storage );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JSONConfig::unload()
+    {
+        m_storages.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::existValue( const Char * _section, const Char * _key ) const

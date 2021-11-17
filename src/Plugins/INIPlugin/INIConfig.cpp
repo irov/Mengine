@@ -153,6 +153,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void INIConfig::unload()
+    {
+        m_stores.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool INIConfig::existValue( const Char * _section, const Char * _key ) const
     {
         for( const INIUtils::IniStore & ini : m_stores )

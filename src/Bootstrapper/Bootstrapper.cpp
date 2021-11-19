@@ -40,6 +40,10 @@
 #define MENGINE_APPLICATION_INI_PATH "application.ini"
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_APPLICATION_JSON_PATH
+#define MENGINE_APPLICATION_JSON_PATH "application.json"
+#endif
+//////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
@@ -478,22 +482,45 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::loadApplicationIni_()
+    namespace Detail
     {
-        FilePath applicationPath = Helper::stringizeFilePath( MENGINE_APPLICATION_INI_PATH );
+        //////////////////////////////////////////////////////////////////////////
+        ConfigInterfacePtr loadApplicationConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+        {
+            if( _fileGroup->existFile( _filePath, true ) == false )
+            {
+                return nullptr;
+            }
+
+            ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
+                ->loadConfig( _fileGroup, _filePath, ConstString::none(), _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, "invalid open application settings '%s'"
+                , _filePath.c_str()
+            );
+
+            return applicationConfig;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::loadApplicationConfig_()
+    {
+        FilePath applicationJsonPath = Helper::stringizeFilePath( MENGINE_APPLICATION_JSON_PATH );
+        FilePath applicationIniPath = Helper::stringizeFilePath( MENGINE_APPLICATION_INI_PATH );
 
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        if( defaultFileGroup->existFile( applicationPath, true ) == true )
+        ConfigInterfacePtr applicationConfig = Detail::loadApplicationConfig( defaultFileGroup, applicationJsonPath, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( applicationConfig == nullptr )
         {
-            ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
-                ->loadConfig( defaultFileGroup, applicationPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            applicationConfig = Detail::loadApplicationConfig( defaultFileGroup, applicationIniPath, MENGINE_DOCUMENT_FACTORABLE );
+        }
 
-            MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, "invalid open application settings '%s'"
-                , applicationPath.c_str()
-            );
-
+        if( applicationConfig != nullptr )
+        {
             VectorFilePath configsPaths;
             applicationConfig->getValues( "Configs", "Path", &configsPaths );
 
@@ -532,7 +559,7 @@ namespace Mengine
         else
         {
             LOGGER_INFO( "bootstrapper", "not exist application config '%s'"
-                , applicationPath.c_str()
+                , applicationIniPath.c_str()
             );
         }
 
@@ -753,7 +780,7 @@ namespace Mengine
 
         LOGGER_INFO( "bootstrapper", "bootstrapper load application ini" );
 
-        if( this->loadApplicationIni_() == false )
+        if( this->loadApplicationConfig_() == false )
         {
             LOGGER_ERROR( "invalid load application ini" );
 

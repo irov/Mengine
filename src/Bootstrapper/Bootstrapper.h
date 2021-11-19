@@ -48,7 +48,7 @@ namespace Mengine
         void stopFrameworks_();
 
     protected:
-        bool loadApplicationIni_();
+        bool loadApplicationConfig_();
         bool mountUserFileGroup_();
         bool initializeFileLogger_();
 

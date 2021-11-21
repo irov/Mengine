@@ -14,6 +14,7 @@ namespace Mengine
         bool isBuildMaster();
         bool isWindowsDebug();
         const Char * getEngineGITSHA1();
+        const Char * getContentCommit();
         const Char * getBuildTimestamp();
         const Char * getBuildUsername();
         const Char * getBuildVersion();

@@ -407,14 +407,13 @@ namespace Mengine
 
         sentry_set_extra( "Build Username", sentry_value_new_string( BUILD_USERNAME ) );
 
-        const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
+        const Char * contentCommit = Helper::getContentCommit();
 
-        LOGGER_MESSAGE( "Sentry set extra [Resource Commit: %s]"
-            , Info_ResourceCommit
+        LOGGER_MESSAGE( "Sentry set extra [Content Commit: %s]"
+            , contentCommit
         );
 
-
-        sentry_set_extra( "Resource Commit", sentry_value_new_string( Info_ResourceCommit ) );
+        sentry_set_extra( "Content Commit", sentry_value_new_string( contentCommit ) );
 
         if( HAS_OPTION( "sentrycrash" ) == true )
         {

@@ -1,6 +1,9 @@
 #include "BuildMode.h"
 
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/GitSHA1.h"
 #include "Config/BuildInfo.h"
@@ -66,6 +69,20 @@ namespace Mengine
             const Char * ENGINE_GIT_SHA1 = MENGINE_ENGINE_GIT_SHA1;
 
             return ENGINE_GIT_SHA1;
+        }
+        //////////////////////////////////////////////////////////////////////////        
+        const Char * getContentCommit()
+        {
+            const Char * defaultContentCommit = "0000000000000000000000000000000000000000";
+
+            if( SERVICE_IS_INITIALIZE( ConfigServiceInterface ) == true )
+            {
+                const Char * Info_ContentCommit = Mengine::Detail::getConfigValue( "Info", "ContentCommit", defaultContentCommit );
+
+                return Info_ContentCommit;
+            }
+
+            return defaultContentCommit;
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * getBuildTimestamp()

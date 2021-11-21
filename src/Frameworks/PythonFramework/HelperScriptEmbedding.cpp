@@ -54,6 +54,7 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/VectorResourceImages.h"
 #include "Kernel/CRC32.h"
+#include "Kernel/BuildMode.h"
 
 #include "Config/Typedef.h"
 #include "Config/StdString.h"
@@ -1577,19 +1578,17 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getBuildVersion()
             {
-                return MENGINE_BUILD_VERSION;
+                return Helper::getBuildVersion();
             }
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getEngineGitSHA1()
             {
-                return MENGINE_ENGINE_GIT_SHA1;
+                return Helper::getEngineGITSHA1();
             }
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getResourceGitSHA1()
             {
-                const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
-
-                return Info_ResourceCommit;
+                return Helper::getContentCommit();
             }
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getBuildMode()

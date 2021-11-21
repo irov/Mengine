@@ -224,6 +224,19 @@ namespace Mengine
             return true;
         }
 
+#if defined(MENGINE_PLATFORM_IOS)
+        if( PLATFORM_SERVICE()
+            ->createWindow( Resolution( 0, 0 ), true ) == false )
+        {
+            return false;
+        }
+#elif defined(MENGINE_PLATFORM_IOS)
+        if( PLATFORM_SERVICE()
+            ->createWindow( Resolution( 0, 0 ), true ) == false )
+        {
+            return false;
+        }
+#else
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();
 
@@ -239,6 +252,7 @@ namespace Mengine
         {
             return false;
         }
+#endif
 
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )

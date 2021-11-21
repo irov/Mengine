@@ -1174,7 +1174,6 @@ namespace Mengine
                 if( m_sleepMode == true )
                 {
                     SDL_Delay( 100 );
-                    SDL_Delay( 100 );
                 }
                 else
                 {
@@ -1509,11 +1508,6 @@ namespace Mengine
             , win_height
         );
 
-        float dwf = static_cast<float>(win_width);
-        float dhf = static_cast<float>(win_height);
-
-        m_sdlInput->updateSurfaceResolution( dwf, dhf );
-
 #ifdef MENGINE_PLATFORM_DESKTOP
         int win_top;
         int win_left;
@@ -1643,18 +1637,12 @@ namespace Mengine
         uint32_t height;
 
 #if defined(MENGINE_PLATFORM_IOS)
-        SDL_Rect rect;
-        if( SDL_GetDisplayBounds( displayIndex, &rect ) != 0 )
-        {
-            LOGGER_ERROR( "invalid get desktop resolution error: %s"
-                , SDL_GetError()
-            );
+        int drawable_width;
+        int drawable_height;
+        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
 
-            return false;
-        }
-
-        width = (uint32_t)rect.w;
-        height = (uint32_t)rect.h;
+        width = (uint32_t)drawable_width;
+        height = (uint32_t)drawable_height;
 #elif defined(MENGINE_PLATFORM_ANDROID)
         SDL_Rect rect;
         if( SDL_GetDisplayBounds( displayIndex, &rect ) != 0 )
@@ -3346,7 +3334,7 @@ namespace Mengine
                 desc.handler( &sdlEvent );
             }
 
-            m_sdlInput->handleEvent( sdlEvent );
+            m_sdlInput->handleEvent( m_sdlWindow, sdlEvent );
 
             switch( sdlEvent.type )
             {
@@ -3479,7 +3467,7 @@ namespace Mengine
             ->getNopause();
 
         mt::vec2f point;
-        m_sdlInput->getCursorPosition( &point );
+        m_sdlInput->getCursorPosition( m_sdlWindow, &point );
 
         if( m_active == false )
         {

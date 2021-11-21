@@ -8,7 +8,7 @@ PROJECT(Depends_Xcode_IOS_Simulator_SDL)
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../xcode_ios_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../xcode_ios_simulator_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(IOS_SIMULATOR OPENGL SDL XCODE)
 

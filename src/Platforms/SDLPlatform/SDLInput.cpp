@@ -12,14 +12,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLInput::SDLInput()
-        : m_width( 0.f )
-        , m_height( 0.f )
-        , m_widthInv( 0.f )
-        , m_heightInv( 0.f )
     {
         Algorithm::fill_n( m_keyDown, MENGINE_INPUT_MAX_KEY_CODE, false );
         Algorithm::fill_n( m_keys, MENGINE_INPUT_MAX_KEY_CODE, KC_UNASSIGNED );
-        Algorithm::fill_n( m_codes, MENGINE_INPUT_MAX_KEY_CODE, SDL_SCANCODE_UNKNOWN );
+        Algorithm::fill_n( m_codes, SDL_NUM_SCANCODES, SDL_SCANCODE_UNKNOWN );
         Algorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,13 +34,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLInput::calcCursorPosition_( Sint32 _mx, Sint32 _my, mt::vec2f * const _point ) const
+    void SDLInput::calcCursorPosition_( SDL_Window * _sdlWindow, Sint32 _mx, Sint32 _my, mt::vec2f * const _point ) const
     {
+        int win_width;
+        int win_height;
+        SDL_GetWindowSize( _sdlWindow, &win_width, &win_height );
+
         float x = static_cast<float>(_mx);
         float y = static_cast<float>(_my);
 
-        _point->x = x * m_widthInv;
-        _point->y = y * m_heightInv;
+        _point->x = x / float(win_width);
+        _point->y = y / float(win_height);
     }
     //////////////////////////////////////////////////////////////////////////
     ETouchCode SDLInput::acquireFingerIndex_( SDL_FingerID _fingerId )
@@ -96,14 +96,14 @@ namespace Mengine
         return TC_TOUCH_INVALID;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLInput::handleEvent( const SDL_Event & _event )
+    void SDLInput::handleEvent( SDL_Window * _sdlWindow, const SDL_Event & _event )
     {
         switch( _event.type )
         {
         case SDL_MOUSEWHEEL:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( _event.wheel.x, _event.wheel.y, &point );
+                this->calcCursorPosition_( _sdlWindow, _event.wheel.x, _event.wheel.y, &point );
 
                 Helper::pushMouseWheelEvent( point.x, point.y, WC_CENTRAL, _event.wheel.y );
             }break;
@@ -117,7 +117,7 @@ namespace Mengine
                 MENGINE_UNUSED( state );
 
                 mt::vec2f point;
-                this->calcCursorPosition_( x, y, &point );
+                this->calcCursorPosition_( _sdlWindow, x, y, &point );
 
                 EKeyCode code = this->getKeyCode_( _event.key.keysym.scancode );
 
@@ -148,7 +148,7 @@ namespace Mengine
                 MENGINE_UNUSED( state );
 
                 mt::vec2f point;
-                this->calcCursorPosition_( x, y, &point );
+                this->calcCursorPosition_( _sdlWindow, x, y, &point );
 
                 WChar text_code[8] = {L'\0'};
                 size_t text_code_size;
@@ -160,10 +160,10 @@ namespace Mengine
         case SDL_MOUSEMOTION:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( _event.motion.x, _event.motion.y, &point );
+                this->calcCursorPosition_( _sdlWindow, _event.motion.x, _event.motion.y, &point );
 
                 mt::vec2f delta;
-                this->calcCursorPosition_( _event.motion.xrel, _event.motion.yrel, &delta );
+                this->calcCursorPosition_( _sdlWindow, _event.motion.xrel, _event.motion.yrel, &delta );
 
                 Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f );
             }break;
@@ -171,7 +171,7 @@ namespace Mengine
         case SDL_MOUSEBUTTONUP:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( _event.button.x, _event.button.y, &point );
+                this->calcCursorPosition_( _sdlWindow, _event.button.x, _event.button.y, &point );
 
                 EMouseCode code;
 
@@ -217,15 +217,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLInput::updateSurfaceResolution( float _width, float _height )
-    {
-        m_width = _width;
-        m_height = _height;
-
-        m_widthInv = 1.f / m_width;
-        m_heightInv = 1.f / m_height;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLInput::isKeyDown( EKeyCode _code ) const
     {
         return m_keyDown[_code];
@@ -244,7 +235,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLInput::getCursorPosition( mt::vec2f * const _point ) const
+    void SDLInput::getCursorPosition( SDL_Window * _sdlWindow, mt::vec2f * const _point ) const
     {
         int x;
         int y;
@@ -252,7 +243,7 @@ namespace Mengine
 
         MENGINE_UNUSED( state );
 
-        this->calcCursorPosition_( x, y, _point );
+        this->calcCursorPosition_( _sdlWindow, x, y, _point );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLInput::fillKeys_()

@@ -9,7 +9,7 @@ PROJECT(${MENGINE_PROJECT_NAME})
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../master_options_template.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../xcode_ios_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../xcode_ios_simulator_template.cmake)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mengine_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(IOS_SIMULATOR OPENGL SDL XCODE)

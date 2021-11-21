@@ -23,23 +23,20 @@ namespace Mengine
         void finalize();
 
     public:
-        void handleEvent( const SDL_Event & _event );
-
-    public:
-        void updateSurfaceResolution( float _width, float _height );
+        void handleEvent( SDL_Window * _sdlWindow, const SDL_Event & _event );
 
     public:
         bool isKeyDown( EKeyCode _code ) const;
         bool isAnyKeyDown() const;
 
     public:
-        void getCursorPosition( mt::vec2f * const _point ) const;
+        void getCursorPosition( SDL_Window * _sdlWindow, mt::vec2f * const _point ) const;
 
     protected:
         void fillKeys_();
 
     protected:
-        void calcCursorPosition_( Sint32 _mx, Sint32 _my, mt::vec2f * const _point ) const;
+        void calcCursorPosition_( SDL_Window * _sdlWindow, Sint32 _mx, Sint32 _my, mt::vec2f * const _point ) const;
 
     protected:
         ETouchCode acquireFingerIndex_( SDL_FingerID _fingerId );
@@ -53,12 +50,6 @@ namespace Mengine
         SDL_Scancode m_codes[SDL_NUM_SCANCODES];
 
         SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH];
-
-        float m_width;
-        float m_height;
-
-        float m_widthInv;
-        float m_heightInv;
 
     protected:
         EKeyCode getKeyCode_( SDL_Scancode _key ) const;

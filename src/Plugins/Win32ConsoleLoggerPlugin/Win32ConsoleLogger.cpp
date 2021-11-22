@@ -141,7 +141,7 @@ namespace Mengine
         ::SetConsoleTextAttribute( output_handle, textColor );
 
         DWORD dWritten;
-        ::WriteConsoleA( output_handle, _data, _size, &dWritten, NULL );
+        ::WriteConsoleA( output_handle, _data, (DWORD)_size, &dWritten, NULL );
 
         ::SetConsoleTextAttribute( output_handle, consoleInfo.wAttributes );
     }

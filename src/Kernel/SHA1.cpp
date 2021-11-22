@@ -29,7 +29,7 @@ namespace Mengine
             struct SHA1_CTX
             {
                 uint32_t state[5];
-                uint32_t count[2];
+                size_t count[2];
                 uint8_t  buffer[64];
             };
             //////////////////////////////////////////////////////////////////////////
@@ -99,9 +99,9 @@ namespace Mengine
                 context->count[1] = 0;
             }
             //////////////////////////////////////////////////////////////////////////
-            static void SHA1_Update( SHA1_CTX * context, const uint8_t * data, const size_t len )
+            static void SHA1_Update( SHA1_CTX * context, const uint8_t * data, size_t len )
             {
-                uint32_t j = (context->count[0] >> 3) & 63;
+                size_t j = (context->count[0] >> 3) & 63;
 
                 if( (context->count[0] += len << 3) < (len << 3) )
                 {
@@ -110,7 +110,7 @@ namespace Mengine
 
                 context->count[1] += (len >> 29);
 
-                uint32_t i;
+                size_t i;
 
                 if( (j + len) > 63 )
                 {

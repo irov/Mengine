@@ -20,10 +20,15 @@
 #include "JSONSetting.h"
 #include "JSONSettingPrototypeGenerator.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
+
+#ifndef MENGINE_PLUGIN_JSON_SEED
+#define MENGINE_PLUGIN_JSON_SEED 1
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( JSONService );
@@ -57,7 +62,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONPlugin::_initializePlugin()
     {
-        jpp::set_object_seed( 1 );
+        uint32_t JSON_Seed = CONFIG_VALUE( "JSON", "Seed", MENGINE_PLUGIN_JSON_SEED );
+
+        jpp::set_object_seed( JSON_Seed );
+
+        const char * version = jpp::get_version();
+
+        LOGGER_MESSAGE_RELEASE( "jannson version: %s", version );
+        LOGGER_MESSAGE_RELEASE( "jannson seed: %u", JSON_Seed );
 
         jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
 

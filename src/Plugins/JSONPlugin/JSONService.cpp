@@ -160,7 +160,7 @@ namespace Mengine
         jd.carriage = 0;
         jd.capacity = _size;
 
-        jpp::object json = jpp::load( &Detail::my_jpp_load_callback, jpp::JPP_DISABLE_EOF_CHECK, &Detail::my_jpp_error, &jd );
+        jpp::object json = jpp::load( &Detail::my_jpp_load_callback, jpp::JPP_LOAD_MODE_DISABLE_EOF_CHECK, &Detail::my_jpp_error, &jd );
 
         if( json == jpp::detail::invalid )
         {

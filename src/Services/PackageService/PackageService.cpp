@@ -365,7 +365,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PackageService::visitPackages( const LambdaPackage & _lambda ) const
+    void PackageService::foreachPackages( const LambdaPackage & _lambda ) const
     {
         for( const PackagePtr & package : m_packages )
         {

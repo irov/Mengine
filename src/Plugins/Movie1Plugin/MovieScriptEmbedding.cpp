@@ -254,23 +254,11 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovieSlot
-            : public VisitorMovieNodeInterface
-            , public Factorable
+        static pybind::list Movie_getSlots( pybind::kernel_interface * _kernel, Movie * _movie )
         {
-        public:
-            PythonVisitorMovieSlot( pybind::kernel_interface * _kernel, pybind::list * _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
+            pybind::list py_list( _kernel );
 
-            ~PythonVisitorMovieSlot() override
-            {
-            }
-
-        protected:
-            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
+            _movie->foreachMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), [_kernel, &py_list]( Movie * _movie, const NodePtr & _node )
             {
                 MovieSlotPtr slot = stdex::intrusive_static_cast<MovieSlotPtr>(_node);
 
@@ -281,46 +269,18 @@ namespace Mengine
 
                 const ConstString & name = slot->getName();
 
-                pybind::tuple py_value = pybind::make_tuple_t( m_kernel, _movie, name, slot );
-                m_list->append( py_value );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list * m_list;
-
-        private:
-            PythonVisitorMovieSlot( const PythonVisitorMovieSlot & );
-            void operator = ( const PythonVisitorMovieSlot & );
-        };
-        //////////////////////////////////////////////////////////////////////////
-        static pybind::list Movie_getSlots( pybind::kernel_interface * _kernel, Movie * _movie )
-        {
-            pybind::list py_list( _kernel );
-
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSlot>( MENGINE_DOCUMENT_PYBIND, _kernel, &py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), visitor );
+                pybind::tuple py_value = pybind::make_tuple_t( _kernel, _movie, name, slot );
+                py_list.append( py_value );
+            } );
 
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovieSocket
-            : public VisitorMovieNodeInterface
-            , public Factorable
+        static pybind::list Movie_getSockets( pybind::kernel_interface * _kernel, Movie * _movie )
         {
-        public:
-            PythonVisitorMovieSocket( pybind::kernel_interface * _kernel, const pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
+            pybind::list py_list( _kernel );
 
-            ~PythonVisitorMovieSocket() override
-            {
-            }
-
-        protected:
-            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
+            auto lambda = [_kernel, &py_list]( Movie * _movie, const NodePtr & _node )
             {
                 HotSpotPtr hotspot = stdex::intrusive_static_cast<HotSpotPtr>(_node);
 
@@ -331,42 +291,20 @@ namespace Mengine
 
                 const ConstString & name = hotspot->getName();
 
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, hotspot ) );
-            }
+                py_list.append( pybind::make_tuple_t( _kernel, _movie, name, hotspot ) );
+            };
 
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list m_list;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        static pybind::list Movie_getSockets( pybind::kernel_interface * _kernel, Movie * _movie )
-        {
-            pybind::list py_list( _kernel );
-
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSocket>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), visitor );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), visitor );
+            _movie->foreachMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), lambda );
+            _movie->foreachMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), lambda );
 
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovieSubMovie
-            : public VisitorMovieNodeInterface
-            , public Factorable
+        static pybind::list Movie_getSubMovies( pybind::kernel_interface * _kernel, Movie * _movie )
         {
-        public:
-            PythonVisitorMovieSubMovie( pybind::kernel_interface * _kernel, const pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
+            pybind::list py_list( _kernel );
 
-            ~PythonVisitorMovieSubMovie() override
-            {
-            }
-
-        protected:
-            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
+            _movie->foreachMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), [_kernel, &py_list]( Movie * _movie, const NodePtr & _node )
             {
                 MoviePtr subMovie = stdex::intrusive_static_cast<MoviePtr>(_node);
 
@@ -377,56 +315,20 @@ namespace Mengine
 
                 const ConstString & name = subMovie->getName();
 
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, subMovie ) );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list m_list;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        static pybind::list Movie_getSubMovies( pybind::kernel_interface * _kernel, Movie * _movie )
-        {
-            pybind::list py_list( _kernel );
-
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSubMovie>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), visitor );
+                py_list.append( pybind::make_tuple_t( _kernel, _movie, name, subMovie ) );
+            } );
 
             return py_list;
         }
-        //////////////////////////////////////////////////////////////////////////
-        class PyVisitorMovieLayer
-            : public VisitorMovieNodeInterface
-            , public Factorable
-        {
-        public:
-            PyVisitorMovieLayer( pybind::kernel_interface * _kernel, const pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
-
-            ~PyVisitorMovieLayer() override
-            {
-            }
-
-        protected:
-            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
-            {
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, _node ) );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list m_list;
-        };
         //////////////////////////////////////////////////////////////////////////
         static pybind::list Movie_filterLayers( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _type )
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PyVisitorMovieLayer>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
-            _movie->visitMovieLayer( _type, visitor );
+            _movie->foreachMovieLayer( _type, [_kernel, &py_list]( Movie * _movie, const NodePtr & _node )
+            {
+                py_list.append( pybind::make_tuple_t( _kernel, _movie, _node ) );
+            } );
 
             return py_list;
         }

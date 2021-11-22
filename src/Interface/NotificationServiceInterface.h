@@ -150,7 +150,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( const ObserverCallableInterfacePtr & )> LambdaObserver;
-        virtual bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) = 0;
+        virtual bool foreachObservers( uint32_t _id, const LambdaObserver & _lambda ) = 0;
 
     public:
         template<uint32_t ID, class ... Args>
@@ -167,7 +167,7 @@ namespace Mengine
         {
             typedef ArgsObserverCallable<ID> args_observer_type;
 
-            bool successful = this->visitObservers( ID, [args = std::forward<typename Notificator<ID>::args_type &&>( _args )]( const ObserverCallableInterfacePtr & _observer ) mutable
+            bool successful = this->foreachObservers( ID, [args = std::forward<typename Notificator<ID>::args_type &&>( _args )]( const ObserverCallableInterfacePtr & _observer ) mutable
             {
                 args_observer_type * args_observer = _observer.getT<args_observer_type *>();
 

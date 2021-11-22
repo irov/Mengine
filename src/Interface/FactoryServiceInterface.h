@@ -27,7 +27,7 @@ namespace Mengine
         virtual uint32_t getFactoryGeneration() const = 0;
 
         typedef Lambda<void( const Factory * _factory, const Factorable *, const Char * _type, const DocumentPtr & _doc )> LambdaFactoryLeaks;
-        virtual void visitFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const = 0;
+        virtual void foreachFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const = 0;
 
     public:
         virtual void debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) = 0;

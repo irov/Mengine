@@ -29,7 +29,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( const ConstString &, const SettingInterfacePtr & )> LambdaSettings;
-        virtual void visitSettings( const LambdaSettings & _lambda ) const = 0;
+        virtual void foreachSettings( const LambdaSettings & _lambda ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

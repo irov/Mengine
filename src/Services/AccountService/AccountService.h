@@ -65,7 +65,8 @@ namespace Mengine
     public:
         const AccountInterfacePtr & getAccount( const ConstString & _accountID ) const override;
 
-        void visitAccounts( const AccountVisitorInterfacePtr & _visitor ) const override;
+    public:
+        void foreachAccounts( const LambdaAccounts & _lambda ) const override;
 
     protected:
         bool loadAccount_( const AccountInterfacePtr & _account );

@@ -1441,7 +1441,7 @@ namespace Mengine
         pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
 
         SETTINGS_SERVICE()
-            ->visitSettings( [&payloadNode]( const ConstString & _name, const SettingInterfacePtr & _settings )
+            ->foreachSettings( [&payloadNode]( const ConstString & _name, const SettingInterfacePtr & _settings )
         {
             const FileGroupInterfacePtr & fileGroup = _settings->getFileGroup();
             const FilePath & filePath = _settings->getFilePath();
@@ -1569,7 +1569,7 @@ namespace Mengine
         typedef Map<String, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
         FACTORY_SERVICE()
-            ->visitFactoryLeakObjects( generation - 1, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+            ->foreachFactoryLeakObjects( generation - 1, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );

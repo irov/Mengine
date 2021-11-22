@@ -33,7 +33,7 @@ namespace Mengine
         bool existLocalePackage( const ConstString & _locale, const Tags & _platformTags ) const override;
 
     public:        
-        void visitPackages( const LambdaPackage & _lambda ) const override;
+        void foreachPackages( const LambdaPackage & _lambda ) const override;
 
     public:
         bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) override;

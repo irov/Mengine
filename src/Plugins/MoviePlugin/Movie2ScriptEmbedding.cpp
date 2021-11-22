@@ -146,7 +146,7 @@ namespace Mengine
 
             pybind::list l = pybind::make_list_t( _kernel );
 
-            data->visitCompositionDataResources( compositionData, [&l]( const ResourcePtr & _resource )
+            data->foreachCompositionDataResources( compositionData, [&l]( const ResourcePtr & _resource )
             {
                 l.append( _resource );
             } );

@@ -295,7 +295,7 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2Data::visitCompositionDataResources( const aeMovieCompositionData * _compositionData, const LambdaResource & _lambda )
+    void Movie2Data::foreachCompositionDataResources( const aeMovieCompositionData * _compositionData, const LambdaResource & _lambda )
     {
         ae_visit_composition_layer_data( _compositionData, &__ae_movie_layer_data_visitor_get, const_cast<void *>(reinterpret_cast<const void *>(&_lambda)) );
     }

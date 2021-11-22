@@ -506,7 +506,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::visitMovieLayer( const ConstString & _type, const VisitorMovieNodeInterfacePtr & _visitor )
+    bool Movie::foreachMovieLayer( const ConstString & _type, const LambdaMovieNodes & _lambda )
     {
         if( m_resourceMovie == nullptr )
         {
@@ -528,7 +528,7 @@ namespace Mengine
 
             const NodePtr & node = this->getLayerNode_( layer );
 
-            _visitor->visitMovieNode( this, node );
+            _lambda( this, node );
         }
 
         for( const MovieLayer & layer : layers )
@@ -540,7 +540,7 @@ namespace Mengine
 
             const MoviePtr & movie = this->getLayerMovie_( layer );
 
-            if( movie->visitMovieLayer( _type, _visitor ) == false )
+            if( movie->foreachMovieLayer( _type, _lambda ) == false )
             {
                 continue;
             }

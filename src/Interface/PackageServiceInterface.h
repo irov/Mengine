@@ -30,7 +30,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( const PackageInterfacePtr & )> LambdaPackage;
-        virtual void visitPackages( const LambdaPackage & _lambda ) const = 0;
+        virtual void foreachPackages( const LambdaPackage & _lambda ) const = 0;
 
     public:
         virtual bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) = 0;

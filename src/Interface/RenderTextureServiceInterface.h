@@ -37,7 +37,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( const RenderTextureInterfacePtr & )> LambdaRenderTexture;
-        virtual void visitTexture( const LambdaRenderTexture & _lambda ) const = 0;
+        virtual void foreachTexture( const LambdaRenderTexture & _lambda ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

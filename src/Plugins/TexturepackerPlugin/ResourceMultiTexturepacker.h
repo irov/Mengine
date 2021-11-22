@@ -25,7 +25,7 @@ namespace Mengine
         bool findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const override;
 
     public:
-        bool visitFrames( const LambdaFrames & _lambdaFrames ) const override;
+        bool foreachFrames( const LambdaFrames & _lambdaFrames ) const override;
 
     public:
         void setStripFrameNameExtension( bool _value ) override;

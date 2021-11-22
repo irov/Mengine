@@ -25,7 +25,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( const ResourcePtr & )> LambdaResource;
-        virtual void visitCompositionDataResources( const aeMovieCompositionData * _composition, const LambdaResource & _lambda ) = 0;
+        virtual void foreachCompositionDataResources( const aeMovieCompositionData * _composition, const LambdaResource & _lambda ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2DataInterface, DataInterface> Movie2DataInterfacePtr;

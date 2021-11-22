@@ -120,7 +120,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceTexturepacker::visitFrames( const LambdaFrames & _lambdaFrames ) const
+    bool ResourceTexturepacker::foreachFrames( const LambdaFrames & _lambdaFrames ) const
     {
         for( const FrameDesc & desc : m_frames )
         {

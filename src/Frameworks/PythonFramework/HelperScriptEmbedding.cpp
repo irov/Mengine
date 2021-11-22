@@ -299,6 +299,12 @@ namespace Mengine
                 return py_data;
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_isSpecialDown() const
+            {
+                return INPUT_SERVICE()
+                    ->isSpecialDown();
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_isAltDown() const
             {
                 return INPUT_SERVICE()
@@ -1261,7 +1267,7 @@ namespace Mengine
                 pybind::list py_list( _kernel );
 
                 RENDERTEXTURE_SERVICE()
-                    ->visitTexture( [&py_list]( const RenderTextureInterfacePtr & _texture )
+                    ->foreachTexture( [&py_list]( const RenderTextureInterfacePtr & _texture )
                 {
                     const FilePath & filePath = _texture->getFilePath();
 
@@ -1353,44 +1359,17 @@ namespace Mengine
                 return str.str();
             }
             //////////////////////////////////////////////////////////////////////////
-            class MyAccountVisitor
-                : public AccountVisitorInterface
-                , public Factorable
-            {
-            public:
-                MyAccountVisitor( VectorConstString * _accounts )
-                    : m_accounts( _accounts )
-                {
-                }
-
-                ~MyAccountVisitor() override
-                {
-                }
-
-            protected:
-                void onAccount( const AccountInterfacePtr & _account ) override
-                {
-                    const ConstString & name = _account->getID();
-
-                    m_accounts->emplace_back( name );
-                }
-
-            protected:
-                VectorConstString * m_accounts;
-
-            private:
-                MyAccountVisitor( const MyAccountVisitor & );
-                void operator = ( const MyAccountVisitor & );
-            };
-            //////////////////////////////////////////////////////////////////////////
             VectorConstString s_getAccounts()
             {
                 VectorConstString v_accounts;
 
-                AccountVisitorInterfacePtr mav = Helper::makeFactorableUnique<MyAccountVisitor>( MENGINE_DOCUMENT_PYBIND, &v_accounts );
-
                 ACCOUNT_SERVICE()
-                    ->visitAccounts( mav );
+                    ->foreachAccounts( [&v_accounts]( const AccountInterfacePtr & _account )
+                {
+                    const ConstString & name = _account->getID();
+
+                    v_accounts.emplace_back( name );
+                } );
 
                 return v_accounts;
             }
@@ -3898,7 +3877,7 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );
         pybind::def_functor_kernel( _kernel, "loadGameData", helperScriptMethod, &HelperScriptMethod::s_loadGameData );
 
-
+        pybind::def_functor( _kernel, "isSpecialDown", helperScriptMethod, &HelperScriptMethod::s_isSpecialDown );
         pybind::def_functor( _kernel, "isAltDown", helperScriptMethod, &HelperScriptMethod::s_isAltDown );
         pybind::def_functor( _kernel, "isShiftDown", helperScriptMethod, &HelperScriptMethod::s_isShiftDown );
         pybind::def_functor( _kernel, "isCtrlDown", helperScriptMethod, &HelperScriptMethod::s_isCtrlDown );

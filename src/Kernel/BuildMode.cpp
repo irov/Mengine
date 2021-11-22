@@ -70,6 +70,20 @@ namespace Mengine
 
             return ENGINE_GIT_SHA1;
         }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getEngineGITURL()
+        {
+            const Char * ENGINE_GIT_URL = MENGINE_ENGINE_GIT_URL;
+
+            return ENGINE_GIT_URL;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getEngineGITBranch()
+        {
+            const Char * ENGINE_GIT_BRANCH = MENGINE_ENGINE_GIT_BRANCH;
+
+            return ENGINE_GIT_BRANCH;
+        }
         //////////////////////////////////////////////////////////////////////////        
         const Char * getContentCommit()
         {

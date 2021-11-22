@@ -310,41 +310,39 @@ namespace Mengine
                 ->messageBox( "Mengine", "author: IROV\nemail for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
+        const Char * engineGitURL = Helper::getEngineGITURL();
         const Char * engineGitSHA1 = Helper::getEngineGITSHA1();
+        const Char * engineGitBranch = Helper::getEngineGITBranch();
 
-        if( HAS_OPTION( "enginecommit" ) == true )
+        if( HAS_OPTION( "engineinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "engine commit: %s", engineGitSHA1 );
+                ->messageBox( "Mengine", "url: %s\ncommit: %s\nbranch: %s", engineGitURL, engineGitSHA1, engineGitBranch );
         }
-        else
-        {
-            LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Commit: %s", engineGitSHA1 );
-        }
+
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine URL: %s", engineGitURL );
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Commit: %s", engineGitSHA1 );
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Branch: %s", engineGitBranch );
 
         const Char * contentCommit = Helper::getContentCommit();
 
-        if( HAS_OPTION( "contentcommit" ) == true )
+        if( HAS_OPTION( "contentinfo" ) == true )
         {
             PLATFORM_SERVICE()
                 ->messageBox( "Mengine", "content commit: %s", contentCommit );
         }
-        else
-        {
-            LOGGER_MESSAGE_RELEASE_PROTECTED( "Content Commit: %s", contentCommit );
-        }
+
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Content Commit: %s", contentCommit );
 
         const Char * buildVersion = Helper::getBuildVersion();
 
-        if( HAS_OPTION( "buildversion" ) == true )
+        if( HAS_OPTION( "buildinfo" ) == true )
         {
             PLATFORM_SERVICE()
                 ->messageBox( "Mengine", "build version: %s", buildVersion );
         }
-        else
-        {
-            LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Version: %s", buildVersion );
-        }
+
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Version: %s", buildVersion );
 
         const Char * buildUserName = Helper::getBuildUsername();
         const Char * buildTimestamp = Helper::getBuildTimestamp();
@@ -354,10 +352,8 @@ namespace Mengine
             PLATFORM_SERVICE()
                 ->messageBox( "Mengine", "build info: %s %s", buildUserName, buildTimestamp );
         }
-        else
-        {
-            LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Info: %s %s", buildUserName, buildTimestamp );
-        }
+
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Info: %s %s", buildUserName, buildTimestamp );
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {
@@ -974,7 +970,7 @@ namespace Mengine
                 {
                     return;
                 }
-                
+
                 Detail::printChildren2( child, _tab + 1 );
             } );
         }

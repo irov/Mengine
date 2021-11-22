@@ -10,16 +10,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class AccountVisitorInterface
-        : public Interface
-    {
-    public:
-        virtual void onAccount( const AccountInterfacePtr & _account ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AccountVisitorInterface> AccountVisitorInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class AccountServiceInterface
         : public ServiceInterface
     {
@@ -67,7 +57,8 @@ namespace Mengine
         virtual const AccountInterfacePtr & getAccount( const ConstString & _accountID ) const = 0;
 
     public:
-        virtual void visitAccounts( const AccountVisitorInterfacePtr & _visitor ) const = 0;
+        typedef Lambda<void( const AccountInterfacePtr & )> LambdaAccounts;
+        virtual void foreachAccounts( const LambdaAccounts & _lambda ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

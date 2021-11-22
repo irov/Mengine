@@ -78,7 +78,7 @@ namespace Mengine
         typedef Vector<DocumentPtr> VectorDocuments;
         typedef Map<String, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
-        this->visitFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+        this->foreachFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
@@ -220,7 +220,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::visitFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const
+    void FactoryService::foreachFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const
     {
         MENGINE_UNUSED( _generation );
         MENGINE_UNUSED( _leaks );

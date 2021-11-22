@@ -38,7 +38,7 @@ namespace Mengine
     protected:
         void increfFactoryGeneration() override;
         uint32_t getFactoryGeneration() const override;
-        void visitFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const override;
+        void foreachFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const override;
 
     protected:
         struct FactoryDesc

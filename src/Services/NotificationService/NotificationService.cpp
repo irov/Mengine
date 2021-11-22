@@ -110,13 +110,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NotificationService::visitObservers( uint32_t _id, const LambdaObserver & _lambda )
+    bool NotificationService::foreachObservers( uint32_t _id, const LambdaObserver & _lambda )
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
         NotificationArea & area = m_areas[_id];
 
-        bool successful = area.visitObservers( _lambda );
+        bool successful = area.foreachObservers( _lambda );
 
         return successful;
     }    

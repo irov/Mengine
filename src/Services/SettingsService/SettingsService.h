@@ -30,7 +30,7 @@ namespace Mengine
         SettingInterfacePtr removeSetting( const ConstString & _name ) override;
 
     protected:
-        void visitSettings( const LambdaSettings & _lambda ) const override;
+        void foreachSettings( const LambdaSettings & _lambda ) const override;
 
     protected:
         typedef Hashtable<ConstString, SettingInterfacePtr> HashtableSettings;

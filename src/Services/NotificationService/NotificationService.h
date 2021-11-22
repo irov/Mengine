@@ -27,7 +27,7 @@ namespace Mengine
         bool hasObserver( Observable * _observer ) const override;
 
     public:
-        bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) override;
+        bool foreachObservers( uint32_t _id, const LambdaObserver & _lambda ) override;
 
     protected:                
         NotificationArea m_areas[MENGINE_NOTIFICATOR_MAX_COUNT];

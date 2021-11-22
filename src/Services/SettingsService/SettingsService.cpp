@@ -155,7 +155,7 @@ namespace Mengine
         return setting_remove;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SettingsService::visitSettings( const LambdaSettings & _lambda ) const
+    void SettingsService::foreachSettings( const LambdaSettings & _lambda ) const
     {
         for( const HashtableSettings::value_type & value : m_settings )
         {

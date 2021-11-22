@@ -32,7 +32,7 @@ namespace Mengine
         bool hasObserver( Observable * _observer ) const;
 
     public:
-        bool visitObservers( const NotificationServiceInterface::LambdaObserver & _lambda );
+        bool foreachObservers( const NotificationServiceInterface::LambdaObserver & _lambda );
 
     protected:
         void addObserver_( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc );

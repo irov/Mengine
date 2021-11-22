@@ -67,13 +67,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMultiTexturepacker::visitFrames( const LambdaFrames & _lambdaFrames ) const
+    bool ResourceMultiTexturepacker::foreachFrames( const LambdaFrames & _lambdaFrames ) const
     {
         for( const ResourcePtr & resource : m_resourceTexturepackers )
         {
             UnknownResourceTexturepackerGetterInterface * unknownResourceTexturepacker = resource->getUnknown();
 
-            if( unknownResourceTexturepacker->visitFrames( _lambdaFrames ) == false )
+            if( unknownResourceTexturepacker->foreachFrames( _lambdaFrames ) == false )
             {
                 return false;
             }

@@ -18,7 +18,7 @@ namespace Mengine
 
     public:
         typedef Lambda<bool( const ResourceImagePtr & )> LambdaFrames;
-        virtual bool visitFrames( const LambdaFrames & _lambdaFrames ) const = 0;
+        virtual bool foreachFrames( const LambdaFrames & _lambdaFrames ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceTexturepackerInterface

@@ -207,7 +207,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureService::visitTexture( const LambdaRenderTexture & _lambda ) const
+    void RenderTextureService::foreachTexture( const LambdaRenderTexture & _lambda ) const
     {
         for( MapRenderTextureEntry::const_iterator
             it = m_textures.begin(),

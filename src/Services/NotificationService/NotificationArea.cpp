@@ -158,7 +158,7 @@ namespace Mengine
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NotificationArea::visitObservers( const NotificationServiceInterface::LambdaObserver & _lambda )
+    bool NotificationArea::foreachObservers( const NotificationServiceInterface::LambdaObserver & _lambda )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

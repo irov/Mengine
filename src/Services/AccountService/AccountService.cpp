@@ -364,7 +364,7 @@ namespace Mengine
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::visitAccounts( const AccountVisitorInterfacePtr & _visitor ) const
+    void AccountService::foreachAccounts( const LambdaAccounts & _lambda ) const
     {
         for( const HashtableAccounts::value_type & value : m_accounts )
         {
@@ -377,7 +377,7 @@ namespace Mengine
                 continue;
             }
 
-            _visitor->onAccount( account );
+            _lambda( account );
         }
     }
     //////////////////////////////////////////////////////////////////////////

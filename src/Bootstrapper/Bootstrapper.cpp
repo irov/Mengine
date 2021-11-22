@@ -521,6 +521,7 @@ namespace Mengine
 
         if( applicationConfig != nullptr )
         {
+
             VectorFilePath configsPaths;
             applicationConfig->getValues( "Configs", "Path", &configsPaths );
 

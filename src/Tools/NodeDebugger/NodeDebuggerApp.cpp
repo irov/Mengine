@@ -740,7 +740,7 @@ namespace Mengine
             fread( buffer, 1, 8096, f );
             fclose( f );
 
-            jpp::object json = jpp::load( buffer, sz, nullptr, nullptr );
+            jpp::object json = jpp::load( buffer, sz, jpp::JPP_LOAD_MODE_DISABLE_EOF_CHECK, nullptr, nullptr );
 
             if( json == jpp::detail::invalid )
             {
@@ -1673,7 +1673,7 @@ namespace Mengine
         {
             const Char * responseStr = responseIterator->url.c_str();
             String::size_type responseStrSize = responseIterator->url.size();
-            jpp::object responseJpp = jpp::load( responseStr, responseStrSize, nullptr, nullptr );
+            jpp::object responseJpp = jpp::load( responseStr, responseStrSize, jpp::JPP_LOAD_MODE_DISABLE_EOF_CHECK, nullptr, nullptr );
 
             uint32_t labelCounter = 0;
             this->ShowResponseJpp( responseJpp, 0, &labelCounter );

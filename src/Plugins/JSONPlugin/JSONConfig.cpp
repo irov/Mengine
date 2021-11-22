@@ -206,17 +206,20 @@ namespace Mengine
         if( memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
         {
             memory_buffer += 4;
+            size -= 4;
 
             uint64_t secureHash = SECURE_SERVICE()
                 ->getSecureHash();
 
-            Helper::ravingcode( secureHash, memory_buffer, size - 4, memory_buffer );
+            Helper::ravingcode( secureHash, memory_buffer, size, memory_buffer );
         }
 
         JSONStorageInterfacePtr storage = JSON_SERVICE()
-            ->loadJSONStreamFromBuffer( memory_buffer, size - 4, _doc );
+            ->loadJSONStreamFromBuffer( memory_buffer, size, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( storage );
+        MENGINE_ASSERTION_MEMORY_PANIC( storage, "invalid load JSON from stream '%s'"
+            , Helper::getInputStreamDebugFilePath( _stream ).c_str()
+        );
 
         m_storages.emplace_back( storage );
 

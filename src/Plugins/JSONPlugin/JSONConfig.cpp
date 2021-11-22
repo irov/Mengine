@@ -214,7 +214,7 @@ namespace Mengine
         }
 
         JSONStorageInterfacePtr storage = JSON_SERVICE()
-            ->loadJSONStreamFromMemory( memory, _doc );
+            ->loadJSONStreamFromBuffer( memory_buffer, size - 4, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( storage );
 

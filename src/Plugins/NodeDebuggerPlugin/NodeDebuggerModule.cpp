@@ -132,13 +132,14 @@ namespace Mengine
 
             mt::vec2f point = {_event.x, _event.y};
 
-            mt::vec2f adapt_screen_position;
-            Helper::adaptScreenPosition( point, &adapt_screen_position );
+            mt::vec2f cursorAdaptScreenPosition;
+            Helper::adaptScreenPosition( point, &cursorAdaptScreenPosition );
 
             mt::vec2f cursorWorldPosition;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( adapt_screen_position, &cursorWorldPosition );
+                ->calcGlobalMouseWorldPosition( cursorAdaptScreenPosition, &cursorWorldPosition );
 
+            m_cursorAdaptScreenPosition = cursorAdaptScreenPosition;
             m_cursorWorldPosition = cursorWorldPosition;
 
             this->findChildRecursive( currentScene, point );
@@ -929,9 +930,9 @@ namespace Mengine
         {
             const ConstString & textAliasId = TEXT_SERVICE()
                 ->getTextAlias( textAliasEnvironment, textId );
-            
+
             Detail::serializeNodeProp( textAliasId, "TextAliasId", xmlNode );
-            
+
             TextEntryInterfacePtr textEntry;
             if( TEXT_SERVICE()
                 ->hasTextEntry( textAliasId, &textEntry ) == false )
@@ -1139,7 +1140,7 @@ namespace Mengine
             const ResourceImagePtr & resourceImageAtlas = resourceImageSubstract->getResourceImage();
 
             Detail::serializeNodeProp( resourceImageAtlas->getName(), "ResourceName", xmlNodeAtlas );
-            Detail::serializeNodeProp( resourceImageAtlas->getType(), "ResourceType", xmlNodeAtlas );            
+            Detail::serializeNodeProp( resourceImageAtlas->getType(), "ResourceType", xmlNodeAtlas );
 
             const ContentInterfacePtr & atlasContent = resourceImageAtlas->getContent();
 
@@ -2196,6 +2197,26 @@ namespace Mengine
                 return true;
             }
 
+            const PickerInterface * picker = _child->getPicker();
+
+            if( picker != nullptr )
+            {
+                const RenderContext * renderContext = PLAYER_SERVICE()
+                    ->getRenderContext();
+
+                const Resolution & contentResolution = APPLICATION_SERVICE()
+                    ->getContentResolution();
+
+                if( picker->pick( m_cursorAdaptScreenPosition, renderContext, contentResolution, m_arrow ) == true )
+                {
+                    m_selectedNode = _child;
+
+                    return false;
+                }
+
+                return true;
+            }
+
             const ConstString & type = _child->getType();
 
             DebuggerBoundingBoxInterfacePtr boundingBoxInterfacePtr = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), type );
@@ -2212,62 +2233,60 @@ namespace Mengine
                         return false;
                     }
                 }
-            }
-            else
-            {
-                RenderInterface * render = _child->getRender();
-
-                if( render == nullptr )
-                {
-                    return true;
-                }
-
-                if( render->isRenderEnable() == false )
-                {
-                    return true;
-                }
-
-                if( render->isHide() == true )
-                {
-                    return true;
-                }
-
-                if( render->isLocalTransparent() == true )
-                {
-                    return true;
-                }
-
-                const mt::box2f * rbb = render->getBoundingBox();
-
-                if( rbb == nullptr )
-                {
-                    return true;
-                }
-
-                if( mt::is_infinity_box( *rbb ) == true )
-                {
-                    return true;
-                }
-
-                if( mt::is_intersect( *rbb, m_cursorWorldPosition ) == false )
-                {
-                    return true;
-                }
-
-                ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
-
-                if( shape != nullptr )
-                {
-                    if( this->checkHit( shape, _point ) == false )
-                    {
-                        return false;
-                    }
-                }
-
-                m_selectedNode = _child;
 
                 return true;
             }
+
+            RenderInterface * render = _child->getRender();
+
+            if( render == nullptr )
+            {
+                return true;
+            }
+
+            if( render->isRenderEnable() == false )
+            {
+                return true;
+            }
+
+            if( render->isHide() == true )
+            {
+                return true;
+            }
+
+            if( render->isLocalTransparent() == true )
+            {
+                return true;
+            }
+
+            const mt::box2f * rbb = render->getBoundingBox();
+
+            if( rbb == nullptr )
+            {
+                return true;
+            }
+
+            if( mt::is_infinity_box( *rbb ) == true )
+            {
+                return true;
+            }
+
+            if( mt::is_intersect( *rbb, m_cursorWorldPosition ) == false )
+            {
+                return true;
+            }
+
+            ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
+
+            if( shape != nullptr )
+            {
+                if( this->checkHit( shape, _point ) == false )
+                {
+                    return false;
+                }
+            }
+
+            m_selectedNode = _child;
 
             return true;
         } );

@@ -27,14 +27,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptickPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "profiler" ) == true )
+        if( HAS_OPTION( "noprofiler" ) == true )
         {
-            return true;
+            return false;
         }
 
-        if( CONFIG_VALUE( "Engine", "Profiler", false ) == true )
+        if( HAS_OPTION( "profiler" ) == false )
         {
-            return true;
+            if( CONFIG_VALUE( "Engine", "Profiler", false ) == false )
+            {
+                return false;
+            }
         }
 
         return false;

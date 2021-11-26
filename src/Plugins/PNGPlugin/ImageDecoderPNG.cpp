@@ -34,7 +34,7 @@ namespace Mengine
             MENGINE_UNUSED( png_ptr );
             MENGINE_UNUSED( _error );
 
-            LOGGER_INFO( "png", "png warning: '%s'"
+            LOGGER_WARNING( "png warning: '%s'"
                 , _error
             );
         }

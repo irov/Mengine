@@ -4927,7 +4927,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::initializeFileService_()
     {
-        LOGGER_INFO( "system", "Initialize Win32 file group..." );
+        LOGGER_INFO( "platform", "Initialize Win32 file group..." );
 
         PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FACTORABLE );
 

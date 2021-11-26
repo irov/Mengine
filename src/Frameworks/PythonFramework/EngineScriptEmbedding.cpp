@@ -3779,7 +3779,23 @@ namespace Mengine
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getGameParam( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+            PyObject * s_getGameParamString( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+            {
+                const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                    ->getDefaultConfig();
+
+                const Char * param_value;
+                if( config->hasValue( "Params", _paramName.c_str(), "", &param_value ) == false )
+                {
+                    return _kernel->ret_none();
+                }
+
+                PyObject * py_param = _kernel->string_from_char( param_value );
+
+                return py_param;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_getGameParamUnicode( pybind::kernel_interface * _kernel, const ConstString & _paramName )
             {
                 const ConfigInterfacePtr & config = CONFIG_SERVICE()
                     ->getDefaultConfig();
@@ -4252,7 +4268,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "getGameViewport", nodeScriptMethod, &EngineScriptMethod::s_getGameViewport );
 
         pybind::def_functor( _kernel, "hasGameParam", nodeScriptMethod, &EngineScriptMethod::s_hasGameParam );
-        pybind::def_functor_kernel( _kernel, "getGameParam", nodeScriptMethod, &EngineScriptMethod::s_getGameParam );
+        pybind::def_functor_kernel( _kernel, "getGameParamString", nodeScriptMethod, &EngineScriptMethod::s_getGameParamString );
+        pybind::def_functor_kernel( _kernel, "getGameParamUnicode", nodeScriptMethod, &EngineScriptMethod::s_getGameParamUnicode );
         pybind::def_functor_kernel( _kernel, "getGameParamFloat", nodeScriptMethod, &EngineScriptMethod::s_getGameParamFloat );
         pybind::def_functor_kernel( _kernel, "getGameParamInt", nodeScriptMethod, &EngineScriptMethod::s_getGameParamInt );
         pybind::def_functor( _kernel, "getGameParamBool", nodeScriptMethod, &EngineScriptMethod::s_getGameParamBool );

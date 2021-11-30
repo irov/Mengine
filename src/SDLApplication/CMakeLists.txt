@@ -188,6 +188,7 @@ if(MENGINE_TARGET_MACOS)
     
     SET(PODFILE_BUFFER "")
     
+    STRING(APPEND PODFILE_BUFFER "project '${MENGINE_PROJECT_NAME}.xcodeproj'\n")
     STRING(APPEND PODFILE_BUFFER "platform :macos, '10.10'\n")
     STRING(APPEND PODFILE_BUFFER "use_frameworks!\n")
 

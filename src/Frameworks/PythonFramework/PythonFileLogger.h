@@ -2,6 +2,7 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/OutputStreamInterface.h"
+#include "Interface/DateTimeProviderInterface.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/Factorable.h"
@@ -19,6 +20,10 @@ namespace Mengine
         ~PythonFileLogger() override;
 
     public:
+        void setTimestamp( bool _timestamp );
+        bool getTimestamp() const;
+
+    public:
         bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
         void finalize();
 
@@ -26,7 +31,10 @@ namespace Mengine
         void write( const Char * _msg );
 
     protected:
+        bool m_timestamp;
+
         OutputStreamInterfacePtr m_stream;
+        DateTimeProviderInterfacePtr m_dateTimeProvider;        
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonFileLogger> PythonFileLoggerPtr;

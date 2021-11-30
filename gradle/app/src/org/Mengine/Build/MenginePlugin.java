@@ -6,6 +6,20 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 public class MenginePlugin {
+    private MengineActivity m_activity;
+
+    public MengineActivity getActivity()
+    {
+        return m_activity;
+    }
+
+    public boolean onInitialize(MengineActivity activity)
+    {
+        m_activity = activity;
+
+        return true;
+    }
+
     public void onCreate(Bundle savedInstanceState)
     {
         //Empty

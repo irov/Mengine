@@ -87,7 +87,7 @@ namespace Mengine
             const ResourceImagePtr & atlasImage = unknownResourceTexturepacker->getAtlasImage();
             page->rendererObject = atlasImage.get();
 
-            unknownResourceTexturepacker->visitFrames( [&page, &atlasWidthF, &atlasHeightF, &atlasWidthInv, &atlasHeightInv, &lastRegion, &atlas]( const ResourceImagePtr & _frame )
+            unknownResourceTexturepacker->foreachFrames( [&page, &atlasWidthF, &atlasHeightF, &atlasWidthInv, &atlasHeightInv, &lastRegion, &atlas]( const ResourceImagePtr & _frame )
             {
                 spAtlasRegion * region = spAtlasRegion_create();
 

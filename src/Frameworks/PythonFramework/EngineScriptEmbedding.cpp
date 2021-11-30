@@ -4445,6 +4445,8 @@ namespace Mengine
 
         pybind::interface_<PythonFileLogger, pybind::bases<Mixin>>( _kernel, "PythonFileLogger" )
             .def_call( &PythonFileLogger::write )
+            .def( "setTimestamp", &PythonFileLogger::setTimestamp )
+            .def( "getTimestamp", &PythonFileLogger::getTimestamp )
             ;
 
         pybind::def_functor( _kernel, "makeFileLogger", nodeScriptMethod, &EngineScriptMethod::s_makeFileLogger );

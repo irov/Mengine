@@ -8,10 +8,11 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
-
-#include "stdex/memorycopy.h"
+#include "Kernel/ColorHelper.h"
 
 #include "Config/Algorithm.h"
+
+#include "stdex/memorycopy.h"
 
 #ifndef MENGINE_SPINE_MAX_VERTICES
 #define MENGINE_SPINE_MAX_VERTICES 512
@@ -204,6 +205,8 @@ namespace Mengine
             case SP_ATTACHMENT_MESH:
                 {
                     spMeshAttachment * const attachment = (spMeshAttachment * const)slot->attachment;
+
+                    MENGINE_ASSERTION_FATAL( attachment->super.worldVerticesLength <= MENGINE_SPINE_MAX_VERTICES );
 
                     spVertexAttachment_computeWorldVertices( &attachment->super, slot, 0, attachment->super.worldVerticesLength, (float *)attachment_vertices, 0, 2 );
 

@@ -47,35 +47,33 @@ import java.util.TimeZone;
 public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     private static final String TAG = "MarSDK";
 
-    private static MengineMARPlugin _instance;
+    public void onPythonEmbedding() {
+        MengineActivity activity = this.getActivity();
 
-    private MengineActivity m_activity;
-
-    public MengineMARPlugin(MengineActivity _activity) {
-        _instance = this;
-
-        m_activity = _activity;
-    }
-
-    public void onPythonEmbedding(){
-        m_activity.addPythonPlugin("MarSDK", this);
+        activity.addPythonPlugin("MarSDK", this);
     }
 
     public void initialize() {
+        MengineActivity activity = this.getActivity();
+        MengineMARPlugin self = this;
         ThreadUtil.performOnMainThread(new Runnable() {
             @Override
             public void run() {
-                MARPlatform.getInstance().init( _instance.m_activity, _instance);
+                MARPlatform.getInstance().init(activity, self);
             }
         });
     }
 
     public void login(){
-        MARPlatform.getInstance().login(m_activity);
+        MengineActivity activity = this.getActivity();
+
+        MARPlatform.getInstance().login(activity);
     }
 
     public void loginCustom(final String loginType){
-        MARPlatform.getInstance().loginCustom(m_activity, loginType);
+        MengineActivity activity = this.getActivity();
+
+        MARPlatform.getInstance().loginCustom(activity, loginType);
     }
 
     public void pay(int coinNum, String productID,
@@ -99,7 +97,9 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         params.setVip("1");			//角色VIP等级
 
         // params.setPayNotifyUrl("http://www.game.com/pay/callback");
-        MARPlatform.getInstance().pay(m_activity, params);
+        MengineActivity activity = this.getActivity();
+
+        MARPlatform.getInstance().pay(activity, params);
     }
 
     public void redeemCode(String code)
@@ -119,11 +119,14 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     }
 
     public void marSDKGetData(int serialNumber){
+        MengineActivity activity = this.getActivity();
+
         MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
             @Override
             public void onCallBack(String var1) {
                 Log.d(TAG, "get data from server, start...");
-                _instance.m_activity.pythonCall("onMarSDKGetData", var1);
+
+                activity.pythonCall("onMarSDKGetData", var1);
             }
         });
     }
@@ -187,12 +190,14 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         int keyCode = event.getKeyCode();
 
         if(keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN ) {
+            MengineActivity activity = this.getActivity();
+
             MARPlatform.getInstance().exitSDK(new MARExitListener() {
                 @Override
                 public void onGameExit() {
                     //游戏自己的退出确认框
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(m_activity);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setTitle("退出确认");
                     builder.setMessage("主公，现在还早，要不要再玩一会？");
                     builder.setCancelable(true);
@@ -209,7 +214,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
                                                     int whichButton) {
                                     //退出游戏
 
-                                    m_activity.quitMengineApplication();
+                                    activity.quitMengineApplication();
                                 }
                             });
 
@@ -232,16 +237,18 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     public void onInitResult(int code, String msg) {
         Log.d(TAG, "marsdk.onInitResult code: " + code + " msg:" + msg);
 
+        MengineActivity activity = this.getActivity();
+
         switch(code){
             case MARCode.CODE_INIT_SUCCESS:
                 Log.d(TAG, "marsdk init success");
 
-                m_activity.pythonCall("onMarSDKInitSuccess");
+                activity.pythonCall("onMarSDKInitSuccess");
                 break;
             case MARCode.CODE_INIT_FAIL:
                 Log.d(TAG, "marsdk init fail");
 
-                m_activity.pythonCall("onMarSDKInitFail");
+                activity.pythonCall("onMarSDKInitFail");
                 break;
         }
     }
@@ -249,6 +256,8 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     @Override
     public void onLoginResult(int code, UToken uToken) {
         Log.d(TAG, "marsdk.onLoginResult code: " + code + " uToken: " + uToken);
+
+        MengineActivity activity = this.getActivity();
         
         switch(code){
             case MARCode.CODE_LOGIN_SUCCESS:
@@ -265,7 +274,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
 
                 submitExtraData(UserExtraData.TYPE_ENTER_GAME);
 
-                m_activity.pythonCall("onMarSDKLoginSuccess");
+                activity.pythonCall("onMarSDKLoginSuccess");
 
                 //m_activity.getData(1);
                 break;
@@ -276,7 +285,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
                     MARPlatform.getInstance().visitorLogin();
                 }
 
-                m_activity.pythonCall("onMarSDKLoginFail");
+                activity.pythonCall("onMarSDKLoginFail");
                 break;
         }
     }
@@ -284,8 +293,10 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     @Override
     public void onSwitchAccount(UToken uToken) {
         Log.d(TAG, "marsdk.onSwitchAccount uToken: " + uToken);
+        MengineActivity activity = this.getActivity();
+
         if(uToken != null){
-            m_activity.pythonCall("onMarSDKSwitchAccount");
+            activity.pythonCall("onMarSDKSwitchAccount");
         }
     }
     
@@ -293,12 +304,16 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     public void onLogout() {
         Log.d(TAG, "marsdk.onLogout");
 
-        m_activity.pythonCall("onMarSDKLogout");
+        MengineActivity activity = this.getActivity();
+
+        activity.pythonCall("onMarSDKLogout");
     }    
     
     @Override
     public void onPayResult(int code, String msg) {
         Log.d(TAG, "marsdk.onPayResult code: " + code + " msg: " + msg);
+
+        MengineActivity activity = this.getActivity();
         
         try {
             JSONObject json = new JSONObject(msg);
@@ -309,13 +324,13 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
                 Log.d(TAG, "pay complete orderId: " + json.getString("orderId"));
                 setPropDeliveredComplete(json.getString("orderId"));
 
-                m_activity.pythonCall("onMarSDKPaySuccess", productId);
+                activity.pythonCall("onMarSDKPaySuccess", productId);
             }
             else
             {
                 Log.d(TAG, "pay fail");
 
-                m_activity.pythonCall("onMarSDKPayFail", productId);
+                activity.pythonCall("onMarSDKPayFail", productId);
             }
         }catch (Exception e){
             Log.d(TAG, "pay error");
@@ -327,6 +342,8 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     public void onRedeemResult(String msg) {
         Log.d(TAG, "marsdk.onRedeemResult msg: " + msg);
 
+        MengineActivity activity = this.getActivity();
+
         int result;
         try {
             result = 0;
@@ -337,12 +354,14 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
             String propType = json.getString("propType");
             String message = json.getString("msg");
 
-            m_activity.pythonCall("onMarSDKRedeemResult", result, propNumber, propType, message);
+            activity.pythonCall("onMarSDKRedeemResult", result, propNumber, propType, message);
         }
         catch(Exception e) {
-            result = -1;
             Log.d(TAG, "redeem error");
-            m_activity.pythonCall("onMarSDKRedeemResult", result, 0, "", "");
+
+            result = -1;
+
+            activity.pythonCall("onMarSDKRedeemResult", result, 0, "", "");
             e.printStackTrace();
         }
     }
@@ -350,15 +369,18 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     @Override
     public void onResult(int code, String msg) {
         Log.d(TAG, "marsdk.onResult code: " + code + " msg: " + msg);
+
+        MengineActivity activity = this.getActivity();
         
         if(MARCode.CODE_AD_VIDEO_CALLBACK == code){
             //play video callback msg : 1 suc 0 fail
             Log.d(TAG, "Video callback: " + msg);
             String watchAdTime = getCurrentTime();
-            m_activity.pythonCall("onMarSDKAdVideoCallback", msg, watchAdTime);
+
+            activity.pythonCall("onMarSDKAdVideoCallback", msg, watchAdTime);
         }
 
-        m_activity.pythonCall("onMarSDKResult", code, msg);
+        activity.pythonCall("onMarSDKResult", code, msg);
     }
 
 	private void submitExtraData(final int dataType){
@@ -384,8 +406,10 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         try {
             String code = null;
 
+            MengineActivity activity = this.getActivity();
+
             /////////////////////////////////
-            ClipboardManager clipboard = (ClipboardManager) _instance.m_activity.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipboardManager clipboard = (ClipboardManager) activity.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
             if (clipboard.hasPrimaryClip()) {
                 ClipData clip = clipboard.getPrimaryClip();
                 ClipData.Item item = clip.getItemAt(0);
@@ -399,7 +423,8 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
             /////////////////////////////////
 
             Log.d(TAG, "try to paste code: \"" + code + "\"");
-            _instance.m_activity.pythonCall("onMarSDKSaveClipboard", code);
+
+            activity.pythonCall("onMarSDKSaveClipboard", code);
         }
         catch (Exception e)
         {
@@ -412,8 +437,13 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     {
         TimeZone tz = TimeZone.getTimeZone("Asia/Beijing");
         Calendar calendar = Calendar.getInstance(tz);
-        String time = String.valueOf(calendar.get(Calendar.DATE)) + "/" + String.valueOf(calendar.get(Calendar.MONTH)) + "/" + String.valueOf(calendar.get(Calendar.YEAR));
+        String time = String.valueOf(
+                calendar.get(Calendar.DATE)) + "/" +
+                String.valueOf(calendar.get(Calendar.MONTH)) + "/" +
+                String.valueOf(calendar.get(Calendar.YEAR));
+
         Log.d(TAG, "China (Beijing) time: " + time);
+
         return time;
     }
 }

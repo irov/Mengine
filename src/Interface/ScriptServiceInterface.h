@@ -3,6 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
+#include "Interface/ScriptModuleInterface.h"
+#include "Interface/ScriptEmbeddingInterface.h"
 
 #include "Environment/Python/PythonForwardDeclaration.h"
 
@@ -20,9 +22,6 @@ namespace pybind
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ScriptModuleInterface> ScriptModuleInterfacePtr;
-    typedef IntrusivePtr<class ScriptEmbeddingInterface> ScriptEmbeddingInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     struct ScriptModulePackage
     {

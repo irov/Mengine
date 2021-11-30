@@ -6,6 +6,7 @@
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonEventReceiver.h"
 
 #include "Spine.h"
 #include "ResourceSpineAtlasDefault.h"
@@ -26,33 +27,33 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonSpineEventReceiver
-            : public PythonAnimatableEventReceiver<SpineEventReceiverInterface>
+            : public PythonAnimatableEventReceiver<SamplerSpineEventReceiverInterface>
         {
         public:
-            void onSpineEvent( const Char * _eventName, int32_t _eventIntValue, float _eventFloatValue, const Char * _eventStringValue ) override
+            void onSamplerSpineEvent( const Char * _eventName, int32_t _eventIntValue, float _eventFloatValue, const Char * _eventStringValue ) override
             {
                 m_cb.call( _eventName, _eventIntValue, _eventFloatValue, _eventStringValue );
             }
 
-            void onSpineStateAnimationEnd( const ConstString & _state, const ConstString & _animation, bool _isEnd ) override
+            void onSamplerSpineStateAnimationEnd( const ConstString & _state, const ConstString & _animation, bool _isEnd ) override
             {
                 m_cb.call( _state, _animation, _isEnd );
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * s_Spine_setEventListener( pybind::kernel_interface * _kernel, Spine * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * s_SamplerSpineAnimationInterface_setEventListener( pybind::kernel_interface * _kernel, SamplerSpineAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _sampler, MENGINE_DOCUMENT_PYBIND );
 
-            Helper::registerPythonEventReceiver<PythonSpineEventReceiver>( _kernel, py_kwds, _node, "onSpineEvent", EVENT_SPINE_EVENT, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonSpineEventReceiver>( _kernel, py_kwds, _node, "onSpineStateAnimationEnd", EVENT_SPINE_STATE_ANIMATION_END, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonSpineEventReceiver>( _kernel, py_kwds, _sampler, STRINGIZE_STRING_LOCAL( "onSamplerSpineEvent" ), EVENT_SAMPLER_SPINE_EVENT, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonSpineEventReceiver>( _kernel, py_kwds, _sampler, STRINGIZE_STRING_LOCAL( "onSamplerSpineStateAnimationEnd" ), EVENT_SAMPLER_SPINE_STATE_ANIMATION_END, MENGINE_DOCUMENT_PYBIND );
 
-            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
+            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _sampler, py_kwds );
 
             return _kernel->ret_none();
         }
@@ -66,11 +67,27 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SpineScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
+    bool SpineScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<Spine, pybind::bases<Node, Eventable, Animatable> >( _kernel, "Spine", false )
+        pybind::interface_<Spine, pybind::bases<Node> >( _kernel, "Spine", false )
             .def( "setResourceSpineSkeleton", &Spine::setResourceSpineSkeleton )
             .def( "getResourceSpineSkeleton", &Spine::getResourceSpineSkeleton )
+            .def( "addAnimationSampler", &Spine::addAnimationSampler )
+            .def( "removeAnimationSampler", &Spine::removeAnimationSampler )
+            .def( "clearAnimationSamplers", &Spine::clearAnimationSamplers )
+            .def( "findAnimationSampler", &Spine::findAnimationSampler )
+            .def( "getAnimationSamplerCount", &Spine::getAnimationSamplerCount )
+            .def( "getAnimationSampler", &Spine::getAnimationSampler )
+            ;
+
+        pybind::interface_<SamplerSpineAnimationInterface, pybind::bases<Identity, Compilable, Updatable, Animatable, Eventable, Scriptable>>( _kernel, "SamplerSpineAnimationInterface", false )
+            .def( "setResourceSpineSkeleton", &SamplerSpineAnimationInterface::setResourceSpineSkeleton )
+            .def( "getResourceSpineSkeleton", &SamplerSpineAnimationInterface::getResourceSpineSkeleton )
+            .def( "setAnimationName", &SamplerSpineAnimationInterface::setAnimationName )
+            .def( "getAnimationName", &SamplerSpineAnimationInterface::getAnimationName )
+            .def( "setAnimationEnable", &SamplerSpineAnimationInterface::setAnimationEnable )
+            .def( "getAnimationEnable", &SamplerSpineAnimationInterface::getAnimationEnable )
+            .def_static_native_kernel( "setEventListener", &Detail::s_SamplerSpineAnimationInterface_setEventListener )
             ;
 
         pybind::interface_<ResourceSpineAtlas, pybind::bases<Resource> >( _kernel, "ResourceSpineAtlas", false )
@@ -81,6 +98,7 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourceSpineAtlasTexturepacker, pybind::bases<ResourceSpineAtlas>>( _kernel, "ResourceSpineAtlasTexturepacker", false )
+            .def( "addResourceTexturepacker", &ResourceSpineAtlasTexturepacker::addResourceTexturepacker )
             ;
 
         pybind::interface_<ResourceSpineSkeleton, pybind::bases<Resource>>( _kernel, "ResourceSpineSkeleton", false )
@@ -89,6 +107,7 @@ namespace Mengine
             ;
 
         Helper::registerScriptWrapping<Spine>( _kernel, STRINGIZE_STRING_LOCAL( "Spine" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<SamplerSpineAnimationInterface>( _kernel, STRINGIZE_STRING_LOCAL( "SamplerSpineAnimationInterface" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<ResourceSpineSkeleton>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<ResourceSpineAtlasDefault>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<ResourceSpineAtlasTexturepacker>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -96,9 +115,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SpineScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
+    void SpineScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<Spine>();
+        _kernel->remove_scope<SamplerSpineAnimationInterface>();
         _kernel->remove_scope<ResourceSpineAtlas>();
         _kernel->remove_scope<ResourceSpineAtlasDefault>();
         _kernel->remove_scope<ResourceSpineAtlasTexturepacker>();
@@ -109,4 +129,5 @@ namespace Mengine
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

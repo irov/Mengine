@@ -58,18 +58,18 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String method, String args);
-    private static native void AndroidNativeFacebook_setupFacebookJNI();
-    private static native void AndroidNativeFacebook_onSDKInitialized();
-    private static native void AndroidNativeUnity_setupUnityJNI();
-    private static native void AndroidNativeUnity_onSDKInitialized();
-    private static native void AndroidNativeAdMob_setupAdMobJNI();
-    private static native void AndroidNativeAdMob_onSDKInitialized();
-    private static native void AndroidNativeDevToDev_setupDevToDevJNI();
-    private static native void AndroidNativeDevToDev_onSDKInitialized();
-    private static native void AndroidNativeLinking_setupLinkingJNI();
-    private static native void AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
-    private static native void AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
-    private static native void AndroidNativeLocalNotifications_onLocalNotificationsPress(int id);
+    //private static native void AndroidNativeFacebook_setupFacebookJNI();
+    //private static native void AndroidNativeFacebook_onSDKInitialized();
+    //private static native void AndroidNativeUnity_setupUnityJNI();
+    //private static native void AndroidNativeUnity_onSDKInitialized();
+    //private static native void AndroidNativeAdMob_setupAdMobJNI();
+    //private static native void AndroidNativeAdMob_onSDKInitialized();
+    //private static native void AndroidNativeDevToDev_setupDevToDevJNI();
+    //private static native void AndroidNativeDevToDev_onSDKInitialized();
+    //private static native void AndroidNativeLinking_setupLinkingJNI();
+    //private static native void AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
+    //private static native void AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
+    //private static native void AndroidNativeLocalNotifications_onLocalNotificationsPress(int id);
 
     @Override
     protected String[] getLibraries() {
@@ -85,7 +85,12 @@ public class MengineActivity extends SDLActivity {
         try{
             Class<?> clazz = cl.loadClass(name);
             Constructor<?> ctr = clazz.getConstructor(MengineActivity.class);
-            MenginePlugin plugin = (MenginePlugin)ctr.newInstance(new Object[] {this});
+            MenginePlugin plugin = (MenginePlugin)ctr.newInstance(new Object[] {});
+
+            if(plugin.onInitialize(this) == false)
+            {
+                return false;
+            }
 
             this.plugins.add(plugin);
 
@@ -201,8 +206,7 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
-    public void quitMengineApplication()
-    {
+    public void quitMengineApplication() {
         AndroidNativeMengine_quitMengineAndroidActivityJNI();
     }
 

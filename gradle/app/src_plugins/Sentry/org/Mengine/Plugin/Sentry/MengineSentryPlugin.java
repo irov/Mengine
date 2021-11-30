@@ -11,25 +11,18 @@ import io.sentry.android.core.SentryAndroid;
 
 public class MengineSentryPlugin extends MenginePlugin {
     private static final String TAG = "Sentry";
-    private MengineActivity m_activity;
 
-    public MengineSentryPlugin(MengineActivity _activity) {
-        m_activity = _activity;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-    }
     @Override
     public void onMengineInitializeBaseServices()
     {
-        SentryAndroid.init(m_activity, options -> {
-            String SENTRY_DNS = m_activity.getConfigValue("Sentry", "DSN", "");
+        MengineActivity activity = this.getActivity();
+
+        SentryAndroid.init(activity, options -> {
+            String SENTRY_DNS = activity.getConfigValue("Sentry", "DSN", "");
             options.setDsn(SENTRY_DNS);
             Log.i(TAG, "Sentry DNS:" + SENTRY_DNS);
 
-            String buildVersion = m_activity.getBuildVersion();
+            String buildVersion = activity.getBuildVersion();
             options.setRelease(buildVersion);
             Log.i(TAG, "Sentry Build Version:" + buildVersion);
         });
@@ -37,19 +30,21 @@ public class MengineSentryPlugin extends MenginePlugin {
     @Override
     public void onMengineCreateApplication()
     {
-        Sentry.configureScope(scope -> {
-            String SENTRY_APPLICATION = m_activity.getConfigValue( "Sentry", "Application", "Mengine" );
+        MengineActivity activity = this.getActivity();
 
-            String companyName = m_activity.getCompanyName();
-            String projectName = m_activity.getProjectName();
-            int projectVersion = m_activity.getProjectVersion();
-            boolean isDebugMode = m_activity.isDebugMode();
-            boolean isDevelopmentMode = m_activity.isDevelopmentMode();
-            boolean isBuildMaster = m_activity.isBuildMaster();
-            boolean isBuildPublish = m_activity.isBuildPublish();
-            String engineGITSHA1 = m_activity.getEngineGITSHA1();
-            String buildTimestamp = m_activity.getBuildTimestamp();
-            String buildUsername = m_activity.getBuildUsername();
+        Sentry.configureScope(scope -> {
+            String SENTRY_APPLICATION = activity.getConfigValue( "Sentry", "Application", "Mengine" );
+
+            String companyName = activity.getCompanyName();
+            String projectName = activity.getProjectName();
+            int projectVersion = activity.getProjectVersion();
+            boolean isDebugMode = activity.isDebugMode();
+            boolean isDevelopmentMode = activity.isDevelopmentMode();
+            boolean isBuildMaster = activity.isBuildMaster();
+            boolean isBuildPublish = activity.isBuildPublish();
+            String engineGITSHA1 = activity.getEngineGITSHA1();
+            String buildTimestamp = activity.getBuildTimestamp();
+            String buildUsername = activity.getBuildUsername();
 
             scope.setExtra("Application", SENTRY_APPLICATION);
             scope.setExtra("Company", companyName);

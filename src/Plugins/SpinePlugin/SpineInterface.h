@@ -16,23 +16,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ESpineEventFlag
     {
-        EVENT_SPINE_EVENT = __EVENT_ANIMATION_LAST__,
-        EVENT_SPINE_STATE_ANIMATION_END,
+        EVENT_SAMPLER_SPINE_EVENT = __EVENT_ANIMATION_LAST__,
+        EVENT_SAMPLER_SPINE_STATE_ANIMATION_END,
         __EVENT_SPINE_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class SpineEventReceiverInterface
+    class SamplerSpineEventReceiverInterface
         : public AnimationEventReceiverInterface
     {
     public:
-        virtual void onSpineEvent( const Char * _eventName, int32_t _eventIntValue, float _eventFloatValue, const Char * _eventStringValue ) = 0;
-        virtual void onSpineStateAnimationEnd( const ConstString & _stateName, const ConstString & _animationName, bool _isEnd ) = 0;
+        virtual void onSamplerSpineEvent( const Char * _eventName, int32_t _eventIntValue, float _eventFloatValue, const Char * _eventStringValue ) = 0;
+        virtual void onSamplerSpineStateAnimationEnd( const ConstString & _stateName, const ConstString & _animationName, bool _isEnd ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SpineEventReceiverInterface> SpineEventReceiverInterfacePtr;
+    typedef IntrusivePtr<SamplerSpineEventReceiverInterface> SamplerSpineEventReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    EVENTATION_TYPEID( SpineEventReceiverInterface, EVENT_SPINE_EVENT );
-    EVENTATION_TYPEID( SpineEventReceiverInterface, EVENT_SPINE_STATE_ANIMATION_END );
+    EVENTATION_TYPEID( SamplerSpineEventReceiverInterface, EVENT_SAMPLER_SPINE_EVENT );
+    EVENTATION_TYPEID( SamplerSpineEventReceiverInterface, EVENT_SAMPLER_SPINE_STATE_ANIMATION_END );
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceSpineAtlasTexturepackerInterface
         : public UnknownInterface

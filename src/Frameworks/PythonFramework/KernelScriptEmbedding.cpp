@@ -412,48 +412,6 @@ namespace Mengine
                 return linearSpeed;
             }
             //////////////////////////////////////////////////////////////////////////
-            class PythonScriptHolderEventReceiver
-                : public PythonEventReceiver
-                , public ScriptHolderEventReceiverInterface
-                , public Factorable
-            {
-            public:
-                PythonScriptHolderEventReceiver()
-                {
-                }
-
-                ~PythonScriptHolderEventReceiver() override
-                {
-                }
-
-            public:
-                pybind::object onScriptHolderKeepScript() override
-                {
-                    return m_cb.call();
-                }
-
-                void onScriptHolderReleaseScript( const pybind::object & _script ) override
-                {
-                    m_cb.call( _script );
-                }
-            };
-            //////////////////////////////////////////////////////////////////////////
-            PyObject * s_ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
-            {
-                MENGINE_UNUSED( _args );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
-
-                pybind::dict py_kwds( _kernel, _kwds );
-
-                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onKeepScript" ), EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
-                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onReleaseScript" ), EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYBIND );
-
-                MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
-
-                return _kernel->ret_none();
-            }
-            //////////////////////////////////////////////////////////////////////////
             bool s_Node_removeChild( Node * _node, const NodePtr & _child )
             {
                 if( _node->removeChild( _child ) == false )

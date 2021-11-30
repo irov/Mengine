@@ -306,8 +306,8 @@ namespace Mengine
                 {
                     const ConstString & name = this->getName();
 
-                    EVENTABLE_METHOD( EVENT_SPINE_STATE_ANIMATION_END )
-                        ->onSpineStateAnimationEnd( name, m_animationName, true );
+                    EVENTABLE_METHOD( EVENT_SAMPLER_SPINE_STATE_ANIMATION_END )
+                        ->onSamplerSpineStateAnimationEnd( name, m_animationName, true );
 
                     if( loop == false )
                     {
@@ -316,8 +316,8 @@ namespace Mengine
                 }break;
             case SP_ANIMATION_EVENT:
                 {
-                    EVENTABLE_METHOD( EVENT_SPINE_EVENT )
-                        ->onSpineEvent( desc.eventName, desc.eventIntValue, desc.eventFloatValue, desc.eventStringValue );
+                    EVENTABLE_METHOD( EVENT_SAMPLER_SPINE_EVENT )
+                        ->onSamplerSpineEvent( desc.eventName, desc.eventIntValue, desc.eventFloatValue, desc.eventStringValue );
                 }break;
             default:
                 break;

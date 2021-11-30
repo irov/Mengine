@@ -189,7 +189,7 @@ if(MENGINE_TARGET_MACOS)
     SET(PODFILE_BUFFER "")
     
     STRING(APPEND PODFILE_BUFFER "project '${MENGINE_PROJECT_NAME}.xcodeproj'\n")
-    STRING(APPEND PODFILE_BUFFER "platform :macos, '10.10'\n")
+    STRING(APPEND PODFILE_BUFFER "platform :macos, '${CMAKE_OSX_DEPLOYMENT_TARGET}'\n")
     STRING(APPEND PODFILE_BUFFER "use_frameworks!\n")
 
     STRING(APPEND PODFILE_BUFFER "target 'SDLApplication' do\n")

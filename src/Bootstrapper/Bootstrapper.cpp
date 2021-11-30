@@ -262,6 +262,10 @@ PLUGIN_EXPORT( Graphics );
 PLUGIN_EXPORT( Sentry );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_SENTRYMACOS_STATIC
+PLUGIN_EXPORT( SentryMacOS );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_STEAM_STATIC
 PLUGIN_EXPORT( Steam );
 #endif
@@ -922,6 +926,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
         MENGINE_ADD_PLUGIN( Sentry, "Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_SENTRYMACOS_STATIC
+        MENGINE_ADD_PLUGIN( SentryMacOS, "Plugin SentryMacOS...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_EXTERNAL_SOURCE

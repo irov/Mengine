@@ -1604,9 +1604,12 @@ namespace Mengine
 
         SERVICE_PROVIDER_STOP();
 
-        this->stopFrameworks_();
+        if( SERVICE_EXIST( FrameworkServiceInterface ) == true )
+        {
+            this->stopFrameworks_();
 
-        this->finalizeFrameworks_();
+            this->finalizeFrameworks_();
+        }
 
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
@@ -1678,8 +1681,11 @@ namespace Mengine
             m_loggerFile = nullptr;
         }
 
-        FILE_SERVICE()
-            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+        if( SERVICE_EXIST( FileServiceInterface ) == true )
+        {
+            FILE_SERVICE()
+                ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+        }
 
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( FileService );

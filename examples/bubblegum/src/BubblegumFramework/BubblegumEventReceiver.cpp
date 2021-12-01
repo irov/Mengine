@@ -25,13 +25,14 @@
 #include "Kernel/TimepipeHelper.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/NodeCast.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BubblegumEventReceiver::BubblegumEventReceiver()
         : m_scene( nullptr )
-        , m_timepipeId( INVALIDATE_UNIQUE_ID )
+        , m_timepipeId( INVALID_UNIQUE_ID )
         , m_score( 0 )
     {
     }

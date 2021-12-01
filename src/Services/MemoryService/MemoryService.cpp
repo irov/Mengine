@@ -9,6 +9,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include "Config/Algorithm.h"
 
@@ -59,12 +60,7 @@ namespace Mengine
             return true;
         } );
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MemoryService::_finalizeService()
-    {
-        if( SERVICE_EXIST( ThreadServiceInterface ) == true )
+        SERVICE_LEAVE( ThreadServiceInterface, [this]()
         {
             m_factoryMemoryBuffer->setMutex( nullptr );
             m_factoryMemoryProxy->setMutex( nullptr );
@@ -74,8 +70,13 @@ namespace Mengine
             m_factoryMemoryInput->setMutex( nullptr );
 
             m_memoryCacheMutex = nullptr;
-        }
+        } );
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MemoryService::_finalizeService()
+    {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryProxy );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryCacheBuffer );
@@ -99,13 +100,11 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     UniqueId MemoryService::lockBuffer( size_t _size, void ** const _memory, const DocumentPtr & _doc )
-    {
-        m_memoryCacheMutex->lock();
+    {        
+        MENGINE_THREAD_MUTEX_SCOPE( m_memoryCacheMutex );
 
         UniqueId buffer_id =
             this->lockBufferNoMutex_( _size, _memory, _doc );
-
-        m_memoryCacheMutex->unlock();
 
         return buffer_id;
     }
@@ -219,7 +218,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MemoryService::unlockBuffer( UniqueId _bufferId )
     {
-        m_memoryCacheMutex->lock();
+        MENGINE_THREAD_MUTEX_SCOPE( m_memoryCacheMutex );
 
         for( CacheBufferMemory & buffer : m_buffers )
         {
@@ -232,13 +231,11 @@ namespace Mengine
 
             break;
         }
-
-        m_memoryCacheMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryService::clearCacheBuffers()
     {
-        m_memoryCacheMutex->lock();
+        MENGINE_THREAD_MUTEX_SCOPE( m_memoryCacheMutex );
 
         m_buffers.erase( Algorithm::remove_if( m_buffers.begin(), m_buffers.end(), []( const CacheBufferMemory & _buffer )
         {
@@ -251,8 +248,6 @@ namespace Mengine
 
             return true;
         } ), m_buffers.end() );
-
-        m_memoryCacheMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryBufferInterfacePtr MemoryService::createMemoryCacheBuffer( const DocumentPtr & _doc )

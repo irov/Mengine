@@ -38,7 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JewelryEventReceiver::JewelryEventReceiver()
         : m_scene( nullptr )
-        , m_timepipeId( INVALIDATE_UNIQUE_ID )
+        , m_timepipeId( INVALID_UNIQUE_ID )
         , m_stage( 0 )
         , m_timemillisecond( 0 )
     {

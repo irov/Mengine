@@ -38,6 +38,8 @@ namespace Mengine
         FilePath m_relationPath;
         FilePath m_folderPath;
         FilePath m_filePath;
+
+        bool m_withTemp;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLFileOutputStream> SDLFileOutputStreamPtr;

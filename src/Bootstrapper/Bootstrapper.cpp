@@ -325,6 +325,10 @@ PLUGIN_EXPORT( Optick );
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
 PLUGIN_EXPORT( GameAnalytics );
 #endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
+PLUGIN_EXPORT( XmlToBin );
+#endif
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -1134,6 +1138,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
         MENGINE_ADD_PLUGIN( GameAnalytics, "Plugin Game Analytics...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
+        MENGINE_ADD_PLUGIN( XmlToBin, "Plugin XmlToBin...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;

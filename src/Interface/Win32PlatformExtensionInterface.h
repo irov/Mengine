@@ -13,6 +13,9 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
+        virtual bool atachWindow( HWND _hwnd, bool _fullscreen ) = 0;
+
+    public:
         virtual HWND getWindowHandle() const = 0;
 
     public:

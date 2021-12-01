@@ -2297,7 +2297,19 @@ namespace Mengine
             return false;
         }
 
-        m_hWnd = hWnd;
+        if( this->atachWindow( hWnd, _fullscreen ) == false )
+        {
+            LOGGER_ERROR( "can't atach window" );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::atachWindow( HWND _hWnd, bool _fullscreen )
+    {
+        m_hWnd = _hWnd;
 
         HWND hWndFgnd = ::GetForegroundWindow();
 
@@ -2329,6 +2341,14 @@ namespace Mengine
             this->getDesktopResolution( &desktopResolution );
 
             m_windowResolution = desktopResolution;
+        }
+        else
+        {
+            RECT rect;
+            ::GetClientRect( _hWnd, &rect );
+
+            m_windowResolution.setWidth( rect.right - rect.left );
+            m_windowResolution.setHeight( rect.bottom - rect.top );
         }
 
         ::SetForegroundWindow( m_hWnd );

@@ -144,9 +144,6 @@ namespace Mengine
         const ConstString & getLocale() const override;
 
     public:
-        const Resolution & getWindowResolution() const;
-
-    public:
         void setFixedContentResolution( bool _fixedContetResolution ) override;
         bool getFixedContentResolution() const override;
 
@@ -199,6 +196,7 @@ namespace Mengine
         bool m_nopause;
 
         Resolution m_windowResolution;
+        Resolution m_fullscreenResolution;
         uint32_t m_bits;
         bool m_fullscreen;
         bool m_alwaysfullscreen;

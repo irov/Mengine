@@ -1994,19 +1994,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::changeWindowResolution( const Resolution & _resolution )
     {
-        LOGGER_MESSAGE( "change window resolution size %u:%u -> %u:%u"
-            , m_windowResolution.getWidth()
-            , m_windowResolution.getHeight()
-            , _resolution.getWidth()
-            , _resolution.getHeight()
-        );
-
-        if( m_windowResolution == _resolution )
+        if( m_fullscreen == true )
         {
-            return;
-        }
+            if( m_fullscreenResolution == _resolution )
+            {
+                return;
+            }
 
-        m_windowResolution = _resolution;
+            LOGGER_MESSAGE( "change fullscreen resolution size %u:%u -> %u:%u"
+                , m_fullscreenResolution.getWidth()
+                , m_fullscreenResolution.getHeight()
+                , _resolution.getWidth()
+                , _resolution.getHeight()
+            );
+
+            m_fullscreenResolution = _resolution;
+        }
+        else
+        {
+            if( m_windowResolution == _resolution )
+            {
+                return;
+            }
+
+            LOGGER_MESSAGE( "change window resolution size %u:%u -> %u:%u"
+                , m_windowResolution.getWidth()
+                , m_windowResolution.getHeight()
+                , _resolution.getWidth()
+                , _resolution.getHeight()
+            );
+
+            m_windowResolution = _resolution;
+        }
 
         this->invalidateWindow_();
     }
@@ -2294,11 +2313,6 @@ namespace Mengine
             _viewport->end.x = width;
             _viewport->end.y = height;
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Resolution & Application::getWindowResolution() const
-    {
-        return m_windowResolution;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::getAllowFullscreenSwitchShortcut() const

@@ -68,8 +68,8 @@ namespace Mengine
 
         const char * version = jpp::get_version();
 
-        LOGGER_MESSAGE_RELEASE( "jannson version: %s", version );
-        LOGGER_MESSAGE_RELEASE( "jannson seed: %u", JSON_Seed );
+        LOGGER_MESSAGE( "jannson version: %s", version );
+        LOGGER_MESSAGE( "jannson seed: %u", JSON_Seed );
 
         jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
 

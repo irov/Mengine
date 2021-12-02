@@ -144,7 +144,7 @@ namespace Mengine
         m_depth = _windowDesc->depth;
         m_waitForVSync = _windowDesc->waitForVSync;
 
-        LOGGER_MESSAGE_RELEASE( "Mockup create render window successfully!" );
+        LOGGER_MESSAGE( "Mockup create render window successfully!" );
 
         return true;
     }

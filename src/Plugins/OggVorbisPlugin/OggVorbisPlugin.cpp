@@ -53,7 +53,7 @@ namespace Mengine
     {
         const char * vorbis_version = vorbis_version_string();
 
-        LOGGER_MESSAGE_RELEASE( "Vorbis version: %s"
+        LOGGER_MESSAGE( "Vorbis version: %s"
             , vorbis_version
         );
 

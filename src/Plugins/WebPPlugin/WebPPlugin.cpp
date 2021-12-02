@@ -30,13 +30,13 @@ namespace Mengine
     {
         int32_t version = WebPGetDecoderVersion();
 
-        LOGGER_MESSAGE_RELEASE( "WebP Version: %u.%u.%u"
+        LOGGER_MESSAGE( "WebP Version: %u.%u.%u"
             , (version >> 16) & 0xff
             , (version >> 8) & 0xff
             , (version >> 0) & 0xff
         );
 
-        LOGGER_MESSAGE_RELEASE( "WebP ABI Version: %p"
+        LOGGER_MESSAGE( "WebP ABI Version: %p"
             , (void *)WEBP_DECODER_ABI_VERSION
         );
 

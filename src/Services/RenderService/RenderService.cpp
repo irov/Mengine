@@ -149,11 +149,11 @@ namespace Mengine
         bool Engine_RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
         uint32_t Engine_RenderMultiSampleCount = CONFIG_VALUE( "Engine", "RenderMultiSampleCount", 2U );
 
-        LOGGER_MESSAGE_RELEASE( "Render auto depth stencil: %s"
+        LOGGER_MESSAGE( "Render auto depth stencil: %s"
             , Engine_RenderEnableAutoDepthStencil == true ? "true" : "false"
         );
 
-        LOGGER_MESSAGE_RELEASE( "Render multi sample count: %u"
+        LOGGER_MESSAGE( "Render multi sample count: %u"
             , Engine_RenderMultiSampleCount
         );
 

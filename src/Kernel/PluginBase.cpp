@@ -80,7 +80,7 @@ namespace Mengine
 
         if( m_availablePlugin == false )
         {
-            LOGGER_MESSAGE_RELEASE( "plugin '%s' not available"
+            LOGGER_MESSAGE( "plugin '%s' not available"
                 , this->getPluginName()
             );
 

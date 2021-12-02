@@ -802,7 +802,7 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
-        LOGGER_MESSAGE_RELEASE( "run platform" );
+        LOGGER_MESSAGE( "run platform" );
 
         MENGINE_PROFILER_BEGIN_APPLICATION();
 
@@ -1567,7 +1567,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                LOGGER_MESSAGE_RELEASE( "Quit application" );
+                LOGGER_MESSAGE( "Quit application" );
 
                 m_close = true;
 

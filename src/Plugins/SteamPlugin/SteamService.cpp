@@ -220,7 +220,7 @@ namespace Mengine
 
         m_userStats->StoreStats();
 
-        LOGGER_MESSAGE_RELEASE( "Steam set achievement '%s'"
+        LOGGER_MESSAGE( "Steam set achievement '%s'"
             , _name.c_str()
         );
 
@@ -273,7 +273,7 @@ namespace Mengine
 
         m_userStats->StoreStats();
 
-        LOGGER_MESSAGE_RELEASE( "Steam set state '%s' value '%u'"
+        LOGGER_MESSAGE( "Steam set state '%s' value '%u'"
             , _name.c_str()
             , _value
         );
@@ -304,7 +304,7 @@ namespace Mengine
 
         m_userStats->StoreStats();
 
-        LOGGER_MESSAGE_RELEASE( "Steam set state '%s' value '%f'"
+        LOGGER_MESSAGE( "Steam set state '%s' value '%f'"
             , _name.c_str()
             , _value
         );
@@ -337,7 +337,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE_RELEASE( "available game languages: %s"
+        LOGGER_MESSAGE( "available game languages: %s"
             , AvailableGameLanguages
         );
 
@@ -350,7 +350,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE_RELEASE( "steam game language: %s"
+        LOGGER_MESSAGE( "steam game language: %s"
             , CurrentGameLanguage
         );
 
@@ -361,7 +361,7 @@ namespace Mengine
             const ConstString & locale = APPLICATION_SERVICE()
                 ->getLocale();
 
-            LOGGER_MESSAGE_RELEASE( "not found game localization for language '%s' stay current localization '%s'"
+            LOGGER_MESSAGE( "not found game localization for language '%s' stay current localization '%s'"
                 , CurrentGameLanguage
                 , locale.c_str()
             );
@@ -379,7 +379,7 @@ namespace Mengine
         if( PACKAGE_SERVICE()
             ->existLocalePackage( steam_locale, {} ) == false )
         {
-            LOGGER_MESSAGE_RELEASE( "not found game localization for language '%s'"
+            LOGGER_MESSAGE( "not found game localization for language '%s'"
                 , CurrentGameLanguage
             );
 

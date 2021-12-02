@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PNGPlugin::_initializePlugin()
     {
-        LOGGER_MESSAGE_RELEASE( "PNG version: %s", PNG_HEADER_VERSION_STRING );
+        LOGGER_MESSAGE( "PNG version: %s", PNG_HEADER_VERSION_STRING );
 
         Helper::registerDecoder<ImageDecoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 

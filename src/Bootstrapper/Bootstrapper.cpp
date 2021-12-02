@@ -712,7 +712,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
         {\
-            LOGGER_MESSAGE_RELEASE( "%s", Info );\
+            LOGGER_MESSAGE( "%s", Info );\
             if( PLUGIN_CREATE(Name, Doc) == false )\
             {\
                 LOGGER_ERROR( "[invalid initialize]" );\
@@ -739,36 +739,41 @@ namespace Mengine
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
 
+        LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
+        LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
+        LOGGER_MESSAGE( "build publish [%s]", Helper::isBuildPublish() == true ? "ON" : "OFF" );
+        LOGGER_MESSAGE( "build master [%s]", Helper::isBuildMaster() == true ? "ON" : "OFF" );
+
 #if MENGINE_ASSERTION_DEBUG == 0
-        LOGGER_MESSAGE_RELEASE( "enable assertion debug [OFF]" );
+        LOGGER_MESSAGE( "enable assertion debug [OFF]" );
 #endif
 
 #if MENGINE_ASSERTION_DEBUG == 1
-        LOGGER_MESSAGE_RELEASE( "enable assertion debug [ON]" );
+        LOGGER_MESSAGE( "enable assertion debug [ON]" );
 #endif
 
 #if MENGINE_LOGGER_DEBUG == 0
-        LOGGER_MESSAGE_RELEASE( "enable logger debug [OFF]" );
+        LOGGER_MESSAGE( "enable logger debug [OFF]" );
 #endif
 
 #if MENGINE_LOGGER_DEBUG == 1
-        LOGGER_MESSAGE_RELEASE( "enable logger debug [ON]" );
+        LOGGER_MESSAGE( "enable logger debug [ON]" );
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG == 0
-        LOGGER_MESSAGE_RELEASE( "enable allocator debug [OFF]" );
+        LOGGER_MESSAGE( "enable allocator debug [OFF]" );
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG == 1
-        LOGGER_MESSAGE_RELEASE( "enable allocator debug [ON]" );
+        LOGGER_MESSAGE( "enable allocator debug [ON]" );
 #endif
 
 #if MENGINE_DOCUMENT_ENABLE == 0
-        LOGGER_MESSAGE_RELEASE( "enable document debug [OFF]" );
+        LOGGER_MESSAGE( "enable document debug [OFF]" );
 #endif
 
 #if MENGINE_DOCUMENT_ENABLE == 1
-        LOGGER_MESSAGE_RELEASE( "enable document debug [ON]" );
+        LOGGER_MESSAGE( "enable document debug [ON]" );
 #endif
 
 #ifdef MENGINE_PLUGIN_INI_STATIC
@@ -1681,7 +1686,7 @@ namespace Mengine
 
         if( m_loggerFile != nullptr )
         {
-            LOGGER_MESSAGE_RELEASE( "Finish log successful" );
+            LOGGER_MESSAGE( "Finish log successful" );
 
             LOGGER_SERVICE()
                 ->unregisterLogger( m_loggerFile );

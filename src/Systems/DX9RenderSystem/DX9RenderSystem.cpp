@@ -594,7 +594,7 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
-        LOGGER_MESSAGE_RELEASE( "DirectX9 create render window successfully!" );
+        LOGGER_MESSAGE( "DirectX9 create render window successfully!" );
 
         return true;
     }
@@ -892,7 +892,7 @@ namespace Mengine
         {
             m_lostDevice = true;
 
-            LOGGER_MESSAGE_RELEASE( "device lost [begin scene]" );
+            LOGGER_MESSAGE( "device lost [begin scene]" );
 
             ::Sleep( 200 );
 
@@ -902,7 +902,7 @@ namespace Mengine
         {
             m_lostDevice = true;
 
-            LOGGER_MESSAGE_RELEASE( "device reset [begin scene]" );
+            LOGGER_MESSAGE( "device reset [begin scene]" );
 
             if( this->resetDevice_() == false )
             {
@@ -950,7 +950,7 @@ namespace Mengine
         {
             m_lostDevice = true;
 
-            LOGGER_MESSAGE_RELEASE( "device lost [swap buffers]" );
+            LOGGER_MESSAGE( "device lost [swap buffers]" );
 
             return;
         }
@@ -959,7 +959,7 @@ namespace Mengine
         {
             m_lostDevice = true;
 
-            LOGGER_MESSAGE_RELEASE( "device reset [swap buffers]" );
+            LOGGER_MESSAGE( "device reset [swap buffers]" );
 
             if( this->resetDevice_() == false )
             {
@@ -1322,7 +1322,7 @@ namespace Mengine
 
         if( cooperativeLevel == D3DERR_DEVICELOST )
         {
-            LOGGER_MESSAGE_RELEASE( "device lost [reset]" );
+            LOGGER_MESSAGE( "device lost [reset]" );
 
             ::Sleep( 200 );
 

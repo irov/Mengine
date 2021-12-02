@@ -51,11 +51,11 @@ namespace Mengine
                 return 0;
             }
 
-            LOGGER_MESSAGE_RELEASE( "%s, %10.10zu bytes (0x%8.8zu)"
+            LOGGER_MESSAGE( "%s, %10.10zu bytes (0x%8.8zu)"
                 , text, size, size
             );
 
-            LOGGER_MESSAGE_RELEASE( "%.*s", (int32_t)size, data );
+            LOGGER_MESSAGE( "%.*s", (int32_t)size, data );
 
             return 0;
         }

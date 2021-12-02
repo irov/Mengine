@@ -48,7 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::loadPlugin( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
-        LOGGER_MESSAGE_RELEASE( "load plugin '%s'"
+        LOGGER_MESSAGE( "load plugin '%s'"
             , _dynamicLibraryName
         );
 

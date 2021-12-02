@@ -122,7 +122,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE_RELEASE( "Sentry: %s"
+        LOGGER_MESSAGE( "Sentry: %s"
             , SENTRY_SDK_USER_AGENT
         );
 

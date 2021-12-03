@@ -32,6 +32,9 @@ namespace Mengine
         JSONStorageInterfacePtr loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc ) const override;
 
     protected:
+        bool saveJSON( const OutputStreamInterfacePtr & _stream, const jpp::object & _j ) const override;
+
+    protected:
         FactoryPtr m_factoryJSONStorage;
     };
 }

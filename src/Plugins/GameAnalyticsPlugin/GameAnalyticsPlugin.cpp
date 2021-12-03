@@ -6,6 +6,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#include "Plugins/JSONPlugin/JSONInterface.h"
+
 #include "GameAnalytics.h"
 
 #include "Kernel/Logger.h"
@@ -22,7 +24,7 @@
 #include "Config/StdString.h"
 
 #ifndef MENGINE_GAMEANALYTICS_FOLDER
-#define MENGINE_GAMEANALYTICS_FOLDER ".game-analytics"
+#define MENGINE_GAMEANALYTICS_FOLDER "game-analytics"
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -193,7 +195,7 @@ namespace Mengine
         MENGINE_STRCAT( configPath, MENGINE_GAMEANALYTICS_FOLDER );
         MENGINE_STRCAT( configPath, "/" );
 
-        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalytics", "Config", "config.ini" );
+        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalytics", "Config", "config.json" );
 
         MENGINE_STRCAT( configPath, GameAnalytics_Config );
 
@@ -205,7 +207,7 @@ namespace Mengine
         }
 
         ConfigInterfacePtr analyticsConfig = CONFIG_SERVICE()
-            ->loadConfig( fileGroupUser, configPath_f, STRINGIZE_STRING_LOCAL( "ini" ), MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( fileGroupUser, configPath_f, STRINGIZE_STRING_LOCAL( "json" ), MENGINE_DOCUMENT_FACTORABLE );
 
         const Char * Config_UserId;
         if( analyticsConfig->hasValue( "Config", "UserId", "", &Config_UserId ) == false )
@@ -232,7 +234,7 @@ namespace Mengine
         MENGINE_STRCAT( configPath, MENGINE_GAMEANALYTICS_FOLDER );
         MENGINE_STRCAT( configPath, "/" );
 
-        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalytics", "Config", "config.ini" );
+        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalytics", "Config", "config.json" );
 
         MENGINE_STRCAT( configPath, GameAnalytics_Config );
 
@@ -245,8 +247,18 @@ namespace Mengine
             return false;
         }
 
-        Helper::writeIniSection( file, "[Config]" );
-        Helper::writeIniSetting( file, "UserId", m_userId );
+        jpp::object j_root = jpp::make_object();
+
+        jpp::object j_config = jpp::make_object();
+        j_config.set( "UserId", m_userId );
+
+        j_root.set( "Config", j_root );
+
+        if( JSON_SERVICE()
+            ->saveJSON( file, j_root ) == false )
+        {
+            return false;
+        }
 
         if( fileGroupUser->closeOutputFile( file ) == false )
         {
@@ -259,7 +271,7 @@ namespace Mengine
     const Char * GameAnalyticsPlugin::getUserId_()
     {
         if( this->loadUserId_() == true )
-        { 
+        {
             return m_userId;
         }
 

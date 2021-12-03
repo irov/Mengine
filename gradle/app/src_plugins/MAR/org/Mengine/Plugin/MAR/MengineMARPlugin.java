@@ -213,8 +213,9 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
                                     //退出游戏
+                                    activity.finish();
 
-                                    activity.quitMengineApplication();
+                                    System.exit(0);
                                 }
                             });
 

@@ -24,6 +24,10 @@
 #include "sentry.h"
 
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_SENTRY_DATABASE_PATH
+#define MENGINE_SENTRY_DATABASE_PATH "sentry-native"
+#endif
+//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -149,7 +153,7 @@ namespace Mengine
 
         PathString sentryDatabasePath;
         sentryDatabasePath.append( userPath, (PathString::size_type)userPathLen );
-        sentryDatabasePath.append( ".sentry-native" );
+        sentryDatabasePath.append( MENGINE_SENTRY_DATABASE_PATH );
         
         LOGGER_MESSAGE( "Sentry Database: %s"
             , sentryDatabasePath.c_str()

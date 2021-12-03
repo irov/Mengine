@@ -8,6 +8,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
+#include "Plugins/JSONPlugin/JSONInterface.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
@@ -25,6 +27,10 @@
 #include "Kernel/UID.h"
 
 #include "Config/StdString.h"
+
+#ifndef MENGINE_ACCOUNTS_SAVE_PATH
+#define MENGINE_ACCOUNTS_SAVE_PATH "accounts.json"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AccountService, Mengine::AccountService );
@@ -495,7 +501,7 @@ namespace Mengine
             return true;
         }
 
-        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
+        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", Helper::stringizeFilePath( MENGINE_ACCOUNTS_SAVE_PATH ) );
 
         if( m_fileGroup->existFile( Game_AccountsPath, true ) == false )
         {
@@ -661,7 +667,7 @@ namespace Mengine
             return true;
         }
 
-        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
+        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", Helper::stringizeFilePath( MENGINE_ACCOUNTS_SAVE_PATH ) );
 
         OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, Game_AccountsPath, true, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -669,32 +675,46 @@ namespace Mengine
             , Game_AccountsPath.c_str()
         );
 
-        Helper::writeIniSection( file, "[SETTINGS]" );
+        jpp::object j_root = jpp::make_object();
+
+        jpp::object j_settings = jpp::make_object();
 
         if( m_globalAccountID.empty() == false )
         {
-            Helper::writeIniSetting( file, "GlobalAccountID", m_globalAccountID );
+            j_settings.set( "GlobalAccountID", m_globalAccountID.c_str() );
         }
 
         if( m_defaultAccountID.empty() == false )
         {
-            Helper::writeIniSetting( file, "DefaultAccountID", m_defaultAccountID );
+            j_settings.set( "DefaultAccountID", m_defaultAccountID.c_str() );
         }
 
         if( m_currentAccountID.empty() == false )
         {
-            Helper::writeIniSetting( file, "SelectAccountID", m_currentAccountID );
+            j_settings.set( "SelectAccountID", m_currentAccountID.c_str() );
         }
 
-        Helper::writeIniSetting( file, "AccountEnumerator", m_playerEnumerator );
+        j_settings.set( "AccountEnumerator", m_playerEnumerator );
 
-        Helper::writeIniSection( file, "[ACCOUNTS]" );
+        jpp::object j_accounts = jpp::make_object();
 
+        jpp::array j_list_account = jpp::make_array();
         for( const HashtableAccounts::value_type & value : m_accounts )
         {
             const ConstString & accountID = value.key;
+            
+            j_list_account.push_back( accountID.c_str() );
+        }
 
-            Helper::writeIniSetting( file, "Account", accountID );
+        j_accounts.set( "Account", j_list_account );
+
+        j_root.set( "SETTINGS", j_settings );
+        j_root.set( "ACCOUNTS", j_accounts );
+
+        if( JSON_SERVICE()
+            ->saveJSON( file, j_root ) == false )
+        {
+            return false;
         }
 
         if( m_fileGroup->closeOutputFile( file ) == false )

@@ -62,6 +62,16 @@ namespace Mengine
 
             return _buflen;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static int my_jpp_dump_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+        {
+            OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(_ud);
+
+            stream->write( _buffer, _size );
+
+            return 0;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     JSONService::JSONService()
@@ -170,6 +180,16 @@ namespace Mengine
         JSONStoragePtr storage = this->createStorage( json, false, _doc );
 
         return storage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONService::saveJSON( const OutputStreamInterfacePtr & _stream, const jpp::object & _j ) const
+    {
+        if( jpp::dump( _j, Detail::my_jpp_dump_callback, _stream.get() ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

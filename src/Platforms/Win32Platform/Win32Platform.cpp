@@ -79,6 +79,10 @@
 #define MENGINE_WINDOW_CLASSNAME "MengineWindow"
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_WINDOW_ICON_CACHE
+#define MENGINE_WINDOW_ICON_CACHE "icon_cache"
+#endif
+//////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( Win32FileGroup );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::Win32Platform );
@@ -2460,7 +2464,8 @@ namespace Mengine
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
         PathString icoFile;
-        icoFile += ".icon_cache/";
+        icoFile += MENGINE_WINDOW_ICON_CACHE;
+        icoFile += "/";
         icoFile += _filePath;
         icoFile += ".ico";
 

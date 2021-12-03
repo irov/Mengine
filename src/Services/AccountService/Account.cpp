@@ -5,6 +5,8 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
+#include "Plugins/JSONPlugin/JSONInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -18,6 +20,11 @@
 #include "Kernel/UID.h"
 
 #include "Config/StdString.h"
+
+#ifndef MENGINE_ACCOUNT_SETTINGS_PATH
+#define MENGINE_ACCOUNT_SETTINGS_PATH "settings.json"
+#endif
+
 
 namespace Mengine
 {
@@ -34,21 +41,18 @@ namespace Mengine
     bool Account::initialize( const ConstString & _id, const ArchivatorInterfacePtr & _archivator, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath, uint32_t _projectVersion )
     {
         m_id = _id;
-        m_projectVersion = _projectVersion;
-
+        m_archivator = _archivator;
+        m_fileGroup = _fileGroup;
         m_folderPath = _folderPath;
+        m_projectVersion = _projectVersion;
 
         PathString settingsPath;
         settingsPath += m_folderPath;
-        settingsPath += "settings.ini";
+        settingsPath += MENGINE_ACCOUNT_SETTINGS_PATH;
 
         Helper::makeUID( 20, m_uid.data );
 
         m_settingsPath = Helper::stringizeFilePath( settingsPath );
-
-        m_archivator = _archivator;
-
-        m_fileGroup = _fileGroup;
 
         return true;
     }
@@ -195,22 +199,11 @@ namespace Mengine
             return false;
         }
 
-        const Char * projectVersion_s;
-        if( config->hasValue( "ACCOUNT", "PROJECT_VERSION", "", &projectVersion_s) == false )
+        uint32_t projectVersion;
+        if( config->hasValue( "ACCOUNT", "PROJECT_VERSION", 0, &projectVersion ) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found project version"
                 , m_id.c_str()
-            );
-
-            return false;
-        }
-
-        uint32_t projectVersion = 0;
-        if( Helper::stringalized( projectVersion_s, &projectVersion ) == false )
-        {
-            LOGGER_ERROR( "account '%s' failed invalid project version '%s'"
-                , m_id.c_str()
-                , projectVersion_s
             );
 
             return false;
@@ -228,7 +221,7 @@ namespace Mengine
         }
 
         const Char * uid;
-        if( config->hasValue( "ACCOUNT", "UID", "", & uid) == false )
+        if( config->hasValue( "ACCOUNT", "UID", "", &uid ) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found uid"
                 , m_id.c_str()
@@ -272,16 +265,27 @@ namespace Mengine
             return false;
         }
 
-        Helper::writeIniSection( file, "[ACCOUNT]" );
+        jpp::object j_root = jpp::make_object();
 
-        Helper::writeIniSetting( file, "PROJECT_VERSION", m_projectVersion );
-        Helper::writeIniSetting( file, "UID", m_uid.data, AccountUID::size_data );
+        jpp::object j_account = jpp::make_object();
 
-        Helper::writeIniSection( file, "[SETTINGS]" );
+        j_account.set( "PROJECT_VERSION", m_projectVersion );        
+        j_account.set( "UID", jpp::make_stringn( m_uid.data, AccountUID::size_data ) );
 
+        jpp::object j_settings = jpp::make_object();
+        
         for( auto && [key, st] : m_settings )
         {
-            Helper::writeIniSetting( file, key.c_str(), st.value );
+            j_settings.set( key.c_str(), st.value );
+        }
+
+        j_root.set( "ACCOUNT", j_account );
+        j_root.set( "SETTINGS", j_settings );
+
+        if( JSON_SERVICE()
+            ->saveJSON( file, j_root ) == false )
+        {
+            return false;
         }
 
         if( m_fileGroup->closeOutputFile( file ) == false )

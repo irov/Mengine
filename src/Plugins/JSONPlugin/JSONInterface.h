@@ -50,6 +50,9 @@ namespace Mengine
         virtual JSONStorageInterfacePtr loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) const = 0;
         virtual JSONStorageInterfacePtr loadJSONStreamFromMemory( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) const = 0;
         virtual JSONStorageInterfacePtr loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc ) const = 0;
+
+    public:
+        virtual bool saveJSON( const OutputStreamInterfacePtr & _stream, const jpp::object & _j ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

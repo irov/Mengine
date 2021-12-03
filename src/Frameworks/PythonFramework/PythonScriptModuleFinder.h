@@ -13,6 +13,7 @@
 #include "Kernel/PathString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/VectorFilePath.h"
+#include "Kernel/ThreadGuard.h"
 
 #include "pybind/pybind.hpp"
 
@@ -55,6 +56,9 @@ namespace Mengine
         void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _pathes );
         void removeModulePath( const FileGroupInterfacePtr & _fileGroup );
 
+        typedef Lambda<void( const ModulePathes &)> LambdaModulePaths;
+        void foreachModulePaths( const LambdaModulePaths & _lambda ) const;
+
     public:
         PyObject * find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path );
         PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module );
@@ -84,6 +88,8 @@ namespace Mengine
         MapModuleLoaders m_loaders;
 
         mutable PathString m_cacheFullPath;
+
+        MENGINE_THREAD_GUARD_INIT( PythonScriptModuleFinder );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonScriptModuleFinder> ScriptModuleFinderPtr;

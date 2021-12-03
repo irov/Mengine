@@ -377,9 +377,12 @@ namespace Mengine
         m_factoryEntityEventable = Helper::makeFactoryPool<EntityEventable, 64>( MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_DEBUG
-        pybind::def_functor( m_kernel, "addLogFunction", this, &PythonScriptService::addLogFunction );
-        pybind::def_functor( m_kernel, "removeLogFunction", this, &PythonScriptService::addLogFunction );
+        pybind::def_functor( m_kernel, "addDebugLogFunction", this, &PythonScriptService::addDebugLogFunction );
+        pybind::def_functor( m_kernel, "removeDebugLogFunction", this, &PythonScriptService::removeDebugLogFunction );
 #endif
+
+        pybind::def_functor( m_kernel, "getModuleFinderPaths", this, &PythonScriptService::getModuleFinderPaths );
+        pybind::def_functor( m_kernel, "getModuleFinderFileGroups", this, &PythonScriptService::getModuleFinderFileGroups );
 
         this->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
 
@@ -1063,7 +1066,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::addLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter )
+    void PythonScriptService::addDebugLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter )
     {
         DebugCallDesc desc;
         desc.className = _className;
@@ -1073,7 +1076,7 @@ namespace Mengine
         m_debugCallFunctions.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::removeLogFunction( const ConstString & _className, const ConstString & _functionName )
+    void PythonScriptService::removeDebugLogFunction( const ConstString & _className, const ConstString & _functionName )
     {
         VectorDebugCallFunctions::iterator it_found = Algorithm::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
         {
@@ -1136,4 +1139,39 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 #endif
+    //////////////////////////////////////////////////////////////////////////
+    pybind::list PythonScriptService::getModuleFinderPaths() const
+    {
+        pybind::list l( m_kernel );
+
+        m_moduleFinder->foreachModulePaths( [&l]( const ModulePathes & _desc )
+        {
+            const FileGroupInterfacePtr & fileGroup = _desc.fileGroup;
+
+            for( const FilePath & path : _desc.pathes )
+            {
+                Char fullpath[MENGINE_MAX_PATH] = {'\0'};
+                fileGroup->getFullPath( path, fullpath );
+
+                l.append( fullpath );
+            }
+        } );
+
+        return l;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    pybind::list PythonScriptService::getModuleFinderFileGroups() const
+    {
+        pybind::list l( m_kernel );
+
+        m_moduleFinder->foreachModulePaths( [&l]( const ModulePathes & _desc )
+        {
+            const FileGroupInterfacePtr & fileGroup = _desc.fileGroup;
+
+            l.append( fileGroup );
+        } );
+
+        return l;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

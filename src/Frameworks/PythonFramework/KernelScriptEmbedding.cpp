@@ -255,6 +255,14 @@ namespace Mengine
                 _transformation->removeRelationTransformation();
             }
             //////////////////////////////////////////////////////////////////////////
+            const Char * s_FileGroupInterface_getFullPath( FileGroupInterface * _fileGroup, const FilePath & _path )
+            {
+                static Char fullpath[MENGINE_MAX_PATH] = {'\0'};
+                _fileGroup->getFullPath( _path, fullpath );
+
+                return fullpath;
+            }
+            //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>> m_nodeAffectorCreatorInterpolateLinearVec4;
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryNodeAffectorCallback;
@@ -623,11 +631,11 @@ namespace Mengine
 
                     if( m_time - _context->time < 0.f )
                     {
-                        transformation->translate( m_velocity * _context->time );
+                        transformation->translate( m_velocity * m_time );
 
-                        m_time -= _context->time;
+                        m_time = 0.f;
 
-                        *_used = _context->time;
+                        *_used = _context->time - m_time;
 
                         return false;
                     }
@@ -2312,6 +2320,7 @@ namespace Mengine
             .def( "getRelationPath", &FileGroupInterface::getRelationPath )
             .def( "existFile", &FileGroupInterface::existFile )
             .def( "existDirectory", &FileGroupInterface::existDirectory )
+            .def_proxy_static( "getFullPath", scriptMethod, &KernelScriptMethod::s_FileGroupInterface_getFullPath )
             ;
 
         pybind::interface_<ContentInterface, pybind::bases<Mixin>>( _kernel, "ContentInterface" )

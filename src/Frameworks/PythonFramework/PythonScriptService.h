@@ -85,10 +85,14 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
     public:
-        void addLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter );
-        void removeLogFunction( const ConstString & _className, const ConstString & _functionName );
+        void addDebugLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter );
+        void removeDebugLogFunction( const ConstString & _className, const ConstString & _functionName );
         void debugCallFunction( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds );
 #endif
+
+    public:
+        pybind::list getModuleFinderPaths() const;
+        pybind::list getModuleFinderFileGroups() const;
 
     protected:
         template<class T>

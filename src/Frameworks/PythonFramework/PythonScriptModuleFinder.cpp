@@ -5,12 +5,11 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/ThreadGuardScope.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -50,14 +49,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::initialize()
     {
-        FactoryWithMutexPtr factory = Helper::makeFactoryPool<PythonScriptModuleLoader, 8, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        factory->setMutex( mutex );
-
-        m_factoryScriptModuleLoader = factory;
+        m_factoryScriptModuleLoader = Helper::makeFactoryPool<PythonScriptModuleLoader, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -99,9 +91,19 @@ namespace Mengine
             );
     }
     //////////////////////////////////////////////////////////////////////////
+    void PythonScriptModuleFinder::foreachModulePaths( const LambdaModulePaths & _lambda ) const
+    {
+        for( const ModulePathes & pathes : m_modulePaths )
+        {
+            _lambda( pathes );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     PyObject * PythonScriptModuleFinder::find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path )
     {
         MENGINE_UNUSED( _path );
+
+        MENGINE_THREAD_GUARD_SCOPE( PythonScriptModuleFinder, this, "PythonScriptModuleFinder::find_module" );
 
 #ifndef MENGINE_MASTER_RELEASE
         {

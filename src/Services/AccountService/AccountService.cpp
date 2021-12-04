@@ -28,10 +28,14 @@
 
 #include "Config/StdString.h"
 
-#ifndef MENGINE_ACCOUNTS_SAVE_PATH
-#define MENGINE_ACCOUNTS_SAVE_PATH "accounts.json"
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ACCOUNTS_SETTINGS_JSON_PATH
+#define MENGINE_ACCOUNTS_SETTINGS_JSON_PATH "accounts.json"
 #endif
-
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ACCOUNTS_SETTINGS_INI_PATH
+#define MENGINE_ACCOUNTS_SETTINGS_INI_PATH "accounts.ini"
+#endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AccountService, Mengine::AccountService );
 //////////////////////////////////////////////////////////////////////////
@@ -501,58 +505,34 @@ namespace Mengine
             return true;
         }
 
-        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", Helper::stringizeFilePath( MENGINE_ACCOUNTS_SAVE_PATH ) );
-
-        if( m_fileGroup->existFile( Game_AccountsPath, true ) == false )
-        {
-            LOGGER_WARNING( "not exist accounts '%s'"
-                , Game_AccountsPath.c_str()
-            );
-
-            return true;
-        }
-
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( m_fileGroup, Game_AccountsPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ConfigInterfacePtr config = this->getLoadSettingConfig_();
 
         if( config == nullptr )
         {
-            LOGGER_ERROR( "parsing accounts failed '%s'"
-                , Game_AccountsPath.c_str()
-            );
-
-            return false;
+            return true;
         }
 
         if( config->hasValue( "SETTINGS", "AccountEnumerator", 0u, &m_playerEnumerator ) == false )
         {
-            LOGGER_ERROR( "get [SETTINGS] AccountEnumerator failed '%s'"
-                , Game_AccountsPath.c_str()
-            );
+            LOGGER_ERROR( "get [SETTINGS] AccountEnumerator failed" );
 
             return false;
         }
 
         if( config->hasValue( "SETTINGS", "GlobalAccountID", ConstString::none(), &m_globalAccountID ) == false )
         {
-            LOGGER_INFO( "account", "get [SETTINGS] GlobalAccountID failed '%s'"
-                , Game_AccountsPath.c_str()
-            );
+            LOGGER_ERROR( "get [SETTINGS] GlobalAccountID failed" );
         }
 
         if( config->hasValue( "SETTINGS", "DefaultAccountID", ConstString::none(), &m_defaultAccountID ) == false )
         {
-            LOGGER_INFO( "account", "get [SETTINGS] DefaultAccountID failed '%s'"
-                , Game_AccountsPath.c_str()
-            );
+            LOGGER_ERROR( "get [SETTINGS] DefaultAccountID failed" );
         }
 
         ConstString selectAccountID;
         if( config->hasValue( "SETTINGS", "SelectAccountID", ConstString::none(), &selectAccountID ) == false )
         {
-            LOGGER_INFO( "account", "get [SETTINGS] SelectAccountID failed '%s'"
-                , Game_AccountsPath.c_str()
-            );
+            LOGGER_ERROR( "get [SETTINGS] SelectAccountID failed" );
         }
 
         VectorConstString values;
@@ -658,6 +638,54 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    ConfigInterfacePtr AccountService::getLoadSettingConfig_() const
+    {
+        FilePath settingsJSONPath = Helper::stringizeFilePath( MENGINE_ACCOUNTS_SETTINGS_JSON_PATH );
+
+        if( m_fileGroup->existFile( settingsJSONPath, true ) == true )
+        {
+            ConfigInterfacePtr config = CONFIG_SERVICE()
+                ->loadConfig( m_fileGroup, settingsJSONPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+            if( config == nullptr )
+            {
+                LOGGER_ERROR( "parsing accounts failed '%s'"
+                    , settingsJSONPath.c_str()
+                );
+
+                return nullptr;
+            }
+
+            return config;
+        }
+
+        FilePath settingsINIPath = Helper::stringizeFilePath( MENGINE_ACCOUNTS_SETTINGS_INI_PATH );
+
+        if( m_fileGroup->existFile( settingsINIPath, true ) == true )
+        {
+            ConfigInterfacePtr config = CONFIG_SERVICE()
+                ->loadConfig( m_fileGroup, settingsINIPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+            if( config == nullptr )
+            {
+                LOGGER_ERROR( "parsing accounts failed '%s'"
+                    , settingsINIPath.c_str()
+                );
+
+                return nullptr;
+            }
+
+            return config;
+        }
+
+        LOGGER_WARNING( "not exist accounts '%s' or '%s'"
+            , settingsJSONPath.c_str()
+            , settingsINIPath.c_str()
+        );
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AccountService::saveAccounts()
     {
         LOGGER_MESSAGE( "save accounts" );
@@ -667,7 +695,7 @@ namespace Mengine
             return true;
         }
 
-        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", Helper::stringizeFilePath( MENGINE_ACCOUNTS_SAVE_PATH ) );
+        FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", Helper::stringizeFilePath( MENGINE_ACCOUNTS_SETTINGS_JSON_PATH ) );
 
         OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, Game_AccountsPath, true, MENGINE_DOCUMENT_FACTORABLE );
 

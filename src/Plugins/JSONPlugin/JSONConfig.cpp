@@ -11,8 +11,11 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Ravingcode.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/DocumentableHelper.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/FileStreamHelper.h"
+
+#include "Config/Typeinfo.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -37,6 +40,14 @@ namespace Mengine
             {
                 return false;
             }
+
+            MENGINE_ASSERTION_FATAL( jpp::check_object_internal()(j_value.ptr(), static_cast<T *>(nullptr)) == true, "Storage section '%s' key '%s' invalid type '%s' cast '%s' doc: %s"
+                , _section
+                , _key
+                , jpp::get_jpp_type_string( j_root )
+                , MENGINE_TYPEINFO_NAME( T )
+                , MENGINE_DOCUMENTABLE_STR( _storage.get(), "getJSONValue" )
+            );
 
             *_value = j_value;
 
@@ -64,6 +75,14 @@ namespace Mengine
 
             for( const jpp::object & j_element : jpp::array( j_value ) )
             {
+                MENGINE_ASSERTION_FATAL( jpp::check_object_internal()(j_element.ptr(), static_cast<typename T::value_type *>(nullptr)) == true, "Storage section '%s' key '%s' invalid type '%s' cast '%s' doc: %s"
+                    , _section
+                    , _key
+                    , jpp::get_jpp_type_string( j_element )
+                    , MENGINE_TYPEINFO_NAME( value_type )
+                    , MENGINE_DOCUMENTABLE_STR( _storage.get(), "getJSONValues" )
+                );
+
                 value_type element = j_element;
 
                 _values->emplace_back( element );

@@ -39,6 +39,9 @@ namespace Mengine
         bool loadAccounts() override;
         bool saveAccounts() override;
 
+    protected:
+        ConfigInterfacePtr getLoadSettingConfig_() const;
+
     public:
         void stopAccounts() override;
 

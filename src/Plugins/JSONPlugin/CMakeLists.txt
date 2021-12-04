@@ -30,6 +30,9 @@ src
     
     JSONCast.cpp
     JSONCast.h
+    
+    JSONCheck.cpp
+    JSONCheck.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
@@ -39,7 +42,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
         JSONScriptEmbedding.h
         )
         
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

@@ -3,6 +3,7 @@
 #include "Interface/AccountInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -43,8 +44,12 @@ namespace Mengine
     public:
         void apply() override;
 
+    public:
         bool load() override;
         bool save() override;
+
+    protected:
+        ConfigInterfacePtr getLoadSettingConfig_() const;
 
     public:
         InputStreamInterfacePtr openReadBinaryFile( const FilePath & _filePath ) override;
@@ -66,7 +71,8 @@ namespace Mengine
         uint32_t m_projectVersion;
 
         FilePath m_folderPath;
-        FilePath m_settingsPath;
+        FilePath m_settingsINIPath;
+        FilePath m_settingsJSONPath;
 
         struct Setting
         {

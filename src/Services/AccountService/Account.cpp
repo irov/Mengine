@@ -2,7 +2,6 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
@@ -21,11 +20,15 @@
 
 #include "Config/StdString.h"
 
-#ifndef MENGINE_ACCOUNT_SETTINGS_PATH
-#define MENGINE_ACCOUNT_SETTINGS_PATH "settings.json"
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ACCOUNT_SETTINGS_JSON_PATH
+#define MENGINE_ACCOUNT_SETTINGS_JSON_PATH "settings.json"
 #endif
-
-
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ACCOUNT_SETTINGS_INI_PATH
+#define MENGINE_ACCOUNT_SETTINGS_INI_PATH "settings.ini"
+#endif
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -46,13 +49,19 @@ namespace Mengine
         m_folderPath = _folderPath;
         m_projectVersion = _projectVersion;
 
-        PathString settingsPath;
-        settingsPath += m_folderPath;
-        settingsPath += MENGINE_ACCOUNT_SETTINGS_PATH;
-
         Helper::makeUID( 20, m_uid.data );
 
-        m_settingsPath = Helper::stringizeFilePath( settingsPath );
+        PathString settingsJSONPath;
+        settingsJSONPath += m_folderPath;
+        settingsJSONPath += MENGINE_ACCOUNT_SETTINGS_JSON_PATH;
+
+        m_settingsJSONPath = Helper::stringizeFilePath( settingsJSONPath );
+
+        PathString settingsINIPath;
+        settingsINIPath += m_folderPath;
+        settingsINIPath += MENGINE_ACCOUNT_SETTINGS_INI_PATH;
+
+        m_settingsINIPath = Helper::stringizeFilePath( settingsINIPath );
 
         return true;
     }
@@ -176,26 +185,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Account::load()
     {
-        if( m_fileGroup->existFile( m_settingsPath, true ) == false )
-        {
-            LOGGER_ERROR( "account '%s' settings not found '%s'"
-                , m_id.c_str()
-                , m_settingsPath.c_str()
-            );
-
-            return false;
-        }
-
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( m_fileGroup, m_settingsPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ConfigInterfacePtr config = this->getLoadSettingConfig_();
 
         if( config == nullptr )
         {
-            LOGGER_ERROR( "parsing Account '%s' settings failed '%s'"
-                , m_id.c_str()
-                , m_settingsPath.c_str()
-            );
-
             return false;
         }
 
@@ -251,15 +244,63 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    ConfigInterfacePtr Account::getLoadSettingConfig_() const
+    {
+        if( m_fileGroup->existFile( m_settingsJSONPath, true ) == true )
+        {
+            ConfigInterfacePtr config = CONFIG_SERVICE()
+                ->loadConfig( m_fileGroup, m_settingsJSONPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+            if( config == nullptr )
+            {
+                LOGGER_ERROR( "get account '%s' settings failed load '%s'"
+                    , m_id.c_str()
+                    , m_settingsJSONPath.c_str()
+                );
+
+                return nullptr;
+            }
+
+            return config;
+        }
+
+        if( m_fileGroup->existFile( m_settingsINIPath, true ) == true )
+        {
+            ConfigInterfacePtr config = CONFIG_SERVICE()
+                ->loadConfig( m_fileGroup, m_settingsINIPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+            if( config == nullptr )
+            {
+                LOGGER_ERROR( "get account '%s' settings failed load '%s'"
+                    , m_id.c_str()
+                    , m_settingsINIPath.c_str()
+                );
+
+                return nullptr;
+            }
+
+            return config;
+        }
+
+
+        LOGGER_ERROR( "account '%s' settings not found any config '%s' or '%s'"
+            , m_id.c_str()
+            , m_settingsJSONPath.c_str()
+            , m_settingsINIPath.c_str()
+        );
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Account::save()
     {
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsPath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsJSONPath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         if( file == nullptr )
         {
             LOGGER_ERROR( "can't open file for writing. Account '%s' settings not saved '%s'"
                 , m_id.c_str()
-                , m_settingsPath.c_str()
+                , m_settingsJSONPath.c_str()
             );
 
             return false;
@@ -269,11 +310,11 @@ namespace Mengine
 
         jpp::object j_account = jpp::make_object();
 
-        j_account.set( "PROJECT_VERSION", m_projectVersion );        
+        j_account.set( "PROJECT_VERSION", m_projectVersion );
         j_account.set( "UID", jpp::make_stringn( m_uid.data, AccountUID::size_data ) );
 
         jpp::object j_settings = jpp::make_object();
-        
+
         for( auto && [key, st] : m_settings )
         {
             j_settings.set( key.c_str(), st.value );

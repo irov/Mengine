@@ -19,6 +19,8 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/ArchivatorInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 
@@ -55,6 +57,8 @@
 #include "Kernel/VectorResourceImages.h"
 #include "Kernel/CRC32.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/FileStreamHelper.h"
+#include "Kernel/Stream.h"
 
 #include "Config/Typedef.h"
 #include "Config/StdString.h"
@@ -2839,6 +2843,156 @@ namespace Mengine
                 return name;
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_writeGlobalPickleFile( pybind::kernel_interface * _kernel, const WString & _filePath, PyObject * _data, PyObject * _pickleTypes )
+            {
+                size_t size;
+                if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
+                {
+                    LOGGER_ERROR( "invalid get pickle size" );
+
+                    return false;
+                }
+
+                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid get memory for '%zu' size"
+                    , size
+                );
+
+                void * memory_buffer = buffer->getBuffer();
+                size_t memory_size = buffer->getSize();
+
+                if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
+                {
+                    LOGGER_ERROR( "invalid pickle" );
+
+                    return false;
+                }
+
+                const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                    ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+                String utf8_filePath;
+                if( Helper::unicodeToUtf8( _filePath, &utf8_filePath ) == false )
+                {
+                    LOGGER_ERROR( "invalid file '%ls' convert to utf8"
+                        , _filePath.c_str()
+                    );
+
+                    return false;
+                }
+
+                FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
+
+                OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, true, MENGINE_DOCUMENT_FACTORABLE );
+
+                if( stream == nullptr )
+                {
+                    LOGGER_ERROR( "invalid open file '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return false;
+                }
+
+                ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+                if( archivator == nullptr )
+                {
+                    LOGGER_ERROR( "invalid get archivator '%s'"
+                        , "lz4"
+                    );
+
+                    return false;
+                }
+
+                //TODO create global data save
+                if( Helper::writeStreamArchiveData( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, memory_buffer, memory_size, EAC_NORMAL ) == false )
+                {
+                    LOGGER_ERROR( "invalid write file '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return false;
+                }
+
+                if( fileGroup->closeOutputFile( stream ) == false )
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_loadGlobalPickleFile( pybind::kernel_interface * _kernel, const WString & _filePath, PyObject * _pickleTypes )
+            {
+                String utf8_filePath;
+                if( Helper::unicodeToUtf8( _filePath, &utf8_filePath ) == false )
+                {
+                    LOGGER_ERROR( "invalid convert file '%ls' to utf8"
+                        , _filePath.c_str()
+                    );
+
+                    return _kernel->ret_none();
+                }
+
+                const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                    ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+                FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
+
+                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+                if( stream == nullptr )
+                {
+                    LOGGER_ERROR( "invalid open file '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return _kernel->ret_none();
+                }
+
+                ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+                if( archivator == nullptr )
+                {
+                    LOGGER_ERROR( "invalid get archivator '%s'"
+                        , "lz4"
+                    );
+
+                    return _kernel->ret_none();
+                }
+
+                MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FACTORABLE );
+
+                if( memory == nullptr )
+                {
+                    LOGGER_ERROR( "invalid load stream archive '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return _kernel->ret_none();
+                }
+
+                void * memory_buffer = memory->getBuffer();
+                size_t memory_size = memory->getSize();
+
+                PyObject * py_data = pybind::unpickle( _kernel, memory_buffer, memory_size, _pickleTypes );
+
+                if( py_data == nullptr )
+                {
+                    LOGGER_ERROR( "invalid unpickle file '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return _kernel->ret_none();
+                }
+
+                memory = nullptr;
+
+                return py_data;
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _filePath, PyObject * _data, PyObject * _pickleTypes )
             {
                 String utf8_filePath;
@@ -3789,6 +3943,9 @@ namespace Mengine
         pybind::def_functor( _kernel, "hasDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_hasDefaultAccount );
         pybind::def_functor( _kernel, "isCurrentDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_isCurrentDefaultAccount );
         pybind::def_functor( _kernel, "selectDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_selectDefaultAccount );
+
+        pybind::def_functor_kernel( _kernel, "writeGlobalPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeGlobalPickleFile );
+        pybind::def_functor_kernel( _kernel, "loadGlobalPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadGlobalPickleFile );
 
         pybind::def_functor_kernel( _kernel, "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
         pybind::def_functor_kernel( _kernel, "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );

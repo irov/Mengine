@@ -43,14 +43,11 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameKey( EKeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat )
+    bool DummyGameEventReceiver::onGameKey( const InputKeyEvent & _event )
     {
-        MENGINE_UNUSED( _code );
-        MENGINE_UNUSED( _x );
-        MENGINE_UNUSED( _y );
-        MENGINE_UNUSED( _isDown );
-        MENGINE_UNUSED( _isRepeat );
+        MENGINE_UNUSED( _event );
         // Empty
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -60,6 +57,7 @@ namespace Mengine
         MENGINE_UNUSED( _x );
         MENGINE_UNUSED( _y );
         // Empty
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -71,6 +69,7 @@ namespace Mengine
         MENGINE_UNUSED( _code );
         MENGINE_UNUSED( _isDown );
         // Empty
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -82,6 +81,7 @@ namespace Mengine
         MENGINE_UNUSED( _code );
         MENGINE_UNUSED( _isDown );
         // Empty
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -93,6 +93,7 @@ namespace Mengine
         MENGINE_UNUSED( _code );
         MENGINE_UNUSED( _isDown );
         // Empty
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -104,6 +105,7 @@ namespace Mengine
         MENGINE_UNUSED( _dx );
         MENGINE_UNUSED( _dy );
         // Empty
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -114,6 +116,7 @@ namespace Mengine
         MENGINE_UNUSED( _code );
         MENGINE_UNUSED( _scroll );
         // Empty
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -139,6 +142,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _debug );
         // Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -155,6 +159,7 @@ namespace Mengine
     bool DummyGameEventReceiver::onGameInitialize()
     {
         // Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -259,6 +264,7 @@ namespace Mengine
     bool DummyGameEventReceiver::onGameClose()
     {
         // Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

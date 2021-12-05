@@ -56,7 +56,7 @@ namespace Mengine
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( EVENT_GAME_KEY, handle )
-                ->onGameKey( _event.code, wp.x, wp.y, _event.isDown, _event.isRepeat );
+                ->onGameKey( _event );
         }
 
         if( handle == false )

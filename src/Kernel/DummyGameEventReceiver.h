@@ -17,7 +17,7 @@ namespace Mengine
         void onGameFixedDisplayResolution( bool _fixed ) override;
         void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
         void onGameViewport( const Viewport & _viewport, float _aspect ) override;
-        bool onGameKey( EKeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) override;
+        bool onGameKey( const InputKeyEvent & _event ) override;
         bool onGameText( WChar _key, float _x, float _y ) override;
         bool onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown ) override;
         bool onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown ) override;

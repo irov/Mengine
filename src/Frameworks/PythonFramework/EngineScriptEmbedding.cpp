@@ -4101,6 +4101,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "createCurrentScene", nodeScriptMethod, &EngineScriptMethod::createCurrentScene );
         pybind::def_functor_args( _kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
         pybind::def_functor_args( _kernel, "restartCurrentScene", nodeScriptMethod, &EngineScriptMethod::restartCurrentScene );
+        pybind::def_functor_args( _kernel, "removeCurrentScene", nodeScriptMethod, &EngineScriptMethod::s_removeCurrentScene );
         pybind::def_functor( _kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
 
         pybind::def_functor( _kernel, "createGlobalScene", nodeScriptMethod, &EngineScriptMethod::createGlobalScene );
@@ -4220,8 +4221,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "isShowKeyboard", nodeScriptMethod, &EngineScriptMethod::s_isShowKeyboard );
 
         pybind::def_functor( _kernel, "hasResource", nodeScriptMethod, &EngineScriptMethod::s_hasResource );
-
-        pybind::def_functor_args( _kernel, "removeCurrentScene", nodeScriptMethod, &EngineScriptMethod::s_removeCurrentScene );
 
         pybind::def_functor_args( _kernel, "addMouseLeaveHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseLeaveHandler );
         pybind::def_functor_args( _kernel, "addMouseMoveHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseMoveHandler );

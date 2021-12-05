@@ -348,9 +348,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::update()
     {
+        if( m_process != 0 )
+        {
+            return;
+        }
+
         ++m_process;
 
-        for( const SceneCommandDesc & desc : m_commands )
+        VectorSceneCommandDesc commands = std::move( m_commands );
+
+        for( const SceneCommandDesc & desc : commands )
         {
             switch( desc.type )
             {
@@ -373,8 +380,6 @@ namespace Mengine
         }
 
         --m_process;
-
-        m_commands.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::isProcess() const

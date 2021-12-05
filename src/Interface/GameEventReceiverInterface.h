@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/EventationInterface.h"
+#include "Interface/InputHandlerInterface.h"
 
 #include "Kernel/Params.h"
 #include "Kernel/KeyCode.h"
@@ -68,7 +69,7 @@ namespace Mengine
         virtual void onGameFixedDisplayResolution( bool _fixed ) = 0;
         virtual void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
-        virtual bool onGameKey( EKeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) = 0;
+        virtual bool onGameKey( const InputKeyEvent & _event ) = 0;
         virtual bool onGameText( WChar _key, float _x, float _y ) = 0;
         virtual bool onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) = 0;
         virtual bool onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) = 0;

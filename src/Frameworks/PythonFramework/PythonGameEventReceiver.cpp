@@ -36,9 +36,9 @@ namespace Mengine
         m_cb.call( _viewport, _aspect );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameKey( EKeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat )
+    bool PythonGameEventReceiver::onGameKey( const InputKeyEvent & _event )
     {
-        return m_cb.call( (uint32_t)_code, _x, _y, _isDown, _isRepeat );
+        return m_cb.call( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameText( WChar _key, float _x, float _y )

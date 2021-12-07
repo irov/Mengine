@@ -1,6 +1,7 @@
 #include "VideoScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
@@ -14,6 +15,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ShapeQuadFixed.h"
 
 #include "pybind/pybind.hpp"
 
@@ -49,6 +51,31 @@ namespace Mengine
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
             return _kernel->ret_none();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        ShapeQuadFixedPtr s_createVideo( const ConstString & _name, const ResourceVideoPtr & _resource )
+        {
+            MENGINE_ASSERTION_MEMORY_PANIC( _resource, "'%s' resource is nullptr"
+                , _name.c_str()
+            );
+
+            SurfaceVideoPtr surface = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_PYBIND );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( surface );
+
+            surface->setName( _name );
+            surface->setResourceVideo( _resource );
+
+            ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_PYBIND );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( shape );
+
+            shape->setName( _name );
+            shape->setSurface( surface );
+
+            return shape;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -96,6 +123,8 @@ namespace Mengine
             .def( "getHeight", &SurfaceMockupVideo::getHeight )
             .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceMockupVideo_setEventListener )
             ;
+
+        pybind::def_function( _kernel, "createVideo", &Detail::s_createVideo );
 
         Helper::registerScriptWrapping<ResourceVideo>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceVideo" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<SurfaceVideo>( _kernel, STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE );

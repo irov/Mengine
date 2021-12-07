@@ -23,6 +23,11 @@ namespace Mengine
         {
             if( SERVICE_IS_INITIALIZE( OptionsServiceInterface ) == true )
             {
+                if( HAS_OPTION( "nodev" ) == true )
+                {
+                    return false;
+                }
+
                 if( HAS_OPTION( "dev" ) == true )
                 {
                     return true;

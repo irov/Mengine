@@ -1157,7 +1157,7 @@ namespace Mengine
                 return randomizer;
             }
             //////////////////////////////////////////////////////////////////////////
-            ShapeQuadFixedPtr s_createSprite( const ConstString & _name, const ResourcePtr & _resource )
+            ShapeQuadFixedPtr s_createSprite( const ConstString & _name, const ResourceImagePtr & _resource )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _resource, "'%s' resource is nullptr"
                     , _name.c_str()

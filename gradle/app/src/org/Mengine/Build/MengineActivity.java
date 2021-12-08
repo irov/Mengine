@@ -84,7 +84,7 @@ public class MengineActivity extends SDLActivity {
 
         try{
             Class<?> clazz = cl.loadClass(name);
-            Constructor<?> ctr = clazz.getConstructor(MengineActivity.class);
+            Constructor<?> ctr = clazz.getConstructor();
             MenginePlugin plugin = (MenginePlugin)ctr.newInstance(new Object[] {});
 
             if(plugin.onInitialize(this) == false)

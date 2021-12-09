@@ -87,7 +87,7 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
-        bool atachWindow( const void * _hWND ) override;
+        bool attachWindow( const void * _hWND ) override;
 
     public:
         bool hasPlatformTag( const ConstString & _tag ) const override;

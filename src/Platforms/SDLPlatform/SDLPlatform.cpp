@@ -1593,7 +1593,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::atachWindow( const void * _hWND )
+    bool SDLPlatform::attachWindow( const void * _hWND )
     {
         this->setupWindow_();
 

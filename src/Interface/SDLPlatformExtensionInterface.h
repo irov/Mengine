@@ -13,7 +13,7 @@ namespace Mengine
         virtual SDL_Window * getWindow() const = 0;
 
     public:
-        virtual bool atachWindow( const void * _hWND ) = 0;
+        virtual bool attachWindow( const void * _hWND ) = 0;
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   if defined(MENGINE_WINDOWS_UNIVERSAL)

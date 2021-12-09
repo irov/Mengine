@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-SET(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../win32_windowsstore_toolchains.cmake")
+SET(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../win64_windowsstore_toolchains.cmake")
 
 SET(MENGINE_PROJECT_NAME "Mengine_WIN32_WindowsStore" CACHE STRING "Mengine project name")
 

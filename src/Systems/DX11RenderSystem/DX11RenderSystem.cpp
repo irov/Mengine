@@ -45,6 +45,7 @@
 #include "Kernel/Error.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -1605,7 +1606,7 @@ namespace Mengine
         }
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
         SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
-            ->getUnknown();
+            ->getDynamicUnknown();
 
         IInspectable * iWindow = sdlExtension->getWindowHandle();
 

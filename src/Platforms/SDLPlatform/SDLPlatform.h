@@ -87,7 +87,7 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
-        bool atachWindow( void * _hWND ) override;
+        bool atachWindow( const void * _hWND ) override;
 
     public:
         bool hasPlatformTag( const ConstString & _tag ) const override;
@@ -184,9 +184,14 @@ namespace Mengine
     public:
         SDL_Window * getWindow() const override;
 
-#if defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_WINDOWS)
+#   if defined(MENGINE_WINDOWS_UNIVERSAL)
     public:
         IInspectable * getWindowHandle() const override;
+#   else
+    public:
+        HWND getWindowHWND() const override;
+#   endif
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)

@@ -1090,14 +1090,14 @@ namespace Mengine
         {
             if( desc.id == INVALID_UNIQUE_ID )
             {
-                return true;
+                continue;
             }
 
             desc.time -= _frameTime;
 
             if( desc.time > 0.f )
             {
-                return true;
+                continue;
             }
 
             desc.time += desc.milliseconds;
@@ -1593,11 +1593,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::atachWindow( void * _hWND )
+    bool SDLPlatform::atachWindow( const void * _hWND )
     {
         this->setupWindow_();
 
+        SDL_Window * sharePixelFormatWindow = SDL_CreateWindow( "MengineSharePixelFormatWindow", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
+
+        Char sBuf[64];
+        MENGINE_SPRINTF( sBuf, "%p", sharePixelFormatWindow );
+
+        SDL_SetHint( SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT, sBuf );
+
         SDL_Window * sdlWindow = SDL_CreateWindowFrom( _hWND );
+
+        SDL_SetHint( SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT, nullptr );
+
+        SDL_DestroyWindow( sharePixelFormatWindow );
 
         if( sdlWindow == nullptr )
         {
@@ -2756,7 +2767,8 @@ namespace Mengine
         return m_sdlWindow;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_WINDOWS)
+#   if defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
     IInspectable * SDLPlatform::getWindowHandle() const
     {
@@ -2765,19 +2777,26 @@ namespace Mengine
 
         SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
 
-#if defined(SDL_VIDEO_DRIVER_WINDOWS)
-        HWND hwnd = wmInfo.info.win.window;
-
-        return hwnd;
-#elif defined(SDL_VIDEO_DRIVER_WINRT)
         IInspectable * iwindow = wmInfo.info.winrt.window;
 
         return iwindow;
-#else
-        return NULL;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
+#   else
+    //////////////////////////////////////////////////////////////////////////
+    HWND SDLPlatform::getWindowHWND() const
+    {
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION( &wmInfo.version );
+
+        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
+
+        HWND hwnd = wmInfo.info.win.window;
+
+        return hwnd;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#   endif
 #endif
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)

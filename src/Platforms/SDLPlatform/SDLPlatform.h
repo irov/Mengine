@@ -191,7 +191,13 @@ namespace Mengine
 #   else
     public:
         HWND getWindowHWND() const override;
+        HDC getWindowHDC() const override;
+        HINSTANCE getWindowHinstance() const override;
 #   endif
+#elif defined(MENGINE_PLATFORM_LINUX)
+    public:
+        Window getWindowInstance() const override;
+        Display * getWindowDisplay() const override;
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)

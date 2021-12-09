@@ -22,7 +22,13 @@ namespace Mengine
 #   else
     public:
         virtual HWND getWindowHWND() const = 0;
+        virtual HDC getWindowHDC() const = 0;
+        virtual HINSTANCE getWindowHinstance() const = 0;
 #   endif
+#elif defined(MENGINE_PLATFORM_LINUX)
+    public:
+        virtual Window getWindowInstance() const = 0;
+        virtual Display * getWindowDisplay() const = 0;
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)

@@ -2796,7 +2796,57 @@ namespace Mengine
         return hwnd;
     }
     //////////////////////////////////////////////////////////////////////////
+    HDC SDLPlatform::getWindowHDC() const
+    {
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION( &wmInfo.version );
+
+        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
+
+        HDC hdc = wmInfo.info.win.hdc;
+
+        return hdc;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HINSTANCE SDLPlatform::getWindowHinstance() const
+    {
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION( &wmInfo.version );
+
+        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
+
+        HINSTANCE hinstance = wmInfo.info.win.hinstance;
+
+        return hinstance;
+    }
+    //////////////////////////////////////////////////////////////////////////
 #   endif
+#elif defined(MENGINE_PLATFORM_LINUX)
+    //////////////////////////////////////////////////////////////////////////
+    Window SDLPlatform::getWindowInstance() const
+    {
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION( &wmInfo.version );
+
+        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
+
+        Window w = wmInfo.info.x11.window;
+
+        return w;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Display * SDLPlatform::getWindowDisplay() const
+    {
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION( &wmInfo.version );
+
+        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
+
+        Display * dispaly = wmInfo.info.x11.display;
+
+        return dispaly;
+    }
+    //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)

@@ -127,8 +127,10 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace
     {
+        //////////////////////////////////////////////////////////////////////////
         class NodeScriptMethod
             : public Factorable
         {
@@ -1163,6 +1165,7 @@ namespace Mengine
 
         SCRIPT_CLASS_WRAPPING( ShapeCircle );
         SCRIPT_CLASS_WRAPPING( ShapePacMan );
+        SCRIPT_CLASS_WRAPPING( ShapeQuadSize );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
@@ -1244,6 +1247,7 @@ namespace Mengine
 
         UNSCRIPT_CLASS_WRAPPING( ShapeCircle );
         UNSCRIPT_CLASS_WRAPPING( ShapePacMan );
+        UNSCRIPT_CLASS_WRAPPING( ShapeQuadSize );
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
@@ -1292,4 +1296,5 @@ namespace Mengine
 
         m_implement = nullptr;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

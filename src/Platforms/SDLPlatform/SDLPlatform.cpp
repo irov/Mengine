@@ -1358,11 +1358,23 @@ namespace Mengine
             , _fullscreen
         );
 
+        this->setupWindow_();
+
         if( this->createWindow_( _windowResolution, _fullscreen ) == false )
         {
             return false;
         }
 
+        if( this->applyWindow_() == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::applyWindow_()
+    {
 #if defined(MENGINE_WINDOWS_UNIVERSAL)
 #else
         SDL_GLContext glContext = SDL_GL_CreateContext( m_sdlWindow );
@@ -1567,6 +1579,32 @@ namespace Mengine
                     , usableBounds.h
                 );
             }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::atachWindow( void * _hWND )
+    {
+        this->setupWindow_();
+
+        SDL_Window * sdlWindow = SDL_CreateWindowFrom( _hWND );
+
+        if( sdlWindow == nullptr )
+        {
+            LOGGER_ERROR( "create window from [%p] failed: %s"
+                , _hWND
+                , SDL_GetError()
+            );
+
+            return false;
+        }
+
+        m_sdlWindow = sdlWindow;
+
+        if( this->applyWindow_() == false )
+        {
+            return false;
         }
 
         return true;
@@ -2837,10 +2875,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createWindow_( const Resolution & _windowResolution, bool _fullscreen )
+    void SDLPlatform::setupWindow_()
     {
-        MENGINE_UNUSED( _windowResolution );
-        MENGINE_UNUSED( _fullscreen );
 
 #if defined(MENGINE_WINDOWS_UNIVERSAL)
 #else
@@ -2905,15 +2941,7 @@ namespace Mengine
         }
 #endif
 
-        Uint32 windowFlags = 0;
-
 #if defined(MENGINE_PLATFORM_IOS)
-        windowFlags |= SDL_WINDOW_OPENGL;
-        windowFlags |= SDL_WINDOW_SHOWN;
-        windowFlags |= SDL_WINDOW_FULLSCREEN;
-        windowFlags |= SDL_WINDOW_BORDERLESS;
-        windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
-
         uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
@@ -2975,12 +3003,6 @@ namespace Mengine
         }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        windowFlags |= SDL_WINDOW_OPENGL;
-        windowFlags |= SDL_WINDOW_SHOWN;
-        windowFlags |= SDL_WINDOW_RESIZABLE;
-        windowFlags |= SDL_WINDOW_FULLSCREEN;
-        windowFlags |= SDL_WINDOW_BORDERLESS;
-
         uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
@@ -3032,24 +3054,9 @@ namespace Mengine
         }
 
 #elif defined(MENGINE_WINDOWS_UNIVERSAL)
-        windowFlags |= SDL_WINDOW_SHOWN;
-
-        if( _fullscreen == true )
-        {
-            windowFlags |= SDL_WINDOW_FULLSCREEN;
-        }
-
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "direct3d11" );
 
 #else
-        windowFlags |= SDL_WINDOW_OPENGL;
-        windowFlags |= SDL_WINDOW_HIDDEN;
-
-        if( _fullscreen == true )
-        {
-            windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-        }
-
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengl" );
 
         uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_CORE );
@@ -3090,6 +3097,46 @@ namespace Mengine
                 , Engine_SDL_HINT_RENDER_SCALE_QUALITY
                 , SDL_GetError()
             );
+        }
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::createWindow_( const Resolution & _windowResolution, bool _fullscreen )
+    {
+        MENGINE_UNUSED( _windowResolution );
+        MENGINE_UNUSED( _fullscreen );
+
+        Uint32 windowFlags = 0;
+
+#if defined(MENGINE_PLATFORM_IOS)
+        windowFlags |= SDL_WINDOW_OPENGL;
+        windowFlags |= SDL_WINDOW_SHOWN;
+        windowFlags |= SDL_WINDOW_FULLSCREEN;
+        windowFlags |= SDL_WINDOW_BORDERLESS;
+        windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
+
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        windowFlags |= SDL_WINDOW_OPENGL;
+        windowFlags |= SDL_WINDOW_SHOWN;
+        windowFlags |= SDL_WINDOW_RESIZABLE;
+        windowFlags |= SDL_WINDOW_FULLSCREEN;
+        windowFlags |= SDL_WINDOW_BORDERLESS;
+
+#elif defined(MENGINE_WINDOWS_UNIVERSAL)
+        windowFlags |= SDL_WINDOW_SHOWN;
+
+        if( _fullscreen == true )
+        {
+            windowFlags |= SDL_WINDOW_FULLSCREEN;
+        }
+
+#else
+        windowFlags |= SDL_WINDOW_OPENGL;
+        windowFlags |= SDL_WINDOW_HIDDEN;
+
+        if( _fullscreen == true )
+        {
+            windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         }
 #endif
 

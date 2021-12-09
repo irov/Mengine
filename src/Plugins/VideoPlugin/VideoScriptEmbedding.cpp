@@ -53,7 +53,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        ShapeQuadFixedPtr s_createVideo( const ConstString & _name, const ResourceVideoPtr & _resource )
+        ShapePtr s_createVideo( const ConstString & _name, const ConstString & _shapeType, const ResourceVideoPtr & _resource )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _resource, "'%s' resource is nullptr"
                 , _name.c_str()
@@ -67,8 +67,8 @@ namespace Mengine
             surface->setName( _name );
             surface->setResourceVideo( _resource );
 
-            ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_PYBIND );
+            ShapePtr shape = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _shapeType, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shape );
 

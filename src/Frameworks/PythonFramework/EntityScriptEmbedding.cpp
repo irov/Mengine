@@ -28,6 +28,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class EntityScriptMethod
         : public Factorable
     {
@@ -416,4 +417,5 @@ namespace Mengine
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Entity" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Scene" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

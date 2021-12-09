@@ -24,6 +24,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace ScriptMethod
     {
         //////////////////////////////////////////////////////////////////////////
@@ -797,6 +798,8 @@ namespace Mengine
             .def( "setHeight", &Resolution::setHeight )
             .def( "getWidth", &Resolution::getWidth )
             .def( "getHeight", &Resolution::getHeight )
+            .def( "getWidthF", &Resolution::getWidthF )
+            .def( "getHeightF", &Resolution::getHeightF )
             .def( "getAspectRatio", &Resolution::getAspectRatio )
             ;
 
@@ -808,4 +811,5 @@ namespace Mengine
         pybind::unregistration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
         pybind::unregistration_stl_vector_type_cast<Vector<Polygon>>(_kernel);
     }
+    //////////////////////////////////////////////////////////////////////////
 }

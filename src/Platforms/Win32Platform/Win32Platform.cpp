@@ -825,6 +825,125 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::tickPlatform( float _frameTime )
+    {
+        MENGINE_PROFILER_FRAME( "main" );
+
+        this->updateWndMessage_();
+
+        if( m_close == true )
+        {
+            return false;
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
+
+        if( m_sessionLock == true )
+        {
+            ::Sleep( 100 );
+
+            return true;
+        }
+
+        for( const UpdateDesc & desc : m_updates )
+        {
+            if( desc.id == INVALID_UNIQUE_ID )
+            {
+                continue;
+            }
+
+            desc.lambda( desc.id );
+        }
+
+        m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
+        {
+            return _desc.id == INVALID_UNIQUE_ID;
+        } ), m_updates.end() );
+
+        for( TimerDesc & desc : m_timers )
+        {
+            if( desc.id == INVALID_UNIQUE_ID )
+            {
+                continue;
+            }
+
+            desc.time -= _frameTime;
+
+            if( desc.time > 0.f )
+            {
+                continue;
+            }
+
+            desc.time += desc.milliseconds;
+
+            desc.lambda( desc.id );
+        }
+
+        m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+        {
+            return _desc.id == INVALID_UNIQUE_ID;
+        } ), m_timers.end() );
+
+        bool updating = APPLICATION_SERVICE()
+            ->beginUpdate();
+
+        if( updating == true )
+        {
+            if( m_pauseUpdatingTime >= 0.f )
+            {
+                _frameTime = m_pauseUpdatingTime;
+                m_pauseUpdatingTime = -1.f;
+            }
+
+            APPLICATION_SERVICE()
+                ->tick( _frameTime );
+        }
+
+        if( this->isNeedWindowRender() == true )
+        {
+            bool sucessful = APPLICATION_SERVICE()
+                ->render();
+
+            if( sucessful == true )
+            {
+                APPLICATION_SERVICE()
+                    ->flush();
+            }
+        }
+
+        APPLICATION_SERVICE()
+            ->endUpdate();
+
+        if( updating == false )
+        {
+            if( m_pauseUpdatingTime < 0.f )
+            {
+                m_pauseUpdatingTime = _frameTime;
+            }
+
+            if( m_sleepMode == true )
+            {
+                ::Sleep( 100 );
+            }
+            else
+            {
+                ::Sleep( 1 );
+            }
+        }
+        else
+        {
+            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
+
+            if( APPLICATION_SERVICE()
+                ->getVSync() == false && OPTION_maxfps == false )
+            {
+                ::Sleep( 1 );
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::updatePlatform()
     {
         this->setActive_( true );
@@ -832,129 +951,18 @@ namespace Mengine
         m_prevTime = TIME_SYSTEM()
             ->getTimeMilliseconds();
 
+        while( m_close == false )
         {
-            while( m_close == false )
+            uint64_t currentTime = TIME_SYSTEM()
+                ->getTimeMilliseconds();
+
+            float frameTime = (float)(currentTime - m_prevTime);
+
+            m_prevTime = currentTime;
+
+            if( this->tickPlatform( frameTime ) == false )
             {
-                MENGINE_PROFILER_FRAME( "main" );
-
-                uint64_t currentTime = TIME_SYSTEM()
-                    ->getTimeMilliseconds();
-
-                float frameTime = (float)(currentTime - m_prevTime);
-
-                m_prevTime = currentTime;
-
-                this->updateWndMessage_();
-
-                if( m_close == true )
-                {
-                    break;
-                }
-
-                NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
-
-                if( m_sessionLock == true )
-                {
-                    ::Sleep( 100 );
-
-                    continue;
-                }
-
-                for( const UpdateDesc & desc : m_updates )
-                {
-                    if( desc.id == INVALID_UNIQUE_ID )
-                    {
-                        continue;
-                    }
-
-                    desc.lambda( desc.id );
-                }
-
-                m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
-                {
-                    return _desc.id == INVALID_UNIQUE_ID;
-                } ), m_updates.end() );
-
-                for( TimerDesc & desc : m_timers )
-                {
-                    if( desc.id == INVALID_UNIQUE_ID )
-                    {
-                        continue;
-                    }
-
-                    desc.time -= frameTime;
-
-                    if( desc.time > 0.f )
-                    {
-                        continue;
-                    }
-
-                    desc.time += desc.milliseconds;
-
-                    desc.lambda( desc.id );
-                }
-
-                m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
-                {
-                    return _desc.id == INVALID_UNIQUE_ID;
-                } ), m_timers.end() );
-
-                bool updating = APPLICATION_SERVICE()
-                    ->beginUpdate();
-
-                if( updating == true )
-                {
-                    if( m_pauseUpdatingTime >= 0.f )
-                    {
-                        frameTime = m_pauseUpdatingTime;
-                        m_pauseUpdatingTime = -1.f;
-                    }
-
-                    APPLICATION_SERVICE()
-                        ->tick( frameTime );
-                }
-
-                if( this->isNeedWindowRender() == true )
-                {
-                    bool sucessful = APPLICATION_SERVICE()
-                        ->render();
-
-                    if( sucessful == true )
-                    {
-                        APPLICATION_SERVICE()
-                            ->flush();
-                    }
-                }
-
-                APPLICATION_SERVICE()
-                    ->endUpdate();
-
-                if( updating == false )
-                {
-                    if( m_pauseUpdatingTime < 0.f )
-                    {
-                        m_pauseUpdatingTime = frameTime;
-                    }
-
-                    if( m_sleepMode == true )
-                    {
-                        ::Sleep( 100 );
-                    }
-                    else
-                    {
-                        ::Sleep( 1 );
-                    }
-                }
-                else
-                {
-                    bool OPTION_maxfps = HAS_OPTION( "maxfps" );
-
-                    if( APPLICATION_SERVICE()
-                        ->getVSync() == false && OPTION_maxfps == false )
-                    {
-                        ::Sleep( 1 );
-                    }
-                }
+                break;
             }
         }
     }
@@ -2823,7 +2831,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/' || _path[MENGINE_STRLEN( _path ) - 1] == '\\') );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/' || _directory[MENGINE_STRLEN( _directory ) - 1] == '\\' ) );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/' || _directory[MENGINE_STRLEN( _directory ) - 1] == '\\') );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )

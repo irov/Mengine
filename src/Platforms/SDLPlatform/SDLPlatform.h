@@ -60,6 +60,7 @@ namespace Mengine
     public:
         bool runPlatform()	override;
         void updatePlatform() override;
+        bool tickPlatform( float _frameTime ) override;
         void stopPlatform()	override;
 
     public:

@@ -105,7 +105,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1quitMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1quitMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
     {
         PLATFORM_SERVICE()
             ->closeWindow();
@@ -1062,6 +1062,126 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::tickPlatform( float _frameTime )
+    {
+        bool quitRequest = this->processEvents_();
+
+        if( quitRequest == true )
+        {
+            return false;
+        }
+
+        for( const UpdateDesc & desc : m_updates )
+        {
+            if( desc.id == INVALID_UNIQUE_ID )
+            {
+                continue;
+            }
+
+            desc.lambda( desc.id );
+        }
+
+        m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
+        {
+            return _desc.id == INVALID_UNIQUE_ID;
+        } ), m_updates.end() );
+
+        for( TimerDesc & desc : m_timers )
+        {
+            if( desc.id == INVALID_UNIQUE_ID )
+            {
+                return true;
+            }
+
+            desc.time -= _frameTime;
+
+            if( desc.time > 0.f )
+            {
+                return true;
+            }
+
+            desc.time += desc.milliseconds;
+
+            desc.lambda( desc.id );
+        }
+
+        m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+        {
+            return _desc.id == INVALID_UNIQUE_ID;
+        } ), m_timers.end() );
+
+        bool updating = APPLICATION_SERVICE()
+            ->beginUpdate();
+
+        if( updating == true )
+        {
+            if( m_pauseUpdatingTime >= 0.f )
+            {
+                _frameTime = m_pauseUpdatingTime;
+                m_pauseUpdatingTime = -1.f;
+            }
+
+            APPLICATION_SERVICE()
+                ->tick( _frameTime );
+        }
+
+        if( this->isNeedWindowRender() == true )
+        {
+            bool sucessful = APPLICATION_SERVICE()
+                ->render();
+
+            if( sucessful == true )
+            {
+                APPLICATION_SERVICE()
+                    ->flush();
+
+                if( m_sdlWindow != nullptr )
+                {
+                    SDL_ShowWindow( m_sdlWindow );
+
+                    if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
+                    {
+                        SDL_GL_SwapWindow( m_sdlWindow );
+                    }
+                }
+            }
+        }
+
+        APPLICATION_SERVICE()
+            ->endUpdate();
+
+        if( updating == false )
+        {
+            if( m_pauseUpdatingTime < 0.f )
+            {
+                m_pauseUpdatingTime = _frameTime;
+            }
+
+            if( m_sleepMode == true )
+            {
+                SDL_Delay( 100 );
+            }
+            else
+            {
+                SDL_Delay( 1 );
+            }
+        }
+        else
+        {
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
+            bool maxfps = HAS_OPTION( "maxfps" );
+
+            if( APPLICATION_SERVICE()
+                ->getVSync() == false && maxfps == false )
+            {
+                SDL_Delay( 1 );
+            }
+#endif
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::updatePlatform()
     {
         this->setActive_( true );
@@ -1078,121 +1198,10 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            bool quitRequest = this->processEvents_();
-
-            if( quitRequest == true )
+            if( this->tickPlatform( frameTime ) == false )
             {
                 break;
             }
-
-            for( const UpdateDesc & desc : m_updates )
-            {
-                if( desc.id == INVALID_UNIQUE_ID )
-                {
-                    continue;
-                }
-
-                desc.lambda( desc.id );
-            }
-
-            m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
-            {
-                return _desc.id == INVALID_UNIQUE_ID;
-            } ), m_updates.end() );
-
-            for( TimerDesc & desc : m_timers )
-            {
-                if( desc.id == INVALID_UNIQUE_ID )
-                {
-                    continue;
-                }
-
-                desc.time -= frameTime;
-
-                if( desc.time > 0.f )
-                {
-                    continue;
-                }
-
-                desc.time += desc.milliseconds;
-
-                desc.lambda( desc.id );
-            }
-
-            m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
-            {
-                return _desc.id == INVALID_UNIQUE_ID;
-            } ), m_timers.end() );
-
-            bool updating = APPLICATION_SERVICE()
-                ->beginUpdate();
-
-            if( updating == true )
-            {
-                if( m_pauseUpdatingTime >= 0.f )
-                {
-                    frameTime = m_pauseUpdatingTime;
-                    m_pauseUpdatingTime = -1.f;
-                }
-
-                APPLICATION_SERVICE()
-                    ->tick( frameTime );
-            }
-
-            if( this->isNeedWindowRender() == true )
-            {
-                bool sucessful = APPLICATION_SERVICE()
-                    ->render();
-
-                if( sucessful == true )
-                {
-                    APPLICATION_SERVICE()
-                        ->flush();
-
-                    if( m_sdlWindow != nullptr )
-                    {
-                        SDL_ShowWindow( m_sdlWindow );
-
-                        if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
-                        {
-                            SDL_GL_SwapWindow( m_sdlWindow );
-                        }
-                    }
-                }
-            }
-
-            APPLICATION_SERVICE()
-                ->endUpdate();
-
-            if( updating == false )
-            {
-                if( m_pauseUpdatingTime < 0.f )
-                {
-                    m_pauseUpdatingTime = frameTime;
-                }
-
-                if( m_sleepMode == true )
-                {
-                    SDL_Delay( 100 );
-                }
-                else
-                {
-                    SDL_Delay( 1 );
-                }
-            }
-            else
-            {
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
-                bool maxfps = HAS_OPTION( "maxfps" );
-
-                if( APPLICATION_SERVICE()
-                    ->getVSync() == false && maxfps == false )
-                {
-                    SDL_Delay( 1 );
-                }
-#endif
-            }
-
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3211,7 +3220,7 @@ namespace Mengine
         }
 
         m_sdlWindow = window;
-        
+
         LOGGER_MESSAGE_RELEASE( "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
         LOGGER_MESSAGE_RELEASE( "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
         LOGGER_MESSAGE_RELEASE( "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
@@ -3625,8 +3634,9 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_ANDROID)
         static jmethodID jmethodID_onMengineInitializeBaseServices = m_jenv->GetMethodID( jclass_activity, "onMengineInitializeBaseServices", "()V" );
 
-        if( jmethodID_onMengineInitializeBaseServices != NULL ) {
-            m_jenv->CallVoidMethod(jobject_activity, jmethodID_onMengineInitializeBaseServices);
+        if( jmethodID_onMengineInitializeBaseServices != NULL )
+        {
+            m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineInitializeBaseServices );
         }
 #endif
     }

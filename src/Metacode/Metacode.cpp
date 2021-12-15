@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 149;
+        return 150;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 3335575017; 
+        return 3554461372; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -1287,6 +1287,11 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
             }
         
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceAstralax::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1389,6 +1394,17 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceCal3dAnimation::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1436,6 +1452,17 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
         
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceCal3dMesh::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceCal3dMesh::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1487,6 +1514,17 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceCal3dSkeleton::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1536,6 +1574,17 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceCursorICO::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceCursorICO::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1583,6 +1632,17 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
         
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceCursorSystem::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceCursorSystem::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1676,6 +1736,17 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceFile::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceFile::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1737,6 +1808,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
             }
         
         }
@@ -2403,6 +2479,11 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
             }
         
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceJSON::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -2467,6 +2548,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Dataflow );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
             }
         
         }
@@ -3005,6 +3091,11 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Dataflow );
             }
         
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3331,6 +3422,11 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_External );
             }
         
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMusic::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3409,6 +3505,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
             }
         
         }
@@ -3581,6 +3682,11 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
             }
         
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
             if( (m_flagNoRequiredAttribute & EMETA_IsStreamable_Value) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_IsStreamable_Value );
@@ -3663,6 +3769,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
             }
         
         }
@@ -3834,6 +3945,11 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
             }
         
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceSpineSkeleton::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3962,6 +4078,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_FrameRate) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_FrameRate );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
             }
         
             if( (m_flagNoRequiredAttribute & EMETA_File_NoSeek) != 0 )

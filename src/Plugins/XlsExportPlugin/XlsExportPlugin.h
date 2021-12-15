@@ -22,6 +22,7 @@ namespace Mengine
         void _finalizePlugin() override;
 
     protected:
+        void notifyBootstrapperCreateApplication_();
         void notifyReloadLocale();
 
     protected:

@@ -1,4 +1,4 @@
-<Protocol Version = "149">
+<Protocol Version = "150">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -13,7 +13,7 @@
   <Type Name="mt::vec4f" Evict="float4"/>
   <Type Name="mt::mat4f" Evict="float16"/>
   <Type Name="mt::box2f" Evict="float4"/>
-  <Type Name="mt::uv4f" Evict="float8"/>  
+  <Type Name="mt::uv4f" Evict="float8"/>
   <Type Name="Color255" Type="Mengine::Color" Evict="float4inv255"/>
   <Type Name="Color" Type="Mengine::Color" Evict="float4"/>
   <Type Name="Mengine::Polygon" Evict="floats"/>
@@ -72,7 +72,7 @@
     <CLAMP/>
     <BORDER/>
     <MIRRORONCE/>
-  </Enum>  
+  </Enum>
 
   <Enum Name="Mengine::EVertexAttributeType">
     <FLOAT/>
@@ -80,8 +80,8 @@
   </Enum>
   
   <Meta Name="Data" Version="1">
-      <Node Name="DataBlock">    
-        <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>    
+      <Node Name="DataBlock">
+        <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
 
         <Node Name="Include">
           <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
@@ -173,7 +173,6 @@
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Alpha" Type="bool"/>
           <Member Node="File" Name="Premultiply" Type="bool"/>
-          
           <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
           <Member Node="File" Name="Size" Type="mt::vec2f"/>
           <Member Node="File" Name="Offset" Type="mt::vec2f"/>
@@ -186,22 +185,20 @@
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Alpha" Type="bool"/>
           <Member Node="File" Name="Premultiply" Type="bool"/>
-          
           <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
           <Member Node="File" Name="Size" Type="mt::vec2f"/>
           <Member Node="File" Name="Offset" Type="mt::vec2f"/>
-
           <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
         
         <Node Name="ResourceImageEmpty" Inheritance="Resource">
           <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
-        </Node>        
+        </Node>
 
         <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance="Resource">
           <Member Node="Image" Name="NameRGB" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UVRGB" Type="mt::uv4f" Required="1"/>
-          <Member Node="Image" Name="UVRGBRotate" Type="bool"/>          
+          <Member Node="Image" Name="UVRGBRotate" Type="bool"/>
 
           <Member Node="Image" Name="NameAlpha" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UVAlpha" Type="mt::uv4f" Required="1"/>
@@ -229,6 +226,7 @@
         <Node Name="ResourceParticle" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
 
           <Member Node="AtlasCount" Name="Value" Type="uint32_t" Required="1"/>
 
@@ -241,6 +239,7 @@
         <Node Name="ResourceAstralax" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
 
           <Member Node="AtlasCount" Name="Value" Type="uint32_t" Required="1"/>
 
@@ -253,6 +252,7 @@
         <Node Name="ResourceJSON" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
         <Node Name="ResourceTexturepacker" Inheritance="Resource">
@@ -262,20 +262,24 @@
 
         <Node Name="ResourceCursorSystem" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
         <Node Name="ResourceCursorICO" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
         
         <Node Name="ResourceFile" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
         
         <Node Name="ResourceSound" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
           <Member Node="DefaultVolume" Name="Value" Type="float"/>
           <Member Node="IsStreamable" Name="Value" Type="bool"/>
         </Node>
@@ -285,6 +289,7 @@
             <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
             <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
             <Member Node="File" Name="External" Type="bool"/>
+            <Member Node="File" Name="NoExist" Type="bool"/>
             <Member Node="DefaultVolume" Name="Value" Type="float"/>
         </Node>
 
@@ -313,6 +318,7 @@
         <Node Name="ResourceMovie2" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Dataflow" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
           
           <Node Name="Composition">
             <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
@@ -354,32 +360,7 @@
           <Member Node="Bounds" Name="Box" Type="mt::box2f"/>
 
           <Node Name="MovieLayer2D">
-            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>        
-            <Attribute Name="Source" Type="Mengine::ConstString" Required="1"/>
-            <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
-            <Attribute Name="Index" Type="uint32_t" Required="1"/>
-            <Attribute Name="In" Type="float" Required="1"/>
-            <Attribute Name="Out" Type="float" Required="1"/>
-            <Attribute Name="Parent" Type="uint32_t"/>
-            <Attribute Name="StartInterval" Type="float"/>
-            <Attribute Name="BlendingMode" Type="Mengine::ConstString"/>
-            <Attribute Name="TimeRemap" Type="bool"/>
-            <Attribute Name="Shape" Type="bool"/>        
-            <Attribute Name="Polygon" Type="bool"/>
-            <Attribute Name="PlayCount" Type="uint32_t"/>
-            <Attribute Name="Stretch" Type="float"/>
-            <Attribute Name="Switch" Type="bool"/>
-            <Attribute Name="Loop" Type="bool"/>
-            <Attribute Name="AnchorPoint" Type="mt::vec3f"/>
-            <Attribute Name="Position" Type="mt::vec3f"/>
-            <Attribute Name="Scale" Type="mt::vec3f"/>
-            <Attribute Name="Rotation" Type="mt::vec3f"/>
-            <Attribute Name="Viewport" Type="Mengine::Viewport"/>
-            <Attribute Name="Params" Type="uint32_t"/>
-          </Node>
-
-          <Node Name="MovieLayer3D">
-            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>        
+            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Source" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Index" Type="uint32_t" Required="1"/>
@@ -396,7 +377,32 @@
             <Attribute Name="Switch" Type="bool"/>
             <Attribute Name="Loop" Type="bool"/>
             <Attribute Name="AnchorPoint" Type="mt::vec3f"/>
-            <Attribute Name="Position" Type="mt::vec3f"/>        
+            <Attribute Name="Position" Type="mt::vec3f"/>
+            <Attribute Name="Scale" Type="mt::vec3f"/>
+            <Attribute Name="Rotation" Type="mt::vec3f"/>
+            <Attribute Name="Viewport" Type="Mengine::Viewport"/>
+            <Attribute Name="Params" Type="uint32_t"/>
+          </Node>
+
+          <Node Name="MovieLayer3D">
+            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Source" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Index" Type="uint32_t" Required="1"/>
+            <Attribute Name="In" Type="float" Required="1"/>
+            <Attribute Name="Out" Type="float" Required="1"/>
+            <Attribute Name="Parent" Type="uint32_t"/>
+            <Attribute Name="StartInterval" Type="float"/>
+            <Attribute Name="BlendingMode" Type="Mengine::ConstString"/>
+            <Attribute Name="TimeRemap" Type="bool"/>
+            <Attribute Name="Shape" Type="bool"/>
+            <Attribute Name="Polygon" Type="bool"/>
+            <Attribute Name="PlayCount" Type="uint32_t"/>
+            <Attribute Name="Stretch" Type="float"/>
+            <Attribute Name="Switch" Type="bool"/>
+            <Attribute Name="Loop" Type="bool"/>
+            <Attribute Name="AnchorPoint" Type="mt::vec3f"/>
+            <Attribute Name="Position" Type="mt::vec3f"/>
             <Attribute Name="Scale" Type="mt::vec3f"/>
             <Attribute Name="Rotation" Type="mt::vec3f"/>
             <Attribute Name="Params" Type="uint32_t"/>
@@ -422,6 +428,7 @@
           <Member Node="File" Name="FrameRate" Type="float"/>
           <Member Node="File" Name="Duration" Type="float"/>
           <Member Node="File" Name="Resize" Type="float"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
         <Node Name="ResourceImageSequence" Inheritance="Resource">
@@ -435,12 +442,15 @@
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
         <Node Name="ResourceModel3D" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Dataflow" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
+          
           <Member Node="Image" Name="Resource" Type="Mengine::ConstString" Required="1"/>
         </Node>
 
@@ -460,19 +470,23 @@
 
         <Node Name="ResourceCal3dSkeleton" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
         <Node Name="ResourceCal3dAnimation" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
         <Node Name="ResourceCal3dMesh" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
           
         <Node Name="ResourceSpineAtlas" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
 
           <Node Name="Image">
             <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
@@ -487,6 +501,7 @@
         <Node Name="ResourceSpineSkeleton" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
 
           <Member Node="Atlas" Name="Name" Type="Mengine::ConstString"/>
         </Node>
@@ -507,7 +522,7 @@
           </Node>
         </Node>
 
-        <Node Name="Fonts">          
+        <Node Name="Fonts">
           <Attribute Name="Platform" Type="Mengine::Tags"/>
 
           <Node Name="Font">
@@ -583,7 +598,7 @@
         <Node Name="Polygon">
           <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
           <Attribute Name="Value" Type="Mengine::Polygon" Required="1"/>
-        </Node>    
+        </Node>
 
         <Node Name="ImageShape">
           <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>

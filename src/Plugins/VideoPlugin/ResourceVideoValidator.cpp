@@ -1,9 +1,12 @@
 #include "ResourceVideoValidator.h"
 
 #include "Interface/ApplicationInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
+#include "Kernel/FileStreamHelper.h"
+#include "Kernel/FileGroupHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -84,7 +87,7 @@ namespace Mengine
             ->getContentResolution();
 
         float videoFillrate = (float)(dataInfo->width * dataInfo->height);
-        
+
         float resolutionWidth = resolution.getWidthF();
         float resolutionHeight = resolution.getHeightF();
 
@@ -108,11 +111,61 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideoValidator::_validate( const ResourceVideoPtr & _resource ) const
     {
-        VideoDecoderInterfacePtr decoder = _resource->createVideoDecoder( MENGINE_DOCUMENT_FACTORABLE );
+        const ContentInterfacePtr & content = _resource->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+
+        if( fileGroup->existFile( filePath, true ) == false )
+        {
+            bool validNoExist = content->isValidNoExist();
+
+            if( validNoExist == true )
+            {
+                return true;
+            }
+
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' not exist file '%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
+            );
+
+            return false;
+        }
+
+        InputStreamInterfacePtr videoStream = Helper::openInputStreamFile( fileGroup, filePath, true, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( videoStream == nullptr )
+        {
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't open video file '%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , _resource->getContent()->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        const ConstString & codecType = content->getCodecType();
+
+        VideoDecoderInterfacePtr decoder = CODEC_SERVICE()
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' can't create decoder '%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't create video decoder for file '%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , _resource->getContent()->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        if( decoder->prepareData( videoStream ) == false )
+        {
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't initialize video decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()
@@ -122,8 +175,6 @@ namespace Mengine
         }
 
         bool valid = s_checkValidVideoDecoder( _resource, decoder );
-
-        _resource->destroyVideoDecoder( decoder );
 
         return valid;
     }

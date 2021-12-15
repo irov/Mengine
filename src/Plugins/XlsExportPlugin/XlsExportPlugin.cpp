@@ -192,9 +192,8 @@ namespace Mengine
         pybind::def_functor( kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins );
         pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &XlsExportPlugin::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RELOAD_LOCALE, &XlsExportPlugin::notifyReloadLocale, MENGINE_DOCUMENT_FACTORABLE );
-
-        this->proccess_();
 
         return true;
     }
@@ -217,7 +216,13 @@ namespace Mengine
         Helper::deleteT( m_warninglogger );
         Helper::deleteT( m_errorLogger );
 
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RELOAD_LOCALE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void XlsExportPlugin::notifyBootstrapperCreateApplication_()
+    {
+        this->proccess_();
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::notifyReloadLocale()
@@ -233,7 +238,7 @@ namespace Mengine
 
         if( Project_Codename.empty() == true )
         {
-            return false;
+            return true;
         }
 
         bool exist = false;
@@ -241,16 +246,28 @@ namespace Mengine
 
         if( py_xlsxExporter == nullptr )
         {
-            return false;
+            return true;
         }
 
-        kernel->call_method( py_xlsxExporter, "export", "(s)"
+        PyObject * py_result = kernel->ask_method( py_xlsxExporter, "export", "(s)"
             , Project_Codename.c_str()
         );
 
+        bool successful = false;
+
+        if( py_result != nullptr )
+        {
+            if( kernel->is_true( py_result ) == true )
+            {
+                successful = true;
+            }
+
+            kernel->decref( py_result );
+        }
+
         kernel->decref( py_xlsxExporter );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::warning_( const WChar * _msg )
@@ -261,7 +278,6 @@ namespace Mengine
         LOGGER_MESSAGE( "XlsExport[Warning]: %s"
             , utf8_msg
         );
-
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::error_( const WChar * _msg )

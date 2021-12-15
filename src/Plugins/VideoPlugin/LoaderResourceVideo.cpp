@@ -30,6 +30,7 @@ namespace Mengine
         metadata->getm_File_Path( content.get(), &ContentInterface::setFilePath );
         metadata->getm_File_Codec( content.get(), &ContentInterface::setCodecType );
         metadata->getm_File_Converter( content.get(), &ContentInterface::setConverterType );
+        metadata->getm_File_NoExist( content.get(), &ContentInterface::setValidNoExist );
 
         metadata->getm_File_Alpha( resource, &ResourceVideo::setAlpha );
         metadata->getm_File_Premultiply( resource, &ResourceVideo::setPremultiply );

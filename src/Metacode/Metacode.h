@@ -1442,6 +1442,7 @@ namespace Metacode
                 enum NoRequiredAttribute
                 {
                     EMETA_File_Converter = (1 <<2),
+                    EMETA_File_NoExist = (1 <<3),
                 };
                 
             public:
@@ -1482,6 +1483,36 @@ namespace Metacode
                     }
                 
                     *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
                 
                     return true;
                 }
@@ -1553,6 +1584,7 @@ namespace Metacode
             protected:
                 uint32_t m_AtlasCount_Value;
                 Mengine::ConstString m_File_Converter;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             public:
                 typedef Metabuf::Vector<Meta_Atlas> VectorMeta_Atlas;
@@ -1572,7 +1604,43 @@ namespace Metacode
             public:
                 Meta_ResourceCal3dAnimation();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_NoExist = (1 <<2),
+                };
+                
             public:
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -1589,11 +1657,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1603,7 +1673,43 @@ namespace Metacode
             public:
                 Meta_ResourceCal3dMesh();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_NoExist = (1 <<2),
+                };
+                
             public:
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -1620,11 +1726,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1634,7 +1742,43 @@ namespace Metacode
             public:
                 Meta_ResourceCal3dSkeleton();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_NoExist = (1 <<2),
+                };
+                
             public:
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -1651,11 +1795,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1665,7 +1811,43 @@ namespace Metacode
             public:
                 Meta_ResourceCursorICO();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_NoExist = (1 <<2),
+                };
+                
             public:
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -1682,11 +1864,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1696,7 +1880,43 @@ namespace Metacode
             public:
                 Meta_ResourceCursorSystem();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_NoExist = (1 <<2),
+                };
+                
             public:
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -1713,11 +1933,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1744,7 +1966,43 @@ namespace Metacode
             public:
                 Meta_ResourceFile();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_NoExist = (1 <<2),
+                };
+                
             public:
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -1761,11 +2019,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1780,6 +2040,7 @@ namespace Metacode
                 {
                     EMETA_File_Codec = (1 <<2),
                     EMETA_File_Converter = (1 <<3),
+                    EMETA_File_NoExist = (1 <<4),
                 };
                 
             public:
@@ -1843,6 +2104,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -1867,6 +2158,7 @@ namespace Metacode
             protected:
                 Mengine::ConstString m_File_Codec;
                 Mengine::ConstString m_File_Converter;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -3047,6 +3339,7 @@ namespace Metacode
                 enum NoRequiredAttribute
                 {
                     EMETA_File_Converter = (1 <<2),
+                    EMETA_File_NoExist = (1 <<3),
                 };
                 
             public:
@@ -3080,6 +3373,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -3103,6 +3426,7 @@ namespace Metacode
             public:
             protected:
                 Mengine::ConstString m_File_Converter;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -3117,6 +3441,7 @@ namespace Metacode
                 {
                     EMETA_File_Converter = (1 <<3),
                     EMETA_File_Dataflow = (1 <<2),
+                    EMETA_File_NoExist = (1 <<4),
                 };
                 
             public:
@@ -3180,6 +3505,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -3215,6 +3570,7 @@ namespace Metacode
             protected:
                 Mengine::ConstString m_File_Converter;
                 Mengine::ConstString m_File_Dataflow;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
                 Mengine::ConstString m_Image_Resource;
             };
@@ -5420,6 +5776,7 @@ namespace Metacode
                 enum NoRequiredAttribute
                 {
                     EMETA_File_Dataflow = (1 <<2),
+                    EMETA_File_NoExist = (1 <<3),
                 };
                 
             public:
@@ -5449,6 +5806,36 @@ namespace Metacode
                     }
                 
                     *_value = this->m_File_Dataflow;
+                
+                    return true;
+                }
+                
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
                 
                     return true;
                 }
@@ -5969,6 +6356,7 @@ namespace Metacode
                 
             protected:
                 Mengine::ConstString m_File_Dataflow;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             public:
                 typedef Metabuf::Vector<Meta_Composition> VectorMeta_Composition;
@@ -5991,10 +6379,11 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_DefaultVolume_Value = (1 <<5),
+                    EMETA_DefaultVolume_Value = (1 <<6),
                     EMETA_File_Codec = (1 <<2),
                     EMETA_File_Converter = (1 <<3),
                     EMETA_File_External = (1 <<4),
+                    EMETA_File_NoExist = (1 <<5),
                 };
                 
             public:
@@ -6118,6 +6507,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -6144,6 +6563,7 @@ namespace Metacode
                 Mengine::ConstString m_File_Codec;
                 Mengine::ConstString m_File_Converter;
                 bool m_File_External;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -6157,6 +6577,7 @@ namespace Metacode
                 enum NoRequiredAttribute
                 {
                     EMETA_File_Converter = (1 <<2),
+                    EMETA_File_NoExist = (1 <<3),
                 };
                 
             public:
@@ -6197,6 +6618,36 @@ namespace Metacode
                     }
                 
                     *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
                 
                     return true;
                 }
@@ -6268,6 +6719,7 @@ namespace Metacode
             protected:
                 uint32_t m_AtlasCount_Value;
                 Mengine::ConstString m_File_Converter;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             public:
                 typedef Metabuf::Vector<Meta_Atlas> VectorMeta_Atlas;
@@ -6321,10 +6773,11 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_DefaultVolume_Value = (1 <<4),
+                    EMETA_DefaultVolume_Value = (1 <<5),
                     EMETA_File_Codec = (1 <<2),
                     EMETA_File_Converter = (1 <<3),
-                    EMETA_IsStreamable_Value = (1 <<5),
+                    EMETA_File_NoExist = (1 <<4),
+                    EMETA_IsStreamable_Value = (1 <<6),
                 };
                 
             public:
@@ -6418,6 +6871,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -6473,6 +6956,7 @@ namespace Metacode
                 float m_DefaultVolume_Value;
                 Mengine::ConstString m_File_Codec;
                 Mengine::ConstString m_File_Converter;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
                 bool m_IsStreamable_Value;
             };
@@ -6487,6 +6971,7 @@ namespace Metacode
                 enum NoRequiredAttribute
                 {
                     EMETA_File_Converter = (1 <<2),
+                    EMETA_File_NoExist = (1 <<3),
                 };
                 
             public:
@@ -6516,6 +7001,36 @@ namespace Metacode
                     }
                 
                     *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
                 
                     return true;
                 }
@@ -6586,6 +7101,7 @@ namespace Metacode
                 
             protected:
                 Mengine::ConstString m_File_Converter;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             public:
                 typedef Metabuf::Vector<Meta_Image> VectorMeta_Image;
@@ -6664,8 +7180,9 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Atlas_Name = (1 <<3),
+                    EMETA_Atlas_Name = (1 <<4),
                     EMETA_File_Converter = (1 <<2),
+                    EMETA_File_NoExist = (1 <<3),
                 };
                 
             public:
@@ -6729,6 +7246,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -6753,6 +7300,7 @@ namespace Metacode
             protected:
                 Mengine::ConstString m_Atlas_Name;
                 Mengine::ConstString m_File_Converter;
+                bool m_File_NoExist;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -6813,6 +7361,7 @@ namespace Metacode
                     EMETA_File_Converter = (1 <<5),
                     EMETA_File_Duration = (1 <<8),
                     EMETA_File_FrameRate = (1 <<7),
+                    EMETA_File_NoExist = (1 <<10),
                     EMETA_File_NoSeek = (1 <<6),
                     EMETA_File_Premultiply = (1 <<3),
                     EMETA_File_Resize = (1 <<9),
@@ -6969,6 +7518,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_NoExist() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_NoExist( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
+                }
+                
+                bool get_File_NoExist( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_NoExist;
+                
+                    return true;
+                }
+                
                 bool has_File_NoSeek() const
                 {
                     return (m_flagNoRequiredAttribute & EMETA_File_NoSeek) != 0;
@@ -7086,6 +7665,7 @@ namespace Metacode
                 Mengine::ConstString m_File_Converter;
                 float m_File_Duration;
                 float m_File_FrameRate;
+                bool m_File_NoExist;
                 bool m_File_NoSeek;
                 Mengine::FilePath m_File_Path;
                 bool m_File_Premultiply;

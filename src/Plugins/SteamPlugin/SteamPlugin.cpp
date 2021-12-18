@@ -12,6 +12,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/Error.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdIO.h"
@@ -65,6 +66,13 @@ namespace Mengine
             }
         }
 
+        if( Steam_AppId == k_uAppIdInvalid )
+        {
+            MENGINE_ERROR_FATAL( "invalid setup Steam_AppId" );
+
+            return false;
+        }
+
         if( HAS_OPTION( "norestartsteamapp" ) == false )
         {
             if( SteamAPI_RestartAppIfNecessary( Steam_AppId ) == true )
@@ -82,7 +90,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SteamPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( SteamService, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( SteamService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()

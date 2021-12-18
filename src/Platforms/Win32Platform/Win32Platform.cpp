@@ -946,6 +946,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::updatePlatform()
     {
+        if( m_close == true )
+        {
+            return;
+        }
+
         this->setActive_( true );
 
         m_prevTime = TIME_SYSTEM()

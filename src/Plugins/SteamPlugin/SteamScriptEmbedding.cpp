@@ -20,6 +20,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_steamSetAchievement( const ConstString & _name )
         {
+            if( SERVICE_EXIST( SteamServiceInterface ) == false )
+            {
+                return false;
+            }
+
             bool result = STEAM_SERVICE()
                 ->setAchievement( _name );
 
@@ -28,6 +33,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_steamGetAchievement( pybind::kernel_interface * _kernel, const ConstString & _name )
         {
+            if( SERVICE_EXIST( SteamServiceInterface ) == false )
+            {
+                return false;
+            }
+
             bool achieved;
             bool result = STEAM_SERVICE()
                 ->getAchievement( _name, &achieved );
@@ -42,6 +52,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_steamSetStateInteger( const ConstString & _name, int32_t _value )
         {
+            if( SERVICE_EXIST( SteamServiceInterface ) == false )
+            {
+                return false;
+            }
+
             bool result = STEAM_SERVICE()
                 ->setStateInteger( _name, _value );
 
@@ -50,6 +65,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_steamSetStateFloat( const ConstString & _name, float _value )
         {
+            if( SERVICE_EXIST( SteamServiceInterface ) == false )
+            {
+                return false;
+            }
+
             bool result = STEAM_SERVICE()
                 ->setStateFloat( _name, _value );
 

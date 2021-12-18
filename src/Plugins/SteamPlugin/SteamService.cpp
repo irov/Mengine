@@ -1,7 +1,7 @@
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
-#   pragma warning(disable:4127)  
-#   endif
+#   pragma warning(disable:4127)
+#endif
 
 #include "SteamService.h"
 
@@ -53,7 +53,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SteamService::~SteamService()
     {
-    } 
+    }
     //////////////////////////////////////////////////////////////////////////
     bool SteamService::_initializeService()
     {
@@ -389,8 +389,9 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->setLocale( steam_locale );
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(pop) 
-#   endif
+#endif

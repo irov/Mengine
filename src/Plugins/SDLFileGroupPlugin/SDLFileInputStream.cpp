@@ -14,6 +14,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    // cppcheck-suppress uninitMemberVar
     SDLFileInputStream::SDLFileInputStream()
         : m_rwops( nullptr )
         , m_size( 0 )
@@ -262,6 +263,8 @@ namespace Mengine
 
         if( bytesRead == 0 )
         {
+            const char * error = SDL_GetError();
+
             *_read = 0;
 
             return true;

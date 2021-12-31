@@ -60,6 +60,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonFileLogger::write( const Char * _msg )
     {
+        if( _msg == nullptr )
+        {
+            return;
+        }
+
         if( m_timestamp == true )
         {
             Char timestamp[128];

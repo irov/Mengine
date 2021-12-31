@@ -18,6 +18,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    // cppcheck-suppress uninitMemberVar
     Win32FileInputStream::Win32FileInputStream()
         : m_hFile( INVALID_HANDLE_VALUE )
         , m_size( 0 )
@@ -275,7 +276,8 @@ namespace Mengine
         DWORD bytesRead = 0;
         if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
-            LOGGER_ERROR( "read %zu:%zu %s"
+            LOGGER_ERROR( "read offset %zu size %zu:%zu %s"
+                , _offset
                 , _size
                 , m_size
                 , Helper::Win32GetLastErrorMessage()

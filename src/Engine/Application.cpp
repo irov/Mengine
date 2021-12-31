@@ -335,25 +335,16 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE_PROTECTED( "Content Commit: %s", contentCommit );
 
         const Char * buildVersion = Helper::getBuildVersion();
-
-        if( HAS_OPTION( "buildinfo" ) == true )
-        {
-            PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build version: %s", buildVersion );
-        }
-
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Version: %s", buildVersion );
-
         const Char * buildUserName = Helper::getBuildUsername();
         const Char * buildTimestamp = Helper::getBuildTimestamp();
 
         if( HAS_OPTION( "buildinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build info: %s %s", buildUserName, buildTimestamp );
+                ->messageBox( "Mengine", "build info: %s %s %s", buildVersion, buildUserName, buildTimestamp );
         }
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Info: %s %s", buildUserName, buildTimestamp );
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Info: %s %s %s", buildVersion, buildUserName, buildTimestamp );
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {

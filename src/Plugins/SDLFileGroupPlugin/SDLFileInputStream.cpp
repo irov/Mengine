@@ -263,8 +263,6 @@ namespace Mengine
 
         if( bytesRead == 0 )
         {
-            const char * error = SDL_GetError();
-
             *_read = 0;
 
             return true;

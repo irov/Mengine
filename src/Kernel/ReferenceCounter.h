@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/ThreadGuard.h"
+#include "Config/Atomic.h"
 
 namespace Mengine
 {
@@ -23,16 +23,10 @@ namespace Mengine
         bool decref();
 
     public:
-        bool increfWithMutex();
-        bool decrefWithMutex();
-
-    public:
         void reset();
 
     private:
-        uint32_t m_counter;
-
-        MENGINE_THREAD_GUARD_INIT( CompilableReference );
+        AtomicUInt32 m_counter;
     };
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t ReferenceCounter::getReferenceCount() const

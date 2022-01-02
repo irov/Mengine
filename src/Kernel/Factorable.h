@@ -61,9 +61,6 @@ namespace Mengine
         bool isDestroyed() const;
 #endif
 
-    public:
-        MENGINE_INLINE uint32_t getReference() const noexcept;
-
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
     public:
         MENGINE_INLINE static bool intrusive_ptr_check_ref( const Factorable * _ptr );
@@ -87,13 +84,6 @@ namespace Mengine
         return m_factory;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE uint32_t Factorable::getReference() const noexcept
-    {
-        uint32_t count = m_reference.getReferenceCount();
-
-        return count;
-    }
-    //////////////////////////////////////////////////////////////////////////
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
     MENGINE_INLINE bool Factorable::intrusive_ptr_check_ref( const Factorable * _ptr )
     {
@@ -109,7 +99,7 @@ namespace Mengine
         }
 #endif
 
-        if( _ptr->getReference() == 0 )
+        if( _ptr->getrefcount() == 0 )
         {
             return false;
         }

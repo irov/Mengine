@@ -1587,7 +1587,7 @@ namespace Mengine
 
         MapHashEmitterContainers::iterator it_found = m_containers.find( id );
 
-        MENGINE_ASSERTION( it_found != m_containers.end(), "deleted container not found on cache (doc: %s)"
+        MENGINE_ASSERTION_FATAL( it_found != m_containers.end(), "deleted container not found on cache (doc: %s)"
             , MENGINE_DOCUMENT_STR( _container->getDocument() )
         );
 

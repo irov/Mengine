@@ -25,8 +25,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setRelationPicker( PickerInterface * _relationPicker )
     {
-        MENGINE_ASSERTION( _relationPicker != nullptr, "set nullptr relation" );
-        MENGINE_ASSERTION( _relationPicker != this, "set this relation" );
+        MENGINE_ASSERTION_FATAL( _relationPicker != nullptr, "set nullptr relation" );
+        MENGINE_ASSERTION_FATAL( _relationPicker != this, "set this relation" );
 
         if( m_relationPicker != nullptr )
         {
@@ -39,8 +39,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setRelationPickerFront( PickerInterface * _relationPicker )
     {
-        MENGINE_ASSERTION( _relationPicker != nullptr, "set nullptr relation" );
-        MENGINE_ASSERTION( _relationPicker != this, "set this relation" );
+        MENGINE_ASSERTION_FATAL( _relationPicker != nullptr, "set nullptr relation" );
+        MENGINE_ASSERTION_FATAL( _relationPicker != this, "set this relation" );
 
         if( m_relationPicker != nullptr )
         {

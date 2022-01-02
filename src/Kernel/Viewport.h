@@ -21,7 +21,7 @@ namespace Mengine
         void setRectangle( const mt::vec2f & _begin, const mt::vec2f & _end );
 
     public:
-        bool equalViewport( const Viewport & _vp ) const;
+        bool equalViewport( const Viewport & _vp, float _epsilon ) const;
 
         bool testPoint( const mt::vec2f & _point ) const;
         bool testBBox( const mt::box2f & _bbox ) const;

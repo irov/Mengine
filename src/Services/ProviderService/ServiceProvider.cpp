@@ -117,7 +117,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION( MENGINE_STRLEN( service->getServiceID() ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( service->getServiceID() ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , service->getServiceID()
             , MENGINE_STRLEN( service->getServiceID() )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
@@ -283,8 +283,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::dependencyService( const Char * _name, const Char * _dependency )
     {
-        MENGINE_ASSERTION( m_dependenciesCount < MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT );
-        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+        MENGINE_ASSERTION_FATAL( m_dependenciesCount < MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
             , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
@@ -298,8 +298,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::waitService( const Char * _owner, const Char * _name, const LambdaWaitService & _lambda )
     {
-        MENGINE_ASSERTION( m_waitsCount < MENGINE_SERVICE_PROVIDER_MAX_WAIT );
-        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+        MENGINE_ASSERTION_FATAL( m_waitsCount < MENGINE_SERVICE_PROVIDER_MAX_WAIT );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
             , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
@@ -338,8 +338,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::leaveService( const Char * _owner, const Char * _name, const LambdaLeaveService & _lambda )
     {
-        MENGINE_ASSERTION( m_leaveCount < MENGINE_SERVICE_PROVIDER_LEAVE_COUNT );
-        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+        MENGINE_ASSERTION_FATAL( m_leaveCount < MENGINE_SERVICE_PROVIDER_LEAVE_COUNT );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
             , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE

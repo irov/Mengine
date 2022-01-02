@@ -87,7 +87,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::setViewport( const Viewport & _viewport )
     {
-        if( m_viewport.equalViewport( _viewport ) == true && m_hasViewport == true )
+        if( m_viewport.equalViewport( _viewport, 0.f ) == true && m_hasViewport == true )
         {
             return;
         }

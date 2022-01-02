@@ -2,6 +2,7 @@
 
 #include "Kernel/Compilable.h"
 #include "Kernel/ReferenceCounter.h"
+#include "Kernel/ThreadGuard.h"
 
 namespace Mengine
 {
@@ -22,6 +23,8 @@ namespace Mengine
 
     private:
         ReferenceCounter m_compileReferenceCount;
+
+        MENGINE_THREAD_GUARD_INIT( CompilableReference );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<CompilableReference> CompilableReferencePtr;

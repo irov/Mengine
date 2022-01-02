@@ -142,14 +142,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Viewport::equalViewport( const Viewport & _vp ) const
+    bool Viewport::equalViewport( const Viewport & _vp, float _epsilon ) const
     {
-        if( begin != _vp.begin )
+        if( mt::equal_f_f_e( begin.x, _vp.begin.x, _epsilon ) == false )
         {
             return false;
         }
 
-        if( end != _vp.end )
+        if( mt::equal_f_f_e( begin.y, _vp.begin.y, _epsilon ) == false )
+        {
+            return false;
+        }
+
+        if( mt::equal_f_f_e( end.x, _vp.end.x, _epsilon ) == false )
+        {
+            return false;
+        }
+
+        if( mt::equal_f_f_e( end.y, _vp.end.y, _epsilon ) == false )
         {
             return false;
         }

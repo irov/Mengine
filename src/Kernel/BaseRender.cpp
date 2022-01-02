@@ -30,8 +30,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRelationRender( RenderInterface * _relationRender )
     {
-        MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
-        MENGINE_ASSERTION( _relationRender != this, "set this relation" );
+        MENGINE_ASSERTION_FATAL( _relationRender != nullptr, "set nullptr relation" );
+        MENGINE_ASSERTION_FATAL( _relationRender != this, "set this relation" );
 
         if( m_extraRelationRender != nullptr )
         {
@@ -55,8 +55,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRelationRenderFront( RenderInterface * _relationRender )
     {
-        MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
-        MENGINE_ASSERTION( _relationRender != this, "set this relation" );
+        MENGINE_ASSERTION_FATAL( _relationRender != nullptr, "set nullptr relation" );
+        MENGINE_ASSERTION_FATAL( _relationRender != this, "set this relation" );
 
         if( m_extraRelationRender != nullptr )
         {
@@ -101,8 +101,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setExtraRelationRender( RenderInterface * _relationRender )
     {
-        MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
-        MENGINE_ASSERTION( _relationRender != this, "set this relation" );
+        MENGINE_ASSERTION_FATAL( _relationRender != nullptr, "set nullptr relation" );
+        MENGINE_ASSERTION_FATAL( _relationRender != this, "set this relation" );
 
         if( m_extraRelationRender != nullptr )
         {

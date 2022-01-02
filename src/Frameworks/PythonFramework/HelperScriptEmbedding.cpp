@@ -500,7 +500,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_makeUID( uint32_t _length )
             {
-                MENGINE_ASSERTION( _length < 1024, "max UID length equal 1024" );
+                MENGINE_ASSERTION_FATAL( _length < 1024, "max UID length equal 1024" );
 
                 Char uid[1024] = {'\0'};
                 Helper::makeUID( _length, uid );
@@ -733,7 +733,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_generateUniqueIdentity( uint32_t _length )
             {
-                MENGINE_ASSERTION( _length < 1024 );
+                MENGINE_ASSERTION_FATAL( _length < 1024 );
 
                 Stringstream ss;
 

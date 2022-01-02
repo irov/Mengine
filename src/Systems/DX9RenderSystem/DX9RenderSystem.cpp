@@ -1051,7 +1051,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setViewport( const Viewport & _viewport )
     {
-        if( m_viewport.equalViewport( _viewport ) == true )
+        if( m_viewport.equalViewport( _viewport, 0.5f ) == true )
         {
             return;
         }
@@ -1509,6 +1509,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _stageCache );
 
+#ifdef MENGINE_DEBUG
+            DWORD pNumPasses;
+            DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
+#endif
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         D3DPRIMITIVETYPE primitiveType = Helper::toD3DPrimitiveType( _desc.primitiveType );
@@ -1518,11 +1523,6 @@ namespace Mengine
         DXCALL( m_pD3DDevice, DrawIndexedPrimitive
             , (primitiveType, _desc.baseVertexIndex, _desc.minIndex, _desc.vertexCount, _desc.startIndex, primCount)
         );
-
-#ifdef MENGINE_DEBUG
-        DWORD pNumPasses;
-        DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _image )

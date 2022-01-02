@@ -85,7 +85,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION( _event != nullptr, "scheduler '%s' event delay '%f' is nullptr"
+        MENGINE_ASSERTION_FATAL( _event != nullptr, "scheduler '%s' event delay '%f' is nullptr"
             , this->getName().c_str()
             , _delay
         );
@@ -125,11 +125,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION( _pipe != nullptr, "scheduler '%s' _pipe is nullptr"
+        MENGINE_ASSERTION_FATAL( _pipe != nullptr, "scheduler '%s' _pipe is nullptr"
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION( _timer != nullptr, "scheduler '%s' _timer is nullptr"
+        MENGINE_ASSERTION_FATAL( _timer != nullptr, "scheduler '%s' _timer is nullptr"
             , this->getName().c_str()
         );
 

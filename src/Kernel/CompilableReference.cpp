@@ -1,5 +1,7 @@
 #include "CompilableReference.h"
 
+#include "Kernel/ThreadGuardScope.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,6 +15,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CompilableReference::compile()
     {
+        MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this, "CompilableReference::compile" );
+
         if( m_compileReferenceCount.incref() == false )
         {
             return true;
@@ -28,6 +32,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void CompilableReference::release()
     {
+        MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this, "CompilableReference::release" );
+
         if( m_compileReferenceCount.decref() == false )
         {
             return;

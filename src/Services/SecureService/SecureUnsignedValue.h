@@ -2,6 +2,8 @@
 
 #include "Interface/SecureValueInterface.h"
 
+#include "Kernel/StaticString.h"
+
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
@@ -39,7 +41,7 @@ namespace Mengine
     public:
         uint32_t m_value;
         uint32_t m_hash;
-        Char m_buffer[20] = {'\0'};
+        StaticString<20> m_buffer;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SecureUnsignedValue> SecureUnsignedValuePtr;

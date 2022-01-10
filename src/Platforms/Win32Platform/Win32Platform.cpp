@@ -40,6 +40,7 @@
 #include "Kernel/SHA1.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/RandomDevice.h"
+#include "Kernel/StringCopy.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -296,7 +297,7 @@ namespace Mengine
 
         const Char * Window_ClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
-        Helper::utf8ToUnicode( Window_ClassName, m_windowClassName, MENGINE_MAX_PATH );
+        Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
 
         SERVICE_WAIT( FileServiceInterface, [this]()
         {
@@ -431,10 +432,10 @@ namespace Mengine
 
         if( m_hInstance != NULL )
         {
-            if( ::UnregisterClass( m_windowClassName, m_hInstance ) == FALSE )
+            if( ::UnregisterClass( m_windowClassName.c_str(), m_hInstance ) == FALSE )
             {
                 LOGGER_ERROR( "invalid UnregisterClass '%ls'"
-                    , m_windowClassName
+                    , m_windowClassName.c_str()
                 );
             }
 
@@ -1022,18 +1023,18 @@ namespace Mengine
     {
         if( _projectTitle == nullptr )
         {
-            m_projectTitle[0] = '\0';
+            m_projectTitle.clear();
 
             return;
         }
 
-        Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle.data(), MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getProjectTitle( Char * const _projectTitle ) const
     {
         size_t utf8Size;
-        Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME, &utf8Size );
+        Helper::unicodeToUtf8( m_projectTitle.c_str(), _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME, &utf8Size );
 
         return utf8Size;
     }
@@ -2229,7 +2230,7 @@ namespace Mengine
             m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 
             bool stop;
-            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, m_windowClassName, m_projectTitle, &stop ) == false )
+            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, m_windowClassName.c_str(), m_projectTitle.c_str(), &stop ) == false )
             {
                 LOGGER_ERROR( "invalid initialize already running monitor" );
 
@@ -2275,7 +2276,7 @@ namespace Mengine
         wc.hbrBackground = (HBRUSH)::GetStockObject( BLACK_BRUSH );
 
         wc.lpszMenuName = NULL;
-        wc.lpszClassName = m_windowClassName;
+        wc.lpszClassName = m_windowClassName.c_str();
         wc.hIconSm = NULL;
 
         ATOM result = ::RegisterClassEx( &wc );
@@ -2300,7 +2301,7 @@ namespace Mengine
 
         DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
 
-        HWND hWnd = ::CreateWindowEx( dwExStyle, m_windowClassName, m_projectTitle
+        HWND hWnd = ::CreateWindowEx( dwExStyle, m_windowClassName.c_str(), m_projectTitle.c_str()
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
             , NULL, NULL, m_hInstance, (LPVOID)this );
@@ -4423,9 +4424,7 @@ namespace Mengine
         const Char * option_workdir;
         if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
         {
-            MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( option_workdir ) < MENGINE_MAX_PATH );
-
-            MENGINE_STRCPY( _currentPath, option_workdir );
+            Helper::stringCopy( _currentPath, option_workdir, MENGINE_MAX_PATH );
 
             Helper::pathCorrectBackslashA( _currentPath );
 
@@ -4861,7 +4860,7 @@ namespace Mengine
 
         const Char * clipboardText = (const Char *)memGlb;
 
-        MENGINE_STRNCPY( _value, clipboardText, _capacity );
+        Helper::stringCopy( _value, clipboardText, _capacity );
 
         ::GlobalUnlock( hGlb );
 

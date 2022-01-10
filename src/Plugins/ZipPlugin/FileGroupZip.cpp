@@ -227,7 +227,7 @@ namespace Mengine
             *_mappedFile = nullptr;
 
             return true;
-        }        
+        }
 
         FileGroupInterface * mappedFileGroup;
         FileMappedInterfacePtr mappedFile = m_baseFileGroup->createMappedFile( _folderPath, &mappedFileGroup, MENGINE_DOCUMENT_FACTORABLE );

@@ -24,18 +24,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32DynamicLibrary::setName( const Char * _name )
     {
-        MENGINE_STRCPY( m_name, _name );
+        m_name.assign( _name );
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * Win32DynamicLibrary::getName() const
     {
-        return m_name;
+        return m_name.c_str();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32DynamicLibrary::load()
     {
         WChar unicode_name[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( m_name, unicode_name, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( m_name.c_str(), unicode_name, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -45,7 +45,7 @@ namespace Mengine
         if( hInstance == NULL )
         {
             LOGGER_ERROR( "invalid load '%s' %s"
-                , m_name
+                , m_name.c_str()
                 , Helper::Win32GetLastErrorMessage()
             );
 

@@ -4,6 +4,7 @@
 
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
+#include "Kernel/StaticString.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Resource.h"
@@ -223,8 +224,8 @@ namespace Mengine
         ConstString m_cursorResourceName;
         ResourceCursorPtr m_cursorResource;
 
-        Char m_companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
-        Char m_projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
+        StaticString<MENGINE_APPLICATION_COMPANY_MAXNAME> m_companyName;
+        StaticString<MENGINE_APPLICATION_PROJECT_MAXNAME> m_projectName;
 
         ConstString m_locale;
 

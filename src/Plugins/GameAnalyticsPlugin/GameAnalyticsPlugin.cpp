@@ -19,6 +19,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/IniHelper.h"
+#include "Kernel/StaticString.h"
 #include "Kernel/UID.h"
 
 #include "Config/StdString.h"
@@ -60,14 +61,15 @@ namespace Mengine
                 break;
             }
 
-            Char messageln[4096];
-            MENGINE_STRCPY( messageln, _message );
-            MENGINE_STRCAT( messageln, "\n" );
+            StaticString<4096> messageln;
+            messageln.assign( _message );
+            messageln.append( '\n' );
 
-            size_t messageln_len = MENGINE_STRLEN( messageln );
+            const Char * messageln_str = messageln.c_str();
+            size_t messageln_len = messageln.size();
 
             LOGGER_SERVICE()
-                ->logMessage( level, 0, LCOLOR_GREEN, messageln, messageln_len );
+                ->logMessage( level, 0, LCOLOR_GREEN, messageln_str, messageln_len );
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -126,8 +128,8 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_STRCPY( m_gameKey, GameAnalytics_GameKey );
-        MENGINE_STRCPY( m_gameSecret, GameAnalytics_GameSecret );
+        m_gameKey.assign( GameAnalytics_GameKey );
+        m_gameSecret.assign( GameAnalytics_GameSecret );
 
         gameanalytics::GameAnalytics::configureCustomLogHandler( &Detail::logHandler );
 
@@ -159,7 +161,7 @@ namespace Mengine
 
         gameanalytics::GameAnalytics::setEnabledManualSessionHandling( true );
 
-        gameanalytics::GameAnalytics::initialize( m_gameKey, m_gameSecret );
+        gameanalytics::GameAnalytics::initialize( m_gameKey.c_str(), m_gameSecret.c_str() );
 
         LOGGER_INFO( "plugin", "plugin '%s' create system: %s"
             , this->getPluginName()
@@ -215,12 +217,7 @@ namespace Mengine
             return false;
         }
 
-        if( MENGINE_STRLEN( Config_UserId ) != 20 )
-        {
-            return false;
-        }
-
-        MENGINE_STRCPY( m_userId, Config_UserId );
+        m_userId.assign( Config_UserId );
 
         return true;
     }
@@ -250,7 +247,7 @@ namespace Mengine
         jpp::object j_root = jpp::make_object();
 
         jpp::object j_config = jpp::make_object();
-        j_config.set( "UserId", m_userId );
+        j_config.set( "UserId", m_userId.c_str() );
 
         j_root.set( "Config", j_root );
 
@@ -272,15 +269,15 @@ namespace Mengine
     {
         if( this->loadUserId_() == true )
         {
-            return m_userId;
+            return m_userId.c_str();
         }
 
-        Helper::makeUID( 20, m_userId );
-        m_userId[20] = '\0';
+        Helper::makeUID( 20, m_userId.data() );
+        m_userId.change( 20, '\0' );
 
         this->saveUserId_();
 
-        return m_userId;
+        return m_userId.c_str();
     }
     //////////////////////////////////////////////////////////////////////////
 }

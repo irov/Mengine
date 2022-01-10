@@ -49,6 +49,16 @@ namespace Mengine
             , m_resourceSound->getName().c_str()
         );
 
+        if( soundBuffer == nullptr )
+        {
+            LOGGER_ERROR( "sound '%s' resource '%s' failed create buffer"
+                , this->getName().c_str()
+                , m_resourceSound->getName().c_str()
+            );
+
+            return false;
+        }
+
         bool streamable = m_resourceSound->isStreamable();
 
         SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()

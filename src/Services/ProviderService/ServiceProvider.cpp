@@ -127,11 +127,11 @@ namespace Mengine
         {
             ServiceDesc & desc = m_services[index];
 
-            if( MENGINE_STRLEN( desc.name ) == 0 )
+            if( desc.name.size() == 0 )
             {
-                MENGINE_STRCPY( desc.name, name );
+                desc.name.assign( name );
             }
-            else if( MENGINE_STRCMP( desc.name, name ) != 0 )
+            else if( desc.name.compare( name ) != 0 )
             {
                 continue;
             }
@@ -190,7 +190,7 @@ namespace Mengine
         {
             LeaveDesc & desc = m_leaving[index];
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -198,8 +198,8 @@ namespace Mengine
             LambdaLeaveService lambda = desc.lambda;
 
             desc.lambda = nullptr;
-            desc.name[0] = '\0';
-            desc.owner[0] = '\0';
+            desc.name.clear();
+            desc.owner.clear();
 
             lambda();
         }
@@ -208,19 +208,19 @@ namespace Mengine
         {
             const DependencyDesc & desc = m_dependencies[index];
 
-            if( MENGINE_STRCMP( desc.dependency, _name ) != 0 )
+            if( desc.dependency.compare( _name ) != 0 )
             {
                 continue;
             }
 
-            this->finalizeService( desc.name );
+            this->finalizeService( desc.name.c_str() );
         }
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -246,19 +246,19 @@ namespace Mengine
         {
             const DependencyDesc & desc = m_dependencies[index];
 
-            if( MENGINE_STRCMP( desc.dependency, _name ) != 0 )
+            if( desc.dependency.compare( _name ) != 0 )
             {
                 continue;
             }
 
-            this->destroyService( desc.name );
+            this->destroyService( desc.name.c_str() );
         }
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -292,8 +292,8 @@ namespace Mengine
 
         DependencyDesc & desc = m_dependencies[m_dependenciesCount++];
 
-        MENGINE_STRCPY( desc.name, _name );
-        MENGINE_STRCPY( desc.dependency, _dependency );
+        desc.name.assign( _name );
+        desc.dependency.assign( _dependency );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::waitService( const Char * _owner, const Char * _name, const LambdaWaitService & _lambda )
@@ -309,7 +309,7 @@ namespace Mengine
         {
             ServiceDesc & desc = m_services[index];
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -329,8 +329,8 @@ namespace Mengine
 
         WaitDesc & desc = m_waits[m_waitsCount++];
 
-        MENGINE_STRCPY( desc.owner, _owner );
-        MENGINE_STRCPY( desc.name, _name );
+        desc.owner.assign( _owner );
+        desc.name.assign( _name );
         desc.lambda = _lambda;
 
         return true;
@@ -347,8 +347,8 @@ namespace Mengine
 
         LeaveDesc & desc = m_leaving[m_leaveCount++];
 
-        MENGINE_STRCPY( desc.owner, _owner );
-        MENGINE_STRCPY( desc.name, _name );
+        desc.owner.assign( _owner );
+        desc.name.assign( _name );
         desc.lambda = _lambda;
 
         return true;
@@ -360,21 +360,21 @@ namespace Mengine
         {
             WaitDesc & desc = m_waits[index];
 
-            if( MENGINE_STRCMP( desc.owner, _owner ) != 0 )
+            if( desc.owner.compare( _owner ) != 0 )
             {
                 continue;
             }
 
             desc.lambda = nullptr;
-            desc.name[0] = '\0';
-            desc.owner[0] = '\0';
+            desc.name.clear();
+            desc.owner.clear();
         }
 
         for( uint32_t index = 0; index != m_leaveCount; ++index )
         {
             LeaveDesc & desc = m_leaving[index];
 
-            if( MENGINE_STRCMP( desc.owner, _owner ) != 0 )
+            if( desc.owner.compare( _owner ) != 0 )
             {
                 continue;
             }
@@ -387,8 +387,8 @@ namespace Mengine
             LambdaLeaveService lambda = desc.lambda;
 
             desc.lambda = nullptr;
-            desc.name[0] = '\0';
-            desc.owner[0] = '\0';
+            desc.name.clear();
+            desc.owner.clear();
 
             lambda();
         }
@@ -407,7 +407,7 @@ namespace Mengine
                 continue;
             }
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 ++index;
 
@@ -416,8 +416,8 @@ namespace Mengine
 
             DependencyDesc & last_desc = m_dependencies[--m_dependenciesCount];
 
-            MENGINE_STRCPY( desc.name, last_desc.name );
-            MENGINE_STRCPY( desc.dependency, last_desc.dependency );
+            desc.name.assign( last_desc.name );
+            desc.dependency.assign( last_desc.dependency );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -427,7 +427,7 @@ namespace Mengine
         {
             WaitDesc & desc = m_waits[index];
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 ++index;
 
@@ -438,7 +438,7 @@ namespace Mengine
 
             WaitDesc & last_desc = m_waits[--m_waitsCount];
 
-            MENGINE_STRCPY( desc.name, last_desc.name );
+            desc.name.assign( last_desc.name );
             desc.lambda = last_desc.lambda;
 
             if( lambda() == false )
@@ -465,7 +465,7 @@ namespace Mengine
                 continue;
             }
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -475,7 +475,7 @@ namespace Mengine
 
         ServiceDesc & desc = m_services[m_servicesCount++];
 
-        MENGINE_STRCPY( desc.name, _name );
+        desc.name.assign( _name );
         desc.service = nullptr;
         desc.exist = false;
         desc.available = false;
@@ -499,7 +499,7 @@ namespace Mengine
                 continue;
             }
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -509,7 +509,7 @@ namespace Mengine
 
         ServiceDesc & desc = m_services[m_servicesCount++];
 
-        MENGINE_STRCPY( desc.name, _name );
+        desc.name.assign( _name );
         desc.service = nullptr;
         desc.exist = false;
         desc.available = false;
@@ -533,7 +533,7 @@ namespace Mengine
                 continue;
             }
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -543,7 +543,7 @@ namespace Mengine
 
         ServiceDesc & desc = m_services[m_servicesCount++];
 
-        MENGINE_STRCPY( desc.name, _name );
+        desc.name.assign( _name );
         desc.service = nullptr;
         desc.exist = false;
         desc.available = false;
@@ -558,7 +558,7 @@ namespace Mengine
         {
             const ServiceDesc & desc = m_services[index];
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -615,7 +615,7 @@ namespace Mengine
             }
 
             MENGINE_ASSERTION_FATAL( false, "service forgot wait '%s'"
-                , desc.name
+                , desc.name.c_str()
             );
         }
 
@@ -629,7 +629,7 @@ namespace Mengine
             }
 
             MENGINE_ASSERTION_FATAL( false, "service forgot leave '%s'"
-                , desc.name
+                , desc.name.c_str()
             );
         }
     }

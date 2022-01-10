@@ -30,6 +30,7 @@
 #include "Kernel/NodeCast.h"
 #include "Kernel/SurfaceCast.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/StaticString.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -1815,7 +1816,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct ShaderParameterDesc
     {
-        Char uniform[32] = {'\0'};
+        StaticString<32> uniform;
         ae_uint8_t type;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -1858,7 +1859,8 @@ namespace Mengine
         {
             ShaderParameterDesc parameter;
 
-            MENGINE_STRCPY( parameter.uniform, _callbackData->parameter_uniforms[index] );
+            ae_string_t uniform = _callbackData->parameter_uniforms[index];
+            parameter.uniform.assign( uniform );
             parameter.type = _callbackData->parameter_types[index];
 
             float shader_values[4] = {0.f, 0.f, 0.f, 0.f};
@@ -1871,7 +1873,7 @@ namespace Mengine
 
                     shader_values[0] = value;
 
-                    programVariable->setPixelVariables( parameter.uniform, desc->indexOffset + index, shader_values, 1, 1 );
+                    programVariable->setPixelVariables( parameter.uniform.c_str(), desc->indexOffset + index, shader_values, 1, 1 );
                 }break;
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_ANGLE:
                 {
@@ -1879,7 +1881,7 @@ namespace Mengine
 
                     shader_values[0] = value;
 
-                    programVariable->setPixelVariables( parameter.uniform, desc->indexOffset + index, shader_values, 1, 1 );
+                    programVariable->setPixelVariables( parameter.uniform.c_str(), desc->indexOffset + index, shader_values, 1, 1 );
                 }break;
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
                 {
@@ -1890,7 +1892,7 @@ namespace Mengine
                     shader_values[2] = color_value.b;
                     shader_values[3] = 1.f;
 
-                    programVariable->setPixelVariables( parameter.uniform, desc->indexOffset + index, shader_values, 4, 1 );
+                    programVariable->setPixelVariables( parameter.uniform.c_str(), desc->indexOffset + index, shader_values, 4, 1 );
                 }break;
             default:
                 return AE_FALSE;

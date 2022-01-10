@@ -24,22 +24,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLDynamicLibrary::setName( const Char * _name )
     {
-        MENGINE_STRCPY( m_name, _name );
+        m_name.assign( _name );
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * SDLDynamicLibrary::getName() const
     {
-        return m_name;
+        return m_name.c_str();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLDynamicLibrary::load()
     {
-        void * instance = SDL_LoadObject( m_name );
+        void * instance = SDL_LoadObject( m_name.c_str() );
 
         if( instance == nullptr )
         {
             LOGGER_ERROR( "'%s' failed load object: %s"
-                , m_name
+                , m_name.c_str()
                 , SDL_GetError()
             );
 
@@ -69,7 +69,7 @@ namespace Mengine
         if( proc == nullptr )
         {
             LOGGER_ERROR( "'%s' failed get symbol '%s': %s"
-                , m_name
+                , m_name.c_str()
                 , _name
                 , SDL_GetError()
             );

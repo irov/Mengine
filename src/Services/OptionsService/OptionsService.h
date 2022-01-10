@@ -35,8 +35,8 @@ namespace Mengine
     protected:
         struct Option
         {
-            Char key[MENGINE_OPTIONS_KEY_SIZE] = {'\0'};
-            Char value[MENGINE_OPTIONS_VALUE_COUNT][MENGINE_OPTIONS_VALUE_SIZE] = {'\0'};
+            StaticString<MENGINE_OPTIONS_KEY_SIZE> key;
+            StaticString<MENGINE_OPTIONS_VALUE_SIZE> value[MENGINE_OPTIONS_VALUE_COUNT];
             uint32_t value_count;
         };
 

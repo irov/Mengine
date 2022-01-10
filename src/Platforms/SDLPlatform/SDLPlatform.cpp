@@ -1335,19 +1335,19 @@ namespace Mengine
     {
         if( _projectTitle == nullptr )
         {
-            m_projectTitle[0] = '\0';
+            m_projectTitle.clear();
 
             return;
         }
 
-        MENGINE_STRCPY( m_projectTitle, _projectTitle );
+        m_projectTitle.assign( _projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getProjectTitle( Char * const _projectTitle ) const
     {
-        MENGINE_STRCPY( _projectTitle, m_projectTitle );
+        m_projectTitle.copy( _projectTitle );
 
-        size_t len = MENGINE_STRLEN( m_projectTitle );
+        size_t len = m_projectTitle.size();
 
         return len;
     }
@@ -3223,7 +3223,7 @@ namespace Mengine
         );
 
 #if defined(MENGINE_PLATFORM_IOS)
-        SDL_Window * window = SDL_CreateWindow( m_projectTitle
+        SDL_Window * window = SDL_CreateWindow( m_projectTitle.c_str()
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
             , -1
@@ -3231,7 +3231,7 @@ namespace Mengine
             , windowFlags );
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        SDL_Window * window = SDL_CreateWindow( m_projectTitle
+        SDL_Window * window = SDL_CreateWindow( m_projectTitle.c_str()
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
             , -1
@@ -3259,7 +3259,7 @@ namespace Mengine
             uint32_t window_x_mode = (mode.w > width) ? SDL_WINDOWPOS_CENTERED : 50;
             uint32_t window_y_mode = (mode.h > height) ? SDL_WINDOWPOS_CENTERED : 50;
 
-            window = SDL_CreateWindow( m_projectTitle
+            window = SDL_CreateWindow( m_projectTitle.c_str()
                 , window_x_mode
                 , window_y_mode
                 , width
@@ -3269,7 +3269,7 @@ namespace Mengine
         }
         else
         {
-            window = SDL_CreateWindow( m_projectTitle
+            window = SDL_CreateWindow( m_projectTitle.c_str()
                 , SDL_WINDOWPOS_UNDEFINED
                 , SDL_WINDOWPOS_UNDEFINED
                 , mode.w

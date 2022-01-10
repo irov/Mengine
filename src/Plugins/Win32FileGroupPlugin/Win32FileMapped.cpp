@@ -20,8 +20,8 @@ namespace Mengine
     Win32FileMapped::Win32FileMapped()
         : m_hFile( INVALID_HANDLE_VALUE )
         , m_hMapping( INVALID_HANDLE_VALUE )
-        , m_dwAllocationGranularity( 0 )
         , m_liSize()
+        , m_dwAllocationGranularity( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////

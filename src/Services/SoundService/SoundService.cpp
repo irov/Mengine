@@ -510,6 +510,17 @@ namespace Mengine
             , _codecType.c_str()
         );
 
+        if( soundDecoder == nullptr )
+        {
+            LOGGER_ERROR( "invalid create sound decoder '%s' codec '%s' streamable [%s]"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , _codecType.c_str()
+                , _streamable == true ? "true" : "false"
+            );
+
+            return nullptr;
+        }
+
         SoundBufferInterfacePtr buffer = SOUND_SYSTEM()
             ->createSoundBuffer( soundDecoder, _streamable, _doc );
 

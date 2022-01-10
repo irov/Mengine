@@ -303,7 +303,7 @@ namespace Mengine
 
         SDLInputPtr m_sdlInput;
 
-        Char m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
+        StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
         uint64_t m_prevTime;
 

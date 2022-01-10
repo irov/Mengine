@@ -579,6 +579,15 @@ Core
     
     DecimalDigitsHelper.h
     
+    StringCopy.h
+    StringCopy.cpp
+    
+    StaticString.h
+    StaticString.cpp
+    
+    StaticWString.h
+    StaticWString.cpp
+    
     StringHelper.h
     StringHelper.cpp
     

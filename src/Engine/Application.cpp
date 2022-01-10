@@ -235,8 +235,8 @@ namespace Mengine
         const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
         const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
-        MENGINE_STRCPY( m_companyName, Project_Company );
-        MENGINE_STRCPY( m_projectName, Project_Name );
+        m_companyName.assign( Project_Company );
+        m_projectName.assign( Project_Name );
 
         m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );
@@ -352,8 +352,8 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "Application company '%s' project '%s' version [%u] locale '%s'"
-            , m_companyName
-            , m_projectName
+            , m_companyName.c_str()
+            , m_projectName.c_str()
             , m_projectVersion
             , m_locale.c_str()
         );
@@ -2166,18 +2166,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Application::getCompanyName( Char * const _companyName ) const
     {
-        MENGINE_STRCPY( _companyName, m_companyName );
+        m_companyName.copy( _companyName );
 
-        size_t companyNameLen = MENGINE_STRLEN( m_companyName );
+        size_t companyNameLen = m_companyName.size();
 
         return companyNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Application::getProjectName( Char * const _projectName ) const
     {
-        MENGINE_STRCPY( _projectName, m_projectName );
+        m_projectName.copy( _projectName );
 
-        size_t projectNameLen = MENGINE_STRLEN( m_projectName );
+        size_t projectNameLen = m_projectName.size();
 
         return projectNameLen;
     }

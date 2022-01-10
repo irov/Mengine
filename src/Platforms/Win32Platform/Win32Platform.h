@@ -10,6 +10,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 #include "Kernel/MouseCode.h"
+#include "Kernel/StaticWString.h"
 
 #include "Config/UniqueId.h"
 
@@ -224,7 +225,7 @@ namespace Mengine
         void updateWndMessage_();
 
     protected:
-        WChar m_windowClassName[MENGINE_MAX_PATH] = {L'\0'};
+        StaticWString<MENGINE_MAX_PATH> m_windowClassName;
 
         HINSTANCE m_hInstance;
 
@@ -282,7 +283,7 @@ namespace Mengine
         VectorUpdates m_updates;
 
         HICON m_hIcon;
-        WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {L'\0'};
+        StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
         uint64_t m_prevTime;
 

@@ -3,6 +3,7 @@
 #include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/StaticString.h"
 
 #ifndef MENGINE_ALLOCATOR_DEBUG
 #   ifdef MENGINE_WINDOWS_DEBUG
@@ -71,7 +72,7 @@ namespace Mengine
 
         struct ReportDesc
         {
-            Char doc[2048] = {'\0'};
+            StaticString<2048> doc;
             AtomicUInt32 count = 0;
             AtomicUInt32 total_alloc = 0;
         };

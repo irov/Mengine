@@ -209,7 +209,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( name ) < MENGINE_PLUGIN_NAME_MAX );
 
         PluginDesc desc;
-        MENGINE_STRCPY( desc.name, name );
+        desc.name.assign( name );
         desc.dynamicLibrary = _dynamicLibrary;
         desc.plugin = _plugin;
 
@@ -260,7 +260,7 @@ namespace Mengine
                 continue;
             }
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }
@@ -280,7 +280,7 @@ namespace Mengine
                 continue;
             }
 
-            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
+            if( desc.name.compare( _name ) != 0 )
             {
                 continue;
             }

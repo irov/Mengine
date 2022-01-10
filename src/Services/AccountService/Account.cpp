@@ -109,7 +109,7 @@ namespace Mengine
         }
 
         Setting st;
-        MENGINE_STRCPY( st.value, _defaultValue );
+        st.value.assign( _defaultValue );
         st.provider = _provider;
 
         m_settings.emplace( _setting, st );
@@ -133,7 +133,7 @@ namespace Mengine
 
         Setting & st = it_found->second;
 
-        MENGINE_STRCPY( st.value, _value );
+        st.value.assign( _value );
 
         if( st.provider != nullptr )
         {
@@ -159,7 +159,7 @@ namespace Mengine
 
         const Setting & st = it_found->second;
 
-        *_value = st.value;
+        *_value = st.value.c_str();
 
         return true;
     }
@@ -177,7 +177,7 @@ namespace Mengine
         {
             const Setting & st = it_found->second;
 
-            *_value = st.value;
+            *_value = st.value.c_str();
         }
 
         return true;
@@ -223,7 +223,9 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_STRNCPY( m_uid.data, uid, AccountUID::size_data );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( uid ) == 20 );
+
+        MENGINE_MEMCPY( m_uid.data, uid, 20 );
 
         for( auto && [key, st] : m_settings )
         {
@@ -238,7 +240,7 @@ namespace Mengine
                 continue;
             }
 
-            MENGINE_STRCPY( st.value, value );
+            st.value.assign( value );
         }
 
         return true;
@@ -317,7 +319,7 @@ namespace Mengine
 
         for( auto && [key, st] : m_settings )
         {
-            j_settings.set( key.c_str(), st.value );
+            j_settings.set( key.c_str(), st.value.c_str() );
         }
 
         j_root.set( "ACCOUNT", j_account );
@@ -346,7 +348,9 @@ namespace Mengine
                 continue;
             }
 
-            st.provider->onChangeSetting( st.value );
+            const Char * value_str = st.value.c_str();
+
+            st.provider->onChangeSetting( value_str );
         }
     }
     //////////////////////////////////////////////////////////////////////////

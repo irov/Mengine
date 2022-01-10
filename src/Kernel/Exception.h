@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Char.h"
+#include "Kernel/StaticString.h"
 
 #include <exception>
 
@@ -21,6 +21,6 @@ namespace Mengine
         const char * what() const noexcept override;
 
     protected:
-        Char m_message[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
+        StaticString<MENGINE_EXCEPTION_MAX_MESSAGE> m_message;
     };
 }

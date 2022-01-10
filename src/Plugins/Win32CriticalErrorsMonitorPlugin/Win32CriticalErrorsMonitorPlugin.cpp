@@ -58,7 +58,7 @@ namespace Mengine
         }
 
         if( PLATFORM_SERVICE()
-            ->createProcessDump( g_monitor->m_dumpPath, pExceptionPointers, false ) == false )
+            ->createProcessDump( g_monitor->m_dumpPath.c_str(), pExceptionPointers, false ) == false )
         {
             return false;
         }
@@ -109,7 +109,7 @@ namespace Mengine
         PlatformDateTime dateTime;
         dateTimeProvider->getLocalDateTime( &dateTime );
 
-        MENGINE_SPRINTF( m_dumpPath, "%sDump_%u_%u_%u_%u_%u_%u.dmp"
+        m_dumpPath.format( "%sDump_%u_%u_%u_%u_%u_%u.dmp"
             , userPath
             , dateTime.year
             , dateTime.month

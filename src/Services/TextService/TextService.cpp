@@ -115,7 +115,7 @@ namespace Mengine
                 return;
             }
 
-            Char text_str_value[4096] = {'\0'};
+            StaticString<4096> text_str_value;
             size_t text_str_size = 0;
 
             ConstString textKey;
@@ -162,17 +162,17 @@ namespace Mengine
                             , str_value_valid
                         );
 
-                        const Char * text_str_end = utf8::replace_invalid( str_value + 0, str_value + str_value_size, text_str_value );
+                        const Char * text_str_end = utf8::replace_invalid( str_value + 0, str_value + str_value_size, text_str_value.data() );
 
-                        text_str_size = text_str_end - text_str_value;
+                        text_str_size = text_str_end - text_str_value.c_str();
 
                         LOGGER_ERROR( "replace to |%s|"
-                            , text_str_value
+                            , text_str_value.c_str()
                         );
                     }
                     else
                     {
-                        MENGINE_STRCPY( text_str_value, str_value );
+                        text_str_value.assign( str_value );
                         text_str_size = str_value_size;
                     }
                 }
@@ -406,7 +406,7 @@ namespace Mengine
             bool isDublicate = false;
 
             Tags tags;
-            if( m_textService->addTextEntry( textKey, text_str_value, text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
+            if( m_textService->addTextEntry( textKey, text_str_value.c_str(), text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
                 LOGGER_ERROR( "file '%s' invalid add text key '%s'"
                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )

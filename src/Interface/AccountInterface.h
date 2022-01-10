@@ -6,6 +6,7 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/StaticString.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Magic.h"
@@ -22,8 +23,8 @@ namespace Mengine
     struct AccountUID
     {
         typedef Char value_type;
-        static constexpr size_t size_data = 20;
-        Char data[size_data];
+        static constexpr size_t size_data = 20U;
+        Char data[AccountUID::size_data];
     };
     //////////////////////////////////////////////////////////////////////////
     class AccountSettingProviderInterface

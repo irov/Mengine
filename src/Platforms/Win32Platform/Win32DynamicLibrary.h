@@ -3,6 +3,7 @@
 #include "Interface/DynamicLibraryInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/StaticString.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -31,7 +32,7 @@ namespace Mengine
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
 
     protected:
-        Char m_name[MENGINE_MAX_PATH] = {'\0'};
+        StaticString<MENGINE_MAX_PATH> m_name;
         HINSTANCE m_hInstance;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/PluginBase.h"
+#include "Kernel/StaticString.h"
 
 namespace Mengine
 {
@@ -25,8 +26,8 @@ namespace Mengine
         const Char * getUserId_();
 
     protected:
-        Char m_userId[21];
-        Char m_gameKey[256];
-        Char m_gameSecret[256];
+        StaticString<21> m_userId;
+        StaticString<256> m_gameKey;
+        StaticString<256> m_gameSecret;
     };
 }

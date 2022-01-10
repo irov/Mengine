@@ -27,6 +27,6 @@ namespace Mengine
         static LONG WINAPI s_exceptionHandler( EXCEPTION_POINTERS * pExceptionPointers );
 
     protected:
-        Char m_dumpPath[MENGINE_MAX_PATH] = {'\0'};
+        StaticString<MENGINE_MAX_PATH> m_dumpPath;
     };
 }

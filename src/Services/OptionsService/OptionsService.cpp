@@ -29,7 +29,7 @@ namespace Mengine
     bool OptionsService::_initializeService()
     {
         //Empty
-        SERVICE_WAIT_METHOD( LoggerServiceInterface, this, logOptions_ );
+        SERVICE_WAIT_METHOD( LoggerServiceInterface, this, OptionsService::logOptions_ );
 
         return true;
     }
@@ -72,9 +72,9 @@ namespace Mengine
                     return false;
                 }
 
-                MENGINE_STRCPY( op.key, option_key_str );
+                op.key.assign( option_key_str );
 
-                op.value[0][0] = '\0';
+                op.value[0].clear();
                 op.value_count = 0;
             }
             else
@@ -86,8 +86,7 @@ namespace Mengine
                     return false;
                 }
 
-                MENGINE_STRNCPY( op.key, option_key_str, key_size );
-                op.key[key_size] = '\0';
+                op.key.assign( option_key_str, key_size );
 
                 const Char * option_delim_str = MENGINE_STRCHR( option_key_str, '|' );
 
@@ -100,7 +99,7 @@ namespace Mengine
 
                     const Char * op_value = option_value_str + 1;
 
-                    MENGINE_STRCPY( op.value[0], op_value );
+                    op.value[0].append( op_value );
                     op.value_count = 1;
                 }
                 else
@@ -116,7 +115,7 @@ namespace Mengine
                             return false;
                         }
 
-                        MENGINE_STRNCPY( op.value[op.value_count], option_value_str + 1, value_size );
+                        op.value[op.value_count].append( option_value_str + 1, value_size );
                         ++op.value_count;
 
                         const Char * option_delim_test_str = MENGINE_STRCHR( option_delim_str + 1, '|' );
@@ -140,7 +139,7 @@ namespace Mengine
                             return MENGINE_ISUPPER( _ch ) != 0;
                         } ) == 0 );
 
-                        MENGINE_STRCPY( op.value[op.value_count], op_value );
+                        op.value[op.value_count].append( op_value );
                         ++op.value_count;
 
                         break;
@@ -149,7 +148,7 @@ namespace Mengine
                 }
             }
 
-            MENGINE_ASSERTION_FATAL( Algorithm::count_if( op.key, op.key + MENGINE_STRLEN( op.key ), []( Char _ch )
+            MENGINE_ASSERTION_FATAL( Algorithm::count_if( op.key.c_str(), op.key.c_str() + op.key.size(), []( Char _ch )
             {
                 return MENGINE_ISUPPER( _ch ) != 0;
             } ) == 0 );
@@ -169,7 +168,7 @@ namespace Mengine
 
         for( const Option & op : m_options )
         {
-            if( MENGINE_STRCMP( op.key, _key ) != 0 )
+            if( op.key.compare( _key ) != 0 )
             {
                 continue;
             }
@@ -192,23 +191,23 @@ namespace Mengine
 
         for( const Option & op : m_options )
         {
-            if( MENGINE_STRCMP( op.key, _key ) == 0 )
+            if( op.key.compare( _key ) == 0 )
             {
                 return false;
             }
         }
 
         Option op;
-        MENGINE_STRCPY( op.key, _key );
+        op.key.assign( _key );
 
         if( MENGINE_STRLEN( _value ) == 0 )
         {
-            op.value[0][0] = '\0';
+            op.value[0].clear();
             op.value_count = 0;
         }
         else
         {
-            MENGINE_STRCPY( op.value[0], _value );
+            op.value[0].append( _value );
             
             op.value_count = 1;
         }        
@@ -227,12 +226,12 @@ namespace Mengine
 
         for( const Option & op : m_options )
         {
-            if( MENGINE_STRCMP( op.key, _key ) != 0 )
+            if( op.key.compare( _key ) != 0 )
             {
                 continue;
             }
 
-            return op.value[0];
+            return op.value[0].c_str();
         }
 
         return _default;
@@ -247,14 +246,14 @@ namespace Mengine
 
         for( const Option & op : m_options )
         {
-            if( MENGINE_STRCMP( op.key, _key ) != 0 )
+            if( op.key.compare( _key ) != 0 )
             {
                 continue;
             }
 
             for( uint32_t index = 0; index != op.value_count; ++index )
             {
-                _values[index] = op.value[index];
+                _values[index] = op.value[index].c_str();
             }
 
             *_count = op.value_count;
@@ -274,17 +273,17 @@ namespace Mengine
 
         for( const Option & op : m_options )
         {
-            if( MENGINE_STRCMP( op.key, _key ) != 0 )
+            if( op.key.compare( _key ) != 0 )
             {
                 continue;
             }
 
             uint32_t value_uint32;
-            if( Helper::stringalized( op.value[0], &value_uint32 ) == false )
+            if( Helper::stringalized( op.value[0].c_str(), &value_uint32 ) == false )
             {
                 LOGGER_ERROR( "option '%s' invalid cast to uint32_t value '%s'"
                     , _key
-                    , op.value[0]
+                    , op.value[0].c_str()
                 );
 
                 return 0;
@@ -332,7 +331,7 @@ namespace Mengine
             if( option.value_count == 0 )
             {
                 LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s"
-                    , option.key
+                    , option.key.c_str()
                 );
             }
             else
@@ -340,20 +339,20 @@ namespace Mengine
                 if( option.value_count == 1 )
                 {
                     LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s=%s"
-                        , option.key
-                        , option.value[0]
+                        , option.key.c_str()
+                        , option.value[0].c_str()
                     );
                 }
                 else
                 {
                     LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s="
-                        , option.key
+                        , option.key.c_str()
                     );
 
                     for( uint32_t index = 0; index != option.value_count; ++index )
                     {
                         LOGGER_MESSAGE_RELEASE_WN( false, true, "%s|"
-                            , option.value[index]
+                            , option.value[index].c_str()
                         );
                     }
                 }

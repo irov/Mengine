@@ -3,6 +3,7 @@
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/Stringstream.h"
+#include "Kernel/StringCopy.h"
 #include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"
@@ -28,16 +29,9 @@ namespace Mengine
 
             String str_date = ss_date.str();
             
-            String::size_type str_date_size = str_date.size();
+            size_t copy_size = Helper::stringCopy( _filePath, str_date.c_str(), _capacity );
 
-            if( str_date_size >= _capacity )
-            {
-                str_date_size = _capacity;
-            }            
-
-            MENGINE_STRNCPY( _filePath, str_date.c_str(), str_date_size );
-
-            return (size_t)str_date_size;
+            return copy_size;
         }
     }
 }

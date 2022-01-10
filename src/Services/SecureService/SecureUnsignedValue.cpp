@@ -33,7 +33,7 @@ namespace Mengine
         m_hash = hash;
         m_value = _value ^ hash;
 
-        MENGINE_SPRINTF( m_buffer, "%x%x", m_value, hash );
+        m_buffer.format( "%x%x", m_value, hash );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SecureUnsignedValue::getUnprotectedValue( uint32_t * const _value ) const
@@ -45,10 +45,10 @@ namespace Mengine
             return false;
         }
 
-        Char buffer[20] = {'\0'};
-        MENGINE_SNPRINTF( buffer, 20, "%x%x", m_value, hash );
+        StaticString<20> buffer;
+        buffer.format( "%x%x", m_value, hash );
 
-        uint32_t unprotected_value = (m_value ^ hash) ^ (MENGINE_ABS( MENGINE_STRCMP( m_buffer, buffer ) ) * ~0U);
+        uint32_t unprotected_value = (m_value ^ hash) ^ (MENGINE_ABS( m_buffer.compare( buffer ) ) * ~0U);
 
         if( (unprotected_value ^ hash) != m_value )
         {
@@ -206,7 +206,7 @@ namespace Mengine
 
         writer.writePOD( m_hash );
         writer.writePOD( m_value );
-        writer.writeBuffer( m_buffer, sizeof( Char ) * 20 );
+        writer.writeBuffer( m_buffer.c_str(), m_buffer.capacity() );
 
         uint64_t secureHash = SECURE_SERVICE()
             ->getSecureHash();
@@ -241,7 +241,7 @@ namespace Mengine
 
         reader.readPOD( m_hash );
         reader.readPOD( m_value );
-        reader.readBuffer( m_buffer, 20 );
+        reader.readBuffer( m_buffer.data(), m_buffer.capacity() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

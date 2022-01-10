@@ -328,14 +328,14 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AllocatorService::get_report_info( uint32_t _index, const char ** _doc ) const
+    size_t AllocatorService::get_report_info( uint32_t _index, const Char ** _doc ) const
     {
         MENGINE_UNUSED( _index );
 
 #if MENGINE_ALLOCATOR_DEBUG
         const ReportDesc & r = m_reports[_index];
 
-        *_doc = r.doc;
+        *_doc = r.doc.c_str();
 
         return r.count;
 #else
@@ -368,7 +368,7 @@ namespace Mengine
         {
             const ReportDesc & r = m_reports[index];
 
-            if( MENGINE_STRCMP( r.doc, _doc ) != 0 )
+            if( r.doc.compare( _doc ) != 0 )
             {
                 continue;
             }
@@ -405,7 +405,7 @@ namespace Mengine
         {
             ReportDesc & r = m_reports[index];
 
-            if( MENGINE_STRCMP( r.doc, _doc ) != 0 )
+            if( r.doc.compare( _doc ) != 0 )
             {
                 continue;
             }
@@ -431,7 +431,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus );
 
-            MENGINE_STRCPY( r.doc, _doc );
+            r.doc.assign( _doc );
 
             r.count += report_add;
             r.count -= report_minus;

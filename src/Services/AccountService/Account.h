@@ -7,7 +7,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/String.h"
+#include "Kernel/StaticString.h"
 #include "Kernel/Map.h"
 
 namespace Mengine
@@ -76,7 +76,7 @@ namespace Mengine
 
         struct Setting
         {
-            Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE] = {'\0'};
+            StaticString<MENGINE_ACCOUNT_SETTING_MAXVALUE> value;
             AccountSettingProviderInterfacePtr provider;
         };
 

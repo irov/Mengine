@@ -373,6 +373,8 @@ namespace Mengine
         EVENTABLE_METHOD( EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
 
+        this->finalizeRenderResources();
+
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             SCRIPT_SERVICE()
@@ -384,8 +386,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( EVENT_GAME_DESTROY )
             ->onGameDestroy();
-
-        this->finalizeRenderResources();
     }
     //////////////////////////////////////////////////////////////////////////
     bool GameService::_initializeService()

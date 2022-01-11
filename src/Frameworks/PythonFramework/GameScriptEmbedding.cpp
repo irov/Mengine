@@ -48,6 +48,7 @@ namespace Mengine
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onStop" ), EVENT_GAME_STOP, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onInitialize" ), EVENT_GAME_INITIALIZE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onInitializeRenderResources" ), EVENT_GAME_INITIALIZE_RENDER_RESOURCES, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFinalizeRenderResources" ), EVENT_GAME_FINALIZE_RENDER_RESOURCES, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onAccountFinalize" ), EVENT_GAME_ACCOUNT_FINALIZE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFinalize" ), EVENT_GAME_FINALIZE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onDestroy" ), EVENT_GAME_DESTROY, _doc );

@@ -1233,6 +1233,17 @@ namespace Mengine
                 return intersect;
             }
             //////////////////////////////////////////////////////////////////////////
+            Tags s_makeTags( const pybind::args & _args )
+            {
+                Tags t;
+                for( const pybind::object & o : _args )
+                {
+                    t.addTag( o.extract() );
+                }
+
+                return t;
+            }
+            //////////////////////////////////////////////////////////////////////////
 #ifdef PYBIND_VISIT_OBJECTS
             class MyObjectVisits
                 : public pybind::pybind_visit_objects
@@ -3979,6 +3990,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "intersectsPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygons );
         pybind::def_functor( _kernel, "intersectsPolygonsWM", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWM );
         pybind::def_functor( _kernel, "intersectsPolygonsWMP", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWMP );
+
+        pybind::def_functor_args( _kernel, "makeTags", helperScriptMethod, &HelperScriptMethod::s_makeTags );
 
 
         pybind::def_functor_kernel( _kernel, "objects", helperScriptMethod, &HelperScriptMethod::s_objects );

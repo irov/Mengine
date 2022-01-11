@@ -10,6 +10,10 @@ namespace Mengine
     {
         DECLARE_FACTORABLE( Win32DateTimeProvider );
 
+    public:
+        Win32DateTimeProvider();
+        ~Win32DateTimeProvider() override;
+
     protected:
         void getLocalDateTime( PlatformDateTime * const _dateTime ) const override;
 

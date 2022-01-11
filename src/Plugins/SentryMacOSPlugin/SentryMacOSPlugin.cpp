@@ -7,6 +7,10 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+extern "C" {
+    #include "SentryMacOS.h"
+}
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Crash.h"
 #include "Kernel/Stringalized.h"
@@ -72,8 +76,13 @@ namespace Mengine
         LOGGER_MESSAGE( "Sentry DSN: %s"
             , Sentry_DSN
         );
+        
+        if( SentryMacOSInitialize( Sentry_DSN ) != 0 )
+        {
+            return false;
+        }
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &SentryPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &SentryMacOSPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

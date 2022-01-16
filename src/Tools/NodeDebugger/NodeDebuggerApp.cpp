@@ -1310,6 +1310,9 @@ namespace Mengine
             ImGui::RadioButton( "Render", &SceneTagId, 3 );
         }
 
+        
+        ImGui::InputText( "Filter:", m_selectFilter, 2048 );
+
         switch( SceneTagId )
         {
         case 0:
@@ -1320,7 +1323,7 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "ArrowTree", ImVec2( 0, 200.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_arrow, &m_selectedArrowNode, "ArrowFull" );
+                            this->DoNodeElement( m_arrow, m_selectFilter, &m_selectedArrowNode, "ArrowFull" );
 
                             m_selectedNode = m_selectedArrowNode;
                         }
@@ -1336,7 +1339,7 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_scene, &m_selectedSceneNode, "SceneFull" );
+                            this->DoNodeElement( m_scene, m_selectFilter, &m_selectedSceneNode, "SceneFull" );
 
                             m_selectedNode = m_selectedSceneNode;
 
@@ -1354,7 +1357,7 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_scenePickerable, &m_selectedPickerableNode, "ScenePickerable" );
+                            this->DoNodeElement( m_scenePickerable, m_selectFilter, &m_selectedPickerableNode, "ScenePickerable" );
 
                             m_selectedNode = m_selectedPickerableNode;
                         }
@@ -1370,7 +1373,7 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_sceneRenderable, &m_selectedRenderableNode, "SceneRenderable" );
+                            this->DoNodeElement( m_sceneRenderable, m_selectFilter, &m_selectedRenderableNode, "SceneRenderable" );
 
                             m_selectedNode = m_selectedRenderableNode;
                         }
@@ -2090,60 +2093,70 @@ namespace Mengine
         return ss.str();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, DebuggerNode ** _selectedNode, const String & _tag )
+    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, const Char * _filter, DebuggerNode ** _selectedNode, const String & _tag )
     {
         const ImGuiTreeNodeFlags seletedFlag = (*_selectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
         const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
         const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
-        String treeNodeName = _node->name.empty() == false ? _node->name : "***unnamed***";
-        String treeNodeId = _tag + "_" + (Stringstream() << _node->uid).str();
-        String fullLabel = treeNodeName + " [" + _node->type + "]" + "##" + treeNodeId;
-
-        ImGuiExt::ImIcon icon;
-        ImGuiExt::ImIcon * iconPtr = nullptr;
-        if( _node->icon )
+        if( strlen( _filter ) == 0 || _node->name.find( _filter ) != String::npos )
         {
-            icon.image = reinterpret_cast<ImTextureID>(_node->icon->image);
-            icon.uv0 = ImVec2( _node->icon->uv0_X, _node->icon->uv0_Y );
-            icon.uv1 = ImVec2( _node->icon->uv1_X, _node->icon->uv1_Y );
+            String treeNodeName = _node->name.empty() == false ? _node->name : "***unnamed***";
+            String treeNodeId = _tag + "_" + (Stringstream() << _node->uid).str();
+            String fullLabel = treeNodeName + " [" + _node->type + "]" + "##" + treeNodeId;
 
-            iconPtr = &icon;
-        }
-
-        ImGuiTreeNodeFlags flag = _node->children.empty() ? flagsNoChildren : flagsNormal;
-
-        if( std::find( m_pathToSelectedNode.begin(), m_pathToSelectedNode.end(), _node->uid ) != m_pathToSelectedNode.end() )
-        {
-            ImGui::SetNextItemOpen( true );
-
-            if( _node->uid == m_pathToSelectedNode[0] )
+            ImGuiExt::ImIcon icon;
+            ImGuiExt::ImIcon * iconPtr = nullptr;
+            if( _node->icon )
             {
-                flag = ImGuiTreeNodeFlags_Selected;
+                icon.image = reinterpret_cast<ImTextureID>(_node->icon->image);
+                icon.uv0 = ImVec2( _node->icon->uv0_X, _node->icon->uv0_Y );
+                icon.uv1 = ImVec2( _node->icon->uv1_X, _node->icon->uv1_Y );
+
+                iconPtr = &icon;
+            }
+
+            ImGuiTreeNodeFlags flag = _node->children.empty() ? flagsNoChildren : flagsNormal;
+
+            if( std::find( m_pathToSelectedNode.begin(), m_pathToSelectedNode.end(), _node->uid ) != m_pathToSelectedNode.end() )
+            {
+                ImGui::SetNextItemOpen( true );
+
+                if( _node->uid == m_pathToSelectedNode[0] )
+                {
+                    flag = ImGuiTreeNodeFlags_Selected;
+                }
+            }
+
+            std::pair<bool, bool> result = ImGuiExt::TreeNodeWithIcon
+            (
+                iconPtr,
+                fullLabel.c_str(),
+                flag,
+                !_node->enable
+            );
+
+            if( result.second == true )
+            {
+                this->OnSelectNode( _node, _selectedNode );
+            }
+
+            if( result.first == true )
+            {
+                for( DebuggerNode * child : _node->children )
+                {
+                    this->DoNodeElement( child, _filter, _selectedNode, _tag );
+                }
+
+                ImGui::TreePop();
             }
         }
-
-        std::pair<bool, bool> result = ImGuiExt::TreeNodeWithIcon
-        (
-            iconPtr,
-            fullLabel.c_str(),
-            flag,
-            !_node->enable
-        );
-
-        if( result.second == true )
-        {
-            this->OnSelectNode( _node, _selectedNode );
-        }
-
-        if( result.first == true )
+        else
         {
             for( DebuggerNode * child : _node->children )
             {
-                this->DoNodeElement( child, _selectedNode, _tag );
+                this->DoNodeElement( child, _filter, _selectedNode, _tag );
             }
-
-            ImGui::TreePop();
         }
     }
     //////////////////////////////////////////////////////////////////////////

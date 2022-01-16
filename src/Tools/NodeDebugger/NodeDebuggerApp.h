@@ -689,7 +689,7 @@ namespace Mengine
         void DoUINetwork();
         void DoUISettingsTab();
         String DoIPInput( const String & _title, const String & _inIP );
-        void DoNodeElement( DebuggerNode * _node, DebuggerNode ** _selectedNode, const String & _tag );
+        void DoNodeElement( DebuggerNode * _node, const Char * _filter, DebuggerNode ** _selectedNode, const String & _tag );
         void DoNodeProperties( DebuggerNode * _node );
         void OnConnectButton();
         void OnDisconnectButton();
@@ -784,6 +784,8 @@ namespace Mengine
         DebuggerNode * m_sceneRenderable;
         String m_selectedNodePath;
         String m_lastSelectedNodePath;
+
+        Char m_selectFilter[2048] = {'\0'};
 
         int m_sceneUpdateFreq;
         double m_sceneUpdateTimer;

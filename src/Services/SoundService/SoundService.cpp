@@ -1311,7 +1311,7 @@ namespace Mengine
 
         if( _pos > duration )
         {
-            LOGGER_ERROR( "emitter %u pos %f length %f"
+            LOGGER_ERROR( "emitter %u invalid position %f because length %f"
                 , identity->getId()
                 , _pos
                 , duration

@@ -20,6 +20,11 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_counter == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
+    void ReferenceCounter::setReferenceCount( uint32_t _counter )
+    {
+        m_counter = _counter;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ReferenceCounter::incref()
     {
         if( ++m_counter == 1 )
@@ -34,6 +39,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ReferenceCounter::decref()
     {
+        MENGINE_ASSERTION_FATAL( m_counter > 0 );
+
         if( --m_counter != 0 )
         {
             return false;

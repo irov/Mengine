@@ -15,9 +15,12 @@ namespace Mengine
         ~ReferenceCounter();
 
     public:
+        void setReferenceCount( uint32_t _counter );
+
+    public:
         MENGINE_INLINE uint32_t getReferenceCount() const;
         MENGINE_INLINE bool isReferencing() const;
-
+            
     public:
         bool incref();
         bool decref();

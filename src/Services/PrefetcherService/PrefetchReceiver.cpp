@@ -4,7 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PrefetchReceiver::PrefetchReceiver()
-        : m_prefetchRefcount( 1 )
+        : m_prefetchRefcount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,8 @@ namespace Mengine
     bool PrefetchReceiver::initialize( const ThreadTaskPrefetchPtr & _prefetcher )
     {
         m_prefetcher = _prefetcher;
+
+        m_prefetchRefcount.incref();
 
         return true;
     }

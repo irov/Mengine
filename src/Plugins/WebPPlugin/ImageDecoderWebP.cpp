@@ -151,7 +151,9 @@ namespace Mengine
             }
         }
 
-        return decoderData->size;
+        size_t size = decoderData->size;
+
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, const ImageDecoderData * _data )

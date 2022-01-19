@@ -2814,7 +2814,7 @@ namespace Mengine
 
         WChar pathFull[MENGINE_MAX_PATH] = {'\0'};
         MENGINE_WNSPRINTF( pathFull, MENGINE_MAX_PATH, L"%ls%ls"
-            , _path
+            , unicode_path
             , pathDirectory
         );
 
@@ -4252,7 +4252,7 @@ namespace Mengine
             if( ::CreateProcess( unicode_process, unicode_command
                 , NULL
                 , NULL
-                , _wait == true ? TRUE : FALSE
+                , TRUE
                 , NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
                 , NULL
                 , &startupInfo
@@ -4338,10 +4338,10 @@ namespace Mengine
                 , NULL
                 , NULL
                 , FALSE
-                , NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
+                , CREATE_NEW_PROCESS_GROUP | NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
                 , NULL
                 , &startupInfo
-                , &processInfo ) == FALSE )
+                , &processInfo) == FALSE )
             {
                 LOGGER_ERROR( "invalid CreateProcess '%s' %s"
                     , _process
@@ -4350,6 +4350,9 @@ namespace Mengine
 
                 return false;
             }
+
+            ::CloseHandle( processInfo.hProcess );
+            ::CloseHandle( processInfo.hThread );
         }
 
         return true;

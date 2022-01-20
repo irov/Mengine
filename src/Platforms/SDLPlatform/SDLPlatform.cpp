@@ -1680,6 +1680,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::getDesktopResolution( Resolution * const _resolution ) const
     {
+#if !defined(MENGINE_PLATFORM_IOS)
         int displayIndex;
 
         if( m_sdlWindow == nullptr )
@@ -1690,6 +1691,7 @@ namespace Mengine
         {
             displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
         }
+#endif
 
         uint32_t width;
         uint32_t height;

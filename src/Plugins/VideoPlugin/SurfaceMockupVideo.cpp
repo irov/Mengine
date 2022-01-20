@@ -207,22 +207,6 @@ namespace Mengine
 
                 return;
             }
-            else
-            {
-                float time = m_intervalBegin;
-
-                float intervalTime = duration * (m_playCount - m_playIterator);
-
-                if( m_intervalStart > intervalTime )
-                {
-                    time += m_intervalStart - intervalTime;
-                }
-
-                if( time > frameTime )
-                {
-                    time -= frameTime;
-                }
-            }
         }
     }
     ////////////////////////////////////////////////////////////////////

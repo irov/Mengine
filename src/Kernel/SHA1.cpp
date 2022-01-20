@@ -84,8 +84,6 @@ namespace Mengine
                 state[2] += c;
                 state[3] += d;
                 state[4] += e;
-
-                a = b = c = d = e = 0;
             }
             //////////////////////////////////////////////////////////////////////////
             static void SHA1_Init( SHA1_CTX * context )

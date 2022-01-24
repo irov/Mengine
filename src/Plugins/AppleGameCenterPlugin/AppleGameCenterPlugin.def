@@ -1,0 +1,2 @@
+LIBRARY "AppleGameCenterPlugin"
+EXPORTS dllCreatePlugin @1

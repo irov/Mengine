@@ -2,18 +2,14 @@
 
 #include "AppleGameCenterInterface.h"
 
-#include "Interface/SoundServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
-#include "Interface/PlayerServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/AffectorCallbackInterface.h"
 #include "Kernel/Factory.h"
-#include "Kernel/AffectorHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"

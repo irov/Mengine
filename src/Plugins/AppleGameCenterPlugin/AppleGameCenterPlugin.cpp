@@ -11,7 +11,7 @@
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleGameCenter );
+SERVICE_EXTERN( AppleGameCenterService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleGameCenter, Mengine::AppleGameCenterPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( AppleGameCenter, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( AppleGameCenterService, MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
@@ -54,12 +54,12 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
-        SERVICE_FINALIZE( AppleGameCenter );
+        SERVICE_FINALIZE( AppleGameCenterService );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleGameCenterPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( AppleGameCenter );
+        SERVICE_DESTROY( AppleGameCenterService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

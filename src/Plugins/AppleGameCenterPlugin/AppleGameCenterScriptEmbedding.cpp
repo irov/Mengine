@@ -46,6 +46,37 @@ namespace Mengine
             }
 
         public:
+            bool connect()
+            {
+                bool result = APPLE_GAMECENTER_SERVICE()
+                    ->connect();
+
+                return result;
+            }
+
+        public:
+            void reportAchievement( const ConstString & _achievementName, float _percentComplete )
+            {
+                APPLE_GAMECENTER_SERVICE()
+                    ->reportAchievement( _achievementName, _percentComplete );
+            }
+
+            bool checkAchievement( const ConstString & _achievementName ) const
+            {
+                bool result = APPLE_GAMECENTER_SERVICE()
+                    ->checkAchievement( _achievementName );
+
+                return result;
+            }
+
+        public:
+            void reportScore( const ConstString & _key, uint32_t _score )
+            {
+                APPLE_GAMECENTER_SERVICE()
+                    ->reportScore( _key, _score );
+            }
+
+        public:
 
         };
         //////////////////////////////////////////////////////////////////////////
@@ -72,6 +103,11 @@ namespace Mengine
 
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleGameCenter", true );
+
+        pybind::def_functor( _kernel, "appleGameCenterConnect", scriptMethod, &AppleGameCenterScriptMethod::connect );
+        pybind::def_functor( _kernel, "appleGameCenterReportAchievement", scriptMethod, &AppleGameCenterScriptMethod::reportAchievement );
+        pybind::def_functor( _kernel, "appleGameCenterCheckAchievement", scriptMethod, &AppleGameCenterScriptMethod::checkAchievement );
+        pybind::def_functor( _kernel, "appleGameCenterReportScore", scriptMethod, &AppleGameCenterScriptMethod::reportScore );
 
         m_implement = scriptMethod;
 

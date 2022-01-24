@@ -19,7 +19,7 @@ namespace Mengine
         virtual bool checkAchievement( const ConstString & _achievementName ) const = 0;
 
     public:
-        virtual void reportScore( const ConstString & _key, uint32_t _score ) = 0;        
+        virtual void reportScore( const ConstString & _key, uint32_t _score ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

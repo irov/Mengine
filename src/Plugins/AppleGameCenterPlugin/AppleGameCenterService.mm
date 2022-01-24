@@ -37,7 +37,9 @@ namespace Mengine
                 NSLog( @"Completed Achievements %@", completedAchievements );
                 for( NSString * ach in completedAchievements )
                 {
-                    achievementsComplete.push_back( [ach UTF8String] );
+                    const Char * ach_str = [ach UTF8String];
+                    
+                    m_achievementsComplete.push_back( Helper::stringizeString(ach_str) );
                 }
             }] ;
         }];
@@ -47,17 +49,17 @@ namespace Mengine
     {
         NSString * nsDescription = [NSString stringWithUTF8String : _achievementName.c_str()];
 
-        [m_gameCenterNative reportAchievementIdentifier : nsDescription percentComplete : percentComplete withBanner : YES] ;
+        [m_gameCenterNative reportAchievementIdentifier : nsDescription percentComplete : _percentComplete withBanner : YES] ;
 
         if( _percentComplete >= 100.f )
         {
-            achievementsComplete.push_back( achievementName );
+            m_achievementsComplete.push_back( _achievementName );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::checkAchievement( const ConstString & _achievementName ) const
     {
-        if( Algorithm::find_if(m_achievementsComplete.begin(), m_achievementsComplete.end(), _achievementName) == m_achievementsComplete.end() )
+        if( Algorithm::find( m_achievementsComplete.begin(), m_achievementsComplete.end(), _achievementName) == m_achievementsComplete.end() )
         {
             return false;
         }

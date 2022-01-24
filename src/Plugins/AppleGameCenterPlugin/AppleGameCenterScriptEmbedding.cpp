@@ -82,7 +82,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        AmplifierScriptMethodPtr scriptMethod = m_implement;
+        AppleGameCenterScriptMethodPtr scriptMethod = m_implement;
         scriptMethod->finalize();
 
         m_implement = nullptr;

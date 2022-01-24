@@ -73,30 +73,21 @@
     
 	[scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
 		if (error != nil) {
-            showAlert(@"Error",@"Could not submit score with Game Center.",@"Try Later");
+            NSLog(@"Could not submit score with Game Center.");
 		}
 	}];
 }
 
-void showAlert(NSString* title, NSString* message, NSString*cancelButtonTitle){
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:cancelButtonTitle style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action) {}];
-
-    [alert addAction:defaultAction];
-    
-    [[AppDelegate viewController] presentViewController:alert animated:YES completion:nil];
-}
-    
 - (void)reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent withBanner:(BOOL)banner {
     if (!gcSuccess) return;
     
     GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier: identifier] ;
     if (achievement) {
 #ifdef DEBUG
-        NSLog(@"report achievement %@ - %2.2f",identifier,percent);
+        NSLog(@"report achievement %@ - %2.2f"
+              , identifier
+              , percent
+        );
 #endif
         [achievement setShowsCompletionBanner:banner];
         achievement.percentComplete = percent;
@@ -104,8 +95,7 @@ void showAlert(NSString* title, NSString* message, NSString*cancelButtonTitle){
         [GKAchievement reportAchievements:@[achievement]
                     withCompletionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
-                showAlert(@"Error",@"Could not submit achievement with Game Center.",@"Try Later");
-                
+                NSLog(@"Could not submit achievement with Game Center.");
             }
         }];
     }

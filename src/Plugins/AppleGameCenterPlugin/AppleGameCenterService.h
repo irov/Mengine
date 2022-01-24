@@ -16,6 +16,10 @@ namespace Mengine
 		AppleGameCenterService();
 		~AppleGameCenterService() override;
 
+    protected:
+        bool _initializeService() override;
+        void _finalizeService() override;
+        
 	protected:
         bool connect() override;
 
@@ -30,5 +34,5 @@ namespace Mengine
 		AppleGameCenterNative * m_gameCenterNative;
 
 		VectorConstString m_achievementsComplete;
-	}
+    };
 }

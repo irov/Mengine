@@ -189,10 +189,7 @@ namespace Mengine
     {
         m_time += _time;
 
-        float frameRate = MENGINE_SURFACE_MOCKUP_VIDEO_FRAMERATE;
         float duration = MENGINE_SURFACE_MOCKUP_VIDEO_DURATION;
-
-        float frameTime = 1000.f / frameRate;
 
         while( m_time >= duration )
         {

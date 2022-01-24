@@ -326,6 +326,10 @@ PLUGIN_EXPORT( Optick );
 PLUGIN_EXPORT( GameAnalytics );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
+PLUGIN_EXPORT( AppleGameCenter );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
 PLUGIN_EXPORT( XmlToBin );
 #endif
@@ -715,7 +719,7 @@ namespace Mengine
             LOGGER_MESSAGE( "%s", Info );\
             if( PLUGIN_CREATE(Name, Doc) == false )\
             {\
-                LOGGER_ERROR( "[invalid initialize]" );\
+                LOGGER_ERROR( "%s [invalid initialize]", Info );\
             return false;\
             }\
         }
@@ -1143,6 +1147,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
         MENGINE_ADD_PLUGIN( GameAnalytics, "Plugin Game Analytics...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
+        MENGINE_ADD_PLUGIN( AppleGameCenter, "Plugin Apple Game Center...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC

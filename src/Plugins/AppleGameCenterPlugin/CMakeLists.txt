@@ -9,7 +9,7 @@ src
     AppleGameCenterPlugin.def
     
     AppleGameCenterService.h
-    AppleGameCenterService.cpp
+    AppleGameCenterService.mm
     
     AppleGameCenterManager.h
     AppleGameCenterManager.m

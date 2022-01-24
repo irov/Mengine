@@ -22,6 +22,7 @@ namespace Mengine
 {    
     namespace
     {
+        //////////////////////////////////////////////////////////////////////////
         class AppleGameCenterScriptMethod
             : public Factorable
         {

@@ -1,36 +1,13 @@
-#import "GameCenterManager.h"
-#import "../../AppDelegate.h"
+#import "AppleGameCenterNative.h"
 
-@implementation GameCenterManager
+@implementation AppleGameCenterNative
+
 @synthesize gcSuccess;
 
 #pragma mark -
 
 - (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController{
     [gameCenterViewController dismissViewControllerAnimated:YES completion:^{}];
-}
-
-- (void)showLeaderboards:(NSString*)leaderboard fromViewController:(UIViewController *)viewController
-{
-    GKGameCenterViewController *leaderboardController = [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateLeaderboards];
-    if (leaderboardController != nil)
-    {
-        leaderboardController.gameCenterDelegate = self;
-        if([leaderboard length] > 0)
-        {
-            leaderboardController.leaderboardCategory = leaderboard;
-        }
-        [viewController presentModalViewController: leaderboardController animated: YES];
-    }
-}
-
-- (void)showAchievements:(UIViewController *)viewController {
-    GKGameCenterViewController *achievementController = [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateAchievements];
-	if (achievementController != nil)
-    {
-        achievementController.gameCenterDelegate = self;
-		[viewController presentViewController:achievementController animated:YES completion:nil];
-	}
 }
 
 - (void) authenticateHandler:(NSError*)error

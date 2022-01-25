@@ -1,11 +1,10 @@
 #include "AppleAppTrackingPlugin.h"
-#include "AppleGameCenterInterface.h"
 
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "AppleGameCenterScriptEmbedding.h"
+#include "AppleAppTrackingScriptEmbedding.h"
 #endif
 
 #include "Kernel/ConstStringHelper.h"
@@ -30,13 +29,13 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleGameCenterScriptEmbedding" ), Helper::makeFactorableUnique<AppleGameCenterScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAppTrackingScriptEmbedding" ), Helper::makeFactorableUnique<AppleAppTrackingScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleGameCenterScriptEmbedding" ) );
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAppTrackingScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 

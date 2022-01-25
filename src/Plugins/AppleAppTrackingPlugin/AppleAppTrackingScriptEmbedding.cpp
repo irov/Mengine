@@ -42,12 +42,10 @@ namespace Mengine
             }
 
         public:
-            bool authorization()
+            void authorization()
             {
-                bool result = APPLE_APPTRACKING_SERVICE()
+                APPLE_APPTRACKING_SERVICE()
                     ->authorization();
-
-                return result;
             }
         };
         //////////////////////////////////////////////////////////////////////////

@@ -220,6 +220,11 @@ MACRO(MENGINE_PROJECT name)
     SET(SRC_FILES)
 ENDMACRO()
 
+MACRO(MENGINE_PROJECT_EXTRA_LANGUAGE name language)
+    PROJECT(${name} C CXX ${language})
+    SET(SRC_FILES)
+ENDMACRO()
+
 MACRO(ADD_FILTER group_name)
     SOURCE_GROUP(${group_name} FILES ${ARGN})
     

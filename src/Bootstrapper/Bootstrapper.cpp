@@ -330,6 +330,10 @@ PLUGIN_EXPORT( GameAnalytics );
 PLUGIN_EXPORT( AppleGameCenter );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_APPTRACKING_STATIC
+PLUGIN_EXPORT( AppleAppTracking );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
 PLUGIN_EXPORT( XmlToBin );
 #endif
@@ -1151,6 +1155,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
         MENGINE_ADD_PLUGIN( AppleGameCenter, "Plugin Apple Game Center...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_APPTRACKING_STATIC
+        MENGINE_ADD_PLUGIN( AppleAppTracking, "Plugin Apple App Tracking...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC

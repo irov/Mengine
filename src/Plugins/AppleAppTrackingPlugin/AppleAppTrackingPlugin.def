@@ -1,0 +1,2 @@
+LIBRARY "AppleAppTrackingPlugin"
+EXPORTS dllCreatePlugin @1

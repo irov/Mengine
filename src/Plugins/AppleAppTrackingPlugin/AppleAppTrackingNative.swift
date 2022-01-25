@@ -1,10 +1,9 @@
-import UIKit
 import Foundation
 import AppTrackingTransparency
 import AdSupport
 
 @objc
-class AppTracking:NSObject{
+class AppleAppTrackingNative:NSObject{
     
     @objc
     static func requestAuthorization() {

@@ -73,7 +73,7 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleAppTracking", true );
 
-        pybind::def_functor( _kernel, "appleGameCenterAuthorization", scriptMethod, &AppleAppTrackingScriptMethod::authorization );
+        pybind::def_functor( _kernel, "appleAppTrackingAuthorization", scriptMethod, &AppleAppTrackingScriptMethod::authorization );
 
         m_implement = scriptMethod;
 

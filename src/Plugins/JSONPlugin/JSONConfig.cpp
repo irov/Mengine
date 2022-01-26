@@ -73,6 +73,13 @@ namespace Mengine
                 return;
             }
 
+            MENGINE_ASSERTION_FATAL( j_value.is_type_array() == true, "Store section '%s' key '%s' invalid type '%s' is not array doc: %s"
+                , _section
+                , _key
+                , jpp::get_jpp_type_string( j_value )
+                , MENGINE_DOCUMENTABLE_STR( _storage.get(), "getJSONValues" )
+            );
+
             for( const jpp::object & j_element : jpp::array( j_value ) )
             {
                 MENGINE_ASSERTION_FATAL( jpp::check_object_internal()(j_element.ptr(), static_cast<typename T::value_type *>(nullptr)) == true, "Storage section '%s' key '%s' invalid type '%s' cast '%s' doc: %s"

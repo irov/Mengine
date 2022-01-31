@@ -10,6 +10,8 @@
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AppleAppTrackingService );
+//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleAppTracking, Mengine::AppleAppTrackingPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -25,6 +27,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingPlugin::_initializePlugin()
     {
+        SERVICE_CREATE( AppleAppTrackingService, MENGINE_DOCUMENT_FACTORABLE );
+
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
@@ -48,10 +52,13 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
+
+        SERVICE_FINALIZE( AppleAppTrackingService );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingPlugin::_destroyPlugin()
     {
+        SERVICE_DESTROY( AppleAppTrackingService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

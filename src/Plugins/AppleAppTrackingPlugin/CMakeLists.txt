@@ -8,9 +8,10 @@ src
     AppleAppTrackingPlugin.cpp
     AppleAppTrackingPlugin.def
     
-    AppleAppTrackingNative.h
-    AppleAppTrackingNative.m
     AppleAppTrackingNative.swift
+    
+    AppleAppTrackingService.h
+    AppleAppTrackingService.mm
     
     ObjC-Bridging-Header.h
 )

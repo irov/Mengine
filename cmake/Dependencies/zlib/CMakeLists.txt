@@ -58,7 +58,7 @@ if(MSVC)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 endif()
 
-set(ZLIB_PC ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc)
+set(ZLIB_PC ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/zlib.pc)
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
 		${ZLIB_PC} @ONLY)
 configure_file(	${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein

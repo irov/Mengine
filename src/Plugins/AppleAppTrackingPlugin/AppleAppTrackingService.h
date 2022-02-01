@@ -3,7 +3,6 @@
 #include "AppleAppTrackingInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/VectorConstString.h"
 
 namespace Mengine
 {
@@ -11,8 +10,8 @@ namespace Mengine
 		: public ServiceBase<AppleAppTrackingInterface>
 	{
 	public:
-		AppleGameCenterService();
-		~AppleGameCenterService() override;
+        AppleAppTrackingService();
+		~AppleAppTrackingService() override;
 
     protected:
         bool _initializeService() override;

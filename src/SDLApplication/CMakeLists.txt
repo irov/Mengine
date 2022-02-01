@@ -1,4 +1,8 @@
-MENGINE_PROJECT(SDLApplication)
+if(MENGINE_TARGET_IOS)
+	MENGINE_PROJECT_EXTRA_LANGUAGE(SDLApplication Swift)
+else()
+	MENGINE_PROJECT(SDLApplication)
+endif()
 
 SET(MENGINE_XCODE_DEPLOY_PATH "Desktop" CACHE STRING "Mengine Xcode deploy path")
 

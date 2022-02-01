@@ -1,4 +1,4 @@
-MENGINE_PROJECT_EXTRA_LANGUAGE(AppleAppTrackingPlugin Swift)
+MENGINE_PROJECT(AppleAppTrackingPlugin)
 
 ADD_FILTER(
 src

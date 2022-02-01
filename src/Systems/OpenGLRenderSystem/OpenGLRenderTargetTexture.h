@@ -66,6 +66,8 @@ namespace Mengine
     protected:
         GLuint m_tuid;
         GLuint m_fuid;
+        
+        mutable GLuint m_oldfuid;
 
         uint32_t m_width;
         uint32_t m_height;

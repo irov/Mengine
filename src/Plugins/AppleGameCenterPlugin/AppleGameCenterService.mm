@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::_initializeService()
     {
-        m_gameCenterNative = [[AppleGameCenterNative alloc]init];
+        m_gameCenterNative = [[AppleGameCenterNative alloc] init];
 
         return true;
     }
@@ -27,6 +27,7 @@ namespace Mengine
     void AppleGameCenterService::_finalizeService()
     {
         [m_gameCenterNative release];
+        m_gameCenterNative = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::connect()

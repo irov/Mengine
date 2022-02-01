@@ -262,10 +262,6 @@ PLUGIN_EXPORT( Graphics );
 PLUGIN_EXPORT( Sentry );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_SENTRYMACOS_STATIC
-PLUGIN_EXPORT( SentryMacOS );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_STEAM_STATIC
 PLUGIN_EXPORT( Steam );
 #endif
@@ -324,6 +320,10 @@ PLUGIN_EXPORT( Optick );
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
 PLUGIN_EXPORT( GameAnalytics );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_SENTRY_STATIC
+PLUGIN_EXPORT( AppleSentry );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
@@ -942,11 +942,11 @@ namespace Mengine
         LOGGER_MESSAGE( "Plugins..." );
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
-        MENGINE_ADD_PLUGIN( Sentry, "Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Sentry, "Plugin Win32 Sentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#ifdef MENGINE_PLUGIN_SENTRYMACOS_STATIC
-        MENGINE_ADD_PLUGIN( SentryMacOS, "Plugin SentryMacOS...", MENGINE_DOCUMENT_FACTORABLE );
+#ifdef MENGINE_PLUGIN_APPLE_SENTRY_STATIC
+        MENGINE_ADD_PLUGIN( AppleSentry, "Plugin Apple Sentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_EXTERNAL_SOURCE
@@ -1130,7 +1130,7 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "Plugin Android Unity Ads Native...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "Plugin Android UnityAds Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
@@ -1154,11 +1154,11 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
-        MENGINE_ADD_PLUGIN( AppleGameCenter, "Plugin Apple Game Center...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleGameCenter, "Plugin Apple GameCenter...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_APPTRACKING_STATIC
-        MENGINE_ADD_PLUGIN( AppleAppTracking, "Plugin Apple App Tracking...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleAppTracking, "Plugin Apple AppTracking...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC

@@ -233,12 +233,13 @@ if(MENGINE_TARGET_MACOS)
             
             MESSAGE("COCOAPOD: ${COCOAPOD_NAME} ${COCOAPOD_GIT} [${COCOAPOD_TAG}]")
         endforeach()
-        
-        STRING(APPEND PODFILE_BUFFER "\n")
     ENDIF()
     
+    STRING(APPEND PODFILE_BUFFER "#patch\n")
+    STRING(APPEND PODFILE_BUFFER "\n")
+    
     SET(PODS_PATCH)
-    file (STRINGS "Pods.patch" PODS_PATCH)
+    file(STRINGS "Pods.patch" PODS_PATCH NEWLINE_CONSUME)
     
     STRING(APPEND PODFILE_BUFFER ${PODS_PATCH})
     

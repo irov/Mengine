@@ -1,8 +1,8 @@
-#import "SentryMacOS.h"
+#import "AppleSentry.h"
 
 @import Sentry;
 
-int SentryMacOSInitialize( const char * _dsn )
+int AppleSentryInitialize( const char * _dsn )
 {
     [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
         options.dsn = @(_dsn);

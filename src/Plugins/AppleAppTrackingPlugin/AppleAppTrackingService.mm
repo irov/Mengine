@@ -29,7 +29,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::authorization()
     {
-	    [AppleAppTrackingNative requestAuthorization];
+        [AppleAppTrackingNative requestAuthorizationWithCb:^(NSInteger code, NSString * _Nullable idfa) {
+            
+        }];
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -6,7 +6,7 @@ import AdSupport
 class AppleAppTrackingNative:NSObject{
     
     @objc
-    static func requestAuthorization() {
+    static func requestAuthorization(cb: ((Int, String?) -> Void)? = nil) {
         DispatchQueue.main.async {
             guard #available(iOS 14, *) else { return }
             ATTrackingManager.requestTrackingAuthorization { status in
@@ -14,11 +14,11 @@ class AppleAppTrackingNative:NSObject{
                     switch status {
                     case .authorized:
                         let idfa = ASIdentifierManager.shared().advertisingIdentifier
-                        print("Пользователь разрешил доступ. IDFA: ", idfa)
+                        cb?(0, idfa.uuidString)
                     case .denied, .restricted:
-                        print("Пользователь запретил доступ.")
+                        cb?(1, nil)
                     case .notDetermined:
-                        print("Пользователь ещё не получил запрос на авторизацию.")
+                        cb?(2, nil)
                     @unknown default:
                         break
                     }

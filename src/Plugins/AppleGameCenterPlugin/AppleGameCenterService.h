@@ -33,6 +33,7 @@ namespace Mengine
 	protected:
 		AppleGameCenterNative * m_gameCenterNative;
 
+        bool m_achievementsLoaded;
 		VectorConstString m_achievementsComplete;
     };
 }

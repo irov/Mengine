@@ -10,6 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleGameCenterService::AppleGameCenterService()
         : m_gameCenterNative( nil )
+        ,m_achivementLoaded( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,12 +34,16 @@ namespace Mengine
     bool AppleGameCenterService::connect()
     {
         [m_gameCenterNative login : ^ (BOOL success)
-        {
+         {
             NSLog( @"connect callback %s", success ? "True" : "FALSE" );
-
+            
+            if(m_achievementsLoaded) return;
+            
             [m_gameCenterNative loadCompletedAchievements : ^ (NSArray * completedAchievements)
-            {
+             {
                 NSLog( @"Completed Achievements %@", completedAchievements );
+                m_achievementsLoaded = true;
+                
                 for( NSString * ach in completedAchievements )
                 {
                     const Char * ach_str = [ach UTF8String];

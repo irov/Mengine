@@ -259,13 +259,12 @@ android {
             }
         }
     }
-
     packagingOptions {
-        pickFirst 'lib/**/libc++_shared.so'
-        pickFirst 'lib/**/libopenal.so'
-        pickFirst 'lib/**/libSDL2.so'
-        pickFirst 'lib/**/libhidapi.so'
+        jniLibs {
+            pickFirsts += ['lib/**/libc++_shared.so', 'lib/**/libopenal.so', 'lib/**/libSDL2.so', 'lib/**/libhidapi.so']
+        }
     }
+
 
     preBuild.dependsOn ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 

@@ -261,7 +261,7 @@ android {
     }
     packagingOptions {
         jniLibs {
-            pickFirsts += ['lib/**/libc++_shared.so', 'lib/**/libopenal.so', 'lib/**/libSDL2.so', 'lib/**/libhidapi.so']
+            pickFirsts += ['lib/**/libc++_shared.so', 'lib/**/libopenal.so', 'lib/**/libSDL2.so']
         }
     }
 

@@ -11,6 +11,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         size_t staticWStringSize( const WChar * _buffer, size_t _capacity )
         {
+            MENGINE_UNUSED( _capacity );
+
             size_t buffer_size = MENGINE_WCSLEN( _buffer );
 
             MENGINE_ASSERTION_FATAL( buffer_size < _capacity );
@@ -20,6 +22,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         WChar staticWStringIndex( const WChar * _buffer, size_t _capacity, size_t _index )
         {
+            MENGINE_UNUSED( _capacity );
+
             MENGINE_ASSERTION_FATAL( _index < _capacity );
 
             WChar c = _buffer[_index];
@@ -29,6 +33,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticWStringChange( WChar * _buffer, size_t _capacity, size_t _index, WChar _ch )
         {
+            MENGINE_UNUSED( _capacity );
+
             MENGINE_ASSERTION_FATAL( _index < _capacity );
 
             _buffer[_index] = _ch;

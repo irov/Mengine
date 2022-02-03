@@ -12,6 +12,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         size_t staticStringSize( const Char * _buffer, size_t _capacity )
         {
+            MENGINE_UNUSED( _capacity );
+
             size_t buffer_size = MENGINE_STRLEN( _buffer );
 
             MENGINE_ASSERTION_FATAL( buffer_size < _capacity );
@@ -21,6 +23,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         Char staticStringIndex( const Char * _buffer, size_t _capacity, size_t _index )
         {
+            MENGINE_UNUSED( _capacity );
+
             MENGINE_ASSERTION_FATAL( _index < _capacity );
 
             Char c = _buffer[_index];
@@ -30,6 +34,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticStringChange( Char * _buffer, size_t _capacity, size_t _index, Char _ch )
         {
+            MENGINE_UNUSED( _capacity );
+
             MENGINE_ASSERTION_FATAL( _index < _capacity );
 
             _buffer[_index] = _ch;

@@ -65,8 +65,8 @@ namespace Mengine
         }
 
     protected:
-        C * m_self;
         M m_method;
+        C * m_self;
     };
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID, class L>

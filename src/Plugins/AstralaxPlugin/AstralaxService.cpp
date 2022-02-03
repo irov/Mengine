@@ -159,6 +159,12 @@ namespace Mengine
             AstralaxEmitterContainerDesc new_desc;
             new_desc.reference = 0;
             new_desc.container = container.get();
+
+#ifdef MENGINE_DEBUG
+            new_desc.fileGroupName = _fileGroup->getName();
+            new_desc.FilePath = _filePath;
+#endif
+
 #if MENGINE_DOCUMENT_ENABLE
             new_desc.doc = _doc;
 #endif
@@ -234,6 +240,13 @@ namespace Mengine
                     const AstralaxEmitterContainerDesc & desc = it_found->second;
 
                     const ResourceImagePtr & resourceImage = desc.container->getAtlasResourceImage( c.file );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "atlas [%u] file '%s:%s' image '%s' not found"
+                        , c.ptc_id
+                        , MENGINE_DEBUG_VALUE( desc.fileGroupName.c_str(), "UNKNOWN" )
+                        , MENGINE_DEBUG_VALUE( desc.FilePath.c_str(), "UNKNOWN" )
+                        , c.file
+                    );
 
                     if( resourceImage->compile() == false )
                     {

@@ -70,6 +70,11 @@ namespace Mengine
             uint32_t reference;
             const AstralaxEmitterContainer * container;
 
+#ifdef MENGINE_DEBUG
+            ConstString fileGroupName;
+            FilePath FilePath;
+#endif
+
 #if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif

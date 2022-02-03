@@ -294,10 +294,10 @@ android.applicationVariants.all { variant ->
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.core:core:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.preference:preference:1.2.0'
     implementation 'androidx.annotation:annotation:1.3.0'
 
     testImplementation 'junit:junit:4.13.2'
@@ -355,7 +355,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == tru
     dependencies {
         implementation 'com.google.android.gms:play-services-gcm:17.0.0'
         implementation 'com.google.android.gms:play-services-ads:19.7.0' // issue https://github.com/irov/Mengine/issues/89
-        implementation 'com.google.android.gms:play-services-basement:17.6.0'
+        implementation 'com.google.android.gms:play-services-basement:18.0.0'
     }
 }
 else

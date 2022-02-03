@@ -81,9 +81,7 @@ android {
                             "-DSDL_HAPTIC:BOOLEAN=ON",
                             "-DSDL_HAPTIC_ENABLED_BY_DEFAULT:BOOLEAN=ON",
                             "-DSDL_POWER:BOOLEAN=ON",
-                            "-DSDL_POWER_ENABLED_BY_DEFAULT:BOOLEAN=ON",
-                            "-DASSEMBLY:BOOLEAN=OFF",
-                            "-DHIDAPI:BOOLEAN=ON"
+                            "-DSDL_POWER_ENABLED_BY_DEFAULT:BOOLEAN=ON"
                 }
             }
         }
@@ -105,9 +103,7 @@ android {
                             "-DSDL_HAPTIC:BOOLEAN=ON",
                             "-DSDL_HAPTIC_ENABLED_BY_DEFAULT:BOOLEAN=ON",
                             "-DSDL_POWER:BOOLEAN=ON",
-                            "-DSDL_POWER_ENABLED_BY_DEFAULT:BOOLEAN=ON",
-                            "-DASSEMBLY:BOOLEAN=OFF",
-                            "-DHIDAPI:BOOLEAN=ON"
+                            "-DSDL_POWER_ENABLED_BY_DEFAULT:BOOLEAN=ON"
                 }
             }
         }
@@ -126,8 +122,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

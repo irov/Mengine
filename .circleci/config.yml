@@ -9,6 +9,8 @@ jobs:
       name: android/android
       sdk-version: '30'
       
+    parallelism: 4
+    
     steps:
       - checkout
       

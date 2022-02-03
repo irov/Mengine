@@ -54,16 +54,20 @@ namespace Mengine
         HM_FILE mf;
         if( this->loadContainer_( binary_memory, binary_size, &mf ) == false )
         {
+            LOGGER_ERROR( "invalid initialize astralax container '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            );
+
             return false;
         }
-
-        m_mf = mf;
-
-        m_memory = memory;
 
         MENGINE_ASSERTION_FATAL( Magic_HasTextures( m_mf ) == false, "astralax '%s' incorrect safe 'with textures'"
             , _filePath.c_str()
         );
+
+        m_mf = mf;
+
+        m_memory = memory;
 
         int32_t atlasCount = Magic_GetStaticAtlasCount( m_mf );
 
@@ -122,7 +126,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & AstralaxEmitterContainer::getAtlasResourceImage( const Char * _file ) const
+    const ResourceImagePtr & AstralaxEmitterContainer::getAtlasResourceImage( uint32_t _index ) const
+    {
+        MENGINE_ASSERTION( _index < m_resourceImages.size(), "invalid get resource image index '%u' atlas count '%u'"
+            , _index
+            , (uint32_t)m_resourceImages.size()
+        );
+
+        const ResourceImagePtr & resourceImage = m_resourceImages[_index];
+
+        return resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AstralaxEmitterContainer::getAtlasResourceImageCount() const
+    {
+        VectorResourceImages::size_type size = m_resourceImages.size();
+
+        return (uint32_t)size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & AstralaxEmitterContainer::findAtlasResourceImage( const Char * _file ) const
     {
         int32_t atlasCount = Magic_GetStaticAtlasCount( m_mf );
 

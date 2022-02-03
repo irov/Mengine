@@ -38,9 +38,11 @@ namespace Mengine
 
     public:
         bool setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
+        const ResourceImagePtr & getAtlasResourceImage( uint32_t _index ) const override;
+        uint32_t getAtlasResourceImageCount() const override;
 
     public:
-        const ResourceImagePtr & getAtlasResourceImage( const Char * _file ) const;
+        const ResourceImagePtr & findAtlasResourceImage( const Char * _file ) const;
 
     public:
         HM_EMITTER initialEmitterId() const;

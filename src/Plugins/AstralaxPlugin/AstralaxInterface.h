@@ -154,6 +154,8 @@ namespace Mengine
 
     public:
         virtual bool setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) = 0;
+        virtual const ResourceImagePtr & getAtlasResourceImage( uint32_t _index ) const = 0;
+        virtual uint32_t getAtlasResourceImageCount() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AstralaxEmitterContainerInterface> AstralaxEmitterContainerInterfacePtr;

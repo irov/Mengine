@@ -239,7 +239,7 @@ namespace Mengine
 
                     const AstralaxEmitterContainerDesc & desc = it_found->second;
 
-                    const ResourceImagePtr & resourceImage = desc.container->getAtlasResourceImage( c.file );
+                    const ResourceImagePtr & resourceImage = desc.container->findAtlasResourceImage( c.file );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "atlas [%u] file '%s:%s' image '%s' not found"
                         , c.ptc_id

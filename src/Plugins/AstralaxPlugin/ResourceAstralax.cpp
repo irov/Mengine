@@ -4,6 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/FileGroupHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
@@ -48,7 +49,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, "resource '%s' can't create container file '%s'"
             , this->getName().c_str()
-            , this->getContent()->getFilePath().c_str()
+            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+        );
+
+        MENGINE_ASSERTION_FATAL( container->getAtlasResourceImageCount() == m_resourceImages.size(), "resource '%s' container '%s' has different image count '%u != %u'"
+            , this->getName().c_str()
+            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+            , container->getAtlasResourceImageCount()
+            , m_resourceImages.size()
         );
 
         uint32_t iterator = 0U;

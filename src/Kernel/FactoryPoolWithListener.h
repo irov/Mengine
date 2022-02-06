@@ -31,8 +31,8 @@ namespace Mengine
             }
 
         protected:
-            M m_method;
             C * m_self;
+            M m_method;
         };
         //////////////////////////////////////////////////////////////////////////
         template<class C, class M, class T>

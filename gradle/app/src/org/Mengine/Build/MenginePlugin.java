@@ -3,10 +3,16 @@ package org.Mengine.Build;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
+
+import java.util.Formatter;
 
 public class MenginePlugin {
     private MengineActivity m_activity;
+    private Formatter m_formatter;
+    private String m_tag;
+    private String m_pluginName;
 
     public MengineActivity getActivity()
     {
@@ -17,7 +23,34 @@ public class MenginePlugin {
     {
         m_activity = activity;
 
+        StringBuilder sb = new StringBuilder();
+        Formatter formatter = new Formatter(sb);
+
+        m_formatter = formatter;
+
+        m_tag = this.getClass().getSimpleName();
+
         return true;
+    }
+
+    protected void addPythonPlugin(String name)
+    {
+        m_pluginName = name;
+
+        m_activity.addPythonPlugin(m_pluginName, this);
+    }
+
+    public void log(String format, Object ... args)
+    {
+        Formatter formatter = m_formatter.format(format, args);
+        String message = formatter.toString();
+
+        Log.i(m_tag, message);
+    }
+
+    public void pythonCall(String method, Object ... args)
+    {
+        m_activity.pythonCall(m_pluginName, method, args);
     }
 
     public void onCreate(Bundle savedInstanceState)

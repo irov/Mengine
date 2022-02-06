@@ -10,8 +10,6 @@ import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 
 public class MengineSentryPlugin extends MenginePlugin {
-    private static final String TAG = "Sentry";
-
     @Override
     public void onMengineInitializeBaseServices()
     {
@@ -20,13 +18,13 @@ public class MengineSentryPlugin extends MenginePlugin {
         SentryAndroid.init(activity, options -> {
             String SENTRY_DNS = activity.getConfigValue("Sentry", "DSN", "");
             options.setDsn(SENTRY_DNS);
-            Log.i(TAG, "Sentry DNS:" + SENTRY_DNS);
+            this.log("Sentry DNS: %s", SENTRY_DNS);
 
             String buildVersion = activity.getBuildVersion();
             options.setRelease(buildVersion);
-            Log.i(TAG, "Sentry Build Version:" + buildVersion);
         });
     }
+
     @Override
     public void onMengineCreateApplication()
     {

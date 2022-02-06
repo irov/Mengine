@@ -1,6 +1,13 @@
 package org.Mengine.Plugin.LocalNotifications;
 
+import org.Mengine.Plugin.LocalNotifications.NotificationPublisher;
+
 import org.Mengine.Build.MenginePlugin;
+import org.Mengine.Build.MengineActivity;
+import org.Mengine.Build.R;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -16,24 +23,64 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
+import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-
-import org.Mengine.Build.MengineActivity;
-import org.Mengine.Build.R;
-
 public class MengineLocalNotificationsPlugin extends MenginePlugin {
-    private static Context _currentContext;
     private static final String channelId = "mengine_channel_id";
     private static final CharSequence channelName = "Mengine Channel";
 
-    public MengineLocalNotificationsPlugin(MengineActivity activity) {
-        _currentContext = activity;
+    @Override
+    public void onPythonEmbedding() {
+        MengineActivity activity = this.getActivity();
 
+        this.addPythonPlugin("LocalNotifications");
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
+            int id = intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
+
+            this.pythonCall("onLocalNotificationsPress", id);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void scheduleJobServiceNotification(int id, String title, String content, int delay) {
+        this.scheduleJobNotification(delay, NotificationJobService.notificationBundle(id, title, content));
+    }
+
+    public void scheduleNotification(Notification notification, int id, int delay) {
+        MengineActivity activity = this.getActivity();
+        
+        Intent notificationIntent = new Intent(activity, NotificationPublisher.class);
+
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    public void instantlyPresentNotification(Notification notification, int id) {
+        MengineActivity activity = this.getActivity();
+        
+        NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(id, notification);
+    }
+    
+    public void run() {
+        MengineActivity activity = this.getActivity();
+        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager = (NotificationManager) _currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
@@ -43,49 +90,21 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
             notificationChannel.setVibrationPattern(new long[]{1000, 2000});
             notificationManager.createNotificationChannel(notificationChannel);
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        //if (_instance.getIntent().hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
-        //    AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
-        //}
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        //if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
-        //    AndroidNativeLocalNotifications_onLocalNotificationsPress(intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
-        //}
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void scheduleJobServiceNotification(int id, String title, String content, int delay){
-        scheduleJobNotification(delay, NotificationJobService.notificationBundle(id, title, content));
-    }
-
-    public void scheduleNotification(Notification notification, int id, int delay) {
-        Intent notificationIntent = new Intent(_currentContext, NotificationPublisher.class);
-
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(_currentContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) _currentContext.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
-
-    public void instantlyPresentNotification(Notification notification, int id) {
-        NotificationManager notificationManager = (NotificationManager)_currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(id, notification);
+        
+        if (activity.getIntent().hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
+            int id = activity.getIntent().getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
+        
+            this.pythonCall("onLocalNotificationsPress", id);
+        }
     }
     
     public void cancelAll() {
-        NotificationManager notificationManager = (NotificationManager)_currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        MengineActivity activity = this.getActivity();
+        
+        NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            JobScheduler jobScheduler = (JobScheduler) _currentContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
             jobScheduler.cancelAll();
         }
     }
@@ -110,15 +129,17 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleJobNotification(int delayMillis, PersistableBundle bundle){
-        Log.d(MengineActivity.TAG, "Schedule notification with delay " + delayMillis);
+        this.log("Schedule notification with delay: %u", delayMillis);
+        
+        MengineActivity activity = this.getActivity();
 
-        JobInfo.Builder builder = new JobInfo.Builder((int)SystemClock.elapsedRealtime(), new ComponentName(_currentContext, NotificationJobService.class));
+        JobInfo.Builder builder = new JobInfo.Builder((int)SystemClock.elapsedRealtime(), new ComponentName(activity, NotificationJobService.class));
         JobInfo jobInfo = builder
                 .setMinimumLatency(delayMillis)
                 .setOverrideDeadline(delayMillis + 10000)
                 .setExtras(bundle)
                 .build();
-        JobScheduler jobScheduler = (JobScheduler) _currentContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(jobInfo);
     }
 }

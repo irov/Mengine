@@ -52,7 +52,7 @@ namespace Mengine
             , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
         );
 
-        MENGINE_ASSERTION_FATAL( container->getAtlasResourceImageCount() == m_resourceImages.size(), "resource '%s' container '%s' has different image count '%u != %u'"
+        MENGINE_ASSERTION_FATAL( container->getAtlasResourceImageCount() == m_resourceImages.size(), "resource '%s' container '%s' has different image count '%u != %zu'"
             , this->getName().c_str()
             , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
             , container->getAtlasResourceImageCount()

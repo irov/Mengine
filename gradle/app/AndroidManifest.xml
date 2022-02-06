@@ -34,13 +34,25 @@
 
         <meta-data android:name="com.google.android.gms.ads.AD_MANAGER_APP" android:value="true"/>
         <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="@string/admob_app_id"/>
+        
+        <!-- Firebase -->
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false"/>
         <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true"/>
+        <!-- Firebase -->
+        
+        <!-- Google Analytics -->
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false"/>
         <meta-data android:name="google_analytics_ssaid_collection_enabled" android:value="false"/>
         <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false"/>
+        <!-- Google Analytics -->
+        
+        <!-- Sentry -->
         <meta-data android:name="io.sentry.auto-init" android:value="false" />
+        <!-- Sentry -->
+        
+        <!-- Facebook -->
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <!-- Facebook -->
 
         <activity
             android:name="MengineActivity"
@@ -60,6 +72,7 @@
         </activity>
 
         <!-- MarSDK -->
+        <!--
         <activity
             android:name="com.mar.sdk.impl.activities.LoginActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
@@ -86,6 +99,7 @@
         <meta-data android:name="ulog.enable" android:value="true"/>
         <meta-data android:name="ulog.level" android:value="DEBUG"/>
         <meta-data android:name="ulog.local" android:value="true"/>
+        -->
         <!-- MARSDK -->
 
         <activity

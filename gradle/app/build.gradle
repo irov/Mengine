@@ -21,6 +21,8 @@ android {
         return true
     }
 
+    ext.plugins = []
+
     signingConfigs {
         config {
             if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE")) {
@@ -337,6 +339,9 @@ else
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_FACEBOOK", true) == true ) {
     println 'ANDROID_APP_ENABLE_FACEBOOK: TRUE'
+    
+    android.sourceSets.main.java.srcDirs += ['src_plugins/Facebook'];
+    android.ext.plugins += 'org.Mengine.Plugin.Facebook.MengineFacebookPlugin';
 
     dependencies {
         implementation 'com.facebook.android:facebook-android-sdk:12.0.0'
@@ -402,10 +407,22 @@ else
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'
 }
 
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS", true) == true ) {
+    println 'ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS: TRUE'
+
+    android.sourceSets.main.java.srcDirs += ['src_plugins/LocalNotifications']
+    android.ext.plugins += 'org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationsPlugin'
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS: FALSE'
+}
+
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
     println 'ANDROID_APP_ENABLE_SENTRY: TRUE'
 
     android.sourceSets.main.java.srcDirs += ['src_plugins/Sentry']
+    android.ext.plugins += 'org.Mengine.Plugin.Sentry.MengineSentryPlugin'
 
     apply plugin: 'io.sentry.android.gradle'
 
@@ -422,6 +439,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_MAR", true) == true ) {
     println 'ANDROID_APP_ENABLE_MAR: TRUE'
 
     android.sourceSets.main.java.srcDirs += ['src_plugins/MAR']
+    android.ext.plugins += 'org.Mengine.Plugin.MAR.MengineMARPlugin'
     
     if (project.hasProperty("ANDROID_APP_PLUGIN_MAR_RES_DIR")) {
         print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: '
@@ -438,3 +456,20 @@ else
 {
     println 'ANDROID_APP_ENABLE_MAR: FALSE'
 }
+
+android {
+    buildTypes {
+        debug {
+            buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {
+                "\"${it}\""
+            }.join(",") + '}'
+        }
+
+        release {
+            buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {
+                "\"${it}\""
+            }.join(",") + '}'
+        }
+    }
+}
+

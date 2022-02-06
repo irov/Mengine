@@ -5,6 +5,7 @@
 
 #include "Kernel/ModuleBase.h"
 #include "Kernel/Map.h"
+#include "Kernel/Pair.h"
 
 #include "pybind/pybind.hpp"
 
@@ -15,7 +16,7 @@ namespace Mengine
             : public Mixin
     {
     public:
-        virtual void pythonMethod( const String & _method, const String & _args ) = 0;
+        virtual void pythonMethod( const String & _plugin, const String & _method, const String & _args ) = 0;
         virtual void addPlugin( const String & _name, const jobject & _plugin ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -46,11 +47,11 @@ namespace Mengine
         void addCommand( const LambdaPythonEventHandler & _command );
 
     public:
-        void pythonMethod( const String & _method, const String & _args ) override;
+        void pythonMethod( const String & _plugin, const String & _method, const String & _args ) override;
         void addPlugin( const String & _name, const jobject & _plugin ) override;
 
     public:
-        void setAndroidCallback( const ConstString & _method, const pybind::object & _cb );
+        void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb );
         bool androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
 
     protected:
@@ -61,7 +62,7 @@ namespace Mengine
 
         pybind::dict m_globals;
 
-        typedef Map<ConstString, pybind::object> MapAndroidCallbacks;
+        typedef Map<Pair<ConstString, ConstString>, pybind::object> MapAndroidCallbacks;
         MapAndroidCallbacks m_callbacks;
 
         typedef Map<ConstString, jobject> MapAndroidPlugins;

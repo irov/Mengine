@@ -2,18 +2,25 @@ package org.Mengine.Build;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.Mengine.Build.MenginePlugin;
-//import org.Mengine.Build.AdMob.AdMobInteractionLayer;
-//import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
-//import org.Mengine.Build.Facebook.FacebookInteractionLayer;
-//import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
-//import org.Mengine.Build.LocalNotifications.NotificationPublisher;
-//import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.io.IOException;
 
 import android.app.Notification;
 import android.content.*;
@@ -29,13 +36,6 @@ public class MengineActivity extends SDLActivity {
     public static final String TAG = "MENGINE";
 
     public ArrayList<MenginePlugin> plugins;
-
-    //public FacebookInteractionLayer facebookInteractionLayer;
-    //public UnityAdsInteractionLayer unityAdsInteractionLayer;
-
-    //public AdMobInteractionLayer adMobInteractionLayer;
-    //public DevToDevInteractionLayer devToDevInteractionLayer;
-    //public LocalNotificationsInteractionLayer localNotificationsInteractionLayer;
 
     private static MengineActivity _instance;
 
@@ -58,18 +58,6 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String method, String args);
-    //private static native void AndroidNativeFacebook_setupFacebookJNI();
-    //private static native void AndroidNativeFacebook_onSDKInitialized();
-    //private static native void AndroidNativeUnity_setupUnityJNI();
-    //private static native void AndroidNativeUnity_onSDKInitialized();
-    //private static native void AndroidNativeAdMob_setupAdMobJNI();
-    //private static native void AndroidNativeAdMob_onSDKInitialized();
-    //private static native void AndroidNativeDevToDev_setupDevToDevJNI();
-    //private static native void AndroidNativeDevToDev_onSDKInitialized();
-    //private static native void AndroidNativeLinking_setupLinkingJNI();
-    //private static native void AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
-    //private static native void AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
-    //private static native void AndroidNativeLocalNotifications_onLocalNotificationsPress(int id);
 
     @Override
     protected String[] getLibraries() {
@@ -117,64 +105,69 @@ public class MengineActivity extends SDLActivity {
     protected void initPlugins() {
         this.plugins = new ArrayList<MenginePlugin>();
 
-        this.createPlugin("org.Mengine.Plugin.Sentry.MengineSentryPlugin");
-        this.createPlugin("org.Mengine.Plugin.MAR.MengineMARPlugin");
+        for(String n : BuildConfig.MENGINE_GRADLE_ANDROID_PLUGINS) {
+            this.createPlugin(n);
+        }
 
         AndroidNativeKernel_setupKernelJNI();
         AndroidNativePython_setupPythonJNI();
-
-        //AndroidNativeFacebook_setupFacebookJNI();
-        //AndroidNativeUnity_setupUnityJNI();
-        //AndroidNativeAdMob_setupAdMobJNI();
-        //AndroidNativeDevToDev_setupDevToDevJNI();
-        //AndroidNativeLinking_setupLinkingJNI();
-        //AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
     }
 
     public static String getCompanyName()
     {
        return AndroidNativeMengine_getCompanyName();
     }
+    
     public static String getProjectName()
     {
         return AndroidNativeMengine_getProjectName();
     }
+    
     public static int getProjectVersion()
     {
         return AndroidNativeMengine_getProjectVersion();
     }
+    
     public static boolean isDebugMode()
     {
         return AndroidNativeMengine_isDebugMode();
     }
+    
     public static boolean isDevelopmentMode()
     {
         return AndroidNativeMengine_isDevelopmentMode();
     }
+    
     public static boolean isBuildMaster()
     {
         return AndroidNativeMengine_isBuildMaster();
     }
+    
     public static boolean isBuildPublish()
     {
         return AndroidNativeMengine_isBuildPublish();
     }
+    
     public static String getEngineGITSHA1()
     {
         return AndroidNativeMengine_getEngineGITSHA1();
     }
+    
     public static String getBuildTimestamp()
     {
         return AndroidNativeMengine_getBuildTimestamp();
     }
+    
     public static String getBuildUsername()
     {
         return AndroidNativeMengine_getBuildUsername();
     }
+    
     public static String getBuildVersion()
     {
         return AndroidNativeMengine_getBuildVersion();
     }
+    
     public static String getConfigValue(String section, String key, String default_value)
     {
         return AndroidNativeMengine_getConfigValue(section, key, default_value);
@@ -199,7 +192,7 @@ public class MengineActivity extends SDLActivity {
 
         AndroidNativeMengine_setMengineAndroidActivityJNI(this);
 
-        initPlugins();
+        this.initPlugins();
 
         for(MenginePlugin p : this.plugins) {
             p.onCreate(savedInstanceState);
@@ -216,6 +209,8 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.plugins) {
             p.onMengineInitializeBaseServices();
         }
+
+        Log.i(TAG, "MengineActivity.onMengineInitializeBaseServices()");
     }
 
     public void onMengineCreateApplication() {
@@ -283,7 +278,7 @@ public class MengineActivity extends SDLActivity {
 
             _instance = this;
 
-            initPlugins();
+            this.initPlugins();
         }
         else {
             for(MenginePlugin p : this.plugins) {
@@ -420,6 +415,7 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Linking Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
     public static boolean linkingOpenURL(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
         _instance.startActivity(Intent.createChooser(intent, ""));
@@ -436,6 +432,7 @@ public class MengineActivity extends SDLActivity {
 
         return true;
     }
+    */
 
     /***********************************************************************************************
     //OLD PLugins: TODO
@@ -474,10 +471,10 @@ public class MengineActivity extends SDLActivity {
     public static boolean facebookPerformLogin(String[] readPermissions) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
-            
+
             return true;
         }
-        
+
         return false;
     }
 
@@ -493,30 +490,30 @@ public class MengineActivity extends SDLActivity {
     public static boolean facebookGetUser() {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.getUser();
-            
+
             return true;
         }
-        
+
         return false;
     }
 
     public static boolean facebookShareLink(String link, String picture, String message) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.shareLink(_instance, link, picture, message);
-            
+
             return true;
         }
-        
+
         return false;
     }
 
     public static boolean facebookGetProfilePictureLink(String typeParameter) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.getProfilePictureLink(typeParameter);
-            
+
             return true;
         }
-        
+
         return false;
     }
 

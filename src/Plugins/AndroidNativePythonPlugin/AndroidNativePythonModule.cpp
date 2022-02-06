@@ -28,22 +28,25 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _method, jstring _kwds)
+    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jstring _kwds)
     {
         if( s_androidNativePythonModule != nullptr )
         {
+            const Mengine::Char * plugin_str = env->GetStringUTFChars( _plugin, nullptr );
             const Mengine::Char * method_str = env->GetStringUTFChars( _method, nullptr );
             const Mengine::Char * kwds_str = env->GetStringUTFChars( _kwds, nullptr );
 
+            Mengine::String plugin = plugin_str;
             Mengine::String method = method_str;
             Mengine::String kwds = kwds_str;
 
+            env->ReleaseStringUTFChars( _plugin, plugin_str );
             env->ReleaseStringUTFChars( _method, method_str );
             env->ReleaseStringUTFChars( _kwds, kwds_str );
 
-            s_androidNativePythonModule->addCommand( [method, kwds]( const Mengine::PythonEventHandlerPtr & _handler )
+            s_androidNativePythonModule->addCommand( [plugin, method, kwds]( const Mengine::PythonEventHandlerPtr & _handler )
                                                        {
-                                                           _handler->pythonMethod( method, kwds );
+                                                           _handler->pythonMethod( plugin, method, kwds );
                                                        } );
         }
     }
@@ -145,18 +148,18 @@ namespace Mengine
         m_eventation.invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::pythonMethod( const String & _method, const String & _args )
+    void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, const String & _args )
     {
+        ConstString plugin_c = Helper::stringizeString( _plugin );
         ConstString method_c = Helper::stringizeString( _method );
 
-        MapAndroidCallbacks::iterator it_found = m_callbacks.find( method_c );
+        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Helper::makePair(plugin_c, method_c) );
 
         if( it_found == m_callbacks.end() )
         {
             return;
         }
 
-        const Char * method_str = _method.c_str();
         const Char * args_str = _args.c_str();
 
         PyObject * py_args = m_kernel->eval_string( args_str, m_globals.ptr(), nullptr );
@@ -173,9 +176,9 @@ namespace Mengine
         m_plugins.emplace( Helper::stringizeString( _name ), _plugin );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::setAndroidCallback( const ConstString & _method, const pybind::object & _cb )
+    void AndroidNativePythonModule::setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
     {
-        m_callbacks.emplace( _method, _cb );
+        m_callbacks.emplace( Helper::makePair(_plugin, _method), _cb );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const

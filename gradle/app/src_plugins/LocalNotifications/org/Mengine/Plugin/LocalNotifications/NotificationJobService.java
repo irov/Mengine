@@ -1,4 +1,4 @@
-package org.Mengine.Build.LocalNotifications;
+package org.Mengine.Plugin.LocalNotifications;
 
 import android.app.Notification;
 import android.app.NotificationManager;

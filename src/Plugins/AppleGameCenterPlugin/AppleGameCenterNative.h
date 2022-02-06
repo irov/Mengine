@@ -3,15 +3,15 @@
 
 @interface AppleGameCenterNative : NSObject <GKGameCenterControllerDelegate>
 {
-    BOOL gcSuccess;
+    BOOL gcAuthenticateSuccess;
 }
 
-@property (assign) BOOL gcSuccess;
+@property (assign) BOOL gcAuthenticateSuccess;
 
-- (void)login:(void(^)(BOOL))handler;
-- (void)loadCompletedAchievements:(void(^)(NSArray*))handler;
+- (BOOL) login:(void(^)(BOOL))handler;
+- (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray* _Nullable))handler;
 
-- (void)reportScore:(int64_t)score forCategory:(NSString*)category;
-- (void)reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent withBanner:(BOOL)banner;
+- (BOOL) reportScore:(int64_t)score forCategory:(NSString*)category response:(void(^)(NSError * _Nullable))handler;
+- (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler;
 
 @end

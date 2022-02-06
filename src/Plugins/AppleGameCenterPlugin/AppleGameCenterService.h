@@ -20,19 +20,28 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
         
+    public:
+        void setProvider( const AppleGameCenterProviderInterfacePtr & _provider ) override;
+        const AppleGameCenterProviderInterfacePtr & getProvider() const override;
+        
 	protected:
         bool connect() override;
+        bool isConnect() const override;
 
 	protected:
-        void reportAchievement( const ConstString & _achievementName, float _percentComplete ) override;
+        bool reportAchievement( const ConstString & _achievementName, float _percentComplete ) override;
         bool checkAchievement( const ConstString & _achievementName ) const override;
 
 	protected:
-        void reportScore( const ConstString & _key, uint32_t _score ) override;
+        bool reportScore( const ConstString & _key, uint32_t _score ) override;
 
 	protected:
+        AppleGameCenterProviderInterfacePtr m_provider;
+        
 		AppleGameCenterNative * m_gameCenterNative;
 
 		VectorConstString m_achievementsComplete;
+        bool m_gameCenterAuthenticate;
+        bool m_achievementsSynchronization;
     };
 }

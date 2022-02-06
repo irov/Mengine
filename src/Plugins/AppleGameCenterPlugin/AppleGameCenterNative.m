@@ -2,103 +2,130 @@
 
 @implementation AppleGameCenterNative
 
-@synthesize gcSuccess;
+@synthesize gcAuthenticateSuccess;
 
 #pragma mark -
 
-- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController{
+- (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController{
     [gameCenterViewController dismissViewControllerAnimated:YES completion:^{}];
 }
 
-- (void) authenticateHandler:(NSError*)error
+- (BOOL) authenticateHandler:(NSError*)error
 {
-    if (error == nil) {
-        // Insert code here to handle a successful authentication.
-        gcSuccess = YES;
+    if (!error) {
+        return YES;
     }
-    else
-    {
-        // Your application can process the error parameter to report the error to the player.
+
+    // Your application can process the error parameter to report the error to the player.
 #ifdef DEBUG
-        NSString* errMsg =[NSString stringWithFormat:@"Could not connect with Game Center servers: %@", [error localizedDescription]];
-        showAlert(@"Error", errMsg, @"Try Later");
-//        NSLog(errMsg);
+    NSString* errMsg =[NSString stringWithFormat:@"Could not connect with Game Center servers: %@", [error localizedDescription]];
+    showAlert(@"Error", errMsg, @"Try Later");
 #endif
-        gcSuccess = NO;
-    }
+    
+    return NO;
 }
 
 #pragma mark -
 
-- (void)login:(void(^)(BOOL))handler;
+- (BOOL) login:(void(^)(BOOL))handler;
 {
-    gcSuccess = NO;
     GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
     
     [localPlayer setAuthenticateHandler:^(UIViewController* v, NSError* error) {
-        [self authenticateHandler:error];
+        BOOL result = [self authenticateHandler:error];
         
-        handler(error == nil);
+        if(gcAuthenticateSuccess == result) {
+            return;
+        }
+        
+        gcAuthenticateSuccess = result;
+        
+        handler(gcAuthenticateSuccess);
     }];
+    
+    return true;
 }
 
 
-- (void) loadCompletedAchievements:(void(^)(NSArray * _Nullable))handler{
-    if (!gcSuccess) {
-        handler(nil);
-        return;
+- (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler{
+    if (!gcAuthenticateSuccess) {
+        return false;
     }
     
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) {
-        
-        if (achievements){
-            NSMutableArray *cmpAch = [[NSMutableArray alloc] init];
-            
-            for (GKAchievement* ach in achievements){
-                if ([ach isCompleted]){
-                    [cmpAch addObject:[ach identifier]];
-                }
-            }
-            handler(cmpAch);
+        if (error) {
+            handler(error, nil);
+            return;
         }
         
+        if (!achievements){
+            handler(nil, nil);
+            return;
+        }
+            
+        NSMutableArray *cmpAch = [[NSMutableArray alloc] init];
+            
+        for (GKAchievement* ach in achievements){
+            if ([ach isCompleted]){
+                [cmpAch addObject:[ach identifier]];
+            }
+        }
+            
+        handler(nil, cmpAch);
     }];
+    
+    return true;
 }
 
-- (void)reportScore:(int64_t)score forCategory:(NSString*)category {
-	if (!gcSuccess) return;
+- (BOOL) reportScore:(int64_t)score forCategory:(NSString*)category response:(void(^)(NSError * _Nullable))handler{
+	if (!gcAuthenticateSuccess) {
+        return false;
+    }
 	
 	GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:category];
 	scoreReporter.value = score;
     
 	[scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
-		if (error != nil) {
+        if (error) {
             NSLog(@"Could not submit score with Game Center.");
-		}
+        }
+        
+        handler(error);
 	}];
+    
+    return true;
 }
 
-- (void)reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent withBanner:(BOOL)banner {
-    if (!gcSuccess) return;
-    
-    GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier: identifier] ;
-    if (achievement) {
-#ifdef DEBUG
-        NSLog(@"report achievement %@ - %2.2f"
-              , identifier
-              , percent
-        );
-#endif
-        [achievement setShowsCompletionBanner:banner];
-        achievement.percentComplete = percent;
-        
-        [GKAchievement reportAchievements:@[achievement]
-                    withCompletionHandler:^(NSError * _Nullable error) {
-            if (error != nil) {
-                NSLog(@"Could not submit achievement with Game Center.");
-            }
-        }];
+- (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler{
+    if (!gcAuthenticateSuccess) {
+        return false;
     }
+    
+    GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier: identifier];
+    
+    if (!achievement) {
+        return false;
+    }
+    
+#ifdef DEBUG
+    NSLog(@"report achievement %@ - %2.2f"
+          , identifier
+          , percent
+    );
+#endif
+    
+    [achievement setShowsCompletionBanner:banner];
+    achievement.percentComplete = percent;
+    
+    [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Could not submit achievement with Game Center.");
+        }
+        
+        handler(error);
+    }];
+    
+    return true;
 }
 
 @end

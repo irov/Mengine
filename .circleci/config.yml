@@ -8,7 +8,6 @@ jobs:
     executor:
       name: android/android-machine
       tag: 2021.10.1
-      sdk-version: '30'
 
     parallelism: 4
     

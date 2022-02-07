@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     ndkVersion '22.0.7026061'
     buildToolsVersion '31.0.0'
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     ext.getBooleanProperty = { name, d ->
         def p = project.getProperties().get(name, null)
@@ -199,7 +199,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../cmake/Android_SDL/CMakeLists.txt"
-            version "3.10.2"
+            version "3.18.1"
         }
     }
 

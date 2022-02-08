@@ -5,6 +5,8 @@
 
 #include "Kernel/ConstString.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -31,11 +33,13 @@ namespace Mengine
         virtual bool isConnect() const = 0;
 
     public:
-        virtual bool reportAchievement( const ConstString & _achievementName, float _percentComplete ) = 0;
+        typedef Lambda<void(bool, float)> LambdaAchievemtResponse;
+        virtual bool reportAchievement( const ConstString & _achievementName, float _percentComplete, const LambdaAchievemtResponse & _response ) = 0;
         virtual bool checkAchievement( const ConstString & _achievementName ) const = 0;
 
     public:
-        virtual bool reportScore( const ConstString & _key, uint32_t _score ) = 0;
+        typedef Lambda<void(bool)> LambdaScoreResponse;
+        virtual bool reportScore( const ConstString & _key, uint32_t _score, const LambdaScoreResponse & _response ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

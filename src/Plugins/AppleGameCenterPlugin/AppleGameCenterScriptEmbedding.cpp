@@ -19,6 +19,28 @@ namespace Mengine
     namespace
     {
         //////////////////////////////////////////////////////////////////////////
+        class PythonAppleGameCenterProvider
+            : public AppleGameCenterProviderInterface
+            , public Factorable
+        {
+        public:
+            PythonAppleGameCenterProvider( const pybind::object & _cb, const pybind::args & _args )
+                : m_cb(_cb)
+                , m_args(_args)
+            {
+            }
+            
+        protected:
+            void onAppleGameConterAuthenticate( bool _successful ) override
+            {
+                m_cb.call_args( _successful, m_args );
+            }
+        
+        protected:
+            pybind::object m_cb;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
         class AppleGameCenterScriptMethod
             : public Factorable
         {
@@ -40,6 +62,21 @@ namespace Mengine
             void finalize()
             {
             }
+            
+        public:
+            void setProvider( const pybind::object & _cb, const pybind::args & _args )
+            {
+                AppleGameCenterProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleGameCenterProvider>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+                
+                APPLE_GAMECENTER_SERVICE()
+                    ->setProvider( provider );
+            }
+            
+            void removeProvider()
+            {
+                APPLE_GAMECENTER_SERVICE()
+                    ->setProvider( nullptr );
+            }
 
         public:
             bool connect()
@@ -49,12 +86,24 @@ namespace Mengine
 
                 return result;
             }
-
-        public:
-            void reportAchievement( const ConstString & _achievementName, float _percentComplete )
+            
+            bool isConnect()
             {
-                APPLE_GAMECENTER_SERVICE()
-                    ->reportAchievement( _achievementName, _percentComplete );
+                bool result = APPLE_GAMECENTER_SERVICE()
+                    ->isConnect();
+
+                return result;
+            }
+            
+        public:
+            bool reportAchievement( const ConstString & _achievementName, float _percentComplete, const pybind::object & _cb, const pybind::args & _args )
+            {
+                bool result = APPLE_GAMECENTER_SERVICE()
+                    ->reportAchievement( _achievementName, _percentComplete, [_cb, _args](bool _successful, float _percentComplete) {
+                        _cb.call_args( _successful, _percentComplete, _args );
+                } );
+                
+                return result;
             }
 
             bool checkAchievement( const ConstString & _achievementName ) const
@@ -66,10 +115,12 @@ namespace Mengine
             }
 
         public:
-            void reportScore( const ConstString & _key, uint32_t _score )
+            bool reportScore( const ConstString & _key, uint32_t _score, const pybind::object & _cb, const pybind::args & _args )
             {
-                APPLE_GAMECENTER_SERVICE()
-                    ->reportScore( _key, _score );
+                bool result = APPLE_GAMECENTER_SERVICE()
+                ->reportScore( _key, _score, [_cb, _args](bool _successful) {
+                    _cb.call_args( _successful, _args );
+                } );
             }
 
         public:
@@ -100,10 +151,13 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleGameCenter", true );
 
+        pybind::def_functor_args( _kernel, "appleGameCenterSetProvider", scriptMethod, &AppleGameCenterScriptMethod::setProvider );
+        pybind::def_functor( _kernel, "appleGameCenterRemoveProvider", scriptMethod, &AppleGameCenterScriptMethod::removeProvider );
         pybind::def_functor( _kernel, "appleGameCenterConnect", scriptMethod, &AppleGameCenterScriptMethod::connect );
-        pybind::def_functor( _kernel, "appleGameCenterReportAchievement", scriptMethod, &AppleGameCenterScriptMethod::reportAchievement );
+        pybind::def_functor( _kernel, "appleGameCenterIsConnect", scriptMethod, &AppleGameCenterScriptMethod::isConnect );
+        pybind::def_functor_args( _kernel, "appleGameCenterReportAchievement", scriptMethod, &AppleGameCenterScriptMethod::reportAchievement );
         pybind::def_functor( _kernel, "appleGameCenterCheckAchievement", scriptMethod, &AppleGameCenterScriptMethod::checkAchievement );
-        pybind::def_functor( _kernel, "appleGameCenterReportScore", scriptMethod, &AppleGameCenterScriptMethod::reportScore );
+        pybind::def_functor_args( _kernel, "appleGameCenterReportScore", scriptMethod, &AppleGameCenterScriptMethod::reportScore );
 
         m_implement = scriptMethod;
 

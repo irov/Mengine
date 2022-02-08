@@ -28,6 +28,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleGameCenterService::_finalizeService()
     {
+        m_provider = nullptr;
+        
         [m_gameCenterNative release];
         m_gameCenterNative = nil;
     }
@@ -102,12 +104,13 @@ namespace Mengine
         return m_gameCenterAuthenticate;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleGameCenterService::reportAchievement( const ConstString & _achievementName, float _percentComplete )
+    bool AppleGameCenterService::reportAchievement( const ConstString & _achievementName, float _percentComplete, const LambdaAchievemtResponse & _response )
     {
         NSString * nsDescription = [NSString stringWithUTF8String : _achievementName.c_str()];
 
         BOOL result = [m_gameCenterNative reportAchievementIdentifier:nsDescription percentComplete:_percentComplete withBanner:YES response:^(NSError * _Nullable _error) {
             if (_error) {
+                _response(false, 0.f);
                 return;
             }
             
@@ -115,6 +118,8 @@ namespace Mengine
             {
                 m_achievementsComplete.push_back( _achievementName );
             }
+            
+            _response(true, _percentComplete);
         }];
         
         return result;
@@ -130,14 +135,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleGameCenterService::reportScore( const ConstString & _key, uint32_t _score )
+    bool AppleGameCenterService::reportScore( const ConstString & _key, uint32_t _score, const LambdaScoreResponse & _response )
     {
         NSString* category = [NSString stringWithUTF8String:_key.c_str()];
 
         BOOL result = [m_gameCenterNative reportScore:_score forCategory:category response:^(NSError * _Nullable _error) {
             if (_error) {
+                _response(false);
+                
                 return;
             }
+            
+            _response(true);
         }];
         
         return result;

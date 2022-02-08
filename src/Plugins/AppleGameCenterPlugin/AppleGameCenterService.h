@@ -29,11 +29,11 @@ namespace Mengine
         bool isConnect() const override;
 
 	protected:
-        bool reportAchievement( const ConstString & _achievementName, float _percentComplete ) override;
+        bool reportAchievement( const ConstString & _achievementName, float _percentComplete, const LambdaAchievemtResponse & _response ) override;
         bool checkAchievement( const ConstString & _achievementName ) const override;
 
 	protected:
-        bool reportScore( const ConstString & _key, uint32_t _score ) override;
+        bool reportScore( const ConstString & _key, uint32_t _score, const LambdaScoreResponse & _response ) override;
 
 	protected:
         AppleGameCenterProviderInterfacePtr m_provider;

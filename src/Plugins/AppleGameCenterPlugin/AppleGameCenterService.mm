@@ -107,6 +107,8 @@ namespace Mengine
     bool AppleGameCenterService::reportAchievement( const ConstString & _achievementName, float _percentComplete, const LambdaAchievemtResponse & _response )
     {
         NSString * nsDescription = [NSString stringWithUTF8String : _achievementName.c_str()];
+        
+        LambdaAchievemtResponse copy_response = _response;
 
         BOOL result = [m_gameCenterNative reportAchievementIdentifier:nsDescription percentComplete:_percentComplete withBanner:YES response:^(NSError * _Nullable _error) {
             if (_error) {
@@ -119,7 +121,7 @@ namespace Mengine
                 m_achievementsComplete.push_back( _achievementName );
             }
             
-            _response(true, _percentComplete);
+            copy_response(true, _percentComplete);
         }];
         
         return result;
@@ -137,9 +139,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::reportScore( const ConstString & _key, uint32_t _score, const LambdaScoreResponse & _response )
     {
-        NSString* category = [NSString stringWithUTF8String:_key.c_str()];
+        NSString* identifier = [NSString stringWithUTF8String:_key.c_str()];
 
-        BOOL result = [m_gameCenterNative reportScore:_score forCategory:category response:^(NSError * _Nullable _error) {
+        BOOL result = [m_gameCenterNative reportScore:identifier score:_score response:^(NSError * _Nullable _error) {
             if (_error) {
                 _response(false);
                 

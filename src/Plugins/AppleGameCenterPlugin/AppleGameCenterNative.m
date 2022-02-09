@@ -77,12 +77,19 @@
     return true;
 }
 
-- (BOOL) reportScore:(int64_t)score forCategory:(NSString*)category response:(void(^)(NSError * _Nullable))handler{
+- (BOOL) reportScore:(NSString*)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler{
 	if (!gcAuthenticateSuccess) {
         return false;
     }
+    
+#ifdef DEBUG
+    NSLog(@"report score %@ - %ld"
+          , identifier
+          , score
+    );
+#endif
 	
-	GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:category];
+	GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
 	scoreReporter.value = score;
     
 	[scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
@@ -101,12 +108,6 @@
         return false;
     }
     
-    GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier: identifier];
-    
-    if (!achievement) {
-        return false;
-    }
-    
 #ifdef DEBUG
     NSLog(@"report achievement %@ - %2.2f"
           , identifier
@@ -114,6 +115,7 @@
     );
 #endif
     
+    GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier:identifier];
     [achievement setShowsCompletionBanner:banner];
     achievement.percentComplete = percent;
     

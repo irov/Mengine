@@ -140,15 +140,17 @@ namespace Mengine
     bool AppleGameCenterService::reportScore( const ConstString & _key, uint32_t _score, const LambdaScoreResponse & _response )
     {
         NSString* identifier = [NSString stringWithUTF8String:_key.c_str()];
+        
+        LambdaScoreResponse copy_response = _response;
 
         BOOL result = [m_gameCenterNative reportScore:identifier score:_score response:^(NSError * _Nullable _error) {
             if (_error) {
-                _response(false);
+                copy_response(false);
                 
                 return;
             }
             
-            _response(true);
+            copy_response(true);
         }];
         
         return result;

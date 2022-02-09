@@ -18,6 +18,13 @@ namespace Mengine
         void _finalizeService() override;
         
 	protected:
-		void authorization() override;
+		void authorization( const LambdaAuthorizationResponse & _response ) override;
+        
+    protected:
+        void getIDFA( EAppleAppTrackingAuthorization * const _status, ConstString * const _idfa ) const override;
+        
+    protected:
+        EAppleAppTrackingAuthorization m_status;
+        ConstString m_idfa;
     };
 }

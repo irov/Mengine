@@ -15,10 +15,16 @@ class AppleAppTrackingNative:NSObject{
                     case .authorized:
                         let idfa = ASIdentifierManager.shared().advertisingIdentifier
                         cb?(0, idfa.uuidString)
-                    case .denied, .restricted:
+                        break
+                    case .denied:
                         cb?(1, nil)
-                    case .notDetermined:
+                        break
+                    case .restricted:
                         cb?(2, nil)
+                        break
+                    case .notDetermined:
+                        cb?(3, nil)
+                        break
                     @unknown default:
                         break
                     }

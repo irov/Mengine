@@ -42,10 +42,12 @@ namespace Mengine
             }
 
         public:
-            void authorization()
+            void authorization( const pybind::object & _cb, const pybind::args & _args )
             {
                 APPLE_APPTRACKING_SERVICE()
-                    ->authorization();
+                    ->authorization( [_cb, _args]( EAppleAppTrackingAuthorization _status, const ConstString & _idfa ) {
+                        _cb.call_args( _status, _idfa, _args );
+                } );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -72,8 +74,16 @@ namespace Mengine
 
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleAppTracking", true );
+        
+        pybind::enum_<EAppleAppTrackingAuthorization>( _kernel, "AppleAppTrackingAuthorization" )
+            .def( "EAATA_NONE", EAATA_NONE )
+            .def( "EAATA_AUTHORIZED", EAATA_AUTHORIZED )
+            .def( "EAATA_DENIED", EAATA_DENIED )
+            .def( "EAATA_RESTRICTED", EAATA_RESTRICTED )
+            .def( "EAATA_NOT_DETERMINED", EAATA_NOT_DETERMINED )
+            ;
 
-        pybind::def_functor( _kernel, "appleAppTrackingAuthorization", scriptMethod, &AppleAppTrackingScriptMethod::authorization );
+        pybind::def_functor_args( _kernel, "appleAppTrackingAuthorization", scriptMethod, &AppleAppTrackingScriptMethod::authorization );
 
         m_implement = scriptMethod;
 

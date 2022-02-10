@@ -91,8 +91,10 @@
 	
 	GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
 	scoreReporter.value = score;
+    scoreReporter.context = 0;
     
-	[scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
+    NSArray *scores = @[scoreReporter];
+    [GKScore reportScores:scores withCompletionHandler:^(NSError *error) {
         if (error) {
             NSLog(@"Could not submit score with Game Center.");
         }

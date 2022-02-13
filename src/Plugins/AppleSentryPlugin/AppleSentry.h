@@ -3,6 +3,6 @@
 
 #include "Config/Config.h"
 
-int AppleSentryInitialize( const char * _dsn );
+int AppleSentryInitialize( const char * _dsn, int _debug );
 
 #endif

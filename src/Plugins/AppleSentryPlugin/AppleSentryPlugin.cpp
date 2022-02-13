@@ -77,7 +77,9 @@ namespace Mengine
             , Sentry_DSN
         );
         
-        if( AppleSentryInitialize( Sentry_DSN ) != 0 )
+        bool debugMode = Helper::isDebugMode();
+        
+        if( AppleSentryInitialize( Sentry_DSN, debugMode ) != 0 )
         {
             return false;
         }

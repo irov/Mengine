@@ -64,9 +64,14 @@ namespace Mengine
             (m_self->*m_method)(std::get<I>( _args )...);
         }
 
-    protected:
+    protected:        
+#ifdef MENGINE_DEBUG //avoid warning C4324
         C * m_self;
         M m_method;
+#else
+        M m_method;
+        C * m_self;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID, class L>

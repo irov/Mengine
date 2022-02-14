@@ -1,8 +1,6 @@
 #include "GameAnalyticsPlugin.h"
 
 #include "Interface/PlatformInterface.h"
-#include "Interface/OptionsServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
@@ -21,6 +19,7 @@
 #include "Kernel/IniHelper.h"
 #include "Kernel/StaticString.h"
 #include "Kernel/UID.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 

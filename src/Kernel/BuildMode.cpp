@@ -1,9 +1,7 @@
 #include "BuildMode.h"
 
-#include "Interface/OptionsServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
-
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/GitSHA1.h"
 #include "Config/BuildInfo.h"

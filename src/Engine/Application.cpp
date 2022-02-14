@@ -1,6 +1,5 @@
 #include "Application.h"
 
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -72,6 +71,7 @@
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"

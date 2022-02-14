@@ -238,10 +238,6 @@ if(MENGINE_PLUGIN_GAMEANALYTICS)
     ADD_SUBDIRECTORY(GameAnalyticsPlugin)
 endif()
 
-if(MENGINE_PLUGIN_APPLE_SENTRY)
-    ADD_SUBDIRECTORY(AppleSentryPlugin)
-endif()
-
 if(MENGINE_PLUGIN_APPLE_GAMECENTER)
     ADD_SUBDIRECTORY(AppleGameCenterPlugin)
 endif()

@@ -683,7 +683,7 @@ namespace Mengine
             {
                 pybind::list r = pybind::make_list_t( _kernel );
 
-                const Char * option_values[MENGINE_OPTIONS_VALUE_COUNT];
+                const Char * option_values[MENGINE_OPTIONS_VALUES_MAX];
                 uint32_t option_count;
                 if( OPTIONS_SERVICE()
                     ->getOptionValues( _option, option_values, &option_count ) == false )

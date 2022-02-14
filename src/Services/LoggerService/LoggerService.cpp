@@ -1,7 +1,6 @@
 #include "LoggerService.h"
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
@@ -14,6 +13,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -110,7 +110,7 @@ namespace Mengine
 
         this->setVerboseFilter( verboseFilter );
 
-        const Char * verboses[MENGINE_OPTIONS_VALUE_COUNT];
+        const Char * verboses[MENGINE_OPTIONS_VALUES_MAX];
         uint32_t verboses_count;
         if( OPTIONS_SERVICE()
             ->getOptionValues( "verboses", verboses, &verboses_count ) == true )

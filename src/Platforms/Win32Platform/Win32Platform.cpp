@@ -1,6 +1,5 @@
 #include "Win32Platform.h"
 
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -41,6 +40,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/RandomDevice.h"
 #include "Kernel/StringCopy.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -171,7 +171,7 @@ namespace Mengine
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = {::LoadCursor( NULL, IDC_HAND ), true};
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HELP" )] = {::LoadCursor( NULL, IDC_HELP ), true};
 
-        const Char * option_platforms[MENGINE_OPTIONS_VALUE_COUNT];
+        const Char * option_platforms[MENGINE_OPTIONS_VALUES_MAX];
         uint32_t option_platforms_count;
         if( OPTIONS_SERVICE()
             ->getOptionValues( "platform", option_platforms, &option_platforms_count ) == true )

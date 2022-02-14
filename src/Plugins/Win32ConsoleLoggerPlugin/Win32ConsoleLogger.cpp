@@ -1,12 +1,12 @@
 #include "Win32ConsoleLogger.h"
 
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include <clocale>
 #include <iostream>

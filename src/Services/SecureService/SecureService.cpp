@@ -1,6 +1,5 @@
 #include "SecureService.h"
 
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "SecureUnsignedValue.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 

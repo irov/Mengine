@@ -1,7 +1,6 @@
 #include "PackageService.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
@@ -15,6 +14,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PackageService, Mengine::PackageService );

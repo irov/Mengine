@@ -6,7 +6,6 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
@@ -47,6 +46,7 @@ extern "C" {
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/RandomDevice.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

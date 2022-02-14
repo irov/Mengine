@@ -1,6 +1,5 @@
 #include "SteamPlugin.h"
 
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
@@ -14,6 +13,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Error.h"
 #include "Kernel/Logger.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdIO.h"
 

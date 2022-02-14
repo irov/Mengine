@@ -17,7 +17,6 @@
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
@@ -48,6 +47,7 @@
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/Algorithm.h"
 

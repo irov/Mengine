@@ -4,7 +4,6 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Interface/Win32PlatformExtensionInterface.h"
@@ -18,6 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/FilePathDateTimeHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Kernel/Stringstream.h"
 

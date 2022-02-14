@@ -1,13 +1,12 @@
 #include "OptickPlugin.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/OptionsServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ProfilerSystem );

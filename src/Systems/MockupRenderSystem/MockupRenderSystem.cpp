@@ -2,7 +2,6 @@
 
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 
 #include "MockupRenderImage.h"
 #include "MockupRenderImageTarget.h"
@@ -30,6 +29,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/Algorithm.h"
 

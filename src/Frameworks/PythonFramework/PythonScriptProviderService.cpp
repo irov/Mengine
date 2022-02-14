@@ -1,6 +1,5 @@
 #include "PythonScriptProviderService.h"
 
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -8,6 +7,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #   include <crtdbg.h>

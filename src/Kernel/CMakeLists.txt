@@ -814,6 +814,7 @@ Core
     BaseComponentHub.cpp
     
     ConfigHelper.h
+    OptionHelper.h
     
     ResolutionHelper.cpp
     ResolutionHelper.h

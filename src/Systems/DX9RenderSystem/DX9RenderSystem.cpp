@@ -2,7 +2,6 @@
 
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "DX9RenderEnum.h"
@@ -38,6 +37,7 @@
 #include "Kernel/Error.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 

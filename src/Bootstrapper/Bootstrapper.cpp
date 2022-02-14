@@ -1,6 +1,5 @@
 #include "Bootstrapper.h"
 
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -34,6 +33,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH

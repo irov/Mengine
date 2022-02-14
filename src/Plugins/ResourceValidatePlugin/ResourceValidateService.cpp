@@ -3,13 +3,13 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceValidateService, Mengine::ResourceValidateService );

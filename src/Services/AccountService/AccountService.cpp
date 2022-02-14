@@ -1,7 +1,6 @@
 #include "AccountService.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -25,6 +24,7 @@
 #include "Kernel/PathString.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UID.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 

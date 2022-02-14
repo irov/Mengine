@@ -237,7 +237,7 @@ namespace Mengine
         return _default;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OptionsService::getOptionValues( const Char * _key, const Char ** _values, uint32_t * _count ) const
+    bool OptionsService::getOptionValues( const Char * _key, const Char ** _values, uint32_t * const _count ) const
     {
         MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {

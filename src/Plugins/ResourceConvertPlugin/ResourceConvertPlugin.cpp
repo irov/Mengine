@@ -6,12 +6,12 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////

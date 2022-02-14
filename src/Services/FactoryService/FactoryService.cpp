@@ -1,6 +1,5 @@
 #include "FactoryService.h"
 
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
@@ -10,6 +9,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

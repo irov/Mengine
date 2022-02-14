@@ -1,15 +1,10 @@
-#include "AppleSentryPlugin.h"
+#include "AppleSentryService.h"
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificatorInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
-
-extern "C" {
-    #include "AppleSentry.h"
-}
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Crash.h"
@@ -19,50 +14,30 @@ extern "C" {
 #include "Kernel/Logger.h"
 #include "Kernel/UID.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/GitSHA1.h"
 #include "Config/BuildVersion.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
+@import Sentry;
+
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleSentry, Mengine::AppleSentryPlugin )
+SERVICE_FACTORY( SentryService, Mengine::AppleSentryService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    AppleSentryPlugin::AppleSentryPlugin()
+	//////////////////////////////////////////////////////////////////////////
+    AppleSentryService::AppleSentryService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleSentryPlugin::~AppleSentryPlugin()
+    AppleSentryService::~AppleSentryService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleSentryPlugin::_unimportantPlugin() const
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AppleSentryPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "nosentry" ) == true )
-        {
-            return false;
-        }
-
-        if( HAS_OPTION( "sentry" ) == false )
-        {
-            if( CONFIG_VALUE( "Sentry", "Enable", true ) == false )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AppleSentryPlugin::_initializePlugin()
+    bool AppleSentryService::_initializeService()
     {
         const Char * Sentry_DSN = CONFIG_VALUE( "Sentry", "DSN", "" );
 
@@ -79,23 +54,22 @@ namespace Mengine
         
         bool debugMode = Helper::isDebugMode();
         
-        if( AppleSentryInitialize( Sentry_DSN, debugMode ) != 0 )
-        {
-            return false;
-        }
+        [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
+            options.dsn = @(_dsn);
+            options.debug = debugMode; // Enabled debug when first installing is always helpful
+        }];
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AppleSentryPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AppleSentryService::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleSentryPlugin::_finalizePlugin()
+    void AppleSentryService::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
-
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
-    void AppleSentryPlugin::notifyCreateApplication_()
+    void AppleSentryService::notifyCreateApplication_()
     {
         const Char * Sentry_Application = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
 
@@ -239,6 +213,7 @@ namespace Mengine
 
             //Helper::crash( "sentrycrash" );
         }
+    }
     }
     //////////////////////////////////////////////////////////////////////////
 }

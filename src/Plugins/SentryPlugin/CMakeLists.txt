@@ -2,19 +2,19 @@ MENGINE_PROJECT(SentryPlugin)
 
 ADD_FILTER(
 src
+    SentryInterface.h
+
     SentryPlugin.h
     SentryPlugin.def
     SentryPlugin.cpp
-    
-    SentryInterface.h
-    
-    SentryLoggerCapture.h
-    SentryLoggerCapture.cpp    
 )
 
 if(MENGINE_TARGET_WINDOWS)
     ADD_FILTER(
     win32
+        Win32SentryLoggerCapture.h
+        Win32SentryLoggerCapture.cpp
+    
         Win32SentryService.h
         Win32SentryService.cpp
     )

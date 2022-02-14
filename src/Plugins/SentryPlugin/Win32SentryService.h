@@ -2,7 +2,7 @@
 
 #include "SentryInterface.h"
 
-#include "SentryLoggerCapture.h"
+#include "Win32SentryLoggerCapture.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ErrorLevel.h"
@@ -26,6 +26,6 @@ namespace Mengine
         void notifyCreateApplication_();
 
     protected:
-        SentryLoggerCapturePtr m_loggerCapture;
+        Win32SentryLoggerCapturePtr m_loggerCapture;
     };
 }

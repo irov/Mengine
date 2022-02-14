@@ -6,12 +6,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class SentryLoggerCapture
+    class Win32SentryLoggerCapture
         : public LoggerBase
     {
     public:
-        SentryLoggerCapture();
-        ~SentryLoggerCapture() override;
+        Win32SentryLoggerCapture();
+        ~Win32SentryLoggerCapture() override;
 
     protected:
         bool _initializeLogger() override;
@@ -24,6 +24,6 @@ namespace Mengine
         String m_message;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SentryLoggerCapture, LoggerInterface> SentryLoggerCapturePtr;
+    typedef IntrusivePtr<Win32SentryLoggerCapture, LoggerInterface> Win32SentryLoggerCapturePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -200,7 +200,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &Win32SentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &Win32SentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
 
-        SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
+        Win32SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<Win32SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
 

@@ -1,4 +1,4 @@
-#include "SentryLoggerCapture.h"
+#include "Win32SentryLoggerCapture.h"
 
 #include "Kernel/ConfigHelper.h"
 
@@ -7,27 +7,27 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SentryLoggerCapture::SentryLoggerCapture()
+    Win32SentryLoggerCapture::Win32SentryLoggerCapture()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SentryLoggerCapture::~SentryLoggerCapture()
+    Win32SentryLoggerCapture::~Win32SentryLoggerCapture()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SentryLoggerCapture::_initializeLogger()
+    bool Win32SentryLoggerCapture::_initializeLogger()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SentryLoggerCapture::_finalizeLogger()
+    void Win32SentryLoggerCapture::_finalizeLogger()
     {
         m_message.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SentryLoggerCapture::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
+    void Win32SentryLoggerCapture::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _filter );

@@ -1,5 +1,5 @@
-#ifndef AppleSentry_H_
-#define AppleSentry_H_
+#ifndef AppleSentryNative_H_
+#define AppleSentryNative_H_
 
 #include "Config/Config.h"
 

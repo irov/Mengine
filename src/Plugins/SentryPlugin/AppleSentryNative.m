@@ -1,4 +1,4 @@
-#import "AppleSentry.h"
+#import "AppleSentryNative.h"
 
 @import Sentry;
 

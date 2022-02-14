@@ -22,9 +22,12 @@ endif()
 
 if(MENGINE_TARGET_APPLE)
     ADD_FILTER(
-    win32
+    apple
         AppleSentryService.h
-        AppleSentryService.mm
+        AppleSentryService.cpp
+        
+        AppleSentryNative.h
+        AppleSentryNative.m
     )
 endif()
 

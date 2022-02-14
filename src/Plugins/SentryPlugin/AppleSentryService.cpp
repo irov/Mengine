@@ -6,6 +6,10 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+extern "C" {
+    #include "AppleSentryNative.h"
+}
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Crash.h"
 #include "Kernel/Stringalized.h"
@@ -20,8 +24,6 @@
 #include "Config/BuildVersion.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
-
-@import Sentry;
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SentryService, Mengine::AppleSentryService );
@@ -54,10 +56,10 @@ namespace Mengine
         
         bool debugMode = Helper::isDebugMode();
         
-        [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
-            options.dsn = @(_dsn);
-            options.debug = debugMode; // Enabled debug when first installing is always helpful
-        }];
+        if( AppleSentryInitialize( Sentry_DSN, debugMode ) != 0 )
+        {
+            return false;
+        }
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AppleSentryService::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -213,7 +215,6 @@ namespace Mengine
 
             //Helper::crash( "sentrycrash" );
         }
-    }
     }
     //////////////////////////////////////////////////////////////////////////
 }

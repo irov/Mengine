@@ -1,4 +1,4 @@
-package org.Mengine.Plugin.Sentry;
+package org.Mengine.Plugin.Facebook;
 
 import org.Mengine.Build.MenginePlugin;
 import org.Mengine.Build.MengineActivity;

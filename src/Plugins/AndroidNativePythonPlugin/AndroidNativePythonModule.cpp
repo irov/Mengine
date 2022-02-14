@@ -28,25 +28,25 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jstring _kwds)
+    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jstring _args)
     {
         if( s_androidNativePythonModule != nullptr )
         {
             const Mengine::Char * plugin_str = env->GetStringUTFChars( _plugin, nullptr );
             const Mengine::Char * method_str = env->GetStringUTFChars( _method, nullptr );
-            const Mengine::Char * kwds_str = env->GetStringUTFChars( _kwds, nullptr );
+            const Mengine::Char * args_str = env->GetStringUTFChars( _args, nullptr );
 
             Mengine::String plugin = plugin_str;
             Mengine::String method = method_str;
-            Mengine::String kwds = kwds_str;
+            Mengine::String args = args_str;
 
             env->ReleaseStringUTFChars( _plugin, plugin_str );
             env->ReleaseStringUTFChars( _method, method_str );
-            env->ReleaseStringUTFChars( _kwds, kwds_str );
+            env->ReleaseStringUTFChars( _args, args_str );
 
-            s_androidNativePythonModule->addCommand( [plugin, method, kwds]( const Mengine::PythonEventHandlerPtr & _handler )
+            s_androidNativePythonModule->addCommand( [plugin, method, args]( const Mengine::PythonEventHandlerPtr & _handler )
                                                        {
-                                                           _handler->pythonMethod( plugin, method, kwds );
+                                                           _handler->pythonMethod( plugin, method, args );
                                                        } );
         }
     }

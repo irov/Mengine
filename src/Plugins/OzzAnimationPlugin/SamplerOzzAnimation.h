@@ -70,7 +70,7 @@ namespace Mengine
         ResourceOzzAnimationPtr m_resourceOzzAnimation;
         ResourceOzzSkeletonPtr m_resourceOzzSkeleton;
 
-        ozz::animation::SamplingCache m_cache;
+        ozz::animation::SamplingJob::Context m_context;
         ozz::vector<ozz::math::SoaTransform> m_locals;
 
         float m_weight;

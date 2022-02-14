@@ -383,7 +383,7 @@ namespace Mengine
         ozz::animation::BlendingJob blend_job;
         blend_job.threshold = threshold;
         blend_job.layers = {layers, layers_iterator};
-        blend_job.bind_pose = ozz_skeleton.joint_bind_poses();
+        blend_job.rest_pose = ozz_skeleton.joint_rest_poses();
         blend_job.output = ozz::make_span( m_blendedLocals );
 
         // Blends.

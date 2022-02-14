@@ -100,7 +100,7 @@ namespace Mengine
         int32_t num_joints = skeleton.num_joints();
 
         m_locals.resize( num_soa_joints );
-        m_cache.Resize( num_joints );
+        m_context.Resize( num_joints );
 
         if( this->updateAnimation_() == false )
         {
@@ -164,7 +164,7 @@ namespace Mengine
         // Setup sampling job.
         ozz::animation::SamplingJob sampling_job;
         sampling_job.animation = &ozz_animation;
-        sampling_job.cache = &m_cache;
+        sampling_job.context = &m_context;
         sampling_job.ratio = ratio;
         sampling_job.output = ozz::make_span( m_locals );
 
@@ -177,6 +177,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_context.Invalidate();
 
         return true;
     }

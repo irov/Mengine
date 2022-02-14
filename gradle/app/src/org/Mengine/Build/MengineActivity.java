@@ -57,7 +57,7 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidNativeKernel_setupKernelJNI();
     private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String method, String args);
+    private static native void AndroidNativePython_call(String plugin, String method, String args);
 
     @Override
     protected String[] getLibraries() {
@@ -379,7 +379,7 @@ public class MengineActivity extends SDLActivity {
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void pythonCall(String method, Object ... args)
+    public void pythonCall(String plugin, String method, Object ... args)
     {
         StringBuilder py_args = new StringBuilder();
 
@@ -403,8 +403,9 @@ public class MengineActivity extends SDLActivity {
 
         py_args.append(")");
 
-        // args example: "(arg1,arg2,arg3)" - string
-        AndroidNativePython_call(method, py_args.toString());
+        String py_args_str = py_args.toString();
+
+        AndroidNativePython_call(plugin, method, py_args_str);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void addPythonPlugin(String name, Object plugin)

@@ -72,7 +72,6 @@
         </activity>
 
         <!-- MarSDK -->
-        <!--
         <activity
             android:name="com.mar.sdk.impl.activities.LoginActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
@@ -99,7 +98,6 @@
         <meta-data android:name="ulog.enable" android:value="true"/>
         <meta-data android:name="ulog.level" android:value="DEBUG"/>
         <meta-data android:name="ulog.local" android:value="true"/>
-        -->
         <!-- MARSDK -->
 
         <activity

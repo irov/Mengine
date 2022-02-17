@@ -17,14 +17,14 @@
 //////////////////////////////////////////////////////////////////////////
 static Mengine::AndroidNativePythonModule * s_androidNativePythonModule = nullptr;
 //////////////////////////////////////////////////////////////////////////
-static jmethodID jmethodID_initializePlugin;
+static jmethodID jmethodID_initializePlugins;
 //////////////////////////////////////////////////////////////////////////
 extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
         MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1setupPythonJNI )(JNIEnv * env, jclass cls)
     {
-        jmethodID_initializePlugin = env->GetStaticMethodID( cls, "pythonInitializePlugin", "()V" );
+        jmethodID_initializePlugins = env->GetMethodID( cls, "pythonInitializePlugins", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -114,9 +114,9 @@ namespace Mengine
                 ->getDynamicUnknown();
 
         m_jenv = extension->getJENV();
-        m_jclassActivity = extension->getJClassActivity();
+        jobject jActivity = extension->getJObjectActivity();
 
-        m_jenv->CallStaticVoidMethod( m_jclassActivity, jmethodID_initializePlugin );
+        m_jenv->CallVoidMethod( jActivity, jmethodID_initializePlugins );
 
         m_eventation.invoke();
 
@@ -125,8 +125,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::_finalizeModule()
     {
-        m_jenv->DeleteGlobalRef( m_jclassActivity );
-
         m_globals.reset();
 
         s_androidNativePythonModule = nullptr;

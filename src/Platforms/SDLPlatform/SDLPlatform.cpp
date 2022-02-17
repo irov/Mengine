@@ -3022,6 +3022,8 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_PLATFORM_IOS)
+        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
+
         uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
@@ -3083,6 +3085,8 @@ namespace Mengine
         }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
+        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
+
         uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )

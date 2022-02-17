@@ -56,7 +56,6 @@ namespace Mengine
 
     protected:
         JNIEnv * m_jenv;
-        jclass m_jclassActivity;
 
         pybind::kernel_interface * m_kernel;
 

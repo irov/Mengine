@@ -33,11 +33,9 @@ import android.provider.Settings.Secure;
 import android.view.KeyEvent;
 
 public class MengineActivity extends SDLActivity {
-    public static final String TAG = "MENGINE";
+    public static final String TAG = "Mengine";
 
     public ArrayList<MenginePlugin> plugins;
-
-    private static MengineActivity _instance;
 
     private static native void AndroidNativeMengine_setMengineAndroidActivityJNI(Object Activity);
     private static native void AndroidNativeMengine_quitMengineAndroidActivityJNI();
@@ -111,6 +109,8 @@ public class MengineActivity extends SDLActivity {
 
         AndroidNativeKernel_setupKernelJNI();
         AndroidNativePython_setupPythonJNI();
+
+        AndroidNativePython_addPlugin("Activity", this);
     }
 
     public static String getCompanyName()
@@ -175,8 +175,6 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        _instance = this;
-
         super.onCreate(savedInstanceState);
 
         Log.i(TAG, "MengineActivity.onCreate()");
@@ -252,8 +250,6 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.plugins) {
             p.onStop();
         }
-
-        _instance = null;
     }
 
     @Override
@@ -273,17 +269,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onResume()");
 
-        if (_instance == null) {
-            Log.i(TAG, "_instance == null -> init plugins");
-
-            _instance = this;
-
-            this.initPlugins();
-        }
-        else {
-            for(MenginePlugin p : this.plugins) {
-                p.onResume();
-            }
+        for(MenginePlugin p : this.plugins) {
+            p.onResume();
         }
     }
 
@@ -371,10 +358,8 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Python Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void pythonInitializePlugin() {
-        _instance.addPythonPlugin("Activity", _instance);
-
-        for(MenginePlugin p : _instance.plugins) {
+    public void pythonInitializePlugins() {
+        for(MenginePlugin p : this.plugins) {
             p.onPythonEmbedding();
         }
     }

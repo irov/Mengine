@@ -38,9 +38,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
     private String m_facebookUserId;
 
     @Override
-    public void onPythonEmbedding() {
-        MengineActivity activity = this.getActivity();
-
+    public void onPythonEmbedding(MengineActivity activity) {
         this.addPythonPlugin("Facebook");
     }
     
@@ -214,7 +212,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
     }
     
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         m_facebookCallbackManager = CallbackManager.Factory.create();
 
         MengineFacebookPlugin self = this;
@@ -242,24 +240,23 @@ public class MengineFacebookPlugin extends MenginePlugin {
             }
         });
         
-        MengineActivity activity = this.getActivity();
         Application application = activity.getApplication();
         
         AppEventsLogger.activateApp(application);
     }
     
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void onMengineInitializeBaseServices()
+    public void onMengineInitializeBaseServices(MengineActivity activity)
     {
     }
 
     @Override
-    public void onMengineCreateApplication()
+    public void onMengineCreateApplication(MengineActivity activity)
     {
     }
 }

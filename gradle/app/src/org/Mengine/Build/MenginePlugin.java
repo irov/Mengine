@@ -1,6 +1,7 @@
 package org.Mengine.Build;
 
 import android.content.Intent;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,19 +10,21 @@ import android.view.KeyEvent;
 import java.util.Formatter;
 
 public class MenginePlugin {
+    private MengineApplication m_application;
     private MengineActivity m_activity;
     private Formatter m_formatter;
     private String m_tag;
     private String m_pluginName;
 
+    public MengineApplication getApplication() { return m_application; }
     public MengineActivity getActivity()
     {
         return m_activity;
     }
 
-    public boolean onInitialize(MengineActivity activity)
+    public boolean onInitialize(MengineApplication application)
     {
-        m_activity = activity;
+        m_application = application;
 
         StringBuilder sb = new StringBuilder();
         Formatter formatter = new Formatter(sb);
@@ -31,6 +34,11 @@ public class MenginePlugin {
         m_tag = this.getClass().getSimpleName();
 
         return true;
+    }
+
+    public void setActivity(MengineActivity activity)
+    {
+        m_activity = activity;
     }
 
     protected void addPythonPlugin(String name)
@@ -53,79 +61,99 @@ public class MenginePlugin {
         m_activity.pythonCall(m_pluginName, method, args);
     }
 
-    public void onCreate(Bundle savedInstanceState)
+    public void onAppCreate(MengineApplication application)
     {
         //Empty
     }
 
-    public void onMengineInitializeBaseServices()
+    public void onAppTerminate(MengineApplication application)
     {
         //Empty
     }
 
-    public void onMengineCreateApplication()
+    public void onAppAttachBaseContext(MengineApplication application, Context base)
     {
         //Empty
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig)
     {
         //Empty
     }
 
-    public void onStart()
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState)
     {
         //Empty
     }
 
-    public void onStop()
+    public void onMengineInitializeBaseServices(MengineActivity activity)
     {
         //Empty
     }
 
-    public void onPause()
+    public void onMengineCreateApplication(MengineActivity activity)
     {
         //Empty
     }
 
-    public void onResume()
+    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data)
     {
         //Empty
     }
 
-    public void onNewIntent(Intent intent)
+    public void onStart(MengineActivity activity)
     {
         //Empty
     }
 
-    public void onDestroy()
+    public void onStop(MengineActivity activity)
     {
         //Empty
     }
 
-    public void onRestart()
+    public void onPause(MengineActivity activity)
     {
         //Empty
     }
 
-    public void onConfigurationChanged(Configuration newConfig)
+    public void onResume(MengineActivity activity)
     {
         //Empty
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    public void onNewIntent(MengineActivity activity, Intent intent)
     {
         //Empty
     }
 
-    public boolean dispatchKeyEvent(KeyEvent event)
+    public void onDestroy(MengineActivity activity)
+    {
+        //Empty
+    }
+
+    public void onRestart(MengineActivity activity)
+    {
+        //Empty
+    }
+
+    public void onConfigurationChanged(MengineActivity activity,Configuration newConfig)
+    {
+        //Empty
+    }
+
+    public void onRequestPermissionsResult(MengineActivity activity, int requestCode, String[] permissions, int[] grantResults)
+    {
+        //Empty
+    }
+
+    public boolean dispatchKeyEvent(MengineActivity activity, KeyEvent event)
     {
         //Empty
 
         return false;
     }
 
-    public void onPythonEmbedding()
+    public void onPythonEmbedding(MengineActivity activity)
     {
         //Empty
     }

@@ -11,10 +11,8 @@ import io.sentry.android.core.SentryAndroid;
 
 public class MengineSentryPlugin extends MenginePlugin {
     @Override
-    public void onMengineInitializeBaseServices()
+    public void onMengineInitializeBaseServices(MengineActivity activity)
     {
-        MengineActivity activity = this.getActivity();
-
         SentryAndroid.init(activity, options -> {
             String SENTRY_DNS = activity.getConfigValue("Sentry", "DSN", "");
             options.setDsn(SENTRY_DNS);
@@ -26,10 +24,8 @@ public class MengineSentryPlugin extends MenginePlugin {
     }
 
     @Override
-    public void onMengineCreateApplication()
+    public void onMengineCreateApplication(MengineActivity activity)
     {
-        MengineActivity activity = this.getActivity();
-
         Sentry.configureScope(scope -> {
             String SENTRY_APPLICATION = activity.getConfigValue( "Sentry", "Application", "Mengine" );
 

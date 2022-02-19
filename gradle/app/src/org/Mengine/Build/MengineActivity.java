@@ -35,8 +35,6 @@ import android.view.KeyEvent;
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "Mengine";
 
-    public ArrayList<MenginePlugin> plugins;
-
     private static native void AndroidNativeMengine_setMengineAndroidActivityJNI(Object Activity);
     private static native void AndroidNativeMengine_quitMengineAndroidActivityJNI();
     private static native String AndroidNativeMengine_getCompanyName();
@@ -63,54 +61,6 @@ public class MengineActivity extends SDLActivity {
                 "SDL2",
                 "SDLApplication"
         };
-    }
-
-    protected boolean createPlugin(String name) {
-        ClassLoader cl = MengineActivity.class.getClassLoader();
-
-        try{
-            Class<?> clazz = cl.loadClass(name);
-            Constructor<?> ctr = clazz.getConstructor();
-            MenginePlugin plugin = (MenginePlugin)ctr.newInstance(new Object[] {});
-
-            if(plugin.onInitialize(this) == false)
-            {
-                return false;
-            }
-
-            this.plugins.add(plugin);
-
-            Log.i(TAG, "MengineActivity add plugin: " + name);
-
-            return true;
-        } catch (ClassNotFoundException ex) {
-            Log.e(TAG, "MengineActivity not found plugin: " + name + " ClassNotFoundException: " + ex.toString());
-        } catch (NoSuchMethodException ex) {
-            Log.e(TAG, "MengineActivity not found plugin: " + name + " NoSuchMethodException: " + ex.toString());
-        } catch (IllegalAccessException ex) {
-            Log.e(TAG, "MengineActivity not found plugin: " + name + " IllegalAccessException: " + ex.toString());
-        } catch (InstantiationException ex) {
-            Log.e(TAG, "MengineActivity not found plugin: " + name + " InstantiationException: " + ex.toString());
-        } catch (InvocationTargetException ex) {
-            Log.e(TAG, "MengineActivity not found plugin: " + name + " InvocationTargetException: " + ex.toString());
-        } catch (NullPointerException ex) {
-            Log.e(TAG, "MengineActivity not found plugin: " + name + " NullPointerException: " + ex.toString());
-        }
-
-        return false;
-    }
-
-    protected void initPlugins() {
-        this.plugins = new ArrayList<MenginePlugin>();
-
-        for(String n : BuildConfig.MENGINE_GRADLE_ANDROID_PLUGINS) {
-            this.createPlugin(n);
-        }
-
-        AndroidNativeKernel_setupKernelJNI();
-        AndroidNativePython_setupPythonJNI();
-
-        AndroidNativePython_addPlugin("Activity", this);
     }
 
     public static String getCompanyName()
@@ -173,6 +123,15 @@ public class MengineActivity extends SDLActivity {
         return AndroidNativeMengine_getConfigValue(section, key, default_value);
     }
 
+    public MengineActivity() {
+    }
+
+    protected ArrayList<MenginePlugin> getPlugins() {
+        MengineApplication app = (MengineApplication)this.getApplication();
+
+        return app.plugins;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,12 +147,18 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
+        for(MenginePlugin p : this.getPlugins()) {
+            p.setActivity(this);
+        }
+
         AndroidNativeMengine_setMengineAndroidActivityJNI(this);
+        AndroidNativeKernel_setupKernelJNI();
+        AndroidNativePython_setupPythonJNI();
 
-        this.initPlugins();
+        AndroidNativePython_addPlugin("Activity", this);
 
-        for(MenginePlugin p : this.plugins) {
-            p.onCreate(savedInstanceState);
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onCreate(this, savedInstanceState);
         }
     }
 
@@ -204,8 +169,8 @@ public class MengineActivity extends SDLActivity {
     public void onMengineInitializeBaseServices() {
         Log.i(TAG, "MengineActivity.onMengineInitializeBaseServices()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onMengineInitializeBaseServices();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onMengineInitializeBaseServices(this);
         }
 
         Log.i(TAG, "MengineActivity.onMengineInitializeBaseServices()");
@@ -214,8 +179,8 @@ public class MengineActivity extends SDLActivity {
     public void onMengineCreateApplication() {
         Log.i(TAG, "MengineActivity.onMengineCreateApplication()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onMengineCreateApplication();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onMengineCreateApplication(this);
         }
     }
 
@@ -225,8 +190,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onActivityResult()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onActivityResult(requestCode, resultCode, data);
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onActivityResult(this, requestCode, resultCode, data);
         }
     }
 
@@ -236,8 +201,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onStart()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onStart();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onStart(this);
         }
     }
 
@@ -247,8 +212,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onStop()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onStop();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onStop(this);
         }
     }
 
@@ -258,8 +223,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onPause()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onPause();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onPause(this);
         }
     }
 
@@ -269,8 +234,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onResume()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onResume();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onResume(this);
         }
     }
 
@@ -280,8 +245,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onNewIntent()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onNewIntent(intent);
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onNewIntent(this, intent);
         }
     }
 
@@ -291,8 +256,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onDestroy()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onDestroy();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onDestroy(this);
         }
     }
 
@@ -302,8 +267,8 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onRestart()");
 
-        for(MenginePlugin p : this.plugins) {
-            p.onRestart();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onRestart(this);
         }
     }
 
@@ -311,8 +276,8 @@ public class MengineActivity extends SDLActivity {
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
 
-        for(MenginePlugin p : this.plugins) {
-            p.onConfigurationChanged(newConfig);
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onConfigurationChanged(this, newConfig);
         }
     }
 
@@ -320,8 +285,8 @@ public class MengineActivity extends SDLActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        for(MenginePlugin p : this.plugins) {
-            p.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
         }
     }
 
@@ -329,8 +294,8 @@ public class MengineActivity extends SDLActivity {
     public boolean dispatchKeyEvent(KeyEvent event){
         Log.i(TAG, "MengineActivity.dispatchKeyEvent() action: " + event.getAction() + " code: " + event.getKeyCode());
 
-        for(MenginePlugin p : this.plugins) {
-            if (p.dispatchKeyEvent(event) == true) {
+        for(MenginePlugin p : this.getPlugins()) {
+            if (p.dispatchKeyEvent(this, event) == true) {
                 return true;
             }
         }
@@ -359,8 +324,8 @@ public class MengineActivity extends SDLActivity {
     //Python Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonInitializePlugins() {
-        for(MenginePlugin p : this.plugins) {
-            p.onPythonEmbedding();
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onPythonEmbedding(this);
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

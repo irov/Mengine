@@ -457,6 +457,31 @@ else
     println 'ANDROID_APP_ENABLE_MAR: FALSE'
 }
 
+if( android.getBooleanProperty("ANDROID_APP_GOOGLE_BILLING", true) == true ) {
+    println 'ANDROID_APP_GOOGLE_BILLING: TRUE'
+
+    android.sourceSets.main.java.srcDirs += ['src_plugins/GooglePlayBilling']
+    android.ext.plugins += 'org.Mengine.Plugin.GPlayBilling.MengineBillingPlugin'
+
+    if (project.hasProperty("ANDROID_APP_GOOGLE_BILLING")) {
+        print 'ANDROID_APP_GOOGLE_BILLING: '
+        println ANDROID_APP_GOOGLE_BILLING
+
+        android.sourceSets.main.res.srcDirs += [ANDROID_APP_GOOGLE_BILLING]
+    } else {
+        print 'ANDROID_APP_GOOGLE_BILLING: res_marsdk [Default]'
+
+//        android.sourceSets.main.res.srcDirs += ['res_marsdk']
+        dependencies {
+            implementation 'com.android.billingclient:billing:4.0.0'
+        }
+    }
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_MAR: FALSE'
+}
+
 android {
     buildTypes {
         debug {

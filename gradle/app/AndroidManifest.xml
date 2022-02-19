@@ -32,6 +32,8 @@
         android:extractNativeLibs="true"
         android:usesCleartextTraffic="true">
 
+        <meta-data android:name="applovin.sdk.key" android:value="@string/applovin_sdk_key"/>
+
         <meta-data android:name="com.google.android.gms.ads.AD_MANAGER_APP" android:value="true"/>
         <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="@string/admob_app_id"/>
         

@@ -463,23 +463,53 @@ if( android.getBooleanProperty("ANDROID_APP_GOOGLE_BILLING", true) == true ) {
     android.sourceSets.main.java.srcDirs += ['src_plugins/GooglePlayBilling']
     android.ext.plugins += 'org.Mengine.Plugin.GPlayBilling.MengineBillingPlugin'
 
-    if (project.hasProperty("ANDROID_APP_GOOGLE_BILLING")) {
-        print 'ANDROID_APP_GOOGLE_BILLING: '
-        println ANDROID_APP_GOOGLE_BILLING
-
-        android.sourceSets.main.res.srcDirs += [ANDROID_APP_GOOGLE_BILLING]
-    } else {
-        print 'ANDROID_APP_GOOGLE_BILLING: res_marsdk [Default]'
-
-//        android.sourceSets.main.res.srcDirs += ['res_marsdk']
-        dependencies {
-            implementation 'com.android.billingclient:billing:4.0.0'
-        }
+    dependencies {
+        implementation 'com.android.billingclient:billing:4.0.0'
     }
 }
 else
 {
-    println 'ANDROID_APP_ENABLE_MAR: FALSE'
+    println 'ANDROID_APP_GOOGLE_BILLING: FALSE'
+}
+
+if( android.getBooleanProperty("ADS_APPLOVIN", true) == true ) {
+    println 'ADS_APPLOVIN: TRUE'
+
+    //<meta-data android:name="applovin.sdk.key"
+    //           android:value="YOUR_SDK_KEY_HERE"/>
+
+    //нужны врезки в AndroidManifest.xml - длается только либой
+    //пока вставлено в конечный манифест
+    android.sourceSets.main.java.srcDirs += ['src_plugins/AdsApplovin']
+    android.ext.plugins += 'org.Mengine.Plugin.AdsApplovin.MengineAdsManager'
+
+    dependencies {
+        //для рекламного id
+        implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+        implementation 'com.applovin:applovin-sdk:11.1.2'
+    }
+}
+else
+{
+    println 'ADS_APPLOVIN: FALSE'
+}
+
+if( android.getBooleanProperty("GOOGLE_GAME_SOCIAL", true) == true ) {
+    println 'GOOGLE_GAME_SOCIAL: TRUE'
+
+    android.sourceSets.main.java.srcDirs += ['src_plugins/GoogleGameSocial']
+    android.ext.plugins += 'org.Mengine.Plugin.GameSocial.MengineGoogleGSN'
+
+    dependencies {
+
+        implementation "com.google.android.gms:play-services-games:22.0.1"
+        implementation "com.google.android.gms:play-services-auth:20.1.0"
+    }
+}
+else
+{
+    println 'GOOGLE_GAME_SOCIAL: FALSE'
 }
 
 android {

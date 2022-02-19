@@ -11,4 +11,8 @@ public class ThreadUtil {
     public static void performOnMainThread(Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);
     }
+
+    public static void performOnMainThread(Runnable runnable, long delayMillis) {
+        new Handler(Looper.getMainLooper()).postDelayed(runnable, delayMillis);
+    }
 }

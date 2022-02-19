@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.MAR;
 
 import org.Mengine.Build.MenginePlugin;
+import org.Mengine.Build.MengineApplication;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,9 +46,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
-    public void onPythonEmbedding() {
-        MengineActivity activity = this.getActivity();
-
+    public void onPythonEmbedding(MengineActivity activity) {
         this.addPythonPlugin("MarSDK");
     }
 
@@ -132,68 +131,91 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    public void onAppCreate(MengineApplication application)
+    {
+        MARSDK.getInstance().onAppCreateAll(application);
+        MARSDK.getInstance().onAppCreate(application);
+    }
+
+    @Override
+    public void onAppTerminate(MengineApplication application)
+    {
+        MARSDK.getInstance().onTerminate();
+    }
+
+    @Override
+    public void onAppAttachBaseContext(MengineApplication application, Context base)
+    {
+        MARSDK.getInstance().onAppAttachBaseContext(application, base);
+    }
+
+    @Override
+    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig)
+    {
+        MARSDK.getInstance().onAppConfigurationChanged(application, newConfig);
+    }
+
+    @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState)
     {
     }
 
     @Override
-    public void onMengineInitializeBaseServices()
+    public void onMengineInitializeBaseServices(MengineActivity activity)
     {
     }
 
     @Override
-    public void onMengineCreateApplication()
+    public void onMengineCreateApplication(MengineActivity activity)
     {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         MARSDK.getInstance().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void onStart(){
+    public void onStart(MengineActivity activity){
         MARSDK.getInstance().onStart();
     }
 
     @Override
-    public void onPause(){
+    public void onPause(MengineActivity activity){
         MARSDK.getInstance().onPause();
     }
 
     @Override
-    public void onResume(){
+    public void onResume(MengineActivity activity){
         MARSDK.getInstance().onResume();
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
+    public void onNewIntent(MengineActivity activity, Intent intent) {
         MARSDK.getInstance().onNewIntent(intent);
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(MengineActivity activity) {
         MARSDK.getInstance().onDestroy();
     }
 
     @Override
-    public void onRestart() {
+    public void onRestart(MengineActivity activity) {
         MARSDK.getInstance().onRestart();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig){
+    public void onConfigurationChanged(MengineActivity activity, Configuration newConfig){
         MARSDK.getInstance().onConfigurationChanged(newConfig);
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    public boolean dispatchKeyEvent(MengineActivity activity, KeyEvent event) {
         int action = event.getAction();
         int keyCode = event.getKeyCode();
 
         if(keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN ) {
-            MengineActivity activity = this.getActivity();
-
             MARPlatform.getInstance().exitSDK(new MARExitListener() {
                 @Override
                 public void onGameExit() {
@@ -232,7 +254,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(MengineActivity activity, int requestCode, String[] permissions, int[] grantResults) {
         MARSDK.getInstance().onRequestPermissionResult(requestCode, permissions, grantResults);
     }
 

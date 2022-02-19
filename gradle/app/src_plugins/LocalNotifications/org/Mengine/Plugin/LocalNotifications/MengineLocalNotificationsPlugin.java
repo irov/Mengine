@@ -31,18 +31,16 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     private static final CharSequence channelName = "Mengine Channel";
 
     @Override
-    public void onPythonEmbedding() {
-        MengineActivity activity = this.getActivity();
-
+    public void onPythonEmbedding(MengineActivity activity) {
         this.addPythonPlugin("LocalNotifications");
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
+    public void onNewIntent(MengineActivity activity, Intent intent) {
         if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
             int id = intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
 

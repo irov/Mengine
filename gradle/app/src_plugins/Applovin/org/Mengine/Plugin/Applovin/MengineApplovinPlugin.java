@@ -12,7 +12,6 @@ import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
-import com.google.android.datatransport.runtime.logging.Logging;
 
 import org.Mengine.Build.MengineActivity;
 import org.Mengine.Build.MenginePlugin;
@@ -23,11 +22,26 @@ import java.util.concurrent.TimeUnit;
 
 public class MengineApplovinPlugin extends MenginePlugin {
 
+    /**
+     * - onMengineApplovinPluginOnSdkInitialized - вызов после успешной инициализации (после можно загружать рекламу)
+     * <p>
+     * Interstitial
+     * void initInterstitial(String interstitial_ad_unit_id)
+     * void loadInterstitial()
+     * void showInterstitial()
+     * <p>
+     * установка Rewarded
+     * void initRewarded(String rewarded_ad_unit_id)
+     * void loadRewarded()
+     * void showRewarded()
+     * - onMengineApplovinPluginOnUserRewarded
+     */
+
     MaxInterstitialAd _interstitialAd;
     private int _retryAttemptInterstitial;
 
-    private MaxRewardedAd rewardedAd;
-    private int retryAttempt;
+    private MaxRewardedAd _rewardedAd;
+    private int _retryAttemptRewarded;
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
@@ -44,35 +58,32 @@ public class MengineApplovinPlugin extends MenginePlugin {
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                startLoading();
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinPluginOnSdkInitialized");
             }
         });
 
+    }
 
-        _interstitialAd = new MaxInterstitialAd(activity.getString(R.string.applovin_interstitial_ad_unit_id), activity);
+    void initInterstitial(String interstitial_ad_unit_id) {
+        //May be
+        // ThreadUtil.performOnMainThread(() -> {
+        _interstitialAd = new MaxInterstitialAd(interstitial_ad_unit_id, getActivity());
         _interstitialAd.setListener(_maxAdListener);
-
-        rewardedAd = MaxRewardedAd.getInstance(activity.getString(R.string.applovin_rewarded_ad_unit_id), activity);
-        rewardedAd.setListener(_maxRewardedAdListener);
-
+        //});
     }
 
-    private boolean _hasStartingLoaded = false;
-
-    public void startLoading() {
-        //делать ли загрузку с проверкой после старта приложения
-        //чтоб загрузка была после инициализцзации всего
-        if (_hasStartingLoaded) return;
-        _hasStartingLoaded = true;
-        ThreadUtil.performOnMainThread(() -> {
-            _interstitialAd.loadAd();
-            rewardedAd.loadAd();
-        }, 4000);
+    void initRewarded(String rewarded_ad_unit_id) {
+        _rewardedAd = MaxRewardedAd.getInstance(rewarded_ad_unit_id, getActivity());
+        _rewardedAd.setListener(_maxRewardedAdListener);
     }
 
-    //    нужно ли загружать рекламу по запросу
-//    чтоб небыло долгой загрузки приложения
-//    сейчас интестишалы грузятся один раз - и далее по каллбеку в нутри applovin
+    void loadInterstitial() {
+        _interstitialAd.loadAd();
+    }
+
+    void loadRewarded() {
+        _rewardedAd.loadAd();
+    }
 
     MaxAdListener _maxAdListener = new MaxAdListener() {
         @Override
@@ -114,7 +125,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
     MaxRewardedAdListener _maxRewardedAdListener = new MaxRewardedAdListener() {
         @Override
         public void onRewardedVideoStarted(MaxAd ad) {
-            retryAttempt = 0;
+            _retryAttemptRewarded = 0;
         }
 
         @Override
@@ -125,6 +136,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
         @Override
         public void onUserRewarded(MaxAd ad, MaxReward reward) {
             log("rewarded received %i", reward.getAmount());
+            MengineApplovinPlugin.this.pythonCall("onMengineApplovinPluginOnUserRewarded", reward.getAmount());
         }
 
         @Override
@@ -139,7 +151,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
         @Override
         public void onAdHidden(MaxAd ad) {
-            rewardedAd.loadAd();
+            _rewardedAd.loadAd();
         }
 
         @Override
@@ -150,17 +162,17 @@ public class MengineApplovinPlugin extends MenginePlugin {
         @Override
         public void onAdLoadFailed(String adUnitId, MaxError error) {
 
-            retryAttempt++;
-            long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, retryAttempt)));
+            _retryAttemptRewarded++;
+            long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, _retryAttemptRewarded)));
 
             ThreadUtil.performOnMainThread(() -> {
-                rewardedAd.loadAd();
+                _rewardedAd.loadAd();
             }, delayMillis);
         }
 
         @Override
         public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-            rewardedAd.loadAd();
+            _rewardedAd.loadAd();
         }
     };
 
@@ -171,8 +183,8 @@ public class MengineApplovinPlugin extends MenginePlugin {
     }
 
     void showRewarded() {
-        if (rewardedAd.isReady()) {
-            rewardedAd.showAd();
+        if (_rewardedAd.isReady()) {
+            _rewardedAd.showAd();
         }
     }
 

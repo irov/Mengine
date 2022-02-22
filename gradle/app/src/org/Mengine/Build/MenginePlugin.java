@@ -16,6 +16,11 @@ public class MenginePlugin {
     private String m_tag;
     private String m_pluginName;
 
+    @FunctionalInterface
+    public interface CallbackInterface{
+        void callback();
+    }
+
     public MengineApplication getApplication() { return m_application; }
     public MengineActivity getActivity()
     {
@@ -57,6 +62,11 @@ public class MenginePlugin {
     }
 
     public void pythonCall(String method, Object ... args)
+    {
+        m_activity.pythonCall(m_pluginName, method, args);
+    }
+
+    public void pythonCallCb(String method, CallbackInterface cb,Object ... args)
     {
         m_activity.pythonCall(m_pluginName, method, args);
     }

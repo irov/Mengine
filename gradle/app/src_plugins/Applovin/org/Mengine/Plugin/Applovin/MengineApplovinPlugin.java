@@ -1,4 +1,4 @@
-package org.Mengine.Plugin.AdsApplovin;
+package org.Mengine.Plugin.Applovin;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,18 +21,18 @@ import org.Mengine.Build.ThreadUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class MengineAdsManager extends MenginePlugin {
-
-    private void Log(String msg) {
-        Logging.i("AdsApplovin", msg);
-    }
-
+public class MengineApplovinPlugin extends MenginePlugin {
 
     MaxInterstitialAd _interstitialAd;
     private int _retryAttemptInterstitial;
 
     private MaxRewardedAd rewardedAd;
     private int retryAttempt;
+
+    @Override
+    public void onPythonEmbedding(MengineActivity activity) {
+        this.addPythonPlugin("MengineApplovinPlugin");
+    }
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
@@ -124,7 +124,7 @@ public class MengineAdsManager extends MenginePlugin {
 
         @Override
         public void onUserRewarded(MaxAd ad, MaxReward reward) {
-            Log("rewarded received" + reward.getAmount());
+            log("rewarded received %i", reward.getAmount());
         }
 
         @Override

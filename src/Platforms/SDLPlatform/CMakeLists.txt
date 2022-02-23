@@ -9,16 +9,22 @@ src
     SDLDateTimeProvider.h
     SDLDateTimeProvider.cpp
     SDLInput.h
-    SDLInput.cpp   
+    SDLInput.cpp
 )
 
 IF(MENGINE_TARGET_MACOS)
 ADD_FILTER(
 OSX
-    OSX/OSXOpenUrlInDefaultBrowser.h
-    OSX/OSXOpenUrlInDefaultBrowser.m
     OSX/OSXSetDesktopWallpaper.h
     OSX/OSXSetDesktopWallpaper.m
+)
+ENDIF()
+
+IF(MENGINE_TARGET_APPLE)
+ADD_FILTER(
+Apple
+    Apple/AppleOpenUrlInDefaultBrowser.h
+    Apple/AppleOpenUrlInDefaultBrowser.m
 )
 ENDIF()
 

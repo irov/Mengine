@@ -14,10 +14,13 @@
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
-#if defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_APPLE)
+extern "C" {
+#   include "Apple/AppleOpenUrlInDefaultBrowser.h"
+}
+#elif defined(MENGINE_PLATFORM_OSX)
 extern "C" {
 #   include "OSX/OSXSetDesktopWallpaper.h"
-#   include "OSX/OSXOpenUrlInDefaultBrowser.h"
 }
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   include "Android/AndroidOpenUrlInDefaultBrowser.h"
@@ -1209,8 +1212,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _url );
 
-#if defined(MENGINE_PLATFORM_OSX)
-        if( OSXOpenUrlInDefaultBrowser( _url ) == -1 )
+#if defined(MENGINE_PLATFORM_APPLE)
+        if( AppleOpenUrlInDefaultBrowser( _url ) == -1 )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url

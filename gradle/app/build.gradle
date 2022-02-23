@@ -60,7 +60,7 @@ android {
         println applicationId
 
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 32
 
         print 'ANDROID_APP_BUILD_PUBLISH = '
         println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)

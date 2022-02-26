@@ -36,12 +36,16 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
      * <p>
      * Соверщить покупку товара
      * boolean buyInApp(String sku)
-     *
+     * - onGooglePlayBillingBuyInAppSuccess - покупка успешно (или нет) начала покупатся)
+     * <p>
      * на оба метода падают все каллбеки - в зависимости от ситуации)
      * - onGooglePlayBillingOnSkuResponse   - прайс товаров
      * - onGooglePlayBillingOnConsume       - покупка совершена
      * - onGooglePlayBillingIsAcknowledge   - покупка реализована + Cb
      * - onGooglePlayBillingAcknowledge     - обратный вызов от Google после успешной реализации товара
+     *
+     * - onGooglePlayBillingDeveloperError  - какаята ошиюка в ключах или покупках
+     * - onGooglePlayBillingUserCanceled    - покупку отменили покупать (в процессе оплаты)
      **/
 
     private List<String> _skusNames = null;
@@ -49,6 +53,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     private BillingClient _billingClient = null;
     private Boolean _connectionSucces = false;
+
+    final Boolean _mutex = true;
+    Boolean _responseEnd = true;
 
     public interface IBillingResponse {
         void skuResponse(List<SkuDetails> priceOffers);
@@ -109,6 +116,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                 }
                 case BillingClient.BillingResponseCode.USER_CANCELED: {
                     log("onPurchasesUpdated: User canceled the purchase");
+                    MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingUserCanceled");
                     break;
                 }
                 case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED: {
@@ -124,6 +132,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                                     "Google Play Console. The SKU product ID must match and the APK you " +
                                     "are using must be signed with release keys."
                     );
+                    MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingDeveloperError");
                     break;
                 }
                 case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED: {
@@ -134,9 +143,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             }
         }
     };
-
-    final Boolean _mutex = true;
-    Boolean _responseEnd = true;
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
@@ -155,6 +161,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                 .setListener(_purchasesUpdatedListener)
                 .enablePendingPurchases()
                 .build();
+
     }
 
     @Override
@@ -162,6 +169,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         super.onResume(activity);
 
         this.connectAndQuerySku();
+    }
+
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        super.onDestroy(activity);
+        _billingClient.endConnection();
     }
 
     private void connectAndQuerySku() {
@@ -245,10 +258,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             int responseCode = _billingClient.launchBillingFlow(this.getActivity(), flowParams).getResponseCode();
             if (responseCode == BillingClient.BillingResponseCode.OK) {
                 log("buyInApp OK %s", sku);
+                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingBuyInAppSuccess", true);
                 return true;
             }
             break;
         }
+        MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingBuyInAppSuccess", false);
         return false;
     }
 

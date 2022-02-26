@@ -36,10 +36,11 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
      * <p>
      * Выход
      * void signOut()
+     *
+     * - onGoogleGameSocialOnSignError
      */
 
-    private final int RC_SIGN_IN = 9000;
-    private final int RC_LEADERBOARD_UI = 9004;
+    private int RC_SIGN_IN;
 
     private @NonNull
     GoogleSignInClient _signInClient;
@@ -55,7 +56,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         super.onCreate(activity, savedInstanceState);
 
-//        RC_SIGN_IN = this.getActivity().getRCId("RC_SIGN_IN");
+        RC_SIGN_IN = this.getActivity().genRequestCode("RC_SIGN_IN");
 
         _signInClient = GoogleSignIn.getClient(
                 activity,
@@ -89,8 +90,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             } else {
                 log("Google game social error " + result.getStatus().getStatusMessage() + " " + result.getStatus());
             }
-        } else if (requestCode == RC_LEADERBOARD_UI) {
-            log("RC_LEADERBOARD_UI");
         }
     }
 
@@ -127,6 +126,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                         } else {
                             log("not success login");
                         }
+                        MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
                         // Player will need to sign-in explicitly using via UI.
                         // See [sign-in best practices](http://developers.google.com/games/services/checklist) for guidance on how and when to implement Interactive Sign-in,
                         // and [Performing Interactive Sign-in](http://developers.google.com/games/services/android/signin#performing_interactive_sign-in) for details on how to implement

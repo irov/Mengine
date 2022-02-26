@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 32
 
         if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {

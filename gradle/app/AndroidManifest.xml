@@ -32,8 +32,6 @@
         android:extractNativeLibs="true"
         android:usesCleartextTraffic="true">
 
-        <meta-data android:name="applovin.sdk.key" android:value="@string/applovin_sdk_key"/>
-
         <meta-data android:name="com.google.android.gms.ads.AD_MANAGER_APP" android:value="true"/>
         <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="@string/admob_app_id"/>
         
@@ -48,13 +46,7 @@
         <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false"/>
         <!-- Google Analytics -->
         
-        <!-- Sentry -->
-        <meta-data android:name="io.sentry.auto-init" android:value="false" />
-        <!-- Sentry -->
-        
-        <!-- Facebook -->
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <!-- Facebook -->
+
 
         <activity
             android:name="MengineActivity"
@@ -73,64 +65,5 @@
             </intent-filter>
         </activity>
 
-        <!-- MarSDK -->
-        <activity
-            android:name="com.mar.sdk.impl.activities.LoginActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:exported="true"
-            android:screenOrientation="behind"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-        </activity>
-
-        <activity
-            android:name="com.mar.sdk.impl.activities.PayActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:exported="true"
-            android:screenOrientation="behind"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-        </activity>
-        
-        <activity
-            android:name="com.mar.sdk.permission.MARProtocolActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
-            android:screenOrientation="behind"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-        </activity>
-        
-        <meta-data android:name="ulog.enable" android:value="true"/>
-        <meta-data android:name="ulog.level" android:value="DEBUG"/>
-        <meta-data android:name="ulog.local" android:value="true"/>
-        <!-- MARSDK -->
-
-        <activity
-            android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
-            tools:replace="android:launchMode"
-            android:launchMode="standard">
-        </activity>
-
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="${app_name_gradle}">
-        </activity>
-
-        <activity
-            android:name="com.facebook.CustomTabActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="@string/fb_login_protocol_scheme"/>
-            </intent-filter>
-        </activity>
-
-        <provider android:authorities="@string/fb_content_provider_id"
-            android:name="com.facebook.FacebookContentProvider"
-            android:exported="true">
-        </provider>
-
-        <receiver android:name="org.Mengine.Build.LocalNotifications.NotificationPublisher"/>
-        <service android:name="org.Mengine.Build.LocalNotifications.NotificationJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 </manifest>

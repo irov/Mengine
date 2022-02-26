@@ -12,3 +12,4 @@
 /daemon
 /native
 .externalNativeBuild
+**/build/**

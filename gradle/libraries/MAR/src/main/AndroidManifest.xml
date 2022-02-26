@@ -1,0 +1,37 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.Mengine.Plugin.MAR">
+
+
+    <application>
+
+        <!-- MarSDK -->
+        <activity
+            android:name="com.mar.sdk.impl.activities.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="true"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+        </activity>
+
+        <activity
+            android:name="com.mar.sdk.impl.activities.PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="true"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+        </activity>
+
+        <activity
+            android:name="com.mar.sdk.permission.MARProtocolActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
+            android:screenOrientation="behind"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
+
+        <meta-data android:name="ulog.enable" android:value="true"/>
+        <meta-data android:name="ulog.level" android:value="DEBUG"/>
+        <meta-data android:name="ulog.local" android:value="true"/>
+        <!-- MARSDK -->
+    </application>
+
+</manifest>

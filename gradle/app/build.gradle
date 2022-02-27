@@ -199,7 +199,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../cmake/Android_SDL/CMakeLists.txt"
-            version "3.18.1"
+            version "3.10.2.4988404"
         }
     }
 

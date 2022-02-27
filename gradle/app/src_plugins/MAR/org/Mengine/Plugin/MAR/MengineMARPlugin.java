@@ -216,36 +216,27 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         int keyCode = event.getKeyCode();
 
         if(keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN ) {
-            MARPlatform.getInstance().exitSDK(new MARExitListener() {
-                @Override
-                public void onGameExit() {
-                    //游戏自己的退出确认框
+            //游戏自己的退出确认框
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("退出确认");
+            builder.setMessage("主公，现在还早，要不要再玩一会？");
+            builder.setCancelable(true);
+            builder.setPositiveButton("好吧",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+                            //这里什么都不用做
+                        }
+                    });
+            builder.setNeutralButton("一会再玩",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton) {
+                            activity.quitMengineApplication();
+                        }
+                    });
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                    builder.setTitle("退出确认");
-                    builder.setMessage("主公，现在还早，要不要再玩一会？");
-                    builder.setCancelable(true);
-                    builder.setPositiveButton("好吧",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-                                    //这里什么都不用做
-                                }
-                            });
-                    builder.setNeutralButton("一会再玩",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-                                    //退出游戏
-                                    activity.finish();
-
-                                    System.exit(0);
-                                }
-                            });
-
-                    builder.show();
-                }
-            });
+            builder.show();
 
             return true;
         }

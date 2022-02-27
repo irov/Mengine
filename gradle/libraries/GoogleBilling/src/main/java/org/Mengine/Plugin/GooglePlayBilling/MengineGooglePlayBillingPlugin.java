@@ -306,5 +306,4 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 //            }
         }
     }
-
 }

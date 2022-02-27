@@ -23,41 +23,4 @@ class Ext {
     }
 
 
-    public static GPathResult GetAndroidManifest(Project project) {
-        String name = project.getName()
-        //String projectPath = project(":" + nameProj).projectDir.absolutePath + "/" + name + "/"
-        //println name
-        //println project.projectDir.absolutePath
-        String projectPath = project.projectDir.absolutePath + "/"// + name + "/../../"
-        if (!projectPath.contains(name))
-            projectPath += "/" + name + "/"
-
-        String pathToManifest = (new File(projectPath + "AndroidManifest.xml")).absolutePath
-        //println pathToManifest
-
-        if (!(new File(pathToManifest)).exists())
-            throw new Exception(" not finded  AndroidManifest " + projectPath)
-        def AndroidManifest = new XmlSlurper().parse(pathToManifest)
-        return AndroidManifest;
-    }
-
-    public static String GetAppId(Project project) {
-        def AndroidManifest = GetAndroidManifest(project)
-        def AppId = AndroidManifest.@package.text()
-        return AppId;
-    }
-
-    public static String GetBuildName(Project project) {
-        def AndroidManifest = GetAndroidManifest(project)
-
-        //def AppId = AndroidManifest.@package.text()
-        //def minSdk = Integer.parseInt(AndroidManifest.'uses-sdk'.@'android:minSdkVersion'.text())
-        //def targetSdk = Integer.parseInt(AndroidManifest.'uses-sdk'.@'android:targetSdkVersion'.text())
-        def VersionCode = Integer.parseInt(AndroidManifest.@'android:versionCode'.text())
-
-        def buildName = project.getName() + "_" + VersionCode + "__" + new SimpleDateFormat("dd-MM-yyyy_HH-mm").format(new Date())
-        //+ ".apk";
-    }
-
-
 }

@@ -41,4 +41,5 @@ dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
 
+    implementation fileTree(dir: '../../../dependencies/marsdk-android', include: ['*.jar'])
 }

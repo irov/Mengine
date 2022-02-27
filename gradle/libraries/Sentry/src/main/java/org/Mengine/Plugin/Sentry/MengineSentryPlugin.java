@@ -1,7 +1,7 @@
 package org.Mengine.Plugin.Sentry;
 
-import org.Mengine.Build.MengineActivity;
-import org.Mengine.Build.MenginePlugin;
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
 
 import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;

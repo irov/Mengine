@@ -11,7 +11,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import org.Mengine.Build.MengineActivity;
+import org.Mengine.Base.MengineActivity;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class NotificationJobService extends JobService {

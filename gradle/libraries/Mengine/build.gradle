@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
-import com.trbrmrdr.Ext
+
+import com.Mengine.Utils
 
 android {
     ndkVersion '22.0.7026061'
@@ -29,7 +30,7 @@ android {
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                             "-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=OFF",
-                            "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (Ext.GetBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
+                            "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                             "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON",
                             "-DCMAKE_BUILD_TYPE:STRING=Debug"
                 }
@@ -47,7 +48,7 @@ android {
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
-                            "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (Ext.GetBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
+                            "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                             "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF",
                             "-DCMAKE_BUILD_TYPE:STRING=Release"
                 }
@@ -63,18 +64,6 @@ android {
     }
 
     preBuild.dependsOn ":libraries:SDL2:build", ":libraries:OpenAL32:build"
-
-    android {
-        buildTypes {
-            debug {
-                buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{}'
-            }
-
-            release {
-                buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{}'
-            }
-        }
-    }
 }
 
 dependencies {

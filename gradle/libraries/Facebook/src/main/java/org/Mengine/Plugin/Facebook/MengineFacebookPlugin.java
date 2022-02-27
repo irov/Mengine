@@ -1,7 +1,7 @@
 package org.Mengine.Plugin.Facebook;
 
-import org.Mengine.Build.MenginePlugin;
-import org.Mengine.Build.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MengineActivity;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;

@@ -2,8 +2,8 @@ package org.Mengine.Plugin.LocalNotifications;
 
 import org.Mengine.Plugin.LocalNotifications.NotificationPublisher;
 
-import org.Mengine.Build.MenginePlugin;
-import org.Mengine.Build.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MengineActivity;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;

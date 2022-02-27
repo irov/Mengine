@@ -62,17 +62,9 @@ android {
         }
     }
 
-    /*sourceSets {
-        main {
-            java.srcDirs = [
-                    'src'
-            ]
-        }
-    }*/
-
     preBuild.dependsOn ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
-   /* android {
+    android {
         buildTypes {
             debug {
                 buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{}'
@@ -82,7 +74,7 @@ android {
                 buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{}'
             }
         }
-    }*/
+    }
 }
 
 dependencies {

@@ -16,7 +16,6 @@ include ':libraries:GoogleBilling'
 include ':libraries:Applovin'
 include ':libraries:GoogleGameSocial'
 
-include ':libraries:unity-ads'
 include ':libraries:devtodev'
 include ':libraries:OpenAL32'
 include ':libraries:SDL2'

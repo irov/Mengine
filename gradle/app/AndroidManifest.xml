@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.Mengine.Build"
+    package="org.Mengine.Project"
     android:installLocation="preferExternal">
 
     <!-- OpenGL ES 2.0 -->
@@ -21,8 +21,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
-        android:label="${app_name_gradle}"
-        android:name="org.Mengine.Build.MengineApplication"
+        android:label="@string/app_name"
+        android:name="org.Mengine.Project.FinalApplication"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:theme="@style/AppTheme"
@@ -32,32 +32,17 @@
         android:extractNativeLibs="true"
         android:usesCleartextTraffic="true">
 
-        <meta-data android:name="com.google.android.gms.ads.AD_MANAGER_APP" android:value="true"/>
-        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="@string/admob_app_id"/>
-        
-        <!-- Firebase -->
-        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false"/>
-        <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true"/>
-        <!-- Firebase -->
-        
-        <!-- Google Analytics -->
-        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false"/>
-        <meta-data android:name="google_analytics_ssaid_collection_enabled" android:value="false"/>
-        <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false"/>
-        <!-- Google Analytics -->
-        
-
 
         <activity
-            android:name="MengineActivity"
-            android:label="${app_name_gradle}"
+            android:name="org.Mengine.Build.MengineActivity"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:clearTaskOnLaunch="true"
             android:exported="true"
             android:launchMode="singleTop"
             android:keepScreenOn="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:screenOrientation="${app_screen_orientation}">
+            android:screenOrientation="@string/app_screen_orientation">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -65,5 +50,5 @@
             </intent-filter>
         </activity>
 
-    </application>
+       </application>
 </manifest>

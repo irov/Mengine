@@ -2,7 +2,7 @@ package org.Mengine.Base;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MengineActivity
+import org.Mengine.Base.MengineActivity;
 
 import android.app.ActivityManager;
 import android.app.Application;

@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
-import com.trbrmrdr.Ext
+
+import com.Mengine.Utils
 
 android {
     ndkVersion '22.0.7026061'
     buildToolsVersion '31.0.0'
     compileSdkVersion 32
-
 
     ext.plugins = []
 
@@ -49,7 +49,7 @@ android {
         targetSdkVersion 32
 
         print 'ANDROID_APP_BUILD_PUBLISH = '
-        println Ext.GetBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH")
+        println Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH")
 
         print 'ANDROID_APP_BUILD_NUMBER = '
         println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", "0")
@@ -59,7 +59,7 @@ android {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
         }
 
-        if (Ext.GetBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH") == true) {
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH") == true) {
             versionCode = 400000000 + buildNumber
         } else {
             versionCode = 300000000 + buildNumber
@@ -82,14 +82,14 @@ android {
         multiDexEnabled true
 
         print 'ANDROID_APP_SPLIT_ENABLE = '
-        println Ext.GetBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE")
+        println Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE")
 
         print 'ANDROID_APP_EMULATOR_ENABLE = '
-        println Ext.GetBooleanProperty(project, "ANDROID_APP_EMULATOR_ENABLE")
+        println Utils.getBooleanProperty(project, "ANDROID_APP_EMULATOR_ENABLE")
 
-        if (Ext.GetBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE") == false) {
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE") == false) {
             ndk {
-                if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                if (Utils.getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                     abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
                 } else {
                     abiFilters "arm64-v8a", "armeabi-v7a"
@@ -98,12 +98,12 @@ android {
         }
 
         print 'ANDROID_APP_ARCH_86_64_ENABLE = '
-        println Ext.GetBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true)
+        println Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true)
     }
 
     splits {
         abi {
-            if (Ext.GetBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE") == true) {
+            if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE") == true) {
                 enable true
             } else {
                 enable false
@@ -111,7 +111,7 @@ android {
 
             reset()
 
-            if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+            if (Utils.getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             } else {
                 include "arm64-v8a", "armeabi-v7a"
@@ -129,14 +129,14 @@ android {
                 println ANDROID_APP_MANIFEST_SRC_FILE
 
                 manifest.srcFile ANDROID_APP_MANIFEST_SRC_FILE
-            } else if (Ext.GetBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH") == true) {
+            } else if (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH") == true) {
                 println 'ANDROID_APP_MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
 
                 manifest.srcFile 'AndroidManifestPublish.xml'
             } else {
                 println 'ANDROID_APP_MANIFEST_SRC_FILE = AndroidManifest.xml [Default]'
 
-                manifest.srcFile './AndroidManifest.xml'
+                manifest.srcFile 'AndroidManifest.xml'
             }
 
             java.srcDirs += ['src']
@@ -171,8 +171,11 @@ android {
         }
     }
 
+
+    preBuild.dependsOn ":libraries:SDL2:build", ":libraries:OpenAL32:build"
+
     afterEvaluate {
-        if (Ext.GetBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
             build.finalizedBy(uploadCrashlyticsSymbolFileRelease)
         }
     }
@@ -210,12 +213,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-
 }
 
-
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_DEVTODEV", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DEVTODEV", true) == true) {
     println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
 
     dependencies {
@@ -225,7 +225,7 @@ if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_DEVTODEV", true) == true
     println 'ANDROID_APP_ENABLE_DEVTODEV: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", true) == true) {
     println 'ANDROID_APP_ENABLE_FACEBOOK: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.Facebook.MengineFacebookPlugin'
@@ -238,7 +238,7 @@ if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", true) == true
     println 'ANDROID_APP_ENABLE_FACEBOOK: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true) {
     println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: TRUE'
 
     apply plugin: 'com.google.gms.google-services'
@@ -251,13 +251,13 @@ if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) =
     println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
 
     apply plugin: 'com.google.firebase.crashlytics'
 
     android {
-        if (Ext.GetBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
             buildTypes {
                 debug {
                     externalNativeBuild {
@@ -288,7 +288,7 @@ if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", t
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS", true) == true) {
     println 'ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationsPlugin'
@@ -303,7 +303,7 @@ if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS", tr
     println 'ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_SENTRY", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_SENTRY", true) == true) {
     println 'ANDROID_APP_ENABLE_SENTRY: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.Sentry.MengineSentryPlugin'
@@ -319,7 +319,7 @@ if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_SENTRY", true) == true) 
     println 'ANDROID_APP_ENABLE_SENTRY: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", true) == true) {
     println 'ANDROID_APP_ENABLE_MAR: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.MAR.MengineMARPlugin'
@@ -331,21 +331,21 @@ if (Ext.GetBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", true) == true) {
     println 'ANDROID_APP_ENABLE_MAR: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_GOOGLE_BILLING", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_GOOGLE_BILLING", true) == true) {
     println 'ANDROID_APP_GOOGLE_BILLING: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.GooglePlayBilling.MengineGooglePlayBillingPlugin'
 
     dependencies {
         implementation 'androidx.annotation:annotation:1.3.0'
-        implementation 'com.android.billingclient:billing:4.0.0'
+        implementation 'com.android.billingclient:billing:4.1.0'
         implementation project(':libraries:GoogleBilling')
     }
 } else {
     println 'ANDROID_APP_GOOGLE_BILLING: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_APPLOVIN", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_APPLOVIN", true) == true) {
     println 'ANDROID_APP_APPLOVIN: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.Applovin.MengineApplovinPlugin'
@@ -360,7 +360,7 @@ if (Ext.GetBooleanProperty(project, "ANDROID_APP_APPLOVIN", true) == true) {
     println 'ANDROID_APP_APPLOVIN: FALSE'
 }
 
-if (Ext.GetBooleanProperty(project, "ANDROID_APP_GOOGLE_GAME_SOCIAL", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_GOOGLE_GAME_SOCIAL", true) == true) {
     println 'ANDROID_APP_GOOGLE_GAME_SOCIAL: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.GoogleGameSocial.MengineGoogleGameSocialPlugin'
@@ -389,5 +389,3 @@ android {
         }
     }
 }
-
-

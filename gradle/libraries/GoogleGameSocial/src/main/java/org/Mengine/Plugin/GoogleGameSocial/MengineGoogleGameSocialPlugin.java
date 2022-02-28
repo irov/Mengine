@@ -15,8 +15,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.Mengine.Build.MengineActivity;
-import org.Mengine.Build.MenginePlugin;
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
 
 public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 

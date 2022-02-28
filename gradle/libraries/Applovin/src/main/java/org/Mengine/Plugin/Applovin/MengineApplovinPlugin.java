@@ -13,9 +13,9 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 
-import org.Mengine.Build.MengineActivity;
-import org.Mengine.Build.MenginePlugin;
-import org.Mengine.Build.ThreadUtil;
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.ThreadUtil;
 
 import java.util.concurrent.TimeUnit;
 

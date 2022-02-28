@@ -2,7 +2,7 @@ package org.Mengine.Project;
 
 
 import org.Mengine.Project.BuildConfig;
-import org.Mengine.Build.MenginePlugin;
+import org.Mengine.Base.MenginePlugin;
 
 import java.util.ArrayList;
 

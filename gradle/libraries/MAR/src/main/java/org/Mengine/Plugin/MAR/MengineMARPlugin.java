@@ -1,7 +1,9 @@
 package org.Mengine.Plugin.MAR;
 
-import org.Mengine.Build.MenginePlugin;
-import org.Mengine.Build.MengineApplication;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.ThreadUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,9 +35,6 @@ import com.mar.sdk.platform.MARPlatform;
 import com.mar.sdk.plugin.MARUser;
 import com.mar.sdk.utils.ResourceHelper;
 import com.mar.sdk.verify.UToken;
-
-import org.Mengine.Build.MengineActivity;
-import org.Mengine.Build.ThreadUtil;
 
 import org.json.JSONObject;
 

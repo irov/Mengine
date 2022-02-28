@@ -89,7 +89,7 @@ android {
 
         if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE") == false) {
             ndk {
-                if (Utils.getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                     abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
                 } else {
                     abiFilters "arm64-v8a", "armeabi-v7a"
@@ -111,7 +111,7 @@ android {
 
             reset()
 
-            if (Utils.getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+            if (Utils.getBooleanProperty(project,"ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             } else {
                 include "arm64-v8a", "armeabi-v7a"
@@ -219,7 +219,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DEVTODEV", true) == tr
     println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
 
     dependencies {
-        implementation project(':libraries:devtodev')
+        implementation project(':libraries:DevToDev')
     }
 } else {
     println 'ANDROID_APP_ENABLE_DEVTODEV: FALSE'

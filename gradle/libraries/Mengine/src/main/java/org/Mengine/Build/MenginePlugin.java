@@ -1,4 +1,7 @@
-package org.Mengine.Build;
+package org.Mengine.Base;
+
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineActivity;
 
 import android.content.Intent;
 import android.content.Context;
@@ -8,6 +11,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import java.util.Formatter;
+
+
 
 public class MenginePlugin {
     private MengineApplication m_application;

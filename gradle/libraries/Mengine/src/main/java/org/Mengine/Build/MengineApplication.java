@@ -1,4 +1,8 @@
-package org.Mengine.Build;
+package org.Mengine.Base;
+
+import org.Mengine.Base.BuildConfig;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MengineActivity
 
 import android.app.ActivityManager;
 import android.app.Application;
@@ -7,8 +11,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Process;
 import android.util.Log;
-
-import org.Mengine.Base.BuildConfig;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,23 +22,7 @@ public class MengineApplication extends Application {
 
     public ArrayList<MenginePlugin> plugins;
 
-    private final String[] MENGINE_GRADLE_ANDROID_PLUGINS = {
-            "org.Mengine.Plugin.Sentry.MengineSentryPlugin",
-            "org.Mengine.Plugin.Facebook.MengineFacebookPlugin",
-            "org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationsPlugin",
-
-            "org.Mengine.Plugin.MAR.MengineMARPlugin",
-            "org.Mengine.Plugin.GooglePlayBilling.MengineGooglePlayBillingPlugin",
-            "org.Mengine.Plugin.Applovin.MengineApplovinPlugin",
-            "org.Mengine.Plugin.GoogleGameSocial.MengineGoogleGameSocialPlugin",
-    };
-
     public MengineApplication() {
-        this.plugins = new ArrayList<MenginePlugin>();
-
-        for (String n : BuildConfig.MENGINE_GRADLE_ANDROID_PLUGINS) {
-            this.createPlugin(n);
-        }
     }
 
     protected boolean createPlugin(String name) {

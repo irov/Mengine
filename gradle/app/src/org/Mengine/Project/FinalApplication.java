@@ -6,7 +6,7 @@ import org.Mengine.Base.MenginePlugin;
 
 import java.util.ArrayList;
 
-class FinalApplication extends org.Mengine.Build.MengineApplication {
+class FinalApplication extends org.Mengine.Base.MengineApplication {
 
     public FinalApplication() {
         this.plugins = new ArrayList<MenginePlugin>();

@@ -3,9 +3,9 @@
 
 
     <application>
-        <receiver android:name="org.Mengine.Build.LocalNotifications.NotificationPublisher" />
+        <receiver android:name="org.Mengine.Plugin.LocalNotifications.NotificationPublisher" />
         <service
-            android:name="org.Mengine.Build.LocalNotifications.NotificationJobService"
+            android:name="org.Mengine.Plugin.LocalNotifications.NotificationJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         
     </application>

@@ -29,6 +29,8 @@ namespace Mengine
     bool WebPPlugin::_initializePlugin()
     {
         int32_t version = WebPGetDecoderVersion();
+        
+        MENGINE_UNUSED( version );
 
         LOGGER_MESSAGE( "WebP Version: %u.%u.%u"
             , (version >> 16) & 0xff

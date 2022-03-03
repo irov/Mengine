@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.Mengine.Plugin.Sentry">
 
-    <meta-data
-        android:name="io.sentry.auto-init"
-        android:value="false" />
-    <application></application>
-
+    <application>
+        <meta-data
+            android:name="io.sentry.auto-init"
+            android:value="false" />
+    </application>
 </manifest>

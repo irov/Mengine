@@ -13,5 +13,4 @@ public class FinalApplication extends org.Mengine.Base.MengineApplication {
             this.createPlugin(n);
         }
     }
-
 }

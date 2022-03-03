@@ -1,13 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.Mengine.Plugin.Facebook">
 
-    <!-- Facebook -->
-    <meta-data
-        android:name="com.facebook.sdk.ApplicationId"
-        android:value="@string/facebook_app_id" />
-    <!-- Facebook -->
-
     <application>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -31,8 +28,5 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="@string/fb_content_provider_id"
             android:exported="true"></provider>
-
-
     </application>
-
 </manifest>

@@ -1,33 +1,19 @@
 apply plugin: 'com.android.library'
 
+import com.Mengine.Utils
+
 android {
     ndkVersion '22.0.7026061'
     buildToolsVersion '31.0.0'
     compileSdkVersion 32
-    
-    ext.getBooleanProperty = { name, d ->
-        def p = project.getProperties().get(name, null)
-
-        if( p == null )
-        {
-            return d
-        }
-
-        if( p as Integer == 0 )
-        {
-            return false
-        }
-
-        return true
-    }
 
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 32
 
-        if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {
-                if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                     abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
                 } else {
                     abiFilters "arm64-v8a", "armeabi-v7a"
@@ -35,10 +21,10 @@ android {
             }
         }
     }
-    
+
     splits {
         abi {
-            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == true) {
+            if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false) == true) {
                 enable true
             } else {
                 enable false
@@ -46,22 +32,22 @@ android {
 
             reset() //reset the list of ABIs to be included to an empty string
 
-            if (getBooleanProperty("ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+            if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             } else {
                 include "arm64-v8a", "armeabi-v7a"
             }
-            
+
             universalApk false
         }
     }
-    
+
     externalNativeBuild {
         cmake {
             version "3.10.2.4988404"
         }
     }
-    
+
     buildTypes {
         debug {
 
@@ -108,16 +94,28 @@ android {
             }
         }
     }
-    
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    
+
     externalNativeBuild {
         cmake {
             path "../../../dependencies/SDL2/CMakeLists.txt"
         }
+    }
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['../../../dependencies/SDL2/android-project/app/src/main/java/']
+            }
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        //If you want to continue even if errors found use following line
+        abortOnError false
     }
 }
 

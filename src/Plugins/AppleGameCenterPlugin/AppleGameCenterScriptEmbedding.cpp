@@ -121,6 +121,8 @@ namespace Mengine
                     ->reportScore( _key, _score, [_cb, _args](bool _successful) {
                     _cb.call_args( _successful, _args );
                 } );
+                
+                return result;
             }
 
         public:

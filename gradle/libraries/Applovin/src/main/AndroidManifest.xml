@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.Mengine.Plugin.Applovin">
+
+
+    <application>
+        <meta-data
+            android:name="applovin.sdk.key"
+            android:value="@string/applovin_sdk_key" />
+
+        <!--<meta-data
+            android:name="applovin.sdk.verbose_logging"
+            android:value="true" />-->
+    </application>
+
+</manifest>

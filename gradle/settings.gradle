@@ -1,1 +1,21 @@
-include ':app', ':libraries:unity-ads', ':libraries:devtodev', ':libraries:OpenAL32', ':libraries:SDL2'
+include ':app'
+
+//Include('CollectAllTheStars2', './Resources/android-basic-samples-master/CollectAllTheStars2')
+void Include(name, path) {
+    include(':' + name)
+    project(':' + name).projectDir = new File(path)
+}
+
+include ':libraries:Mengine'
+include ':libraries:Sentry'
+include ':libraries:Facebook'
+include ':libraries:LocalNotifications'
+
+include ':libraries:MAR'
+include ':libraries:GoogleBilling'
+include ':libraries:Applovin'
+include ':libraries:GoogleGameSocial'
+
+include ':libraries:DevToDev'
+include ':libraries:OpenAL32'
+include ':libraries:SDL2'

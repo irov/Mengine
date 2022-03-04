@@ -52,6 +52,8 @@ namespace Mengine
     bool OggVorbisPlugin::_initializePlugin()
     {
         const char * vorbis_version = vorbis_version_string();
+        
+        MENGINE_UNUSED( vorbis_version );
 
         LOGGER_MESSAGE( "Vorbis version: %s"
             , vorbis_version

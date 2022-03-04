@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="com_facebook_loginview_log_in_button_continue_f1gender">Continue</string>
+  <string name="com_facebook_loginview_log_in_button_continue_m2gender">Continuee</string>
+  <string name="com_facebook_loginview_log_out_action_f1gender">Log out</string>
+  <string name="com_facebook_loginview_log_out_action_m2gender">Log out</string>
+  <string name="com_facebook_loginview_log_out_button_f1gender">Log out</string>
+  <string name="com_facebook_loginview_log_out_button_m2gender">Log out</string>
+  <string name="com_facebook_loginview_logged_in_as_f1gender">Logged in as</string>
+  <string name="com_facebook_loginview_logged_in_as_m2gender">Logged in as</string>
+  <string name="com_facebook_loginview_logged_in_using_facebook_f1gender">Logged in using Facebook</string>
+  <string name="com_facebook_loginview_logged_in_using_facebook_m2gender">Logged in using Facebook</string>
+  <string name="com_facebook_send_button_text_f1gender">Send</string>
+  <string name="com_facebook_send_button_text_m2gender">Send</string>
+  <string name="com_facebook_share_button_text_f1gender">Share</string>
+  <string name="com_facebook_share_button_text_m2gender">Share</string>
+  <string name="com_facebook_smart_login_confirmation_cancel_f1gender">Cancel</string>
+  <string name="com_facebook_smart_login_confirmation_cancel_m2gender">Cancel</string>
+  <string name="com_facebook_smart_login_confirmation_continue_as_f1gender">Continue</string>
+  <string name="com_facebook_smart_login_confirmation_continue_as_m2gender">Continue</string>
+  <string name="com_facebook_smart_login_confirmation_title_f1gender">Confirm</string>
+  <string name="com_facebook_smart_login_confirmation_title_m2gender">Confirm</string>
+  <string name="com_facebook_tooltip_default_f1gender">Default</string>
+  <string name="com_facebook_tooltip_default_m2gender">Default</string>
+</resources>

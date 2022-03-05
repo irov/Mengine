@@ -219,6 +219,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DEVTODEV", true) == tr
     println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
 
     dependencies {
+        implementation  files('../../dependencies/devtodev-android/devtodev-android 1.14.10/devtodev-1.14.10.aar')
         implementation project(':libraries:DevToDev')
     }
 } else {

@@ -24,6 +24,7 @@ extern "C" {
 }
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   include "Android/AndroidOpenUrlInDefaultBrowser.h"
+#   include "Android/AndroidOpenMail.h"
 #endif
 
 #include "SDLDynamicLibrary.h"
@@ -251,7 +252,19 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeKernel_1hasPlugin )(JNIEnv * env, jclass cls, jstring name)
+    {
+        const Mengine::Char * name_str = env->GetStringUTFChars( name, nullptr );
 
+        bool exist = PLUGIN_SERVICE()
+            ->hasPlugin( name_str );
+
+        env->ReleaseStringUTFChars( name, name_str );
+
+        return (jboolean)exist;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #endif
@@ -1235,6 +1248,36 @@ namespace Mengine
 
         return true;
 #else
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    {
+        MENGINE_UNUSED( _email );
+        MENGINE_UNUSED( _subject );
+        MENGINE_UNUSED( _body );
+
+#if defined(MENGINE_PLATFORM_APPLE)
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        if( AndroidOpenMail( m_jenv, jclass_activity, jobject_activity, _email, _subject, _body ) == false )
+        {
+            LOGGER_ERROR( "error open mail '%s'"
+                , _email
+            );
+
+            return false;
+        }
+
+        return true;
+#else
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
         return false;
 #endif
     }
@@ -2868,6 +2911,21 @@ namespace Mengine
     jobject SDLPlatform::getJObjectActivity() const
     {
         return jobject_activity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    String SDLPlatform::getAndroidId() const
+    {
+        static jmethodID jmethodID_getAndroidId = m_jenv->GetMethodID( jclass_activity, "getAndroidId", "()Ljava/lang/String;" );
+
+        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getAndroidId );
+
+        const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
+
+        String stringValue = jStringValue;
+
+        m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+
+        return stringValue;
     }
     //////////////////////////////////////////////////////////////////////////
 #endif

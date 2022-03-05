@@ -28,7 +28,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jstring _args)
+    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jstring _args)
     {
         if( s_androidNativePythonModule != nullptr )
         {
@@ -44,9 +44,9 @@ extern "C" {
             env->ReleaseStringUTFChars( _method, method_str );
             env->ReleaseStringUTFChars( _args, args_str );
 
-            s_androidNativePythonModule->addCommand( [plugin, method, args]( const Mengine::PythonEventHandlerPtr & _handler )
+            s_androidNativePythonModule->addCommand( [plugin, method, _id, args]( const Mengine::PythonEventHandlerPtr & _handler )
                                                        {
-                                                           _handler->pythonMethod( plugin, method, args );
+                                                           _handler->pythonMethod( plugin, method, _id, args );
                                                        } );
         }
     }
@@ -146,7 +146,7 @@ namespace Mengine
         m_eventation.invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, const String & _args )
+    void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int _id, const String & _args )
     {
         ConstString plugin_c = Helper::stringizeString( _plugin );
         ConstString method_c = Helper::stringizeString( _method );
@@ -164,7 +164,52 @@ namespace Mengine
 
         const pybind::object & cb = it_found->second;
 
-        cb.call_native( pybind::tuple( m_kernel, py_args ) );
+        PyObject * py_result = cb.call_native( pybind::tuple( m_kernel, py_args ) );
+
+        m_kernel->decref( py_args );
+
+        if( py_result == nullptr )
+        {
+            LOGGER_ERROR("android plugin '%s' method '%s' id '%d' invalid call"
+            , _plugin.c_str()
+            , _method.c_str()
+            , _id
+            );
+
+            return;
+        }
+
+        if( m_kernel->is_none( py_result ) == true && _id != 0 )
+        {
+            LOGGER_ERROR("android plugin '%s' method '%s' return 'None' but have callback '%d'"
+            , _plugin.c_str()
+            , _method.c_str()
+            , _id
+            );
+
+            m_kernel->decref( py_result );
+
+            return;
+        }
+
+        if( m_kernel->is_none( py_result ) == false && _id == 0 )
+        {
+            LOGGER_ERROR("android plugin '%s' method '%s' return '%s' but not setup callback"
+            , _plugin.c_str()
+            , _method.c_str()
+            , m_kernel->object_str( py_result ).c_str()
+            );
+
+            m_kernel->decref( py_result );
+
+            return;
+        }
+
+        PyObject * py_result_args = m_kernel->tuple_new( 1 );
+        m_kernel->tuple_setitem( py_result_args, 0, py_result );
+        m_kernel->decref( py_result );
+
+        this->androidMethod(STRINGIZE_STRING_LOCAL("Activity"), STRINGIZE_STRING_LOCAL("responseCall"), pybind::args(m_kernel, py_result_args) );
 
         m_kernel->decref( py_args );
     }

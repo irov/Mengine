@@ -6,11 +6,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( jobject_activity );
 
-        static jmethodID jmethodID_openURL = jenv->GetStaticMethodID( jclass_activity, "linkingOpenURL", "(Ljava/lang/String;)Z" );
+        static jmethodID jmethodID_openURL = jenv->GetMethodID( jclass_activity, "linkingOpenURL", "(Ljava/lang/String;)Z" );
 
         jstring jurl = jenv->NewStringUTF( _url );
 
-        jboolean jReturnValue = jenv->CallStaticBooleanMethod( jclass_activity, jmethodID_openURL, jurl );
+        jboolean jReturnValue = jenv->CallBooleanMethod( jclass_activity, jmethodID_openURL, jurl );
 
         jenv->DeleteLocalRef( jurl );
 

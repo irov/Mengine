@@ -30,9 +30,11 @@ ENDIF()
 
 IF(MENGINE_TARGET_ANDROID)
 ADD_FILTER(
-OSX
+Android
     Android/AndroidOpenUrlInDefaultBrowser.h
     Android/AndroidOpenUrlInDefaultBrowser.cpp
+    Android/AndroidOpenMail.h
+    Android/AndroidOpenMail.cpp
 )
 ENDIF()
 

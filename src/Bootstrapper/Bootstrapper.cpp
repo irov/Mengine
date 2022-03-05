@@ -282,36 +282,8 @@ PLUGIN_EXPORT( CameraDebugGizmo );
 PLUGIN_EXPORT( Win32AntifreezeMonitor );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL_STATIC
-PLUGIN_EXPORT( AndroidNativeKernel );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC
 PLUGIN_EXPORT( AndroidNativePython );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
-PLUGIN_EXPORT( AndroidNativeFacebook );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
-PLUGIN_EXPORT( AndroidNativeUnityAds );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
-PLUGIN_EXPORT( AndroidNativeAdMob );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
-PLUGIN_EXPORT( AndroidNativeDevToDev );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
-PLUGIN_EXPORT( AndroidNativeLinking );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
-PLUGIN_EXPORT( AndroidNativeLocalNotifications );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
@@ -1117,36 +1089,8 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Win32AntifreezeMonitor, "Plugin Win32 Antifreeze Monitor...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeKernel, "Plugin Android Kernel Native...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativePython, "Plugin Android Kernel Python...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "Plugin Android Facebook Native...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "Plugin Android UnityAds Native...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "Plugin Android AdMob Native...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "Plugin Android DevToDev Native...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeLinking, "Plugin Android Linking Native...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "Plugin Android Local Notifications Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC

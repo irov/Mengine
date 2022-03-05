@@ -155,7 +155,8 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
         @Override
         public void onUserRewarded(MaxAd ad, MaxReward reward) {
-            log("rewarded received %i", reward.getAmount());
+            MengineApplovinPlugin.this.log("rewarded received %d", reward.getAmount());
+
             MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnUserRewarded", reward.getAmount());
         }
 

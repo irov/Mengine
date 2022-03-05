@@ -23,7 +23,7 @@ public class MenginePlugin {
 
     @FunctionalInterface
     public interface CallbackInterface{
-        void callback();
+        void callback(Object result);
     }
 
     public MengineApplication getApplication() { return m_application; }
@@ -73,7 +73,7 @@ public class MenginePlugin {
 
     public void pythonCallCb(String method, CallbackInterface cb, Object ... args)
     {
-        //m_activity.pythonCallCb(m_pluginName, method, cb, args);
+            m_activity.pythonCallCb(m_pluginName, method, cb, args);
     }
 
     public void onAppCreate(MengineApplication application)

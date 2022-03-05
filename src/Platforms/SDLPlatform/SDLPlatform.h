@@ -145,6 +145,7 @@ namespace Mengine
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
+        bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
 
     public:
         bool existDirectory( const Char * _path, const Char * _directory ) const override;
@@ -205,6 +206,8 @@ namespace Mengine
 
         jclass getJClassActivity() const override;
         jobject getJObjectActivity() const override;
+
+        String getAndroidId() const override;
 #endif
 
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )

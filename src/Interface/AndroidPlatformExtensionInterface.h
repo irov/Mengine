@@ -4,6 +4,8 @@
 
 #include "Environment/Android/AndroidIncluder.h"
 
+#include "Kernel/String.h"
+
 namespace Mengine
 {
     class AndroidPlatformExtensionInterface
@@ -14,5 +16,7 @@ namespace Mengine
 
         virtual jclass getJClassActivity() const = 0;
         virtual jobject getJObjectActivity() const = 0;
+
+        virtual String getAndroidId() const = 0;
     };
 }

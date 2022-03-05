@@ -3,6 +3,7 @@ package org.Mengine.Base;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineApplication;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -23,6 +24,7 @@ import java.nio.file.Paths;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import android.app.Notification;
@@ -40,6 +42,15 @@ public class MengineActivity extends SDLActivity {
 
     private Map<String, Integer> _requestCodes;
 
+    class CallbackResponse
+    {
+        public Integer id;
+        public MenginePlugin.CallbackInterface cb;
+    };
+
+    private ArrayList<CallbackResponse> _callbackResponses;
+    private Integer _callbackResponseEnumerator;
+
     private static native void AndroidNativeMengine_setMengineAndroidActivityJNI(Object Activity);
     private static native void AndroidNativeMengine_quitMengineAndroidActivityJNI();
     private static native String AndroidNativeMengine_getCompanyName();
@@ -55,10 +66,16 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidNativeMengine_getBuildVersion();
     private static native String AndroidNativeMengine_getConfigValue(String section, String key, String default_value);
 
-    private static native void AndroidNativeKernel_setupKernelJNI();
     private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, String args);
+    private static native void AndroidNativePython_call(String plugin, String method, Integer responseId, String args);
+
+    public MengineActivity() {
+        _requestCodes = new HashMap<String, Integer>();
+
+        _callbackResponseEnumerator = 0;
+        _callbackResponses = new ArrayList<CallbackResponse>();
+    }
 
     @Override
     protected String[] getLibraries() {
@@ -128,9 +145,6 @@ public class MengineActivity extends SDLActivity {
         return AndroidNativeMengine_getConfigValue(section, key, default_value);
     }
 
-    public MengineActivity() {
-    }
-
     protected ArrayList<MenginePlugin> getPlugins() {
         MengineApplication app = (MengineApplication)this.getApplication();
 
@@ -157,7 +171,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         AndroidNativeMengine_setMengineAndroidActivityJNI(this);
-        AndroidNativeKernel_setupKernelJNI();
         AndroidNativePython_setupPythonJNI();
 
         AndroidNativePython_addPlugin("Activity", this);
@@ -318,12 +331,19 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Kernel Methods    
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static String kernelGetAndroidId() {
-        ContentResolver resolver = getContext().getContentResolver();
+    public String getAndroidId() {
+        ContentResolver resolver = this.getContext().getContentResolver();
 
         String android_id = Secure.getString(resolver, Secure.ANDROID_ID);
 
         return android_id;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public int genRequestCode(String name) {
+        if (!_requestCodes.containsKey(name)) {
+            _requestCodes.put(name, _requestCodes.size());
+        }
+        return _requestCodes.get(name);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Python Methods
@@ -334,7 +354,7 @@ public class MengineActivity extends SDLActivity {
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void pythonCall(String plugin, String method, Object ... args)
+    private String pythonCallBuildArgs(Object ... args)
     {
         StringBuilder py_args = new StringBuilder();
 
@@ -348,6 +368,25 @@ public class MengineActivity extends SDLActivity {
                 py_args.append(a);
                 py_args.append("\"");
             }
+            else if(a instanceof String[]) {
+                String[] aa = (String[])a;
+                py_args.append("[");
+                int index = 0;
+                for(String s : aa)
+                {
+                    if(index != 0)
+                    {
+                        py_args.append(",");
+                    }
+
+                    py_args.append("\"");
+                    py_args.append(s);
+                    py_args.append("\"");
+
+                    index++;
+                }
+                py_args.append("]");
+            }
             else
             {
                 py_args.append(a);
@@ -360,45 +399,79 @@ public class MengineActivity extends SDLActivity {
 
         String py_args_str = py_args.toString();
 
-        AndroidNativePython_call(plugin, method, py_args_str);
+        return py_args_str;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void pythonCall(String plugin, String method, Object ... args)
+    {
+        String py_args_str = this.pythonCallBuildArgs(args);
+
+        AndroidNativePython_call(plugin, method, 0, py_args_str);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void pythonCallCb(String plugin, String method, MenginePlugin.CallbackInterface cb, Object ... args)
+    {
+        _callbackResponseEnumerator++;
+
+        Integer id = _callbackResponseEnumerator;
+
+        CallbackResponse cr = new CallbackResponse();
+        cr.id = id;
+        cr.cb = cb;
+
+        _callbackResponses.add(cr);
+
+        String py_args_str = this.pythonCallBuildArgs(args);
+
+        AndroidNativePython_call(plugin, method, id, py_args_str);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void responseCall(Integer id, Object result)
+    {
+        Iterator itr = _callbackResponses.iterator();
+
+        while(itr.hasNext())
+        {
+            CallbackResponse cr = (CallbackResponse)itr.next();
+
+            if( cr.id != id )
+            {
+                continue;
+            }
+
+            cr.cb.callback(result);
+
+            itr.remove();
+
+            return;
+        }
+
+        Log.e(TAG, "MengineActivity.responceCall not found id " + id);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void addPythonPlugin(String name, Object plugin)
     {
         AndroidNativePython_addPlugin(name, plugin);
     }
-
-    public int genRequestCode(String name) {
-        if(_requestCodes == null){
-            _requestCodes = new HashMap<String, Integer>();
-        }
-        if (!_requestCodes.containsKey(name)) {
-            _requestCodes.put(name, _requestCodes.size());
-        }
-        return _requestCodes.get(name);
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Linking Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    /*
-    public static boolean linkingOpenURL(String url) {
+    public boolean linkingOpenURL(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
-        _instance.startActivity(Intent.createChooser(intent, ""));
+        this.startActivity(Intent.createChooser(intent, ""));
 
         return true;
     }
 
-    public static boolean linkingOpenMail(String email, String subject, String body) {
+    public boolean linkingOpenMail(String email, String subject, String body) {
         Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(email));
-        _instance.startActivity(Intent.createChooser(intent, ""));
+        this.startActivity(Intent.createChooser(intent, ""));
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
-        _instance.startActivity(Intent.createChooser(intent, ""));
+        this.startActivity(Intent.createChooser(intent, ""));
 
         return true;
     }
-    */
 
     /***********************************************************************************************
     //OLD PLugins: TODO

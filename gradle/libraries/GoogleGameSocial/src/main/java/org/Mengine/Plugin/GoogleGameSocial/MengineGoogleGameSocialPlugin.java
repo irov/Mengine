@@ -75,7 +75,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         _signInClient.signOut().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                log("google game social log OUT");
+                MengineGoogleGameSocialPlugin.this.log("google game social log OUT");
             }
         });
     }
@@ -88,18 +88,27 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             if (result != null && result.isSuccess()) {
                 signInCallback(result.getSignInAccount());
             } else {
-                log("Google game social error " + result.getStatus().getStatusMessage() + " " + result.getStatus());
+                MengineGoogleGameSocialPlugin.this.log("Google game social error %s status %s"
+                        , result.getStatus().getStatusMessage()
+                        , result.getStatus()
+                );
             }
         }
     }
 
     private void signInCallback(@Nullable GoogleSignInAccount account) {
         if (account == null) {
-            log("GoogleSignInAccount == null");
+            MengineGoogleGameSocialPlugin.this.log("GoogleSignInAccount == null");
+
             return;
         }
+
         //аккаунт от гугла - профиль от гугла
-        log("player include '" + account.getDisplayName() + "' ->id= " + account.getId());
+        MengineGoogleGameSocialPlugin.this.log("player include '%s' ->id = '%s'"
+                , account.getDisplayName()
+                , account.getId()
+        );
+
         this.pythonCall("onGoogleGameSocialOnSign", account.getId());
     }
 
@@ -120,11 +129,18 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                         signInCallback(googleSignInAccountTask.getResult());
                     } else {
                         Exception ex = googleSignInAccountTask.getException();
-                        if (ex == null) ex = googleSignInAccountTask.getException();
+
+                        if (ex == null)
+                        {
+                            ex = googleSignInAccountTask.getException();
+                        }
+
                         if (ex != null) {
-                            log(ex.getLocalizedMessage());
+                            MengineGoogleGameSocialPlugin.this.log("not success login: %s"
+                                    , ex.getLocalizedMessage()
+                            );
                         } else {
-                            log("not success login");
+                            MengineGoogleGameSocialPlugin.this.log("not success login");
                         }
                         MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
                         // Player will need to sign-in explicitly using via UI.

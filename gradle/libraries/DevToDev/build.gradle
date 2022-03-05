@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 32
     }
 
 
@@ -22,8 +22,5 @@ android {
 }
 
 dependencies {
-//    implementation project(':libraries:Mengine')
-//    implementation project(':libraries:SDL2')
-
     implementation  files('../../../dependencies/devtodev-android/devtodev-android 1.14.10/devtodev-1.14.10.aar')
 }

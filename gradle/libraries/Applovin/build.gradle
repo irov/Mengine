@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 32
     }
 
 
@@ -26,5 +26,5 @@ dependencies {
     implementation project(':libraries:SDL2')
 
     implementation 'com.google.android.gms:play-services-location:19.0.1'
-    implementation 'com.applovin:applovin-sdk:11.1.2'
+    implementation 'com.applovin:applovin-sdk:11.2.0'
 }

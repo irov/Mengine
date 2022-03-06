@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+
+android {
+    buildToolsVersion '31.0.0'
+    compileSdkVersion 32
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 32
+    }
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation project(':libraries:Mengine')
+    implementation project(':libraries:SDL2')
+
+    implementation platform('com.google.firebase:firebase-bom:26.3.0')
+    implementation 'com.google.firebase:firebase-analytics'
+}

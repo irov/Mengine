@@ -121,6 +121,25 @@ android {
         }
     }
 
+    if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+        buildTypes {
+            debug {
+                externalNativeBuild {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled true
+                    }
+                }
+            }
+
+            release {
+                externalNativeBuild {
+                    firebaseCrashlytics {
+                        nativeSymbolUploadEnabled true
+                    }
+                }
+            }
+        }
+    }
 
     sourceSets {
         main {
@@ -165,6 +184,7 @@ android {
             }
         }
     }
+
     packagingOptions {
         jniLibs {
             pickFirsts += ['lib/**/libc++_shared.so', 'lib/**/libopenal.so', 'lib/**/libSDL2.so']
@@ -242,11 +262,8 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", true) == tr
 if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true) {
     println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: TRUE'
 
-    apply plugin: 'com.google.gms.google-services'
-
     dependencies {
-        implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-        implementation 'com.google.android.gms:play-services-basement:18.0.0'
+        implementation project(':libraries:GoogleService')
     }
 } else {
     println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: FALSE'
@@ -255,35 +272,20 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true)
 if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
 
-    apply plugin: 'com.google.firebase.crashlytics'
+    dependencies {
+        implementation 'com.google.firebase:firebase-analytics'
 
-    android {
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
-            buildTypes {
-                debug {
-                    externalNativeBuild {
-                        firebaseCrashlytics {
-                            mappingFileUploadEnabled true
-                        }
-                    }
-                }
-
-                release {
-                    externalNativeBuild {
-                        firebaseCrashlytics {
-                            nativeSymbolUploadEnabled true
-                        }
-                    }
-                }
-            }
-        }
+        implementation project(':libraries:FirebaseCrashlytics')
     }
+} else {
+    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'
+}
+
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_ANALYTICS", true) == true) {
+    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
 
     dependencies {
-        implementation platform('com.google.firebase:firebase-bom:26.3.0')
-
-        implementation 'com.google.firebase:firebase-crashlytics'
-        implementation 'com.google.firebase:firebase-analytics'
+        implementation project(':libraries:FirebaseAnalytics')
     }
 } else {
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'

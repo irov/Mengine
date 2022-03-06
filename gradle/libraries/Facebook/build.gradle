@@ -1,6 +1,6 @@
 import com.Mengine.Utils
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", false) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", true) == true) {
     apply plugin: 'com.android.library'
 
     android {
@@ -27,7 +27,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", false) == t
                 if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
                     res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
                 } else {
-                    res.srcDirs += ['res']
+                    res.srcDirs += ['../../app/res']
                 }
             }
         }

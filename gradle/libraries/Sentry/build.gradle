@@ -38,7 +38,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_SENTRY", true) == true
                 if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
                     res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
                 } else {
-                    res.srcDirs += ['res']
+                    res.srcDirs += ['../../app/res']
                 }
             }
         }

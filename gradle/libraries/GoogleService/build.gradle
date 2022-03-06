@@ -40,16 +40,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true)
                 if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
                     res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
                 } else {
-                    res.srcDirs += ['res']
-                }
-
-                if (project.hasProperty("ANDROID_APP_ASSETS_SRC_DIR")) {
-                    print 'ANDROID_APP_ASSETS_SRC_DIR = '
-                    println ANDROID_APP_ASSETS_SRC_DIR
-
-                    assets.srcDirs = [ANDROID_APP_ASSETS_SRC_DIR]
-                } else {
-                    assets.srcDirs = ['data']
+                    res.srcDirs += ['../../app/res']
                 }
             }
         }

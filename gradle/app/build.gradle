@@ -168,12 +168,12 @@ android {
                 print 'ANDROID_APP_ASSETS_SRC_DIR = '
                 println ANDROID_APP_ASSETS_SRC_DIR
 
-                assets.srcDirs = [ANDROID_APP_ASSETS_SRC_DIR]
+                assets.srcDirs += [ANDROID_APP_ASSETS_SRC_DIR]
             } else {
                 print 'ANDROID_APP_ASSETS_SRC_DIR = '
                 println 'data'
 
-                assets.srcDirs = ['data']
+                assets.srcDirs += ['data']
             }
         }
     }

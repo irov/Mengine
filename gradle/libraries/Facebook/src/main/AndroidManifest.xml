@@ -8,8 +8,8 @@
 
         <activity
             android:name="com.facebook.FacebookActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"></activity>
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
+        </activity>
 
         <activity
             android:name="com.facebook.CustomTabActivity"

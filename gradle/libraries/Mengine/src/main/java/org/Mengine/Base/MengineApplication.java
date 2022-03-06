@@ -77,7 +77,7 @@ public class MengineApplication extends Application {
         }
     }
 
-  /*  @Override
+    @Override
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 
@@ -85,7 +85,7 @@ public class MengineApplication extends Application {
             p.onAppAttachBaseContext(this, base);
         }
     }
-*/
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

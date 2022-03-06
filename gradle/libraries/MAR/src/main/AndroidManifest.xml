@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.Mengine.Plugin.MAR">
 
-
-    <application>
+    <application
+        android:extractNativeLibs="true"
+        android:usesCleartextTraffic="true">
 
         <!-- MarSDK -->
         <activity

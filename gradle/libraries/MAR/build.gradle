@@ -36,7 +36,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", true) == true) {
                 }
 
                 if (project.hasProperty("ANDROID_APP_PLUGIN_MAR_ASSETS_SRC_DIR")) {
-                    print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: '
+                    print 'ANDROID_APP_PLUGIN_MAR_ASSETS_SRC_DIR: '
                     println ANDROID_APP_PLUGIN_MAR_ASSETS_SRC_DIR
 
                     assets.srcDirs += [ANDROID_APP_PLUGIN_MAR_ASSETS_SRC_DIR]

@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'io.sentry:sentry-android-gradle-plugin:2.1.5'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'io.sentry.android.gradle'
 
@@ -10,7 +20,6 @@ android {
         targetSdkVersion 32
     }
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -19,6 +28,16 @@ android {
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+    }
+
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['res']
+            }
+        }
     }
 }
 

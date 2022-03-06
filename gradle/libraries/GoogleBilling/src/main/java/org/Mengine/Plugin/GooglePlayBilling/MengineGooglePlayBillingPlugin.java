@@ -74,25 +74,25 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             for (int i = 0; i < stringArray.length; i++) {
                 stringArray[i] = priceOffers.get(i).getOriginalJson();
             }
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnSkuResponse", stringArray);
+            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnSkuResponse", (Object[])stringArray);
         }
 
         @Override
         public void consume(ArrayList<String> skus) {
             String[] stringArray = skus.toArray(new String[0]);
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnConsume", stringArray);
+            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnConsume", (Object[])stringArray);
         }
 
         @Override
         public void hasAcknowledge(ArrayList<String> skus, CallbackInterface cb) {
             String[] stringArray = skus.toArray(new String[0]);
-            MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, stringArray);
+            MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, (Object[])stringArray);
         }
 
         @Override
         public void acknowledge(ArrayList<String> skus) {
             String[] stringArray = skus.toArray(new String[0]);
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingAcknowledge", (String[])stringArray);
+            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingAcknowledge", (Object[])stringArray);
         }
     };
 

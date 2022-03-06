@@ -48,9 +48,6 @@ android {
         minSdkVersion 19
         targetSdkVersion 32
 
-        print 'ANDROID_APP_BUILD_PUBLISH = '
-        println Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH")
-
         print 'ANDROID_APP_BUILD_NUMBER = '
         println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", "0")
 
@@ -148,10 +145,6 @@ android {
                 println ANDROID_APP_MANIFEST_SRC_FILE
 
                 manifest.srcFile ANDROID_APP_MANIFEST_SRC_FILE
-            } else if (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH") == true) {
-                println 'ANDROID_APP_MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
-
-                manifest.srcFile 'AndroidManifestPublish.xml'
             } else {
                 println 'ANDROID_APP_MANIFEST_SRC_FILE = AndroidManifest.xml [Default]'
 
@@ -282,13 +275,13 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS",
 }
 
 if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_ANALYTICS", true) == true) {
-    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
+    println 'ANDROID_APP_ENABLE_FIREBASE_ANALYTICS: TRUE'
 
     dependencies {
         implementation project(':libraries:FirebaseAnalytics')
     }
 } else {
-    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'
+    println 'ANDROID_APP_ENABLE_FIREBASE_ANALYTICS: FALSE'
 }
 
 if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS", true) == true) {
@@ -327,8 +320,8 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", true) == true) {
     println 'ANDROID_APP_ENABLE_MAR: FALSE'
 }
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_GOOGLE_BILLING", true) == true) {
-    println 'ANDROID_APP_GOOGLE_BILLING: TRUE'
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_BILLING", true) == true) {
+    println 'ANDROID_APP_ENABLE_GOOGLE_BILLING: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.GooglePlayBilling.MengineGooglePlayBillingPlugin'
 
@@ -336,11 +329,11 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_GOOGLE_BILLING", true) == tru
         implementation project(':libraries:GoogleBilling')
     }
 } else {
-    println 'ANDROID_APP_GOOGLE_BILLING: FALSE'
+    println 'ANDROID_APP_ENABLE_GOOGLE_BILLING: FALSE'
 }
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_APPLOVIN", true) == true) {
-    println 'ANDROID_APP_APPLOVIN: TRUE'
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN", true) == true) {
+    println 'ANDROID_APP_ENABLE_APPLOVIN: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.Applovin.MengineApplovinPlugin'
 
@@ -348,11 +341,11 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_APPLOVIN", true) == true) {
         implementation project(':libraries:Applovin')
     }
 } else {
-    println 'ANDROID_APP_APPLOVIN: FALSE'
+    println 'ANDROID_APP_ENABLE_APPLOVIN: FALSE'
 }
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_GOOGLE_GAME_SOCIAL", true) == true) {
-    println 'ANDROID_APP_GOOGLE_GAME_SOCIAL: TRUE'
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL", true) == true) {
+    println 'ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.GoogleGameSocial.MengineGoogleGameSocialPlugin'
 
@@ -360,7 +353,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_GOOGLE_GAME_SOCIAL", true) ==
         implementation project(':libraries:GoogleGameSocial')
     }
 } else {
-    println 'ANDROID_APP_GOOGLE_GAME_SOCIAL: FALSE'
+    println 'ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL: FALSE'
 }
 
 android {

@@ -1,5 +1,19 @@
+buildscript {
+    repositories {
+        google()
+        maven { url 'https://maven.google.com' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.google.gms:google-services:4.3.10'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.google.gms.google-services'
+
+import com.Mengine.Utils
 
 android {
     buildToolsVersion '31.0.0'
@@ -10,7 +24,6 @@ android {
         targetSdkVersion 32
     }
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -19,6 +32,16 @@ android {
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+    }
+    
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['res']
+            }
+        }
     }
 }
 

@@ -9,7 +9,6 @@ android {
         targetSdkVersion 32
     }
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -19,23 +18,28 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['res']
+            }
+
+            if (project.hasProperty("ANDROID_APP_PLUGIN_MAR_RES_DIR")) {
+                print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: '
+                println ANDROID_APP_PLUGIN_MAR_RES_DIR
+
+                res.srcDirs += [ANDROID_APP_PLUGIN_MAR_RES_DIR]
+            } else {
+                print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: res_marsdk [Default]'
+
+                res.srcDirs += ['res_marsdk']
+            }
+        }
+    }
 }
-
-
-/*android.sourceSets.main.java.srcDirs += ['src_plugins/MAR']
-   Ext.plugins += 'org.Mengine.Plugin.MAR.MengineMARPlugin'
-
-   if (project.hasProperty("ANDROID_APP_PLUGIN_MAR_RES_DIR")) {
-       print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: '
-       println ANDROID_APP_PLUGIN_MAR_RES_DIR
-
-       android.sourceSets.main.res.srcDirs += [ANDROID_APP_PLUGIN_MAR_RES_DIR]
-   } else {
-       print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: res_marsdk [Default]'
-
-       android.sourceSets.main.res.srcDirs += ['res_marsdk']
-   }*/
-
 
 dependencies {
     implementation project(':libraries:Mengine')

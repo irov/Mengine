@@ -9,7 +9,6 @@ android {
         targetSdkVersion 32
     }
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -19,8 +18,24 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['res']
+            }
+        }
+    }
 }
 
 dependencies {
-    implementation  files('../../../dependencies/devtodev-android/devtodev-android 1.14.10/devtodev-1.14.10.aar')
+    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'com.android.installreferrer:installreferrer:2.2'
+    implementation 'com.google.android.gms:play-services-base:18.0.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.firebase:firebase-core:20.1.0'
+
+    implementation 'com.devtodev:android-analytics:2.0.0'
 }

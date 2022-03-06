@@ -1,49 +1,59 @@
-apply plugin: 'com.android.library'
+import com.Mengine.Utils
 
-android {
-    buildToolsVersion '31.0.0'
-    compileSdkVersion 32
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", true) == true) {
+    apply plugin: 'com.android.library'
 
-    defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 32
-    }
+    android {
+        buildToolsVersion '31.0.0'
+        compileSdkVersion 32
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+        defaultConfig {
+            minSdkVersion 19
+            targetSdkVersion 32
+        }
 
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
 
-    sourceSets {
-        main {
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
-                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
-            } else {
-                res.srcDirs += ['res']
-            }
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false
+        }
 
-            if (project.hasProperty("ANDROID_APP_PLUGIN_MAR_RES_DIR")) {
-                print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: '
-                println ANDROID_APP_PLUGIN_MAR_RES_DIR
+        sourceSets {
+            main {
+                if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                    res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+                } else {
+                    res.srcDirs += ['res']
+                }
 
-                res.srcDirs += [ANDROID_APP_PLUGIN_MAR_RES_DIR]
-            } else {
-                print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: res_marsdk [Default]'
+                if (project.hasProperty("ANDROID_APP_PLUGIN_MAR_RES_DIR")) {
+                    print 'ANDROID_APP_PLUGIN_MAR_RES_DIR: '
+                    println ANDROID_APP_PLUGIN_MAR_RES_DIR
 
-                res.srcDirs += ['res_marsdk']
+                    res.srcDirs += [ANDROID_APP_PLUGIN_MAR_RES_DIR]
+                } else {
+                    println 'ANDROID_APP_PLUGIN_MAR_RES_DIR: res_marsdk [Default]'
+
+                    res.srcDirs += ['res_marsdk']
+                }
+
+                if (project.hasProperty("ANDROID_APP_ASSETS_SRC_DIR")) {
+                    assets.srcDirs = [ANDROID_APP_ASSETS_SRC_DIR]
+                } else {
+                    assets.srcDirs = ['data']
+                }
             }
         }
     }
-}
 
-dependencies {
-    implementation project(':libraries:Mengine')
-    implementation project(':libraries:SDL2')
+    dependencies {
+        implementation project(':libraries:Mengine')
+        implementation project(':libraries:SDL2')
 
-    implementation fileTree(dir: '../../../dependencies/marsdk-android', include: ['*.jar'])
+        implementation fileTree(dir: '../../../dependencies/marsdk-android', include: ['*.jar'])
+    }
 }

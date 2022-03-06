@@ -1,6 +1,6 @@
-apply plugin: 'com.android.library'
-
 import com.Mengine.Utils
+
+apply plugin: 'com.android.library'
 
 android {
     ndkVersion '22.0.7026061'
@@ -60,7 +60,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../../cmake/Android_SDL/CMakeLists.txt"
-            version "3.18.1"
+            version "3.10.2.4988404"
         }
     }
 

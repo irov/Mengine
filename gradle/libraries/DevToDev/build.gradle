@@ -34,7 +34,10 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DEVTODEV", true) == tr
     }
 
     dependencies {
-        implementation 'androidx.preference:preference-ktx:1.2.0'
+        implementation project(':libraries:Mengine')
+        implementation project(':libraries:SDL2')
+
+        implementation "androidx.preference:preference:$preference"
         implementation 'com.android.installreferrer:installreferrer:2.2'
         implementation 'com.google.android.gms:play-services-base:18.0.1'
         implementation 'com.google.code.gson:gson:2.8.6'

@@ -28,11 +28,11 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
      * <p>
      * Авторизация
      * void startSignInIntent()
-     * - onGoogleGameSocialPluginSign
+     * - onGoogleGameSocialOnSign
      * <p>
      * Тихая авторизация - если возможно то без вопроса у пользователя произвести авторизацию
      * void signInSilently()
-     * - onGoogleGameSocialPluginSign
+     * - onGoogleGameSocialOnSign
      * <p>
      * Выход
      * void signOut()

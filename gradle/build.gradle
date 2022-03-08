@@ -1,4 +1,9 @@
 buildscript {
+
+    ext {
+        preference = '1.2.0'
+    }
+
     repositories {
         google()
         maven { url 'https://maven.google.com' }

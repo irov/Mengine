@@ -193,7 +193,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
 
                     charOffset = value;
@@ -211,7 +211,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
 
                     lineOffset = value;
@@ -232,7 +232,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
 
                     colorFont.setRGBA( r, g, b, a );
@@ -250,7 +250,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
 
                     maxLength = value;
@@ -268,7 +268,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
 
                     isOverride = (value != 0);
@@ -301,7 +301,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
                 }
                 else if( MENGINE_STRCMP( str_key, "HorizontAlign" ) == 0 )
@@ -332,7 +332,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
                 }
                 else if( MENGINE_STRCMP( str_key, "CharScale" ) == 0 )
@@ -346,7 +346,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
 
                     charScale = value;
@@ -364,7 +364,7 @@ namespace Mengine
                             , str_value
                         );
 
-                        m_successful = false;
+                        this->setError();
                     }
 
                     isEmpty = (value != 0);
@@ -399,7 +399,7 @@ namespace Mengine
                         , fontName.c_str()
                     );
 
-                    m_successful = false;
+                    this->setError();
                 }
             }
 
@@ -415,12 +415,17 @@ namespace Mengine
 
                 if( isDublicate == false )
                 {
-                    m_successful = false;
+                    this->setError();
                 }
             }
         }
 
     public:
+        void setError()
+        {
+            m_successful = false;
+        }
+
         bool isSuccessful() const
         {
             return m_successful;

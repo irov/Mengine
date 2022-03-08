@@ -44,6 +44,11 @@ namespace Mengine
         bool closeInputFile( const InputStreamInterfacePtr & _stream ) override;
 
     public:
+        InputStreamInterfacePtr createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) override;
+        bool openInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) override;
+        bool closeInputMutexFile( const InputStreamInterfacePtr & _stream ) override;
+
+    public:
         OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) override;
         bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp ) override;
         bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
@@ -57,8 +62,9 @@ namespace Mengine
         bool closeMappedFile( const MappedInterfacePtr & _stream ) override;
 
     protected:
-        FactoryPtr m_factoryInputStream;
-        FactoryPtr m_factoryOutputStream;
+        FactoryPtr m_factoryInputStreamFile;
+        FactoryPtr m_factoryInputStreamMutexFile;
+        FactoryPtr m_factoryOutputStreamFile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLFileGroupDirectory, FileGroupInterface> SDLFileGroupDirectoryPtr;

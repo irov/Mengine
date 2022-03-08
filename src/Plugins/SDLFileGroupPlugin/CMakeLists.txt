@@ -12,6 +12,8 @@ src
 	SDLFileGroupDirectoryFactory.cpp
     SDLFileInputStream.h
     SDLFileInputStream.cpp
+    SDLMutexFileInputStream.h
+    SDLMutexFileInputStream.cpp
     SDLFileOutputStream.cpp
     SDLFileOutputStream.h
     SDLFileMapped.h

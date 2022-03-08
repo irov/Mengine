@@ -23,6 +23,7 @@ extern "C" {
 #   include "OSX/OSXSetDesktopWallpaper.h"
 }
 #elif defined(MENGINE_PLATFORM_ANDROID)
+#   include "Android/AndroidAssetFile.h"
 #   include "Android/AndroidOpenUrlInDefaultBrowser.h"
 #   include "Android/AndroidOpenMail.h"
 #endif
@@ -3788,5 +3789,47 @@ namespace Mengine
         }
 #endif
     }
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDLPlatform::androidOpenAssetFile( const Char * _path )
+    {
+        int32_t fileId = AndroidOpenAssetFile( m_jenv, jclass_activity, jobject_activity, _path );
+
+        return fileId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDLPlatform::androidAvailableAssetFile( int32_t _fileId )
+    {
+        int32_t available = AndroidAvailableAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+
+        return available;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDLPlatform::androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer )
+    {
+        int32_t read = AndroidReadAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId, _offset, _size, _buffer );
+
+        return read;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDLPlatform::androidSkipAssetFile( int32_t _fileId, int32_t _offset )
+    {
+        int32_t skip = AndroidSkipAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId, _offset );
+
+        return skip;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::androidResetAssetFile( int32_t _fileId )
+    {
+        AndroidResetAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::androidCloseAssetFile( int32_t _fileId )
+    {
+        AndroidCloseAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

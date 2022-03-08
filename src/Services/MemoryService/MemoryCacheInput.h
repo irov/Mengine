@@ -38,7 +38,7 @@ namespace Mengine
         size_t read( void * const _buf, size_t _size ) override;
         bool seek( size_t _pos ) override;
         bool rseek( size_t _pos ) override;
-        bool skip( size_t _pos ) override;
+        bool skip( size_t _size ) override;
         size_t tell() const override;
         size_t size() const override;
         bool eof() const override;

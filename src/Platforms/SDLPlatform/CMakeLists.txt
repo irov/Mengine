@@ -31,6 +31,8 @@ ENDIF()
 IF(MENGINE_TARGET_ANDROID)
 ADD_FILTER(
 Android
+    Android/AndroidAssetFile.h
+    Android/AndroidAssetFile.cpp
     Android/AndroidOpenUrlInDefaultBrowser.h
     Android/AndroidOpenUrlInDefaultBrowser.cpp
     Android/AndroidOpenMail.h

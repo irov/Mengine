@@ -243,6 +243,16 @@ namespace Mengine
         void notifyInitializeBaseServices_();
         void notifyCreateApplication_();
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+    protected:
+        int32_t androidOpenAssetFile( const Char * _path ) override;
+        int32_t androidAvailableAssetFile( int32_t _fileId ) override;
+        int32_t androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer ) override;
+        int32_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) override;
+        void androidResetAssetFile( int32_t _fileId ) override;
+        void androidCloseAssetFile( int32_t _fileId ) override;
+#endif
+
     protected:
         SDL_malloc_func m_old_SDL_malloc_func;
         SDL_calloc_func m_old_SDL_calloc_func;

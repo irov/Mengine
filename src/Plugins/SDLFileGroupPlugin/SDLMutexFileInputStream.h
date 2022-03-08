@@ -1,35 +1,36 @@
 #pragma once
 
 #include "Interface/FileInputStreamInterface.h"
+#include "Interface/ThreadMutexInterface.h"
+
+#include "SDLFileInputStream.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/ThreadGuard.h"
 
 #include "SDL_rwops.h"
-
-#ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
-#define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
-#endif
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class SDLFileInputStream
+    class SDLMutexFileInputStream
         : public FileInputStreamInterface
         , public Factorable
     {
-        DECLARE_FACTORABLE( SDLFileInputStream );
+        DECLARE_FACTORABLE( SDLMutexFileInputStream );
 
     public:
-        SDLFileInputStream();
-        ~SDLFileInputStream() override;
+        SDLMutexFileInputStream();
+        ~SDLMutexFileInputStream() override;
+
+    public:
+        bool initialize( const SDLFileInputStreamPtr & _stream, const ThreadMutexInterfacePtr & _mutex );
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share ) override;
         bool close() override;
 
     public:
-        size_t read( void * const _buf, size_t _count ) override;
+        size_t read( void * const _buf, size_t _size ) override;
         bool seek( size_t _pos ) override;
         bool rseek( size_t _pos ) override;
         bool skip( size_t _size ) override;
@@ -38,16 +39,12 @@ namespace Mengine
         bool eof() const override;
 
     public:
-        bool time( uint64_t * const _time ) const override;
+        bool time( uint64_t *  const _time ) const override;
 
     public:
         bool memory( void ** const _memory, size_t * const _size ) override;
 
-    public:
-        SDL_RWops * getRWops() const;
-
     protected:
-        bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char *  const _fullPath );
         bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
         bool seek_( size_t _pos );
 
@@ -59,15 +56,16 @@ namespace Mengine
 #endif
 
     protected:
-        SDL_RWops * m_rwops;
+        SDLFileInputStreamPtr m_stream;
+        ThreadMutexInterfacePtr m_mutex;
 
         size_t m_size;
         size_t m_offset;
 
         size_t m_carriage;
         size_t m_capacity;
-        size_t m_reading;
-        
+        size_t m_reading;        
+
         uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE];
 
 #ifdef MENGINE_DEBUG
@@ -75,13 +73,8 @@ namespace Mengine
         FilePath m_folderPath;
         FilePath m_filePath;
 #endif
-
-        bool m_streaming;
-        bool m_share;
-
-        MENGINE_THREAD_GUARD_INIT( SDLFileInputStream );
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SDLFileInputStream, FileInputStreamInterface> SDLFileInputStreamPtr;
+    typedef IntrusivePtr<SDLMutexFileInputStream, FileInputStreamInterface> SDLMutexFileInputStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }

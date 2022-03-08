@@ -4,6 +4,7 @@
 #include "Interface/PlatformInterface.h"
 
 #include "SDLFileInputStream.h"
+#include "SDLMutexFileInputStream.h"
 #include "SDLFileOutputStream.h"
 #include "SDLFileMapped.h"
 #include "SDLFileHelper.h"
@@ -32,19 +33,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::_initialize()
     {
-        m_factoryInputStream = Helper::makeFactoryPool<SDLFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOutputStream = Helper::makeFactoryPool<SDLFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamFile = Helper::makeFactoryPool<SDLFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamMutexFile = Helper::makeFactoryPool<SDLMutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOutputStreamFile = Helper::makeFactoryPool<SDLFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLFileGroupDirectory::_finalize()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStream );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStream );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStreamFile );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStreamMutexFile );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStreamFile );
 
-        m_factoryInputStream = nullptr;
-        m_factoryOutputStream = nullptr;
+        m_factoryInputStreamFile = nullptr;
+        m_factoryInputStreamMutexFile = nullptr;
+        m_factoryOutputStreamFile = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::isPacked() const
@@ -193,9 +197,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
     {
-        MENGINE_UNUSED( _filePath );
-        MENGINE_UNUSED( _streaming );
-
         if( m_parentFileGroup != nullptr )
         {
             if( this->existFile( _filePath, false ) == false )
@@ -206,7 +207,7 @@ namespace Mengine
             }
         }
 
-        SDLFileInputStreamPtr stream = m_factoryInputStream->createObject( _doc );
+        SDLFileInputStreamPtr stream = m_factoryInputStreamFile->createObject( _doc );
         
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
@@ -249,9 +250,66 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    InputStreamInterfacePtr SDLFileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    {
+        if( m_parentFileGroup != nullptr )
+        {
+            if( this->existFile( _filePath, false ) == false )
+            {
+                InputStreamInterfacePtr stream = m_parentFileGroup->createInputMutexFile( _filePath, _stream, _mutex, _fileGroup, _doc );
+
+                return stream;
+            }
+        }
+
+        SDLMutexFileInputStreamPtr stream = m_factoryInputStreamMutexFile->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+
+        stream->initialize( _stream, _mutex );
+
+        if( _fileGroup != nullptr )
+        {
+            *_fileGroup = this;
+        }
+
+        return stream;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::openInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
+
+        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+
+        bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, false, false );
+
+        MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
+
+        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+
+        bool result = file->close();
+
+        MENGINE_ASSERTION( result == true, "failed close file '%s'"
+            , m_folderPath.c_str()
+        );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile( const DocumentPtr & _doc )
     {
-        SDLFileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
+        SDLFileOutputStreamPtr stream = m_factoryOutputStreamFile->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 

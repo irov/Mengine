@@ -32,36 +32,6 @@ namespace Mengine
         this->close();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::close()
-    {
-        if( m_rwops == nullptr )
-        {
-            return true;
-        }
-
-#ifdef MENGINE_DEBUG
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
-        }
-#endif
-
-        int error = SDL_RWclose( m_rwops );
-        m_rwops = nullptr;
-
-        if( error != 0 )
-        {
-            LOGGER_ERROR( "invalid close '%s' get error: %s"
-                , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
         MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::open" );
@@ -177,7 +147,37 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLFileInputStream::read( void * _buf, size_t _count )
+    bool SDLFileInputStream::close()
+    {
+        if( m_rwops == nullptr )
+        {
+            return true;
+        }
+
+#ifdef MENGINE_DEBUG
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
+        }
+#endif
+
+        int error = SDL_RWclose( m_rwops );
+        m_rwops = nullptr;
+
+        if( error != 0 )
+        {
+            LOGGER_ERROR( "invalid close '%s' get error: %s"
+                , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
+                , SDL_GetError()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLFileInputStream::read( void * const _buf, size_t _count )
     {
         MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::read" );
 
@@ -200,10 +200,9 @@ namespace Mengine
             }
 
             size_t toRead = correct_count - tail;
-            void * toBuffer = (uint8_t *)_buf + tail;
 
             size_t bytesRead;
-            if( this->read_( toBuffer, toRead, &bytesRead ) == false )
+            if( this->read_( _buf, tail, toRead, &bytesRead ) == false )
             {
                 return 0;
             }
@@ -233,7 +232,7 @@ namespace Mengine
         }
 
         size_t bytesRead;
-        if( this->read_( m_readCache, MENGINE_FILE_STREAM_BUFFER_SIZE, &bytesRead ) == false )
+        if( this->read_( m_readCache, 0, MENGINE_FILE_STREAM_BUFFER_SIZE, &bytesRead ) == false )
         {
             return 0;
         }
@@ -250,7 +249,7 @@ namespace Mengine
         return readSize + tail;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::read_( void * const _buf, size_t _size, size_t * const _read )
+    bool SDLFileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read )
     {
         if( _size == 0 )
         {
@@ -259,7 +258,9 @@ namespace Mengine
             return true;
         }
 
-        size_t bytesRead = SDL_RWread( m_rwops, _buf, 1, _size );
+        uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
+
+        size_t bytesRead = SDL_RWread( m_rwops, buf_offset, 1, _size );
 
         if( bytesRead == 0 )
         {
@@ -321,13 +322,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::skip( size_t _pos )
+    bool SDLFileInputStream::skip( size_t _size )
     {
         MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::skip" );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
-        size_t seek_pos = current + _pos;
+        size_t seek_pos = current + _size;
 
         bool result = this->seek_( seek_pos );
 
@@ -388,6 +389,11 @@ namespace Mengine
         MENGINE_UNUSED( _size );
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SDL_RWops * SDLFileInputStream::getRWops() const
+    {
+        return m_rwops;
     }
     //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG

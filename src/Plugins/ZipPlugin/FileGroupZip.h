@@ -49,6 +49,11 @@ namespace Mengine
         bool closeInputFile( const InputStreamInterfacePtr & _stream ) override;
 
     public:
+        InputStreamInterfacePtr createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) override;
+        bool openInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) override;
+        bool closeInputMutexFile( const InputStreamInterfacePtr & _stream ) override;
+
+    public:
         OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) override;
         bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp ) override;
         bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
@@ -73,9 +78,11 @@ namespace Mengine
         struct ZipInfo
         {
             FilePath folderPath;
-            InputStreamInterfacePtr zipFile;
+            InputStreamInterfacePtr stream;
+            InputStreamInterfacePtr proxyStream;
             FileMappedInterfacePtr mappedFile;
             ThreadMutexInterfacePtr mutex;
+            ThreadMutexInterfacePtr proxyMutex;
         };
 
         typedef List<ZipInfo> ListZipInfo;

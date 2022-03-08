@@ -47,9 +47,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketInputStream::skip( size_t _pos )
+    bool Win32SocketInputStream::skip( size_t _size )
     {
-        MENGINE_UNUSED( _pos );
+        MENGINE_UNUSED( _size );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 

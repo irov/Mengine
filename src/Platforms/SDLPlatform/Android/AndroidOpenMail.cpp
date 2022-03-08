@@ -12,7 +12,7 @@ namespace Mengine
         jstring jsubject = jenv->NewStringUTF( _subject );
         jstring jbody = jenv->NewStringUTF( _body );
 
-        jboolean jReturnValue = jenv->CallBooleanMethod( jclass_activity, jmethodID_openURL, jemail, jsubject, jbody );
+        jboolean jReturnValue = jenv->CallBooleanMethod( jobject_activity, jmethodID_openURL, jemail, jsubject, jbody );
 
         jenv->DeleteLocalRef( jemail );
         jenv->DeleteLocalRef( jsubject );

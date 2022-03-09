@@ -1,0 +1,2 @@
+-keep class com.devtodev.** { *; }
+-dontwarn com.devtodev.**

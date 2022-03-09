@@ -123,6 +123,7 @@ namespace Mengine
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
+        bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
 
     public:
         bool existDirectory( const Char * _path, const Char * _directory ) const override;

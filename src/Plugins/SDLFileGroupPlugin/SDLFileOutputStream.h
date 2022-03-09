@@ -30,6 +30,9 @@ namespace Mengine
     public:
         bool flush() override;
 
+    public:
+        SDL_RWops * getRWops() const;
+
     protected:
         SDL_RWops * m_rwops;
 
@@ -42,6 +45,6 @@ namespace Mengine
         bool m_withTemp;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SDLFileOutputStream> SDLFileOutputStreamPtr;
+    typedef IntrusivePtr<SDLFileOutputStream, FileOutputStreamInterface> SDLFileOutputStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }

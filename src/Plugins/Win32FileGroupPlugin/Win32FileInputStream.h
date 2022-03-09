@@ -43,6 +43,9 @@ namespace Mengine
     public:
         bool memory( void ** const _memory, size_t * const _size ) override;
 
+    public:
+        HANDLE getHandleFile() const;
+
     protected:
         bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _fullPath );
         bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
@@ -79,6 +82,6 @@ namespace Mengine
         bool m_share;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Win32FileInputStream> Win32FileInputStreamPtr;
+    typedef IntrusivePtr<Win32FileInputStream, FileInputStreamInterface> Win32FileInputStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -7,11 +7,8 @@ import android.app.job.JobService;
 import android.content.Context;
 import android.os.Build;
 import android.os.PersistableBundle;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
-
-import org.Mengine.Base.MengineActivity;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class NotificationJobService extends JobService {
@@ -24,12 +21,12 @@ public class NotificationJobService extends JobService {
         bundle.putInt(KEY_ID, id);
         bundle.putString(KEY_CONTENT, content);
         bundle.putString(KEY_TITLE, title);
+
         return bundle;
     }
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Log.d(MengineActivity.TAG, "Job started");
         PersistableBundle bundle = params.getExtras();
         String title = bundle.getString(KEY_TITLE);
         String content = bundle.getString(KEY_CONTENT);

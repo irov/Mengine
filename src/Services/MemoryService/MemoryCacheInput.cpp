@@ -123,16 +123,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryCacheInput::skip( size_t _pos )
+    bool MemoryCacheInput::skip( size_t _size )
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::skip" );
 
-        if( m_pos + _pos > m_end )
+        if( m_pos + _size > m_end )
         {
-            _pos = 0;
+            _size = 0;
         }
 
-        m_pos += _pos;
+        m_pos += _size;
 
         return true;
     }

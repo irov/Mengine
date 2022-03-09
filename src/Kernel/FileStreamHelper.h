@@ -8,6 +8,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         InputStreamInterfacePtr openInputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _streaming, bool _share, const DocumentPtr & _doc );
+        InputStreamInterfacePtr openInputStreamMutexFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
         OutputStreamInterfacePtr openOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentPtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         bool closeOutputStreamFile( const OutputStreamInterfacePtr & _stream );

@@ -38,7 +38,6 @@ import com.mar.sdk.verify.UToken;
 
 import org.json.JSONObject;
 
-import android.util.Log;
 import android.view.KeyEvent;
 
 import java.util.Calendar;
@@ -51,13 +50,8 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
 
     public void initialize() {
         MengineActivity activity = this.getActivity();
-        MengineMARPlugin self = this;
-        ThreadUtil.performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                MARPlatform.getInstance().init(activity, self);
-            }
-        });
+
+        MARPlatform.getInstance().init(activity, this);
     }
 
     public void login(){

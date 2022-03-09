@@ -145,6 +145,7 @@ namespace Mengine
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
+        bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
 
     public:
         bool existDirectory( const Char * _path, const Char * _directory ) const override;
@@ -205,6 +206,8 @@ namespace Mengine
 
         jclass getJClassActivity() const override;
         jobject getJObjectActivity() const override;
+
+        String getAndroidId() const override;
 #endif
 
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
@@ -239,6 +242,16 @@ namespace Mengine
     protected:
         void notifyInitializeBaseServices_();
         void notifyCreateApplication_();
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+    protected:
+        int32_t androidOpenAssetFile( const Char * _path ) override;
+        int32_t androidAvailableAssetFile( int32_t _fileId ) override;
+        int32_t androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer ) override;
+        int32_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) override;
+        void androidResetAssetFile( int32_t _fileId ) override;
+        void androidCloseAssetFile( int32_t _fileId ) override;
+#endif
 
     protected:
         SDL_malloc_func m_old_SDL_malloc_func;

@@ -91,16 +91,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryProxyInput::skip( size_t _pos )
+    bool MemoryProxyInput::skip( size_t _size )
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::skip" );
 
-        if( m_pos + _pos > m_end )
+        if( m_pos + _size > m_end )
         {
-            _pos = 0;
+            _size = 0;
         }
 
-        m_pos += _pos;
+        m_pos += _size;
 
         return true;
     }

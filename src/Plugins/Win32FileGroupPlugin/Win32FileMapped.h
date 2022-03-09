@@ -39,6 +39,6 @@ namespace Mengine
         FactoryPtr m_factoryFileMappedInputStream;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Win32FileMapped> Win32FileMappedPtr;
+    typedef IntrusivePtr<Win32FileMapped, FileMappedInterface> Win32FileMappedPtr;
     //////////////////////////////////////////////////////////////////////////
 }

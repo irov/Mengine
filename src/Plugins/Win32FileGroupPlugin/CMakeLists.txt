@@ -10,6 +10,8 @@ src
     Win32FileGroupDirectoryFactory.h
     Win32FileInputStream.h
     Win32FileInputStream.cpp
+    Win32MutexFileInputStream.h
+    Win32MutexFileInputStream.cpp
     Win32FileOutputStream.cpp
     Win32FileOutputStream.h
     Win32FileMapped.h

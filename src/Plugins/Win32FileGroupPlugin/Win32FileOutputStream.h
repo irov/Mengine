@@ -33,6 +33,9 @@ namespace Mengine
     public:
         bool flush() override;
 
+    public:
+        HANDLE getHandleFile() const;
+
     protected:
         HANDLE m_hFile;
 
@@ -45,6 +48,6 @@ namespace Mengine
         bool m_withTemp;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Win32FileOutputStream> Win32FileOutputStreamPtr;
+    typedef IntrusivePtr<Win32FileOutputStream, FileOutputStreamInterface> Win32FileOutputStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }

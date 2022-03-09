@@ -26,6 +26,6 @@ namespace Mengine
         bool openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SDLFileMapped> SDLFileMappedPtr;
+    typedef IntrusivePtr<SDLFileMapped, FileMappedInterface> SDLFileMappedPtr;
     //////////////////////////////////////////////////////////////////////////
 }

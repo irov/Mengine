@@ -1,29 +1,42 @@
-apply plugin: 'com.android.library'
+import com.Mengine.Utils
 
-android {
-    buildToolsVersion '31.0.0'
-    compileSdkVersion 32
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", true) == true) {
+    apply plugin: 'com.android.library'
 
-    defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 31
+    android {
+        buildToolsVersion '31.0.0'
+        compileSdkVersion 32
+
+        defaultConfig {
+            minSdkVersion 19
+            targetSdkVersion 32
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false
+        }
+
+        sourceSets {
+            main {
+                if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                    res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+                } else {
+                    res.srcDirs += ['../../app/res']
+                }
+            }
+        }
     }
 
+    dependencies {
+        implementation project(':libraries:Mengine')
+        implementation project(':libraries:SDL2')
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        implementation 'com.facebook.android:facebook-android-sdk:12.0.0'
     }
-
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-}
-
-dependencies {
-    implementation project(':libraries:Mengine')
-    implementation project(':libraries:SDL2')
-
-    implementation 'com.facebook.android:facebook-android-sdk:12.0.0'
 }

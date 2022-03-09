@@ -3861,6 +3861,23 @@ namespace Mengine
                 return val;
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_openMail( const WString & _email, const WString & _subject, const WString & _body )
+            {
+                Char utf8_email[4096];
+                Helper::unicodeToUtf8( _email, utf8_email, 4095 );
+
+                Char utf8_subject[4096];
+                Helper::unicodeToUtf8( _subject, utf8_subject, 4095 );
+
+                Char utf8_body[4096];
+                Helper::unicodeToUtf8( _body, utf8_body, 4095 );
+
+                bool val = PLATFORM_SERVICE()
+                    ->openMail( utf8_email, utf8_subject, utf8_body );
+
+                return val;
+            }
+            //////////////////////////////////////////////////////////////////////////
             ConstString s_getDefaultResourceFontName()
             {
                 const TextFontInterfacePtr & defaultResourceFont = FONT_SERVICE()
@@ -4274,6 +4291,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getGameParamBool", nodeScriptMethod, &EngineScriptMethod::s_getGameParamBool );
 
         pybind::def_functor( _kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
+        pybind::def_functor( _kernel, "openMail", nodeScriptMethod, &EngineScriptMethod::s_openMail );
 
         pybind::def_functor( _kernel, "getDefaultResourceFontName", nodeScriptMethod, &EngineScriptMethod::s_getDefaultResourceFontName );
 

@@ -1,7 +1,5 @@
 package org.Mengine.Plugin.LocalNotifications;
 
-import org.Mengine.Plugin.LocalNotifications.NotificationPublisher;
-
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
 
@@ -23,11 +21,10 @@ import android.os.Build;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Bundle;
-import android.util.Log;
 
 public class MengineLocalNotificationsPlugin extends MenginePlugin {
-    private static final String channelId = "mengine_channel_id";
-    private static final CharSequence channelName = "Mengine Channel";
+    private static final String CHANNEL_ID = "mengine_channel_id";
+    private static final CharSequence CHANNEL_NAME = "Mengine Channel";
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
@@ -80,7 +77,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
             NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.RED);
             notificationChannel.enableVibration(true);
@@ -112,7 +109,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
         intent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
         return builder.setContentTitle(title)
                 .setContentText(content)

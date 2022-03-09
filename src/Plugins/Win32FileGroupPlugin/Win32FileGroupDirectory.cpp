@@ -4,6 +4,10 @@
 #include "Interface/PlatformInterface.h"
 
 #include "Win32FileHelper.h"
+#include "Win32FileInputStream.h"
+#include "Win32FileOutputStream.h"
+#include "Win32MutexFileInputStream.h"
+#include "Win32FileMapped.h"
 
 #include "Kernel/PathString.h"
 #include "Kernel/FactoryPool.h"
@@ -30,8 +34,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::_initialize()
     {
-        m_factoryInputStream = Helper::makeFactoryPool<Win32FileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOutputStream = Helper::makeFactoryPool<Win32FileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamFile = Helper::makeFactoryPool<Win32FileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamMutexFile = Helper::makeFactoryPool<Win32MutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOutputStreamFile = Helper::makeFactoryPool<Win32FileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMappedFile = Helper::makeFactoryPool<Win32FileMapped, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -39,12 +44,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FileGroupDirectory::_finalize()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStream );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStream );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStreamFile );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStreamMutexFile );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStreamFile );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMappedFile );
 
-        m_factoryInputStream = nullptr;
-        m_factoryOutputStream = nullptr;
+        m_factoryInputStreamFile = nullptr;
+        m_factoryInputStreamMutexFile = nullptr;
+        m_factoryOutputStreamFile = nullptr;
         m_factoryMappedFile = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -190,7 +197,7 @@ namespace Mengine
             }
         }
 
-        Win32FileInputStreamPtr stream = m_factoryInputStream->createObject( _doc );
+        Win32FileInputStreamPtr stream = m_factoryInputStreamFile->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
@@ -233,9 +240,66 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    InputStreamInterfacePtr Win32FileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    {
+        if( m_parentFileGroup != nullptr )
+        {
+            if( this->existFile( _filePath, false ) == false )
+            {
+                InputStreamInterfacePtr stream = m_parentFileGroup->createInputMutexFile( _filePath, _stream, _mutex, _fileGroup, _doc );
+
+                return stream;
+            }
+        }
+
+        Win32MutexFileInputStreamPtr stream = m_factoryInputStreamMutexFile->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+
+        stream->initialize( _stream, _mutex );
+
+        if( _fileGroup != nullptr )
+        {
+            *_fileGroup = this;
+        }
+
+        return stream;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::openInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
+
+        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+
+        bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, false, false );
+
+        MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
+
+        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+
+        bool result = file->close();
+
+        MENGINE_ASSERTION( result == true, "failed close file '%s'"
+            , m_folderPath.c_str()
+        );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const DocumentPtr & _doc )
     {
-        Win32FileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
+        Win32FileOutputStreamPtr stream = m_factoryOutputStreamFile->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 

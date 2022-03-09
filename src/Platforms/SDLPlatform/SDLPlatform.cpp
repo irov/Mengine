@@ -23,7 +23,9 @@ extern "C" {
 #   include "OSX/OSXSetDesktopWallpaper.h"
 }
 #elif defined(MENGINE_PLATFORM_ANDROID)
+#   include "Android/AndroidAssetFile.h"
 #   include "Android/AndroidOpenUrlInDefaultBrowser.h"
+#   include "Android/AndroidOpenMail.h"
 #endif
 
 #include "SDLDynamicLibrary.h"
@@ -251,7 +253,19 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeKernel_1hasPlugin )(JNIEnv * env, jclass cls, jstring name)
+    {
+        const Mengine::Char * name_str = env->GetStringUTFChars( name, nullptr );
 
+        bool exist = PLUGIN_SERVICE()
+            ->hasPlugin( name_str );
+
+        env->ReleaseStringUTFChars( name, name_str );
+
+        return (jboolean)exist;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #endif
@@ -1235,6 +1249,36 @@ namespace Mengine
 
         return true;
 #else
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    {
+        MENGINE_UNUSED( _email );
+        MENGINE_UNUSED( _subject );
+        MENGINE_UNUSED( _body );
+
+#if defined(MENGINE_PLATFORM_APPLE)
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        if( AndroidOpenMail( m_jenv, jclass_activity, jobject_activity, _email, _subject, _body ) == false )
+        {
+            LOGGER_ERROR( "error open mail '%s'"
+                , _email
+            );
+
+            return false;
+        }
+
+        return true;
+#else
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
         return false;
 #endif
     }
@@ -2870,6 +2914,21 @@ namespace Mengine
         return jobject_activity;
     }
     //////////////////////////////////////////////////////////////////////////
+    String SDLPlatform::getAndroidId() const
+    {
+        static jmethodID jmethodID_getAndroidId = m_jenv->GetMethodID( jclass_activity, "getAndroidId", "()Ljava/lang/String;" );
+
+        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getAndroidId );
+
+        const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
+
+        String stringValue = jStringValue;
+
+        m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+
+        return stringValue;
+    }
+    //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
@@ -3730,5 +3789,47 @@ namespace Mengine
         }
 #endif
     }
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDLPlatform::androidOpenAssetFile( const Char * _path )
+    {
+        int32_t fileId = AndroidOpenAssetFile( m_jenv, jclass_activity, jobject_activity, _path );
+
+        return fileId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDLPlatform::androidAvailableAssetFile( int32_t _fileId )
+    {
+        int32_t available = AndroidAvailableAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+
+        return available;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDLPlatform::androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer )
+    {
+        int32_t read = AndroidReadAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId, _offset, _size, _buffer );
+
+        return read;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t SDLPlatform::androidSkipAssetFile( int32_t _fileId, int32_t _offset )
+    {
+        int32_t skip = AndroidSkipAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId, _offset );
+
+        return skip;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::androidResetAssetFile( int32_t _fileId )
+    {
+        AndroidResetAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::androidCloseAssetFile( int32_t _fileId )
+    {
+        AndroidCloseAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

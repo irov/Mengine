@@ -26,6 +26,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -4725,6 +4726,17 @@ namespace Mengine
         ::ShellExecute( NULL, L"open", unicode_url, NULL, NULL, SW_SHOWNORMAL );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    {
+        MENGINE_UNUSED( _email );
+        MENGINE_UNUSED( _subject );
+        MENGINE_UNUSED( _body );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setActive_( bool _active )

@@ -22,6 +22,10 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Interface/AndroidPlatformExtensionInterface.h"
+#endif
+
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Engine/HotSpotPolygon.h"
@@ -747,6 +751,20 @@ namespace Mengine
 
                 return str;
             }
+            //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+            //////////////////////////////////////////////////////////////////////////
+            String s_getAndroidId()
+            {
+                AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
+                    ->getDynamicUnknown();
+
+                String id = extension->getAndroidId();
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+#endif
             //////////////////////////////////////////////////////////////////////////
             void s_setCursorPosition( const mt::vec2f & _pos )
             {
@@ -4101,6 +4119,9 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "generateUniqueIdentity", helperScriptMethod, &HelperScriptMethod::s_generateUniqueIdentity );
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+        pybind::def_functor( _kernel, "getAndroidId", helperScriptMethod, &HelperScriptMethod::s_getAndroidId );
+#endif
 
         m_implement = helperScriptMethod;
 

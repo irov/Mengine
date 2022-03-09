@@ -1,35 +1,19 @@
 package org.Mengine.Base;
 
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MengineApplication;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-import android.app.Notification;
 import android.content.*;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.provider.Settings.Secure;
@@ -38,7 +22,19 @@ import android.view.KeyEvent;
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "Mengine";
 
-    private Map<String, Integer> _requestCodes;
+    private Map<Integer, InputStream> m_openFiles;
+    private int m_fileEnumerator;
+
+    private Map<String, Integer> m_requestCodes;
+
+    class CallbackResponse
+    {
+        public Integer id;
+        public MenginePlugin.CallbackInterface cb;
+    };
+
+    private ArrayList<CallbackResponse> m_callbackResponses;
+    private int m_callbackResponseEnumerator;
 
     private static native void AndroidNativeMengine_setMengineAndroidActivityJNI(Object Activity);
     private static native void AndroidNativeMengine_quitMengineAndroidActivityJNI();
@@ -55,10 +51,19 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidNativeMengine_getBuildVersion();
     private static native String AndroidNativeMengine_getConfigValue(String section, String key, String default_value);
 
-    private static native void AndroidNativeKernel_setupKernelJNI();
     private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, String args);
+    private static native void AndroidNativePython_call(String plugin, String method, int responseId, String args);
+
+    public MengineActivity() {
+        m_openFiles = new HashMap<Integer, InputStream>();
+        m_fileEnumerator = 0;
+
+        m_requestCodes = new HashMap<String, Integer>();
+
+        m_callbackResponses = new ArrayList<CallbackResponse>();
+        m_callbackResponseEnumerator = 0;
+    }
 
     @Override
     protected String[] getLibraries() {
@@ -68,67 +73,64 @@ public class MengineActivity extends SDLActivity {
         };
     }
 
-    public static String getCompanyName()
+    public String getCompanyName()
     {
        return AndroidNativeMengine_getCompanyName();
     }
 
-    public static String getProjectName()
+    public String getProjectName()
     {
         return AndroidNativeMengine_getProjectName();
     }
 
-    public static int getProjectVersion()
+    public int getProjectVersion()
     {
         return AndroidNativeMengine_getProjectVersion();
     }
 
-    public static boolean isDebugMode()
+    public boolean isDebugMode()
     {
         return AndroidNativeMengine_isDebugMode();
     }
 
-    public static boolean isDevelopmentMode()
+    public boolean isDevelopmentMode()
     {
         return AndroidNativeMengine_isDevelopmentMode();
     }
 
-    public static boolean isBuildMaster()
+    public boolean isBuildMaster()
     {
         return AndroidNativeMengine_isBuildMaster();
     }
 
-    public static boolean isBuildPublish()
+    public boolean isBuildPublish()
     {
         return AndroidNativeMengine_isBuildPublish();
     }
 
-    public static String getEngineGITSHA1()
+    public String getEngineGITSHA1()
     {
         return AndroidNativeMengine_getEngineGITSHA1();
     }
 
-    public static String getBuildTimestamp()
+    public String getBuildTimestamp()
     {
         return AndroidNativeMengine_getBuildTimestamp();
     }
 
-    public static String getBuildUsername()
+    public String getBuildUsername()
     {
         return AndroidNativeMengine_getBuildUsername();
     }
 
-    public static String getBuildVersion()
+    public String getBuildVersion()
     {
         return AndroidNativeMengine_getBuildVersion();
     }
 
-    public static String getConfigValue(String section, String key, String default_value)
+    public String getConfigValue(String section, String key, String default_value)
     {
         return AndroidNativeMengine_getConfigValue(section, key, default_value);
-    }
-
-    public MengineActivity() {
     }
 
     protected ArrayList<MenginePlugin> getPlugins() {
@@ -157,7 +159,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         AndroidNativeMengine_setMengineAndroidActivityJNI(this);
-        AndroidNativeKernel_setupKernelJNI();
         AndroidNativePython_setupPythonJNI();
 
         AndroidNativePython_addPlugin("Activity", this);
@@ -318,12 +319,20 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Kernel Methods    
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static String kernelGetAndroidId() {
-        ContentResolver resolver = getContext().getContentResolver();
+    public String getAndroidId() {
+        ContentResolver resolver = this.getContext().getContentResolver();
 
         String android_id = Secure.getString(resolver, Secure.ANDROID_ID);
 
         return android_id;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public int genRequestCode(String name) {
+        if (!m_requestCodes.containsKey(name)) {
+            m_requestCodes.put(name, m_requestCodes.size());
+        }
+
+        return m_requestCodes.get(name);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Python Methods
@@ -334,7 +343,7 @@ public class MengineActivity extends SDLActivity {
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void pythonCall(String plugin, String method, Object ... args)
+    private String pythonCallBuildArgs(Object ... args)
     {
         StringBuilder py_args = new StringBuilder();
 
@@ -348,6 +357,25 @@ public class MengineActivity extends SDLActivity {
                 py_args.append(a);
                 py_args.append("\"");
             }
+            else if(a instanceof String[]) {
+                String[] aa = (String[])a;
+                py_args.append("[");
+                int index = 0;
+                for(String s : aa)
+                {
+                    if(index != 0)
+                    {
+                        py_args.append(",");
+                    }
+
+                    py_args.append("\"");
+                    py_args.append(s);
+                    py_args.append("\"");
+
+                    index++;
+                }
+                py_args.append("]");
+            }
             else
             {
                 py_args.append(a);
@@ -360,226 +388,182 @@ public class MengineActivity extends SDLActivity {
 
         String py_args_str = py_args.toString();
 
-        AndroidNativePython_call(plugin, method, py_args_str);
+        return py_args_str;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void pythonCall(String plugin, String method, Object ... args)
+    {
+        String py_args_str = this.pythonCallBuildArgs(args);
+
+        AndroidNativePython_call(plugin, method, 0, py_args_str);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void pythonCallCb(String plugin, String method, MenginePlugin.CallbackInterface cb, Object ... args)
+    {
+        m_callbackResponseEnumerator++;
+
+        int id = m_callbackResponseEnumerator;
+
+        CallbackResponse cr = new CallbackResponse();
+        cr.id = id;
+        cr.cb = cb;
+
+        m_callbackResponses.add(cr);
+
+        String py_args_str = this.pythonCallBuildArgs(args);
+
+        AndroidNativePython_call(plugin, method, id, py_args_str);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void responseCall(int id, Object result)
+    {
+        Log.i(TAG, "responseCall [" + id + "] result [" + result.toString() + "]");
+
+        Iterator itr = m_callbackResponses.iterator();
+
+        while(itr.hasNext())
+        {
+            CallbackResponse cr = (CallbackResponse)itr.next();
+
+            if( cr.id != id )
+            {
+                continue;
+            }
+
+            cr.cb.callback(result);
+
+            itr.remove();
+
+            return;
+        }
+
+        Log.e(TAG, "MengineActivity.responceCall not found id " + id);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void addPythonPlugin(String name, Object plugin)
     {
         AndroidNativePython_addPlugin(name, plugin);
     }
-
-    public int genRequestCode(String name) {
-        if(_requestCodes == null){
-            _requestCodes = new HashMap<String, Integer>();
-        }
-        if (!_requestCodes.containsKey(name)) {
-            _requestCodes.put(name, _requestCodes.size());
-        }
-        return _requestCodes.get(name);
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Linking Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    /*
-    public static boolean linkingOpenURL(String url) {
+    public boolean linkingOpenURL(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
-        _instance.startActivity(Intent.createChooser(intent, ""));
+        this.startActivity(Intent.createChooser(intent, ""));
 
         return true;
     }
-
-    public static boolean linkingOpenMail(String email, String subject, String body) {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public boolean linkingOpenMail(String email, String subject, String body) {
         Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(email));
-        _instance.startActivity(Intent.createChooser(intent, ""));
+        this.startActivity(Intent.createChooser(intent, ""));
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
-        _instance.startActivity(Intent.createChooser(intent, ""));
+        this.startActivity(Intent.createChooser(intent, ""));
 
         return true;
     }
-    */
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Asset Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public int openAssetFile(String path)
+    {
+        try {
+            InputStream stream = getAssets().open(path);
+
+            m_fileEnumerator++;
+            int id = m_fileEnumerator;
+
+            m_openFiles.put(id, stream);
+
+            return id;
+        } catch(IOException ex) {
+            Log.e(TAG, "open asset file [" + path + "] ex: " + ex);
+
+            return 0;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public int availableAssetFile(int id)
+    {
+        InputStream stream = m_openFiles.get(id);
+
+        int size = 0;
+
+        try {
+            size = stream.available();
+        } catch (IOException ex) {
+            Log.e(TAG, "available asset file [" + id + "] ex: " + ex);
+
+            return 0;
+        }
+
+        return size;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public byte[] readAssetFile(int id, int offset, int size)
+    {
+        InputStream stream = m_openFiles.get(id);
+
+        byte[] buffer = new byte[size];
+
+        int read = 0;
+
+        try {
+            read = stream.read(buffer, offset, size);
+        } catch (IOException ex) {
+            Log.e(TAG, "read asset file [" + id + "] offset [" + offset + "] size [" + size + "] ex: " + ex);
+
+            return null;
+        }
+
+        return buffer;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public long skipAssetFile(int id, long offset)
+    {
+        InputStream stream = m_openFiles.get(id);
+
+        long skip;
+
+        try {
+            skip = stream.skip(offset);
+        } catch (IOException ex) {
+            Log.e(TAG, "skip asset file [" + id + "] offset [" + offset + "] ex: " + ex);
+
+            return 0;
+        }
+
+        return skip;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void resetAssetFile(int id)
+    {
+        InputStream stream = m_openFiles.get(id);
+
+        try {
+            stream.reset();
+        } catch (IOException ex) {
+            Log.e(TAG, "reset asset file [" + id + "] ex: " + ex);
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void closeAssetFile(int id)
+    {
+        InputStream stream = m_openFiles.get(id);
+
+        try {
+            stream.close();
+        } catch (IOException ex) {
+            Log.e(TAG, "close asset file [" + id + "] ex: " + ex);
+        }
+
+        m_openFiles.remove(id);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /***********************************************************************************************
     //OLD PLugins: TODO
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Facebook Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void facebookInitializePlugin() {
-        ThreadUtil.performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (_instance != null && _instance.facebookInteractionLayer == null) {
-                    _instance.facebookInteractionLayer = new FacebookInteractionLayer(_instance);
-                    AndroidNativeFacebook_onSDKInitialized();
-                }
-            }
-        });
-    }
-
-    public static boolean facebookIsLoggedIn() {
-        if (_instance != null && _instance.facebookInteractionLayer != null) {
-            return _instance.facebookInteractionLayer.isLoggedIn();
-        } else {
-            return false;
-        }
-    }
-
-    public static String facebookGetAccessToken() {
-        if (_instance != null && _instance.facebookInteractionLayer != null) {
-            return _instance.facebookInteractionLayer.getAccessToken();
-        } else {
-            return "";
-        }
-    }
-
-    public static boolean facebookPerformLogin(String[] readPermissions) {
-        if (_instance != null && _instance.facebookInteractionLayer != null) {
-            _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean facebookLogout() {
-        if (_instance != null && _instance.facebookInteractionLayer != null) {
-            _instance.facebookInteractionLayer.LogoutFromFacebook();
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean facebookGetUser() {
-        if (_instance != null && _instance.facebookInteractionLayer != null) {
-            _instance.facebookInteractionLayer.getUser();
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean facebookShareLink(String link, String picture, String message) {
-        if (_instance != null && _instance.facebookInteractionLayer != null) {
-            _instance.facebookInteractionLayer.shareLink(_instance, link, picture, message);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean facebookGetProfilePictureLink(String typeParameter) {
-        if (_instance != null && _instance.facebookInteractionLayer != null) {
-            _instance.facebookInteractionLayer.getProfilePictureLink(typeParameter);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean facebookGetProfileUserPictureLink(String user_id, String typeParameter) {
-        if (_instance != null && _instance.facebookInteractionLayer != null) {
-            _instance.facebookInteractionLayer.getProfileUserPictureLink(user_id, typeParameter);
-            return true;
-        }
-
-        return false;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //UnityAds Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void unityInitializePlugin(final String gameId) {
-        ThreadUtil.performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (_instance != null && _instance.unityAdsInteractionLayer == null) {
-                    _instance.unityAdsInteractionLayer = new UnityAdsInteractionLayer(gameId);
-                    AndroidNativeUnity_onSDKInitialized();
-                }
-            }
-        });
-    }
-
-    public static boolean unitySetupAds(final boolean debug) {
-        if (_instance != null && _instance.unityAdsInteractionLayer != null) {
-            _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean unityShowAd(final String placementId) {
-        if (_instance != null && _instance.unityAdsInteractionLayer != null) {
-            _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
-
-            return true;
-        }
-        return false;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //AdMob Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void admobInitializePlugin(final String interAdUnitId, final String videoAdUnitId) {
-        ThreadUtil.performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (_instance != null && _instance.adMobInteractionLayer == null) {
-                    _instance.adMobInteractionLayer = new AdMobInteractionLayer(_instance, interAdUnitId, videoAdUnitId);
-                    AndroidNativeAdMob_onSDKInitialized();
-                }
-            }
-        });
-    }
-
-    public static boolean admobSetupInterstitialAd() {
-        if (_instance != null && _instance.adMobInteractionLayer != null) {
-            _instance.adMobInteractionLayer.setupInterstitialAd();
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean admobShowInterstitialAd() {
-        if (_instance != null && _instance.adMobInteractionLayer != null) {
-            _instance.adMobInteractionLayer.showInterstitialAd();
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean admobSetupRewardedVideoAd() {
-        if (_instance != null && _instance.adMobInteractionLayer != null) {
-            _instance.adMobInteractionLayer.setupRewardedVideoAd();
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean admobShowRewardedVideoAd() {
-        if (_instance != null && _instance.adMobInteractionLayer != null) {
-            _instance.adMobInteractionLayer.showRewardedVideoAd();
-
-            return true;
-        }
-
-        return false;
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //DevToDev Methods
@@ -666,56 +650,5 @@ public class MengineActivity extends SDLActivity {
         return false;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Local Notifications Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void localNotificationsInitializePlugin() {
-        ThreadUtil.performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (_instance != null) {
-                    if (_instance.localNotificationsInteractionLayer == null) {
-                        _instance.localNotificationsInteractionLayer = new LocalNotificationsInteractionLayer(_instance);
-                        AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
-                    }
-                }
-            }
-        });
-    }
-
-    public static boolean scheduleLocalNotification(int id, String title, String content, int delay) {
-        if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                _instance.localNotificationsInteractionLayer.scheduleJobServiceNotification(id, title, content, delay);
-            }else {
-                Notification notification = LocalNotificationsInteractionLayer.getNotification(_instance, id, title, content);
-                _instance.localNotificationsInteractionLayer.scheduleNotification(notification, id, delay);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean instantlyPresentLocalNotification(int id, String title, String content) {
-        if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
-            Notification notification = LocalNotificationsInteractionLayer.getNotification(_instance, id, title, content);
-            _instance.localNotificationsInteractionLayer.instantlyPresentNotification(notification, id);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean cancelAllLocalNotification() {
-        if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
-            _instance.localNotificationsInteractionLayer.cancelAll();
-
-            return true;
-        }
-
-        return false;
-    }
     ***********************************************************************************************/
 }

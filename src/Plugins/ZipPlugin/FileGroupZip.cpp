@@ -244,24 +244,35 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::loadHeader_( const FilePath & _folderPath )
     {
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
-
         FileMappedInterfacePtr mappedFile;
         if( this->loadMappedFile( _folderPath, &mappedFile ) == false )
         {
             return false;
         }
 
-        InputStreamInterfacePtr zipFile = Helper::openInputStreamFile( m_baseFileGroup, _folderPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( zipFile, "can't open input stream for path '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+
+        ThreadMutexInterfacePtr proxyMutex = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( proxyMutex );
+
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_baseFileGroup, _folderPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open input stream for path '%s'"
             , _folderPath.c_str()
         );
 
-        if( zipFile->rseek( ZIP_END_CENTRAL_DIR_SIZE ) == false )
+        InputStreamInterfacePtr proxyStream = Helper::openInputStreamFile( m_baseFileGroup, _folderPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( proxyStream, "can't open input mutex stream for path '%s'"
+            , _folderPath.c_str()
+        );
+
+        if( stream->rseek( ZIP_END_CENTRAL_DIR_SIZE ) == false )
         {
             return false;
         }
@@ -269,27 +280,29 @@ namespace Mengine
         ZipInfo zinfo;
         zinfo.folderPath = _folderPath;
         zinfo.mappedFile = mappedFile;
-        zinfo.zipFile = zipFile;
+        zinfo.stream = stream;
+        zinfo.proxyStream = proxyStream;
         zinfo.mutex = mutex;
+        zinfo.proxyMutex = proxyMutex;
 
         const ZipInfo & pzinfo = m_zips.emplace_back( zinfo );
 
         uint32_t eocd_signature;
-        zipFile->read( &eocd_signature, sizeof( eocd_signature ) );
+        stream->read( &eocd_signature, sizeof( eocd_signature ) );
 
         MENGINE_ASSERTION_FATAL( eocd_signature == ZIP_END_HEADER_SIGNATURE, "bad 'End of Central Dir' signature zip '%s'"
             , _folderPath.c_str()
         );
 
         ZipEndOfCentralDirectoryFileHeader eocd;
-        zipFile->read( &eocd, sizeof( eocd ) );
+        stream->read( &eocd, sizeof( eocd ) );
 
         MENGINE_ASSERTION_FATAL( eocd.commentLength == 0 );
         MENGINE_ASSERTION_FATAL( eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive != 0xffffffffU );
 
         size_t header_offset = (size_t)eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive;
 
-        if( zipFile->seek( header_offset ) == false )
+        if( stream->seek( header_offset ) == false )
         {
             return false;
         }
@@ -299,7 +312,7 @@ namespace Mengine
         for( ;;)
         {
             uint32_t signature;
-            zipFile->read( &signature, sizeof( signature ) );
+            stream->read( &signature, sizeof( signature ) );
 
             if( signature == ZIP_END_HEADER_SIGNATURE )
             {
@@ -315,9 +328,9 @@ namespace Mengine
             );
 
             ZipCentralDirectoryFileHeader header;
-            zipFile->read( &header, sizeof( header ) );
+            stream->read( &header, sizeof( header ) );
 
-            zipFile->read( &fileNameBuffer, header.fileNameLen );
+            stream->read( &fileNameBuffer, header.fileNameLen );
 
             uint64_t uncompressedSize = header.uncompressedSize;
             uint64_t compressedSize = header.compressedSize;
@@ -328,13 +341,13 @@ namespace Mengine
                 uint16_t headerID;
                 uint16_t dataSize;
 
-                zipFile->read( &headerID, sizeof( headerID ) );
-                zipFile->read( &dataSize, sizeof( dataSize ) );
+                stream->read( &headerID, sizeof( headerID ) );
+                stream->read( &dataSize, sizeof( dataSize ) );
 
                 if( header.uncompressedSize == 0xffffffffU )
                 {
                     uint64_t dataValue;
-                    zipFile->read( &dataValue, sizeof( dataValue ) );
+                    stream->read( &dataValue, sizeof( dataValue ) );
 
                     uncompressedSize = dataValue;
                 }
@@ -342,7 +355,7 @@ namespace Mengine
                 if( header.compressedSize == 0xffffffffU )
                 {
                     uint64_t dataValue;
-                    zipFile->read( &dataValue, sizeof( dataValue ) );
+                    stream->read( &dataValue, sizeof( dataValue ) );
 
                     compressedSize = dataValue;
                 }
@@ -350,13 +363,13 @@ namespace Mengine
                 if( header.relativeOffset == 0xffffffffU )
                 {
                     uint64_t dataValue;
-                    zipFile->read( &dataValue, sizeof( dataValue ) );
+                    stream->read( &dataValue, sizeof( dataValue ) );
 
                     relativeOffset = dataValue;
                 }
             }
 
-            zipFile->skip( header.commentLen );
+            stream->skip( header.commentLen );
 
             FilePath filePath = Helper::stringizeFilePathSize( fileNameBuffer, header.fileNameLen );
 
@@ -563,7 +576,7 @@ namespace Mengine
             }
             else
             {
-                InputStreamInterfacePtr stream = m_baseFileGroup->createInputFile( _filePath, true, nullptr, _doc );
+                InputStreamInterfacePtr stream = m_baseFileGroup->createInputMutexFile( _filePath, fi.zip->proxyStream, fi.zip->proxyMutex, nullptr, _doc );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
@@ -590,6 +603,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
+        MENGINE_UNUSED( _share );
+
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "zip '%s' file '%s' stream is nullptr"
             , m_folderPath.c_str()
             , _filePath.c_str()
@@ -632,7 +647,7 @@ namespace Mengine
             }
             else
             {
-                if( m_baseFileGroup->openInputFile( fi.zip->folderPath, _stream, file_offset, file_size, true, _share ) == false )
+                if( m_baseFileGroup->openInputMutexFile( fi.zip->folderPath, _stream, file_offset, file_size ) == false )
                 {
                     LOGGER_ERROR( "zip '%s' file '%s' invalid open range %zu:%zu"
                         , fi.zip->folderPath.c_str()
@@ -663,8 +678,8 @@ namespace Mengine
                 );
 
                 fi.zip->mutex->lock();
-                fi.zip->zipFile->seek( file_offset );
-                fi.zip->zipFile->read( buffer, fi.file_size );
+                fi.zip->stream->seek( file_offset );
+                fi.zip->stream->read( buffer, fi.file_size );
                 fi.zip->mutex->unlock();
             }
             else
@@ -700,8 +715,8 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( compress_memory );
 
             fi.zip->mutex->lock();
-            fi.zip->zipFile->seek( file_offset );
-            fi.zip->zipFile->read( compress_memory, fi.file_size );
+            fi.zip->stream->seek( file_offset );
+            fi.zip->stream->read( compress_memory, fi.file_size );
             fi.zip->mutex->unlock();
 
             if( Detail::zip_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
@@ -725,6 +740,40 @@ namespace Mengine
         //Empty
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    InputStreamInterfacePtr FileGroupZip::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _stream );
+        MENGINE_UNUSED( _mutex );
+        MENGINE_UNUSED( _fileGroup );
+        MENGINE_UNUSED( _doc );        
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::openInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _stream );
+        MENGINE_UNUSED( _offset );
+        MENGINE_UNUSED( _size );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::closeInputMutexFile( const InputStreamInterfacePtr & _stream )
+    {
+        MENGINE_UNUSED( _stream );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile( const DocumentPtr & _doc )

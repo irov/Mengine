@@ -51,11 +51,11 @@ public class MengineApplovinPlugin extends MenginePlugin {
      * - onMengineApplovinRewardedOnAdDisplayFailed
      */
 
-    MaxInterstitialAd _interstitialAd;
-    private int _retryAttemptInterstitial;
+    private MaxInterstitialAd m_interstitialAd;
+    private int m_retryAttemptInterstitial;
 
-    private MaxRewardedAd _rewardedAd;
-    private int _retryAttemptRewarded;
+    private MaxRewardedAd m_rewardedAd;
+    private int m_retryAttemptRewarded;
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
@@ -75,141 +75,138 @@ public class MengineApplovinPlugin extends MenginePlugin {
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinPluginOnSdkInitialized");
             }
         });
-
     }
 
 
     void initInterstitial(String interstitial_ad_unit_id) {
-        //May be
-        // ThreadUtil.performOnMainThread(() -> {
-        _interstitialAd = new MaxInterstitialAd(interstitial_ad_unit_id, getActivity());
-        _interstitialAd.setListener(_maxAdListener);
-        //});
+        m_interstitialAd = new MaxInterstitialAd(interstitial_ad_unit_id, getActivity());
+
+        MaxAdListener maxAdListener = new MaxAdListener() {
+            @Override
+            public void onAdLoaded(MaxAd ad) {
+                m_retryAttemptInterstitial = 0;
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdLoaded");
+            }
+
+            @Override
+            public void onAdDisplayed(MaxAd ad) {
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdDisplayed");
+            }
+
+            @Override
+            public void onAdHidden(MaxAd ad) {
+                m_interstitialAd.loadAd();
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdHidden");
+            }
+
+            @Override
+            public void onAdClicked(MaxAd ad) {
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdClicked");
+            }
+
+            @Override
+            public void onAdLoadFailed(String adUnitId, MaxError error) {
+                m_retryAttemptInterstitial++;
+                long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptInterstitial)));
+
+                ThreadUtil.performOnMainThread(() -> {
+                    m_interstitialAd.loadAd();
+                }, delayMillis);
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdLoadFailed");
+            }
+
+            @Override
+            public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                m_interstitialAd.loadAd();
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdDisplayFailed");
+            }
+        };
+
+        m_interstitialAd.setListener(maxAdListener);
     }
 
     void initRewarded(String rewarded_ad_unit_id) {
-        _rewardedAd = MaxRewardedAd.getInstance(rewarded_ad_unit_id, getActivity());
-        _rewardedAd.setListener(_maxRewardedAdListener);
+        m_rewardedAd = MaxRewardedAd.getInstance(rewarded_ad_unit_id, getActivity());
+
+        MaxRewardedAdListener maxRewardedAdListener = new MaxRewardedAdListener() {
+            @Override
+            public void onRewardedVideoStarted(MaxAd ad) {
+                m_retryAttemptRewarded = 0;
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnRewardedVideoStarted");
+            }
+
+            @Override
+            public void onRewardedVideoCompleted(MaxAd ad) {
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnRewardedVideoCompleted");
+            }
+
+            @Override
+            public void onUserRewarded(MaxAd ad, MaxReward reward) {
+                MengineApplovinPlugin.this.log("rewarded received %d", reward.getAmount());
+
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnUserRewarded", reward.getAmount());
+            }
+
+            @Override
+            public void onAdLoaded(MaxAd ad) {
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdLoaded");
+            }
+
+            @Override
+            public void onAdDisplayed(MaxAd ad) {
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdDisplayed");
+            }
+
+            @Override
+            public void onAdHidden(MaxAd ad) {
+                m_rewardedAd.loadAd();
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdHidden");
+            }
+
+            @Override
+            public void onAdClicked(MaxAd ad) {
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdClicked");
+            }
+
+            @Override
+            public void onAdLoadFailed(String adUnitId, MaxError error) {
+                m_retryAttemptRewarded++;
+                long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptRewarded)));
+
+                ThreadUtil.performOnMainThread(() -> {
+                    m_rewardedAd.loadAd();
+                }, delayMillis);
+
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdLoadFailed");
+            }
+
+            @Override
+            public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                m_rewardedAd.loadAd();
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdDisplayFailed");
+            }
+        };
+
+        m_rewardedAd.setListener(maxRewardedAdListener);
     }
 
     void loadInterstitial() {
-        _interstitialAd.loadAd();
+        m_interstitialAd.loadAd();
     }
 
     void loadRewarded() {
-        _rewardedAd.loadAd();
+        m_rewardedAd.loadAd();
     }
 
-    MaxAdListener _maxAdListener = new MaxAdListener() {
-        @Override
-        public void onAdLoaded(MaxAd ad) {
-            _retryAttemptInterstitial = 0;
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdLoaded");
-        }
-
-        @Override
-        public void onAdDisplayed(MaxAd ad) {
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdDisplayed");
-        }
-
-        @Override
-        public void onAdHidden(MaxAd ad) {
-            _interstitialAd.loadAd();
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdHidden");
-        }
-
-        @Override
-        public void onAdClicked(MaxAd ad) {
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdClicked");
-        }
-
-        @Override
-        public void onAdLoadFailed(String adUnitId, MaxError error) {
-            _retryAttemptInterstitial++;
-            long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, _retryAttemptInterstitial)));
-
-            ThreadUtil.performOnMainThread(() -> {
-                _interstitialAd.loadAd();
-            }, delayMillis);
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdLoadFailed");
-        }
-
-        @Override
-        public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-            _interstitialAd.loadAd();
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdDisplayFailed");
-        }
-    };
-
-    MaxRewardedAdListener _maxRewardedAdListener = new MaxRewardedAdListener() {
-        @Override
-        public void onRewardedVideoStarted(MaxAd ad) {
-            _retryAttemptRewarded = 0;
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnRewardedVideoStarted");
-        }
-
-        @Override
-        public void onRewardedVideoCompleted(MaxAd ad) {
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnRewardedVideoCompleted");
-        }
-
-        @Override
-        public void onUserRewarded(MaxAd ad, MaxReward reward) {
-            log("rewarded received %i", reward.getAmount());
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnUserRewarded", reward.getAmount());
-        }
-
-        @Override
-        public void onAdLoaded(MaxAd ad) {
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdLoaded");
-        }
-
-        @Override
-        public void onAdDisplayed(MaxAd ad) {
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdDisplayed");
-        }
-
-        @Override
-        public void onAdHidden(MaxAd ad) {
-            _rewardedAd.loadAd();
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdHidden");
-        }
-
-        @Override
-        public void onAdClicked(MaxAd ad) {
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdClicked");
-        }
-
-        @Override
-        public void onAdLoadFailed(String adUnitId, MaxError error) {
-            _retryAttemptRewarded++;
-            long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, _retryAttemptRewarded)));
-
-            ThreadUtil.performOnMainThread(() -> {
-                _rewardedAd.loadAd();
-            }, delayMillis);
-
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdLoadFailed");
-
-        }
-
-        @Override
-        public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-            _rewardedAd.loadAd();
-            MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdDisplayFailed");
-        }
-    };
-
     void showInterstitial() {
-        if (_interstitialAd.isReady()) {
-            _interstitialAd.showAd();
+        if (m_interstitialAd.isReady()) {
+            m_interstitialAd.showAd();
         }
     }
 
     void showRewarded() {
-        if (_rewardedAd.isReady()) {
-            _rewardedAd.showAd();
+        if (m_rewardedAd.isReady()) {
+            m_rewardedAd.showAd();
         }
     }
-
 }

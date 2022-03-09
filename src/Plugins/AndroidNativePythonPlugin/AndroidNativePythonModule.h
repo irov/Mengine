@@ -13,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonEventHandler
-            : public Mixin
+        : public Mixin
     {
     public:
         virtual void pythonMethod( const String & _plugin, const String & _method, int _id, const String & _args ) = 0;
@@ -52,6 +52,7 @@ namespace Mengine
 
     public:
         void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb );
+        bool androidResponse( int _id, const pybind::object & _result ) const;
         bool androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
 
     protected:

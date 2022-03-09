@@ -73,7 +73,7 @@ public class MenginePlugin {
 
     public void pythonCallCb(String method, CallbackInterface cb, Object ... args)
     {
-            m_activity.pythonCallCb(m_pluginName, method, cb, args);
+        m_activity.pythonCallCb(m_pluginName, method, cb, args);
     }
 
     public void onAppCreate(MengineApplication application)

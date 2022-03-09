@@ -59,6 +59,7 @@ public class MengineDevToDevPlugin extends MenginePlugin {
 
     public void onSimpleCustomEvent(String eventName, String intJSON, String floatJSON, String stringJSON) {
         DTDCustomEventParameters customEventParams = new DTDCustomEventParameters();
+
         if (!intJSON.isEmpty()) {
             try {
                 final JSONObject obj = new JSONObject(intJSON);
@@ -71,6 +72,7 @@ public class MengineDevToDevPlugin extends MenginePlugin {
                 e.printStackTrace();
             }
         }
+
         if (!floatJSON.isEmpty()) {
             try {
                 final JSONObject obj = new JSONObject(floatJSON);
@@ -83,6 +85,7 @@ public class MengineDevToDevPlugin extends MenginePlugin {
                 e.printStackTrace();
             }
         }
+
         if (!stringJSON.isEmpty()) {
             try {
                 final JSONObject obj = new JSONObject(stringJSON);
@@ -95,6 +98,7 @@ public class MengineDevToDevPlugin extends MenginePlugin {
                 e.printStackTrace();
             }
         }
+
         DTDAnalytics.INSTANCE.customEvent(eventName, customEventParams);
     }
 }

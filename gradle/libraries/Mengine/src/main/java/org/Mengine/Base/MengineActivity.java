@@ -53,7 +53,7 @@ public class MengineActivity extends SDLActivity {
 
     private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, Integer responseId, String args);
+    private static native void AndroidNativePython_call(String plugin, String method, int responseId, String args);
 
     public MengineActivity() {
         m_openFiles = new HashMap<Integer, InputStream>();
@@ -415,8 +415,10 @@ public class MengineActivity extends SDLActivity {
         AndroidNativePython_call(plugin, method, id, py_args_str);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void responseCall(Integer id, Object result)
+    public void responseCall(int id, Object result)
     {
+        Log.i(TAG, "responseCall [" + id + "] result [" + result.toString() + "]");
+
         Iterator itr = m_callbackResponses.iterator();
 
         while(itr.hasNext())

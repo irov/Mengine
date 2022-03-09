@@ -21,6 +21,10 @@ int main( int argc, char * argv[] )
     }
 
     application.finalize();
+    
+#ifdef MENGINE_PLATFORM_IOS
+    ::exit( EXIT_SUCCESS );
+#endif
 
     return EXIT_SUCCESS;
 }

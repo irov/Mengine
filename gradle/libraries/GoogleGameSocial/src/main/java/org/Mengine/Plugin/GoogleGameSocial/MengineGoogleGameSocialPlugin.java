@@ -49,7 +49,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("MengineGoogleGameSocialPlugin");
+        this.addPythonPlugin("GoogleGameSocial");
     }
 
     @Override

@@ -98,7 +98,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("MengineGooglePlayBillingPlugin");
+        this.addPythonPlugin("GooglePlayBilling");
     }
 
     public void setSkuList(List<String> skus) {

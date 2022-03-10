@@ -20,6 +20,10 @@ import java.util.Iterator;
  */
 
 public class MengineDevToDevPlugin extends MenginePlugin {
+    @Override
+    public void onPythonEmbedding(MengineActivity activity) {
+        this.addPythonPlugin("DevToDev");
+    }
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

@@ -59,7 +59,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("MengineApplovinPlugin");
+        this.addPythonPlugin("Applovin");
     }
 
     @Override

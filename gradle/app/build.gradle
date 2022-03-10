@@ -266,8 +266,6 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS",
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
 
     dependencies {
-        implementation 'com.google.firebase:firebase-analytics'
-
         implementation project(':libraries:FirebaseCrashlytics')
     }
 } else {

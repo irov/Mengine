@@ -50,7 +50,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS",
         implementation project(':libraries:Mengine')
         implementation project(':libraries:SDL2')
 
-        implementation platform('com.google.firebase:firebase-bom:26.3.0')
+        implementation platform('com.google.firebase:firebase-bom:29.1.0')
         implementation 'com.google.firebase:firebase-crashlytics'
     }
 }

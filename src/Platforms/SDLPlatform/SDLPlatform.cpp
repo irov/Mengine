@@ -1235,6 +1235,10 @@ namespace Mengine
 
             return false;
         }
+        
+        LOGGER_INFO( "platform", "open url in default browser '%s'"
+            , _url
+        );
 
         return true;
 #elif defined(MENGINE_PLATFORM_ANDROID)
@@ -1246,6 +1250,10 @@ namespace Mengine
 
             return false;
         }
+        
+        LOGGER_INFO( "platform", "open url in default browser '%s'"
+            , _url
+        );
 
         return true;
 #else
@@ -3085,7 +3093,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_IOS)
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
-
+	
         uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )

@@ -279,6 +279,8 @@ namespace Mengine
     bool AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         MENGINE_ASSERTION_FATAL( _args.size() <= 32, "android method plugin '%s' method '%s' max args [32 < %u]"
+            , _plugin.c_str()
+            , _method.c_str()
             , _args.size()
         );
 

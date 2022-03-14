@@ -208,6 +208,7 @@ namespace Mengine
         jobject getJObjectActivity() const override;
 
         String getAndroidId() const override;
+        String getAndroidPackageName() const override;
 #endif
 
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )

@@ -2937,6 +2937,21 @@ namespace Mengine
         return stringValue;
     }
     //////////////////////////////////////////////////////////////////////////
+    String SDLPlatform::getAndroidPackageName() const
+    {
+        static jmethodID jmethodID_getPackageName = m_jenv->GetMethodID( jclass_activity, "getPackageName", "()Ljava/lang/String;" );
+
+        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getPackageName );
+
+        const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
+
+        String stringValue = jStringValue;
+
+        m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+
+        return stringValue;
+    }
+    //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )

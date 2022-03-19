@@ -257,13 +257,13 @@ namespace Mengine
 
         if( HAS_OPTION( "locale" ) == true )
         {
-            const Char * option_locale = GET_OPTION_VALUE( "locale", nullptr );
+            const Char * option_locale = GET_OPTION_VALUE( "locale", "en" );
 
             m_locale = Helper::stringizeString( option_locale );
         }
         else
         {
-            m_locale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_FILEPATH_LOCAL( "en" ) );
+            m_locale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_STRING_LOCAL( "en" ) );
         }
 
         LOGGER_MESSAGE( "setup locale '%s'"

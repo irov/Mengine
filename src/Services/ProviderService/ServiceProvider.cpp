@@ -290,7 +290,9 @@ namespace Mengine
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
-        DependencyDesc & desc = m_dependencies[m_dependenciesCount++];
+        uint32_t id = m_dependenciesCount++;
+
+        DependencyDesc & desc = m_dependencies[id];
 
         desc.name.assign( _name );
         desc.dependency.assign( _dependency );

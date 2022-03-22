@@ -18,6 +18,7 @@ namespace Mengine
     public:
         size_t read( void * const _buffer, size_t _size ) override;
         bool seek( size_t _pos ) override;
+        void rewind() override;
         bool rseek( size_t _pos ) override;
         bool skip( size_t _pos ) override;
         size_t tell() const override;

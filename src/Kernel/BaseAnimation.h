@@ -17,6 +17,13 @@ namespace Mengine
         ~BaseAnimation() override;
 
     public:
+        void setRelationAnimation( const AnimationInterface * _relationAnimation ) override;
+        const AnimationInterface * getRelationAnimation() const override;
+
+        void setRelationIncessantly( bool _relationIncessantly ) override;
+        bool getRelationIncessantly() const override;
+
+    public:
         void setLoop( bool _value ) override;
         bool isLoop() const override;
 
@@ -73,8 +80,11 @@ namespace Mengine
         uint32_t getPlayId() const override;
         float getPlayTime() const override;
 
+    public:
+        bool calcTotalLoop() const override;
+
     protected:
-        float calcTotalTime( const UpdateContext * _context ) const;
+        float calcTotalTime( const UpdateContext * _context ) const;        
 
     protected:
         virtual void _setLoop( bool _value );
@@ -101,6 +111,8 @@ namespace Mengine
         virtual bool _interrupt( UniqueId _enumerator ) = 0;
 
     protected:
+        const AnimationInterface * m_relationAnimation;
+
         UniqueId m_playId;
 
         float m_playTime;
@@ -114,13 +126,14 @@ namespace Mengine
         uint32_t m_playIterator;
         float m_stretch;
 
+        bool m_relationIncessantly;
         bool m_autoPlay;
 
         bool m_play;
         bool m_pause;
         bool m_interrupt;
 
-        bool m_loop;
+        bool m_loop;        
     };
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BaseAnimation::isPlay() const

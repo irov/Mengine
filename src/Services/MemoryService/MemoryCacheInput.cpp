@@ -109,6 +109,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MemoryCacheInput::rewind()
+    {
+        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::rewind" );
+
+        m_pos = m_data;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MemoryCacheInput::rseek( size_t _pos )
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::rseek" );

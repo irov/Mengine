@@ -12,7 +12,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BaseAnimation::BaseAnimation()
-        : m_playId( INVALID_UNIQUE_ID )
+        : m_relationAnimation( nullptr )
+        , m_playId( INVALID_UNIQUE_ID )
         , m_playTime( 0.f )
         , m_animationSpeedFactor( 1.f )
         , m_intervalStart( 0.f )
@@ -21,6 +22,7 @@ namespace Mengine
         , m_playCount( 1 )
         , m_playIterator( 0 )
         , m_stretch( 1.f )
+        , m_relationIncessantly( false )
         , m_autoPlay( false )
         , m_play( false )
         , m_pause( false )
@@ -31,6 +33,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseAnimation::~BaseAnimation()
     {
+    }
+    void BaseAnimation::setRelationAnimation( const AnimationInterface * _relationAnimation )
+    {
+        m_relationAnimation = _relationAnimation;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AnimationInterface * BaseAnimation::getRelationAnimation() const
+    {
+        return m_relationAnimation;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseAnimation::setRelationIncessantly( bool _relationIncessantly )
+    {
+        m_relationIncessantly = _relationIncessantly;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseAnimation::getRelationIncessantly() const
+    {
+        return m_relationIncessantly;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseAnimation::setLoop( bool _value )
@@ -302,6 +323,7 @@ namespace Mengine
     float BaseAnimation::calcTotalTime( const UpdateContext * _context ) const
     {
         float totalTime = _context->time;
+
         if( m_playTime > _context->current )
         {
             float deltha = m_playTime - _context->current;
@@ -317,9 +339,35 @@ namespace Mengine
         float speedFactor = this->getAnimationSpeedFactor();
         float stretch = this->getStretch();
 
+        if( m_relationAnimation != nullptr )
+        {
+            float relationSpeedFactor = m_relationAnimation->getAnimationSpeedFactor();
+            float relationStretch = m_relationAnimation->getStretch();
+
+            speedFactor *= relationSpeedFactor;
+            stretch *= relationStretch;
+        }
+
         totalTime *= speedFactor / stretch;
 
         return totalTime;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseAnimation::calcTotalLoop() const
+    {
+        if( m_relationAnimation == nullptr )
+        {
+            return m_loop;
+        }
+
+        bool relationLoop = m_relationAnimation->calcTotalLoop();
+
+        if( relationLoop == true && m_relationIncessantly == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseAnimation::end()

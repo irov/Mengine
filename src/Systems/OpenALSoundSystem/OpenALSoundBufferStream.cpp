@@ -374,7 +374,10 @@ namespace Mengine
 
         if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE && m_looped == true )
         {
-            m_soundDecoder->rewind();
+            if( m_soundDecoder->rewind() == false )
+            {
+                return false;
+            }
 
             size_t bufferSize = MENGINE_OPENAL_STREAM_BUFFER_SIZE - bytesWritten;
 

@@ -13,6 +13,7 @@ namespace Mengine
     public:
         virtual size_t read( void * const _buffer, size_t _size ) = 0;
         virtual bool seek( size_t _pos ) = 0;
+        virtual void rewind() = 0;
         virtual bool rseek( size_t _pos ) = 0;
         virtual bool skip( size_t _size ) = 0;
         virtual size_t tell() const = 0;

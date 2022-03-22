@@ -490,10 +490,7 @@ namespace Mengine
 
         const InputStreamInterfacePtr & stream = this->getStream();
 
-        if( stream->seek( 0 ) == false )
-        {
-            return false;
-        }
+        stream->rewind();
 
         if( this->_prepareData() == false )
         {

@@ -1736,17 +1736,17 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
                     {
-                        m_clickOutArea[0] = true;
+                        m_clickOutArea[MC_LBUTTON] = true;
                     }
 
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) != 0 )
                     {
-                        m_clickOutArea[1] = true;
+                        m_clickOutArea[MC_RBUTTON] = true;
                     }
 
                     if( (::GetKeyState( VK_MBUTTON ) & 0x8000) != 0 )
                     {
-                        m_clickOutArea[2] = true;
+                        m_clickOutArea[MC_MBUTTON] = true;
                     }
                 }
 
@@ -1780,9 +1780,9 @@ namespace Mengine
                     return false;
                 }
 
-                if( m_clickOutArea[0] == true )
+                if( m_clickOutArea[MC_LBUTTON] == true )
                 {
-                    m_clickOutArea[0] = false;
+                    m_clickOutArea[MC_LBUTTON] = false;
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
@@ -1790,9 +1790,9 @@ namespace Mengine
                     }
                 }
 
-                if( m_clickOutArea[1] == true )
+                if( m_clickOutArea[MC_RBUTTON] == true )
                 {
-                    m_clickOutArea[1] = false;
+                    m_clickOutArea[MC_RBUTTON] = false;
 
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) == 0 )
                     {
@@ -1800,9 +1800,9 @@ namespace Mengine
                     }
                 }
 
-                if( m_clickOutArea[2] == true )
+                if( m_clickOutArea[MC_MBUTTON] == true )
                 {
-                    m_clickOutArea[2] = false;
+                    m_clickOutArea[MC_MBUTTON] = false;
 
                     if( (::GetKeyState( VK_MBUTTON ) & 0x8000) == 0 )
                     {
@@ -1850,6 +1850,15 @@ namespace Mengine
                     LOGGER_ERROR( "invalid hwnd [%p] get client rect %s"
                         , m_hWnd
                         , Helper::Win32GetLastErrorMessage()
+                    );
+
+                    return false;
+                }
+
+                if( rect.right == rect.left || rect.bottom == rect.top )
+                {
+                    LOGGER_ERROR( "invalid hwnd [%p] zero client rect"
+                        , m_hWnd
                     );
 
                     return false;
@@ -1906,7 +1915,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                m_isDoubleClick[0] = true;
+                m_isDoubleClick[MC_LBUTTON] = true;
 
                 handle = true;
                 *_result = 0;
@@ -1920,7 +1929,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                m_isDoubleClick[1] = true;
+                m_isDoubleClick[MC_RBUTTON] = true;
 
                 handle = true;
                 *_result = 0;
@@ -1934,7 +1943,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                m_isDoubleClick[2] = true;
+                m_isDoubleClick[MC_MBUTTON] = true;
 
                 handle = true;
                 *_result = 0;
@@ -1973,7 +1982,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                if( m_isDoubleClick[0] == false )
+                if( m_isDoubleClick[MC_LBUTTON] == false )
                 {
                     POINT p;
                     p.x = GET_X_LPARAM( lParam );
@@ -1988,7 +1997,7 @@ namespace Mengine
                     Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
                 }
 
-                m_isDoubleClick[0] = false;
+                m_isDoubleClick[MC_LBUTTON] = false;
 
                 handle = true;
                 *_result = 0;
@@ -2026,7 +2035,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                if( m_isDoubleClick[1] == false )
+                if( m_isDoubleClick[MC_RBUTTON] == false )
                 {
                     POINT p;
                     p.x = GET_X_LPARAM( lParam );
@@ -2041,7 +2050,7 @@ namespace Mengine
                     Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
                 }
 
-                m_isDoubleClick[1] = false;
+                m_isDoubleClick[MC_RBUTTON] = false;
 
                 handle = true;
                 *_result = 0;
@@ -2079,7 +2088,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                if( m_isDoubleClick[2] == false )
+                if( m_isDoubleClick[MC_MBUTTON] == false )
                 {
                     POINT p;
                     p.x = GET_X_LPARAM( lParam );
@@ -2094,7 +2103,7 @@ namespace Mengine
                     Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
                 }
 
-                m_isDoubleClick[2] = false;
+                m_isDoubleClick[MC_MBUTTON] = false;
 
                 handle = true;
                 *_result = 0;

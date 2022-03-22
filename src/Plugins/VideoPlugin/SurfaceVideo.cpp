@@ -254,19 +254,19 @@ namespace Mengine
         MENGINE_UNUSED( _playId );
         MENGINE_UNUSED( _time );
 
-        m_time = 0.f;
+        //m_time = 0.f;
         m_needUpdateVideoBuffer = true;
-        m_updateFirstFrame = true;
+        //m_updateFirstFrame = true;
 
-        if( m_decoderVideo->rewind() == false )
-        {
-            LOGGER_ERROR( "video '%s' resource '%s' invalid rewind"
-                , this->getName().c_str()
-                , m_resourceVideo->getName().c_str()
-            );
+        //if( m_decoderVideo->rewind() == false )
+        //{
+        //    LOGGER_ERROR( "video '%s' resource '%s' invalid rewind"
+        //        , this->getName().c_str()
+        //        , m_resourceVideo->getName().c_str()
+        //    );
 
-            return false;
-        }
+        //    return false;
+        //}
 
         return true;
     }
@@ -347,12 +347,15 @@ namespace Mengine
             }
             else if( state == VDRS_END_STREAM )
             {
-                bool loop = this->isLoop();
+                bool loop = this->calcTotalLoop();
                 bool interrupt = this->isInterrupt();
 
                 if( (loop == false && --m_playIterator == 0) || interrupt == true )
                 {
-                    m_decoderVideo->rewind();
+                    if( m_decoderVideo->rewind() == false )
+                    {
+                        return false;
+                    }
 
                     this->end();
 

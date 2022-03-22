@@ -2459,6 +2459,7 @@ namespace Mengine
             .def( "getIntervalEnd", &AnimationInterface::getIntervalEnd )
             .def( "setIntervalStart", &AnimationInterface::setIntervalStart )
             .def( "getIntervalStart", &AnimationInterface::getIntervalStart )
+            .def( "calcTotalLoop", &AnimationInterface::calcTotalLoop )            
             ;
 
         pybind::interface_<Animatable, pybind::bases<Mixin>>( _kernel, "Animatable" )

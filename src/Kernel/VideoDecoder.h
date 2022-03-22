@@ -14,7 +14,7 @@ namespace Mengine
         ~VideoDecoder() override;
 
     public:
-        void setCodecDataInfo( const CodecDataInfo * ) override;
+        void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
         const VideoCodecDataInfo * getCodecDataInfo() const override;
 
     protected:

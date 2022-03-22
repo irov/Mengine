@@ -38,6 +38,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32SocketInputStream::rewind()
+    {
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32SocketInputStream::rseek( size_t _pos )
     {
         MENGINE_UNUSED( _pos );

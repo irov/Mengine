@@ -343,9 +343,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XmlToBinDecoder::rewind()
     {
-        bool successful = m_stream->seek( 0 );
+        m_stream->rewind();
 
-        return successful;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool XmlToBinDecoder::seek( float _time )

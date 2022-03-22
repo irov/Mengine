@@ -75,7 +75,7 @@ namespace Mengine
         soundIdentity->setSoundListener( SoundListenerInterfacePtr( this ) );
 
         AnimationInterface * animation = this->getAnimation();
-        bool loop = animation->isLoop();
+        bool loop = animation->calcTotalLoop();
 
         SOUND_SERVICE()
             ->setLoop( soundIdentity, loop );

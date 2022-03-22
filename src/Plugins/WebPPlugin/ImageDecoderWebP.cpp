@@ -61,7 +61,7 @@ namespace Mengine
 
                 status = WebPGetFeatures( featuresMemory, featuresBufferSizeRead, &features );
 
-                stream->seek( 0 );
+                stream->rewind();
             } while( status == VP8_STATUS_NOT_ENOUGH_DATA );
         }
         else

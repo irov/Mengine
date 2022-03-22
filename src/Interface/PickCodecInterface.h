@@ -33,13 +33,13 @@ namespace Mengine
         virtual const PickCodecDataInfo * getCodecDataInfo() const override = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PickDecoderInterface> PickDecoderInterfacePtr;
+    typedef IntrusivePtr<PickDecoderInterface, DecoderInterface> PickDecoderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class PickEncoderInterface
         : public EncoderInterface
     {
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PickEncoderInterface> PickEncoderInterfacePtr;
+    typedef IntrusivePtr<PickEncoderInterface, EncoderInterface> PickEncoderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -283,6 +283,13 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLFileInputStream::rewind()
+    {
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::rewind" );
+
+        this->seek_( 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::rseek( size_t _pos )
     {
         MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::seek" );

@@ -57,7 +57,7 @@ namespace Mengine
         );
 
         const InputStreamInterfacePtr & stream = this->getStream();
-        stream->seek( 0 );
+        stream->rewind();
 
         size_t read_byte = 0;
 

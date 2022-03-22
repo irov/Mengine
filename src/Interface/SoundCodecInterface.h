@@ -30,6 +30,6 @@ namespace Mengine
         virtual const SoundCodecDataInfo * getCodecDataInfo() const override = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SoundDecoderInterface> SoundDecoderInterfacePtr;
+    typedef IntrusivePtr<SoundDecoderInterface, DecoderInterface> SoundDecoderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

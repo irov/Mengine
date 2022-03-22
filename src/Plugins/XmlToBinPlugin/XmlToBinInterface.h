@@ -30,6 +30,6 @@ namespace Mengine
         virtual const XmlCodecDataInfo * getCodecDataInfo() const override = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<XmlDecoderInterface> XmlDecoderInterfacePtr;
+    typedef IntrusivePtr<XmlDecoderInterface, DecoderInterface> XmlDecoderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

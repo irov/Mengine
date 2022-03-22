@@ -55,13 +55,13 @@ namespace Mengine
         virtual const ImageCodecDataInfo * getCodecDataInfo() const override = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ImageDecoderInterface> ImageDecoderInterfacePtr;
+    typedef IntrusivePtr<ImageDecoderInterface, DecoderInterface> ImageDecoderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ImageEncoderInterface
         : public EncoderInterface
     {
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ImageEncoderInterface> ImageEncoderInterfacePtr;
+    typedef IntrusivePtr<ImageEncoderInterface, EncoderInterface> ImageEncoderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

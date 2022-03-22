@@ -120,7 +120,6 @@ namespace Mengine
         float _getDuration() const override;
         void _setFirstFrame() override;
         void _setLastFrame() override;
-        void _setAnimationSpeedFactor( float _factor ) override;
 
     protected:
         void update( const UpdateContext * _context ) override;
@@ -212,9 +211,6 @@ namespace Mengine
 
     protected:
         void _destroy() override;
-
-    protected:
-        void updateAnimationSpeedFactor_( float _factor );
 
     public:
         ResourceMovie2Ptr m_resourceMovie2;

@@ -214,6 +214,11 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLMutexFileInputStream::rewind()
+    {
+        this->seek_( 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLMutexFileInputStream::rseek( size_t _pos )
     {
         size_t carriage = m_size - _pos;

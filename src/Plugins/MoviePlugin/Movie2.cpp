@@ -1196,6 +1196,8 @@ namespace Mengine
     {
         Movie2 * movie2 = static_cast<Movie2 *>(_ud);
 
+        AnimationInterface * movie2Animation = movie2->getAnimation();
+
         const aeMovieLayerData * layer_data = _callbackData->layer_data;
 
         ae_uint32_t node_index = _callbackData->index;
@@ -1360,7 +1362,9 @@ namespace Mengine
 
                 ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer_data );
                 animation->setStretch( layer_stretch );
-                animation->setLoop( _callbackData->incessantly );
+                             
+                animation->setRelationAnimation( movie2Animation );
+                animation->setRelationIncessantly( _callbackData->incessantly );
 
                 *_nd = node.get();
 
@@ -1504,9 +1508,13 @@ namespace Mengine
 
                     EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer_data );
 
-                    AnimationInterface * surfaceVideoAnimation = surfaceVideo->getAnimation();
+                    AnimationInterface * animation = surfaceVideo->getAnimation();
 
-                    surfaceVideoAnimation->setLoop( _callbackData->incessantly );
+                    ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer_data );
+                    animation->setStretch( layer_stretch );
+
+                    animation->setRelationAnimation( movie2Animation );
+                    animation->setRelationIncessantly( _callbackData->incessantly );
 
                     surfaceVideo->setBlendMode( blend_mode );
 
@@ -1528,7 +1536,12 @@ namespace Mengine
 
                     AnimationInterface * animation = surfaceSound->getAnimation();
 
-                    animation->setLoop( _callbackData->incessantly );
+                    ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer_data );
+                    animation->setStretch( layer_stretch );
+
+                    animation->setRelationAnimation( movie2Animation );
+                    animation->setRelationIncessantly( _callbackData->incessantly );
+
                     surfaceSound->setInterpolateVolume( false );
 
                     if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'v', 'o' ) ) == AE_TRUE )
@@ -1629,7 +1642,7 @@ namespace Mengine
                 float time = TIMELINE_SERVICE()
                     ->getTotalTime();
 
-                if( _callbackData->loop == AE_TRUE && _animation->isLoop() == true )
+                if( _callbackData->loop == AE_TRUE && _animation->calcTotalLoop() == true )
                 {
                     if( _animation->isPlay() == false )
                     {
@@ -2292,9 +2305,6 @@ namespace Mengine
 
         ae_set_movie_composition_loop( m_composition, loop ? AE_TRUE : AE_FALSE );
 
-        float animationSpeedFactor = this->getAnimationSpeedFactor();
-        this->updateAnimationSpeedFactor_( animationSpeedFactor );
-
         for( const HashtableSubCompositions::value_type & value : m_subCompositions )
         {
             const Movie2SubCompositionPtr & subComposition = value.element;
@@ -2363,6 +2373,14 @@ namespace Mengine
 
         for( const SurfacePtr & surface : m_surfaces )
         {
+            AnimationInterface * animation = surface->getAnimation();
+
+            if( animation != nullptr )
+            {
+                animation->setRelationAnimation( nullptr );
+                animation->setRelationIncessantly( false );
+            }
+
             surface->release();
         }
 
@@ -2512,31 +2530,6 @@ namespace Mengine
         float frameDuration = ae_get_movie_composition_data_frame_duration( compositionData );
 
         this->setTime( AE_TIME_MILLISECOND( (duration - frameDuration) ) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie2::_setAnimationSpeedFactor( float _factor )
-    {
-        if( this->isCompile() == false )
-        {
-            return;
-        }
-
-        this->updateAnimationSpeedFactor_( _factor );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie2::updateAnimationSpeedFactor_( float _factor )
-    {
-        for( const SurfacePtr & surface : m_surfaces )
-        {
-            AnimationInterface * animation = surface->getAnimation();
-
-            if( animation == nullptr )
-            {
-                continue;
-            }
-
-            animation->setAnimationSpeedFactor( _factor );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::update( const UpdateContext * _context )

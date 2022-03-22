@@ -106,7 +106,16 @@ namespace Mengine
 
         if( cacheVideoDecoder != nullptr )
         {
-            cacheVideoDecoder->rewind();
+            if( cacheVideoDecoder->rewind() == false )
+            {
+                LOGGER_ERROR( "group '%s' name '%s' invalid rewind cache video decoder for file '%s'"
+                    , this->getGroupName().c_str()
+                    , this->getName().c_str()
+                    , this->getContent()->getFilePath().c_str()
+                );
+
+                return nullptr;
+            }
 
             return cacheVideoDecoder;
         }

@@ -70,7 +70,7 @@ namespace Mengine
         virtual EVideoDecoderReadState readNextFrame( float _request, float * const _pts ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<VideoDecoderInterface> VideoDecoderInterfacePtr;
+    typedef IntrusivePtr<VideoDecoderInterface, DecoderInterface> VideoDecoderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class UnknownVideoResourceInterface
         : public UnknownInterface

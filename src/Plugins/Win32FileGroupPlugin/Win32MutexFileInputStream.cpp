@@ -227,6 +227,11 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32MutexFileInputStream::rewind()
+    {
+        this->seek_( 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32MutexFileInputStream::rseek( size_t _pos )
     {
         size_t carriage = m_size - _pos;

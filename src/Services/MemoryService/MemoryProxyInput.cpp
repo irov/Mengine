@@ -77,6 +77,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MemoryProxyInput::rewind()
+    {
+        MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::rewind" );
+
+        m_pos = m_data;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MemoryProxyInput::rseek( size_t _pos )
     {
         MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::rseek" );

@@ -239,7 +239,7 @@ namespace Mengine
     void Movie2SubComposition::updateLoop_()
     {
         AnimationInterface * animation = this->getAnimation();
-        bool loop = animation->isLoop();
+        bool loop = animation->calcTotalLoop();
 
         ae_set_movie_sub_composition_loop( m_subcomposition, loop == true ? AE_TRUE : AE_FALSE );
     }

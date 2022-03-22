@@ -2790,7 +2790,7 @@ namespace Mengine
 
                     if( layer.timeRemap == false )
                     {
-                        if( animation->isPlay() == true && animation->isLoop() == false )
+                        if( animation->isPlay() == true && animation->calcTotalLoop() == false )
                         {
                             animation->stop();
                         }

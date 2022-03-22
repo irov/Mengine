@@ -195,7 +195,7 @@ namespace Mengine
         {
             m_time -= duration;
 
-            bool loop = this->isLoop();
+            bool loop = this->calcTotalLoop();
             bool interrupt = this->isInterrupt();
 
             if( (loop == false && --m_playIterator == 0) || interrupt == true )

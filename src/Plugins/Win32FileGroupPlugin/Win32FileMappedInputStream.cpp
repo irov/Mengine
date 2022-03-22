@@ -110,6 +110,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32FileMappedInputStream::rewind()
+    {
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::rewind" );
+
+        m_pos = m_base;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32FileMappedInputStream::rseek( size_t _pos )
     {
         MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::rseek" );

@@ -14,6 +14,13 @@ namespace Mengine
         virtual Animatable * getAnimatable() = 0;
 
     public:
+        virtual void setRelationAnimation( const AnimationInterface * _relationAnimation ) = 0;
+        virtual const AnimationInterface * getRelationAnimation() const = 0;
+
+        virtual void setRelationIncessantly( bool _relationIncessantly ) = 0;
+        virtual bool getRelationIncessantly() const = 0;
+
+    public:
         virtual void setLoop( bool _value ) = 0;
         virtual bool isLoop() const = 0;
 
@@ -69,6 +76,9 @@ namespace Mengine
     public:
         virtual uint32_t getPlayId() const = 0;
         virtual float getPlayTime() const = 0;
+
+    public:
+        virtual bool calcTotalLoop() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AnimationInterface> AnimationInterfacePtr;

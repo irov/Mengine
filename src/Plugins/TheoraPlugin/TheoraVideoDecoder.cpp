@@ -23,9 +23,6 @@
 #   define THEORA_COLOR_A 3
 #endif
 //////////////////////////////////////////////////////////////////////////
-#define THEORA_CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
-    rgb_char_buffer = (uint8_t)MENGINE_CLAMP( 0, rgb_color_test, 255)
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     namespace Detail
@@ -284,10 +281,7 @@ namespace Mengine
 
         const InputStreamInterfacePtr & stream = this->getStream();
 
-        if( stream->seek( 0 ) == false )
-        {
-            return false;
-        }
+        stream->rewind();
 
         if( this->_prepareData() == false )
         {
@@ -339,6 +333,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, const VideoDecoderData * _decoderData )
     {
+        #define THEORA_CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) rgb_char_buffer = (uint8_t)MENGINE_CLAMP( 0, rgb_color_test, 255)
+
         uint8_t * dstBitmap = static_cast<uint8_t *>(_decoderData->buffer);
         uint8_t * dstBitmapOffset = static_cast<uint8_t *>(_decoderData->buffer) + _decoderData->pitch;
 
@@ -754,10 +750,10 @@ namespace Mengine
     {
         float frameTiming = 1000.f / m_dataInfo.fps;
 
-        ogg_packet packet;
-
         for( ;; )
         {
+            ogg_packet packet;
+
             for( ;; )
             {
                 int32_t error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
@@ -768,7 +764,7 @@ namespace Mengine
                 }
                 else if( error_packetout < 0 )
                 {
-                    return VDRS_FAILURE;
+                    return false;
                 }
 
                 size_t bytes = this->read_buffer_data_();
@@ -785,24 +781,24 @@ namespace Mengine
                 }
             }
 
-            double theora_time = theora_granule_time( &m_theoraState, packet.granulepos );
+            if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
+            {
+                return false;
+            }
 
-            float time = (float)(theora_time * 1000.0);
+            double time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
 
-            if( time + frameTiming < _time )
+            float pts = (float)(time * 1000.0);
+
+            if( pts + frameTiming < _time )
             {
                 continue;
             }
 
-            m_time = time;
+            m_time = pts;
 
             break;
-        }
-
-        if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
-        {
-            return false;
-        }
+        }       
 
         return true;
     }
@@ -831,6 +827,9 @@ namespace Mengine
                 return true;
             }
         }
+
+        //bool successful = this->seekToFrame( _time );
+        //return successful;
 
         return true;
     }

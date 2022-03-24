@@ -63,13 +63,39 @@ namespace Mengine
         }
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AppleSentryService::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+ 	    NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &AppleSentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &AppleSentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
 
+        AppleSentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<AppleSentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
+
+        loggerCapture->setVerboseLevel( LM_ERROR );
+
+        uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
+
+        loggerCapture->setVerboseFilter( loggerFilter );
+
+        loggerCapture->setWriteHistory( true );
+
+        LOGGER_SERVICE()
+            ->registerLogger( loggerCapture );
+
+        m_loggerCapture = loggerCapture;
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleSentryService::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
+        
+        LOGGER_SERVICE()
+            ->unregisterLogger( m_loggerCapture );
+
+        m_loggerCapture = nullptr;
         
         appleSentryFinalize();
     }    
@@ -216,6 +242,29 @@ namespace Mengine
 
             Helper::crash( "sentrycrash" );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleSentryService::notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
+    {
+        if( _level < ASSERTION_LEVEL_FATAL )
+        {
+            return;
+        }
+
+        appleSentrySetExtraString( "Assetion Test", _test );
+        appleSentrySetExtraString( "Assetion Function", _file );
+        appleSentrySetExtraInteger( "Assetion Line", _line );
+
+        appleSentryCapture( _message, 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleSentryService::notifyError_( EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
+    {
+        appleSentrySetExtraInteger( "Error Level", _level );
+        appleSentrySetExtraString( "Error Function", _file );
+        appleSentrySetExtraInteger( "Error Line", _line );
+
+        appleSentryCapture( _message, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

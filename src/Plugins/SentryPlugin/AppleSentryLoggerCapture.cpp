@@ -1,37 +1,35 @@
-#include "Win32SentryLoggerCapture.h"
+#include "AppleSentryLoggerCapture.h"
 
 #include "Kernel/ConfigHelper.h"
 
-#include "sentry.h"
-
-#ifndef MENGINE_SENTRY_MAX_LOG_SIZE
-#define MENGINE_SENTRY_MAX_LOG_SIZE 9240
-#endif
+extern "C" {
+    #include "AppleSentryNative.h"
+}
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Win32SentryLoggerCapture::Win32SentryLoggerCapture()
+    AppleSentryLoggerCapture::AppleSentryLoggerCapture()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Win32SentryLoggerCapture::~Win32SentryLoggerCapture()
+    AppleSentryLoggerCapture::~AppleSentryLoggerCapture()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SentryLoggerCapture::_initializeLogger()
+    bool AppleSentryLoggerCapture::_initializeLogger()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32SentryLoggerCapture::_finalizeLogger()
+    void AppleSentryLoggerCapture::_finalizeLogger()
     {
         m_message.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32SentryLoggerCapture::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
+    void AppleSentryLoggerCapture::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _filter );
@@ -39,7 +37,7 @@ namespace Mengine
          
         m_message.append( _data, _size );
 
-        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "Sentry", "MaxLogSize", MENGINE_SENTRY_MAX_LOG_SIZE );
+        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "Sentry", "MaxLogSize", 9240 );
 
         String::size_type message_size = m_message.size();
 
@@ -47,7 +45,7 @@ namespace Mengine
         {
             const Char * message_str = m_message.c_str();
 
-            sentry_set_extra( "Log", sentry_value_new_string( message_str ) );
+            appleSentrySetExtraString( "Log", message_str );
         }
         else
         {
@@ -66,7 +64,7 @@ namespace Mengine
 
             const Char * total_message_str = total_message.c_str();
 
-            sentry_set_extra( "Log", sentry_value_new_string( total_message_str ) );
+            appleSentrySetExtraString( "Log", total_message_str );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,9 @@ endif()
 if(MENGINE_TARGET_APPLE)
     ADD_FILTER(
     apple
+        AppleSentryLoggerCapture.h
+        AppleSentryLoggerCapture.cpp
+    
         AppleSentryService.h
         AppleSentryService.cpp
         

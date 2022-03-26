@@ -94,7 +94,7 @@
     return true;
 }
 
-- (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(float)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler{
+- (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler{
     if (!gcAuthenticateSuccess) {
         return false;
     }

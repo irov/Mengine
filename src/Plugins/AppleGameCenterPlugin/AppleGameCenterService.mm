@@ -116,9 +116,9 @@ namespace Mengine
         return m_gameCenterAuthenticate;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleGameCenterService::reportAchievement( const ConstString & _achievementName, float _percentComplete, const LambdaAchievemtResponse & _response )
+    bool AppleGameCenterService::reportAchievement( const ConstString & _achievementName, double _percentComplete, const LambdaAchievemtResponse & _response )
     {
-        LOGGER_MESSAGE( "[AppleGameCenter] report achievement: '%s' [%f]"
+        LOGGER_MESSAGE( "[AppleGameCenter] report achievement: '%s' [%lf]"
             , _achievementName.c_str()
             , _percentComplete
         );
@@ -131,23 +131,23 @@ namespace Mengine
 
         BOOL result = [m_gameCenterNative reportAchievementIdentifier:nsDescription percentComplete:_percentComplete withBanner:YES response:^(NSError * _Nullable _error) {
             if (_error) {
-                LOGGER_ERROR("[AppleGameCenter] response achievement '%s' [%f] error: %s"
+                LOGGER_ERROR("[AppleGameCenter] response achievement '%s' [%lf] error: %s"
                    , copy_achievementName.c_str()
                    , _percentComplete
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                _response( false, 0.f );
+                _response( false, 0.0 );
                 
                 return;
             }
             
-            LOGGER_MESSAGE( "[AppleGameCenter] response achievement '%s' [%f] successful"
+            LOGGER_MESSAGE( "[AppleGameCenter] response achievement '%s' [%lf] successful"
                 , copy_achievementName.c_str()
                 , _percentComplete
             );
             
-            if( _percentComplete >= 100.f )
+            if( _percentComplete >= 100.0 )
             {
                 m_achievementsComplete.push_back( copy_achievementName );
             }

@@ -34,7 +34,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void(bool, float)> LambdaAchievemtResponse;
-        virtual bool reportAchievement( const ConstString & _achievementName, float _percentComplete, const LambdaAchievemtResponse & _response ) = 0;
+        virtual bool reportAchievement( const ConstString & _achievementName, double _percentComplete, const LambdaAchievemtResponse & _response ) = 0;
         virtual bool checkAchievement( const ConstString & _achievementName ) const = 0;
 
     public:

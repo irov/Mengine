@@ -96,10 +96,10 @@ namespace Mengine
             }
             
         public:
-            bool reportAchievement( const ConstString & _achievementName, float _percentComplete, const pybind::object & _cb, const pybind::args & _args )
+            bool reportAchievement( const ConstString & _achievementName, double _percentComplete, const pybind::object & _cb, const pybind::args & _args )
             {
                 bool result = APPLE_GAMECENTER_SERVICE()
-                    ->reportAchievement( _achievementName, _percentComplete, [_cb, _args](bool _successful, float _percentComplete) {
+                    ->reportAchievement( _achievementName, _percentComplete, [_cb, _args](bool _successful, double _percentComplete) {
                         _cb.call_args( _successful, _percentComplete, _args );
                 } );
                 

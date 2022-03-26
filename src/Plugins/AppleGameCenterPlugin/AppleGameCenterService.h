@@ -29,7 +29,7 @@ namespace Mengine
         bool isConnect() const override;
 
 	protected:
-        bool reportAchievement( const ConstString & _achievementName, float _percentComplete, const LambdaAchievemtResponse & _response ) override;
+        bool reportAchievement( const ConstString & _achievementName, double _percentComplete, const LambdaAchievemtResponse & _response ) override;
         bool checkAchievement( const ConstString & _achievementName ) const override;
 
 	protected:

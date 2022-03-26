@@ -24,6 +24,6 @@ namespace Mengine
         String m_message;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleSentryLoggerCapture, LoggerInterface> Win32SentryLoggerCapturePtr;
+    typedef IntrusivePtr<AppleSentryLoggerCapture, LoggerInterface> AppleSentryLoggerCapturePtr;
     //////////////////////////////////////////////////////////////////////////
 }

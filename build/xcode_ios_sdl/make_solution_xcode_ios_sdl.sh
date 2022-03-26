@@ -12,13 +12,13 @@ CONFIGURATION=$1
 DEPLOY_PATH=$2
 
 if test -z "$CONFIGURATION"; then
-	echo "please setup CONFIGURATION"
-	exit 0
+    echo "please setup CONFIGURATION"
+    exit 0
 fi
 
 if test -z "$DEPLOY_PATH"; then
-	echo "please setup DEPLOY_PATH"
-	exit 0
+    echo "please setup DEPLOY_PATH"
+    exit 0
 fi
 
 mkdir -p ../../solutions/solution_xcode_ios_sdl/$CONFIGURATION

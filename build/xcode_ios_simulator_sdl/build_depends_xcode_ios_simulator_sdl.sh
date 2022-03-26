@@ -10,6 +10,12 @@ fi
 
 CONFIGURATION=$1
 
+if test -z "$CONFIGURATION"; then
+    echo "please setup CONFIGURATION"
+    exit 0
+fi
+
+
 mkdir -p ../../solutions/dependencies_xcode_ios_simulator_sdl/$CONFIGURATION
 pushd ../../solutions/dependencies_xcode_ios_simulator_sdl/$CONFIGURATION
 $CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_IOS_Simulator_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION

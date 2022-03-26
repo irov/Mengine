@@ -33,7 +33,7 @@ namespace Mengine
         bool checkAchievement( const ConstString & _achievementName ) const override;
 
 	protected:
-        bool reportScore( const ConstString & _key, uint32_t _score, const LambdaScoreResponse & _response ) override;
+        bool reportScore( const ConstString & _key, int64_t _score, const LambdaScoreResponse & _response ) override;
 
 	protected:
         AppleGameCenterProviderInterfacePtr m_provider;

@@ -81,24 +81,13 @@
 	if (!gcAuthenticateSuccess) {
         return false;
     }
-    
-#ifdef DEBUG
-    NSLog(@"report score %@ - %ld"
-          , identifier
-          , score
-    );
-#endif
-	
+    	
 	GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
 	scoreReporter.value = score;
     scoreReporter.context = 0;
     
     NSArray *scores = @[scoreReporter];
     [GKScore reportScores:scores withCompletionHandler:^(NSError *error) {
-        if (error) {
-            NSLog(@"Could not submit score with Game Center.");
-        }
-        
         handler(error);
 	}];
     
@@ -109,23 +98,12 @@
     if (!gcAuthenticateSuccess) {
         return false;
     }
-    
-#ifdef DEBUG
-    NSLog(@"report achievement %@ - %2.2f"
-          , identifier
-          , percent
-    );
-#endif
-    
+        
     GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier:identifier];
     [achievement setShowsCompletionBanner:banner];
-    achievement.percentComplete = percent;
+    [achievement setPercentComplete: percent];
     
     [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"Could not submit achievement with Game Center.");
-        }
-        
         handler(error);
     }];
     

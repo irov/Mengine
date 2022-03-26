@@ -9,7 +9,10 @@ int AppleOpenUrlInDefaultBrowser( const char * _url )
     
     if( [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:url]] == TRUE )
     {
-        [[UIApplication sharedApplication] openURL: [NSURL URLWithString:url] options:@{} completionHandler:nil];
+        [[UIApplication sharedApplication] openURL: [NSURL URLWithString:url] options:@{} completionHandler:^(BOOL success)
+        {
+            //ToDo callback
+        }];
     }
     else
     {

@@ -115,7 +115,7 @@ namespace Mengine
             }
 
         public:
-            bool reportScore( const ConstString & _key, uint32_t _score, const pybind::object & _cb, const pybind::args & _args )
+            bool reportScore( const ConstString & _key, int64_t _score, const pybind::object & _cb, const pybind::args & _args )
             {
                 bool result = APPLE_GAMECENTER_SERVICE()
                     ->reportScore( _key, _score, [_cb, _args](bool _successful) {

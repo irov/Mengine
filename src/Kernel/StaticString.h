@@ -30,13 +30,6 @@ namespace Mengine
         {
         }
 
-        StaticString( StaticString<N> && _value )
-        {
-            const Char * str_value = _value.c_str();
-
-            this->assign( str_value );
-        }
-
         StaticString( const Char * _value )
         {
             this->assign( _value );

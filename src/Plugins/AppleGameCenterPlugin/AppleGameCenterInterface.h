@@ -39,7 +39,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void(bool)> LambdaScoreResponse;
-        virtual bool reportScore( const ConstString & _key, uint32_t _score, const LambdaScoreResponse & _response ) = 0;
+        virtual bool reportScore( const ConstString & _key, int64_t _score, const LambdaScoreResponse & _response ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,7 @@ namespace Mengine
 	protected:
         bool connect() override;
         bool isConnect() const override;
+        bool isSynchronizate() const override;
 
 	protected:
         bool reportAchievement( const ConstString & _achievementName, double _percentComplete, const LambdaAchievemtResponse & _response ) override;

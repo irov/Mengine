@@ -8,7 +8,7 @@
 
 @property (assign) BOOL gcAuthenticateSuccess;
 
-- (BOOL) login:(void(^ _Nonnull)(BOOL))handler;
+- (BOOL) login:(void(^ _Nonnull)(NSError* _Nullable))handler;
 - (BOOL) loadCompletedAchievements:(void(^ _Nonnull)(NSError * _Nullable, NSArray* _Nullable))handler;
 
 - (BOOL) reportScore:(NSString * _Nonnull)identifier score:(int64_t)score response:(void(^ _Nonnull)(NSError * _Nullable))handler;

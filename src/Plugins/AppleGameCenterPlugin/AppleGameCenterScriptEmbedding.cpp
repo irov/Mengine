@@ -24,20 +24,27 @@ namespace Mengine
             , public Factorable
         {
         public:
-            PythonAppleGameCenterProvider( const pybind::object & _cb, const pybind::args & _args )
-                : m_cb(_cb)
+            PythonAppleGameCenterProvider( const pybind::object & _cbAuthenticate, const pybind::object & _cbSynchronizate, const pybind::args & _args )
+                : m_cbAuthenticate(_cbAuthenticate)
+                , m_cbSynchronizate(_cbSynchronizate)
                 , m_args(_args)
             {
             }
             
         protected:
-            void onAppleGameConterAuthenticate( bool _successful ) override
+            void onAppleGameCenterAuthenticate( bool _successful ) override
             {
-                m_cb.call_args( _successful, m_args );
+                m_cbAuthenticate.call_args( _successful, m_args );
+            }
+            
+            void onAppleGameCenterSynchronizate( bool _successful ) override
+            {
+                m_cbSynchronizate.call_args( _successful, m_args );
             }
         
         protected:
-            pybind::object m_cb;
+            pybind::object m_cbAuthenticate;
+            pybind::object m_cbSynchronizate;
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
@@ -64,9 +71,9 @@ namespace Mengine
             }
             
         public:
-            void setProvider( const pybind::object & _cb, const pybind::args & _args )
+            void setProvider( const pybind::object & _cbAuthenticate, const pybind::object & _cbSynchronizate, const pybind::args & _args )
             {
-                AppleGameCenterProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleGameCenterProvider>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+                AppleGameCenterProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleGameCenterProvider>( MENGINE_DOCUMENT_PYBIND, _cbAuthenticate, _cbSynchronizate, _args );
                 
                 APPLE_GAMECENTER_SERVICE()
                     ->setProvider( provider );

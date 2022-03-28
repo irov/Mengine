@@ -14,7 +14,8 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onAppleGameConterAuthenticate( bool _successful ) = 0;
+        virtual void onAppleGameCenterAuthenticate( bool _successful ) = 0;
+        virtual void onAppleGameCenterSynchronizate( bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleGameCenterProviderInterface> AppleGameCenterProviderInterfacePtr;
@@ -31,6 +32,7 @@ namespace Mengine
     public:
         virtual bool connect() = 0;
         virtual bool isConnect() const = 0;
+        virtual bool isSynchronizate() const = 0;
 
     public:
         typedef Lambda<void(bool, float)> LambdaAchievemtResponse;

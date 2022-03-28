@@ -10,37 +10,24 @@
     [gameCenterViewController dismissViewControllerAnimated:YES completion:^{}];
 }
 
-- (BOOL) authenticateHandler:(NSError*)error
-{
-    if (!error) {
-        return YES;
-    }
-
-    // Your application can process the error parameter to report the error to the player.
-#ifdef DEBUG
-    NSString* errMsg =[NSString stringWithFormat:@"Could not connect with Game Center servers: %@", [error localizedDescription]];
-    showAlert(@"Error", errMsg, @"Try Later");
-#endif
-    
-    return NO;
-}
-
 #pragma mark -
 
-- (BOOL) login:(void(^)(BOOL))handler;
+- (BOOL) login:(void(^)(NSError* _Nullable))handler;
 {
     GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
     
     [localPlayer setAuthenticateHandler:^(UIViewController* v, NSError* error) {
-        BOOL result = [self authenticateHandler:error];
-        
-        if(gcAuthenticateSuccess == result) {
+        if (error) {
+            gcAuthenticateSuccess = false;
+            
+            handler(error);
+            
             return;
         }
         
-        gcAuthenticateSuccess = result;
+        gcAuthenticateSuccess = true;
         
-        handler(gcAuthenticateSuccess);
+        handler(nil);
     }];
     
     return true;

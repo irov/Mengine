@@ -50,61 +50,80 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::connect()
     {
-        [m_gameCenterNative login : ^ (BOOL success)
-        {
-            LOGGER_MESSAGE( "[AppleGameCenter] connect: '%s'"
-                , success == TRUE ? "Successful" : "Failed"
-            );
-            
-            if(!success) {
+        [m_gameCenterNative login : ^ (NSError * _Nullable _error) {
+            if (_error) {
                 m_gameCenterAuthenticate = false;
-                m_achievementsSynchronization = false;
+                
                 m_achievementsComplete.clear();
+                
+                LOGGER_ERROR("[AppleGameCenter] login error: '%s'"
+                   , Helper::AppleGetMessageFromNSError(_error).c_str()
+                );
                 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onAppleGameConterAuthenticate( false );
+                    m_provider->onAppleGameCenterAuthenticate( false );
                 }
                 
                 return;
             }
             
-            if(m_achievementsSynchronization) {
-                return;
+            LOGGER_MESSAGE( "[AppleGameCenter] connect successful" );
+            
+            if( m_gameCenterAuthenticate == false )
+            {
+                m_gameCenterAuthenticate = true;
+                
+                if( m_provider != nullptr )
+                {
+                    m_provider->onAppleGameCenterAuthenticate( true );
+                }
             }
-
+            
+            m_achievementsSynchronization = false;
+            m_achievementsComplete.clear();
+            
+            if( m_provider != nullptr )
+            {
+                m_provider->onAppleGameCenterSynchronizate( false );
+            }
+            
             [m_gameCenterNative loadCompletedAchievements : ^ (NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
                 if (_error) {
+                    m_achievementsSynchronization = false;
+                    
                     LOGGER_ERROR("[AppleGameCenter] load completed achievements error: '%s'"
                        , Helper::AppleGetMessageFromNSError(_error).c_str()
                     );
                     
+                    if( m_provider != nullptr )
+                    {
+                        m_provider->onAppleGameCenterSynchronizate( false );
+                    }
+                    
                     return;
                 }
                 
-                if (!_completedAchievements) {
-                    return;
-                }
-                
-                for( NSString * ach in _completedAchievements )
+                if (_completedAchievements)
                 {
-                    const Char * ach_str = [ach UTF8String];
-                    
-                    LOGGER_MESSAGE( "[AppleGameCenter] completed achievement: '%s'"
-                        , ach_str
-                    );
-                    
-                    m_achievementsComplete.push_back( Helper::stringizeString(ach_str) );
+                    for( NSString * ach in _completedAchievements )
+                    {
+                        const Char * ach_str = [ach UTF8String];
+                        
+                        LOGGER_MESSAGE( "[AppleGameCenter] completed achievement: '%s'"
+                            , ach_str
+                        );
+                        
+                        m_achievementsComplete.push_back( Helper::stringizeString(ach_str) );
+                    }
                 }
                 
                 m_achievementsSynchronization = true;
                 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onAppleGameConterAuthenticate( true );
+                    m_provider->onAppleGameCenterSynchronizate( true );
                 }
-                
-                m_gameCenterAuthenticate = true;
             }] ;
         }];
         
@@ -116,6 +135,11 @@ namespace Mengine
         return m_gameCenterAuthenticate;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AppleGameCenterService::isSynchronizate() const
+    {
+        return m_achievementsSynchronization;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::reportAchievement( const ConstString & _achievementName, double _percentComplete, const LambdaAchievemtResponse & _response )
     {
         LOGGER_MESSAGE( "[AppleGameCenter] report achievement: '%s' [%lf]"
@@ -124,7 +148,6 @@ namespace Mengine
         );
         
         NSString * nsDescription = [NSString stringWithUTF8String : _achievementName.c_str()];
-        
 
         ConstString copy_achievementName = _achievementName;
         LambdaAchievemtResponse copy_response = _response;

@@ -35,9 +35,12 @@ namespace Mengine
         virtual bool isSynchronizate() const = 0;
 
     public:
-        typedef Lambda<void(bool, float)> LambdaAchievemtResponse;
+        typedef Lambda<void(bool)> LambdaAchievemtResponse;
         virtual bool reportAchievement( const ConstString & _achievementName, double _percentComplete, const LambdaAchievemtResponse & _response ) = 0;
         virtual bool checkAchievement( const ConstString & _achievementName ) const = 0;
+        
+    public:
+        virtual bool resetAchievements() = 0;
 
     public:
         typedef Lambda<void(bool)> LambdaScoreResponse;

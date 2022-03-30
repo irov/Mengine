@@ -160,7 +160,7 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                _response( false, 0.0 );
+                copy_response( false );
                 
                 return;
             }
@@ -175,10 +175,20 @@ namespace Mengine
                 m_achievementsComplete.push_back( copy_achievementName );
             }
             
-            copy_response(true, _percentComplete);
+            copy_response( true );
         }];
         
-        return result;
+        if( result == FALSE )
+        {
+            LOGGER_ERROR("[AppleGameCenter] invalid report achievement '%s' [%lf]"
+               , _achievementName.c_str()
+               , _percentComplete
+            );
+            
+            return false;
+        }
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::checkAchievement( const ConstString & _achievementName ) const
@@ -188,6 +198,32 @@ namespace Mengine
             return false;
         }
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleGameCenterService::resetAchievements()
+    {
+        LOGGER_MESSAGE( "[AppleGameCenter] try reset achievemnts" );
+        
+        BOOL result = [m_gameCenterNative resetAchievements : ^ (NSError * _Nullable _error) {
+            if (_error) {
+                LOGGER_ERROR("[AppleGameCenter] reset achievemnts error: '%s'"
+                   , Helper::AppleGetMessageFromNSError(_error).c_str()
+                );
+                
+                return;
+            }
+            
+            LOGGER_MESSAGE( "[AppleGameCenter] reset achievement successful" );
+        }] ;
+        
+        if( result == FALSE )
+        {
+            LOGGER_ERROR("[AppleGameCenter] invalid reset achievements" );
+            
+            return false;
+        }
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -224,7 +260,17 @@ namespace Mengine
             copy_response( true );
         }];
         
-        return result;
+        if( result == FALSE )
+        {
+            LOGGER_ERROR("[AppleGameCenter] invalid report score '%s' [%lld]"
+               , _key.c_str()
+               , _score
+            );
+            
+            return false;
+        }
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

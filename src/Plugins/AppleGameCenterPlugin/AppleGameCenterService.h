@@ -32,6 +32,9 @@ namespace Mengine
 	protected:
         bool reportAchievement( const ConstString & _achievementName, double _percentComplete, const LambdaAchievemtResponse & _response ) override;
         bool checkAchievement( const ConstString & _achievementName ) const override;
+        
+    protected:
+        bool resetAchievements() override;
 
 	protected:
         bool reportScore( const ConstString & _key, int64_t _score, const LambdaScoreResponse & _response ) override;

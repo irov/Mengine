@@ -106,8 +106,8 @@ namespace Mengine
             bool reportAchievement( const ConstString & _achievementName, double _percentComplete, const pybind::object & _cb, const pybind::args & _args )
             {
                 bool result = APPLE_GAMECENTER_SERVICE()
-                    ->reportAchievement( _achievementName, _percentComplete, [_cb, _args](bool _successful, double _percentComplete) {
-                        _cb.call_args( _successful, _percentComplete, _args );
+                    ->reportAchievement( _achievementName, _percentComplete, [_cb, _args](bool _successful) {
+                        _cb.call_args( _successful, _args );
                 } );
                 
                 return result;
@@ -117,6 +117,14 @@ namespace Mengine
             {
                 bool result = APPLE_GAMECENTER_SERVICE()
                     ->checkAchievement( _achievementName );
+
+                return result;
+            }
+            
+            bool resetAchievements() const
+            {
+                bool result = APPLE_GAMECENTER_SERVICE()
+                    ->resetAchievements();
 
                 return result;
             }
@@ -166,6 +174,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "appleGameCenterIsConnect", scriptMethod, &AppleGameCenterScriptMethod::isConnect );
         pybind::def_functor_args( _kernel, "appleGameCenterReportAchievement", scriptMethod, &AppleGameCenterScriptMethod::reportAchievement );
         pybind::def_functor( _kernel, "appleGameCenterCheckAchievement", scriptMethod, &AppleGameCenterScriptMethod::checkAchievement );
+        pybind::def_functor( _kernel, "appleGameCenterResetAchievements", scriptMethod, &AppleGameCenterScriptMethod::resetAchievements );        
         pybind::def_functor_args( _kernel, "appleGameCenterReportScore", scriptMethod, &AppleGameCenterScriptMethod::reportScore );
 
         m_implement = scriptMethod;

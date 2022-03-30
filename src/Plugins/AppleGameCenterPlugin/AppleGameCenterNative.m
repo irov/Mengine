@@ -6,7 +6,7 @@
 
 #pragma mark -
 
-- (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController{
+- (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController {
     [gameCenterViewController dismissViewControllerAnimated:YES completion:^{}];
 }
 
@@ -34,7 +34,7 @@
 }
 
 
-- (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler{
+- (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler {
     if (!gcAuthenticateSuccess) {
         return false;
     }
@@ -64,7 +64,19 @@
     return true;
 }
 
-- (BOOL) reportScore:(NSString*)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler{
+- (BOOL) resetAchievements:(void(^ _Nonnull)(NSError * __nullable error))handler {
+    if (!gcAuthenticateSuccess) {
+        return false;
+    }
+    
+    [GKAchievement resetAchievementsWithCompletionHandler:^(NSError * _Nullable error) {
+        handler(error);
+    }];
+    
+    return true;
+}
+
+- (BOOL) reportScore:(NSString*)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler {
 	if (!gcAuthenticateSuccess) {
         return false;
     }
@@ -81,7 +93,7 @@
     return true;
 }
 
-- (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler{
+- (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler {
     if (!gcAuthenticateSuccess) {
         return false;
     }

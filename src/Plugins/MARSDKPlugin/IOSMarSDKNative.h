@@ -3,16 +3,33 @@
 
 @interface IOSMarSDKNative : NSObject
 {
-//    BOOL gcAuthenticateSuccess;
 }
 
-//@property (assign) BOOL gcAuthenticateSuccess;
 
 - (void) didFinishLaunchingWithOptions:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
-//- (BOOL) login:(void(^ _Nonnull)(NSError* _Nullable))handler;
-//- (BOOL) loadCompletedAchievements:(void(^ _Nonnull)(NSError * _Nullable, NSArray* _Nullable))handler;
-//
-//- (BOOL) reportScore:(NSString * _Nonnull)identifier score:(int64_t)score response:(void(^ _Nonnull)(NSError * _Nullable))handler;
-//- (BOOL) reportAchievementIdentifier:(NSString * _Nonnull)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^ _Nonnull)(NSError * _Nullable))handler;
+
+-(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
+
+-(void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo;
+
+-(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void(^)(UIBackgroundFetchResult)) completionHandler;
+
+-(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification;
+
+- (void)applicationWillResignActive:(UIApplication *)application;
+
+- (void)applicationDidEnterBackground:(UIApplication *)application;
+
+- (void)applicationWillEnterForeground:(UIApplication *)application;
+
+-(void)applicationDidBecomeActive:(UIApplication *)application;
+
+- (void)applicationWillTerminate:(UIApplication *)application;
+
+-(BOOL)application:(UIApplication *_Nullable)application handleOpenURL:(NSURL *)url;
+
+-(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation;
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options;
 
 @end

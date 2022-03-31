@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "MARSDKCore.framework/Headers/MARSDK.h"
+#import "../../../dependencies/MARSDK/MARSDKCore.framework/Headers/MARSDK.h"
 
 @interface IOSMarSDKNative : NSObject
 {

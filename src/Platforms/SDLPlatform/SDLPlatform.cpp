@@ -643,6 +643,8 @@ namespace Mengine
             return false;
         }
 
+        m_platformTags.clear();
+
         const Char * sdlPlatform = SDL_GetPlatform();
 
         if( MENGINE_STRCMP( sdlPlatform, "Windows" ) == 0 )
@@ -651,7 +653,14 @@ namespace Mengine
             m_touchpad = false;
 
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS32
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
         }
         else if( MENGINE_STRCMP( sdlPlatform, "WinRT" ) == 0 )
         {
@@ -677,6 +686,16 @@ namespace Mengine
             m_touchpad = true;
 
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+
+            if( isTablet == SDL_TRUE )
+            {
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
+            }
+            else
+            {
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
+            }
+
             SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
         }
         else if( MENGINE_STRCMP( sdlPlatform, "iOS" ) == 0 )
@@ -685,6 +704,16 @@ namespace Mengine
             m_touchpad = true;
 
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+
+            if( isTablet == SDL_TRUE )
+            {
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
+            }
+            else
+            {
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
+            }
+
             SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
         }
         else if( MENGINE_STRCMP( sdlPlatform, "Linux" ) == 0 )
@@ -734,10 +763,6 @@ namespace Mengine
 
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
-
-#ifdef MENGINE_PLATFORM_WINDOWS
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#endif
         }
         else if( HAS_OPTION( "android" ) )
         {
@@ -762,6 +787,15 @@ namespace Mengine
 
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
+        }
+
+        if( HAS_OPTION( "table" ) == true )
+        {
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
+        }
+        else if( HAS_OPTION( "phone" ) == true )
+        {
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
         }
 
         const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );

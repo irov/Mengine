@@ -4,8 +4,6 @@
 #include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( MARSDKService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MARSDK, Mengine::MARSDKPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -13,9 +11,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MARSDKPlugin::MARSDKPlugin()
     {
-        //для примера вызова
-        m_marSDKNative = [[IOSMarSDKNative alloc] init];
-        [m_marSDKNative didFinishLaunchingWithOptions:[UIApplication sharedApplication] didFinishLaunchingWithOptions:NULL];
     }
     //////////////////////////////////////////////////////////////////////////
     MARSDKPlugin::~MARSDKPlugin()
@@ -47,22 +42,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MARSDKPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( MARSDKService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
+        m_marSDKNative = [[IOSMarSDKNative alloc] init];
+        
+        [m_marSDKNative didFinishLaunchingWithOptions:[UIApplication sharedApplication] didFinishLaunchingWithOptions:NULL];
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MARSDKPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( MARSDKService );
     }
     //////////////////////////////////////////////////////////////////////////
     void MARSDKPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( MARSDKService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

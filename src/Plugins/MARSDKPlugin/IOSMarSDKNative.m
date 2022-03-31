@@ -12,20 +12,20 @@
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
--(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
     [[MARSDK sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
--(void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo{
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo{
     [[MARSDK sharedInstance] application:application didReceiveRemoteNotification: userInfo];
 }
 
--(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void(^)(UIBackgroundFetchResult)) completionHandler{
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void(^)(UIBackgroundFetchResult)) completionHandler{
     [[MARSDK sharedInstance] application:application didReceiveRemoteNotification: userInfo];
 }
 
--(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
     [[MARSDK sharedInstance] application:application didReceiveLocalNotification:notification];
 }
@@ -53,7 +53,7 @@
     [[MARSDK sharedInstance] applicationWillEnterForeground:application];
 }
 
--(void)applicationDidBecomeActive:(UIApplication *)application {
+- (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the applicati on was inactive. If the application was previously in the background, optionally refresh the user interface.
     [[MARSDK sharedInstance] applicationWillEnterForeground:application];
 }
@@ -64,12 +64,12 @@
 }
 
 
--(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
     return [[MARSDK sharedInstance] application:application handleOpenURL:url];
 }
 
--(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     return [[MARSDK sharedInstance] application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }

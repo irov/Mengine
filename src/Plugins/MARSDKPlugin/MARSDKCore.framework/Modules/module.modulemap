@@ -1,6 +1,0 @@
-framework module MARSDKCore {
-  umbrella header "MARSDKCore.h"
-
-  export *
-  module * { export * }
-}

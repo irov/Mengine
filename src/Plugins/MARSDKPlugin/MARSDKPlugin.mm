@@ -13,6 +13,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MARSDKPlugin::MARSDKPlugin()
     {
+        //для примера вызова
+        m_marSDKNative = [[IOSMarSDKNative alloc] init];
+        [m_marSDKNative didFinishLaunchingWithOptions:[UIApplication sharedApplication] didFinishLaunchingWithOptions:NULL];
     }
     //////////////////////////////////////////////////////////////////////////
     MARSDKPlugin::~MARSDKPlugin()

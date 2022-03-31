@@ -6,7 +6,7 @@ src
 
     MARSDKPlugin.h
     MARSDKPlugin.def
-    MARSDKPlugin.cpp
+    MARSDKPlugin.mm
 
     IOSMarSDKNative.h
     IOSMarSDKNative.m

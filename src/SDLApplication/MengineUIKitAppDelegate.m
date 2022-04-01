@@ -1,9 +1,11 @@
 #import "MengineUIKitAppDelegate.h"
 
-@implementation SDLUIKitDelegate {
+@implementation MengineUIKitDelegate {
 }
 
 - (void)postFinishLaunch
 {
     [super postFinishLaunch];
 }
+
+@end

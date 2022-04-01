@@ -43,7 +43,7 @@ int appleSentrySetExtraInteger( const char * _key, int _value )
     return 0;
 }
 
-int appleSentrySetExtraString( const char * _key, const char * _value )	
+int appleSentrySetExtraString( const char * _key, const char * _value )
 {
     [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
         [scope setExtraValue:@(_value) forKey:@(_key)];

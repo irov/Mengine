@@ -298,10 +298,6 @@ PLUGIN_EXPORT( Optick );
 PLUGIN_EXPORT( GameAnalytics );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_APPLE_SENTRY_STATIC
-PLUGIN_EXPORT( AppleSentry );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
 PLUGIN_EXPORT( AppleGameCenter );
 #endif
@@ -918,11 +914,7 @@ namespace Mengine
         LOGGER_MESSAGE( "Plugins..." );
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
-        MENGINE_ADD_PLUGIN( Sentry, "Plugin Win32 Sentry...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_APPLE_SENTRY_STATIC
-        MENGINE_ADD_PLUGIN( AppleSentry, "Plugin Apple Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Sentry, "Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_EXTERNAL_SOURCE

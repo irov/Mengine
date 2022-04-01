@@ -24,6 +24,7 @@ Containers
     Regex.h
     Optional.h
     Variant.h
+    InitializerList.h
 )
 
 ADD_FILTER(

@@ -230,6 +230,10 @@ if(MENGINE_PLUGIN_OPTICK)
     ADD_SUBDIRECTORY(OptickPlugin)
 endif()
 
+if(MENGINE_PLUGIN_DEVTODEBUG)
+    ADD_SUBDIRECTORY(DevToDebugPlugin)
+endif()
+
 if(MENGINE_PLUGIN_GAMEANALYTICS)
     ADD_SUBDIRECTORY(GameAnalyticsPlugin)
 endif()

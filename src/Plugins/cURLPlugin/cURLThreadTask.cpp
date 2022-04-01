@@ -63,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     cURLThreadTask::cURLThreadTask()
         : m_id( 0 )
-        , m_timeout( -1 )
+        , m_timeout( MENGINE_CURL_TIMEOUT_INFINITY )
         , m_receiveHeaders( false )
         , m_curl_header_list( nullptr )
         , m_responseCode( 0 )
@@ -175,7 +175,7 @@ namespace Mengine
 
         this->_onCURL( curl );
 
-        if( m_timeout != -1 )
+        if( m_timeout != MENGINE_CURL_TIMEOUT_INFINITY )
         {
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_TIMEOUT_MS, m_timeout) );
         }
@@ -279,7 +279,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::_onThreadTaskComplete( bool _successful )
     {
-        m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_responseStatus, m_responseError, m_responseHeaders, m_responseData, m_responseCode, _successful );
+        cURLResponseData response;
+        response.id = m_id;
+        response.status = (uint32_t)m_responseStatus;
+        response.headers = m_responseHeaders;
+        response.data = m_responseData;
+        response.code = m_responseCode;
+        response.error = m_responseError;
+        response.successful = _successful;
+
+        m_receiver->onHttpRequestComplete( response );
         m_receiver = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

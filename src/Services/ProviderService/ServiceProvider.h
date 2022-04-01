@@ -2,6 +2,10 @@
 
 #include "Interface/ServiceProviderInterface.h"
 
+#ifndef MENGINE_SERVICE_PROVIDER_MAX_REQUIRED
+#define MENGINE_SERVICE_PROVIDER_MAX_REQUIRED 16
+#endif
+
 #ifndef MENGINE_SERVICE_PROVIDER_NAME_SIZE
 #define MENGINE_SERVICE_PROVIDER_NAME_SIZE 64U
 #endif
@@ -59,17 +63,21 @@ namespace Mengine
 
     protected:
         ServiceInterfacePtr generateService_( FServiceProviderGenerator _generator, const DocumentPtr & _doc );
-        void removeDependency_( const Char * _name );
-        bool checkWaits_( const Char * _name );
+        void removeDependency_( const ServiceInterfacePtr & _service );
+        bool checkWaits_( const ServiceInterfacePtr & _service );
 
     protected:
         struct ServiceDesc
         {
             StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> name;
+            StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> required[MENGINE_SERVICE_PROVIDER_MAX_REQUIRED];
+            uint32_t required_count = 0;
             ServiceInterfacePtr service;
             bool exist = false;
+            bool safe = false;
             bool available = false;
             bool initialize = false;
+            bool requiring = false;
         };
 
         ServiceDesc m_services[MENGINE_SERVICE_PROVIDER_COUNT];
@@ -111,5 +119,10 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         const Char * m_initializeServiceName;
 #endif
+
+    protected:
+        bool isRequired_( const ServiceDesc & _desc );
+        bool initializeService_( ServiceDesc & _desc, const DocumentPtr & _doc );
+        bool checkRequired_( const DocumentPtr & _doc );
     };
 }

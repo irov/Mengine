@@ -1,0 +1,2 @@
+LIBRARY "DevToDebugPlugin"
+EXPORTS dllCreatePlugin @1

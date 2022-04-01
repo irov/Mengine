@@ -74,54 +74,13 @@ namespace Mengine
             return false;
         }
 
-        const Char * name = service->getServiceID();
-
-#ifdef MENGINE_DEBUG
-        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr );
-
-        m_initializeServiceName = name;
-#endif
-
-        bool successful = false;
-
-        try
-        {
-            successful = service->initializeService();
-        }
-        catch( const std::exception & ex )
-        {
-            MENGINE_UNUSED( ex );
-
-#ifdef MENGINE_DEBUG
-            m_initializeServiceName = nullptr;
-#endif
-
-            MENGINE_ASSERTION_EXCEPTION( _safe == true, "exception initialize service '%s' (doc: %s)\n%s"
-                , service->getServiceID()
-                , MENGINE_DOCUMENT_STR( _doc )
-                , ex.what()
-            );
-        }
-
-#ifdef MENGINE_DEBUG
-        m_initializeServiceName = nullptr;
-#endif
-
-        if( successful == false )
-        {
-            MENGINE_ASSERTION_EXCEPTION( _safe == true, "invalid initialize service '%s' (doc: %s)"
-                , service->getServiceID()
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
-
-            return false;
-        }
-
         MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( service->getServiceID() ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , service->getServiceID()
             , MENGINE_STRLEN( service->getServiceID() )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
+
+        const Char * name = service->getServiceID();
 
         for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
         {
@@ -145,30 +104,35 @@ namespace Mengine
                 }
             }
 
-            desc.exist = true;
-            desc.available = service->isAvailableService();
-            desc.initialize = service->isInitializeService();
-            desc.service = service;
-
             ++m_servicesCount;
 
-            if( this->checkWaits_( name ) == false )
+            if( service->availableService() == false )
             {
-                MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (waits) (doc: %s)"
-                    , service->getServiceID()
-                    , MENGINE_DOCUMENT_STR( _doc )
-                );
-
-                return false;
+                return true;
             }
 
-            if( service->runService() == false )
-            {
-                MENGINE_THROW_EXCEPTION( "invalid run service '%s' (waits) (doc: %s)"
-                    , service->getServiceID()
-                    , MENGINE_DOCUMENT_STR( _doc )
-                );
+            desc.exist = true;
+            desc.safe = _safe;
+            desc.service = service;
+            desc.available = true;
+            desc.requiring = false;
 
+            const ServiceRequiredList & required = service->requiredServices();
+
+            for( const Char * require_name : required )
+            {
+                desc.required[desc.required_count++] = require_name;
+            }
+
+            if( this->isRequired_( desc ) == false )
+            {
+                desc.requiring = true;
+
+                return true;
+            }
+
+            if( this->initializeService_( desc, _doc ) == false )
+            {
                 return false;
             }
 
@@ -182,6 +146,86 @@ namespace Mengine
         );
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::initializeService_( ServiceDesc & _desc, const DocumentPtr & _doc )
+    {
+        const ServiceInterfacePtr & service = _desc.service;
+
+#ifdef MENGINE_DEBUG
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr );
+
+        m_initializeServiceName = service->getServiceID();
+#endif
+
+        bool successful = false;
+
+        try
+        {
+            successful = service->initializeService();
+        }
+        catch( const std::exception & ex )
+        {
+            MENGINE_UNUSED( ex );
+
+#ifdef MENGINE_DEBUG
+            m_initializeServiceName = nullptr;
+#endif
+
+            MENGINE_ASSERTION_EXCEPTION( _desc.safe == true, "exception initialize service '%s' (doc: %s)\n%s"
+                , service->getServiceID()
+                , MENGINE_DOCUMENT_STR( _doc )
+                , ex.what()
+            );
+        }
+
+#ifdef MENGINE_DEBUG
+        m_initializeServiceName = nullptr;
+#endif
+
+        if( successful == false )
+        {
+            MENGINE_ASSERTION_EXCEPTION( _desc.safe == true, "invalid initialize service '%s' (doc: %s)"
+                , service->getServiceID()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return false;
+        }
+
+        _desc.initialize = true;
+
+        if( this->checkWaits_( service ) == false )
+        {
+            MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (waits) (doc: %s)"
+                , service->getServiceID()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return false;
+        }
+
+        if( service->runService() == false )
+        {
+            MENGINE_THROW_EXCEPTION( "invalid run service '%s' (waits) (doc: %s)"
+                , service->getServiceID()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return false;
+        }
+
+        if( this->checkRequired_( _doc ) == false )
+        {
+            MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (required) (doc: %s)"
+                , service->getServiceID()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::finalizeService( const Char * _name )
@@ -268,7 +312,7 @@ namespace Mengine
                 break;
             }
 
-            this->removeDependency_( _name );
+            this->removeDependency_( desc.service );
 
             desc.exist = false;
             desc.initialize = false;
@@ -396,8 +440,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::removeDependency_( const Char * _name )
+    void ServiceProvider::removeDependency_( const ServiceInterfacePtr & _service )
     {
+        const Char * name = _service->getServiceID();
+
         for( uint32_t index = 0; index != m_dependenciesCount; )
         {
             DependencyDesc & desc = m_dependencies[index];
@@ -409,7 +455,7 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.name.compare( _name ) != 0 )
+            if( desc.name.compare( name ) != 0 )
             {
                 ++index;
 
@@ -423,13 +469,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::checkWaits_( const Char * _name )
+    bool ServiceProvider::checkWaits_( const ServiceInterfacePtr & _service )
     {
+        const Char * name = _service->getServiceID();
+
         for( uint32_t index = 0; index != m_waitsCount; )
         {
             WaitDesc & desc = m_waits[index];
 
-            if( desc.name.compare( _name ) != 0 )
+            if( desc.name.compare( name ) != 0 )
             {
                 ++index;
 
@@ -452,6 +500,67 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::isRequired_( const ServiceDesc & _desc )
+    {
+        for( uint32_t index_required = 0; index_required != _desc.required_count; ++index_required )
+        {
+            const Char * name_required = _desc.required[index_required].c_str();
+
+            bool required = false;
+
+            for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
+            {
+                const ServiceDesc & service_desc = m_services[index_service];
+
+                if( service_desc.name.compare( name_required ) != 0 )
+                {
+                    continue;
+                }
+
+                if( service_desc.initialize == false )
+                {
+                    return false;
+                }
+
+                required = true;
+            }
+
+            if( required == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::checkRequired_( const DocumentPtr & _doc )
+    {
+        for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
+        {
+            ServiceDesc & desc = m_services[index_service];
+
+            if( desc.requiring == false )
+            {
+                continue;
+            }
+
+            if( this->isRequired_( desc ) == false )
+            {
+                continue;
+            }
+
+            desc.requiring = false;
+
+            if( this->initializeService_( desc, _doc ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const bool * ServiceProvider::isExistServiceProvider( const Char * _name )
     {
 #ifdef MENGINE_DEBUG
@@ -462,11 +571,6 @@ namespace Mengine
         {
             const ServiceDesc & desc = m_services[index];
 
-            if( desc.service == nullptr )
-            {
-                continue;
-            }
-
             if( desc.name.compare( _name ) != 0 )
             {
                 continue;
@@ -475,13 +579,11 @@ namespace Mengine
             return &desc.exist;
         }
 
+        MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [exist]" );
+
         ServiceDesc & desc = m_services[m_servicesCount++];
 
         desc.name.assign( _name );
-        desc.service = nullptr;
-        desc.exist = false;
-        desc.available = false;
-        desc.initialize = false;
 
         return &desc.exist;
     }
@@ -496,11 +598,6 @@ namespace Mengine
         {
             const ServiceDesc & desc = m_services[index];
 
-            if( desc.service == nullptr )
-            {
-                continue;
-            }
-
             if( desc.name.compare( _name ) != 0 )
             {
                 continue;
@@ -509,13 +606,11 @@ namespace Mengine
             return &desc.available;
         }
 
+        MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [available]" );
+
         ServiceDesc & desc = m_services[m_servicesCount++];
 
         desc.name.assign( _name );
-        desc.service = nullptr;
-        desc.exist = false;
-        desc.available = false;
-        desc.initialize = false;
 
         return &desc.available;
     }
@@ -530,11 +625,6 @@ namespace Mengine
         {
             const ServiceDesc & desc = m_services[index];
 
-            if( desc.service == nullptr )
-            {
-                continue;
-            }
-
             if( desc.name.compare( _name ) != 0 )
             {
                 continue;
@@ -543,13 +633,11 @@ namespace Mengine
             return &desc.initialize;
         }
 
+        MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [initialize]" );
+
         ServiceDesc & desc = m_services[m_servicesCount++];
 
         desc.name.assign( _name );
-        desc.service = nullptr;
-        desc.exist = false;
-        desc.available = false;
-        desc.initialize = false;
 
         return &desc.initialize;
     }

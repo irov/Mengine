@@ -270,6 +270,10 @@ PLUGIN_EXPORT( Steam );
 PLUGIN_EXPORT( GOAP );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_DEVTODEBUG_STATIC
+PLUGIN_EXPORT( DevToDebug );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_IMGUI_STATIC
 PLUGIN_EXPORT( ImGUI );
 #endif
@@ -292,10 +296,6 @@ PLUGIN_EXPORT( Optick );
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
 PLUGIN_EXPORT( GameAnalytics );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_APPLE_SENTRY_STATIC
-PLUGIN_EXPORT( AppleSentry );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
@@ -918,11 +918,7 @@ namespace Mengine
         LOGGER_MESSAGE( "Plugins..." );
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
-        MENGINE_ADD_PLUGIN( Sentry, "Plugin Win32 Sentry...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_APPLE_SENTRY_STATIC
-        MENGINE_ADD_PLUGIN( AppleSentry, "Plugin Apple Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Sentry, "Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_EXTERNAL_SOURCE
@@ -1075,6 +1071,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_GOAP_STATIC
         MENGINE_ADD_PLUGIN( GOAP, "Plugin GOAP...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_DEVTODEBUG_STATIC
+        MENGINE_ADD_PLUGIN( DevToDebug, "Plugin DevToDebug...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_IMGUI_STATIC

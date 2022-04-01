@@ -11,6 +11,8 @@
 #include "Kernel/String.h"
 #include "Kernel/VectorString.h"
 
+#define MENGINE_CURL_TIMEOUT_INFINITY (-1)
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -26,11 +28,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<cURLPostParam> cURLPostParams;
     //////////////////////////////////////////////////////////////////////////
+    struct cURLResponseData
+    {
+        HttpRequestID id;
+        uint32_t status;
+        cURLHeaders headers;
+        String data;
+        uint32_t code;
+        String error;
+        bool successful;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class cURLReceiverInterface
         : public Interface
     {
     public:
-        virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) = 0;
+        virtual void onHttpRequestComplete( const cURLResponseData & _response ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLReceiverInterface> cURLReceiverInterfacePtr;

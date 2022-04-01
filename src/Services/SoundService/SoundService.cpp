@@ -43,6 +43,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & SoundService::requiredServices() const
+    {
+        static ServiceRequiredList required = {
+            ThreadServiceInterface::getStaticServiceID()
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SoundService::_initializeService()
     {
         m_supportStream = THREAD_SERVICE()
@@ -50,14 +59,24 @@ namespace Mengine
 
         if( m_supportStream == true )
         {
-            m_threadJobSoundBufferUpdate = THREAD_SERVICE()
+            ThreadJobPtr threadJobSoundBufferUpdate = THREAD_SERVICE()
                 ->createJob( 25, MENGINE_DOCUMENT_FACTORABLE );
 
-            THREAD_SERVICE()
-                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+            MENGINE_ASSERTION_MEMORY_PANIC( threadJobSoundBufferUpdate );
 
-            THREAD_SERVICE()
-                ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate );
+            m_threadJobSoundBufferUpdate = threadJobSoundBufferUpdate;
+
+            if( THREAD_SERVICE()
+                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                return false;
+            }
+
+            if( THREAD_SERVICE()
+                ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate ) == false )
+            {
+                return false;
+            }
         }
 
         float Engine_CommonVolume = CONFIG_VALUE( "Engine", "CommonVolume", 1.f );

@@ -23,7 +23,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & DevToDebugService::requiredServices() const
     {
-        static ServiceRequiredList required = {"cURLService"};
+        static ServiceRequiredList required = {
+            cURLServiceInterface::getStaticServiceID()
+        };
 
         return required;
     }
@@ -44,8 +46,6 @@ namespace Mengine
         LOGGER_MESSAGE( "DevToDebug PID: %s"
             , m_pid.c_str()
         );
-
-        this->process();
 
         return true;
     }
@@ -68,9 +68,10 @@ namespace Mengine
                 );
 
                 cURLHeaders headers;
-                cURLPostParams params;
+                headers.push_back( "Content-Type:application/json" );
+                String data = R"({"did": "12345678", "name": "Test", "state": {"Dev": [ { "id": "btn1", "type": "button", "data": { "title": "Push Me!"}}]}})";
                 CURL_SERVICE()
-                    ->postMessage( connect_url, headers, -1, 0, params, cURLReceiverInterfacePtr::from( this ) );                
+                    ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ) );
             }break;
         default:
             break;

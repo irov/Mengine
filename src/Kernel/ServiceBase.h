@@ -36,23 +36,26 @@ namespace Mengine
         }
 
     private:
+        bool availableService() override
+        {
+            m_availableService = this->_availableService();
+
+            return m_availableService;
+        }
+
         bool initializeService() override
         {
+            if( m_availableService == false )
+            {
+                return true;
+            }
+
             if( m_initializeService == true )
             {
                 return true;
             }
 
             this->_dependencyService();
-
-            m_availableService = this->_availableService();
-
-            if( m_availableService == false )
-            {
-                m_initializeService = true;
-
-                return true;
-            }
 
             bool successful = this->_initializeService();
 

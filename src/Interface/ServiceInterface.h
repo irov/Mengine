@@ -28,6 +28,7 @@ namespace Mengine
         virtual const ServiceRequiredList & requiredServices() const = 0;
 
     protected:
+        virtual bool availableService() = 0;
         virtual bool initializeService() = 0;
         virtual void finalizeService() = 0;
         virtual void replaceService() = 0;

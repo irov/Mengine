@@ -11,6 +11,8 @@
 #include "Kernel/String.h"
 #include "Kernel/VectorString.h"
 
+#define MENGINE_CURL_TIMEOUT_INFINITY (-1)
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

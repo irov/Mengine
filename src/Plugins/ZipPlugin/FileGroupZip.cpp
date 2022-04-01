@@ -497,6 +497,7 @@ namespace Mengine
                             ++mask;
                             break;
                         }
+
                         return -1;
                     }break;
                 }

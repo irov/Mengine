@@ -51,6 +51,14 @@ if(MENGINE_WINDOWS_UNIVERSAL)
     )
 endif()
 
+if(MENGINE_TARGET_IOS)
+    ADD_FILTER(
+    ios
+        MengineUIKitAppDelegate.m
+        MengineUIKitAppDelegate.h
+    )
+endif()
+
 if(MENGINE_TARGET_ANDROID)
     ADD_FILTER(
     android

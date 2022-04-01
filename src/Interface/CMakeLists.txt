@@ -1,7 +1,7 @@
 MENGINE_PROJECT(Interface)
 
 ADD_FILTER(
-src     
+Common     
     Interface.h
     ServiceInterface.h
     ServiceProviderInterface.h
@@ -131,6 +131,7 @@ src
     DebuggerBoundingBoxInterface.h
     AnalyticsSystemInterface.h
     SecureValueInterface.h
+    UIKitProxyApplicationDelegateInterface.h
 )
 
 ADD_FILTER(

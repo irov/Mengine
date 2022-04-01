@@ -1,5 +1,11 @@
 #import "MengineUIKitAppDelegate.h"
 
+@implementation UIKitProxyApplicationDelegateInterface {
+}
+
+@end
+
+
 @implementation MengineUIKitDelegate {
 }
 

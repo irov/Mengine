@@ -270,6 +270,10 @@ PLUGIN_EXPORT( Steam );
 PLUGIN_EXPORT( GOAP );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_DEVTODEBUG_STATIC
+PLUGIN_EXPORT( DevToDebug );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_IMGUI_STATIC
 PLUGIN_EXPORT( ImGUI );
 #endif
@@ -1071,6 +1075,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_GOAP_STATIC
         MENGINE_ADD_PLUGIN( GOAP, "Plugin GOAP...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_DEVTODEBUG_STATIC
+        MENGINE_ADD_PLUGIN( DevToDebug, "Plugin DevToDebug...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_IMGUI_STATIC

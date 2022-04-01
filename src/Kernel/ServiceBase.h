@@ -27,6 +27,14 @@ namespace Mengine
             );
         }
 
+    protected:
+        const ServiceRequiredList & requiredServices() const override
+        {
+            static ServiceRequiredList required = {};
+
+            return required;
+        }
+
     private:
         bool initializeService() override
         {

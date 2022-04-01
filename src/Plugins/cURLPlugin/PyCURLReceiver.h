@@ -23,7 +23,7 @@ namespace Mengine
         bool initialize( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override;
+        void onHttpRequestComplete( const cURLResponseData & _response ) override;
 
     protected:
         pybind::object m_cb;

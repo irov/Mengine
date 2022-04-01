@@ -279,7 +279,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::_onThreadTaskComplete( bool _successful )
     {
-        m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_responseStatus, m_responseError, m_responseHeaders, m_responseData, m_responseCode, _successful );
+        cURLResponseData response;
+        response.id = m_id;
+        response.status = (uint32_t)m_responseStatus;
+        response.headers = m_responseHeaders;
+        response.data = m_responseData;
+        response.code = m_responseCode;
+        response.error = m_responseError;
+        response.successful = _successful;
+
+        m_receiver->onHttpRequestComplete( response );
         m_receiver = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

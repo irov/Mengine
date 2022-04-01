@@ -449,11 +449,11 @@ namespace Mengine
         } ));
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )
+    void cURLService::onHttpRequestComplete( const cURLResponseData & _response )
     {
         for( const RequestListenerDesk & listenerDesc : m_networkListeners )
         {
-            listenerDesc.listener->response( _id, _response );
+            listenerDesc.listener->response( _response.id, _response.data );
         }
 
         for( VectorReceiverDesc::iterator
@@ -464,7 +464,7 @@ namespace Mengine
         {
             ReceiverDesc & desc = *it;
 
-            if( desc.id != _id )
+            if( desc.id != _response.id )
             {
                 continue;
             }
@@ -476,19 +476,19 @@ namespace Mengine
 
             if( receiver != nullptr )
             {
-                receiver->onHttpRequestComplete( _id, _status, _error, _headers, _response, _code, _successful );
+                receiver->onHttpRequestComplete( _response );
             }
 
             return;
         }
 
         LOGGER_ERROR( "invalid request '%u' complete (status [%u] error '%.2048s' response '%.2048s' code [%u] successful [%u])"
-            , _id
-            , _status
-            , _error.c_str()
-            , _response.c_str()
-            , _code
-            , _successful
+            , _response.id
+            , _response.status
+            , _response.error.c_str()
+            , _response.data.c_str()
+            , _response.code
+            , _response.successful
         );
     }
     //////////////////////////////////////////////////////////////////////////

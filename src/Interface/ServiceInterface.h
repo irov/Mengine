@@ -3,6 +3,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/InitializerList.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/ExceptionHelper.h"
 #include "Kernel/Typename.h"
@@ -10,27 +11,28 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    typedef InitializeList<const Char *> ServiceRequiredList;
+    //////////////////////////////////////////////////////////////////////////
     class ServiceInterface
         : public Factorable
     {
     public:
         virtual const Char * getServiceID() const = 0;
 
+    public:
+        virtual bool isAvailableService() const = 0;
+        virtual bool isInitializeService() const = 0;
+        virtual bool isStopService() const = 0;
+
+    public:        
+        virtual const ServiceRequiredList & requiredServices() const = 0;
+
     protected:
         virtual bool initializeService() = 0;
         virtual void finalizeService() = 0;
         virtual void replaceService() = 0;
         virtual bool runService() = 0;
-
-    public:
-        virtual bool isInitializeService() const = 0;
-
-    public:
-        virtual bool isAvailableService() const = 0;
-
-    protected:
         virtual void stopService() = 0;
-        virtual bool isStopService() const = 0;
 
     public:
         friend class ServiceProvider;
@@ -42,7 +44,7 @@ namespace Mengine
     {
         namespace Detail
         {
-            //////////////////////////////////////////////////////////////////////////        
+            //////////////////////////////////////////////////////////////////////////
             template<class T>
             T * getService2( const Char * _file, uint32_t _line )
             {

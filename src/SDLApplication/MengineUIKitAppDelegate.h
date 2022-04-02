@@ -1,5 +1,5 @@
-#import "../src/video/uikit/SDL_uikitappdelegate.h"
+#import "Interface/UIKitProxyApplicationDelegateInterface.h"
 
-@interface MengineUIKitDelegate : SDLUIKitDelegate
+@interface MengineUIKitDelegate : UIKitProxyApplicationDelegateInterface
 
 @end

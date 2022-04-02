@@ -7,7 +7,7 @@ namespace Mengine
     class NodeDebugRenderPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "DebugRender" )
+        PLUGIN_DECLARE( "NodeDebugRender" )
 
     public:
         NodeDebugRenderPlugin();

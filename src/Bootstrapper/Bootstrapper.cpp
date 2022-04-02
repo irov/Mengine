@@ -6,7 +6,6 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
 #include "Interface/AccountServiceInterface.h"
@@ -14,7 +13,6 @@
 #include "Interface/GameServiceInterface.h"
 #include "Interface/FrameworkServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -34,6 +32,7 @@
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH
@@ -466,6 +465,8 @@ namespace Mengine
 
         LOGGER_SERVICE()
             ->clearHistory();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
 
         return true;
     }

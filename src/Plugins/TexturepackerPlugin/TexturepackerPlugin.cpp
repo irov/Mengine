@@ -4,7 +4,6 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "ResourceTexturepacker.h"
 #include "ResourceMultiTexturepacker.h"
@@ -17,6 +16,7 @@
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Texturepacker, Mengine::TexturepackerPlugin );

@@ -6,7 +6,6 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "BatchRenderPipeline.h"
 
@@ -24,6 +23,7 @@
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
 

@@ -1,11 +1,11 @@
 #include "TextValidatePlugin.h"
 
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 
 #include "Kernel/BuildMode.h"
 #include "Kernel/Logger.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( TextValidate, Mengine::TextValidatePlugin )

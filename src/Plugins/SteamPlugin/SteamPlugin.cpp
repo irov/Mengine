@@ -1,6 +1,5 @@
 #include "SteamPlugin.h"
 
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
@@ -14,6 +13,7 @@
 #include "Kernel/Error.h"
 #include "Kernel/Logger.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdIO.h"
 

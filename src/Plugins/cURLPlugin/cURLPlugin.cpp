@@ -2,11 +2,11 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/NotificationHelper.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "cURLScriptEmbedding.h"

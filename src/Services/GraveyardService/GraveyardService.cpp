@@ -3,11 +3,10 @@
 #include "Interface/RenderImageInterface.h"
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
-#include "Interface/NotificatorInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
 

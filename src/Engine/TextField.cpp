@@ -3,7 +3,6 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/StringFormat.h"
 #include "Kernel/StringHelper.h"
@@ -13,6 +12,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionObservable.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"

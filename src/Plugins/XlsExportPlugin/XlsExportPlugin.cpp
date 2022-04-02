@@ -2,7 +2,6 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 
 #define MENGINE_WINDOWS_VERSION_WIN8
@@ -12,6 +11,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 

@@ -1,7 +1,6 @@
 #include "Win32FileInputStream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
@@ -10,10 +9,11 @@
 #include "Kernel/Win32Helper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
-
-#include "stdex/memorycopy.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
+
+#include "stdex/memorycopy.h"
 
 namespace Mengine
 {

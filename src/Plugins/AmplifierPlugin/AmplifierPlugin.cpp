@@ -1,7 +1,6 @@
 #include "AmplifierPlugin.h"
 #include "AmplifierInterface.h"
 
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
@@ -9,6 +8,7 @@
 #endif
 
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Amplifier );

@@ -3,7 +3,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
 
 #include "Engine/ResourceMusic.h"
@@ -13,6 +12,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Amplifier, Mengine::Amplifier );

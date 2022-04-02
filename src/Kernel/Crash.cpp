@@ -1,6 +1,6 @@
 #include "Crash.h"
 
-#include "Interface/NotificationServiceInterface.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdInt.h"
 

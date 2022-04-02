@@ -3,10 +3,10 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
 
 namespace Mengine
 {

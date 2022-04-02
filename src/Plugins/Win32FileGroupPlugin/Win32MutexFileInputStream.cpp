@@ -4,8 +4,6 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
-#include "Interface/NotificationServiceInterface.h"
-
 #include "Win32FileHelper.h"
 
 #include "Kernel/Win32Helper.h"

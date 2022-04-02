@@ -8,7 +8,6 @@
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ModuleInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -48,6 +47,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
 

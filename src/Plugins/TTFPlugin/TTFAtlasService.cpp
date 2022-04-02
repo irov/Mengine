@@ -1,12 +1,12 @@
 #include "TTFAtlasService.h"
 
 #include "Interface/RenderTextureServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "stdex/memorycopy.h"
 

@@ -1,7 +1,6 @@
 #include "SceneService.h"
 
 #include "Interface/ModuleServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/Scene.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SceneService, Mengine::SceneService );

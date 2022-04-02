@@ -4,7 +4,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/AssertionVocabulary.h"
@@ -13,6 +12,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ResourceConvertService );

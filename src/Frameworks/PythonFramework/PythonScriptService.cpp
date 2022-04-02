@@ -13,8 +13,6 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
-#include "Interface/NotificatorInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 
@@ -38,6 +36,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/StringHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -62,11 +61,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_WINDOWS_DEBUG
         //////////////////////////////////////////////////////////////////////////
-        static void py_invalid_parameter_handler( const wchar_t * _expression,
-            const wchar_t * _function,
-            const wchar_t * _file,
-            unsigned int _line,
-            uintptr_t pReserved )
+        static void py_invalid_parameter_handler( const wchar_t * _expression
+            , const wchar_t * _function
+            , const wchar_t * _file
+            , unsigned int _line
+            , uintptr_t pReserved )
         {
             MENGINE_UNUSED( pReserved );
 

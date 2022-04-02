@@ -2,7 +2,6 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
@@ -18,7 +17,7 @@
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/OptionHelper.h"
-
+#include "Kernel/NotificationHelper.h"
 #include "Kernel/Stringstream.h"
 
 namespace Mengine

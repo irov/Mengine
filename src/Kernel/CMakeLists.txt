@@ -825,6 +825,8 @@ Core
     
     Hexadecimal.cpp
     Hexadecimal.h
+    
+    NotificationHelper.h
 )
 
 ADD_FILTER(

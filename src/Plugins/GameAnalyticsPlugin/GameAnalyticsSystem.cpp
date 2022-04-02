@@ -1,8 +1,8 @@
 #include "GameAnalyticsSystem.h"
 
-#include "Interface/NotificationServiceInterface.h"
-
 #include "GameAnalytics.h"
+
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AnalyticsSystem, Mengine::GameAnalyticsSystem );

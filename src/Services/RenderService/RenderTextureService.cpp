@@ -5,7 +5,6 @@
 #include "Interface/GraveyardServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
 #include "RenderTexture.h"
@@ -21,6 +20,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"

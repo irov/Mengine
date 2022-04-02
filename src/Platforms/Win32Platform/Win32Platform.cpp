@@ -5,7 +5,6 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/ProfilerSystemInterface.h"
@@ -42,6 +41,7 @@
 #include "Kernel/RandomDevice.h"
 #include "Kernel/StringCopy.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

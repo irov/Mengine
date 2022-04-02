@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -47,11 +48,24 @@ namespace Mengine
             , m_pid.c_str()
         );
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &DevToDebugService::notifyBootstrapperRunComplete_, MENGINE_DOCUMENT_FACTORABLE );        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::addProvider( const ConstString & _type, const DevToDebugProviderInterfacePtr & _provider )
+    {
+        m_providers.emplace( _type, _provider );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::removeProvider( const ConstString & _type )
+    {
+        m_providers.erase( _type );
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::process()
@@ -83,6 +97,11 @@ namespace Mengine
         MENGINE_UNUSED( _response );
 
         return;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::notifyBootstrapperRunComplete_()
+    {
+
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -5,7 +5,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -28,6 +27,7 @@
 #include "Kernel/EventableHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );

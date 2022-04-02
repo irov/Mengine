@@ -3,7 +3,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
@@ -19,6 +18,7 @@
 #include "Kernel/Error.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
 

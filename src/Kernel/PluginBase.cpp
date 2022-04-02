@@ -2,13 +2,13 @@
 
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionObservable.h"
+#include "Kernel/NotificationHelper.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Kernel/Win32Helper.h"

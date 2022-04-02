@@ -14,7 +14,6 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -54,6 +53,7 @@
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ResolutionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"

@@ -4,7 +4,6 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -23,6 +22,8 @@
 #include "Kernel/SurfacePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Video, Mengine::VideoPlugin );

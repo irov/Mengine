@@ -6,7 +6,6 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
 
 #include "Kernel/FactoryPool.h"
@@ -19,6 +18,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
 

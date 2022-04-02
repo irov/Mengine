@@ -2,7 +2,6 @@
 
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -14,6 +13,7 @@
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdIO.h"
 

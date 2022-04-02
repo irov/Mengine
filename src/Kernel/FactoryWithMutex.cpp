@@ -3,7 +3,7 @@
 #include "Interface/FactoryServiceInterface.h"
 
 #ifdef MENGINE_DEBUG
-#   include "Interface/NotificationServiceInterface.h"
+#   include "Kernel/NotificationHelper.h"
 #   include "Kernel/Logger.h"
 #endif
 

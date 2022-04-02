@@ -5,11 +5,12 @@
 #include "Kernel/DebugBreak.h"
 
 #include "Interface/PlatformInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
+
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdIO.h"
 

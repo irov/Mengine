@@ -5,7 +5,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/TextFontConfigLoaderInterface.h"
 #include "Interface/FontValidatorInterface.h"

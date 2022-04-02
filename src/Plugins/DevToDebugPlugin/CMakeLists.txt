@@ -10,6 +10,18 @@ src
     
     DevToDebugService.h
     DevToDebugService.cpp
+    
+    DevToDebugProvider.h
+    DevToDebugProvider.cpp
+
+    DevToDebugWidget.h
+    DevToDebugWidget.cpp
+    
+    DevToDebugWidgetButton.h
+    DevToDebugWidgetButton.cpp
+    
+    DevToDebugWidgetText.h
+    DevToDebugWidgetText.cpp
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_DEVTODEBUG)

@@ -6,22 +6,47 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct DevToDebugWidgetTextData
+    class DevToDebugWidgetInterface
+        : public Interface
     {
-        String text;
+    public:
+        virtual void setId( const ConstString & _id ) = 0;
+        virtual const ConstString & getId() const = 0;
+    };
+    typedef IntrusivePtr<DevToDebugWidgetInterface> DevToDebugWidgetInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class DevToDebugWidgetTextInterface
+        : public DevToDebugWidgetInterface
+    {
+    public:
+        virtual void setConstText( const String & _text ) = 0;
+
+        typedef Lambda<void( String & )> LambdaGetterText;
+        virtual void setGetterTitle( const LambdaGetterText & _getter ) = 0;
+
+        virtual const String & calculateText() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    struct DevToDebugWidgetButtonData
+    typedef IntrusivePtr<DevToDebugWidgetTextInterface, DevToDebugWidgetInterface> DevToDebugWidgetTextInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class DevToDebugWidgetButtonInterface
+        : public DevToDebugWidgetInterface
     {
-        String title;
+    public:
+        virtual void setTitle( const String & _title ) = 0;
+        virtual const String & getTitle() const = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DevToDebugWidgetButtonInterface, DevToDebugWidgetInterface> DevToDebugWidgetButtonInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugProviderInterface
         : public Interface
     {
     public:
-        virtual void addWidgetText( const ConstString & _id, const DevToDebugWidgetTextData & _data ) = 0;
-        virtual void addWidgetButton( const ConstString & _id, const DevToDebugWidgetButtonData & _data ) = 0;
+        virtual void addWidget( const DevToDebugWidgetInterfacePtr & _widget ) = 0;
+
+        typedef Lambda<void( const DevToDebugWidgetInterfacePtr & )> LambdaForeachWidgets;
+        virtual void foreachWidgets( const LambdaForeachWidgets & _lambda ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugProviderInterface> DevToDebugProviderInterfacePtr;

@@ -1,9 +1,9 @@
 #include "RenderViewport.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/AssertionObservable.h"
+#include "Kernel/NotificationHelper.h"
 
 namespace Mengine
 {

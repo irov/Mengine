@@ -1,13 +1,13 @@
 #include "SDLFileInputStream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/PlatformInterface.h"
+
+#include "SDLFileHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
-
-#include "SDLFileHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "stdex/memorycopy.h"
 

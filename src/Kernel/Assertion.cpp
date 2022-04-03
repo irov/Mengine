@@ -1,14 +1,14 @@
 #include "Assertion.h"
 
+#include "Interface/LoggerServiceInterface.h"
+#include "Interface/PlatformInterface.h"
+
 #include "Kernel/Crash.h"
 #include "Kernel/Exception.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Abort.h"
 #include "Kernel/DebugBreak.h"
-
-#include "Interface/LoggerServiceInterface.h"
-#include "Interface/PlatformInterface.h"
-#include "Interface/NotificationServiceInterface.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"

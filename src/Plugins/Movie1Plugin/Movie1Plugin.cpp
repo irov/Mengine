@@ -8,7 +8,6 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "MovieScriptEmbedding.h"
@@ -20,17 +19,6 @@
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotResourceShape.h"
 #include "Engine/ResourceShape.h"
-
-#include "Kernel/ConfigHelper.h"
-#include "Kernel/RenderScissor.h"
-#include "Kernel/DefaultPrototypeGenerator.h"
-#include "Kernel/NodePrototypeGenerator.h"
-#include "Kernel/ResourcePrototypeGenerator.h"
-#include "Kernel/NodeRenderHierarchy.h"
-#include "Kernel/PolygonHelper.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/AssertionAllocator.h"
-#include "Kernel/Logger.h"
 
 #include "Movie.h"
 #include "MovieSlot.h"
@@ -50,6 +38,18 @@
 #include "DataflowAEK.h"
 
 #include "ResourceMovieValidator.h"
+
+#include "Kernel/ConfigHelper.h"
+#include "Kernel/RenderScissor.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/NodeRenderHierarchy.h"
+#include "Kernel/PolygonHelper.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
+#include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Movie1, Mengine::Movie1Plugin )

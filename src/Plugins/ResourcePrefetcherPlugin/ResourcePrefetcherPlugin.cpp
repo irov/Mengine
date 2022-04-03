@@ -6,8 +6,6 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
-#include "Interface/NotificatorInterface.h"
 
 #include "ResourcePrefetcherServiceInterface.h"
 
@@ -24,6 +22,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ResourcePrefetcherService );

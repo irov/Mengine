@@ -5,7 +5,6 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
@@ -25,6 +24,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UID.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 

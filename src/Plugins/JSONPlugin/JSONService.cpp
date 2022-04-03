@@ -184,7 +184,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONService::saveJSON( const OutputStreamInterfacePtr & _stream, const jpp::object & _j ) const
     {
-        if( jpp::dump( _j, Detail::my_jpp_dump_callback, _stream.get() ) == false )
+        if( jpp::dump( _j, &Detail::my_jpp_dump_callback, _stream.get() ) == false )
         {
             return false;
         }

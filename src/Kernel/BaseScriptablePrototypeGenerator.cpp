@@ -1,13 +1,12 @@
 #include "BaseScriptablePrototypeGenerator.h"
 
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
-#include "Interface/NotificatorInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 namespace Mengine
 {

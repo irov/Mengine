@@ -1,12 +1,10 @@
 #include "Win32AntifreezeMonitorPlugin.h"
 
-#include "Interface/NotificationServiceInterface.h"
-#include "Interface/NotificatorInterface.h"
-
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Win32AntifreezeMonitorPlugin, Mengine::Win32AntifreezeMonitorPlugin )

@@ -1,9 +1,8 @@
 #include "TimelineService.h"
 
-#include "Interface/NotificationServiceInterface.h"
-
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TimelineService, Mengine::TimelineService );

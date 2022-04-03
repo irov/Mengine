@@ -1,7 +1,6 @@
 #include "ImGUIModule.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
@@ -29,6 +28,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "imgui.h"
 

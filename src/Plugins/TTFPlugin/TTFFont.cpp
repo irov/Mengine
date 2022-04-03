@@ -7,7 +7,6 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "TTFDataInterface.h"
 #include "TTFFontTextureGlyphProvider.h"
@@ -22,12 +21,14 @@
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/NotificationHelper.h"
+
+#include "Config/Algorithm.h"
 
 #include "utf8.h"
 
 #include "stdex/memorycopy.h"
 
-#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FT_FLOOR(X) (((X) & -64) / 64)

@@ -33,7 +33,7 @@ namespace Mengine
     const ThreadMutexInterfacePtr & NotificationArea::getMutex() const
     {
         return m_mutex;
-    }   
+    }
     //////////////////////////////////////////////////////////////////////////
     bool NotificationArea::initialize( uint32_t _id )
     {
@@ -78,7 +78,7 @@ namespace Mengine
             , MENGINE_MIXIN_DEBUG_NAME( _observer )
             , m_id
             , MENGINE_DOCUMENT_STR( _doc )
-        );        
+        );
 
         if( m_visiting != 0 )
         {

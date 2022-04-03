@@ -6,7 +6,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #ifdef MENGINE_DEBUG
-#   include "Interface/NotificationServiceInterface.h"
+#   include "Kernel/NotificationHelper.h"
 #endif
 
 namespace Mengine

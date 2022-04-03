@@ -9,7 +9,6 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
@@ -22,14 +21,6 @@
 #include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
 
-#include "Kernel/ConfigHelper.h"
-#include "Kernel/DefaultPrototypeGenerator.h"
-#include "Kernel/NodePrototypeGenerator.h"
-#include "Kernel/ResourcePrototypeGenerator.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/AssertionAllocator.h"
-#include "Kernel/Logger.h"
-
 #include "Movie2.h"
 #include "ResourceMovie2.h"
 #include "LoaderResourceMovie2.h"
@@ -37,6 +28,15 @@
 
 #include "ResourceMovie2Validator.h"
 #include "Movie2DebuggerBoundingBox.h"
+
+#include "Kernel/ConfigHelper.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
+#include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdIO.h"
 

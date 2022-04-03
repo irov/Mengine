@@ -3,7 +3,6 @@
 #include "Interface/ApplicationInterface.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"

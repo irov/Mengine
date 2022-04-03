@@ -119,6 +119,6 @@ namespace Mengine
         bool successful = area.foreachObservers( _lambda );
 
         return successful;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
 }

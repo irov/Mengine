@@ -1,8 +1,7 @@
 #include "ModuleBase.h"
 
-#include "Interface/NotificationServiceInterface.h"
-
 #include "Kernel/AssertionObservable.h"
+#include "Kernel/NotificationHelper.h"
 
 namespace Mengine
 {

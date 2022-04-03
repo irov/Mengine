@@ -11,7 +11,6 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 

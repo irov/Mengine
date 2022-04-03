@@ -1,9 +1,8 @@
 #include "RenderCamera.h"
 
-#include "Interface/NotificationServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionObservable.h"
+#include "Kernel/NotificationHelper.h"
 
 namespace Mengine
 {

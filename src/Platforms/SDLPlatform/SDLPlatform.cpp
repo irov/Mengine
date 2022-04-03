@@ -52,6 +52,7 @@ extern "C" {
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/RandomDevice.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

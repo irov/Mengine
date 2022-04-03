@@ -29,7 +29,7 @@ namespace Mengine
     public:
         bool foreachObservers( uint32_t _id, const LambdaObserver & _lambda ) override;
 
-    protected:                
+    protected:
         NotificationArea m_areas[MENGINE_NOTIFICATOR_MAX_COUNT];
     };
 }

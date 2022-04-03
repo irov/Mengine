@@ -10,7 +10,6 @@
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/CodecInterface.h"
@@ -24,7 +23,6 @@
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -72,6 +70,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"

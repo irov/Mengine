@@ -2,8 +2,6 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/NotificatorInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -15,6 +13,7 @@
 #include "Kernel/UID.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/GitSHA1.h"
 #include "Config/BuildVersion.h"

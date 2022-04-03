@@ -1,9 +1,8 @@
 #include "ResourceUselessCompileChecker.h"
 
-#include "Interface/NotificationServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionObservable.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
 

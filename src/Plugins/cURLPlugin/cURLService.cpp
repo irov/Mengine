@@ -3,7 +3,6 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "cURLGetMessageThreadTask.h"
 #include "cURLPostMessageThreadTask.h"
@@ -23,6 +22,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"

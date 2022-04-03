@@ -2,7 +2,6 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "ConstsScriptEmbedding.h"
 #include "EngineScriptEmbedding.h"
@@ -16,6 +15,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

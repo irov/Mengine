@@ -1,6 +1,5 @@
 #include "ResourceValidateService.h"
 
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -10,6 +9,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceValidateService, Mengine::ResourceValidateService );

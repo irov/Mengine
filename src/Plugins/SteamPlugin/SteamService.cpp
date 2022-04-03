@@ -9,11 +9,11 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PackageServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdIO.h"
 

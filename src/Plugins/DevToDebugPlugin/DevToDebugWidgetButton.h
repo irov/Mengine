@@ -25,6 +25,6 @@ namespace Mengine
         String m_title;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetButton, DevToDebugWidgetInterface> DevToDebugWidgetButtonPtr;
+    typedef IntrusivePtr<DevToDebugWidgetButton> DevToDebugWidgetButtonPtr;
     //////////////////////////////////////////////////////////////////////////
 }

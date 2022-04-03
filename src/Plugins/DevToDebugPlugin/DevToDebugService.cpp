@@ -1,5 +1,7 @@
 #include "DevToDebugService.h"
 
+#include "DevToDebugWidget.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
@@ -36,8 +38,7 @@ namespace Mengine
     const ServiceRequiredList & DevToDebugService::requiredServices() const
     {
         static ServiceRequiredList required = {
-            cURLServiceInterface::getStaticServiceID(),
-            JSONServiceInterface::getStaticServiceID()
+            cURLServiceInterface::getStaticServiceID()
         };
 
         return required;
@@ -122,11 +123,13 @@ namespace Mengine
 
             jpp::array jtab = jpp::make_array();
 
-            tab->foreachWidgets( [&jtab]( const DevToDebugWidgetInterfacePtr & _widgets )
+            tab->foreachWidgets( [&jtab]( const DevToDebugWidgetInterfacePtr & _widget )
             {
+                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
+
                 jpp::object jwidget = jpp::make_object();
 
-                _widgets->fillJson( jwidget );
+                widget->fillJson( jwidget );
 
                 jtab.push_back( jwidget );
             } );

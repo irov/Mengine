@@ -1,15 +1,13 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/Interface.h"
-
-#include "jpp/jpp.hpp"
+#include "Interface/ServantInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void setId( const ConstString & _id ) = 0;
@@ -17,9 +15,6 @@ namespace Mengine
 
         virtual void setHide( bool _hide ) = 0;
         virtual bool getHide() const = 0;
-
-    public:
-        virtual void fillJson( jpp::object & _jwidget ) = 0;
     };
     typedef IntrusivePtr<DevToDebugWidgetInterface> DevToDebugWidgetInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
@@ -33,7 +28,7 @@ namespace Mengine
         virtual void setGetterTitle( const LambdaGetterText & _getter ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetTextInterface, DevToDebugWidgetInterface> DevToDebugWidgetTextInterfacePtr;
+    typedef IntrusivePtr<DevToDebugWidgetTextInterface> DevToDebugWidgetTextInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetButtonInterface
         : virtual public DevToDebugWidgetInterface
@@ -42,10 +37,10 @@ namespace Mengine
         virtual void setTitle( const String & _title ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetButtonInterface, DevToDebugWidgetInterface> DevToDebugWidgetButtonInterfacePtr;
+    typedef IntrusivePtr<DevToDebugWidgetButtonInterface> DevToDebugWidgetButtonInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugTabInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void addWidget( const DevToDebugWidgetInterfacePtr & _widget ) = 0;

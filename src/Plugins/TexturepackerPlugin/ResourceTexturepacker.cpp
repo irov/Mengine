@@ -220,11 +220,9 @@ namespace Mengine
 
         UnknownResourceJSONInterface * unknownResourceJSON = m_resourceJSON->getUnknown();
 
-        const JSONStorageInterfacePtr & storage = unknownResourceJSON->getJSONStorage();
+        const jpp::object & j = unknownResourceJSON->getJSON();
 
-        const jpp::object & root = storage->getJSON();
-
-        MENGINE_ASSERTION_FATAL( root != jpp::detail::invalid, "invalid json '%s'"
+        MENGINE_ASSERTION_FATAL( j != jpp::detail::invalid, "invalid json '%s'"
             , m_resourceJSON->getName().c_str()
         );
 
@@ -233,9 +231,9 @@ namespace Mengine
 
         if( m_resourceImage == nullptr )
         {
-            jpp::object root_meta = root["meta"];
+            jpp::object j_meta = j["meta"];
 
-            const Char * root_meta_image = root_meta["image"];
+            const Char * j_meta_image = j_meta["image"];
 
             ResourceImagePtr resourceImage = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -248,7 +246,7 @@ namespace Mengine
             ContentInterfacePtr resource_content = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
-            FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
+            FilePath newFilePath = Helper::replaceFileSpec( filePath, j_meta_image );
 
             resource_content->setFileGroup( fileGroup );
             resource_content->setFilePath( newFilePath );
@@ -260,12 +258,12 @@ namespace Mengine
 
             resourceImage->setContent( resource_content );
 
-            jpp::object root_meta_size = root_meta["size"];
+            jpp::object j_meta_size = j_meta["size"];
             mt::vec2f atlasSize;
-            if( root_meta_size.invalid() == false )
+            if( j_meta_size.invalid() == false )
             {
-                atlasSize.x = root_meta_size["w"];
-                atlasSize.y = root_meta_size["h"];
+                atlasSize.x = j_meta_size["w"];
+                atlasSize.y = j_meta_size["h"];
             }
             else
             {
@@ -330,9 +328,9 @@ namespace Mengine
         bool atlasIsPremultiply = m_resourceImage->isPremultiply();
         bool atlasIsPow2 = m_resourceImage->isPow2();
 
-        jpp::object root_frames = root["frames"];
+        jpp::object j_frames = j["frames"];
 
-        for( auto && [name, value] : root_frames )
+        for( auto && [name, value] : j_frames )
         {
             jpp::object frame = value["frame"];
 

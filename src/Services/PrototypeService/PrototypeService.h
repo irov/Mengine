@@ -30,6 +30,7 @@ namespace Mengine
 
     public:
         FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc ) override;
+        FactorableDynamicPointer generateDynamicPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc ) override;
 
     public:
         void foreachGenerators( const LambdaPrototypeGenerator & _lambda ) const override;

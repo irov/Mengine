@@ -10,7 +10,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<JSONStorageInterfacePtr> VectorJSONStorages;
+    typedef Vector<jpp::object> VectorJSON;
     //////////////////////////////////////////////////////////////////////////
     class JSONConfig
         : public ConfigInterface
@@ -59,9 +59,9 @@ namespace Mengine
         void getValues( const Char * _section, const Char * _key, VectorString * const _values ) const override;
 
     protected:
-        Tags m_platformTags;
-                
-        VectorJSONStorages m_storages;
+        Tags m_platformTags;                
+        
+        VectorJSON m_jsons;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<JSONConfig, ConfigInterface> JSONConfigPtr;

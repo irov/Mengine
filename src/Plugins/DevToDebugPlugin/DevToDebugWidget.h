@@ -4,6 +4,8 @@
 
 #include "Kernel/ConstString.h"
 
+#include "Kernel/JSON.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -21,8 +23,8 @@ namespace Mengine
         void setHide( bool _hide ) override;
         bool getHide() const override;
 
-    protected:
-        void fillJson( jpp::object & _jwidget ) override;
+    public:
+        void fillJson( jpp::object & _jwidget );
 
     protected:
         virtual void _fillDataJson( jpp::object & _jdata ) = 0;
@@ -32,6 +34,6 @@ namespace Mengine
         bool m_hide;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidget, DevToDebugWidgetInterface> DevToDebugWidgetPtr;
+    typedef IntrusivePtr<DevToDebugWidget> DevToDebugWidgetPtr;
     //////////////////////////////////////////////////////////////////////////
 }

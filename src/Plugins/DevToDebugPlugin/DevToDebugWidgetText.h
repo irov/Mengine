@@ -30,6 +30,6 @@ namespace Mengine
         LambdaGetterText m_getter;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetText, DevToDebugWidgetInterface> DevToDebugWidgetTextPtr;
+    typedef IntrusivePtr<DevToDebugWidgetText> DevToDebugWidgetTextPtr;
     //////////////////////////////////////////////////////////////////////////
 }

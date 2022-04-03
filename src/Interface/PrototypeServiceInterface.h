@@ -23,6 +23,7 @@ namespace Mengine
 
     public:
         virtual FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc ) = 0;
+        virtual FactorableDynamicPointer generateDynamicPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc ) = 0;
 
     public:
         typedef Lambda<void( const PrototypeGeneratorInterfacePtr & _factory )> LambdaPrototypeGenerator;

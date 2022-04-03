@@ -1,45 +1,33 @@
-MENGINE_PROJECT(JSONPlugin)
+MENGINE_PROJECT(JsonPlugin)
 
 ADD_FILTER(
 src
-    JSONInterface.h
+    JsonInterface.h
     
-    JSONPlugin.h
-    JSONPlugin.cpp
-    JSONPlugin.def
+    JsonPlugin.h
+    JsonPlugin.cpp
+    JsonPlugin.def
+    
+    ResourceJson.cpp
+    ResourceJson.h
 
-    JSONStorage.cpp
-    JSONStorage.h
+    LoaderResourceJson.cpp
+    LoaderResourceJson.h
     
-    JSONService.cpp
-    JSONService.h
+    JsonSetting.cpp
+    JsonSetting.h
+    JsonSettingPrototypeGenerator.cpp
+    JsonSettingPrototypeGenerator.h
     
-    ResourceJSON.cpp
-    ResourceJSON.h
-
-    LoaderResourceJSON.cpp
-    LoaderResourceJSON.h
-    
-    JSONSetting.cpp
-    JSONSetting.h
-    JSONSettingPrototypeGenerator.cpp
-    JSONSettingPrototypeGenerator.h
-    
-    JSONConfig.cpp
-    JSONConfig.h
-    
-    JSONCast.cpp
-    JSONCast.h
-    
-    JSONCheck.cpp
-    JSONCheck.h
+    JsonConfig.cpp
+    JsonConfig.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
-        JSONScriptEmbedding.cpp
-        JSONScriptEmbedding.h
+        JsonScriptEmbedding.cpp
+        JsonScriptEmbedding.h
         )
         
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
@@ -62,5 +50,3 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} Metacode)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}jpp${MENGINE_LIB_SUFFIX})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}jansson${MENGINE_LIB_SUFFIX})

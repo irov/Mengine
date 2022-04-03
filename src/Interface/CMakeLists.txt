@@ -55,7 +55,7 @@ Common
     EasingInterface.h
     EasingServiceInterface.h
     BootstrapperInterface.h
-    SecureServiceInterface.h    
+    SecureServiceInterface.h
     DateTimeProviderInterface.h
     
     ConverterInterface.h
@@ -132,6 +132,7 @@ Common
     AnalyticsSystemInterface.h
     SecureValueInterface.h
     UIKitProxyApplicationDelegateInterface.h
+    ExecutorInterface.h
 )
 
 ADD_FILTER(

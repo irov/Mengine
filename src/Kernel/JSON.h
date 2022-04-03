@@ -12,6 +12,12 @@
 
 namespace jpp
 {
+    //////////////////////////////////////////////////////////////////////////    
+    template<>
+    struct extract_object_extern<Mengine::ConstString>
+    {
+        jpp::object operator()( const Mengine::ConstString & _value ) const;
+    };
     //////////////////////////////////////////////////////////////////////////
     template<>
     struct cast_object_extern<Mengine::ConstString>
@@ -53,6 +59,48 @@ namespace jpp
     struct cast_object_extern<Mengine::String>
     {
         void operator()( const jpp::object & _obj, Mengine::String * const _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////    
+    template<>
+    struct check_object_extern<Mengine::ConstString>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::ConstString * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::FilePath>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::FilePath * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::Tags>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::Tags * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::Resolution>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::Resolution * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::Color>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::Color * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::AspectRatioViewport>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::AspectRatioViewport * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::String>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::String * const ) const;
     };
     //////////////////////////////////////////////////////////////////////////
 }

@@ -4,8 +4,6 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
-#include "Plugins/JSONPlugin/JSONInterface.h"
-
 #include "GameAnalytics.h"
 
 #include "Kernel/Logger.h"
@@ -20,6 +18,7 @@
 #include "Kernel/StaticString.h"
 #include "Kernel/UID.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/JSONHelper.h"
 
 #include "Config/StdString.h"
 
@@ -259,8 +258,7 @@ namespace Mengine
 
         j_root.set( "Config", j_root );
 
-        if( JSON_SERVICE()
-            ->saveJSON( file, j_root ) == false )
+        if( Helper::saveJSON( file, j_root ) == false )
         {
             return false;
         }

@@ -38,9 +38,9 @@ namespace Mengine
         FileGroupInterfacePtr m_fileGroup;
         FilePath m_filePath;
 
-        JSONStorageInterfacePtr m_storage;
+        jpp::object m_json;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<JSONSetting> JSONSettingPtr;
+    typedef IntrusivePtr<JSONSetting, SettingInterface> JSONSettingPtr;
     //////////////////////////////////////////////////////////////////////////
 }

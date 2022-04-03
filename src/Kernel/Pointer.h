@@ -361,6 +361,100 @@ namespace Mengine
         IntrusivePtr<T> m_pointer;
     };
     //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    class DynamicPointerT<IntrusivePtr<T>>
+    {
+    public:
+        DynamicPointerT( std::nullptr_t )
+        {
+        }
+
+        DynamicPointerT( T * _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
+        DynamicPointerT( const DynamicPointerT & _pointer )
+            : m_pointer( _pointer.m_pointer )
+        {
+        }
+
+        DynamicPointerT( DynamicPointerT && _pointer )
+            : m_pointer( std::forward<PointerT &&>( _pointer.m_pointer ) )
+        {
+        }
+
+        DynamicPointerT( const IntrusivePtr<T> & _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
+        template<class U>
+        DynamicPointerT( const IntrusivePtr<U> & _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
+        template<class U>
+        DynamicPointerT( IntrusivePtr<U> && _pointer )
+            : m_pointer( std::forward<IntrusivePtr<U> &&>( _pointer ) )
+        {
+        }
+
+        template<class U, class D>
+        DynamicPointerT( const IntrusivePtr<U, D> & _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
+        template<class U, class D>
+        DynamicPointerT( IntrusivePtr<U, D> && _pointer )
+            : m_pointer( std::forward<IntrusivePtr<U, D> &&>( _pointer ) )
+        {
+        }
+
+    public:
+        operator IntrusivePtr<T>() &&
+        {
+            return std::move( m_pointer );
+        }
+
+        template<class U>
+        operator IntrusivePtr<U>() &&
+        {
+            return IntrusivePtr<U>::dynamic_from( std::move( m_pointer ) );
+        }
+
+        template<class D>
+        operator IntrusivePtr<T, D>() &&
+        {
+            return IntrusivePtr<T, D>( std::move( m_pointer ) );
+        }
+
+        template<class U, class D>
+        operator IntrusivePtr<U, D>() &&
+        {
+#ifdef MENGINE_DEBUG
+            T * p = m_pointer.get();
+
+            if( p == nullptr )
+            {
+                return IntrusivePtr<U, D>();
+            }
+
+            if( stdex::mpl::is_dynamic_cast<U *>::test( p ) == false )
+            {
+                throw;
+            }
+#endif
+
+            return std::move( m_pointer.template moveT<U, D>() );
+        }
+
+    protected:
+        IntrusivePtr<T> m_pointer;
+    };
+    //////////////////////////////////////////////////////////////////////////
     typedef ConstPointerT<void> ConstPointer;
     typedef PointerT<void> Pointer;
     typedef DynamicConstPointerT<void> DynamicConstPointer;

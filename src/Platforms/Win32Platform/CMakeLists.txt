@@ -16,6 +16,14 @@ src
     Win32CPUInfo.cpp
 )
 
+if(MENGINE_PLUGIN_DEVTODEBUG)
+    ADD_FILTER(
+    DevToDebug
+        Win32PlatformDevToDebug.h
+        Win32PlatformDevToDebug.cpp
+    )
+endif()
+
 ADD_MENGINE_LIBRARY(Platforms)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

@@ -31,8 +31,6 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( JSONService );
-//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( JSON, Mengine::JSONPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -72,8 +70,6 @@ namespace Mengine
         LOGGER_MESSAGE( "jannson seed: %u", JSON_Seed );
 
         jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
-
-        SERVICE_CREATE( JSONService, MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
@@ -151,14 +147,10 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Setting" ), STRINGIZE_STRING_LOCAL( "json" ), nullptr );
-
-        SERVICE_FINALIZE( JSONService );
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( JSONService );
-
         MENGINE_ASSERTION_ALLOCATOR( "json" );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -4,8 +4,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Plugins/JSONPlugin/JSONInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -17,6 +15,7 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/PathString.h"
 #include "Kernel/UID.h"
+#include "Kernel/JSONHelper.h"
 
 #include "Config/StdString.h"
 
@@ -325,8 +324,7 @@ namespace Mengine
         j_root.set( "ACCOUNT", j_account );
         j_root.set( "SETTINGS", j_settings );
 
-        if( JSON_SERVICE()
-            ->saveJSON( file, j_root ) == false )
+        if( Helper::saveJSON( file, j_root ) == false )
         {
             return false;
         }

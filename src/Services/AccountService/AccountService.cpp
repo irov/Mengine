@@ -6,8 +6,6 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 
-#include "Plugins/JSONPlugin/JSONInterface.h"
-
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
@@ -25,6 +23,7 @@
 #include "Kernel/UID.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/JSONHelper.h"
 
 #include "Config/StdString.h"
 
@@ -739,8 +738,7 @@ namespace Mengine
         j_root.set( "SETTINGS", j_settings );
         j_root.set( "ACCOUNTS", j_accounts );
 
-        if( JSON_SERVICE()
-            ->saveJSON( file, j_root ) == false )
+        if( Helper::saveJSON( file, j_root ) == false )
         {
             return false;
         }

@@ -7,10 +7,10 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionJSONInvalid.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
-
-#include "jpp/jpp.hpp"
+#include "Kernel/JSONHelper.h"
 
 namespace Mengine
 {
@@ -23,9 +23,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const JSONStorageInterfacePtr & ResourceJSON::getJSONStorage() const
+    const jpp::object & ResourceJSON::getJSON() const
     {
-        return m_storage;
+        return m_json;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceJSON::_compile()
@@ -39,26 +39,20 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
-        JSONStorageInterfacePtr storage = JSON_SERVICE()
-            ->loadJSONStream( stream, MENGINE_DOCUMENT_FACTORABLE );
-        
-        if( storage == nullptr )
-        {
-            LOGGER_ERROR( "invalid load json '%s'"
-                , this->getContent()->getFilePath().c_str()
-            );
+        jpp::object json = Helper::loadJSONStream( stream, MENGINE_DOCUMENT_FACTORABLE );
 
-            return false;
-        }
+        MENGINE_ASSERTION_JSON_INVALID( json, "invalid load json '%s'"
+            , this->getContent()->getFilePath().c_str()
+        );
 
-        m_storage = storage;
+        m_json = json;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceJSON::_release()
     {
-        m_storage = nullptr;
+        m_json = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
 }

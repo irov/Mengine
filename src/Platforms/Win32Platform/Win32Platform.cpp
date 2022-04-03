@@ -4351,7 +4351,7 @@ namespace Mengine
                 , CREATE_NEW_PROCESS_GROUP | NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
                 , NULL
                 , &startupInfo
-                , &processInfo) == FALSE )
+                , &processInfo ) == FALSE )
             {
                 LOGGER_ERROR( "invalid CreateProcess '%s' %s"
                     , _process

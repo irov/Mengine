@@ -3,6 +3,8 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionJSONInvalid.h"
+#include "Kernel/JSONHelper.h"
 
 namespace Mengine
 {
@@ -20,22 +22,20 @@ namespace Mengine
         m_fileGroup = _fileGroup;
         m_filePath = _filePath;
 
-        JSONStorageInterfacePtr storage = JSON_SERVICE()
-            ->loadJSON( _fileGroup, _filePath, _doc );
+        jpp::object json = Helper::loadJSON( _fileGroup, _filePath, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( storage );
+        MENGINE_ASSERTION_JSON_INVALID( json );
 
-        m_storage = storage;
+        m_json = json;
 
         FILE_SERVICE()
             ->setFileModifyHook( m_fileGroup, m_filePath, [this, _doc]()
         {
-            JSONStorageInterfacePtr storage = JSON_SERVICE()
-                ->loadJSON( m_fileGroup, m_filePath, _doc );
+            jpp::object new_json = Helper::loadJSON( m_fileGroup, m_filePath, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( storage );
+            MENGINE_ASSERTION_JSON_INVALID( new_json );
 
-            m_storage = storage;
+            m_json = new_json;
         } );
 
         return true;
@@ -47,7 +47,7 @@ namespace Mengine
             ->removeFileModifyHook( m_fileGroup, m_filePath );
 
         m_fileGroup = nullptr;
-        m_storage = nullptr;
+        m_json = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & JSONSetting::getFileGroup() const
@@ -185,86 +185,74 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONSetting::getValue( const Char * _key, bool _default ) const
     {
-        const jpp::object & j = m_storage->getJSON();
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_FALSE ) == true
+            || Detail::test_value( m_json, _key, jpp::e_type::JPP_TRUE ) == true
+            || Detail::test_value( m_json, _key, jpp::e_type::JPP_INTEGER ) == true );
 
-        MENGINE_ASSERTION_FATAL( Detail::test_value( j, _key, jpp::e_type::JPP_FALSE ) == true
-            || Detail::test_value( j, _key, jpp::e_type::JPP_TRUE ) == true
-            || Detail::test_value( j, _key, jpp::e_type::JPP_INTEGER ) == true );
-
-        bool value = Detail::get_value( j, _key, _default );
+        bool value = Detail::get_value( m_json, _key, _default );
 
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t JSONSetting::getValue( const Char * _key, int32_t _default ) const
     {
-        const jpp::object & j = m_storage->getJSON();
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_INTEGER ) == true );
 
-        MENGINE_ASSERTION_FATAL( Detail::test_value( j, _key, jpp::e_type::JPP_INTEGER ) == true );
-        
-        int32_t value = Detail::get_value( j, _key, _default );
+        int32_t value = Detail::get_value( m_json, _key, _default );
 
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t JSONSetting::getValue( const Char * _key, uint32_t _default ) const
     {
-        const jpp::object & j = m_storage->getJSON();
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( j, _key, jpp::e_type::JPP_INTEGER ) == true, "key ['%s'] is not integer"
-            , _key 
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_INTEGER ) == true, "key ['%s'] is not integer"
+            , _key
         );
 
-        uint32_t value = Detail::get_value( j, _key, _default );
+        uint32_t value = Detail::get_value( m_json, _key, _default );
 
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
     float JSONSetting::getValue( const Char * _key, float _default ) const
     {
-        const jpp::object & j = m_storage->getJSON();
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( j, _key, jpp::e_type::JPP_REAL ) == true, "key ['%s'] is not real"
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_REAL ) == true, "key ['%s'] is not real"
             , _key
         );
 
-        float value = Detail::get_value( j, _key, _default );
+        float value = Detail::get_value( m_json, _key, _default );
 
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * JSONSetting::getValue( const Char * _key, const Char * _default ) const
     {
-        const jpp::object & j = m_storage->getJSON();
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( j, _key, jpp::e_type::JPP_STRING ) == true, "key ['%s'] is not string"
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_STRING ) == true, "key ['%s'] is not string"
             , _key
         );
 
-        const Char * value = Detail::get_value( j, _key, _default );
+        const Char * value = Detail::get_value( m_json, _key, _default );
 
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
     mt::vec2f JSONSetting::getValue( const Char * _key, const mt::vec2f & _default ) const
     {
-        const jpp::object & j = m_storage->getJSON();
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( j, _key, jpp::e_type::JPP_OBJECT ) == true, "key ['%s'] is not object"
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_OBJECT ) == true, "key ['%s'] is not object"
             , _key
         );
 
         jpp::object k;
-        if( j.exist( _key, &k ) == false )
+        if( m_json.exist( _key, &k ) == false )
         {
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( j, _key ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "x" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "y" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "x", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "y", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "x" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "y" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "x", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "y", jpp::e_type::JPP_REAL ) == true );
 
         jpp::object jv2 = k["value"];
 
@@ -275,25 +263,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     mt::vec3f JSONSetting::getValue( const Char * _key, const mt::vec3f & _default ) const
     {
-        const jpp::object & j = m_storage->getJSON();
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( j, _key, jpp::e_type::JPP_OBJECT ) == true, "key ['%s'] is not object"
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_OBJECT ) == true, "key ['%s'] is not object"
             , _key
         );
 
         jpp::object k;
-        if( j.exist( _key, &k ) == false )
+        if( m_json.exist( _key, &k ) == false )
         {
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( j, _key ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "x" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "y" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "z" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "x", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "y", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "z", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "x" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "y" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "z" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "x", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "y", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "z", jpp::e_type::JPP_REAL ) == true );
 
         jpp::object jv3 = k["value"];
 
@@ -304,26 +290,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Color JSONSetting::getValue( const Char * _key, const Color & _default ) const
     {
-        const jpp::object & j = m_storage->getJSON();
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( j, _key, jpp::e_type::JPP_OBJECT ) == true, "key ['%s'] is not real"
-            , _key 
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_OBJECT ) == true, "key ['%s'] is not real"
+            , _key
         );
 
         jpp::object k;
-        if( j.exist( _key, &k ) == false )
+        if( m_json.exist( _key, &k ) == false )
         {
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( j, _key ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "r" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "g" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "b" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "r", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "g", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "b", jpp::e_type::JPP_REAL ) == true );
-        
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "r" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "g" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "b" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "r", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "g", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "b", jpp::e_type::JPP_REAL ) == true );
+
         jpp::object jc = k["value"];
 
         Color value( jc["r"], jc["g"], jc["b"], jc.get( "a", 1.f ) );

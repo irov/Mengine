@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DevToDebugInterface.h"
+#include "DevToDebugWidget.h"
 
 #include "Kernel/String.h"
 
@@ -8,7 +8,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetButton
-        : public DevToDebugWidgetButtonInterface
+        : public DevToDebugWidget
+        , public DevToDebugWidgetButtonInterface
     {
     public:
         DevToDebugWidgetButton();
@@ -16,7 +17,9 @@ namespace Mengine
 
     public:
         void setTitle( const String & _title ) override;
-        const String & getTitle() const override;
+
+    protected:
+        void _fillDataJson( jpp::object & _jdata ) override;
 
     protected:
         String m_title;

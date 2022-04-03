@@ -1,22 +1,22 @@
-#include "DevToDebugProvider.h"
+#include "DevToDebugTab.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DevToDebugProvider::DevToDebugProvider()
+    DevToDebugTab::DevToDebugTab()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DevToDebugProvider::~DevToDebugProvider()
+    DevToDebugTab::~DevToDebugTab()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugProvider::addWidget( const DevToDebugWidgetInterfacePtr & _widget )
+    void DevToDebugTab::addWidget( const DevToDebugWidgetInterfacePtr & _widget )
     {
         m_widgets.emplace_back( _widget );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugProvider::foreachWidgets( const LambdaForeachWidgets & _lambda )
+    void DevToDebugTab::foreachWidgets( const LambdaForeachWidgets & _lambda )
     {
         for( const DevToDebugWidgetInterfacePtr & widget : m_widgets )
         {

@@ -7,12 +7,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DevToDebugProvider
-        : public DevToDebugProviderInterface
+    class DevToDebugTab
+        : public DevToDebugTabInterface
     {
     public:
-        DevToDebugProvider();
-        ~DevToDebugProvider() override;
+        DevToDebugTab();
+        ~DevToDebugTab() override;
 
     public:
         void addWidget( const DevToDebugWidgetInterfacePtr & _widget ) override;
@@ -23,6 +23,6 @@ namespace Mengine
         VectorDevToDebugWidgets m_widgets;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugProvider, DevToDebugProviderInterface> DevToDebugProviderPtr;
+    typedef IntrusivePtr<DevToDebugTab, DevToDebugTabInterface> DevToDebugTabPtr;
     //////////////////////////////////////////////////////////////////////////
 }

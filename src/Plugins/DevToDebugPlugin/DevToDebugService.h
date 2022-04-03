@@ -3,6 +3,7 @@
 #include "DevToDebugInterface.h"
 
 #include "Plugins/cURLPlugin/cURLInterface.h"
+#include "Plugins/JSONPlugin/JSONInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
@@ -31,8 +32,8 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        void addProvider( const ConstString & _type, const DevToDebugProviderInterfacePtr & _provider ) override;
-        void removeProvider( const ConstString & _type ) override;
+        void addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab ) override;
+        void removeTab( const ConstString & _name ) override;
 
     protected:
         void process();
@@ -45,8 +46,8 @@ namespace Mengine
 
 
     protected:
-        typedef Hashtable<ConstString, DevToDebugProviderInterfacePtr> HashtableDevToDebugProviders;
-        HashtableDevToDebugProviders m_providers;
+        typedef Hashtable<ConstString, DevToDebugTabInterfacePtr> HashtableDevToDebugTabs;
+        HashtableDevToDebugTabs m_tabs;
 
         uint32_t m_status;
 

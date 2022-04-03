@@ -3,6 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/Interface.h"
 
+#include "jpp/jpp.hpp"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -12,34 +14,37 @@ namespace Mengine
     public:
         virtual void setId( const ConstString & _id ) = 0;
         virtual const ConstString & getId() const = 0;
+
+        virtual void setHide( bool _hide ) = 0;
+        virtual bool getHide() const = 0;
+
+    public:
+        virtual void fillJson( jpp::object & _jwidget ) = 0;
     };
     typedef IntrusivePtr<DevToDebugWidgetInterface> DevToDebugWidgetInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetTextInterface
-        : public DevToDebugWidgetInterface
+        : virtual public DevToDebugWidgetInterface
     {
     public:
         virtual void setConstText( const String & _text ) = 0;
 
         typedef Lambda<void( String & )> LambdaGetterText;
         virtual void setGetterTitle( const LambdaGetterText & _getter ) = 0;
-
-        virtual const String & calculateText() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetTextInterface, DevToDebugWidgetInterface> DevToDebugWidgetTextInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetButtonInterface
-        : public DevToDebugWidgetInterface
+        : virtual public DevToDebugWidgetInterface
     {
     public:
         virtual void setTitle( const String & _title ) = 0;
-        virtual const String & getTitle() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetButtonInterface, DevToDebugWidgetInterface> DevToDebugWidgetButtonInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class DevToDebugProviderInterface
+    class DevToDebugTabInterface
         : public Interface
     {
     public:
@@ -49,7 +54,7 @@ namespace Mengine
         virtual void foreachWidgets( const LambdaForeachWidgets & _lambda ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugProviderInterface> DevToDebugProviderInterfacePtr;
+    typedef IntrusivePtr<DevToDebugTabInterface> DevToDebugTabInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugServiceInterface
         : public ServiceInterface
@@ -57,8 +62,8 @@ namespace Mengine
         SERVICE_DECLARE( "DevToDebugService" )
 
     public:
-        virtual void addProvider( const ConstString & _type, const DevToDebugProviderInterfacePtr & _provider ) = 0;
-        virtual void removeProvider( const ConstString & _type ) = 0;
+        virtual void addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab ) = 0;
+        virtual void removeTab( const ConstString & _name ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

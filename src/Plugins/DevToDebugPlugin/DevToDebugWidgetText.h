@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DevToDebugInterface.h"
+#include "DevToDebugWidget.h"
 
 #include "Kernel/String.h"
 
@@ -8,7 +8,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetText
-        : public DevToDebugWidgetTextInterface
+        : public DevToDebugWidget
+        , public DevToDebugWidgetTextInterface
     {
     public:
         DevToDebugWidgetText();
@@ -18,7 +19,11 @@ namespace Mengine
         void setConstText( const String & _text ) override;
         virtual void setGetterTitle( const LambdaGetterText & _getter ) override;
 
-        const String & calculateText() const override;
+    protected:
+        const String & calculateText() const;
+
+    protected:
+        void _fillDataJson( jpp::object & _jdata ) override;
 
     protected:
         mutable String m_text;

@@ -44,7 +44,7 @@ namespace Mengine
     {
         m_marSDKNative = [[IOSMarSDKNative alloc] init];
         
-        [m_marSDKNative didFinishLaunchingWithOptions:[UIApplication sharedApplication] didFinishLaunchingWithOptions:NULL];
+        //[UIApplication sharedApplication]
 
         return true;
     }

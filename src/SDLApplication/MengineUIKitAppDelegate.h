@@ -1,5 +1,7 @@
-#import "Interface/UIKitProxyApplicationDelegateInterface.h"
+#import "../src/video/uikit/SDL_uikitappdelegate.h"
 
-@interface MengineUIKitDelegate : UIKitProxyApplicationDelegateInterface
+@interface MengineUIKitDelegate : SDLUIKitDelegate
+
+@property (nonatomic,retain) NSMutableArray <NSObject *> *listApplicationDelegateInterfaces;
 
 @end

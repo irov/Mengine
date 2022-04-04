@@ -380,7 +380,7 @@ namespace Mengine
         }
 
         DynamicPointerT( DynamicPointerT && _pointer )
-            : m_pointer( std::forward<PointerT &&>( _pointer.m_pointer ) )
+            : m_pointer( std::forward<DynamicPointerT &&>( _pointer.m_pointer ) )
         {
         }
 

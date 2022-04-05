@@ -23,9 +23,16 @@ namespace Mengine
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE );
 
         DevToDebugWidgetTextInterfacePtr widgetText = PROTOTYPE_SERVICE()
-            ->generateDynamicPrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
+            ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
 
         widgetText->setConstText( "Hello World!" );
+
+        tab->addWidget( widgetText );
+
+        DevToDebugWidgetButtonInterfacePtr widgetButton = PROTOTYPE_SERVICE()
+            ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
+
+        widgetButton->setTitle( "Quit" );
 
         tab->addWidget( widgetText );
 

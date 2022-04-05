@@ -5,6 +5,7 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/JSON.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {
@@ -13,7 +14,10 @@ namespace Mengine
         jpp::object loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc );
         jpp::object loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc );
         jpp::object loadJSONStreamFromMemory( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc );
-        jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc );
-        bool saveJSON( const OutputStreamInterfacePtr & _stream, const jpp::object & _j );
+        jpp::object loadJSONStreamFromString( const String & _value, const DocumentPtr & _doc );
+        jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc );        
+
+        bool writeJSONStream( const jpp::object & _j, const OutputStreamInterfacePtr & _stream );
+        bool writeJSONString( const jpp::object & _j, String * const _string );
     }
 }

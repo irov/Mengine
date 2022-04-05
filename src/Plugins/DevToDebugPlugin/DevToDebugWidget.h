@@ -27,6 +27,7 @@ namespace Mengine
         void fillJson( jpp::object & _jwidget );
 
     protected:
+        virtual void _fillTypeJson( jpp::object & _jdata ) = 0;
         virtual void _fillDataJson( jpp::object & _jdata ) = 0;
 
     protected:

@@ -35,6 +35,10 @@ namespace Mengine
     {
     public:
         virtual void setTitle( const String & _title ) = 0;
+
+    public:
+        typedef Lambda<void()> LambdaClickEvent;
+        virtual void setClickEvent( const LambdaClickEvent & _clickEvent ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetButtonInterface> DevToDebugWidgetButtonInterfacePtr;

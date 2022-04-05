@@ -258,7 +258,7 @@ namespace Mengine
 
         j_root.set( "Config", j_root );
 
-        if( Helper::saveJSON( file, j_root ) == false )
+        if( Helper::writeJSONStream( j_root, file ) == false )
         {
             return false;
         }

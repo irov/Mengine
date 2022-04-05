@@ -27,9 +27,9 @@ namespace Mengine
                 }
 
             protected:
-                void onResponse( const GOAP::SourceInterfacePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override
+                void onResponse( const GOAP::SourceInterfacePtr & _source, const cURLResponseData & _response ) override
                 {
-                    m_f( _source, _status, _error, _headers, _response, _code, _successful );
+                    m_f( _source, _response.status, _response.error, _response.headers, _response.data, _response.code, _response.successful );
                 }
 
             protected:

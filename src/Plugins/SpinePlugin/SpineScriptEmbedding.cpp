@@ -125,6 +125,7 @@ namespace Mengine
         _kernel->remove_scope<ResourceSpineSkeleton>();
 
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Spine" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "SamplerSpineAnimationInterface" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ) );

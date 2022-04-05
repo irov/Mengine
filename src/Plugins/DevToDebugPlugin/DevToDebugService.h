@@ -13,7 +13,6 @@ namespace Mengine
     enum EDevToDebugStatus
     {
         EDTDS_NONE,
-        EDTDS_READY,
         EDTDS_CONNECTING,
         EDTDS_CONNECT,
     };
@@ -44,13 +43,19 @@ namespace Mengine
     protected:
         void notifyBootstrapperRunComplete_();
 
+    protected:
+        jpp::object makeConnectData();
+        jpp::object makeProcessData();
 
     protected:
         typedef Hashtable<ConstString, DevToDebugTabInterfacePtr> HashtableDevToDebugTabs;
         HashtableDevToDebugTabs m_tabs;
 
-        uint32_t m_status;
+        EDevToDebugStatus m_status;
 
         String m_pid;
+        String m_uuid;
+
+        uint32_t m_revision;
     };
 }

@@ -34,11 +34,16 @@ namespace Mengine
         return m_text;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidgetText::_fillTypeJson( jpp::object & _jdata )
+    {
+        _jdata.set( "type", "text" );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetText::_fillDataJson( jpp::object & _jdata )
     {
         const String & text = this->calculateText();
 
-        _jdata.set( "content", text );        
+        _jdata.set( "content", text );
     }
     //////////////////////////////////////////////////////////////////////////
 }

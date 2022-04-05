@@ -37,6 +37,8 @@ namespace Mengine
         _jwidget.set( "id", m_id );
         _jwidget.set( "hide", m_hide );
 
+        this->_fillTypeJson( _jwidget );
+
         jpp::object jdata = jpp::make_object();
 
         this->_fillDataJson( jdata );

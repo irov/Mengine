@@ -20,6 +20,7 @@ namespace Mengine
 
     public:
         FactorablePointer createObject( const DocumentPtr & _doc ) override;
+        FactorableVirtualInheritancePointer createVirtualInheritanceObject( const DocumentPtr & _doc ) override;
         void destroyObject( Factorable * _object ) override;
 
     protected:

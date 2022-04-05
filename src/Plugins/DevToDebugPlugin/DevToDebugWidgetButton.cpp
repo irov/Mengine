@@ -16,6 +16,16 @@ namespace Mengine
         m_title = _title;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidgetButton::setClickEvent( const LambdaClickEvent & _clickEvent )
+    {
+        m_clickEvent = _clickEvent;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidgetButton::_fillTypeJson( jpp::object & _jdata )
+    {
+        _jdata.set( "type", "button" );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetButton::_fillDataJson( jpp::object & _jdata )
     {
         _jdata.set( "title", m_title );

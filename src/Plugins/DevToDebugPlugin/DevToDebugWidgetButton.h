@@ -11,6 +11,8 @@ namespace Mengine
         : public DevToDebugWidget
         , public DevToDebugWidgetButtonInterface
     {
+        DECLARE_FACTORABLE( DevToDebugWidgetButton );
+
     public:
         DevToDebugWidgetButton();
         ~DevToDebugWidgetButton() override;
@@ -18,11 +20,17 @@ namespace Mengine
     public:
         void setTitle( const String & _title ) override;
 
+    public:
+        void setClickEvent( const LambdaClickEvent & _clickEvent ) override;
+
     protected:
+        void _fillTypeJson( jpp::object & _jdata ) override;
         void _fillDataJson( jpp::object & _jdata ) override;
 
     protected:
         String m_title;
+
+        LambdaClickEvent m_clickEvent;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetButton> DevToDebugWidgetButtonPtr;

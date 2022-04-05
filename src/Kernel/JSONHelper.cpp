@@ -62,11 +62,20 @@ namespace Mengine
                 return _buflen;
             }
             //////////////////////////////////////////////////////////////////////////
-            static int my_jpp_dump_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+            static int my_jpp_dump_stream_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
             {
                 OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(_ud);
 
                 stream->write( _buffer, _size );
+
+                return 0;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static int my_jpp_dump_string_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+            {
+                String * string = static_cast<String *>(_ud);
+
+                string->append( _buffer, _size );
 
                 return 0;
             }
@@ -109,6 +118,16 @@ namespace Mengine
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
+        jpp::object loadJSONStreamFromString( const String & _value, const DocumentPtr & _doc )
+        {
+            const String::value_type * value_buffer = _value.c_str();
+            String::size_type value_size = _value.size();
+
+            jpp::object j = Helper::loadJSONStreamFromBuffer( value_buffer, value_size, _doc );
+
+            return j;
+        }
+        //////////////////////////////////////////////////////////////////////////
         jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc )
         {
             MENGINE_UNUSED( _doc );
@@ -132,9 +151,19 @@ namespace Mengine
             return json;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool saveJSON( const OutputStreamInterfacePtr & _stream, const jpp::object & _j )
+        bool writeJSONStream( const jpp::object & _j, const OutputStreamInterfacePtr & _stream )
         {
-            if( jpp::dump( _j, &Detail::my_jpp_dump_callback, _stream.get() ) == false )
+            if( jpp::dump( _j, &Detail::my_jpp_dump_stream_callback, _stream.get() ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool writeJSONString( const jpp::object & _j, String * const _string )
+        {
+            if( jpp::dump( _j, &Detail::my_jpp_dump_string_callback, _string ) == false )
             {
                 return false;
             }

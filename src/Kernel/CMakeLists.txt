@@ -220,6 +220,7 @@ PrototypeGenerator
     FactoryPrototypeGenerator.cpp
     FactoryPrototypeGenerator.h
     DefaultPrototypeGenerator.h
+    DefaultVirtualInheritancePrototypeGenerator.h
     NodePrototypeGenerator.h
     BaseScriptablePrototypeGenerator.cpp
     BaseScriptablePrototypeGenerator.h
@@ -828,6 +829,9 @@ Core
     Hexadecimal.h
     
     NotificationHelper.h
+    
+    ExecutorHelper.h
+    PrototypeHelper.h
 )
 
 ADD_FILTER(
@@ -888,6 +892,7 @@ Factory
     FactoryWithMutex.cpp
     FactoryDefault.h
     FactoryPool.h
+    FactoryPoolVirtualInheritance.h
     FactoryPoolWithListener.h
 )
 

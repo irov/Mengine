@@ -157,7 +157,7 @@ namespace Mengine
         return prototype;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorableDynamicPointer PrototypeService::generateDynamicPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+    FactorableVirtualInheritancePointer PrototypeService::generateVirtualInheritancePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
     {
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 

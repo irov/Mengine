@@ -272,7 +272,7 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
         IF(${Plugin}_DLL)
             SET(${Plugin}_STATIC OFF CACHE BOOL ${MSG} FORCE)
         ELSE()
-            SET(${Plugin}_STATIC ON CACHE BOOL ${MSG} FORCE)            
+            SET(${Plugin}_STATIC ON CACHE BOOL ${MSG} FORCE)
         ENDIF()
         
         add_definitions(-D${Plugin})

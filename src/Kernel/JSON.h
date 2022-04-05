@@ -12,11 +12,23 @@
 
 namespace jpp
 {
-    //////////////////////////////////////////////////////////////////////////    
+    //////////////////////////////////////////////////////////////////////////
     template<>
     struct extract_object_extern<Mengine::ConstString>
     {
         jpp::object operator()( const Mengine::ConstString & _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct extract_object_extern<Mengine::FilePath>
+    {
+        jpp::object operator()( const Mengine::FilePath & _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct extract_object_extern<Mengine::String>
+    {
+        jpp::object operator()( const Mengine::String & _value ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     template<>

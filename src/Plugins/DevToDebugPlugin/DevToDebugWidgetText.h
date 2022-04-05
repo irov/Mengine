@@ -11,6 +11,8 @@ namespace Mengine
         : public DevToDebugWidget
         , public DevToDebugWidgetTextInterface
     {
+        DECLARE_FACTORABLE( DevToDebugWidgetText );
+
     public:
         DevToDebugWidgetText();
         ~DevToDebugWidgetText() override;
@@ -23,6 +25,7 @@ namespace Mengine
         const String & calculateText() const;
 
     protected:
+        void _fillTypeJson( jpp::object & _jdata ) override;
         void _fillDataJson( jpp::object & _jdata ) override;
 
     protected:

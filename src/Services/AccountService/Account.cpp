@@ -324,7 +324,7 @@ namespace Mengine
         j_root.set( "ACCOUNT", j_account );
         j_root.set( "SETTINGS", j_settings );
 
-        if( Helper::saveJSON( file, j_root ) == false )
+        if( Helper::writeJSONStream( j_root, file ) == false )
         {
             return false;
         }

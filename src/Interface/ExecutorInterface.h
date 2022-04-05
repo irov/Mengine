@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ExecutorInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual bool execute() = 0;

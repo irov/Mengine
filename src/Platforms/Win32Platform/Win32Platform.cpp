@@ -17,6 +17,12 @@
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
 
+#ifdef MENGINE_PLUGIN_DEVTODEBUG
+#   include "Plugins/DevToDebugPlugin/DevToDebugInterface.h"
+
+#   include "Win32PlatformDevToDebug.h"
+#endif
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
@@ -42,6 +48,7 @@
 #include "Kernel/StringCopy.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ExecutorHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -314,6 +321,18 @@ namespace Mengine
         {
             this->finalizeFileService_();
         } );
+
+#ifdef MENGINE_PLUGIN_DEVTODEBUG
+        SERVICE_WAIT( DevToDebugServiceInterface, [this]()
+        {
+            if( Helper::execute<Win32PlatformDevToDebug>( MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+#endif
 
 #if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA
         if( HAS_OPTION( "workdir" ) == true )

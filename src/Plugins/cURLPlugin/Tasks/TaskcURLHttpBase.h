@@ -12,7 +12,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void onResponse( const GOAP::SourceInterfacePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) = 0;
+        virtual void onResponse( const GOAP::SourceInterfacePtr & _source, const cURLResponseData & _response ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLTaskReceiverInterface> cURLTaskReceiverInterfacePtr;

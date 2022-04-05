@@ -2,7 +2,6 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #include "NodeAreaOfInterestTrigger.h"
 #include "NodeAreaOfInterestActor.h"
@@ -13,6 +12,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AreaOfInterestService );

@@ -13,6 +13,20 @@ namespace jpp
 
         return jpp::make_string( value_str );
     };
+    //////////////////////////////////////////////////////////////////////////    
+    jpp::object extract_object_extern<Mengine::FilePath>::operator()( const Mengine::FilePath & _value ) const
+    {
+        const Mengine::Char * value_str = _value.c_str();
+
+        return jpp::make_string( value_str );
+    };
+    //////////////////////////////////////////////////////////////////////////    
+    jpp::object extract_object_extern<Mengine::String>::operator()( const Mengine::String & _value ) const
+    {
+        const Mengine::Char * value_str = _value.c_str();
+
+        return jpp::make_string( value_str );
+    };
     //////////////////////////////////////////////////////////////////////////
     void cast_object_extern<Mengine::ConstString>::operator()( const jpp::object & _obj, Mengine::ConstString * const _value ) const
     {

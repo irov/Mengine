@@ -5,7 +5,6 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DebuggerBoundingBoxInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "SpineScriptEmbedding.h"
@@ -29,6 +28,7 @@
 #include "Kernel/ObjectPrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "spine/extension.h"
 

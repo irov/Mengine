@@ -2,7 +2,6 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "PathfinderScriptEmbedding.h"
@@ -11,6 +10,7 @@
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( PathfinderService );

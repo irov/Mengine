@@ -10,6 +10,8 @@ namespace Mengine
     class DevToDebugTab
         : public DevToDebugTabInterface
     {
+        DECLARE_FACTORABLE( DevToDebugTab );
+
     public:
         DevToDebugTab();
         ~DevToDebugTab() override;

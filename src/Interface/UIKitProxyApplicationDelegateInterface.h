@@ -1,4 +1,3 @@
-#import "../src/video/uikit/SDL_uikitappdelegate.h"
 
 @protocol UIKitProxyApplicationDelegateInterface
 

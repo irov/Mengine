@@ -24,5 +24,9 @@ fi
 mkdir -p ../../solutions/solution_xcode_ios_simulator_sdl/$CONFIGURATION
 pushd ../../solutions/solution_xcode_ios_simulator_sdl/$CONFIGURATION
 $CMAKE -G"Xcode" "$PWD/../../../cmake/Xcode_IOS_Simulator_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_XCODE_DEPLOY_PATH="$DEPLOY_PATH"
+if [ $? -ne 0 ]; then
+    echo "please fix CMake"
+    exit 0
+fi
 pod install --repo-update
 popd

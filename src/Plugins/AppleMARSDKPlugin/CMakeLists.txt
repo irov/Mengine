@@ -11,15 +11,15 @@ src
     AppleMARSDKNative.m
 )
 
-ADD_FILTER(
-Framework
-    "${THIRDPARTY_DIR}/marsdk-ios/MARSDKCore.framework"
-)
-
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_MARSDK)
 
 if(MENGINE_TARGET_IOS)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        XCODE_EMBED_FRAMEWORKS "${THIRDPARTY_DIR}/marsdk-ios/MARSDKCore.framework"
-        XCODE_ATTRIBUTE_OTHER_LDFLAGS "-ObjC")
+    find_library(FRAMEWORK_MARSDK NAMES MARSDKCore PATHS "/Users/yuriylevchenko/Desktop/Mengine/dependencies/marsdk-ios" NO_CMAKE_FIND_ROOT_PATH)
+
+    if( ${FRAMEWORK_MARSDK} STREQUAL FRAMEWORK_MARSDK-NOTFOUND)
+        MESSAGE(FATAL_ERROR ": Framework MARSDK not found")
+    else()
+        target_link_libraries(${PROJECT_NAME} "-framework /Users/yuriylevchenko/Desktop/Mengine/dependencies/marsdk-ios/MARSDKCore.framework")
+        MESSAGE(STATUS "Framework MARSDK found at ${FRAMEWORK_MARSDK}")
+    endif()
 endif()

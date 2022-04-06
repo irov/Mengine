@@ -1,33 +1,33 @@
-MENGINE_PROJECT(JsonPlugin)
+MENGINE_PROJECT(JSONPlugin)
 
 ADD_FILTER(
 src
-    JsonInterface.h
+    JSONInterface.h
     
-    JsonPlugin.h
-    JsonPlugin.cpp
-    JsonPlugin.def
+    JSONPlugin.h
+    JSONPlugin.cpp
+    JSONPlugin.def
     
-    ResourceJson.cpp
-    ResourceJson.h
+    ResourceJSON.cpp
+    ResourceJSON.h
 
-    LoaderResourceJson.cpp
-    LoaderResourceJson.h
+    LoaderResourceJSON.cpp
+    LoaderResourceJSON.h
     
-    JsonSetting.cpp
-    JsonSetting.h
-    JsonSettingPrototypeGenerator.cpp
-    JsonSettingPrototypeGenerator.h
+    JSONSetting.cpp
+    JSONSetting.h
+    JSONSettingPrototypeGenerator.cpp
+    JSONSettingPrototypeGenerator.h
     
-    JsonConfig.cpp
-    JsonConfig.h
+    JSONConfig.cpp
+    JSONConfig.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
-        JsonScriptEmbedding.cpp
-        JsonScriptEmbedding.h
+        JSONScriptEmbedding.cpp
+        JSONScriptEmbedding.h
         )
         
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

@@ -7,8 +7,8 @@ src
     AppleMARSDKPlugin.h
     AppleMARSDKPlugin.mm
 
-    AppleMARSDKNative.h
-    AppleMARSDKNative.m
+    AppleMARSDKApplicationDelegate.h
+    AppleMARSDKApplicationDelegate.m
 )
 
 ADD_FILTER(

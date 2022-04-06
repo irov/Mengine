@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/ExecutorInterface.h"
+
 #include "Kernel/Document.h"
 #include "Kernel/FactorableUnique.h"
 

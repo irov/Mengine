@@ -1,7 +1,8 @@
 #import "AppleMARSDKNative.h"
 
-@implementation AppleMARSDKNative
+#import "MARSDKCore/MARSDKCore.h"
 
+@implementation AppleMARSDKNative
 
 #pragma mark -
 

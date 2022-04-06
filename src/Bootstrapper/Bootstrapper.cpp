@@ -305,6 +305,10 @@ PLUGIN_EXPORT( AppleGameCenter );
 PLUGIN_EXPORT( AppleAppTracking );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_MARSDK_STATIC
+PLUGIN_EXPORT( MARSDK );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
 PLUGIN_EXPORT( XmlToBin );
 #endif
@@ -1104,6 +1108,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_APPLE_APPTRACKING_STATIC
         MENGINE_ADD_PLUGIN( AppleAppTracking, "Plugin Apple AppTracking...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+        
+#ifdef MENGINE_PLUGIN_APPLE_MARSDK_STATIC
+        MENGINE_ADD_PLUGIN( MARSDK, "Plugin Apple MARSDK...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC

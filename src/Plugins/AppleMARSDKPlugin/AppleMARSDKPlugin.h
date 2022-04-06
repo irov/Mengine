@@ -2,8 +2,6 @@
 
 #include "Interface/PlatformInterface.h"
 
-#import "AppleMARSDKNative.h"
-
 #include "Kernel/PluginBase.h"
 
 namespace Mengine

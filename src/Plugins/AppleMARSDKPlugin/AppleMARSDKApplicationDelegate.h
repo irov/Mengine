@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AppleMARSDKNative : NSObject<UIKitProxyApplicationDelegateInterface>
+@interface AppleMARSDKApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface>
 {
 }
 

@@ -1,2 +1,0 @@
-LIBRARY "MARSDKPlugin"
-EXPORTS dllCreatePlugin @1

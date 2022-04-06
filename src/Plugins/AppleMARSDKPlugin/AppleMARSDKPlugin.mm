@@ -1,28 +1,23 @@
-#include "MARSDKPlugin.h"
+#include "AppleMARSDKPlugin.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MARSDK, Mengine::MARSDKPlugin )
+PLUGIN_FACTORY( AppleMARSDK, Mengine::AppleMARSDKPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MARSDKPlugin::MARSDKPlugin()
+    AppleMARSDKPlugin::AppleMARSDKPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MARSDKPlugin::~MARSDKPlugin()
+    AppleMARSDKPlugin::~AppleMARSDKPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MARSDKPlugin::_unimportantPlugin() const
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MARSDKPlugin::_availablePlugin() const
+    bool AppleMARSDKPlugin::_availablePlugin() const
     {
         if( HAS_OPTION( "nomarsdk" ) == true )
         {
@@ -40,20 +35,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MARSDKPlugin::_initializePlugin()
+    bool AppleMARSDKPlugin::_initializePlugin()
     {
-        m_marSDKNative = [[IOSMarSDKNative alloc] init];
-        
-        //[UIApplication sharedApplication]
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MARSDKPlugin::_finalizePlugin()
+    void AppleMARSDKPlugin::_finalizePlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MARSDKPlugin::_destroyPlugin()
+    void AppleMARSDKPlugin::_destroyPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////

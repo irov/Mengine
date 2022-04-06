@@ -1,24 +1,20 @@
-MENGINE_PROJECT(MARSDKPlugin)
+MENGINE_PROJECT(AppleMARSDKPlugin)
 
 ADD_FILTER(
 src
-    MARSDKInterface.h
+    AppleMARSDKInterface.h
 
-    MARSDKPlugin.h
-    MARSDKPlugin.def
-    MARSDKPlugin.mm
+    AppleMARSDKPlugin.h
+    AppleMARSDKPlugin.mm
 
-    IOSMarSDKNative.h
-    IOSMarSDKNative.m
+    AppleMARSDKNative.h
+    AppleMARSDKNative.m
 )
 
 ADD_FILTER(
 Framework
     "${THIRDPARTY_DIR}/MARSDK/MARSDKCore.framework"
 )
-
-INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_MARSDK)
 

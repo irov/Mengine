@@ -4,15 +4,15 @@
 
 namespace Mengine
 {
-    class MARSDKServiceInterface
+    class AppleMARSDKServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "MARSDKService" )
+        SERVICE_DECLARE( "AppleMARSDKService" )
 
     public:
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define MARSDK_SERVICE()\
-    ((Mengine::MARSDKServiceInterface *)SERVICE_GET(Mengine::MARSDKServiceInterface))
+#define APPLE_MARSDK_SERVICE()\
+    ((Mengine::AppleMARSDKServiceInterface *)SERVICE_GET(Mengine::AppleMARSDKServiceInterface))
 //////////////////////////////////////////////////////////////////////////

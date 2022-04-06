@@ -1,6 +1,6 @@
-#import "IOSMarSDKNative.h"
+#import "AppleMARSDKNative.h"
 
-@implementation IOSMarSDKNative
+@implementation AppleMARSDKNative
 
 
 #pragma mark -

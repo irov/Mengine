@@ -9,6 +9,15 @@ src
 
     AppleMARSDKApplicationDelegate.h
     AppleMARSDKApplicationDelegate.m
+
+    AppleMARSDKDelegate.h
+    AppleMARSDKDelegate.m
+
+    AppleMARSDKCallbacks.h
+    AppleMARSDKCallbacks.m
+    
+    AppleMARSDKService.h
+    AppleMARSDKService.mm
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_MARSDK)

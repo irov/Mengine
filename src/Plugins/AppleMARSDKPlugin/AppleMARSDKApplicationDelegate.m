@@ -1,16 +1,41 @@
 #import "AppleMARSDKApplicationDelegate.h"
 
-#import "MARSDKCore/MARSDKCore.h"
+bool _hasInited = false;
+
+
+@interface ShortMARSDKDelegate:NSObject<MARSDKDelegate>
+@end
+
+@implementation ShortMARSDKDelegate
+
+- (void) OnPlastformInit: (NSDictionary *)params {
+    NSLog(@"Success");
+    _hasInited = true;
+}
+
+- (UIView *)GetView {
+    UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
+    return  [appWindow.subviews objectAtIndex:0];
+}
+
+- (UIViewController *)GetViewController {
+    UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
+    return  appWindow.rootViewController;
+}
+
+@end
 
 @implementation AppleMARSDKApplicationDelegate
 
 #pragma mark -
 
-- (id) init {
-    return [super init];
++ (BOOL) hasInited {
+    return _hasInited;
 }
 
 + (void)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [MARSDK sharedInstance].delegate = [[ShortMARSDKDelegate alloc] init];
+    
     NSDictionary *sdkconfig = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"MARSDK"];
     [[MARSDK sharedInstance] initWithParams:sdkconfig];
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
@@ -44,7 +69,6 @@
     [[MARSDK sharedInstance] applicationWillResignActive:application];
 }
 
-
 + (void)applicationDidEnterBackground:(UIApplication *)application {
     
     // Use this method to release shared resources, save user data, invalidate tim ers, and store enough application state information to restore your application to its current state in case it is terminated later.
@@ -66,7 +90,6 @@
     // Called when the application is about to terminate. Save data if appropriat e. See also applicationDidEnterBackground:.
     [[MARSDK sharedInstance] applicationWillTerminate:application];
 }
-
 
 + (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {

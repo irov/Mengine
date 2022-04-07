@@ -2,41 +2,11 @@
 
 #import "MARSDKCore/MARSDKCore.h"
 
-bool _hasInited = false;
-
-@interface ShortMARSDKDelegate:NSObject<MARSDKDelegate>
-@end
-
-@implementation ShortMARSDKDelegate
-
-- (void) OnPlastformInit: (NSDictionary *)params {
-    NSLog(@"Success");
-    _hasInited = true;
-}
-
-- (UIView *)GetView {
-    UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
-    return  [appWindow.subviews objectAtIndex:0];
-}
-
-- (UIViewController *)GetViewController {
-    UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
-    return  appWindow.rootViewController;
-}
-
-@end
-
 @implementation AppleMARSDKApplicationDelegate
 
 #pragma mark -
 
-+ (BOOL) hasInited {
-    return _hasInited;
-}
-
 + (void)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [MARSDK sharedInstance].delegate = [[ShortMARSDKDelegate alloc] init];
-    
     NSDictionary *sdkconfig = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"MARSDK"];
     [[MARSDK sharedInstance] initWithParams:sdkconfig];
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
@@ -78,7 +48,6 @@ bool _hasInited = false;
 }
 
 + (void)applicationWillEnterForeground:(UIApplication *)application {
-    NSLog(@"application will enter foreground...");
     [[MARSDK sharedInstance] applicationWillEnterForeground:application];
 }
 

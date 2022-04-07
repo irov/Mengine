@@ -13,8 +13,7 @@ src
     AppleMARSDKDelegate.h
     AppleMARSDKDelegate.m
 
-    AppleMARSDKCallbacks.h
-    AppleMARSDKCallbacks.m
+    AppleMARSDKCallbacksProtocol.h
     
     AppleMARSDKService.h
     AppleMARSDKService.mm

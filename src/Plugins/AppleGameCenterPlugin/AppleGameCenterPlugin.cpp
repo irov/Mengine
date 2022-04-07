@@ -28,7 +28,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( AppleGameCenterService, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( AppleGameCenterService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()

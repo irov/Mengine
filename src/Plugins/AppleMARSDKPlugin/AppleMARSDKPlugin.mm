@@ -4,6 +4,8 @@
 #include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AppleMARSDKService );
+//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AppleMARSDK, Mengine::AppleMARSDKPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -37,17 +39,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMARSDKPlugin::_initializePlugin()
     {
-//        m_appleMARSDKNative = [[AppleMARSDKNative alloc] init];
-//        [m_appleMARSDKNative login];
+        if( SERVICE_CREATE( AppleMARSDKService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKPlugin::_finalizePlugin()
     {
+        SERVICE_FINALIZE( AppleMARSDKService );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKPlugin::_destroyPlugin()
     {
+        SERVICE_DESTROY( AppleMARSDKService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

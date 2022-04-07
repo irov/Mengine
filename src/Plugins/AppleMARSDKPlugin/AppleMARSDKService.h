@@ -2,68 +2,13 @@
 
 #include "AppleMARSDKInterface.h"
 
+#include "AppleMARSDKDelegate.h"
+
 #include "Kernel/ServiceBase.h"
 #include "Kernel/VectorConstString.h"
 
-#include "AppleMARSDKDelegate.h"
-
 namespace Mengine
 {
-
-enum DataType{
-    TYPE_SELECT_SERVER = 1,
-    TYPE_CREATE_ROLE,
-    TYPE_ENTER_GAME,
-    TYPE_LEVEL_UP,
-    TYPE_EXIT_GAME
-};
-
-struct ExtraData{
-    
-    DataType dataType;
-    ConstString opType;
-    ConstString roleID;
-    ConstString roleName;
-    ConstString roleLevel;
-    int serverID;
-    ConstString serverName;
-    int moneyNum;
-    long roleCreateTime;//time(NULL)
-    long roleLevelUpTime;//time(NULL)
-
-    ConstString vip;
-    int roleGender;
-    ConstString professionID;
-    ConstString professionName;
-    ConstString power;
-    ConstString partyID;
-    ConstString partyName;
-    ConstString partyMasterID;
-    ConstString partyMasterName;
-    
-    int serverId;
-};
-
-struct ProductInfo{
-    ConstString orderID;
-    ConstString productId;
-    ConstString productName;
-    ConstString productDesc;
-
-
-    double price;
-    int buyNum;
-    int coinNum;
-
-    ConstString roleId;
-    ConstString roleName;
-    ConstString roleLevel;
-    ConstString vip;
-    ConstString serverId;
-    ConstString serverName;
-    ConstString notifyUrl;
-};
-
 	class AppleMARSDKService
 		: public ServiceBase<AppleMARSDKServiceInterface>
 	{
@@ -76,14 +21,25 @@ struct ProductInfo{
         void _finalizeService() override;
         
     public:
-        bool login();
-        bool logout();
-        bool switchAccount();
+        void setProvider( const AppleMARSDKProviderInterfacePtr & _provider ) override;
+        const AppleMARSDKProviderInterfacePtr & getProvider() const override;
         
-        void submitExtendedData(const Mengine::ExtraData& extradata);
-        void submitPayementData(const Mengine::ProductInfo& product);
+    public:
+        bool login() override;
+        bool logout() override;
+        bool switchAccount() override;
+        
+        void submitExtendedData( const MARSDKExtraData & extradata ) override;
+        void submitPayementData( const MARSDKProductInfo & product ) override;
+        
+    public:
+        void onUserLogin();
+        void onUserLogout();
+        void onPayPaid();
 
 	protected:
-        AppleMARSDKDelegate * m_appleMARSDKNative;
+        AppleMARSDKProviderInterfacePtr m_provider;
+        
+        AppleMARSDKDelegate * m_delegate;
     };
 }

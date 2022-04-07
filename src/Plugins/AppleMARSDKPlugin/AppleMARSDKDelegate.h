@@ -1,15 +1,15 @@
+#import "AppleMARSDKCallbacksProtocol.h"
 
-#import <Foundation/Foundation.h>
 #import "MARSDKCore/MARSDKCore.h"
 
-#import "AppleMARSDKCallbacks.h"
-
+#import <Foundation/Foundation.h>
 
 @interface AppleMARSDKDelegate : NSObject<MARSDKDelegate>
 
-@property (assign) MARSDKCallbacks* _Nonnull m_callbacks;
+@property (assign) id<AppleMARSDKCallbacksProtocol> * _Nonnull m_callbacks;
 
-- (instancetype _Nonnull)initWithLogIn:(MARSDKCb _Nonnull) logIn logOut:(MARSDKCb _Nonnull) logOut onPayPaid:(MARSDKCb _Nonnull) onPayPaid;
+- (instancetype _Nonnull)initWithCallbacks:(id<AppleMARSDKCallbacksProtocol> * _Nonnull) callbacks;
+
 - (BOOL) login;
 - (BOOL) logout;
 - (void) switchAccount;

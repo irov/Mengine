@@ -27,7 +27,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( AppleAppTrackingService, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( AppleAppTrackingService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()

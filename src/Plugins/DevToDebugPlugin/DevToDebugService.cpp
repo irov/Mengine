@@ -195,6 +195,11 @@ namespace Mengine
                 this->process();
             }break;
         case Mengine::EDTDS_CONNECT:
+            LOGGER_ERROR( "%s"
+                , _response.data.c_str()
+            );
+
+            this->process();
             break;
         default:
             break;
@@ -249,7 +254,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::notifyBootstrapperRunComplete_()
     {
-        this->process();
+        //this->process();
     }
     //////////////////////////////////////////////////////////////////////////
 }

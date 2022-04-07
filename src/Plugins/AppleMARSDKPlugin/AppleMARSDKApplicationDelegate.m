@@ -1,7 +1,8 @@
 #import "AppleMARSDKApplicationDelegate.h"
 
-bool _hasInited = false;
+#import "MARSDKCore/MARSDKCore.h"
 
+bool _hasInited = false;
 
 @interface ShortMARSDKDelegate:NSObject<MARSDKDelegate>
 @end

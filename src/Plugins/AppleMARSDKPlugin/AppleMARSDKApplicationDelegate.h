@@ -1,7 +1,6 @@
 #import "Interface/UIKitProxyApplicationDelegateInterface.h"
 
 #import <Foundation/Foundation.h>
-#import "MARSDKCore/MARSDKCore.h"
 
 @interface AppleMARSDKApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface>
 {

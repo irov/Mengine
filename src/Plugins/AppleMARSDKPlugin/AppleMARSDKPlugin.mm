@@ -31,12 +31,14 @@ namespace Mengine
                 return false;
             }
         }
-
+      
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleMARSDKPlugin::_initializePlugin()
     {
+//        m_appleMARSDKNative = [[AppleMARSDKNative alloc] init];
+//        [m_appleMARSDKNative login];
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

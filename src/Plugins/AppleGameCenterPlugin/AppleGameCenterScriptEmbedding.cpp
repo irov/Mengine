@@ -89,7 +89,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleGameCenter_checkAchievement( const ConstString & _achievementName ) const
+        static bool s_AppleGameCenter_checkAchievement( const ConstString & _achievementName )
         {
             bool result = APPLE_GAMECENTER_SERVICE()
                 ->checkAchievement( _achievementName );
@@ -97,7 +97,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleGameCenter_resetAchievements() const
+        static bool s_AppleGameCenter_resetAchievements()
         {
             bool result = APPLE_GAMECENTER_SERVICE()
                 ->resetAchievements();

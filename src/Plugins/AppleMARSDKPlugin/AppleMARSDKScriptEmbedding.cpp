@@ -21,7 +21,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleMARSDKProvider
             : public AppleMARSDKProviderInterface
-            , public Factorable
         {
         public:
             PythonAppleMARSDKProvider( const pybind::object & _cbUserLogin, const pybind::object & _cbUserLogout, const pybind::object & _cbPayPaid, const pybind::args & _args )
@@ -178,7 +177,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleGameCenterScriptEmbedding::eject( pybind::kernel_interface * _kernel )
+    void AppleMARSDKScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_from_module( "appleMARSDKSetProvider", nullptr );
         _kernel->remove_from_module( "appleMARSDKLogin", nullptr );

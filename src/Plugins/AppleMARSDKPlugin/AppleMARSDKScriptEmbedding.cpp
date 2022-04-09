@@ -57,7 +57,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleMARSDKProvider, AppleMARSDKProviderInterface> PythonAppleMARSDKProviderPtr;
         //////////////////////////////////////////////////////////////////////////
-        static void s_MARSDK_setProvider( const pybind::object & _cbUserLogin, const pybind::object & _cbUserLogout, const pybind::object & _cbPayPaid, const pybind::args & _args )
+        static void s_AppleMARSDK_setProvider( const pybind::object & _cbUserLogin, const pybind::object & _cbUserLogout, const pybind::object & _cbPayPaid, const pybind::args & _args )
         {
             PythonAppleMARSDKProviderPtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _cbUserLogin, _cbUserLogout, _cbPayPaid, _args );
 
@@ -65,7 +65,7 @@ namespace Mengine
                 ->setProvider( provider );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_MARSDK_login()
+        static bool s_AppleMARSDK_login()
         {
             bool result = APPLE_MARSDK_SERVICE()
                 ->login();
@@ -73,7 +73,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_MARSDK_logout()
+        static bool s_AppleMARSDK_logout()
         {
             bool result = APPLE_MARSDK_SERVICE()
                 ->logout();
@@ -81,7 +81,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_MARSDK_switchAccount()
+        static bool s_AppleMARSDK_switchAccount()
         {
             bool result = APPLE_MARSDK_SERVICE()
                 ->switchAccount();
@@ -89,7 +89,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_MARSDK_submitExtendedData( const pybind::dict & _d )
+        static void s_AppleMARSDK_submitExtendedData( const pybind::dict & _d )
         {
             MARSDKExtraData data;
 
@@ -120,7 +120,7 @@ namespace Mengine
                 ->submitExtendedData( data );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_MARSDK_submitPayementData( const pybind::dict & _d )
+        static void s_AppleMARSDK_submitPayementData( const pybind::dict & _d )
         {
             MARSDKProductInfo info;
 
@@ -168,12 +168,12 @@ namespace Mengine
             .def( "TYPE_EXIT_GAME", TYPE_EXIT_GAME )
             ;
 
-        pybind::def_function_args( _kernel, "appleMARSDKSetProvider", &Detail::s_MARSDK_setProvider );
-        pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::s_MARSDK_login );
-        pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::s_MARSDK_logout );
-        pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_MARSDK_switchAccount );
-        pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_MARSDK_submitExtendedData );
-        pybind::def_function( _kernel, "appleMARSDKSubmitPayementData", &Detail::s_MARSDK_submitPayementData );
+        pybind::def_function_args( _kernel, "appleMARSDKSetProvider", &Detail::s_AppleMARSDK_setProvider );
+        pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::s_AppleMARSDK_login );
+        pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::s_AppleMARSDK_logout );
+        pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );
+        pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_AppleMARSDK_submitExtendedData );
+        pybind::def_function( _kernel, "appleMARSDKSubmitPayementData", &Detail::s_AppleMARSDK_submitPayementData );
 
         return true;
     }

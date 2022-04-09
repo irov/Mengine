@@ -99,7 +99,7 @@ namespace Mengine
                 return true;
             }
 
-            bool Debug_Pybind = CONFIG_VALUE( "Debug", "Pybind", MENGINE_DEBUG_VALUE( true, false ) );
+            bool Debug_Pybind = CONFIG_VALUE( "Debug", "Pybind", true );
 
             return Debug_Pybind;
         }

@@ -12,21 +12,19 @@
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
-+ (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-{
++ (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [[MARSDK sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
-+ (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo{
++ (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo {
     [[MARSDK sharedInstance] application:application didReceiveRemoteNotification: userInfo];
 }
 
-+ (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void(^)(UIBackgroundFetchResult)) completionHandler{
++ (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void(^)(UIBackgroundFetchResult)) completionHandler {
     [[MARSDK sharedInstance] application:application didReceiveRemoteNotification: userInfo];
 }
 
-+ (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
++ (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     [[MARSDK sharedInstance] application:application didReceiveLocalNotification:notification];
 }
 
@@ -41,7 +39,6 @@
 }
 
 + (void)applicationDidEnterBackground:(UIApplication *)application {
-    
     // Use this method to release shared resources, save user data, invalidate tim ers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called in stead of applicationWillTerminate: when the user quits.
     [[MARSDK sharedInstance] applicationDidEnterBackground:application];
@@ -61,18 +58,15 @@
     [[MARSDK sharedInstance] applicationWillTerminate:application];
 }
 
-+ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
-{
++ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     return [[MARSDK sharedInstance] application:application handleOpenURL:url];
 }
 
-+ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
++ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [[MARSDK sharedInstance] application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
-+ (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options
-{
++ (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
     return [[MARSDK sharedInstance] application:app openURL:url options:options];
 }
 

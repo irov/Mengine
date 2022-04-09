@@ -1,9 +1,9 @@
 #include "AppleAppTrackingPlugin.h"
 
-#include "Interface/ScriptServiceInterface.h"
-
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "AppleAppTrackingScriptEmbedding.h"
+#   include "Interface/ScriptServiceInterface.h"
+
+#   include "AppleAppTrackingScriptEmbedding.h"
 #endif
 
 #include "Kernel/ConstStringHelper.h"

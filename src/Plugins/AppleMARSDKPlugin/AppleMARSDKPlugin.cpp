@@ -1,11 +1,15 @@
 #include "AppleMARSDKPlugin.h"
 
-#include "Kernel/ConfigHelper.h"
-#include "Kernel/OptionHelper.h"
-
 #ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Interface/ScriptServiceInterface.h"
+
 #   include "AppleMARSDKScriptEmbedding.h"
 #endif
+
+#include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AppleMARSDKService );

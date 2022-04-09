@@ -2,6 +2,8 @@
 #include "AppleGameCenterInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Interface/ScriptServiceInterface.h"
+
 #   include "AppleGameCenterScriptEmbedding.h"
 #endif
 

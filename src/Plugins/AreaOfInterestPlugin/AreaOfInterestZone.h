@@ -5,16 +5,22 @@
 #include "AreaOfInterestActor.h"
 #include "AreaOfInterestTrigger.h"
 
-#include "Kernel/Scriptable.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Vector.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Kernel/Scriptable.h"
+#endif
+
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AreaOfInterestZone
         : public AreaOfInterestZoneInterface
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         , public Scriptable
+#endif
     {
         DECLARE_FACTORABLE( AreaOfInterestZone );
 

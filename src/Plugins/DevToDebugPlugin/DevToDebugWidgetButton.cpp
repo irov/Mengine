@@ -31,4 +31,16 @@ namespace Mengine
         _jdata.set( "title", m_title );
     }
     ////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidgetButton::process( const jpp::object & _data )
+    {
+        MENGINE_UNUSED( _data );
+
+        if( m_clickEvent == nullptr )
+        {
+            return;
+        }
+
+        m_clickEvent();
+    }
+    ////////////////////////////////////////////////////////////////////////
 }

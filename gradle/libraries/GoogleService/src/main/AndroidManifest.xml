@@ -2,6 +2,6 @@
     package="org.Mengine.Plugin.GoogleService">
 
     <application>
-        <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/google_app_id"/>
+        <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/google_services_app_id"/>
     </application>
 </manifest>

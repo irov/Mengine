@@ -6,8 +6,6 @@
 #include "Interface/SoundSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Scriptable.h"
-
 #include "Kernel/BaseEventation.h"
 #include "Kernel/Resolution.h"
 

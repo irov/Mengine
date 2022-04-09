@@ -28,6 +28,9 @@ namespace Mengine
         void _fillDataJson( jpp::object & _jdata ) override;
 
     protected:
+        void process( const jpp::object & _data ) override;
+
+    protected:
         String m_title;
 
         LambdaClickEvent m_clickEvent;

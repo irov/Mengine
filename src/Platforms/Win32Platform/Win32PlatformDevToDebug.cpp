@@ -1,5 +1,7 @@
 #include "Win32PlatformDevToDebug.h"
 
+#include "Interface/ApplicationInterface.h"
+
 #include "Interface/PrototypeServiceInterface.h"
 #include "Plugins/DevToDebugPlugin/DevToDebugInterface.h"
 
@@ -35,6 +37,12 @@ namespace Mengine
 
         widgetButton->setId( STRINGIZE_STRING_LOCAL( "btn_quit" ) );
         widgetButton->setTitle( "Quit" );
+
+        widgetButton->setClickEvent( []()
+        {
+            APPLICATION_SERVICE()
+                ->quit();
+        } );
 
         tab->addWidget( widgetButton );
 

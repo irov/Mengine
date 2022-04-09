@@ -1,10 +1,8 @@
 #include "AppleGameCenterPlugin.h"
 #include "AppleGameCenterInterface.h"
 
-#include "Interface/ScriptServiceInterface.h"
-
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "AppleGameCenterScriptEmbedding.h"
+#   include "AppleGameCenterScriptEmbedding.h"
 #endif
 
 #include "Kernel/ConstStringHelper.h"

@@ -29,6 +29,9 @@ namespace Mengine
         void _fillDataJson( jpp::object & _jdata ) override;
 
     protected:
+        void process( const jpp::object & _data ) override;
+
+    protected:
         mutable String m_text;
         LambdaGetterText m_getter;
     };

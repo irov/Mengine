@@ -3,7 +3,6 @@
 #include "Movie2Interface.h"
 
 #include "Kernel/Identity.h"
-#include "Kernel/Scriptable.h"
 #include "Kernel/Animatable.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"

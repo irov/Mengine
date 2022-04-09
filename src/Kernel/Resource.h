@@ -5,7 +5,6 @@
 
 #include "Kernel/Compilable.h"
 #include "Kernel/Identity.h"
-#include "Kernel/Scriptable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Unknowable.h"
 #include "Kernel/Magicable.h"
@@ -15,6 +14,10 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 #include "Kernel/ReferenceCounter.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Kernel/Scriptable.h"
+#endif
 
 namespace Mengine
 {
@@ -26,10 +29,12 @@ namespace Mengine
         , public Compilable
         , public Magicable
         , public Identity
-        , public Scriptable
         , public Visitable
         , public Unknowable
         , public LoadableInterface
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        , public Scriptable
+#endif
     {
         DECLARE_VISITABLE_BASE();
 

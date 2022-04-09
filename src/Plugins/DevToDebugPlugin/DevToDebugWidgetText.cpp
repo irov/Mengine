@@ -46,4 +46,11 @@ namespace Mengine
         _jdata.set( "content", text );
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidgetText::process( const jpp::object & _data )
+    {
+        MENGINE_UNUSED( _data );
+
+        //Emty
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

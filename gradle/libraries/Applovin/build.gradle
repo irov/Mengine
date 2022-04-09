@@ -52,6 +52,6 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN", true) == tr
         implementation project(':libraries:SDL2')
 
         implementation 'com.google.android.gms:play-services-location:19.0.1'
-        implementation 'com.applovin:applovin-sdk:11.2.0'
+        implementation 'com.applovin:applovin-sdk:11.3.1'
     }
 }

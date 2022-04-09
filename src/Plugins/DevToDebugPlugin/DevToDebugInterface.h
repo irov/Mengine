@@ -16,6 +16,7 @@ namespace Mengine
         virtual void setHide( bool _hide ) = 0;
         virtual bool getHide() const = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetInterface> DevToDebugWidgetInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetTextInterface
@@ -48,6 +49,7 @@ namespace Mengine
     {
     public:
         virtual void addWidget( const DevToDebugWidgetInterfacePtr & _widget ) = 0;
+        virtual const DevToDebugWidgetInterfacePtr & findWidget( const ConstString & _id ) const = 0;
 
         typedef Lambda<void( const DevToDebugWidgetInterfacePtr & )> LambdaForeachWidgets;
         virtual void foreachWidgets( const LambdaForeachWidgets & _lambda ) = 0;

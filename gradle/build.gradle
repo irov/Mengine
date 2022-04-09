@@ -1,9 +1,4 @@
 buildscript {
-
-    ext {
-        preference = '1.2.0'
-    }
-
     repositories {
         google()
         maven { url 'https://maven.google.com' }
@@ -11,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:7.1.3'
     }
 }
 

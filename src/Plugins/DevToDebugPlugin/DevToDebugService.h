@@ -42,6 +42,7 @@ namespace Mengine
 
     protected:
         void notifyBootstrapperRunComplete_();
+        void notifyBootstrapperFinalizeGame_();
 
     protected:
         jpp::object makeConnectData();

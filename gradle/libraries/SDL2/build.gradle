@@ -112,10 +112,9 @@ android {
             }
         }
     }
-    lintOptions {
-        checkReleaseBuilds false
-        //If you want to continue even if errors found use following line
+    lint {
         abortOnError false
+        checkReleaseBuilds false
     }
 }
 

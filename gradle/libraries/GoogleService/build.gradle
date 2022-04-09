@@ -51,6 +51,6 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true)
         implementation project(':libraries:SDL2')
 
         implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-        implementation 'com.google.android.gms:play-services-basement:18.0.0'
+        implementation 'com.google.android.gms:play-services-basement:18.0.1'
     }
 }

@@ -1,8 +1,5 @@
 #include "ResourceInternalObject.h"
 
-#include "Kernel/Scriptable.h"
-#include "Kernel/Node.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -107,6 +107,16 @@ namespace Mengine
             return false;
         }
 
+        curl_version_info_data * info = curl_version_info( CURLVERSION_NOW );
+
+        MENGINE_UNUSED( info );
+
+        LOGGER_MESSAGE( "cURL version: %s host: %s ssl: %s"
+            , info->version
+            , info->host
+            , info->ssl_version
+        );
+
         uint32_t cURLService_ThreadCount = CONFIG_VALUE( "cURLService", "ThreadCount", 4 );
 
         ThreadQueueInterfacePtr threadQueue = THREAD_SERVICE()
@@ -451,6 +461,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::onHttpRequestComplete( const cURLResponseData & _response )
     {
+        if( this->isStopService() == true )
+        {
+            return;
+        }
+
         for( const RequestListenerDesk & listenerDesc : m_networkListeners )
         {
             listenerDesc.listener->response( _response.id, _response.data );

@@ -22,7 +22,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
         AppleGameCenterScriptEmbedding.cpp
         )
         
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_GAMECENTER)

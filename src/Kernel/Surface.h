@@ -4,13 +4,16 @@
 
 #include "Kernel/Identity.h"
 #include "Kernel/Visitable.h"
-#include "Kernel/Scriptable.h"
 #include "Kernel/Materialable.h"
 #include "Kernel/Compilable.h"
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Unknowable.h"
 #include "Kernel/UpdateContext.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Kernel/Scriptable.h"
+#endif
 
 #include "Kernel/Color.h"
 
@@ -23,12 +26,14 @@ namespace Mengine
         : public Factorable
         , public Identity
         , public Visitable
-        , public Scriptable
         , public Materialable
         , public Compilable
         , public Animatable
         , public Eventable
         , public Unknowable
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        , public Scriptable
+#endif
     {
         DECLARE_VISITABLE_BASE();
 

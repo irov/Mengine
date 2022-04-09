@@ -22,14 +22,14 @@ namespace Mengine
         ConstString roleID;
         ConstString roleName;
         ConstString roleLevel;
-        int serverID;
+        int32_t serverID;
         ConstString serverName;
-        int moneyNum;
-        long roleCreateTime;//time(NULL)
-        long roleLevelUpTime;//time(NULL)
+        int32_t moneyNum;
+        int64_t roleCreateTime;//time(NULL)
+        int64_t roleLevelUpTime;//time(NULL)
 
         ConstString vip;
-        int roleGender;
+        int32_t roleGender;
         ConstString professionID;
         ConstString professionName;
         ConstString power;
@@ -38,7 +38,7 @@ namespace Mengine
         ConstString partyMasterID;
         ConstString partyMasterName;
         
-        int serverId;
+        int32_t serverId;
     };
     //////////////////////////////////////////////////////////////////////////
     struct MARSDKProductInfo
@@ -49,8 +49,8 @@ namespace Mengine
         ConstString productDesc;
 
         double price;
-        int buyNum;
-        int coinNum;
+        int32_t buyNum;
+        int32_t coinNum;
 
         ConstString roleId;
         ConstString roleName;

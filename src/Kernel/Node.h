@@ -2,7 +2,6 @@
 
 #include "Kernel/Identity.h"
 #include "Kernel/Hierarchy.h"
-#include "Kernel/Scriptable.h"
 #include "Kernel/Pickerable.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Compilable.h"
@@ -15,6 +14,10 @@
 #include "Kernel/Unknowable.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Viewport.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Kernel/Scriptable.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

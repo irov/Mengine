@@ -6,8 +6,11 @@
 #include "Kernel/Resolution.h"
 #include "Kernel/BoundingBox.h"
 #include "Kernel/RenderContext.h"
-#include "Kernel/Scriptable.h"
 #include "Kernel/Eventable.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Kernel/Scriptable.h"
+#endif
 
 #include "Config/Lambda.h"
 
@@ -59,8 +62,12 @@ namespace Mengine
         virtual void setPickerExclusive( bool _picked ) = 0;
         virtual bool isPickerExclusive() const = 0;
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
     public:
         virtual Scriptable * getPickerScriptable() = 0;
+#endif
+
+    public:
         virtual Eventable * getPickerEventable() = 0;
 
         virtual InputHandlerInterface * getPickerInputHandler() = 0;

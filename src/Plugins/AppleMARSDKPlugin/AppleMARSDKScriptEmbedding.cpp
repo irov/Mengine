@@ -35,17 +35,17 @@ namespace Mengine
         protected:
             void onUserLogin() override
             {
-                m_cbUserLogin.call_args( m_args )
+                m_cbUserLogin.call_args( m_args );
             }
 
             void onUserLogout() override
             {
-                m_cbUserLogout.call_args( m_args )
+                m_cbUserLogout.call_args( m_args );
             }
 
             void onPayPaid() override
             {
-                m_cbPayPaid.call_args( m_args )
+                m_cbPayPaid.call_args( m_args );
             }
 
         protected:

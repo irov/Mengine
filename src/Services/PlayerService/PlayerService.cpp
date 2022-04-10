@@ -15,7 +15,6 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
-#include "Interface/TimeSystemInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
@@ -48,6 +47,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/TimeHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -105,8 +105,7 @@ namespace Mengine
         }
         else
         {
-            uint64_t milliseconds = TIME_SYSTEM()
-                ->getTimeMilliseconds();
+            TimeMilliseconds milliseconds = Helper::getTimeMilliseconds();
 
             uint32_t randomSeed = (uint32_t)milliseconds;
 

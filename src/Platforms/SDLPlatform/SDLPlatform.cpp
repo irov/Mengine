@@ -5,7 +5,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
-#include "Interface/TimeSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
@@ -53,6 +52,7 @@ extern "C" {
 #include "Kernel/RandomDevice.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/TimeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -396,9 +396,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getUserName( Char * const _userName ) const
     {
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        WChar unicode_userName[UNLEN + 1] = {L'\0'};
+        DWORD unicode_userNameLen = UNLEN + 1;
+        if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
+        {
+            LOGGER_ERROR( "GetUserName invalid %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return 0;
+        }
+
+        size_t userNameLen;
+        if( Helper::unicodeToUtf8Size( unicode_userName, unicode_userNameLen, _userName, MENGINE_PLATFORM_USER_MAXNAME, &userNameLen ) == false )
+        {
+            return 0;
+        }
+
+        return userNameLen;
+#else
         _userName[0] = '\0';
 
         return 0;
+#endif        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatform::getFingerprint( Char * const _fingerprint ) const
+    {
+        m_fingerprint.copy( _fingerprint );
+
+        return MENGINE_SHA1_HEX_COUNT;
     }
     //////////////////////////////////////////////////////////////////////////
     float SDLPlatform::getJoystickAxis( uint32_t _index ) const
@@ -1022,6 +1050,37 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE( "Accelerometer not found" );
         }
 
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        WChar UserNameBuffer[UNLEN + 1] = {L'\0'};
+        DWORD UserNameLen = UNLEN + 1;
+        if( ::GetUserName( UserNameBuffer, &UserNameLen ) == FALSE )
+        {
+            LOGGER_ERROR( "GetUserName invalid %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
+        }
+
+        WChar ComputerNameBuffer[MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
+        DWORD ComputerNameLen = MAX_COMPUTERNAME_LENGTH + 1;
+        if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == FALSE )
+        {
+            LOGGER_ERROR( "GetComputerName invalid %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
+        }
+
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "ComputerName: %ls"
+            , ComputerNameBuffer
+        );
+
+        WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
+        MENGINE_WCSCPY( fingerprintGarbage, UserNameBuffer );
+        MENGINE_WCSCAT( fingerprintGarbage, ComputerNameBuffer );
+
+        Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
+        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1238,13 +1297,11 @@ namespace Mengine
     {
         this->setActive_( true );
 
-        m_prevTime = TIME_SYSTEM()
-            ->getTimeMilliseconds();
+        m_prevTime = Helper::getTimeMilliseconds();
 
         for( ;; )
         {
-            uint64_t currentTime = TIME_SYSTEM()
-                ->getTimeMilliseconds();
+            TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
 
             float frameTime = (float)(currentTime - m_prevTime);
 

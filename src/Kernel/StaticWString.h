@@ -45,6 +45,11 @@ namespace Mengine
             return N;
         }
 
+        size_t size() const
+        {
+            return Detail::staticWStringSize( m_buffer, N );
+        }
+
         void clear()
         {
             Detail::staticWStringChange( m_buffer, N, 0, L'\0');

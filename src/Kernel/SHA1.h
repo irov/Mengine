@@ -5,6 +5,9 @@
 #include "Config/StdDef.h"
 #include "Config/Char.h"
 
+#define MENGINE_SHA1_UINT8_COUNT 20
+#define MENGINE_SHA1_HEX_COUNT 40
+
 namespace Mengine
 {
     namespace Helper

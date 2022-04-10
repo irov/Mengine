@@ -29,10 +29,6 @@
 
 #include "Config/Algorithm.h"
 
-#include <ctime>
-#include <sstream>
-#include <iomanip>
-
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_MENGINE_STATIC
 extern Mengine::ServiceProviderInterface * initializeMengine();

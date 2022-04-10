@@ -28,6 +28,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PathfinderScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( "Pathfinder", true );
+
         MENGINE_UNUSED( _kernel );
 
         return true;

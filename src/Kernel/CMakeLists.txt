@@ -832,6 +832,9 @@ Core
     
     ExecutorHelper.h
     PrototypeHelper.h
+    
+    TimeHelper.cpp
+    TimeHelper.h
 )
 
 ADD_FILTER(

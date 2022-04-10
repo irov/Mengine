@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Config/Time.h"
+
 namespace Mengine
 {
     class TimeSystemInterface
@@ -10,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "TimeSystem" );
 
     public:
-        virtual uint64_t getTimeMilliseconds() = 0;
+        virtual TimeMilliseconds getTimeMilliseconds() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

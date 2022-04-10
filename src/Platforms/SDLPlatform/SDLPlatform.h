@@ -23,17 +23,20 @@
 #   include "Interface/AndroidPlatformExtensionInterface.h"
 #endif
 
-#include "Kernel/Factory.h"
-#include "Kernel/ServiceBase.h"
-
-#include "SDLInput.h"
-
 #include "Environment/SDL2/SDL2Includer.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidIncluder.h"
 #   include "Environment/Android/AndroidUtils.h"
 #endif
+
+#include "SDLInput.h"
+
+#include "Kernel/Factory.h"
+#include "Kernel/ServiceBase.h"
+#include "Kernel/SHA1.h"
+
+#include "Config/Time.h"
 
 namespace Mengine
 {
@@ -113,6 +116,8 @@ namespace Mengine
         size_t getCurrentPath( Char * const _currentPath ) const override;
         size_t getUserPath( Char * const _userPath ) const override;
         size_t getUserName( Char * const _userName ) const override;
+
+        size_t getFingerprint( Char * const _fingerprint ) const override;
 
         void closeWindow() override;
         void minimizeWindow() override;
@@ -317,8 +322,9 @@ namespace Mengine
         SDLInputPtr m_sdlInput;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
+        StaticString<MENGINE_SHA1_HEX_COUNT + 1> m_fingerprint; //SHA1
 
-        uint64_t m_prevTime;
+        TimeMilliseconds m_prevTime;
 
         float m_pauseUpdatingTime;
 

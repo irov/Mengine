@@ -14,7 +14,25 @@ namespace Mengine
 {
     namespace Helper
     {
-        size_t makeFilePathDateTimeHelper( const DateTimeProviderInterfacePtr & _dateTimeProvider, Char * const _filePath, size_t _capacity )
+        //////////////////////////////////////////////////////////////////////////
+        size_t makeLoggerDateTimestamp( const DateTimeProviderInterfacePtr & _dateTimeProvider, Char * const _timestamp, size_t _capacity )
+        {
+            PlatformDateTime dateTime;
+            _dateTimeProvider->getLocalDateTime( &dateTime );
+
+            Stringstream ss_date;
+            ss_date << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+                << ":" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+                << ":" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+            String str_date = ss_date.str();
+
+            size_t copy_size = Helper::stringCopy( _timestamp, str_date.c_str(), _capacity );
+
+            return copy_size;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        size_t makeFilePathDateTimestamp( const DateTimeProviderInterfacePtr & _dateTimeProvider, Char * const _timestamp, size_t _capacity )
         {
             PlatformDateTime dateTime;
             _dateTimeProvider->getLocalDateTime( &dateTime );
@@ -29,9 +47,10 @@ namespace Mengine
 
             String str_date = ss_date.str();
             
-            size_t copy_size = Helper::stringCopy( _filePath, str_date.c_str(), _capacity );
+            size_t copy_size = Helper::stringCopy( _timestamp, str_date.c_str(), _capacity );
 
             return copy_size;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

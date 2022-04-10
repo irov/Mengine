@@ -13,7 +13,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetButton::setTitle( const String & _title )
     {
+        if( m_title == _title )
+        {
+            return;
+        }
+
         m_title = _title;
+
+        this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetButton::setClickEvent( const LambdaClickEvent & _clickEvent )
@@ -41,6 +48,11 @@ namespace Mengine
         }
 
         m_clickEvent();
+    }
+    ////////////////////////////////////////////////////////////////////////
+    bool DevToDebugWidgetButton::_checkInvalidate() const
+    {
+        return false;
     }
     ////////////////////////////////////////////////////////////////////////
 }

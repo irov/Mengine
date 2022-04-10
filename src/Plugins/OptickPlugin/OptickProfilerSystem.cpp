@@ -111,7 +111,7 @@ namespace Mengine
             ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
         Char filePathDate[1024] = {'\0'};
-        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate, 1024 );
+        Helper::makeFilePathDateTimestamp( dateTimeProvider, filePathDate, 1024 );
 
         optPath += filePathDate;
         optPath += ".opt";

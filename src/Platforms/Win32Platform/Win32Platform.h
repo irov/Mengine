@@ -10,8 +10,11 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 #include "Kernel/MouseCode.h"
+#include "Kernel/StaticString.h"
 #include "Kernel/StaticWString.h"
+#include "Kernel/SHA1.h"
 
+#include "Config/Time.h"
 #include "Config/UniqueId.h"
 
 namespace Mengine
@@ -87,6 +90,8 @@ namespace Mengine
         size_t getCurrentPath( Char * const _currentPath ) const override;
         size_t getUserPath( Char * const _userPath ) const override;
         size_t getUserName( Char * const _userName ) const override;
+
+        size_t getFingerprint( Char * const _fingerprint ) const override;
 
         void closeWindow() override;
         void minimizeWindow() override;
@@ -227,13 +232,15 @@ namespace Mengine
 
     protected:
         StaticWString<MENGINE_MAX_PATH> m_windowClassName;
-
+        
         HINSTANCE m_hInstance;
 
         HWND m_hWnd;
 
         LARGE_INTEGER m_performanceFrequency;
         bool m_performanceSupport;
+
+        StaticString<MENGINE_SHA1_HEX_COUNT + 1> m_fingerprint; //SHA1
 
         FactoryPtr m_factoryDynamicLibraries;
         FactoryPtr m_factoryDateTimeProviders;
@@ -286,7 +293,7 @@ namespace Mengine
         HICON m_hIcon;
         StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
-        uint64_t m_prevTime;
+        TimeMilliseconds m_prevTime;
 
         Tags m_platformTags;
         Resolution m_windowResolution;

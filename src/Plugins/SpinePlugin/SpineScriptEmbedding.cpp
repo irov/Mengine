@@ -69,6 +69,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SpineScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( "Spine", true );
+
         pybind::interface_<Spine, pybind::bases<Node> >( _kernel, "Spine", false )
             .def( "setResourceSpineSkeleton", &Spine::setResourceSpineSkeleton )
             .def( "getResourceSpineSkeleton", &Spine::getResourceSpineSkeleton )

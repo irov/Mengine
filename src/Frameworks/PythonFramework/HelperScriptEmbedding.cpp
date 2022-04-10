@@ -5,7 +5,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/TimeSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UserdataServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -63,6 +62,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stream.h"
+#include "Kernel/TimeHelper.h"
 
 #include "Config/Typedef.h"
 #include "Config/StdString.h"
@@ -76,9 +76,6 @@
 #include "pybind/pybind.hpp"
 #include "pybind/pickle.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
-
-#include <ctime>
-#include <iomanip>
 
 namespace Mengine
 {
@@ -1326,19 +1323,18 @@ namespace Mengine
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint64_t s_getTimeMs()
+            TimeMilliseconds s_getTimeMs()
             {
-                uint64_t ms = TIME_SYSTEM()
-                    ->getTimeMilliseconds();
+                TimeMilliseconds ms = Helper::getTimeMilliseconds();
 
                 return ms;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint64_t s_getTime()
+            TimeMilliseconds s_getTime()
             {
-                uint64_t ms = s_getTimeMs();
+                TimeMilliseconds ms = s_getTimeMs();
 
-                uint64_t s = ms / 1000;
+                TimeMilliseconds s = ms / 1000;
 
                 return s;
             }
@@ -1360,7 +1356,7 @@ namespace Mengine
                     ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
 
                 Char pathTimestamp[1024] = {'\0'};
-                Helper::makeFilePathDateTimeHelper( dateTimeProvider, pathTimestamp, 1024 );
+                Helper::makeFilePathDateTimestamp( dateTimeProvider, pathTimestamp, 1024 );
 
                 return pathTimestamp;
             }
@@ -1381,15 +1377,10 @@ namespace Mengine
                 DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
                     ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
 
-                PlatformDateTime dateTime;
-                dateTimeProvider->getLocalDateTime( &dateTime );
+                Char timestamp[256] = {'\0'};
+                Helper::makeLoggerDateTimestamp( dateTimeProvider, timestamp, 256 );
 
-                Stringstream str;
-                str << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
-                    << ":" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
-                    << ":" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
-
-                return str.str();
+                return timestamp;
             }
             //////////////////////////////////////////////////////////////////////////
             VectorConstString s_getAccounts()

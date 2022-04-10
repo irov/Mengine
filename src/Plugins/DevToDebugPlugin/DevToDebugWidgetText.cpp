@@ -13,8 +13,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetText::setConstText( const String & _text )
     {
+        if( m_text == _text )
+        {
+            return;
+        }
+
         m_text = _text;
         m_getter = nullptr;
+
+        this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetText::setGetterTitle( const LambdaGetterText & _getter )
@@ -51,6 +58,21 @@ namespace Mengine
         MENGINE_UNUSED( _data );
 
         //Emty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugWidgetText::_checkInvalidate() const
+    {
+        if( m_getter == nullptr )
+        {
+            return false;
+        }
+
+        if( m_getter( m_text ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

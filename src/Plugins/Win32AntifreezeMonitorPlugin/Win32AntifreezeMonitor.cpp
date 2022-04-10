@@ -174,7 +174,7 @@ namespace Mengine
         processDumpPath += "_";
 
         Char filePathDate[1024] = {'\0'};
-        Helper::makeFilePathDateTimeHelper( m_dateTimeProvider, filePathDate, 1024 );
+        Helper::makeFilePathDateTimestamp( m_dateTimeProvider, filePathDate, 1024 );
 
         processDumpPath += filePathDate;
         processDumpPath += ".dmp";

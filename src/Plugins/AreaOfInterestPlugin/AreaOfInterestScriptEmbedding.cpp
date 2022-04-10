@@ -91,6 +91,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AreaOfInterestScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( "AreaOfInterest", true );
+
         pybind::interface_<AreaOfInterestZoneInterface, pybind::bases<Mixin>>( _kernel, "AreaOfInterestZoneInterface" )
             .def( "freeze", &AreaOfInterestZoneInterface::freeze )
             .def( "isFreeze", &AreaOfInterestZoneInterface::isFreeze )

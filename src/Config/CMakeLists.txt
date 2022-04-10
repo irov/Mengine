@@ -78,6 +78,7 @@ src
     Algorithm.h
     Numeric.h
     Iterator.h
+    Time.h
     Utils.h
 )
 

@@ -5,6 +5,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DevToDebugWidget::DevToDebugWidget()
         : m_hide( false )
+        , m_invalidate( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidget::setHide( bool _hide )
     {
+        if( m_hide == _hide )
+        {
+            return;
+        }
+
         m_hide = _hide;
+
+        this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugWidget::getHide() const
@@ -44,6 +52,26 @@ namespace Mengine
         this->_fillDataJson( jdata );
 
         _jwidget.set( "data", jdata );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidget::invalidate()
+    {
+        m_invalidate = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugWidget::isInvalidate() const
+    {
+        if( m_invalidate == true )
+        {
+            return true;
+        }
+
+        if( this->_checkInvalidate() == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

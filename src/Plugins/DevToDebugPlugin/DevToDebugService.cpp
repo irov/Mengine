@@ -1,5 +1,7 @@
 #include "DevToDebugService.h"
 
+#include "Interface/PlatformInterface.h"
+
 #include "DevToDebugTab.h"
 #include "DevToDebugWidget.h"
 #include "DevToDebugWidgetText.h"
@@ -24,6 +26,7 @@ namespace Mengine
     DevToDebugService::DevToDebugService()
         : m_status( EDTDS_NONE )
         , m_revision( 0 )
+        , m_timerId( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -75,11 +78,27 @@ namespace Mengine
             return false;
         }
 
+        float DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebug", "ProccesTime", 500.f );
+
+        UniqueId timerId = PLATFORM_SERVICE()
+            ->addTimer( DevToDebug_ProccesTime, [this]( UniqueId _id )
+        {
+            MENGINE_UNUSED( _id );
+
+            this->process();
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_timerId = timerId;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_finalizeService()
     {
+        PLATFORM_SERVICE()
+            ->removeTimer( m_timerId );
+        m_timerId = INVALID_UNIQUE_ID;
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), nullptr );
 
@@ -108,12 +127,18 @@ namespace Mengine
         switch( m_status )
         {
         case EDTDS_NONE:
+            break;
+        case EDTDS_READY:
             {
                 m_status = EDTDS_CONNECTING;
 
                 Char connect_url[256] = {'\0'};
                 MENGINE_SPRINTF( connect_url, "http://www.devtodebug.com/api/%s/connect/"
                     , m_pid.c_str()
+                );
+
+                LOGGER_INFO( "devtodebug", "Connecting: %s"
+                    , connect_url
                 );
 
                 cURLHeaders headers;
@@ -186,9 +211,11 @@ namespace Mengine
                     break;
                 }
 
-                m_status = EDTDS_CONNECT;
+                LOGGER_INFO( "devtodebug", "Connect: %s"
+                    , m_uuid.c_str()
+                );
 
-                this->process();
+                m_status = EDTDS_CONNECT;
             }break;
         case Mengine::EDTDS_CONNECT:
             {
@@ -197,8 +224,6 @@ namespace Mengine
                     m_status = EDTDS_NONE;
                     m_revision = 0;
 
-                    this->process();
-
                     break;
                 }
 
@@ -206,8 +231,6 @@ namespace Mengine
                 {
                     m_status = EDTDS_NONE;
                     m_revision = 0;
-
-                    this->process();
 
                     break;
                 }
@@ -234,6 +257,11 @@ namespace Mengine
                     ConstString tab_name = a.get( "tab_name" );
                     ConstString id = a.get( "id" );
 
+                    LOGGER_INFO( "devtodebug", "Action tab '%s' widget '%s'"
+                        , tab_name.c_str()
+                        , id.c_str()
+                    );
+
                     jpp::object d = a.get( "data" );
                     
                     DevToDebugTabInterfacePtr tab = m_tabs.find( tab_name );
@@ -249,9 +277,6 @@ namespace Mengine
 
                     widget_base->process( d );
                 }
-
-                this->process();
-
             }break;
         default:
             break;
@@ -264,8 +289,17 @@ namespace Mengine
     {
         jpp::object j = jpp::make_object();
 
-        j.set( "did", "12345678" );
-        j.set( "name", "Test" );
+        Char fingerprint[MENGINE_PLATFORM_FINGERPRINT_MAXNAME] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getFingerprint( fingerprint );
+
+        j.set( "did", fingerprint );
+
+        Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getUserName( userName );
+
+        j.set( "name", userName );
 
         jpp::object jstate = jpp::make_object();
 
@@ -301,12 +335,42 @@ namespace Mengine
 
         j.set( "confirmed_revision", m_revision );
 
+        jpp::object jstate = jpp::make_object();
+
+        for( const HashtableDevToDebugTabs::value_type & value : m_tabs )
+        {
+            const ConstString & key = value.key;
+            const DevToDebugTabInterfacePtr & tab = value.element;
+
+            jpp::array jtab = jpp::make_array();
+
+            tab->foreachWidgets( [&jtab]( const DevToDebugWidgetInterfacePtr & _widget )
+            {
+                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
+
+                if( widget->isInvalidate() == false )
+                {
+                    return;
+                }
+
+                jpp::object jwidget = jpp::make_object();
+
+                widget->fillJson( jwidget );
+
+                jtab.push_back( jwidget );
+            } );
+
+            jstate.set( key, jtab );
+        }
+
+        j.set( "change_state", jstate );
+
         return j;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::notifyBootstrapperRunComplete_()
     {
-        this->process();
+        m_status = EDTDS_READY;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::notifyBootstrapperFinalizeGame_()

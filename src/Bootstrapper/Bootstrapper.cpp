@@ -631,7 +631,7 @@ namespace Mengine
             ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
         Char filePathDate[1024] = {'\0'};
-        Helper::makeFilePathDateTimeHelper( dateTimeProvider, filePathDate, MENGINE_MAX_PATH );
+        Helper::makeFilePathDateTimestamp( dateTimeProvider, filePathDate, MENGINE_MAX_PATH );
 
         WString unicode_date;
         Helper::utf8ToUnicode( filePathDate, &unicode_date );

@@ -32,6 +32,9 @@ namespace Mengine
         void process( const jpp::object & _data ) override;
 
     protected:
+        bool _checkInvalidate() const override;
+
+    protected:
         mutable String m_text;
         LambdaGetterText m_getter;
     };

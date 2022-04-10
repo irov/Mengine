@@ -8,11 +8,14 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     enum EDevToDebugStatus
     {
         EDTDS_NONE,
+        EDTDS_READY,
         EDTDS_CONNECTING,
         EDTDS_CONNECT,
     };
@@ -58,5 +61,7 @@ namespace Mengine
         String m_uuid;
 
         uint32_t m_revision;
+
+        UniqueId m_timerId;
     };
 }

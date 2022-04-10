@@ -1,5 +1,6 @@
 #include "AndroidNativePythonModule.h"
 
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/PlatformInterface.h"
@@ -196,6 +197,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::addPlugin( const String & _name, const jobject & _plugin )
     {
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( _name.c_str(), true );
+
         m_plugins.emplace( Helper::stringizeString( _name ), _plugin );
     }
     //////////////////////////////////////////////////////////////////////////

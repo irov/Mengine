@@ -5,6 +5,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Map.h"
 
+#include "Config/Time.h"
 #include "Config/Typedef.h"
 
 namespace Mengine
@@ -20,7 +21,7 @@ namespace Mengine
         double watch( const ConstString & _tag ) override;
 
     protected:
-        typedef Map<ConstString, uint64_t> MapWatchers;
+        typedef Map<ConstString, TimeMilliseconds> MapWatchers;
         MapWatchers m_watchers;
     };
 }

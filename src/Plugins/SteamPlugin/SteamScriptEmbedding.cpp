@@ -1,5 +1,7 @@
 #include "SteamScriptEmbedding.h"
 
+#include "Interface/ScriptServiceInterface.h"
+
 #include "SteamServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"

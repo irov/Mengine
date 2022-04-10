@@ -9,6 +9,8 @@
 #   include "Kernel/Document.h"
 #endif
 
+#include "Config/Time.h"
+
 namespace Mengine
 {
     class ChronometerService
@@ -30,7 +32,7 @@ namespace Mengine
         bool removeChronometer( uint32_t _id ) override;
 
     protected:
-        uint64_t m_oldTime;
+        TimeMilliseconds m_oldTime;
 
         struct ChronometerDesc
         {

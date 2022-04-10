@@ -39,9 +39,18 @@ namespace Mengine
     public:
         virtual void process( const jpp::object & _data ) = 0;
 
+    public:
+        void invalidate();
+        bool isInvalidate() const;
+
+    protected:
+        virtual bool _checkInvalidate() const = 0;
+
     protected:
         ConstString m_id;
         bool m_hide;
+
+        bool m_invalidate;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidget> DevToDebugWidgetPtr;

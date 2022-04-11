@@ -4,6 +4,7 @@
 .idea
 .gradle
 /local.properties
+/gradle.properties
 .DS_Store
 /caches
 /wrapper
@@ -11,5 +12,6 @@
 /captures
 /daemon
 /native
+/delivery
 .externalNativeBuild
 **/build/**

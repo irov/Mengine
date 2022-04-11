@@ -30,6 +30,18 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    
+    bundle {
+        language {
+            enableSplit = false
+        }
+        density {
+            enableSplit = false
+        }
+        abi {
+            enableSplit = false
+        }
+    }
 
     defaultConfig {
         if (project.hasProperty("ANDROID_APP_ID")) {
@@ -136,6 +148,13 @@ android {
                 }
             }
         }
+    }
+    
+    if (project.hasProperty("ANDROID_APP_DELIVERY_DIR")) {
+        print 'ANDROID_APP_DELIVERY_DIR = '
+        println ANDROID_APP_DELIVERY_DIR
+        
+        assetPacks += [ANDROID_APP_DELIVERY_DIR]
     }
 
     sourceSets {

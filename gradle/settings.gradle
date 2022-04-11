@@ -1,5 +1,7 @@
 include ':app'
 
+include ':delivery'
+
 //Include('CollectAllTheStars2', './Resources/android-basic-samples-master/CollectAllTheStars2')
 void Include(name, path) {
     include(':' + name)

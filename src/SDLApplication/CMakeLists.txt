@@ -217,6 +217,11 @@ endif()
 
 if(MENGINE_TARGET_APPLE)
     SET(PODFILE_BUFFER "")
+
+    SET(PODS_START_PATCH)
+    file(STRINGS "Pods.start_patch" PODS_START_PATCH NEWLINE_CONSUME)
+    
+    STRING(APPEND PODFILE_BUFFER ${PODS_START_PATCH})
     
     STRING(APPEND PODFILE_BUFFER "project '${MENGINE_PROJECT_NAME}.xcodeproj'\n")
     
@@ -230,8 +235,14 @@ if(MENGINE_TARGET_APPLE)
     
     STRING(APPEND PODFILE_BUFFER "inhibit_all_warnings!\n")
     STRING(APPEND PODFILE_BUFFER "\n")
-    
-    IF(APPLICATION_COCOAPODS)
+
+    IF(APPLICATION_COCOAPODS OR APPLICATION_COCOAPODS_FUNC)
+
+    # __________________________________________________________________________________________________
+
+        SET(PODFILE_BUFFER_COCOAPOD_PROJECT "")
+        SET(PODFILE_BUFFER_IN_TARGET_PROJECT "")
+
         SET(LENGTH_APPLICATION_COCOAPODS)
         list(LENGTH APPLICATION_COCOAPODS LENGTH_APPLICATION_COCOAPODS)
         
@@ -253,30 +264,64 @@ if(MENGINE_TARGET_APPLE)
             SET(COCOAPOD_TAG)
             list(GET APPLICATION_COCOAPODS ${COCOAPODS_INDEX} COCOAPOD_TAG)
             math(EXPR COCOAPODS_INDEX "${COCOAPODS_INDEX}+1")
+
             
-            STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
-            STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
-            STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
-            STRING(APPEND PODFILE_BUFFER "end\n")
-            STRING(APPEND PODFILE_BUFFER "\n")
+            STRING(APPEND PODFILE_BUFFER_IN_TARGET_PROJECT "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
+
+            # STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
+            # STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
+            # STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
+            # STRING(APPEND PODFILE_BUFFER "end\n")
+            # STRING(APPEND PODFILE_BUFFER "\n")
             
-            STRING(APPEND PODFILE_BUFFER "target '" ${COCOAPOD_PROJECT_NAME} "' do\n")
-            STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
-            STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
-            STRING(APPEND PODFILE_BUFFER "end\n")
-            STRING(APPEND PODFILE_BUFFER "\n")
+            STRING(APPEND PODFILE_BUFFER_COCOAPOD_PROJECT "target '" ${COCOAPOD_PROJECT_NAME} "' do\n")
+            STRING(APPEND PODFILE_BUFFER_COCOAPOD_PROJECT "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
+            STRING(APPEND PODFILE_BUFFER_COCOAPOD_PROJECT "  use_frameworks!\n")
+            STRING(APPEND PODFILE_BUFFER_COCOAPOD_PROJECT "end\n")
+            STRING(APPEND PODFILE_BUFFER_COCOAPOD_PROJECT "\n")
             
             MESSAGE("COCOAPOD: ${COCOAPOD_NAME} ${COCOAPOD_GIT} [${COCOAPOD_TAG}]")
         endforeach()
+
+        # __________________________________________________________________________________________________
+
+        SET(PODFILE_BUFFER_COCOAPOD_TARGET_FUNC)
+
+        SET(LENGTH_APPLICATION_COCOAPODS_FUNC)
+        list(LENGTH APPLICATION_COCOAPODS_FUNC LENGTH_APPLICATION_COCOAPODS_FUNC)
+
+        math(EXPR LENGTH_APPLICATION_COCOAPODS_FUNC "${LENGTH_APPLICATION_COCOAPODS_FUNC}-1")
+
+        foreach(COCOAPODS_INDEX RANGE 0 ${LENGTH_APPLICATION_COCOAPODS_FUNC})
+            SET(FUNC_NAME)
+            list(GET APPLICATION_COCOAPODS_FUNC ${COCOAPODS_INDEX} FUNC_NAME)
+            STRING(APPEND PODFILE_BUFFER_COCOAPOD_TARGET_FUNC "  " ${FUNC_NAME} "\n")
+        endforeach()
+            
+        # __________________________________________________________________________________________________
+
+
+        STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
+        # STRING(APPEND PODFILE_BUFFER_IN_TARGET_PROJECT "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
+        STRING(APPEND PODFILE_BUFFER ${PODFILE_BUFFER_IN_TARGET_PROJECT})
+        if(LENGTH_APPLICATION_COCOAPODS_FUNC GREATER 0)
+            STRING(APPEND PODFILE_BUFFER ${PODFILE_BUFFER_COCOAPOD_TARGET_FUNC})
+        endif()
+        STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
+        STRING(APPEND PODFILE_BUFFER "end\n")
+        STRING(APPEND PODFILE_BUFFER "\n")
+
+        STRING(APPEND PODFILE_BUFFER ${PODFILE_BUFFER_COCOAPOD_PROJECT})
+
     ENDIF()
     
     STRING(APPEND PODFILE_BUFFER "#patch\n")
     STRING(APPEND PODFILE_BUFFER "\n")
+
+    SET(PODS_END_PATCH)
+    file(STRINGS "Pods.end_patch" PODS_END_PATCH NEWLINE_CONSUME)
     
-    SET(PODS_PATCH)
-    file(STRINGS "Pods.patch" PODS_PATCH NEWLINE_CONSUME)
-    
-    STRING(APPEND PODFILE_BUFFER ${PODS_PATCH})
+    STRING(APPEND PODFILE_BUFFER ${PODS_END_PATCH})
     
     FILE(WRITE ${CMAKE_BINARY_DIR}/Podfile ${PODFILE_BUFFER})
 endif()

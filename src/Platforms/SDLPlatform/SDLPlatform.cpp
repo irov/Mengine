@@ -173,9 +173,9 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jint JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isBuildMaster )(JNIEnv * env, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isMasterRelease )(JNIEnv * env, jclass cls)
     {
-        bool mode = Mengine::Helper::isBuildMaster();
+        bool mode = Mengine::Helper::isMasterRelease();
 
         jboolean result = (jboolean)mode;
 

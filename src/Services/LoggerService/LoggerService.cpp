@@ -19,6 +19,10 @@
 
 #include "Config/Algorithm.h"
 
+#ifndef MENGINE_LOGGER_LEVEL_FORCE_VERBOSE
+#define MENGINE_LOGGER_LEVEL_FORCE_VERBOSE 0
+#endif
+
 #ifndef MENGINE_LOGGER_HISTORY_MAX
 #define MENGINE_LOGGER_HISTORY_MAX 1048576
 #endif
@@ -104,6 +108,10 @@ namespace Mengine
             logLevel = LM_VERBOSE;
         }
 
+#if MENGINE_LOGGER_LEVEL_FORCE_VERBOSE == 1
+        logLevel = LM_VERBOSE;
+#endif
+
         this->setVerboseLevel( logLevel );
 
         uint32_t verboseFilter = 0xFFFFFFFF;
@@ -142,8 +150,8 @@ namespace Mengine
             , loggerLevel
             , developmentMode == true ? "Dev" : "Normal"
             , MENGINE_DEBUG_VALUE( "True", "False" )
-            , MENGINE_MASTER_VALUE( "True", "False" )
-            , MENGINE_PUBLISH_VALUE( "True", "False" )
+            , MENGINE_MASTER_RELEASE_VALUE( "True", "False" )
+            , MENGINE_BUILD_PUBLISH_VALUE( "True", "False" )
         );
 
         this->logHistory_( LM_MESSAGE, 0, LCOLOR_GREEN, loggerLevelMessage, loggerLevelMessageLen );

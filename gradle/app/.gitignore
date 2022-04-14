@@ -1,9 +1,9 @@
 *.iml
 /data*
-!/data/README.md
+/data_delivery*
+/res*
 /build
 /release
 /captures
 .externalNativeBuild
 google-services.json
-/res*

@@ -418,6 +418,10 @@ namespace Mengine
 
         if( decoder->decode( &data ) == 0 )
         {
+            LOGGER_ERROR( "invalid make bin for '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePathXml )
+            );
+
             return false;
         }
 

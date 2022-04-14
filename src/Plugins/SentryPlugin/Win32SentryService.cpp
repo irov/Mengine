@@ -347,7 +347,7 @@ namespace Mengine
 
         sentry_set_extra( "Development", sentry_value_new_bool( developmentMode ) );
 
-        bool masterMode = Helper::isBuildMaster();
+        bool masterMode = Helper::isMasterRelease();
 
         LOGGER_MESSAGE( "Sentry set extra [Master: %u]"
             , masterMode

@@ -4,7 +4,7 @@
 
 @synthesize m_callbacks;
 
-- (instancetype _Nonnull) initWithCallback:(id<AppLovinRewardCallbackProtocol> * _Nonnull)callback AdUnitIdentifier:(NSString* _Nonnull) key {
+- (instancetype _Nonnull) initWithCallback:(Mengine::AppLovinRewardCallback * _Nonnull)callback AdUnitIdentifier:(NSString* _Nonnull) key {
     self = [super init];
     
     self.m_callbacks = callback;
@@ -78,7 +78,8 @@
 {
     // Rewarded ad was displayed and user should receive the reward
     NSLog(@"Rewarded user: %d %@", reward.amount, reward.label);
-    [self.m_callbacks receivedReward:reward.amount];
+    
+    m_callbacks->receivedReward(reward.amount);
 }
     
 @end

@@ -4,6 +4,7 @@
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonScriptWrapper.h"
 
 #include "DevToDebugTab.h"
 #include "DevToDebugWidgetText.h"
@@ -71,9 +72,9 @@ namespace Mengine
             return DevToDebugWidgetButtonPtr::dynamic_from( button );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugWidgetText_setGetterTitle( DevToDebugWidgetText * _text, const pybind::object & _cb, const pybind::args & _args )
+        static void s_DevToDebugWidgetText_setGetterText( DevToDebugWidgetText * _text, const pybind::object & _cb, const pybind::args & _args )
         {
-            _text->setGetterTitle( [_cb, _args]( String * const _value )
+            _text->setGetterText( [_cb, _args]( String * const _value )
             {
                 String value = _cb.call_args( _args );
 
@@ -123,13 +124,18 @@ namespace Mengine
 
         pybind::interface_<DevToDebugWidgetText, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetText" )
             .def( "setConstText", &DevToDebugWidgetText::setConstText )
-            .def_static_args( "setGetterTitle", &Detail::s_DevToDebugWidgetText_setGetterTitle )
+            .def_static_args( "setGetterText", &Detail::s_DevToDebugWidgetText_setGetterText )
             ;
 
         pybind::interface_<DevToDebugWidgetButton, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetButton" )
             .def( "setTitle", &DevToDebugWidgetButton::setTitle )
+            .def( "getTitle", &DevToDebugWidgetButton::getTitle )
             .def_static_args( "setClickEvent", &Detail::s_DevToDebugWidgetButton_setClickEvent )
             ;
+
+        Helper::registerScriptWrapping<DevToDebugTab>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetText>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetButton>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -137,10 +143,18 @@ namespace Mengine
     void DevToDebugScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<DevToDebugTab>();
+        _kernel->remove_scope<DevToDebugWidget>();
+        _kernel->remove_scope<DevToDebugWidgetText>();
+        _kernel->remove_scope<DevToDebugWidgetButton>();
 
         _kernel->remove_from_module( "addDevToDebugTab", nullptr );
         _kernel->remove_from_module( "removeDevToDebugTab", nullptr );
+        _kernel->remove_from_module( "createDevToDebugWidgetText", nullptr );
+        _kernel->remove_from_module( "createDevToDebugWidgetButton", nullptr );        
+
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugTab" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }
-

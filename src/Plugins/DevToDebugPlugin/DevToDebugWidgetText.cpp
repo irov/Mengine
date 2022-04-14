@@ -24,7 +24,7 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetText::setGetterTitle( const LambdaGetterText & _getter )
+    void DevToDebugWidgetText::setGetterText( const LambdaGetterText & _getter )
     {
         m_getter = _getter;
     }

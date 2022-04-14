@@ -115,5 +115,5 @@ namespace Mengine
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }
-

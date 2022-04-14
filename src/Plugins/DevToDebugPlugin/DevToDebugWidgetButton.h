@@ -19,6 +19,7 @@ namespace Mengine
 
     public:
         void setTitle( const String & _title ) override;
+        const String & getTitle() const override;
 
     public:
         void setClickEvent( const LambdaClickEvent & _clickEvent ) override;

@@ -26,7 +26,7 @@ namespace Mengine
         virtual void setConstText( const String & _text ) = 0;
 
         typedef Lambda<void( String * const )> LambdaGetterText;
-        virtual void setGetterTitle( const LambdaGetterText & _getter ) = 0;
+        virtual void setGetterText( const LambdaGetterText & _getter ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetTextInterface> DevToDebugWidgetTextInterfacePtr;
@@ -36,6 +36,7 @@ namespace Mengine
     {
     public:
         virtual void setTitle( const String & _title ) = 0;
+        virtual const String & getTitle() const = 0;
 
     public:
         typedef Lambda<void()> LambdaClickEvent;

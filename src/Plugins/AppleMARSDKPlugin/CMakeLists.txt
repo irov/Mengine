@@ -8,10 +8,10 @@ src
     AppleMARSDKPlugin.cpp
 
     AppleMARSDKApplicationDelegate.h
-    AppleMARSDKApplicationDelegate.m
+    AppleMARSDKApplicationDelegate.mm
 
     AppleMARSDKDelegate.h
-    AppleMARSDKDelegate.m
+    AppleMARSDKDelegate.mm
 
     AppleMARSDKCallbacksProtocol.h
     

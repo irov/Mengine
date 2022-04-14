@@ -25,7 +25,7 @@ namespace Mengine
     public:
         virtual void setConstText( const String & _text ) = 0;
 
-        typedef Lambda<bool( String & )> LambdaGetterText;
+        typedef Lambda<void( String * const )> LambdaGetterText;
         virtual void setGetterTitle( const LambdaGetterText & _getter ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

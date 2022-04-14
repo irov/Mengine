@@ -71,6 +71,16 @@ namespace Mengine
             return DevToDebugWidgetButtonPtr::dynamic_from( button );
         }
         //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetText_setGetterTitle( DevToDebugWidgetText * _text, const pybind::object & _cb, const pybind::args & _args )
+        {
+            _text->setGetterTitle( [_cb, _args]( String * const _value )
+            {
+                String value = _cb.call_args( _args );
+
+                *_value = value;
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void s_DevToDebugWidgetButton_setClickEvent( DevToDebugWidgetButton * _button, const pybind::object & _cb, const pybind::args & _args )
         {
             _button->setClickEvent( [_cb, _args]()
@@ -113,6 +123,7 @@ namespace Mengine
 
         pybind::interface_<DevToDebugWidgetText, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetText" )
             .def( "setConstText", &DevToDebugWidgetText::setConstText )
+            .def_static_args( "setGetterTitle", &Detail::s_DevToDebugWidgetText_setGetterTitle )
             ;
 
         pybind::interface_<DevToDebugWidgetButton, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetButton" )

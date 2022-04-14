@@ -36,7 +36,7 @@ namespace Mengine
             return m_text;
         }
 
-        m_getter( m_text );
+        m_getter( &m_text );
 
         return m_text;
     }
@@ -67,7 +67,9 @@ namespace Mengine
             return false;
         }
 
-        if( m_getter( m_text ) == false )
+        m_getter( &m_test );
+
+        if( m_text == m_test )
         {
             return false;
         }

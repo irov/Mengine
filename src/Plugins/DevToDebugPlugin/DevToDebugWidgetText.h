@@ -36,6 +36,7 @@ namespace Mengine
 
     protected:
         mutable String m_text;
+        mutable String m_test;
         LambdaGetterText m_getter;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -1,11 +1,7 @@
 include ':app'
 
-include ':delivery'
-
-//Include('CollectAllTheStars2', './Resources/android-basic-samples-master/CollectAllTheStars2')
-void Include(name, path) {
-    include(':' + name)
-    project(':' + name).projectDir = new File(path)
+if(ANDROID_APP_DELIVERY_DIR) {
+    include ':app:' + ANDROID_APP_DELIVERY_DIR
 }
 
 include ':libraries:Mengine'

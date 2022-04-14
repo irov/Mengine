@@ -13,6 +13,8 @@ if(MENGINE_TARGET_IOS)
     ADD_FILTER(
     apple
 
+        AppLovinInterface.h
+
         AppLovinApplicationDelegate.h
         AppLovinApplicationDelegate.m
 

@@ -19,7 +19,7 @@ namespace Mengine
 
     public:
         void setConstText( const String & _text ) override;
-        virtual void setGetterTitle( const LambdaGetterText & _getter ) override;
+        virtual void setGetterText( const LambdaGetterText & _getter ) override;
 
     protected:
         const String & calculateText() const;
@@ -36,6 +36,7 @@ namespace Mengine
 
     protected:
         mutable String m_text;
+        mutable String m_test;
         LambdaGetterText m_getter;
     };
     //////////////////////////////////////////////////////////////////////////

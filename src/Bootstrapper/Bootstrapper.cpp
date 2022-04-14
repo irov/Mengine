@@ -731,7 +731,7 @@ namespace Mengine
         LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "build publish [%s]", Helper::isBuildPublish() == true ? "ON" : "OFF" );
-        LOGGER_MESSAGE( "build master [%s]", Helper::isBuildMaster() == true ? "ON" : "OFF" );
+        LOGGER_MESSAGE( "master release [%s]", Helper::isMasterRelease() == true ? "ON" : "OFF" );
 
 #if MENGINE_ASSERTION_DEBUG == 0
         LOGGER_MESSAGE( "enable assertion debug [OFF]" );
@@ -1154,7 +1154,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createDynamicDevPlugins_()
     {
-        bool devplugins = MENGINE_MASTER_VALUE( false, Helper::isDevelopmentMode() );
+        bool devplugins = MENGINE_MASTER_RELEASE_VALUE( false, Helper::isDevelopmentMode() );
 
         if( HAS_OPTION( "devplugins" ) == true )
         {
@@ -1209,7 +1209,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createDynamicSystemDevPlugins_()
     {
-        bool devplugins = MENGINE_MASTER_VALUE( false, Helper::isDevelopmentMode() );
+        bool devplugins = MENGINE_MASTER_RELEASE_VALUE( false, Helper::isDevelopmentMode() );
 
         if( HAS_OPTION( "devplugins" ) == true )
         {
@@ -1264,7 +1264,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createDynamicPriorityDevPlugins_()
     {
-        bool devplugins = MENGINE_MASTER_VALUE( false, Helper::isDevelopmentMode() );
+        bool devplugins = MENGINE_MASTER_RELEASE_VALUE( false, Helper::isDevelopmentMode() );
 
         if( HAS_OPTION( "devplugins" ) == true )
         {

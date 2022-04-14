@@ -1596,14 +1596,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getBuildMode()
             {
-                bool publish = MENGINE_PUBLISH_VALUE( true, false );
+                bool publish = MENGINE_BUILD_PUBLISH_VALUE( true, false );
 
                 if( publish == true )
                 {
                     return "publish";
                 }
 
-                const Char * mode = MENGINE_MASTER_VALUE( "alpha", "develop" );
+                const Char * mode = MENGINE_MASTER_RELEASE_VALUE( "alpha", "develop" );
 
                 return mode;
             }

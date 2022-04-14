@@ -43,7 +43,7 @@ public class MengineActivity extends SDLActivity {
     private static native int AndroidNativeMengine_getProjectVersion();
     private static native boolean AndroidNativeMengine_isDebugMode();
     private static native boolean AndroidNativeMengine_isDevelopmentMode();
-    private static native boolean AndroidNativeMengine_isBuildMaster();
+    private static native boolean AndroidNativeMengine_isMasterRelease();
     private static native boolean AndroidNativeMengine_isBuildPublish();
     private static native String AndroidNativeMengine_getEngineGITSHA1();
     private static native String AndroidNativeMengine_getBuildTimestamp();
@@ -98,9 +98,9 @@ public class MengineActivity extends SDLActivity {
         return AndroidNativeMengine_isDevelopmentMode();
     }
 
-    public boolean isBuildMaster()
+    public boolean isMasterRelease()
     {
-        return AndroidNativeMengine_isBuildMaster();
+        return AndroidNativeMengine_isMasterRelease();
     }
 
     public boolean isBuildPublish()

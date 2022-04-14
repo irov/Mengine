@@ -54,12 +54,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool isBuildPublish()
         {
-            return MENGINE_PUBLISH_VALUE( true, false );
+            return MENGINE_BUILD_PUBLISH_VALUE( true, false );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool isBuildMaster()
+        bool isMasterRelease()
         {
-            return MENGINE_MASTER_VALUE( true, false );
+            return MENGINE_MASTER_RELEASE_VALUE( true, false );
         }
         //////////////////////////////////////////////////////////////////////////
         bool isWindowsDebug()

@@ -37,6 +37,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -613,6 +614,17 @@ namespace Mengine
             pathes.emplace_back( pack.path );
         }
 
+#if MENGINE_LOGGER_DEBUG == 1
+        for( const FilePath & filePath : pathes )
+        {
+            MENGINE_UNUSED( filePath );
+
+            LOGGER_INFO( "script", "add module path '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, filePath )
+            );
+        }
+#endif
+
         m_moduleFinder->addModulePath( _fileGroup, pathes );
 
         m_bootstrapperModules.insert( m_bootstrapperModules.end(), _modules.begin(), _modules.end() );
@@ -654,6 +666,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
     {
+        LOGGER_INFO( "script", "add script embedding '%s'"
+            , _name.c_str()
+        );
+
         MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
@@ -903,6 +919,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleInterfacePtr PythonScriptService::importModule( const ConstString & _name )
     {
+        LOGGER_INFO( "script", "import module '%s'"
+            , _name.c_str()
+        );
+
         PyObject * py_module = nullptr;
         bool exist = false;
 
@@ -912,7 +932,7 @@ namespace Mengine
         }
         catch( ... )
         {
-            LOGGER_ERROR( "invalid import module '%s'(c-exception)"
+            LOGGER_ERROR( "invalid import module '%s' (c-exception)"
                 , _name.c_str()
             );
 
@@ -921,14 +941,14 @@ namespace Mengine
 
         if( exist == false )
         {
-            LOGGER_WARNING( "invalid import module '%s'(not exist)"
+            LOGGER_WARNING( "invalid import module '%s' (not exist)"
                 , _name.c_str()
             );
 
             return nullptr;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( py_module, "invalid import module '%s'(script)"
+        MENGINE_ASSERTION_MEMORY_PANIC( py_module, "invalid import module '%s' (script)"
             , _name.c_str()
         );
 
@@ -936,7 +956,7 @@ namespace Mengine
 
         if( module->initialize( pybind::module( m_kernel, py_module ) ) == false )
         {
-            LOGGER_ERROR( "invalid import initialize '%s'(script)"
+            LOGGER_ERROR( "invalid import initialize '%s' (script)"
                 , _name.c_str()
             );
 
@@ -953,6 +973,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::addGlobalModule( const Char * _name, PyObject * _module )
     {
+        LOGGER_INFO( "script", "add global module '%s' object '%s'"
+            , _name
+            , m_kernel->object_repr( _module ).c_str()
+        );
+
         PyObject * builtins = m_kernel->get_builtins();
 
         PyObject * dir_bltin = m_kernel->module_dict( builtins );

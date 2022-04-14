@@ -1,4 +1,6 @@
-#import "AppleMARSDKCallbacksProtocol.h"
+#pragma once
+
+#include "AppleMARSDKInterface.h"
 
 #import "MARSDKCore/MARSDKCore.h"
 
@@ -6,9 +8,9 @@
 
 @interface AppleMARSDKDelegate : NSObject<MARSDKDelegate>
 
-@property (assign) id<AppleMARSDKCallbacksProtocol> * _Nonnull m_callbacks;
+@property (assign) Mengine::AppleMARSDKServiceInterface * _Nonnull m_service;
 
-- (instancetype _Nonnull)initWithCallbacks:(id<AppleMARSDKCallbacksProtocol> * _Nonnull) callbacks;
+- (instancetype _Nonnull)initWithService:(Mengine::AppleMARSDKServiceInterface* _Nonnull)service;
 
 - (BOOL) login;
 - (BOOL) logout;

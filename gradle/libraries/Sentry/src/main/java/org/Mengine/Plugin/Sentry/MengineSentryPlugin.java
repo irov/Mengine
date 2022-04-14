@@ -31,7 +31,7 @@ public class MengineSentryPlugin extends MenginePlugin {
             int projectVersion = activity.getProjectVersion();
             boolean isDebugMode = activity.isDebugMode();
             boolean isDevelopmentMode = activity.isDevelopmentMode();
-            boolean isBuildMaster = activity.isBuildMaster();
+            boolean isMasterRelease = activity.isMasterRelease();
             boolean isBuildPublish = activity.isBuildPublish();
             String engineGITSHA1 = activity.getEngineGITSHA1();
             String buildTimestamp = activity.getBuildTimestamp();
@@ -43,7 +43,7 @@ public class MengineSentryPlugin extends MenginePlugin {
             scope.setExtra("Version", String.valueOf(projectVersion));
             scope.setExtra("Debug", String.valueOf(isDebugMode));
             scope.setExtra("Development", String.valueOf(isDevelopmentMode));
-            scope.setExtra("Master", String.valueOf(isBuildMaster));
+            scope.setExtra("Master", String.valueOf(isMasterRelease));
             scope.setExtra("Publish", String.valueOf(isBuildPublish));
             scope.setExtra("Engine Commit", engineGITSHA1);
             scope.setExtra("Build Timestamp", buildTimestamp);

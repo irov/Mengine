@@ -4,8 +4,11 @@
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonScriptWrapper.h"
 
 #include "DevToDebugTab.h"
+#include "DevToDebugWidgetText.h"
+#include "DevToDebugWidgetButton.h"
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/DocumentHelper.h"
@@ -37,35 +40,54 @@ namespace Mengine
                 ->removeTab( _name );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugTab_addText( DevToDebugTab * _tab, const ConstString & _id, bool _hide, const String & _text )
+        static void s_DevToDebugTab_addWidget( DevToDebugTab * _tab, const DevToDebugWidgetPtr & _widget )
+        {
+            _tab->addWidget( _widget );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static DevToDebugWidgetPtr s_DevToDebugTab_findWidget( DevToDebugTab * _tab, const ConstString & _id )
+        {
+            const DevToDebugWidgetInterfacePtr & widget = _tab->findWidget( _id );
+
+            return DevToDebugWidgetPtr::dynamic_from( widget );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static DevToDebugWidgetTextPtr s_createDevToDebugWidgetText( const ConstString & _id )
         {
             DevToDebugWidgetTextInterfacePtr text = PROTOTYPE_SERVICE()
                 ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_PYBIND );
 
             text->setId( _id );
-            text->setHide( _hide );
 
-            text->setConstText( _text );
-
-            _tab->addWidget( text );
+            return DevToDebugWidgetTextPtr::dynamic_from( text );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugTab_addButton( DevToDebugTab * _tab, const ConstString & _id, bool _hide, const String & _title, const pybind::object & _cb, const pybind::args & _args )
+        static DevToDebugWidgetButtonPtr s_createDevToDebugWidgetButton( const ConstString & _id )
         {
             DevToDebugWidgetButtonInterfacePtr button = PROTOTYPE_SERVICE()
                 ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_PYBIND );
 
             button->setId( _id );
-            button->setHide( _hide );
 
-            button->setTitle( _title );
+            return DevToDebugWidgetButtonPtr::dynamic_from( button );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetText_setGetterText( DevToDebugWidgetText * _text, const pybind::object & _cb, const pybind::args & _args )
+        {
+            _text->setGetterText( [_cb, _args]( String * const _value )
+            {
+                String value = _cb.call_args( _args );
 
-            button->setClickEvent( [_cb, _args]()
+                *_value = value;
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetButton_setClickEvent( DevToDebugWidgetButton * _button, const pybind::object & _cb, const pybind::args & _args )
+        {
+            _button->setClickEvent( [_cb, _args]()
             {
                 _cb.call_args( _args );
             } );
-
-            _tab->addWidget( button );
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -86,10 +108,34 @@ namespace Mengine
         pybind::def_function( _kernel, "addDevToDebugTab", &Detail::s_addDevToDebugTab );
         pybind::def_function( _kernel, "removeDevToDebugTab", &Detail::s_removeDevToDebugTab );
 
+        pybind::def_function( _kernel, "createDevToDebugWidgetText", &Detail::s_createDevToDebugWidgetText );
+        pybind::def_function( _kernel, "createDevToDebugWidgetButton", &Detail::s_createDevToDebugWidgetButton );
+
         pybind::interface_<DevToDebugTab, pybind::bases<Scriptable>>( _kernel, "DevToDebugTab" )
-            .def_static( "addText", &Detail::s_DevToDebugTab_addText )
-            .def_static_args( "addButton", &Detail::s_DevToDebugTab_addButton )
+            .def_static( "addWidget", &Detail::s_DevToDebugTab_addWidget )
+            .def_static( "findWidget", &Detail::s_DevToDebugTab_findWidget )
             ;
+
+        pybind::interface_<DevToDebugWidget, pybind::bases<Scriptable>>( _kernel, "DevToDebugWidget" )
+            .def( "getId", &DevToDebugWidget::getId )
+            .def( "setHide", &DevToDebugWidget::setHide )
+            .def( "getHide", &DevToDebugWidget::getHide )
+            ;
+
+        pybind::interface_<DevToDebugWidgetText, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetText" )
+            .def( "setConstText", &DevToDebugWidgetText::setConstText )
+            .def_static_args( "setGetterText", &Detail::s_DevToDebugWidgetText_setGetterText )
+            ;
+
+        pybind::interface_<DevToDebugWidgetButton, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetButton" )
+            .def( "setTitle", &DevToDebugWidgetButton::setTitle )
+            .def( "getTitle", &DevToDebugWidgetButton::getTitle )
+            .def_static_args( "setClickEvent", &Detail::s_DevToDebugWidgetButton_setClickEvent )
+            ;
+
+        Helper::registerScriptWrapping<DevToDebugTab>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetText>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetButton>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -97,10 +143,18 @@ namespace Mengine
     void DevToDebugScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<DevToDebugTab>();
+        _kernel->remove_scope<DevToDebugWidget>();
+        _kernel->remove_scope<DevToDebugWidgetText>();
+        _kernel->remove_scope<DevToDebugWidgetButton>();
 
         _kernel->remove_from_module( "addDevToDebugTab", nullptr );
         _kernel->remove_from_module( "removeDevToDebugTab", nullptr );
+        _kernel->remove_from_module( "createDevToDebugWidgetText", nullptr );
+        _kernel->remove_from_module( "createDevToDebugWidgetButton", nullptr );        
+
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugTab" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }
-

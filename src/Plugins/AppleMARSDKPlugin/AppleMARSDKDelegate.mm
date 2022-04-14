@@ -4,12 +4,12 @@
 
 #pragma mark -
 
-@synthesize m_callbacks;
+@synthesize m_service;
 
-- (instancetype)initWithCallbacks:( id<AppleMARSDKCallbacksProtocol> * _Nonnull) callbacks {
+- (instancetype)initWithService: (Mengine::AppleMARSDKServiceInterface* _Nonnull)service {
     self = [super init];
     
-    m_callbacks = callbacks;
+    self.m_service = service;
     
     [MARSDK sharedInstance].delegate = self;
     
@@ -50,7 +50,9 @@
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
-    [m_callbacks onUserLogin:params];
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    provider->onUserLogin();
 }
 
 - (BOOL) logout {
@@ -59,7 +61,9 @@
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
-    [m_callbacks onUserLogout:params];
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    provider->onUserLogout();
 }
 
 - (void) switchAccount {
@@ -75,7 +79,9 @@
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
-    [m_callbacks onPayPaid:params];
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    provider->onPayPaid();
 }
 
 @end

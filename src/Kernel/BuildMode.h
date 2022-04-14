@@ -11,7 +11,7 @@ namespace Mengine
         bool isDevelopmentMode();
         bool isQualityAssuranceMode();
         bool isBuildPublish();
-        bool isBuildMaster();
+        bool isMasterRelease();
         bool isWindowsDebug();
         const Char * getEngineGITSHA1();
         const Char * getEngineGITURL();

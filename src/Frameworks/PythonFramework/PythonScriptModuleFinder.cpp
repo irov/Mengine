@@ -10,6 +10,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ThreadGuardScope.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -105,7 +106,9 @@ namespace Mengine
 
         MENGINE_THREAD_GUARD_SCOPE( PythonScriptModuleFinder, this, "PythonScriptModuleFinder::find_module" );
 
-#ifndef MENGINE_MASTER_RELEASE
+        static bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", MENGINE_MASTER_RELEASE_VALUE( false, true ) );
+
+        if( PythonScript_AvailableSourceCode == true )
         {
             ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -121,8 +124,10 @@ namespace Mengine
 
             loader->finalize();
         }
-#endif
 
+        static bool PythonScript_AvailableCompileZCode = CONFIG_VALUE( "PythonScript", "AvailableCompileZCode", true );
+
+        if( PythonScript_AvailableCompileZCode == true )
         {
             ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FACTORABLE );
 

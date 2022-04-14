@@ -23,6 +23,11 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
+    const String & DevToDebugWidgetButton::getTitle() const
+    {
+        return m_title;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetButton::setClickEvent( const LambdaClickEvent & _clickEvent )
     {
         m_clickEvent = _clickEvent;

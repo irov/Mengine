@@ -133,7 +133,7 @@ namespace Mengine
                 }
 #endif
 
-                if( Detail::hasJSONValueT2( j, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value ) == true )
+                if( Detail::hasJSONValueT2( j, MENGINE_MASTER_RELEASE_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value ) == true )
                 {
                     return true;
                 }
@@ -182,7 +182,7 @@ namespace Mengine
                 Detail::calcJSONValuesT2( j, "Publish-", _platform, _section, _key, _value );
 #endif
 
-                Detail::calcJSONValuesT2( j, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value );
+                Detail::calcJSONValuesT2( j, MENGINE_MASTER_RELEASE_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value );
 
                 Detail::calcJSONValuesT2( j, "", _platform, _section, _key, _value );
             }

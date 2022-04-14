@@ -178,7 +178,7 @@ namespace Mengine
 
         appleSentrySetExtraBoolean( "Development", developmentMode );
 
-        bool masterMode = Helper::isBuildMaster();
+        bool masterMode = Helper::isMasterRelease();
 
         LOGGER_MESSAGE( "Sentry set extra [Master: %u]"
             , masterMode

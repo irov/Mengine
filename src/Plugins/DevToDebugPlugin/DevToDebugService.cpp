@@ -133,7 +133,7 @@ namespace Mengine
                 m_status = EDTDS_CONNECTING;
 
                 Char connect_url[256] = {'\0'};
-                MENGINE_SPRINTF( connect_url, "http://www.devtodebug.com/api/%s/connect/"
+                MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/%s/connect/"
                     , m_pid.c_str()
                 );
 
@@ -155,7 +155,7 @@ namespace Mengine
         case EDTDS_CONNECT:
             {
                 Char connect_url[256] = {'\0'};
-                MENGINE_SPRINTF( connect_url, "http://www.devtodebug.com/api/worker/%s/"
+                MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/worker/%s/"
                     , m_uuid.c_str()
                 );
 
@@ -416,7 +416,7 @@ namespace Mengine
         }
 
         Char connect_url[256] = {'\0'};
-        MENGINE_SPRINTF( connect_url, "http://www.devtodebug.com/api/worker/%s/delete/"
+        MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/worker/%s/delete/"
             , m_uuid.c_str()
         );
 

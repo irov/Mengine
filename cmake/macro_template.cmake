@@ -37,7 +37,7 @@ MACRO(SET_MENGINE_ENVIRONMENT MENGINE_TARGET MENGINE_RENDER MENGINE_PLATFORM MEN
         SET(MENGINE_TARGET_APPLE ON CACHE BOOL "MENGINE_TARGET_APPLE" FORCE)
     ENDIF()
     
-    MESSAGE("*********************************************")    
+    MESSAGE("*********************************************")
     
     IF(WIN32)
         IF(${CMAKE_SYSTEM_NAME} STREQUAL "WindowsStore")
@@ -592,17 +592,25 @@ macro(set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
 endmacro()
 
 macro(ADD_APPLE_FRAMEWORK NAME)
-    SET(APPLICATION_APPLE_FRAMEWORKS ${APPLICATION_APPLE_FRAMEWORKS} ${NAME} PARENT_SCOPE)
+    find_library(FRAMEWORK_${NAME} ${NAME})
+
+    if( ${FRAMEWORK_${NAME}} STREQUAL FRAMEWORK_${NAME}-NOTFOUND)
+        MESSAGE(ERROR "Framework ${NAME} not found")
+    else()
+        target_link_libraries(${PROJECT_NAME} "-framework ${NAME}")
+        
+        MESSAGE(STATUS "Framework ${NAME} found at ${FRAMEWORK_${NAME}}")
+    endif()
 endmacro()
 
 macro(ADD_APPLE_FRAMEWORK_WITH_PATH NAME PATH)
-	find_library(FRAMEWORK_${NAME} NAMES ${NAME} PATHS ${PATH} NO_CMAKE_FIND_ROOT_PATH)
+    find_library(FRAMEWORK_${NAME} NAMES ${NAME} PATHS ${PATH} NO_CMAKE_FIND_ROOT_PATH)
 
     if(${FRAMEWORK_${NAME}} STREQUAL FRAMEWORK_${NAME}-NOTFOUND)
         MESSAGE(FATAL_ERROR "Framework ${NAME} not found")
     else()
         target_link_libraries(${PROJECT_NAME} ${FRAMEWORK_${NAME}})
-		
+
         MESSAGE(STATUS "Framework ${NAME} found at ${FRAMEWORK_${NAME}}")
     endif()
 endmacro()

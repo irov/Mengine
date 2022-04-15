@@ -1,3 +1,5 @@
+#pragma once
+
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
@@ -8,8 +10,8 @@
 - (void) show;
 - (void) hide;
 
-- (UIViewController* _Nullable) rootViewConstroller;
+- (UIViewController* _Nullable) rootViewController;
 
-@property (nonatomic, strong) MAAdView * m_adView;
+@property (nonatomic, strong) MAAdView * _Nonnull m_adView;
 
 @end

@@ -3,7 +3,6 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -20,17 +19,17 @@ namespace Mengine
         SERVICE_DECLARE( "AppleAppLovinService" )
 
     public:
-        virtual bool hasLoadedinterstitial() const override;
-        virtual bool showInterstitial() override;
+        virtual bool hasLoadedinterstitial() const = 0;
+        virtual bool showInterstitial() = 0;
 
-        virtual bool hasLoadedrewarded() const override;
-        virtual bool showRewarded() override;
-
-    public:
-        virtual void showBanner() override;
-        virtual void hideBanner() override;
+        virtual bool hasLoadedrewarded() const = 0;
+        virtual bool showRewarded() = 0;
 
     public:
-        virtual void showMediationDebugger() override;
+        virtual void showBanner() = 0;
+        virtual void hideBanner() = 0;
+
+    public:
+        virtual void showMediationDebugger() = 0;
     };
 }

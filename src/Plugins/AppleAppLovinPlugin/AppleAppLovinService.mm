@@ -1,5 +1,6 @@
 #include "AppleAppLovinService.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -9,9 +10,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleAppLovinService::AppleAppLovinService()
-        : m_interstitialDelegate(nil)
-        , m_rewardedDelegate(nil)
-        , m_bannerDelegate(nil)
+        : m_banner(nil)
+        , m_interstitial(nil)
+        , m_rewarded(nil)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -43,7 +44,7 @@ namespace Mengine
         CGFloat width = CGRectGetWidth(UIScreen.mainScreen.bounds);
         CGRect bannerRect = CGRectMake(0, 0, width, height);
         
-        m_banner = [[AppLovinBannerDelegate alloc] initWithAdUnit:bannerAdUnit rect:bannerRect];
+        m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit rect:bannerRect];
 
         const Char * Applovin_InterstitialAdUnit = CONFIG_VALUE("Applovin", "InterstitialAdUnit", "");
 
@@ -53,7 +54,7 @@ namespace Mengine
 
         NSString * interstitialAdUnit = [NSString stringWithUTF8String:Applovin_InterstitialAdUnit];
 
-        m_interstitial = [[AppLovinInterstitialDelegate alloc] initWithAdUnit:interstitialAdUnit];
+        m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit];
 
         const Char * Applovin_RewardedAdUnit = CONFIG_VALUE("Applovin", "RewardedAdUnit", "");
 
@@ -63,7 +64,7 @@ namespace Mengine
 
         NSString * rewardedAdUnit = [NSString stringWithUTF8String:Applovin_RewardedAdUnit];
 
-        m_rewarded = [[AppLovinRewardedDelegate alloc] initWithAdUnit:rewardedAdUnit callback:this];
+        m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:rewardedAdUnit rewardCallback:this];
         
         return true;
     }
@@ -102,12 +103,12 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::showBanner()
     {
-        [m_bannerDelegate show];
+        [m_banner show];
     }
     ////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::showBanner( bool show )
+    void AppleAppLovinService::hideBanner()
     {
-        [m_bannerDelegate hide];
+        [m_banner hide];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::showMediationDebugger()

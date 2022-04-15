@@ -14,7 +14,7 @@
     // Set background or background color for banners to be fully functional
     self.m_adView.backgroundColor = UIColor.blackColor;
 
-    [self.rootViewConstroller addSubview: self.adView];
+    [self.rootViewController addSubview: self.m_adView];
 
     // Load the ad
     [self.m_adView loadAd];
@@ -34,7 +34,7 @@
     [self.m_adView stopAutoRefresh];
 }
 
-- (UIViewController* _Nullable) rootViewConstroller {
+- (UIViewController* _Nullable) rootViewController {
     UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
     return appWindow.rootViewController;
 }

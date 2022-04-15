@@ -2,11 +2,11 @@
 
 #include "AppleAppLovinInterface.h"
 
-#include "AppLovinInterstitialDelegate.h"
-#include "AppLovinRewardedDelegate.h"
-#include "AppLovinBannerDelegate.h"
-
 #include "Kernel/ServiceBase.h"
+
+#import "AppleAppLovinInterstitialDelegate.h"
+#import "AppleAppLovinRewardedDelegate.h"
+#import "AppleAppLovinBannerDelegate.h"
 
 namespace Mengine
 {
@@ -23,25 +23,25 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool hasLoadedinterstitial() const;
-        bool showInterstitial();
+        bool hasLoadedinterstitial() const override;
+        bool showInterstitial() override;
 
-        bool hasLoadedrewarded() const;
-        bool showRewarded();
-
-    public:
-        void showBanner();
-        void hideBanner();
+        bool hasLoadedrewarded() const override;
+        bool showRewarded() override;
 
     public:
-        void showMediationDebugger();
+        void showBanner() override;
+        void hideBanner() override;
+
+    public:
+        void showMediationDebugger() override;
 
     protected:
-        void onAppLovinRewardReceivedReward( uint64_t _amount );
+        void onAppLovinRewardReceivedReward( uint64_t _amount ) override;
 
     protected:
-        AppleAppLovinInterstitialDelegate * m_interstitial;
-        AppleAppLovinRewardedDelegate * m_rewarded;
         AppleAppLovinBannerDelegate * m_banner;
+        AppleAppLovinInterstitialDelegate * m_interstitial;
+        AppleAppLovinRewardedDelegate * m_rewarded;        
     };
 }

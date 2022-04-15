@@ -4,7 +4,7 @@
 
 @synthesize m_callback;
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier callback:(Mengine::AppLovinRewardCallback * _Nonnull) callback {
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback {
     self = [super init];
     
     self.m_callback = callback;
@@ -23,7 +23,7 @@
 }
 
 - (BOOL) show {
-    if( self.m_hasLoaded ){
+    if( self.hasLoaded == true ) {
         [self.m_rewardedAd showAd];
 
         return YES;

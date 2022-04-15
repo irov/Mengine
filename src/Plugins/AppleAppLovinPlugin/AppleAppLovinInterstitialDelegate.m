@@ -19,7 +19,7 @@
 }
 
 - (BOOL) show {
-    if( self.m_hasLoaded == true ) {
+    if( self.hasLoaded == true ) {
         [self.m_interstitialAd showAd];
 
         return YES;

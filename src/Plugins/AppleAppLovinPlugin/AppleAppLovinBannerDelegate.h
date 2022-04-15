@@ -1,14 +1,15 @@
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
-@interface AppLovinBannerDelegate : NSObject<MAAdViewAdDelegate>
+@interface AppleAppLovinBannerDelegate : NSObject<MAAdViewAdDelegate>
 
-- (instancetype _Nonnull) initWithRect:(CGRect) bannerRect key:(NSString* _Nonnull) key;
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) AdUnitIdentifier rect:(CGRect) rect;
 
 - (void) show;
 - (void) hide;
 
 - (UIViewController* _Nullable) rootViewConstroller;
 
-@property (nonatomic, strong) MAAdView *adView;
+@property (nonatomic, strong) MAAdView * m_adView;
+
 @end

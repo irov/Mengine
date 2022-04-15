@@ -1,35 +1,37 @@
-#import "AppLovinBannerDelegate.h"
+#import "AppleAppLovinBannerDelegate.h"
 
-@implementation AppLovinBannerDelegate
+@implementation AppleAppLovinBannerDelegate
 
 
-- (instancetype _Nonnull) initWithRect:(CGRect) bannerRect key:(NSString* _Nonnull) key{
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) AdUnitIdentifier rect:(CGRect) rect {
     self = [super init];
     
-    self.adView = [[MAAdView alloc] initWithAdUnitIdentifier: key];
-    self.adView.delegate = self;
+    self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: AdUnitIdentifier];
+    self.m_adView.delegate = self;
 
-    self.adView.frame = bannerRect;//CGRectMake(x, y, width, height);
+    self.m_adView.frame = rect;//CGRectMake(x, y, width, height);
 
     // Set background or background color for banners to be fully functional
-    self.adView.backgroundColor = UIColor.blackColor;
+    self.m_adView.backgroundColor = UIColor.blackColor;
 
     [self.rootViewConstroller addSubview: self.adView];
 
     // Load the ad
-    [self.adView loadAd];
+    [self.m_adView loadAd];
     
     return self;
 }
 
 - (void) show {
-    self.adView.hidden = NO;
-    [self.adView startAutoRefresh];
+    self.m_adView.hidden = NO;
+
+    [self.m_adView startAutoRefresh];
 }
 
 - (void) hide {
-    self.adView.hidden = YES;
-    [self.adView stopAutoRefresh];
+    self.m_adView.hidden = YES;
+
+    [self.m_adView stopAutoRefresh];
 }
 
 - (UIViewController* _Nullable) rootViewConstroller {
@@ -43,6 +45,8 @@
     CGSize adViewSize = ad.size;
     CGFloat widthDp = adViewSize.width;
     CGFloat heightDp = adViewSize.height;
+
+    //ToDo
 }
 
 - (void)didFailToLoadAdForAdUnitIdentifier:(NSString *)adUnitIdentifier withError:(MAError *)error {}
@@ -60,8 +64,9 @@
 
 #pragma mark - Deprecated Callbacks
 
-- (void)didDisplayAd:(MAAd *)ad { /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */ }
-- (void)didHideAd:(MAAd *)ad { /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */ }
-
+/* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
+- (void)didDisplayAd:(MAAd *)ad {}
+- (void)didHideAd:(MAAd *)ad {}
+/* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
     
 @end

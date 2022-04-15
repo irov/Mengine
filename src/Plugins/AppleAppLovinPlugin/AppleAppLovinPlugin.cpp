@@ -1,10 +1,4 @@
-#include "AppLovinPlugin.h"
-
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-#   include "Interface/ScriptServiceInterface.h"
-
-//#   include "AppLovinPluginScriptEmbedding.h"
-#endif
+#include "AppleAppLovinPlugin.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -12,22 +6,22 @@
 #include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-//SERVICE_EXTERN( AppLovinPluginService );
+SERVICE_EXTERN( AppleAppLovinService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppLovinPlugin, Mengine::AppLovinPlugin )
+PLUGIN_FACTORY( AppleAppLovinPlugin, Mengine::AppleAppLovinPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppLovinPlugin::AppLovinPlugin()
+    AppleAppLovinPlugin::AppleAppLovinPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppLovinPlugin::~AppLovinPlugin()
+    AppleAppLovinPlugin::~AppleAppLovinPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppLovinPlugin::_availablePlugin() const
+    bool AppleAppLovinPlugin::_availablePlugin() const
     {
         if( HAS_OPTION( "noapplovin" ) == true )
         {
@@ -41,47 +35,47 @@ namespace Mengine
                 return false;
             }
         }
-      
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AppLovinPlugin::_initializePlugin()
-    {
-//        if( SERVICE_CREATE( AppLovinPluginService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-//        {
-//            return false;
-//        }
-
-//#ifdef MENGINE_USE_SCRIPT_SERVICE
-//        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-//        {
-//            SCRIPT_SERVICE()
-//                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppLovinPluginScriptEmbedding" ), Helper::makeFactorableUnique<AppLovinPluginScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-//        }, MENGINE_DOCUMENT_FACTORABLE );
-//
-//        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-//        {
-//            SCRIPT_SERVICE()
-//                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppLovinPluginScriptEmbedding" ) );
-//        }, MENGINE_DOCUMENT_FACTORABLE );
-//#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppLovinPlugin::_finalizePlugin()
+    bool AppleAppLovinPlugin::_initializePlugin()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
+        if( SERVICE_CREATE( AppleAppLovinService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
-//        SERVICE_FINALIZE( AppLovinPluginService );
+        //#ifdef MENGINE_USE_SCRIPT_SERVICE
+        //        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+        //        {
+        //            SCRIPT_SERVICE()
+        //                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAppLovinScriptEmbedding" ), Helper::makeFactorableUnique<AppleAppLovinScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        //        }, MENGINE_DOCUMENT_FACTORABLE );
+        //
+        //        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+        //        {
+        //            SCRIPT_SERVICE()
+        //                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAppLovinScriptEmbedding" ) );
+        //        }, MENGINE_DOCUMENT_FACTORABLE );
+        //#endif
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppLovinPlugin::_destroyPlugin()
+    void AppleAppLovinPlugin::_finalizePlugin()
     {
-//        SERVICE_DESTROY( AppLovinPluginService );
+        //#ifdef MENGINE_USE_SCRIPT_SERVICE
+                //NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+                //NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+        //#endif
+
+        SERVICE_FINALIZE( AppleAppLovinService );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleAppLovinPlugin::_destroyPlugin()
+    {
+        SERVICE_DESTROY( AppleAppLovinService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

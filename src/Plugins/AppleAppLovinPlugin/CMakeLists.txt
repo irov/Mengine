@@ -7,9 +7,6 @@ src
 
     AppleAppLovinInterface.h
 
-    AppleAppLovinApplicationDelegate.h
-    AppleAppLovinApplicationDelegate.m
-
     AppleAppLovinInterstitialDelegate.h
     AppleAppLovinInterstitialDelegate.m
 

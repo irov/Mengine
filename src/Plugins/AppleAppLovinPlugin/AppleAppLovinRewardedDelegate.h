@@ -1,21 +1,19 @@
 #pragma once
 
-#include "AppLovinInterface.h"
+#include "AppleAppLovinInterface.h"
 
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
+@interface AppleAppLovinRewardedDelegate : NSObject<MARewardedAdDelegate>
 
-
-@interface AppLovinRewardedDelegate : NSObject<MARewardedAdDelegate>
-
-- (instancetype _Nonnull) initWithCallback:(Mengine::AppLovinRewardCallback * _Nonnull)callback WithAdUnitIdentifier:(NSString* _Nonnull) key;
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier callback:(Mengine::AppLovinRewardCallbackInterface * _Nonnull) callback;
 
 - (BOOL) hasLoaded;
 - (BOOL) show;
 
+@property (assign) Mengine::AppLovinRewardCallbackInterface * _Nonnull m_callback;
+@property (nonatomic, strong) MARewardedAd *_Nonnull m_rewardedAd;
+@property (nonatomic, assign) NSInteger m_retryAttempt;
 
-@property (assign) Mengine::AppLovinRewardCallback * _Nonnull m_callbacks;
-@property (nonatomic, strong) MARewardedAd *_Nonnull rewardedAd;
-@property (nonatomic, assign) NSInteger retryAttempt;
 @end

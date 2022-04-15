@@ -1,31 +1,34 @@
-#import "AppLovinRewardedDelegate.h"
+#import "AppleAppLovinRewardedDelegate.h"
 
-@implementation AppLovinRewardedDelegate
+@implementation AppleAppLovinRewardedDelegate
 
-@synthesize m_callbacks;
+@synthesize m_callback;
 
-- (instancetype _Nonnull) initWithCallback:(Mengine::AppLovinRewardCallback * _Nonnull)callback AdUnitIdentifier:(NSString* _Nonnull) key {
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier callback:(Mengine::AppLovinRewardCallback * _Nonnull) callback {
     self = [super init];
     
-    self.m_callbacks = callback;
-    self.rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: key];
-    self.rewardedAd.delegate = self;
+    self.m_callback = callback;
+    
+    self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitIdentifier];
+    self.m_rewardedAd.delegate = self;
     
     // Load the first ad
-    [self.rewardedAd loadAd];
+    [self.m_rewardedAd loadAd];
     
     return self;
 }
 
 - (BOOL) hasLoaded {
-    return [self.rewardedAd isReady];
+    return [self.m_rewardedAd isReady];
 }
 
 - (BOOL) show {
-    if( self.hasLoaded ){
-        [self.rewardedAd showAd];
+    if( self.m_hasLoaded ){
+        [self.m_rewardedAd showAd];
+
         return YES;
     }
+
     return NO;
 }
 
@@ -36,7 +39,7 @@
     // Rewarded ad is ready to be shown. '[self.rewardedAd isReady]' will now return 'YES'
     
     // Reset retry attempt
-    self.retryAttempt = 0;
+    self.m_retryAttempt = 0;
 }
 
 - (void)didFailToLoadAdForAdUnitIdentifier:(NSString *)adUnitIdentifier withError:(MAError *)error
@@ -44,11 +47,12 @@
     // Rewarded ad failed to load
     // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
     
-    self.retryAttempt++;
-    NSInteger delaySec = pow(2, MIN(6, self.retryAttempt));
+    self.m_retryAttempt++;
+
+    NSInteger delaySec = pow(2, MIN(6, self.m_retryAttempt));
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delaySec * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self.rewardedAd loadAd];
+        [self.m_rewardedAd loadAd];
     });
 }
 
@@ -59,13 +63,13 @@
 - (void)didHideAd:(MAAd *)ad
 {
     // Rewarded ad is hidden. Pre-load the next ad
-    [self.rewardedAd loadAd];
+    [self.m_rewardedAd loadAd];
 }
 
 - (void)didFailToDisplayAd:(MAAd *)ad withError:(MAError *)error
 {
     // Rewarded ad failed to display. We recommend loading the next ad
-    [self.rewardedAd loadAd];
+    [self.m_rewardedAd loadAd];
 }
 
 #pragma mark - MARewardedAdDelegate Protocol
@@ -76,10 +80,7 @@
 
 - (void)didRewardUserForAd:(MAAd *)ad withReward:(MAReward *)reward
 {
-    // Rewarded ad was displayed and user should receive the reward
-    NSLog(@"Rewarded user: %d %@", reward.amount, reward.label);
-    
-    m_callbacks->receivedReward(reward.amount);
+    m_callback->onAppLovinRewardReceivedReward( reward.amount );
 }
     
 @end

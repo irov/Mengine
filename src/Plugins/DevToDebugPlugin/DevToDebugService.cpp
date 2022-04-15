@@ -267,7 +267,9 @@ namespace Mengine
 
                 if( m_revision != revision_from )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connect out of sync: %s [%u]"
+                    LOGGER_ERROR( "[DevToDebug] Connect out of sync revision %u != from %u: %s [%u]"
+                        , m_revision
+                        , revision_from
                         , _response.data.c_str()
                         , _response.code
                     );

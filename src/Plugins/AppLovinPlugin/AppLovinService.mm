@@ -4,36 +4,8 @@
 
 #include "Config/Algorithm.h"
 
- #import "AppLovinRewardedDelegate.h"
-
 //////////////////////////////////////////////////////////////////////////
 //SERVICE_FACTORY( AppLovinService, Mengine::AppLovinService );
-/////////////////////////////////////////////////////////////////////////////
-@interface AppLovinCallbacks : NSObject<AppLovinRewardCallbackProtocol>
-//////////////////////////////////////////////////////////////////////////
-- (void) receivedReward:(int) amount;
-//////////////////////////////////////////////////////////////////////////
-@property Mengine::AppLovinService * m_service;
-//////////////////////////////////////////////////////////////////////////
-- (instancetype _Nonnull)initWithCallback:(Mengine::AppLovinService * _Nonnull) service;
-//////////////////////////////////////////////////////////////////////////
-@end
-//////////////////////////////////////////////////////////////////////////
-@implementation AppLovinCallbacks
-//////////////////////////////////////////////////////////////////////////
-#pragma mark - AppLovinCallbacks
-//////////////////////////////////////////////////////////////////////////
-@synthesize m_service;
-//////////////////////////////////////////////////////////////////////////
-- (instancetype)initWithCallback:(Mengine::AppLovinService * _Nonnull) service {
-    m_service = service;
-}
-//////////////////////////////////////////////////////////////////////////
-- (void) receivedReward:(int) amount{
-    m_service->receivedReward(amount);
-}
-//////////////////////////////////////////////////////////////////////////
-@end
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -53,11 +25,8 @@ namespace Mengine
         NSString* interstitial_key = [NSString stringWithUTF8String:"a34c2956c56e8044"];
         NSString* rewarded_key = [NSString stringWithUTF8String:"5c16834f0cda36ad"];
         NSString* banner_key = [NSString stringWithUTF8String:"6c5e2fd2fa0e48e6"];
-        
-        id<AppLovinRewardCallbackProtocol> * callbacks = (id<AppLovinRewardCallbackProtocol> *)[[AppLovinCallbacks alloc] initWithCallback:this];
-                
-        
-        m_rewardedDelegate = [[AppLovinRewardedDelegate alloc] initWithCallback:callbacks AdUnitIdentifier:rewarded_key];
+                 
+        m_rewardedDelegate = [[AppLovinRewardedDelegate alloc] initWithCallback:this AdUnitIdentifier:rewarded_key];
         m_interstitialDelegate = [[AppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:rewarded_key];
         
         
@@ -111,7 +80,7 @@ namespace Mengine
         return [m_rewardedDelegate show];
     }
 //    //////////////////////////////////////////////////////////////////////
-    void AppLovinService::receivedReward(int amount){
+    void AppLovinService::receivedReward(long amount){
     }
 //    //////////////////////////////////////////////////////////////////////
     void AppLovinService::visibleBanner(bool show){

@@ -22,7 +22,7 @@ if(MENGINE_TARGET_IOS)
         AppLovinInterstitialDelegate.m
 
         AppLovinRewardedDelegate.h
-        AppLovinRewardedDelegate.m
+        AppLovinRewardedDelegate.mm
 
         AppLovinBannerDelegate.h
         AppLovinBannerDelegate.m

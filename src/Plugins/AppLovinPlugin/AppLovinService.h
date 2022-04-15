@@ -3,6 +3,7 @@
 #include "AppLovinInterstitialDelegate.h"
 #include "AppLovinRewardedDelegate.h"
 #include "AppLovinBannerDelegate.h"
+#include "AppLovinInterface.h"
 
 //#include "Kernel/ServiceBase.h"
 #include "Kernel/VectorConstString.h"
@@ -11,6 +12,7 @@
 namespace Mengine
 {
 	class AppLovinService
+        : public Mengine::AppLovinRewardCallback
 //		: public ServiceBase<AppLovinServiceInterface>
 	{
 	public:
@@ -35,7 +37,7 @@ namespace Mengine
         void visibleBanner(bool show);
         
     public:
-        void receivedReward(int amount);
+        void receivedReward(long amount);
         
 	protected:
 //        AppleMARSDKProviderInterfacePtr m_provider;

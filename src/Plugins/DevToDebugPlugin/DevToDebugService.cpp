@@ -185,6 +185,11 @@ namespace Mengine
             {
                 if( _response.successful == false )
                 {
+                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s [%u]"
+                        , _response.error.c_str()
+                        , _response.code
+                    );
+
                     m_status = EDTDS_NONE;
                     m_revision = 0;
 
@@ -193,6 +198,11 @@ namespace Mengine
 
                 if( _response.code / 100 != 2 )
                 {
+                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s [%u]"
+                        , _response.error.c_str()
+                        , _response.code
+                    );
+
                     m_status = EDTDS_NONE;
                     m_revision = 0;
 
@@ -205,6 +215,11 @@ namespace Mengine
 
                 if( m_uuid.empty() == true )
                 {
+                    LOGGER_ERROR( "[DevToDebug] Connecting response error: %s [%u]"
+                        , _response.data.c_str()
+                        , _response.code
+                    );
+
                     m_status = EDTDS_NONE;
                     m_revision = 0;
 
@@ -221,6 +236,11 @@ namespace Mengine
             {
                 if( _response.successful == false )
                 {
+                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s [%u]"
+                        , _response.data.c_str()
+                        , _response.code
+                    );
+
                     m_status = EDTDS_NONE;
                     m_revision = 0;
 
@@ -229,6 +249,11 @@ namespace Mengine
 
                 if( _response.code / 100 != 2 )
                 {
+                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s [%u]"
+                        , _response.data.c_str()
+                        , _response.code
+                    );
+
                     m_status = EDTDS_NONE;
                     m_revision = 0;
 
@@ -242,6 +267,11 @@ namespace Mengine
 
                 if( m_revision != revision_from )
                 {
+                    LOGGER_ERROR( "[DevToDebug] Connect out of sync: %s [%u]"
+                        , _response.data.c_str()
+                        , _response.code
+                    );
+
                     m_status = EDTDS_NONE;
                     m_revision = 0;
 
@@ -263,7 +293,7 @@ namespace Mengine
                     );
 
                     jpp::object d = a.get( "data" );
-                    
+
                     DevToDebugTabInterfacePtr tab = m_tabs.find( tab_name );
 
                     if( tab == nullptr )
@@ -300,6 +330,11 @@ namespace Mengine
             ->getUserName( userName );
 
         j.set( "name", userName );
+
+        LOGGER_INFO( "devtodebug", "Device did '%s' name '%s'"
+            , fingerprint
+            , userName
+        );
 
         jpp::object jstate = jpp::make_object();
 

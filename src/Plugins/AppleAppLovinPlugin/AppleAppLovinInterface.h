@@ -13,6 +13,8 @@ namespace Mengine
         virtual void onAppLovinRewardReceivedReward( uint64_t _amount ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<AppleAppLovinRewardCallbackInterface> AppleAppLovinRewardCallbackInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinServiceInterface
         : public ServiceInterface
     {
@@ -32,4 +34,5 @@ namespace Mengine
     public:
         virtual void showMediationDebugger() = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

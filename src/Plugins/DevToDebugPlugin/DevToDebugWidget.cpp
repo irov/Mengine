@@ -63,11 +63,15 @@ namespace Mengine
     {
         if( m_invalidate == true )
         {
+            m_invalidate = false;
+
             return true;
         }
 
         if( this->_checkInvalidate() == true )
         {
+            m_invalidate = false;
+
             return true;
         }
 

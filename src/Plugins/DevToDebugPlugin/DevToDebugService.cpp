@@ -147,7 +147,7 @@ namespace Mengine
                 jpp::object j = this->makeConnectData();
 
                 String data;
-                Helper::writeJSONString( j, &data );
+                Helper::writeJSONStringCompact( j, &data );
 
                 CURL_SERVICE()
                     ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ) );
@@ -165,7 +165,7 @@ namespace Mengine
                 jpp::object j = this->makeProcessData();
 
                 String data;
-                Helper::writeJSONString( j, &data );
+                Helper::writeJSONStringCompact( j, &data );
 
                 CURL_SERVICE()
                     ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ) );
@@ -275,6 +275,11 @@ namespace Mengine
                     m_status = EDTDS_NONE;
                     m_revision = 0;
 
+                    break;
+                }
+
+                if( revision_from == revision_to )
+                {
                     break;
                 }
 
@@ -395,10 +400,35 @@ namespace Mengine
                 jtab.push_back( jwidget );
             } );
 
+            if( jtab.empty() == true )
+            {
+                continue;
+            }
+
             jstate.set( key, jtab );
         }
 
         j.set( "change_state", jstate );
+
+#ifdef MENGINE_LOGGER_DEBUG
+        static uint32_t old_revision = 0;
+        
+        if( m_revision != old_revision )
+        {
+            LOGGER_INFO( "devtodebug", "confirmed revision: %u"
+                , m_revision
+            );
+
+            String data;
+            Helper::writeJSONStringCompact( jstate, &data );
+
+            LOGGER_INFO( "devtodebug", "change state: %s"
+                , data.c_str()
+            );
+
+            old_revision = m_revision;
+        }
+#endif
 
         return j;
     }
@@ -426,7 +456,7 @@ namespace Mengine
         jpp::object j = jpp::make_object();
 
         String data;
-        Helper::writeJSONString( j, &data );
+        Helper::writeJSONStringCompact( j, &data );
 
         CURL_SERVICE()
             ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, nullptr );

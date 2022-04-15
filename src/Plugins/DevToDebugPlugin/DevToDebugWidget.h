@@ -52,7 +52,7 @@ namespace Mengine
         ConstString m_id;
         bool m_hide;
 
-        bool m_invalidate;
+        mutable bool m_invalidate;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidget> DevToDebugWidgetPtr;

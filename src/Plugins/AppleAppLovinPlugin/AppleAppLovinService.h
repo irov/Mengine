@@ -11,37 +11,33 @@
 
 namespace Mengine
 {
-	class AppLovinService
+	class AppleAppLovinService
         : public Mengine::AppLovinRewardCallback
-//		: public ServiceBase<AppLovinServiceInterface>
+		: public ServiceBase<AppleAppLovinServiceInterface>
 	{
 	public:
-        AppLovinService();
-		~AppLovinService() ;
+        AppleAppLovinService();
+		~AppleAppLovinService() ;
 
     protected:
-        bool _initializeService() ;
-        void _finalizeService() ;
-        
-    public:
-//        void setProvider( const AppleMARSDKProviderInterfacePtr & _provider ) override;
-//        const AppleMARSDKProviderInterfacePtr & getProvider() const override;
+        bool _initializeService() override;
+        void _finalizeService() override;
         
     public:
         bool interstitialHasLoaded();
         bool showInterstitial();
         
         bool rewardedHasLoaded();
-        bool showRewarded();
-        
-        void visibleBanner(bool show);
+        bool showRewarded();        
         
     public:
-        void receivedReward(long amount);
+        void receivedReward( uint64_t amount );
+
+    public:
+        void showBanner();
+        void hideBanner();
         
-	protected:
-//        AppleMARSDKProviderInterfacePtr m_provider;
-        
+	protected:       
         AppLovinInterstitialDelegate * m_interstitialDelegate;
         AppLovinRewardedDelegate * m_rewardedDelegate;
         AppLovinBannerDelegate* m_bannerDelegate;

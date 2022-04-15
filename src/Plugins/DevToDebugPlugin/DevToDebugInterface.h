@@ -2,12 +2,16 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
+#include "Interface/UnknownInterface.h"
+
+#include "Kernel/Unknowable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetInterface
         : public ServantInterface
+        , public Unknowable
     {
     public:
         virtual void setId( const ConstString & _id ) = 0;
@@ -19,8 +23,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetInterface> DevToDebugWidgetInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class DevToDebugWidgetTextInterface
-        : virtual public DevToDebugWidgetInterface
+    class UnknownDevToDebugWidgetTextInterface
+        : public UnknownInterface
     {
     public:
         virtual void setConstText( const String & _text ) = 0;
@@ -29,10 +33,10 @@ namespace Mengine
         virtual void setGetterText( const LambdaGetterText & _getter ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetTextInterface> DevToDebugWidgetTextInterfacePtr;
+    typedef IntrusivePtr<UnknownDevToDebugWidgetTextInterface, UnknownInterface> UnknownDevToDebugWidgetTextInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class DevToDebugWidgetButtonInterface
-        : virtual public DevToDebugWidgetInterface
+    class UnknownDevToDebugWidgetButtonInterface
+        : public UnknownInterface
     {
     public:
         virtual void setTitle( const String & _title ) = 0;
@@ -43,7 +47,7 @@ namespace Mengine
         virtual void setClickEvent( const LambdaClickEvent & _clickEvent ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetButtonInterface> DevToDebugWidgetButtonInterfacePtr;
+    typedef IntrusivePtr<UnknownDevToDebugWidgetButtonInterface, UnknownInterface> UnknownDevToDebugWidgetButtonInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugTabInterface
         : public ServantInterface

@@ -1,13 +1,11 @@
 #include "PlayerGlobalInputHandler.h"
 
-#include "Interface/EnumeratorServiceInterface.h"
-
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
 
 #include "Config/StdIntTypes.h"
-
 #include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -249,8 +247,7 @@ namespace Mengine
 
         GlobalHandlerDesc desc;
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         desc.id = new_id;
 

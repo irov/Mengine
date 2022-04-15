@@ -1,12 +1,12 @@
 #include "InputService.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/EnumeratorHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -340,8 +340,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         InputMousePositionProviderDesc desc;
         desc.id = new_id;

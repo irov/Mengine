@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/EnumeratorServiceInterface.h"
-
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #else
@@ -11,6 +9,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/EnumeratorHelper.h"
 
 namespace Mengine
 {
@@ -44,8 +43,7 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = ENUMERATOR_SERVICE()
-                ->generateUniqueIdentity();
+            UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
 
             resource->setUniqueIdentity( uniqueIdentity );
 

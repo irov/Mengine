@@ -1,7 +1,6 @@
 #include "TimepipeService.h"
 
-#include "Interface/EnumeratorServiceInterface.h"
-
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Algorithm.h"
@@ -51,8 +50,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId newid = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId newid = Helper::generateUniqueIdentity();
 
         TimepipeDesc desc;
         desc.id = newid;

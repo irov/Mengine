@@ -6,6 +6,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #endif
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -40,8 +41,7 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = ENUMERATOR_SERVICE()
-                ->generateUniqueIdentity();
+            UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
 
             object->setUniqueIdentity( uniqueIdentity );
 
@@ -62,4 +62,16 @@ namespace Mengine
             return object;
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class Type, uint32_t Count>
+        FactoryPrototypeGeneratorPtr makeObjectPrototypeGenerator( const DocumentPtr & _doc )
+        {
+            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<ObjectPrototypeGenerator<Type, Count>>( _doc );
+
+            return generator;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

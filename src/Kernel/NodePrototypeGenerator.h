@@ -6,13 +6,12 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #endif
 
-#include "Interface/EnumeratorServiceInterface.h"
-
 #include "Kernel/Node.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Document.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/EnumeratorHelper.h"
 
 namespace Mengine
 {
@@ -46,8 +45,7 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = ENUMERATOR_SERVICE()
-                ->generateUniqueIdentity();
+            UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
 
             node->setUniqueIdentity( uniqueIdentity );
 

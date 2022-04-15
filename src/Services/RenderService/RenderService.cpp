@@ -5,10 +5,10 @@
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
 #include "BatchRenderPipeline.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/FactoryPool.h"

@@ -27,39 +27,45 @@ namespace Mengine
         DevToDebugTabInterfacePtr tab = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        DevToDebugWidgetTextInterfacePtr text1 = PROTOTYPE_SERVICE()
-            ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
+        DevToDebugWidgetInterfacePtr text1 = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
 
         text1->setId( STRINGIZE_STRING_LOCAL( "text1" ) );
-        text1->setConstText( "Hello World!" );
+
+        UnknownDevToDebugWidgetTextInterfacePtr unknown_text1 = text1->getUnknown();
+        unknown_text1->setConstText( "Hello World!" );
 
         tab->addWidget( text1 );
 
-        DevToDebugWidgetButtonInterfacePtr btn_change = PROTOTYPE_SERVICE()
-            ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
+        DevToDebugWidgetInterfacePtr btn_change = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
 
         btn_change->setId( STRINGIZE_STRING_LOCAL( "btn_change" ) );
-        btn_change->setTitle( "Change" );
 
-        btn_change->setClickEvent( [text1]()
+        UnknownDevToDebugWidgetButtonInterfacePtr unknown_btn_change = btn_change->getUnknown();
+        unknown_btn_change->setTitle( "Change" );
+
+        unknown_btn_change->setClickEvent( [unknown_text1]()
         {
             Char buffer[256];
             MENGINE_SPRINTF( buffer, "Bye Bye! %llu"
                 , Helper::getTimeMilliseconds()
             );
 
-            text1->setConstText( buffer );
+            unknown_text1->setConstText( buffer );
         } );
 
         tab->addWidget( btn_change );
 
-        DevToDebugWidgetButtonInterfacePtr btn_quit = PROTOTYPE_SERVICE()
-            ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
+        DevToDebugWidgetInterfacePtr btn_quit = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
 
         btn_quit->setId( STRINGIZE_STRING_LOCAL( "btn_quit" ) );
-        btn_quit->setTitle( "Quit" );
 
-        btn_quit->setClickEvent( []()
+        UnknownDevToDebugWidgetButtonInterfacePtr unknown_btn_quit = btn_quit->getUnknown();
+        unknown_btn_quit->setTitle( "Quit" );
+
+        unknown_btn_quit->setClickEvent( []()
         {
             APPLICATION_SERVICE()
                 ->quit();

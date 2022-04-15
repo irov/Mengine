@@ -3,15 +3,17 @@
 #include "DevToDebugWidget.h"
 
 #include "Kernel/String.h"
+#include "Kernel/Unknowable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetText
         : public DevToDebugWidget
-        , public DevToDebugWidgetTextInterface
+        , public UnknownDevToDebugWidgetTextInterface
     {
         DECLARE_FACTORABLE( DevToDebugWidgetText );
+        DECLARE_UNKNOWABLE();
 
     public:
         DevToDebugWidgetText();

@@ -2,13 +2,13 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
 #include "cURLGetMessageThreadTask.h"
 #include "cURLPostMessageThreadTask.h"
 #include "cURLHeaderDataThreadTask.h"
 #include "cURLGetAssetThreadTask.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AllocatorHelper.h"
@@ -220,8 +220,7 @@ namespace Mengine
             return 0;
         }
 
-        UniqueId task_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId task_id = Helper::generateUniqueIdentity();
 
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -267,8 +266,7 @@ namespace Mengine
             return 0;
         }
 
-        UniqueId task_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId task_id = Helper::generateUniqueIdentity();
 
         cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -314,8 +312,7 @@ namespace Mengine
             return 0;
         }
 
-        UniqueId task_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId task_id = Helper::generateUniqueIdentity();
 
         cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -368,8 +365,7 @@ namespace Mengine
 
         FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", _filePath.c_str() );
 
-        UniqueId task_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId task_id = Helper::generateUniqueIdentity();
 
         cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -434,8 +430,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId id = Helper::generateUniqueIdentity();
 
         RequestListenerDesk desc;
         desc.id = id;

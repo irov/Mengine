@@ -33,7 +33,6 @@ namespace Mengine
 
     public:
         virtual FactorablePointer createObject( const DocumentPtr & _doc );
-        virtual FactorableVirtualInheritancePointer createVirtualInheritanceObject( const DocumentPtr & _doc );
         virtual void destroyObject( Factorable * _object );
 
     public:

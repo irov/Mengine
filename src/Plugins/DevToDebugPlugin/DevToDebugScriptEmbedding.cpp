@@ -54,8 +54,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetTextPtr s_createDevToDebugWidgetText( const ConstString & _id )
         {
-            DevToDebugWidgetTextInterfacePtr text = PROTOTYPE_SERVICE()
-                ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr text = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_PYBIND );
 
             text->setId( _id );
 
@@ -64,8 +64,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetButtonPtr s_createDevToDebugWidgetButton( const ConstString & _id )
         {
-            DevToDebugWidgetButtonInterfacePtr button = PROTOTYPE_SERVICE()
-                ->generateVirtualInheritancePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr button = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_PYBIND );
 
             button->setId( _id );
 

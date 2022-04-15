@@ -4,10 +4,10 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -347,8 +347,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity );
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         identity->setId( new_id );
 

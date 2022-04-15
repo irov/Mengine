@@ -1,8 +1,8 @@
 #include "MemoryService.h"
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -196,8 +196,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         CacheBufferMemory buffer;
         buffer.id = new_id;

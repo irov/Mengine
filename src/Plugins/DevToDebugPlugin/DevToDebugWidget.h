@@ -4,6 +4,7 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/JSON.h"
+#include "Kernel/Identity.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "Kernel/Scriptable.h"
@@ -13,7 +14,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidget
-        : virtual public DevToDebugWidgetInterface
+        : public DevToDebugWidgetInterface
+        , public Identity
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         , public Scriptable
 #endif

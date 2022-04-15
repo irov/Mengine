@@ -41,8 +41,7 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = ENUMERATOR_SERVICE()
-                ->generateUniqueIdentity();
+            UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
 
             surface->setUniqueIdentity( uniqueIdentity );
 

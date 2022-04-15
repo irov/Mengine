@@ -28,9 +28,9 @@ namespace Mengine
             return false;
         }
 
-        if( HAS_OPTION( "appodeal" ) == false )
+        if( HAS_OPTION( "applovin" ) == false )
         {
-            if( CONFIG_VALUE( "APPLOVIN", "Enable", true ) == false )
+            if( CONFIG_VALUE( "AppLovin", "Enable", true ) == false )
             {
                 return false;
             }

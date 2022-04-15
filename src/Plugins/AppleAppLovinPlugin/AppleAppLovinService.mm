@@ -30,13 +30,13 @@ namespace Mengine
             LOGGER_MESSAGE("AppLovin initialize");
         }];
 
-        const Char * Applovin_BannerAdUnit = CONFIG_VALUE("Applovin", "BannerAdUnit", "");
+        const Char * AppLovin_BannerAdUnit = CONFIG_VALUE("AppLovin", "BannerAdUnit", "");
 
         LOGGER_INFO("applovin", "Banner AdUnit '%s'"
-            , Applovin_BannerAdUnit
+            , AppLovin_BannerAdUnit
         );
 
-        NSString * bannerAdUnit = [NSString stringWithUTF8String:Applovin_BannerAdUnit];
+        NSString * bannerAdUnit = [NSString stringWithUTF8String:AppLovin_BannerAdUnit];
 
         // Banner height on iPhone and iPad is 50 and 90, respectively
         CGFloat height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
@@ -46,23 +46,23 @@ namespace Mengine
         
         m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit rect:bannerRect];
 
-        const Char * Applovin_InterstitialAdUnit = CONFIG_VALUE("Applovin", "InterstitialAdUnit", "");
+        const Char * AppLovin_InterstitialAdUnit = CONFIG_VALUE("AppLovin", "InterstitialAdUnit", "");
 
         LOGGER_INFO("applovin", "Interstitial AdUnit '%s'"
-            , Applovin_InterstitialAdUnit
+            , AppLovin_InterstitialAdUnit
         );
 
-        NSString * interstitialAdUnit = [NSString stringWithUTF8String:Applovin_InterstitialAdUnit];
+        NSString * interstitialAdUnit = [NSString stringWithUTF8String:AppLovin_InterstitialAdUnit];
 
         m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit];
 
-        const Char * Applovin_RewardedAdUnit = CONFIG_VALUE("Applovin", "RewardedAdUnit", "");
+        const Char * AppLovin_RewardedAdUnit = CONFIG_VALUE("AppLovin", "RewardedAdUnit", "");
 
         LOGGER_INFO("applovin", "Rewarded AdUnit '%s'"
-            , Applovin_RewardedAdUnit
+            , AppLovin_RewardedAdUnit
         );
 
-        NSString * rewardedAdUnit = [NSString stringWithUTF8String:Applovin_RewardedAdUnit];
+        NSString * rewardedAdUnit = [NSString stringWithUTF8String:AppLovin_RewardedAdUnit];
 
         m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:rewardedAdUnit rewardCallback:this];
         

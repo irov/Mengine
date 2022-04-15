@@ -309,8 +309,8 @@ PLUGIN_EXPORT( AppleAppTracking );
 PLUGIN_EXPORT( AppleMARSDK );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_APPLE_MARSDK_STATIC
-PLUGIN_EXPORT( AppLovinPlugin );
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
+PLUGIN_EXPORT( AppleAppLovinPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
@@ -1119,7 +1119,7 @@ namespace Mengine
 #endif
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
-        MENGINE_ADD_PLUGIN( AppLovinPlugin, "Plugin AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleAppLovinPlugin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC

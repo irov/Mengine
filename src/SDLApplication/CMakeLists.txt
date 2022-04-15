@@ -231,17 +231,11 @@ if(MENGINE_TARGET_APPLE)
     STRING(APPEND PODFILE_BUFFER "inhibit_all_warnings!\n")
     STRING(APPEND PODFILE_BUFFER "\n")
 
-    # __________________________________________________________________________________________________
-
-    SET(PODFILE_BUFFER "")
-    SET(PODFILE_BUFFER_LOCAL "")
-    SET(PODFILE_BUFFER_ALL "")
-
     SET(LENGTH_APPLICATION_COCOAPODS)
     list(LENGTH APPLICATION_COCOAPODS LENGTH_APPLICATION_COCOAPODS)
     
     math(EXPR LENGTH_APPLICATION_COCOAPODS "${LENGTH_APPLICATION_COCOAPODS}-1")
-    
+
     foreach(COCOAPODS_INDEX RANGE 0 ${LENGTH_APPLICATION_COCOAPODS} 4)
         SET(COCOAPOD_PROJECT_NAME)
         list(GET APPLICATION_COCOAPODS ${COCOAPODS_INDEX} COCOAPOD_PROJECT_NAME)
@@ -260,23 +254,35 @@ if(MENGINE_TARGET_APPLE)
         math(EXPR COCOAPODS_INDEX "${COCOAPODS_INDEX}+1")
 
         string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPODS_NO_GIT)
-        
+    
+        STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
         if(COCOAPODS_NO_GIT)
-            STRING(APPEND PODFILE_BUFFER_LOCAL "  pod '" ${COCOAPOD_NAME} "', '" ${COCOAPOD_TAG} "'\n")
+            STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', '" ${COCOAPOD_TAG} "'\n")
             
             MESSAGE("COCOAPOD: ${COCOAPOD_NAME} [${COCOAPOD_TAG}]")
         else()
-            STRING(APPEND PODFILE_BUFFER_LOCAL "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
+            STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
         
             MESSAGE("COCOAPOD: ${COCOAPOD_NAME} ${COCOAPOD_GIT} [${COCOAPOD_TAG}]")
         endif()
+        STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
+        STRING(APPEND PODFILE_BUFFER "end\n")
+        STRING(APPEND PODFILE_BUFFER "\n")
+        
+        STRING(APPEND PODFILE_BUFFER "target '" ${COCOAPOD_PROJECT_NAME} "' do\n")
+        if(COCOAPODS_NO_GIT)
+            STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', '" ${COCOAPOD_TAG} "'\n")
+            
+            MESSAGE("COCOAPOD: ${COCOAPOD_NAME} [${COCOAPOD_TAG}]")
+        else()
+            STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
+        
+            MESSAGE("COCOAPOD: ${COCOAPOD_NAME} ${COCOAPOD_GIT} [${COCOAPOD_TAG}]")
+        endif()
+        STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
+        STRING(APPEND PODFILE_BUFFER "end\n")
+        STRING(APPEND PODFILE_BUFFER "\n")
     endforeach()
-
-    STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
-    STRING(APPEND PODFILE_BUFFER ${PODFILE_BUFFER_ALL})
-    STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
-    STRING(APPEND PODFILE_BUFFER "end\n")
-    STRING(APPEND PODFILE_BUFFER "\n")
     
     STRING(APPEND PODFILE_BUFFER "#patch\n")
     STRING(APPEND PODFILE_BUFFER "\n")

@@ -1,13 +1,14 @@
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
-@interface AppLovinInterstitialDelegate : NSObject<MAAdDelegate>
+@interface AppleAppLovinInterstitialDelegate : NSObject<MAAdDelegate>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) key;
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier;
 
 - (BOOL) hasLoaded;
 - (BOOL) show;
 
-@property (nonatomic, strong) MAInterstitialAd *interstitialAd;
-@property (nonatomic, assign) NSInteger retryAttempt;
+@property (nonatomic, strong) MAInterstitialAd * m_interstitialAd;
+@property (nonatomic, assign) NSInteger m_retryAttempt;
+
 @end

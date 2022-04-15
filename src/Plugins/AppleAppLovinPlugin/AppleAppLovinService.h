@@ -1,45 +1,47 @@
 #pragma once
 
+#include "AppleAppLovinInterface.h"
+
 #include "AppLovinInterstitialDelegate.h"
 #include "AppLovinRewardedDelegate.h"
 #include "AppLovinBannerDelegate.h"
-#include "AppLovinInterface.h"
 
-//#include "Kernel/ServiceBase.h"
-#include "Kernel/VectorConstString.h"
-
+#include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {
-	class AppleAppLovinService
-        : public Mengine::AppLovinRewardCallback
-		: public ServiceBase<AppleAppLovinServiceInterface>
-	{
-	public:
+    class AppleAppLovinService
+        : public ServiceBase<AppleAppLovinServiceInterface>
+        , public AppleAppLovinRewardCallbackInterface
+    {
+    public:
         AppleAppLovinService();
-		~AppleAppLovinService() ;
+        ~AppleAppLovinService();
 
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
-        
+
     public:
-        bool interstitialHasLoaded();
+        bool hasLoadedinterstitial() const;
         bool showInterstitial();
-        
-        bool rewardedHasLoaded();
-        bool showRewarded();        
-        
-    public:
-        void receivedReward( uint64_t amount );
+
+        bool hasLoadedrewarded() const;
+        bool showRewarded();
 
     public:
         void showBanner();
         void hideBanner();
-        
-	protected:       
-        AppLovinInterstitialDelegate * m_interstitialDelegate;
-        AppLovinRewardedDelegate * m_rewardedDelegate;
-        AppLovinBannerDelegate* m_bannerDelegate;
+
+    public:
+        void showMediationDebugger();
+
+    protected:
+        void onAppLovinRewardReceivedReward( uint64_t _amount );
+
+    protected:
+        AppleAppLovinInterstitialDelegate * m_interstitial;
+        AppleAppLovinRewardedDelegate * m_rewarded;
+        AppleAppLovinBannerDelegate * m_banner;
     };
 }

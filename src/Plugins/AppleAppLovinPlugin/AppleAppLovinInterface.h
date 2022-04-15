@@ -7,10 +7,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AppLovinRewardCallback{
-        public:
-            virtual void receivedReward(long amount) = 0;
-    
+    class AppleAppLovinRewardCallbackInterface
+        : public Mixin
+    {
+    public:
+        virtual void onAppLovinRewardReceivedReward( uint64_t _amount ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinServiceInterface
@@ -19,5 +20,17 @@ namespace Mengine
         SERVICE_DECLARE( "AppleAppLovinService" )
 
     public:
+        virtual bool hasLoadedinterstitial() const override;
+        virtual bool showInterstitial() override;
+
+        virtual bool hasLoadedrewarded() const override;
+        virtual bool showRewarded() override;
+
+    public:
+        virtual void showBanner() override;
+        virtual void hideBanner() override;
+
+    public:
+        virtual void showMediationDebugger() override;
     };
 }

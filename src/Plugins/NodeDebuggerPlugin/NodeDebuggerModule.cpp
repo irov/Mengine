@@ -585,7 +585,7 @@ namespace Mengine
         vertices[6].position = mt::vec3f( bbox.maximum.x - offset, bbox.maximum.y - offset, 0.f );
         vertices[7].position = mt::vec3f( bbox.minimum.x + offset, bbox.maximum.y - offset, 0.f );
 
-        ColorValue_ARGB color = Helper::makeRGBA( 1.f, 0.f, 1.f, 1.f );
+        ColorValue_ARGB color = Helper::makeRGBAF( 1.f, 0.f, 1.f, 1.f );
 
         for( uint32_t index = 0; index != 8; ++index )
         {

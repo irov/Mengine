@@ -1,11 +1,13 @@
 #include "DevToDebugWidget.h"
 
+#include "DevToDebugProperty.h"
+
+#include "Kernel/Assertion.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DevToDebugWidget::DevToDebugWidget()
-        : m_hide( false )
-        , m_invalidate( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -23,59 +25,44 @@ namespace Mengine
         return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidget::setHide( bool _hide )
+    void DevToDebugWidget::setBaseProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property )
     {
-        if( m_hide == _hide )
-        {
-            return;
-        }
-
-        m_hide = _hide;
-
-        this->invalidate();
+        m_baseProperties.emplace( _name, _property );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DevToDebugWidget::getHide() const
+    const DevToDebugPropertyInterfacePtr & DevToDebugWidget::getBaseProperty( const ConstString & _name ) const
     {
-        return m_hide;
+        const DevToDebugPropertyInterfacePtr & property = m_baseProperties.find( _name );
+
+        return property;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidget::fillJson( jpp::object & _jwidget )
+    bool DevToDebugWidget::fillJson( jpp::object & _jwidget, bool _force )
     {
+        MENGINE_ASSERTION_FATAL( m_id.empty() == false, "DevToDebug widget type '%s' miss id"
+            , this->getType().c_str()
+        );
+
         _jwidget.set( "id", m_id );
-        _jwidget.set( "hide", m_hide );
 
         this->_fillTypeJson( _jwidget );
 
+        bool invalidate = false;
+
+        for( const HashtableBaseProperties::value_type & value : m_baseProperties )
+        { 
+            DevToDebugPropertyPtr property = DevToDebugPropertyPtr::from( value.element );
+
+            invalidate |= property->fillPropertyJson( value.key, _jwidget, _force );
+        }
+
         jpp::object jdata = jpp::make_object();
 
-        this->_fillDataJson( jdata );
+        invalidate |= this->_fillDataJson( jdata, _force );
 
         _jwidget.set( "data", jdata );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidget::invalidate()
-    {
-        m_invalidate = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DevToDebugWidget::isInvalidate() const
-    {
-        if( m_invalidate == true )
-        {
-            m_invalidate = false;
 
-            return true;
-        }
-
-        if( this->_checkInvalidate() == true )
-        {
-            m_invalidate = false;
-
-            return true;
-        }
-
-        return false;
+        return invalidate;
     }
     //////////////////////////////////////////////////////////////////////////
 }

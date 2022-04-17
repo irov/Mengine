@@ -1,36 +1,41 @@
-#include "DevToDebugWidgetText.h"
+#include "DevToDebugWidgetCheckbox.h"
 
 #include "DevToDebugProperty.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DevToDebugWidgetText::DevToDebugWidgetText()
+    DevToDebugWidgetCheckbox::DevToDebugWidgetCheckbox()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DevToDebugWidgetText::~DevToDebugWidgetText()
+    DevToDebugWidgetCheckbox::~DevToDebugWidgetCheckbox()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetText::setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property )
+    void DevToDebugWidgetCheckbox::setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property )
     {
         m_dataProperties.emplace( _name, _property );
     }
     //////////////////////////////////////////////////////////////////////////
-    const DevToDebugPropertyInterfacePtr & DevToDebugWidgetText::getDataProperty( const ConstString & _name ) const
+    const DevToDebugPropertyInterfacePtr & DevToDebugWidgetCheckbox::getDataProperty( const ConstString & _name ) const
     {
         const DevToDebugPropertyInterfacePtr & property = m_dataProperties.find( _name );
 
         return property;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetText::_fillTypeJson( jpp::object & _jdata )
+    void DevToDebugWidgetCheckbox::setClickEvent( const LambdaClickEvent & _clickEvent )
     {
-        _jdata.set( "type", "text" );
+        m_clickEvent = _clickEvent;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DevToDebugWidgetText::_fillDataJson( jpp::object & _jdata, bool _force )
+    void DevToDebugWidgetCheckbox::_fillTypeJson( jpp::object & _jdata )
+    {
+        _jdata.set( "type", "check-box" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugWidgetCheckbox::_fillDataJson( jpp::object & _jdata, bool _force )
     {
         bool invalidate = false;
 
@@ -44,11 +49,16 @@ namespace Mengine
         return invalidate;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetText::process( const jpp::object & _data )
+    void DevToDebugWidgetCheckbox::process( const jpp::object & _data )
     {
         MENGINE_UNUSED( _data );
 
-        //Emty
+        if( m_clickEvent == nullptr )
+        {
+            return;
+        }
+
+        m_clickEvent( true );
     }
     //////////////////////////////////////////////////////////////////////////
 }

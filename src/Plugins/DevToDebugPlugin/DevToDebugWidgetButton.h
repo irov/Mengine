@@ -20,28 +20,26 @@ namespace Mengine
         ~DevToDebugWidgetButton() override;
 
     public:
-        void setTitle( const String & _title ) override;
-        const String & getTitle() const override;
+        void setClickEvent( const LambdaClickEvent & _clickEvent ) override;
 
     public:
-        void setClickEvent( const LambdaClickEvent & _clickEvent ) override;
+        void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) override;
+        const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const override;
 
     protected:
         void _fillTypeJson( jpp::object & _jdata ) override;
-        void _fillDataJson( jpp::object & _jdata ) override;
+        bool _fillDataJson( jpp::object & _jdata, bool _force ) override;
 
     protected:
         void process( const jpp::object & _data ) override;
 
     protected:
-        bool _checkInvalidate() const override;
-
-    protected:
-        String m_title;
-
         LambdaClickEvent m_clickEvent;
+
+        typedef Hashtable<ConstString, DevToDebugPropertyInterfacePtr> HashtableDataProperties;
+        HashtableDataProperties m_dataProperties;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetButton> DevToDebugWidgetButtonPtr;
+    typedef IntrusivePtr<DevToDebugWidgetButton, DevToDebugWidgetInterface> DevToDebugWidgetButtonPtr;
     //////////////////////////////////////////////////////////////////////////
 }

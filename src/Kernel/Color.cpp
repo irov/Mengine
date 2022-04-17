@@ -7,7 +7,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Color::updateRGBA_() const
     {
-        m_argb = Helper::makeRGBA( m_r, m_g, m_b, m_a );
+        m_argb = Helper::makeRGBAF( m_r, m_g, m_b, m_a );
 
         if( m_argb == Detail::COLOR_IDENTITY_VALUE )
         {

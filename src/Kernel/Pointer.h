@@ -75,6 +75,18 @@ namespace Mengine
         template<class U, class D>
         operator IntrusivePtr<U, D>() &&
         {
+#ifdef MENGINE_DEBUG
+            if( m_pointer == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
+            {
+                throw;
+            }
+#endif
+
             return IntrusivePtr<U, D>::from( m_pointer );
         }
 
@@ -148,6 +160,18 @@ namespace Mengine
         template<class U, class D>
         operator IntrusivePtr<U, D>() &&
         {
+#ifdef MENGINE_DEBUG
+            if( m_pointer == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
+            {
+                throw;
+            }
+#endif
+
             return IntrusivePtr<U, D>::from( m_pointer );
         }
 

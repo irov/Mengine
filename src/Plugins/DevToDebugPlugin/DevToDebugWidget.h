@@ -5,6 +5,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/JSON.h"
 #include "Kernel/Identity.h"
+#include "Kernel/Hashtable.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "Kernel/Scriptable.h"
@@ -15,7 +16,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidget
         : public DevToDebugWidgetInterface
-        , public Identity
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         , public Scriptable
 #endif
@@ -28,33 +28,27 @@ namespace Mengine
         void setId( const ConstString & _id ) override;
         const ConstString & getId() const override;
 
-        void setHide( bool _hide ) override;
-        bool getHide() const override;
+    public:
+        void setBaseProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) override;
+        const DevToDebugPropertyInterfacePtr & getBaseProperty( const ConstString & _name ) const override;
 
     public:
-        void fillJson( jpp::object & _jwidget );
+        bool fillJson( jpp::object & _jwidget, bool _force );
 
     protected:
         virtual void _fillTypeJson( jpp::object & _jdata ) = 0;
-        virtual void _fillDataJson( jpp::object & _jdata ) = 0;
+        virtual bool _fillDataJson( jpp::object & _jdata, bool _force ) = 0;
 
     public:
         virtual void process( const jpp::object & _data ) = 0;
 
-    public:
-        void invalidate();
-        bool isInvalidate() const;
-
-    protected:
-        virtual bool _checkInvalidate() const = 0;
-
     protected:
         ConstString m_id;
-        bool m_hide;
 
-        mutable bool m_invalidate;
+        typedef Hashtable<ConstString, DevToDebugPropertyInterfacePtr> HashtableBaseProperties;
+        HashtableBaseProperties m_baseProperties;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidget> DevToDebugWidgetPtr;
+    typedef IntrusivePtr<DevToDebugWidget, DevToDebugWidgetInterface> DevToDebugWidgetPtr;
     //////////////////////////////////////////////////////////////////////////
 }

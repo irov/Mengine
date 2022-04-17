@@ -3,9 +3,19 @@
 #include "Interface/PlatformInterface.h"
 
 #include "DevToDebugTab.h"
+
+#include "DevToDebugPropertyConstBoolean.h"
+#include "DevToDebugPropertyInitialBoolean.h"
+#include "DevToDebugPropertyGetterBoolean.h"
+#include "DevToDebugPropertyConstString.h"
+#include "DevToDebugPropertyGetterString.h"
+#include "DevToDebugPropertyConstColor.h"
+#include "DevToDebugPropertyGetterColor.h"
+
 #include "DevToDebugWidget.h"
 #include "DevToDebugWidgetText.h"
 #include "DevToDebugWidgetButton.h"
+#include "DevToDebugWidgetCheckbox.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
@@ -68,12 +78,52 @@ namespace Mengine
             return false;
         }
 
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyInitialBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyInitialBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstColor, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterColor, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
         if( Helper::addObjectPrototype<DevToDebugWidgetButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
         if( Helper::addObjectPrototype<DevToDebugWidgetText, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addObjectPrototype<DevToDebugWidgetCheckbox, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -103,10 +153,31 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), nullptr );
 
         PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), nullptr );
+
+        PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), nullptr );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), nullptr );        
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
@@ -115,6 +186,20 @@ namespace Mengine
     void DevToDebugService::addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab )
     {
         m_tabs.emplace( _name, _tab );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const DevToDebugTabInterfacePtr & DevToDebugService::getTab( const ConstString & _name ) const
+    {
+        const DevToDebugTabInterfacePtr & tab = m_tabs.find( _name );
+
+        return tab;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugService::hasTab( const ConstString & _name ) const
+    {
+        bool result = m_tabs.exist( _name );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::removeTab( const ConstString & _name )
@@ -199,7 +284,7 @@ namespace Mengine
                 if( _response.code / 100 != 2 )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connecting error: %s [%u]"
-                        , _response.error.c_str()
+                        , _response.data.c_str()
                         , _response.code
                     );
 
@@ -237,7 +322,7 @@ namespace Mengine
                 if( _response.successful == false )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connect response error: %s [%u]"
-                        , _response.data.c_str()
+                        , _response.error.c_str()
                         , _response.code
                     );
 
@@ -358,7 +443,7 @@ namespace Mengine
 
                 jpp::object jwidget = jpp::make_object();
 
-                widget->fillJson( jwidget );
+                widget->fillJson( jwidget, true );
 
                 jtab.push_back( jwidget );
             } );
@@ -390,14 +475,9 @@ namespace Mengine
             {
                 DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
 
-                if( widget->isInvalidate() == false )
-                {
-                    return;
-                }
-
                 jpp::object jwidget = jpp::make_object();
 
-                widget->fillJson( jwidget );
+                widget->fillJson( jwidget, false );
 
                 jtab.push_back( jwidget );
             } );

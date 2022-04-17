@@ -8,16 +8,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DevToDebugWidgetText
+    class DevToDebugWidgetCheckbox
         : public DevToDebugWidget
-        , public UnknownDevToDebugWidgetTextInterface
+        , public UnknownDevToDebugWidgetCheckboxInterface
     {
-        DECLARE_FACTORABLE( DevToDebugWidgetText );
+        DECLARE_FACTORABLE( DevToDebugWidgetCheckbox );
         DECLARE_UNKNOWABLE();
 
     public:
-        DevToDebugWidgetText();
-        ~DevToDebugWidgetText() override;
+        DevToDebugWidgetCheckbox();
+        ~DevToDebugWidgetCheckbox() override;
+
+    public:
+        void setClickEvent( const LambdaClickEvent & _clickEvent ) override;
 
     public:
         void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) override;
@@ -31,10 +34,12 @@ namespace Mengine
         void process( const jpp::object & _data ) override;
 
     protected:
+        LambdaClickEvent m_clickEvent;
+
         typedef Hashtable<ConstString, DevToDebugPropertyInterfacePtr> HashtableDataProperties;
         HashtableDataProperties m_dataProperties;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetText, DevToDebugWidgetInterface> DevToDebugWidgetTextPtr;
+    typedef IntrusivePtr<DevToDebugWidgetCheckbox, DevToDebugWidgetInterface> DevToDebugWidgetCheckboxPtr;
     //////////////////////////////////////////////////////////////////////////
 }

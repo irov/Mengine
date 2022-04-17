@@ -227,6 +227,7 @@ PrototypeGenerator
     ResourcePrototypeGenerator.h
     SurfacePrototypeGenerator.h
     ObjectPrototypeGenerator.h
+    IdentityPrototypeGenerator.h
 )
 
 ADD_FILTER(

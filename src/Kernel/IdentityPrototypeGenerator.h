@@ -7,12 +7,13 @@
 #endif
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
 {
     template<class Type, uint32_t Count>
-    class ObjectPrototypeGenerator
+    class IdentityPrototypeGenerator
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         : public ScriptablePrototypeGenerator<Type, Count>
 #else
@@ -20,11 +21,11 @@ namespace Mengine
 #endif
     {
     public:
-        ObjectPrototypeGenerator()
+        IdentityPrototypeGenerator()
         {
         }
 
-        ~ObjectPrototypeGenerator() override
+        ~IdentityPrototypeGenerator() override
         {
         }
 
@@ -41,8 +42,13 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
+            UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
+
+            object->setUniqueIdentity( uniqueIdentity );
+
 #if MENGINE_DOCUMENT_ENABLE
-            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Object type '%s' create '%s'"
+            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Identity '%s' type '%s' create '%s'"
+                , object->getName().c_str()
                 , object->getType().c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -61,9 +67,9 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, uint32_t Count>
-        FactoryPrototypeGeneratorPtr makeObjectPrototypeGenerator( const DocumentPtr & _doc )
+        FactoryPrototypeGeneratorPtr makeIdentityPrototypeGenerator( const DocumentPtr & _doc )
         {
-            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<ObjectPrototypeGenerator<Type, Count>>( _doc );
+            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<IdentityPrototypeGenerator<Type, Count>>( _doc );
 
             return generator;
         }

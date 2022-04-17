@@ -14,7 +14,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugTab
         : public DevToDebugTabInterface
-        , public Identity
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         , public Scriptable
 #endif

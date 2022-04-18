@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetText::setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property )
     {
-        m_dataProperties.emplace( _name, _property );
+        m_dataProperties.change( _name, _property );
     }
     //////////////////////////////////////////////////////////////////////////
     const DevToDebugPropertyInterfacePtr & DevToDebugWidgetText::getDataProperty( const ConstString & _name ) const

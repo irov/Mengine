@@ -47,7 +47,7 @@ namespace Mengine
 
         Char hex_value[16] = {'\0'};
         MENGINE_SPRINTF( hex_value, "#%06X"
-            , argb 
+            , argb
         );
 
         _jwidget.set( _name.c_str(), hex_value );

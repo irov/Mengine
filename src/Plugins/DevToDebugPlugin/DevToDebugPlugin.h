@@ -3,7 +3,7 @@
 #include "Kernel/PluginBase.h"
 
 namespace Mengine
-{    
+{
     class DevToDebugPlugin
         : public PluginBase
     {

@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidget::setBaseProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property )
     {
-        m_baseProperties.emplace( _name, _property );
+        m_baseProperties.change( _name, _property );
     }
     //////////////////////////////////////////////////////////////////////////
     const DevToDebugPropertyInterfacePtr & DevToDebugWidget::getBaseProperty( const ConstString & _name ) const

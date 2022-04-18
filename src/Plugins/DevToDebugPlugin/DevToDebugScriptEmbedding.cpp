@@ -317,12 +317,12 @@ namespace Mengine
         _kernel->remove_scope<DevToDebugWidget>();
         _kernel->remove_scope<DevToDebugWidgetText>();
         _kernel->remove_scope<DevToDebugWidgetButton>();
-        _kernel->remove_scope<DevToDebugWidgetCheckbox>();        
+        _kernel->remove_scope<DevToDebugWidgetCheckbox>();
 
         _kernel->remove_from_module( "addDevToDebugTab", nullptr );
         _kernel->remove_from_module( "removeDevToDebugTab", nullptr );
         _kernel->remove_from_module( "createDevToDebugWidgetText", nullptr );
-        _kernel->remove_from_module( "createDevToDebugWidgetButton", nullptr );        
+        _kernel->remove_from_module( "createDevToDebugWidgetButton", nullptr );
         _kernel->remove_from_module( "createDevToDebugWidgetCheckbox", nullptr );
 
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugTab" ) );

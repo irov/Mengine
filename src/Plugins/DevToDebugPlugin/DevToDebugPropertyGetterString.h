@@ -14,7 +14,7 @@ namespace Mengine
 
     public:
         DevToDebugPropertyGetterString();
-        ~DevToDebugPropertyGetterString();
+        ~DevToDebugPropertyGetterString() override;
 
     public:
         typedef Lambda<void( String * const )> LambdaGetterValue;

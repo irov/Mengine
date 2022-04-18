@@ -9,6 +9,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/TimeHelper.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/Logger.h"
 
 #include "Config/StdIo.h"
 
@@ -125,6 +126,13 @@ namespace Mengine
         unknown_checkbox_test_value->setValue( true );
 
         unknown_checkbox_test->setDataProperty( STRINGIZE_STRING_LOCAL( "value" ), checkbox_test_value );
+
+        unknown_checkbox_test->setClickEvent( []( bool _value )
+        {
+            LOGGER_ERROR( "checkbox: %s"
+                , _value == true ? "true" : "false"
+            );
+        } );
 
         tab->addWidget( checkbox_test );
 

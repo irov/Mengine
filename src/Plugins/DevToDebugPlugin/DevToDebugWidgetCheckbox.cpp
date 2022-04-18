@@ -58,7 +58,9 @@ namespace Mengine
             return;
         }
 
-        m_clickEvent( true );
+        bool value = _data.get( "value" );
+
+        m_clickEvent( value );
     }
     //////////////////////////////////////////////////////////////////////////
 }

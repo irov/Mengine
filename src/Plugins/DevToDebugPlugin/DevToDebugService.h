@@ -41,6 +41,7 @@ namespace Mengine
 
     protected:
         void process();
+        void stop();
 
     protected:
         void onHttpRequestComplete( const cURLResponseData & _response ) override;

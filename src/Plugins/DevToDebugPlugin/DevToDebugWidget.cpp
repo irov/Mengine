@@ -47,22 +47,25 @@ namespace Mengine
 
         this->_fillTypeJson( _jwidget );
 
-        bool invalidate = false;
+        bool invalidate_property = false;
 
         for( const HashtableBaseProperties::value_type & value : m_baseProperties )
-        { 
+        {
             DevToDebugPropertyPtr property = DevToDebugPropertyPtr::from( value.element );
 
-            invalidate |= property->fillPropertyJson( value.key, _jwidget, _force );
+            invalidate_property |= property->fillPropertyJson( value.key, _jwidget, _force );
         }
 
         jpp::object jdata = jpp::make_object();
 
-        invalidate |= this->_fillDataJson( jdata, _force );
+        bool invalidate_data = this->_fillDataJson( jdata, _force );
 
-        _jwidget.set( "data", jdata );
+        if( invalidate_data == true )
+        {
+            _jwidget.set( "data", jdata );
+        }
 
-        return invalidate;
+        return invalidate_property | invalidate_data;
     }
     //////////////////////////////////////////////////////////////////////////
 }

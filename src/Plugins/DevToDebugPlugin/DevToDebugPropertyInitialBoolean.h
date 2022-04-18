@@ -14,7 +14,7 @@ namespace Mengine
 
     public:
         DevToDebugPropertyInitialBoolean();
-        ~DevToDebugPropertyInitialBoolean();
+        ~DevToDebugPropertyInitialBoolean() override;
 
     public:
         void setValue( bool _value ) override;
@@ -24,7 +24,7 @@ namespace Mengine
         bool fillPropertyJson( const ConstString & _name, jpp::object & _jwidget, bool _force ) const override;
 
     protected:
-        bool m_value;        
+        bool m_value;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugPropertyInitialBoolean, DevToDebugPropertyInterface> DevToDebugPropertyInitialBooleanPtr;

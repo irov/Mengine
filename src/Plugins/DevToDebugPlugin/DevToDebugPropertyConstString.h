@@ -16,7 +16,7 @@ namespace Mengine
 
     public:
         DevToDebugPropertyConstString();
-        ~DevToDebugPropertyConstString();
+        ~DevToDebugPropertyConstString() override;
 
     public:
         void setValue( const String & _value ) override;

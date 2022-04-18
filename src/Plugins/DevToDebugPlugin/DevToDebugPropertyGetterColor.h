@@ -14,7 +14,7 @@ namespace Mengine
 
     public:
         DevToDebugPropertyGetterColor();
-        ~DevToDebugPropertyGetterColor();
+        ~DevToDebugPropertyGetterColor() override;
 
     public:
         typedef Lambda<void( Color * const )> LambdaGetterValue;

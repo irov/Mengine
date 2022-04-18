@@ -16,7 +16,7 @@ namespace Mengine
 
     public:
         DevToDebugPropertyConstColor();
-        ~DevToDebugPropertyConstColor();
+        ~DevToDebugPropertyConstColor() override;
 
     public:
         void setValue( const Color & _value ) override;

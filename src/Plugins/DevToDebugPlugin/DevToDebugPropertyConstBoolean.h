@@ -14,7 +14,7 @@ namespace Mengine
 
     public:
         DevToDebugPropertyConstBoolean();
-        ~DevToDebugPropertyConstBoolean();
+        ~DevToDebugPropertyConstBoolean() override;
 
     public:
         void setValue( bool _value ) override;
@@ -25,7 +25,7 @@ namespace Mengine
 
     protected:
         mutable bool m_invalidate;
-        bool m_value;        
+        bool m_value;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugPropertyConstBoolean, DevToDebugPropertyInterface> DevToDebugPropertyConstBooleanPtr;

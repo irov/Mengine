@@ -145,9 +145,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_finalizeService()
     {
-        PLATFORM_SERVICE()
-            ->removeTimer( m_timerId );
-        m_timerId = INVALID_UNIQUE_ID;
+        this->stop();
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), nullptr );
@@ -177,7 +175,7 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), nullptr );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), nullptr );        
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), nullptr );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
@@ -234,6 +232,10 @@ namespace Mengine
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
+                LOGGER_INFO( "devtodebug", "Data: %s"
+                    , data.c_str()
+                );
+
                 CURL_SERVICE()
                     ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ) );
             }break;
@@ -275,21 +277,20 @@ namespace Mengine
                         , _response.code
                     );
 
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    this->stop();
 
                     break;
                 }
 
                 if( _response.code / 100 != 2 )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s [%u]"
+                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s data: %s [code %u]"
+                        , _response.error.c_str()
                         , _response.data.c_str()
                         , _response.code
                     );
 
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    this->stop();
 
                     break;
                 }
@@ -305,8 +306,7 @@ namespace Mengine
                         , _response.code
                     );
 
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    this->stop();
 
                     break;
                 }
@@ -326,21 +326,20 @@ namespace Mengine
                         , _response.code
                     );
 
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    this->stop();
 
                     break;
                 }
 
                 if( _response.code / 100 != 2 )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s [%u]"
+                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s data: %s [%u]"
+                        , _response.error.c_str()
                         , _response.data.c_str()
                         , _response.code
                     );
 
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    this->stop();
 
                     break;
                 }
@@ -359,8 +358,7 @@ namespace Mengine
                         , _response.code
                     );
 
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    this->stop();
 
                     break;
                 }
@@ -370,6 +368,15 @@ namespace Mengine
                     break;
                 }
 
+#ifdef MENGINE_LOGGER_DEBUG
+                String data;
+                Helper::writeJSONStringCompact( j, &data );
+
+                LOGGER_INFO( "devtodebug", "Activity: %s"
+                    , data.c_str()
+                );
+#endif
+
                 m_revision = revision_to;
 
                 jpp::array activity = j.get( "activity" );
@@ -378,12 +385,6 @@ namespace Mengine
                 {
                     ConstString tab_name = a.get( "tab_name" );
                     ConstString id = a.get( "id" );
-
-                    LOGGER_INFO( "devtodebug", "Action tab '%s' widget '%s'"
-                        , tab_name.c_str()
-                        , id.c_str()
-                    );
-
                     jpp::object d = a.get( "data" );
 
                     DevToDebugTabInterfacePtr tab = m_tabs.find( tab_name );
@@ -405,6 +406,19 @@ namespace Mengine
         }
 
         return;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::stop()
+    {
+        if( m_timerId != INVALID_UNIQUE_ID )
+        {
+            PLATFORM_SERVICE()
+                ->removeTimer( m_timerId );
+            m_timerId = INVALID_UNIQUE_ID;
+        }
+
+        m_status = EDTDS_NONE;
+        m_revision = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     jpp::object DevToDebugService::makeConnectData()
@@ -477,7 +491,10 @@ namespace Mengine
 
                 jpp::object jwidget = jpp::make_object();
 
-                widget->fillJson( jwidget, false );
+                if( widget->fillJson( jwidget, false ) == false )
+                {
+                    return;
+                }
 
                 jtab.push_back( jwidget );
             } );
@@ -490,11 +507,14 @@ namespace Mengine
             jstate.set( key, jtab );
         }
 
-        j.set( "change_state", jstate );
+        if( jstate.empty() == false )
+        {
+            j.set( "change_state", jstate );
+        }
 
 #ifdef MENGINE_LOGGER_DEBUG
         static uint32_t old_revision = 0;
-        
+
         if( m_revision != old_revision )
         {
             LOGGER_INFO( "devtodebug", "confirmed revision: %u"

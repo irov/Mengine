@@ -120,9 +120,9 @@ namespace Mengine
         unknown_checkbox_test->setDataProperty( STRINGIZE_STRING_LOCAL( "text" ), checkbox_test_text );
 
         DevToDebugPropertyInterfacePtr checkbox_test_value = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyInitialBoolean" ), MENGINE_DOCUMENT_FACTORABLE );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        UnknownDevToDebugPropertyInitialBooleanInterfacePtr unknown_checkbox_test_value = checkbox_test_value->getUnknown();
+        UnknownDevToDebugPropertyConstBooleanInterfacePtr unknown_checkbox_test_value = checkbox_test_value->getUnknown();
         unknown_checkbox_test_value->setValue( true );
 
         unknown_checkbox_test->setDataProperty( STRINGIZE_STRING_LOCAL( "value" ), checkbox_test_value );

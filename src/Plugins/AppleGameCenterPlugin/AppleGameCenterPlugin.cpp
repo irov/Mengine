@@ -7,6 +7,8 @@
 #   include "AppleGameCenterScriptEmbedding.h"
 #endif
 
+#include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
 
@@ -24,6 +26,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleGameCenterPlugin::~AppleGameCenterPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleGameCenterPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "noapplegamecenter" ) == true )
+        {
+            return false;
+        }
+
+        if( HAS_OPTION( "applegamecenter" ) == false )
+        {
+            if( CONFIG_VALUE( "AppleGameCenter", "Enable", false ) == false )
+            {
+                return false;
+            }
+        }
+  
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterPlugin::_initializePlugin()

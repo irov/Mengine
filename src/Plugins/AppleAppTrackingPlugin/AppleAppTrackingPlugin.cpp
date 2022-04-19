@@ -6,6 +6,8 @@
 #   include "AppleAppTrackingScriptEmbedding.h"
 #endif
 
+#include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
 
@@ -23,6 +25,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleAppTrackingPlugin::~AppleAppTrackingPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleAppTrackingPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "noappleapptracking" ) == true )
+        {
+            return false;
+        }
+
+        if( HAS_OPTION( "appleapptracking" ) == false )
+        {
+            if( CONFIG_VALUE( "AppleAppTracking", "Enable", false ) == false )
+            {
+                return false;
+            }
+        }
+  
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingPlugin::_initializePlugin()

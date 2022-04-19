@@ -94,7 +94,7 @@ namespace Mengine
         [m_delegate submitExtendedData:extraData];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::submitPayementData( const MARSDKProductInfo & _info )
+    void AppleMARSDKService::submitPaymentData( const MARSDKProductInfo & _info )
     {
         MARProductInfo* productInfo = [[MARProductInfo alloc] init];
         
@@ -114,7 +114,7 @@ namespace Mengine
         productInfo.serverName = [NSString stringWithUTF8String: _info.serverName.c_str()];
         productInfo.notifyUrl = [NSString stringWithUTF8String: _info.notifyUrl.c_str()];
         
-        [m_delegate submitPayementData:productInfo];
+        [m_delegate submitPaymentData:productInfo];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogin()

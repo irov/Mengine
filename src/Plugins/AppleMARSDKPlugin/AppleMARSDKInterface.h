@@ -87,7 +87,7 @@ namespace Mengine
         virtual bool switchAccount() = 0;
         
         virtual void submitExtendedData( const MARSDKExtraData & _data ) = 0;
-        virtual void submitPayementData( const MARSDKProductInfo & _info ) = 0;
+        virtual void submitPaymentData( const MARSDKProductInfo & _info ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

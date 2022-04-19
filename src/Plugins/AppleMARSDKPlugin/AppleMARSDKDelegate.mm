@@ -74,7 +74,7 @@
     [[MARSDK sharedInstance] submitExtraData:extraData];
 }
 
-- (void) submitPayementData:(MARProductInfo* _Nonnull)productInfo {
+- (void) submitPaymentData:(MARProductInfo* _Nonnull)productInfo {
     [[MARSDK sharedInstance] pay:productInfo];
 }
 

@@ -97,6 +97,16 @@ namespace Mengine
             return DevToDebugWidgetButtonPtr::dynamic_from( button );
         }
         //////////////////////////////////////////////////////////////////////////
+        static DevToDebugWidgetCheckboxPtr s_createDevToDebugWidgetCheckbox( const ConstString & _id )
+        {
+            DevToDebugWidgetInterfacePtr button = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_PYBIND );
+
+            button->setId( _id );
+
+            return DevToDebugWidgetCheckboxPtr::dynamic_from( button );
+        }
+        //////////////////////////////////////////////////////////////////////////
         static DevToDebugPropertyInterfacePtr s_createDevToDebugPropertyBoolean( const pybind::object & _cb, const pybind::args & _args )
         {
             DevToDebugPropertyInterfacePtr property;
@@ -276,6 +286,7 @@ namespace Mengine
 
         pybind::def_function( _kernel, "createDevToDebugWidgetText", &Detail::s_createDevToDebugWidgetText );
         pybind::def_function( _kernel, "createDevToDebugWidgetButton", &Detail::s_createDevToDebugWidgetButton );
+        pybind::def_function( _kernel, "createDevToDebugWidgetCheckbox", &Detail::s_createDevToDebugWidgetCheckbox );
 
         pybind::interface_<DevToDebugTab, pybind::bases<Scriptable>>( _kernel, "DevToDebugTab" )
             .def_static( "addWidget", &Detail::s_DevToDebugTab_addWidget )

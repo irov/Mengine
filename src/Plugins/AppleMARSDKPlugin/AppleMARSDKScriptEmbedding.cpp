@@ -119,7 +119,7 @@ namespace Mengine
                 ->submitExtendedData( data );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_submitPayementData( const pybind::dict & _d )
+        static void s_AppleMARSDK_submitPaymentData( const pybind::dict & _d )
         {
             MARSDKProductInfo info;
 
@@ -141,7 +141,7 @@ namespace Mengine
             info.notifyUrl = _d["notifyUrl"];
 
             APPLE_MARSDK_SERVICE()
-                ->submitPayementData( info );
+                ->submitPaymentData( info );
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -172,7 +172,7 @@ namespace Mengine
         pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::s_AppleMARSDK_logout );
         pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );
         pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_AppleMARSDK_submitExtendedData );
-        pybind::def_function( _kernel, "appleMARSDKSubmitPayementData", &Detail::s_AppleMARSDK_submitPayementData );
+        pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::s_AppleMARSDK_submitPaymentData );
 
         return true;
     }
@@ -184,7 +184,7 @@ namespace Mengine
         _kernel->remove_from_module( "appleMARSDKLogout", nullptr );
         _kernel->remove_from_module( "appleMARSDKSwitchAccount", nullptr );
         _kernel->remove_from_module( "appleMARSDKSubmitExtendedData", nullptr );
-        _kernel->remove_from_module( "appleMARSDKSubmitPayementData", nullptr );
+        _kernel->remove_from_module( "appleMARSDKSubmitPaymentData", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

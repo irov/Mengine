@@ -35,9 +35,7 @@ public class MengineAdjustPlugin extends MenginePlugin {
     @Override
     public void onAppCreate(MengineApplication application) {
         super.onAppCreate(application);
-
-        String appToken = "{YourAppToken}";
-
+        
         String environment = AdjustConfig.ENVIRONMENT_SANDBOX;
         if (!BuildConfig.DEBUG) {
             environment = AdjustConfig.ENVIRONMENT_PRODUCTION;

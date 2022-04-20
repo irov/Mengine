@@ -157,21 +157,6 @@ namespace Mengine
         return prototype;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorableVirtualInheritancePointer PrototypeService::generateVirtualInheritancePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
-    {
-        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, "prototype not found category '%s' prototype '%s' (doc: %s)"
-            , _category.c_str()
-            , _prototype.c_str()
-            , MENGINE_DOCUMENT_STR( _doc )
-        );
-
-        FactorablePtr prototype = generator->generate( _doc );
-
-        return prototype;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PrototypeService::foreachGenerators( const LambdaPrototypeGenerator & _lambda ) const
     {
         for( const HashtablePrototypes::value_type & value : m_generators )

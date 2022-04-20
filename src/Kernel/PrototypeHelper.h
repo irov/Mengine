@@ -3,7 +3,8 @@
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/DefaultPrototypeGenerator.h"
-#include "Kernel/DefaultVirtualInheritancePrototypeGenerator.h"
+#include "Kernel/ObjectPrototypeGenerator.h"
+#include "Kernel/IdentityPrototypeGenerator.h"
 
 namespace Mengine
 {
@@ -22,9 +23,20 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t Count>
-        bool addDefaultVirtualInheritancePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        bool addObjectPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
         {
-            PrototypeGeneratorInterfacePtr generator = Helper::makeDefaultVirtualInheritancePrototypeGenerator<T, Count>( _doc );
+            PrototypeGeneratorInterfacePtr generator = Helper::makeObjectPrototypeGenerator<T, Count>( _doc );
+
+            bool result = PROTOTYPE_SERVICE()
+                ->addPrototype( _category, _prototype, generator );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T, uint32_t Count>
+        bool addIdentityPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        {
+            PrototypeGeneratorInterfacePtr generator = Helper::makeIdentityPrototypeGenerator<T, Count>( _doc );
 
             bool result = PROTOTYPE_SERVICE()
                 ->addPrototype( _category, _prototype, generator );

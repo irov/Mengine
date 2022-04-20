@@ -6,6 +6,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #endif
 
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -40,14 +41,8 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            UniqueId uniqueIdentity = ENUMERATOR_SERVICE()
-                ->generateUniqueIdentity();
-
-            object->setUniqueIdentity( uniqueIdentity );
-
 #if MENGINE_DOCUMENT_ENABLE
-            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Object '%s' type '%s' create '%s'"
-                , object->getName().c_str()
+            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Object type '%s' create '%s'"
                 , object->getType().c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -62,4 +57,16 @@ namespace Mengine
             return object;
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class Type, uint32_t Count>
+        FactoryPrototypeGeneratorPtr makeObjectPrototypeGenerator( const DocumentPtr & _doc )
+        {
+            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<ObjectPrototypeGenerator<Type, Count>>( _doc );
+
+            return generator;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -67,7 +67,7 @@ namespace jpp
     {
         const jpp::array a( _obj );
 
-        *_value = Mengine::Helper::makeColor( a[0], a[1], a[2], a[3] );
+        *_value = Mengine::Helper::makeColor8( a[0], a[1], a[2], a[3] );
     };
     //////////////////////////////////////////////////////////////////////////
     void cast_object_extern<Mengine::AspectRatioViewport>::operator()( const jpp::object & _obj, Mengine::AspectRatioViewport * const _value ) const

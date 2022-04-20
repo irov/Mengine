@@ -2,13 +2,18 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
 #include "cURLGetMessageThreadTask.h"
 #include "cURLPostMessageThreadTask.h"
 #include "cURLHeaderDataThreadTask.h"
 #include "cURLGetAssetThreadTask.h"
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Interface/ScriptServiceInterface.h"
+#   include "cURLScriptEmbedding.h"
+#endif
+
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AllocatorHelper.h"
@@ -147,11 +152,30 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &cURLService::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+        {
+            SCRIPT_SERVICE()
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), Helper::makeFactorableUnique<cURLScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+        {
+            SCRIPT_SERVICE()
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_finalizeService()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+#endif
+
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
@@ -220,8 +244,7 @@ namespace Mengine
             return 0;
         }
 
-        UniqueId task_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId task_id = Helper::generateUniqueIdentity();
 
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -267,8 +290,7 @@ namespace Mengine
             return 0;
         }
 
-        UniqueId task_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId task_id = Helper::generateUniqueIdentity();
 
         cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -314,8 +336,7 @@ namespace Mengine
             return 0;
         }
 
-        UniqueId task_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId task_id = Helper::generateUniqueIdentity();
 
         cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -368,8 +389,7 @@ namespace Mengine
 
         FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", _filePath.c_str() );
 
-        UniqueId task_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId task_id = Helper::generateUniqueIdentity();
 
         cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -434,8 +454,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId id = Helper::generateUniqueIdentity();
 
         RequestListenerDesk desc;
         desc.id = id;

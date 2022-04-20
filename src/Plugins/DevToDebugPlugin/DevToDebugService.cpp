@@ -1,11 +1,26 @@
 #include "DevToDebugService.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "DevToDebugTab.h"
+
+#include "DevToDebugPropertyConstBoolean.h"
+#include "DevToDebugPropertyInitialBoolean.h"
+#include "DevToDebugPropertyGetterBoolean.h"
+#include "DevToDebugPropertyConstString.h"
+#include "DevToDebugPropertyGetterString.h"
+#include "DevToDebugPropertyConstColor.h"
+#include "DevToDebugPropertyGetterColor.h"
+
 #include "DevToDebugWidget.h"
 #include "DevToDebugWidgetText.h"
 #include "DevToDebugWidgetButton.h"
+#include "DevToDebugWidgetCheckbox.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#include "DevToDebugScriptEmbedding.h"
+#endif
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
@@ -13,6 +28,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/JSONHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -63,17 +79,57 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &DevToDebugService::notifyBootstrapperRunComplete_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &DevToDebugService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( Helper::addDefaultVirtualInheritancePrototype<DevToDebugTab, 16>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addObjectPrototype<DevToDebugTab, 16>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultVirtualInheritancePrototype<DevToDebugWidgetButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( Helper::addDefaultVirtualInheritancePrototype<DevToDebugWidgetText, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyInitialBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyInitialBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyConstColor, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addDefaultPrototype<DevToDebugPropertyGetterColor, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addObjectPrototype<DevToDebugWidgetButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addObjectPrototype<DevToDebugWidgetText, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addObjectPrototype<DevToDebugWidgetCheckbox, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -90,23 +146,61 @@ namespace Mengine
 
         m_timerId = timerId;
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+        {
+            SCRIPT_SERVICE()
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "DevToDebugScriptEmbedding" ), Helper::makeFactorableUnique<DevToDebugScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+        {
+            SCRIPT_SERVICE()
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "DevToDebugScriptEmbedding" ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_finalizeService()
     {
-        PLATFORM_SERVICE()
-            ->removeTimer( m_timerId );
-        m_timerId = INVALID_UNIQUE_ID;
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+#endif
+
+        this->stop();
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), nullptr );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), nullptr );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), nullptr );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
@@ -115,6 +209,20 @@ namespace Mengine
     void DevToDebugService::addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab )
     {
         m_tabs.emplace( _name, _tab );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const DevToDebugTabInterfacePtr & DevToDebugService::getTab( const ConstString & _name ) const
+    {
+        const DevToDebugTabInterfacePtr & tab = m_tabs.find( _name );
+
+        return tab;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugService::hasTab( const ConstString & _name ) const
+    {
+        bool result = m_tabs.exist( _name );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::removeTab( const ConstString & _name )
@@ -133,7 +241,7 @@ namespace Mengine
                 m_status = EDTDS_CONNECTING;
 
                 Char connect_url[256] = {'\0'};
-                MENGINE_SPRINTF( connect_url, "http://www.devtodebug.com/api/%s/connect/"
+                MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/%s/connect/"
                     , m_pid.c_str()
                 );
 
@@ -147,7 +255,11 @@ namespace Mengine
                 jpp::object j = this->makeConnectData();
 
                 String data;
-                Helper::writeJSONString( j, &data );
+                Helper::writeJSONStringCompact( j, &data );
+
+                LOGGER_INFO( "devtodebug", "Data: %s"
+                    , data.c_str()
+                );
 
                 CURL_SERVICE()
                     ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ) );
@@ -155,7 +267,7 @@ namespace Mengine
         case EDTDS_CONNECT:
             {
                 Char connect_url[256] = {'\0'};
-                MENGINE_SPRINTF( connect_url, "http://www.devtodebug.com/api/worker/%s/"
+                MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/worker/%s/"
                     , m_uuid.c_str()
                 );
 
@@ -165,7 +277,7 @@ namespace Mengine
                 jpp::object j = this->makeProcessData();
 
                 String data;
-                Helper::writeJSONString( j, &data );
+                Helper::writeJSONStringCompact( j, &data );
 
                 CURL_SERVICE()
                     ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ) );
@@ -185,16 +297,25 @@ namespace Mengine
             {
                 if( _response.successful == false )
                 {
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s [%u]"
+                        , _response.error.c_str()
+                        , _response.code
+                    );
+
+                    this->stop();
 
                     break;
                 }
 
                 if( _response.code / 100 != 2 )
                 {
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s data: %s [code %u]"
+                        , _response.error.c_str()
+                        , _response.data.c_str()
+                        , _response.code
+                    );
+
+                    this->stop();
 
                     break;
                 }
@@ -205,8 +326,12 @@ namespace Mengine
 
                 if( m_uuid.empty() == true )
                 {
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    LOGGER_ERROR( "[DevToDebug] Connecting response error: %s [%u]"
+                        , _response.data.c_str()
+                        , _response.code
+                    );
+
+                    this->stop();
 
                     break;
                 }
@@ -221,16 +346,25 @@ namespace Mengine
             {
                 if( _response.successful == false )
                 {
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s [%u]"
+                        , _response.error.c_str()
+                        , _response.code
+                    );
+
+                    this->stop();
 
                     break;
                 }
 
                 if( _response.code / 100 != 2 )
                 {
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s data: %s [%u]"
+                        , _response.error.c_str()
+                        , _response.data.c_str()
+                        , _response.code
+                    );
+
+                    this->stop();
 
                     break;
                 }
@@ -242,11 +376,31 @@ namespace Mengine
 
                 if( m_revision != revision_from )
                 {
-                    m_status = EDTDS_NONE;
-                    m_revision = 0;
+                    LOGGER_ERROR( "[DevToDebug] Connect out of sync revision %u != from %u: %s [%u]"
+                        , m_revision
+                        , revision_from
+                        , _response.data.c_str()
+                        , _response.code
+                    );
+
+                    this->stop();
 
                     break;
                 }
+
+                if( revision_from == revision_to )
+                {
+                    break;
+                }
+
+#ifdef MENGINE_LOGGER_DEBUG
+                String data;
+                Helper::writeJSONStringCompact( j, &data );
+
+                LOGGER_INFO( "devtodebug", "Activity: %s"
+                    , data.c_str()
+                );
+#endif
 
                 m_revision = revision_to;
 
@@ -256,14 +410,8 @@ namespace Mengine
                 {
                     ConstString tab_name = a.get( "tab_name" );
                     ConstString id = a.get( "id" );
-
-                    LOGGER_INFO( "devtodebug", "Action tab '%s' widget '%s'"
-                        , tab_name.c_str()
-                        , id.c_str()
-                    );
-
                     jpp::object d = a.get( "data" );
-                    
+
                     DevToDebugTabInterfacePtr tab = m_tabs.find( tab_name );
 
                     if( tab == nullptr )
@@ -285,6 +433,19 @@ namespace Mengine
         return;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::stop()
+    {
+        if( m_timerId != INVALID_UNIQUE_ID )
+        {
+            PLATFORM_SERVICE()
+                ->removeTimer( m_timerId );
+            m_timerId = INVALID_UNIQUE_ID;
+        }
+
+        m_status = EDTDS_NONE;
+        m_revision = 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     jpp::object DevToDebugService::makeConnectData()
     {
         jpp::object j = jpp::make_object();
@@ -301,6 +462,11 @@ namespace Mengine
 
         j.set( "name", userName );
 
+        LOGGER_INFO( "devtodebug", "Device did '%s' name '%s'"
+            , fingerprint
+            , userName
+        );
+
         jpp::object jstate = jpp::make_object();
 
         for( const HashtableDevToDebugTabs::value_type & value : m_tabs )
@@ -316,7 +482,7 @@ namespace Mengine
 
                 jpp::object jwidget = jpp::make_object();
 
-                widget->fillJson( jwidget );
+                widget->fillJson( jwidget, true );
 
                 jtab.push_back( jwidget );
             } );
@@ -348,22 +514,48 @@ namespace Mengine
             {
                 DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
 
-                if( widget->isInvalidate() == false )
+                jpp::object jwidget = jpp::make_object();
+
+                if( widget->fillJson( jwidget, false ) == false )
                 {
                     return;
                 }
 
-                jpp::object jwidget = jpp::make_object();
-
-                widget->fillJson( jwidget );
-
                 jtab.push_back( jwidget );
             } );
+
+            if( jtab.empty() == true )
+            {
+                continue;
+            }
 
             jstate.set( key, jtab );
         }
 
-        j.set( "change_state", jstate );
+        if( jstate.empty() == false )
+        {
+            j.set( "change_state", jstate );
+        }
+
+#ifdef MENGINE_LOGGER_DEBUG
+        static uint32_t old_revision = 0;
+
+        if( m_revision != old_revision )
+        {
+            LOGGER_INFO( "devtodebug", "confirmed revision: %u"
+                , m_revision
+            );
+
+            String data;
+            Helper::writeJSONStringCompact( jstate, &data );
+
+            LOGGER_INFO( "devtodebug", "change state: %s"
+                , data.c_str()
+            );
+
+            old_revision = m_revision;
+        }
+#endif
 
         return j;
     }
@@ -381,7 +573,7 @@ namespace Mengine
         }
 
         Char connect_url[256] = {'\0'};
-        MENGINE_SPRINTF( connect_url, "http://www.devtodebug.com/api/worker/%s/delete/"
+        MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/worker/%s/delete/"
             , m_uuid.c_str()
         );
 
@@ -391,7 +583,7 @@ namespace Mengine
         jpp::object j = jpp::make_object();
 
         String data;
-        Helper::writeJSONString( j, &data );
+        Helper::writeJSONStringCompact( j, &data );
 
         CURL_SERVICE()
             ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, nullptr );

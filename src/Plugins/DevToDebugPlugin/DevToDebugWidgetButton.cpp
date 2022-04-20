@@ -1,5 +1,7 @@
 #include "DevToDebugWidgetButton.h"
 
+#include "DevToDebugProperty.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -11,21 +13,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetButton::setTitle( const String & _title )
+    void DevToDebugWidgetButton::setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property )
     {
-        if( m_title == _title )
-        {
-            return;
-        }
-
-        m_title = _title;
-
-        this->invalidate();
+        m_dataProperties.change( _name, _property );
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & DevToDebugWidgetButton::getTitle() const
+    const DevToDebugPropertyInterfacePtr & DevToDebugWidgetButton::getDataProperty( const ConstString & _name ) const
     {
-        return m_title;
+        const DevToDebugPropertyInterfacePtr & property = m_dataProperties.find( _name );
+
+        return property;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetButton::setClickEvent( const LambdaClickEvent & _clickEvent )
@@ -38,9 +35,18 @@ namespace Mengine
         _jdata.set( "type", "button" );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetButton::_fillDataJson( jpp::object & _jdata )
+    bool DevToDebugWidgetButton::_fillDataJson( jpp::object & _jdata, bool _force )
     {
-        _jdata.set( "title", m_title );
+        bool invalidate = false;
+
+        for( const HashtableDataProperties::value_type & value : m_dataProperties )
+        {
+            DevToDebugPropertyPtr property = DevToDebugPropertyPtr::from( value.element );
+
+            invalidate |= property->fillPropertyJson( value.key, _jdata, _force );
+        }
+
+        return invalidate;
     }
     ////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetButton::process( const jpp::object & _data )
@@ -53,11 +59,6 @@ namespace Mengine
         }
 
         m_clickEvent();
-    }
-    ////////////////////////////////////////////////////////////////////////
-    bool DevToDebugWidgetButton::_checkInvalidate() const
-    {
-        return false;
     }
     ////////////////////////////////////////////////////////////////////////
 }

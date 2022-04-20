@@ -31,8 +31,7 @@ namespace Mengine
     public:
         uint32_t add( const LambdaEvent & _lambda )
         {
-            UniqueId id = ENUMERATOR_SERVICE()
-                ->generateUniqueIdentity();
+            UniqueId id = Helper::generateUniqueIdentity();
 
             EventDesc desc;
             desc.id = id;

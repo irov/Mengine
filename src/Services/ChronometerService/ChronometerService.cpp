@@ -1,7 +1,6 @@
 #include "ChronometerService.h"
 
-#include "Interface/EnumeratorServiceInterface.h"
-
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/TimeHelper.h"
 #include "Kernel/Logger.h"
 
@@ -45,8 +44,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         ChronometerDesc desc;
         desc.id = new_id;

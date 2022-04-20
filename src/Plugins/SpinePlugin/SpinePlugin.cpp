@@ -25,7 +25,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
-#include "Kernel/ObjectPrototypeGenerator.h"
+#include "Kernel/IdentityPrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/NotificationHelper.h"
@@ -113,7 +113,7 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SamplerSpineAnimation" ), Helper::makeFactorableUnique<ObjectPrototypeGenerator<SamplerSpineAnimation, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SamplerSpineAnimation" ), Helper::makeFactorableUnique<IdentityPrototypeGenerator<SamplerSpineAnimation, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }

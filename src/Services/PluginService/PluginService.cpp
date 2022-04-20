@@ -2,14 +2,13 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
 
 #include "Config/StdString.h"
-
 #include "Config/Algorithm.h"
 
 #ifndef MENGINE_PLUGIN_CREATE_FUNCTION_NAME
@@ -96,8 +95,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId id = Helper::generateUniqueIdentity();
 
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 

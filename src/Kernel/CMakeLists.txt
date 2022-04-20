@@ -220,7 +220,6 @@ PrototypeGenerator
     FactoryPrototypeGenerator.cpp
     FactoryPrototypeGenerator.h
     DefaultPrototypeGenerator.h
-    DefaultVirtualInheritancePrototypeGenerator.h
     NodePrototypeGenerator.h
     BaseScriptablePrototypeGenerator.cpp
     BaseScriptablePrototypeGenerator.h
@@ -228,6 +227,7 @@ PrototypeGenerator
     ResourcePrototypeGenerator.h
     SurfacePrototypeGenerator.h
     ObjectPrototypeGenerator.h
+    IdentityPrototypeGenerator.h
 )
 
 ADD_FILTER(
@@ -835,6 +835,9 @@ Core
     
     TimeHelper.cpp
     TimeHelper.h
+    
+    EnumeratorHelper.cpp
+    EnumeratorHelper.h
 )
 
 ADD_FILTER(
@@ -895,7 +898,6 @@ Factory
     FactoryWithMutex.cpp
     FactoryDefault.h
     FactoryPool.h
-    FactoryPoolVirtualInheritance.h
     FactoryPoolWithListener.h
 )
 

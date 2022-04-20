@@ -3,7 +3,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/ProfilerSystemInterface.h"
@@ -22,6 +21,7 @@
 #   include "Win32PlatformDevToDebug.h"
 #endif
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
@@ -748,8 +748,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         UpdateDesc desc;
         desc.id = new_id;
@@ -785,8 +784,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         TimerDesc desc;
         desc.id = new_id;
@@ -4950,8 +4948,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId id = Helper::generateUniqueIdentity();
 
         Win32ProcessDesc desc;
         desc.id = id;

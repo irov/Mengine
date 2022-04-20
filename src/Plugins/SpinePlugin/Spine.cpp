@@ -496,7 +496,7 @@ namespace Mengine
             float wb = nb * m_skeleton->color.b * slot->color.b * ab;
             float wa = na * m_skeleton->color.a * slot->color.a * aa;
 
-            ColorValue_ARGB argb = Helper::makeRGBA( wr, wg, wb, wa );
+            ColorValue_ARGB argb = Helper::makeRGBAF( wr, wg, wb, wa );
 
             RenderVertex2D * vertices = mesh.vertices.data();
             RenderIndex * indices = mesh.indices.data();

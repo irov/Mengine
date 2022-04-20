@@ -1,9 +1,8 @@
 #include "BaseAffectorHub.h"
 
-#include "Interface/EnumeratorServiceInterface.h"
-
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/IntrusivePtrScope.h"
+#include "Kernel/EnumeratorHelper.h"
 
 namespace Mengine
 {
@@ -33,8 +32,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _affector, "affector is nullptr" );
 
-        UniqueId id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId id = Helper::generateUniqueIdentity();
 
         _affector->setId( id );
 

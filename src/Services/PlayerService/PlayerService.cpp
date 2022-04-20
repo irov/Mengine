@@ -14,7 +14,6 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
@@ -22,6 +21,7 @@
 #include "PlayerGlobalInputHandler.h"
 #include "PlayerGlobalAffectorable.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Scene.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/RenderViewport.h"

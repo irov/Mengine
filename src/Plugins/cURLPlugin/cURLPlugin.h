@@ -22,4 +22,3 @@ namespace Mengine
         void _destroyPlugin() override;
     };
 }
-

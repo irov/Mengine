@@ -1,8 +1,8 @@
 #include "HotSpotBubbles.h"
 
 #include "Interface/RenderCameraInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -21,8 +21,7 @@ namespace Mengine
     {
         Bubble bubble;
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         bubble.id = new_id;
         bubble.pos = _pos;

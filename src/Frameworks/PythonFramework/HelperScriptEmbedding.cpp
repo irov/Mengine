@@ -11,7 +11,6 @@
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
@@ -63,6 +62,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stream.h"
 #include "Kernel/TimeHelper.h"
+#include "Kernel/EnumeratorHelper.h"
 
 #include "Config/Typedef.h"
 #include "Config/StdString.h"
@@ -833,8 +833,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             UniqueId mt_enumerator()
             {
-                UniqueId new_id = ENUMERATOR_SERVICE()
-                    ->generateUniqueIdentity();
+                UniqueId new_id = Helper::generateUniqueIdentity();
 
                 return new_id;
             }

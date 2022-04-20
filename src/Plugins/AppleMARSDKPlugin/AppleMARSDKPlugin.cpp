@@ -29,14 +29,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMARSDKPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "nomarsdk" ) == true )
+        if( HAS_OPTION( "noapplemarsdk" ) == true )
         {
             return false;
         }
 
-        if( HAS_OPTION( "marsdk" ) == false )
+        if( HAS_OPTION( "applemarsdk" ) == false )
         {
-            if( CONFIG_VALUE( "MARSDK", "Enable", true ) == false )
+            if( CONFIG_VALUE( "AppleMARSDK", "Enable", false ) == false )
             {
                 return false;
             }

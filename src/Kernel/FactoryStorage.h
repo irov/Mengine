@@ -36,13 +36,6 @@ namespace Mengine
             return p;
         }
 
-        static FactorableVirtualInheritancePointer createVirtualInheritanceObject( const DocumentPtr & _doc )
-        {
-            FactorableVirtualInheritancePointer p = m_factory->createVirtualInheritanceObject( _doc );
-
-            return p;
-        }
-
     protected:
         static FactoryPtr m_factory;
     };

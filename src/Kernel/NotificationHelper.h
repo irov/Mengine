@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificatorInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_ADDOBSERVERMETHOD( ID, Observer, Method, Doc )\

@@ -3,43 +3,38 @@
 #include "DevToDebugWidget.h"
 
 #include "Kernel/String.h"
+#include "Kernel/Unknowable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetText
         : public DevToDebugWidget
-        , public DevToDebugWidgetTextInterface
+        , public UnknownDevToDebugWidgetTextInterface
     {
         DECLARE_FACTORABLE( DevToDebugWidgetText );
+        DECLARE_UNKNOWABLE();
 
     public:
         DevToDebugWidgetText();
         ~DevToDebugWidgetText() override;
 
     public:
-        void setConstText( const String & _text ) override;
-        virtual void setGetterText( const LambdaGetterText & _getter ) override;
-
-    protected:
-        const String & calculateText() const;
+        void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) override;
+        const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const override;
 
     protected:
         void _fillTypeJson( jpp::object & _jdata ) override;
-        void _fillDataJson( jpp::object & _jdata ) override;
+        bool _fillDataJson( jpp::object & _jdata, bool _force ) override;
 
     protected:
         void process( const jpp::object & _data ) override;
 
     protected:
-        bool _checkInvalidate() const override;
-
-    protected:
-        mutable String m_text;
-        mutable String m_test;
-        LambdaGetterText m_getter;
+        typedef Hashtable<ConstString, DevToDebugPropertyInterfacePtr> HashtableDataProperties;
+        HashtableDataProperties m_dataProperties;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetText> DevToDebugWidgetTextPtr;
+    typedef IntrusivePtr<DevToDebugWidgetText, DevToDebugWidgetInterface> DevToDebugWidgetTextPtr;
     //////////////////////////////////////////////////////////////////////////
 }

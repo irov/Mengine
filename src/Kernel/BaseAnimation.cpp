@@ -1,10 +1,10 @@
 #include "Kernel/BaseAnimation.h"
 
 #include "Interface/UpdationInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/MixinDebug.h"
+#include "Kernel/EnumeratorHelper.h"
 
 #include "math/utils.h"
 
@@ -209,8 +209,7 @@ namespace Mengine
 
         m_playIterator = m_playCount;
 
-        UniqueId id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId id = Helper::generateUniqueIdentity();
 
         m_playId = id;
 

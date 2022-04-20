@@ -62,8 +62,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( TTFAtlasService, MENGINE_DOCUMENT_FACTORABLE );
-
         FT_Library ftlibrary;
         FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
 
@@ -88,6 +86,11 @@ namespace Mengine
         );
 
         m_ftlibrary = ftlibrary;
+
+        if( SERVICE_CREATE( TTFAtlasService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         TTFPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<TTFPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 

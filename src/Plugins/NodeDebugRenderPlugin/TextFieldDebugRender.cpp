@@ -52,7 +52,7 @@ namespace Mengine
 
             const mt::mat4f & wm = transformation->getWorldMatrix();
 
-            ColorValue_ARGB color = Helper::makeRGBA( 0.f, 1.f, 0.f, 1.f );
+            ColorValue_ARGB color = Helper::makeRGBAF( 0.f, 1.f, 0.f, 1.f );
 
             Helper::nodeDebugRenderPoint( _renderPipeline, _context, wm, mt::vec2f( 0.f, 0.f ), color, 10.f, MENGINE_DOCUMENT_FORWARD );
         }
@@ -71,7 +71,7 @@ namespace Mengine
 
             float halfLength = 10.f;
 
-            ColorValue_ARGB color = Helper::makeRGBA( 1.f, 0.f, 0.f, 1.f );
+            ColorValue_ARGB color = Helper::makeRGBAF( 1.f, 0.f, 0.f, 1.f );
 
             Helper::nodeDebugRenderLineByToPoints( _renderPipeline, _context, wm, mt::vec2f( start_x, -halfLength ), mt::vec2f( start_x, halfLength ), color, MENGINE_DOCUMENT_FORWARD );
             Helper::nodeDebugRenderLineByToPoints( _renderPipeline, _context, wm, mt::vec2f( finish_x, -halfLength ), mt::vec2f( finish_x, halfLength ), color, MENGINE_DOCUMENT_FORWARD );

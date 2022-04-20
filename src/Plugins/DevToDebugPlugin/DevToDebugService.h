@@ -35,10 +35,13 @@ namespace Mengine
 
     protected:
         void addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab ) override;
+        const DevToDebugTabInterfacePtr & getTab( const ConstString & _name ) const override;
+        bool hasTab( const ConstString & _name ) const override;
         void removeTab( const ConstString & _name ) override;
 
     protected:
         void process();
+        void stop();
 
     protected:
         void onHttpRequestComplete( const cURLResponseData & _response ) override;

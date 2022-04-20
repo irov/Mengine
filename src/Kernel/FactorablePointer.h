@@ -5,5 +5,4 @@
 namespace Mengine
 {
     typedef PointerT<IntrusivePtr<class Factorable>> FactorablePointer;
-    typedef DynamicPointerT<IntrusivePtr<class Factorable>> FactorableVirtualInheritancePointer;
 }

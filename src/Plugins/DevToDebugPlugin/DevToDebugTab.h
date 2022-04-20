@@ -3,6 +3,7 @@
 #include "DevToDebugInterface.h"
 
 #include "Kernel/Vector.h"
+#include "Kernel/Identity.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "Kernel/Scriptable.h"

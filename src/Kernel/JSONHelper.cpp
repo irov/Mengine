@@ -171,5 +171,15 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool writeJSONStringCompact( const jpp::object & _j, String * const _string )
+        {
+            if( jpp::dump_compact( _j, &Detail::my_jpp_dump_string_callback, _string ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

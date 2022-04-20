@@ -15,9 +15,10 @@ namespace Mengine
         jpp::object loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc );
         jpp::object loadJSONStreamFromMemory( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc );
         jpp::object loadJSONStreamFromString( const String & _value, const DocumentPtr & _doc );
-        jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc );        
+        jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc );
 
         bool writeJSONStream( const jpp::object & _j, const OutputStreamInterfacePtr & _stream );
         bool writeJSONString( const jpp::object & _j, String * const _string );
+        bool writeJSONStringCompact( const jpp::object & _j, String * const _string );
     }
 }

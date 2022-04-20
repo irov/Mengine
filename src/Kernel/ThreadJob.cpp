@@ -1,11 +1,11 @@
 #include "ThreadJob.h"
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/EnumeratorHelper.h"
 
 namespace Mengine
 {
@@ -258,8 +258,7 @@ namespace Mengine
             return 0;
         }
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
         {

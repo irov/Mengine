@@ -4,13 +4,13 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
 #include "RenderTexture.h"
 #include "DecoderRenderImageProvider.h"
 #include "DecoderRenderImageLoader.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
@@ -345,8 +345,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const DocumentPtr & _doc )
     {
-        UniqueId id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId id = Helper::generateUniqueIdentity();
 
         RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
 

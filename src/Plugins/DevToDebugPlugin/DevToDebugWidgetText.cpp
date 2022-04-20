@@ -1,5 +1,7 @@
 #include "DevToDebugWidgetText.h"
 
+#include "DevToDebugProperty.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -11,34 +13,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetText::setConstText( const String & _text )
+    void DevToDebugWidgetText::setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property )
     {
-        if( m_text == _text )
-        {
-            return;
-        }
-
-        m_text = _text;
-        m_getter = nullptr;
-
-        this->invalidate();
+        m_dataProperties.change( _name, _property );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetText::setGetterText( const LambdaGetterText & _getter )
+    const DevToDebugPropertyInterfacePtr & DevToDebugWidgetText::getDataProperty( const ConstString & _name ) const
     {
-        m_getter = _getter;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const String & DevToDebugWidgetText::calculateText() const
-    {
-        if( m_getter == nullptr )
-        {
-            return m_text;
-        }
+        const DevToDebugPropertyInterfacePtr & property = m_dataProperties.find( _name );
 
-        m_getter( &m_text );
-
-        return m_text;
+        return property;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetText::_fillTypeJson( jpp::object & _jdata )
@@ -46,11 +30,18 @@ namespace Mengine
         _jdata.set( "type", "text" );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetText::_fillDataJson( jpp::object & _jdata )
+    bool DevToDebugWidgetText::_fillDataJson( jpp::object & _jdata, bool _force )
     {
-        const String & text = this->calculateText();
+        bool invalidate = false;
 
-        _jdata.set( "content", text );
+        for( const HashtableDataProperties::value_type & value : m_dataProperties )
+        {
+            DevToDebugPropertyPtr property = DevToDebugPropertyPtr::from( value.element );
+
+            invalidate |= property->fillPropertyJson( value.key, _jdata, _force );
+        }
+
+        return invalidate;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetText::process( const jpp::object & _data )
@@ -58,23 +49,6 @@ namespace Mengine
         MENGINE_UNUSED( _data );
 
         //Emty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DevToDebugWidgetText::_checkInvalidate() const
-    {
-        if( m_getter == nullptr )
-        {
-            return false;
-        }
-
-        m_getter( &m_test );
-
-        if( m_text == m_test )
-        {
-            return false;
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

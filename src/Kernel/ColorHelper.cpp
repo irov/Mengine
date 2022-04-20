@@ -52,7 +52,7 @@ namespace Mengine
             return argb;
         }
         //////////////////////////////////////////////////////////////////////////
-        ColorValue_ARGB makeRGBA( float _r, float _g, float _b, float _a )
+        ColorValue_ARGB makeRGBAF( float _r, float _g, float _b, float _a )
         {
             const float rgba_255 = 255.5f;
 
@@ -66,7 +66,7 @@ namespace Mengine
             return argb;
         }
         //////////////////////////////////////////////////////////////////////////
-        Color makeColor( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
+        Color makeColor8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
         {
             ColorValue_ARGB value = Helper::makeRGBA8( _r, _g, _b, _a );
 
@@ -93,6 +93,11 @@ namespace Mengine
             float af = one_div_255[a8];
 
             return Color( rf, gf, bf, af, value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        Color makeColorF( float _r, float _g, float _b, float _a )
+        {
+            return Color( _r, _g, _b, _a );
         }
         //////////////////////////////////////////////////////////////////////////
         Color makeColorARGB( ColorValue_ARGB _argb )

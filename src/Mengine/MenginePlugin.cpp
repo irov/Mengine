@@ -28,9 +28,20 @@ extern "C"
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_CREATE( AllocatorService, nullptr );
-        SERVICE_CREATE( StringizeService, nullptr );
-        SERVICE_CREATE( DocumentService, nullptr );
+        if( SERVICE_CREATE( AllocatorService, nullptr ) == false )
+        {
+            return nullptr;
+        }
+
+        if( SERVICE_CREATE( StringizeService, nullptr ) == false )
+        {
+            return nullptr;
+        }
+
+        if( SERVICE_CREATE( DocumentService, nullptr ) == false )
+        {
+            return nullptr;
+        }
 
         return serviceProvider;
     }

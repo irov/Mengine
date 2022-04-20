@@ -2,8 +2,8 @@
 
 #include "Interface/InputServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"
 #include "Kernel/VectorAuxScope.h"

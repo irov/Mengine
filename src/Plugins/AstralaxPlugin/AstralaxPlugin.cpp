@@ -50,7 +50,10 @@ namespace Mengine
             , version
         );
 
-        SERVICE_CREATE( AstralaxService, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( AstralaxService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralax" )
             , Helper::makeModuleFactory<AstralaxModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );

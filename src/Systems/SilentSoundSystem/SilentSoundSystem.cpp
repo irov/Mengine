@@ -1,7 +1,6 @@
 #include "SilentSoundSystem.h"
 
-#include "Interface/EnumeratorServiceInterface.h"
-
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
@@ -86,8 +85,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SilentSoundSystem::genSourceId()
     {
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         return new_id;
     }
@@ -101,8 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SilentSoundSystem::genBufferId()
     {
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         return new_id;
     }

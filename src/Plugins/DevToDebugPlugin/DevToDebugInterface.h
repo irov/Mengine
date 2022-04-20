@@ -2,48 +2,145 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
+#include "Interface/UnknownInterface.h"
+
+#include "Kernel/Unknowable.h"
+#include "Kernel/String.h"
+#include "Kernel/Color.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    class DevToDebugPropertyInterface
+        : public ServantInterface
+        , public Unknowable
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DevToDebugPropertyInterface> DevToDebugPropertyInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugPropertyConstBooleanInterface
+        : public UnknownInterface
+    {
+    public:
+        virtual void setValue( bool _value ) = 0;
+        virtual bool getValue() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugPropertyConstBooleanInterface> UnknownDevToDebugPropertyConstBooleanInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugPropertyGetterBooleanInterface
+        : public UnknownInterface
+    {
+    public:
+        typedef Lambda<void( bool * const )> LambdaGetterValue;
+        virtual void setGetter( const LambdaGetterValue & _getter ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugPropertyGetterBooleanInterface> UnknownDevToDebugPropertyGetterBooleanInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugPropertyInitialBooleanInterface
+        : public UnknownInterface
+    {
+    public:
+        virtual void setValue( bool _value ) = 0;
+        virtual bool getValue() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugPropertyInitialBooleanInterface> UnknownDevToDebugPropertyInitialBooleanInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugPropertyConstStringInterface
+        : public UnknownInterface
+    {
+    public:
+        virtual void setValue( const String & _value ) = 0;
+        virtual const String & getValue() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugPropertyConstStringInterface> UnknownDevToDebugPropertyConstStringInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugPropertyGetterStringInterface
+        : public UnknownInterface
+    {
+    public:
+        typedef Lambda<void( String * const )> LambdaGetterValue;
+        virtual void setGetter( const LambdaGetterValue & _getter ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugPropertyGetterStringInterface> UnknownDevToDebugPropertyGetterStringInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugPropertyConstColorInterface
+        : public UnknownInterface
+    {
+    public:
+        virtual void setValue( const Color & _value ) = 0;
+        virtual const Color & getValue() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugPropertyConstColorInterface> UnknownDevToDebugPropertyConstColorInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugPropertyGetterColorInterface
+        : public UnknownInterface
+    {
+    public:
+        typedef Lambda<void( Color * const )> LambdaGetterValue;
+        virtual void setGetter( const LambdaGetterValue & _getter ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugPropertyGetterColorInterface> UnknownDevToDebugPropertyGetterColorInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetInterface
         : public ServantInterface
+        , public Unknowable
     {
     public:
         virtual void setId( const ConstString & _id ) = 0;
         virtual const ConstString & getId() const = 0;
 
-        virtual void setHide( bool _hide ) = 0;
-        virtual bool getHide() const = 0;
+    public:
+        virtual void setBaseProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
+        virtual const DevToDebugPropertyInterfacePtr & getBaseProperty( const ConstString & _name ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetInterface> DevToDebugWidgetInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class DevToDebugWidgetTextInterface
-        : virtual public DevToDebugWidgetInterface
+    class UnknownDevToDebugWidgetTextInterface
+        : public UnknownInterface
     {
     public:
-        virtual void setConstText( const String & _text ) = 0;
-
-        typedef Lambda<void( String * const )> LambdaGetterText;
-        virtual void setGetterText( const LambdaGetterText & _getter ) = 0;
+        virtual void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
+        virtual const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetTextInterface> DevToDebugWidgetTextInterfacePtr;
+    typedef IntrusivePtr<UnknownDevToDebugWidgetTextInterface> UnknownDevToDebugWidgetTextInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class DevToDebugWidgetButtonInterface
-        : virtual public DevToDebugWidgetInterface
+    class UnknownDevToDebugWidgetCheckboxInterface
+        : public UnknownInterface
     {
     public:
-        virtual void setTitle( const String & _title ) = 0;
-        virtual const String & getTitle() const = 0;
+        typedef Lambda<void(bool)> LambdaClickEvent;
+        virtual void setClickEvent( const LambdaClickEvent & _clickEvent ) = 0;
 
+    public:
+        virtual void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
+        virtual const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugWidgetCheckboxInterface> UnknownDevToDebugWidgetCheckboxInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugWidgetButtonInterface
+        : public UnknownInterface
+    {
     public:
         typedef Lambda<void()> LambdaClickEvent;
         virtual void setClickEvent( const LambdaClickEvent & _clickEvent ) = 0;
+
+    public:
+        virtual void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
+        virtual const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetButtonInterface> DevToDebugWidgetButtonInterfacePtr;
+    typedef IntrusivePtr<UnknownDevToDebugWidgetButtonInterface> UnknownDevToDebugWidgetButtonInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugTabInterface
         : public ServantInterface
@@ -65,6 +162,8 @@ namespace Mengine
 
     public:
         virtual void addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab ) = 0;
+        virtual const DevToDebugTabInterfacePtr & getTab( const ConstString & _name ) const = 0;
+        virtual bool hasTab( const ConstString & _name ) const = 0;
         virtual void removeTab( const ConstString & _name ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

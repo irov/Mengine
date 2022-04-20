@@ -16,6 +16,6 @@
 - (BOOL) logout;
 - (void) switchAccount;
 - (void) submitExtendedData:(MARUserExtraData* _Nonnull)extraData;
-- (void) submitPayementData:(MARProductInfo* _Nonnull)productInfo;
+- (void) submitPaymentData:(MARProductInfo* _Nonnull)productInfo;
 
 @end

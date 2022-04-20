@@ -3,15 +3,15 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
-
-#include "math/utils.h"
+#include "Kernel/EnumeratorHelper.h"
 
 #include "Config/Algorithm.h"
+
+#include "math/utils.h"
 
 namespace Mengine
 {
@@ -90,8 +90,7 @@ namespace Mengine
             , _delay
         );
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         SchedulerEventDesc desc;
 
@@ -133,8 +132,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
+        UniqueId new_id = Helper::generateUniqueIdentity();
 
         SchedulerEventDesc desc;
 

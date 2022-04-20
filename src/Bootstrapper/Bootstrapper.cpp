@@ -709,24 +709,32 @@ namespace Mengine
             }\
         }
     //////////////////////////////////////////////////////////////////////////
+#define MENGINE_ADD_SERVICE( Name, Doc )\
+        {\
+            if( SERVICE_CREATE(Name, Doc) == false )\
+            {\
+            return false;\
+            }\
+        }
+    //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
-        SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( Platform, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
 
         LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
@@ -823,7 +831,10 @@ namespace Mengine
 
 #define BOOTSTRAPPER_SERVICE_CREATE( Name, Doc )\
         LOGGER_INFO("bootstrapper", "bootstrapper create service: " #Name);\
-        SERVICE_CREATE(Name, Doc)\
+        if( SERVICE_CREATE(Name, Doc) == false)\
+        {\
+            return false;\
+        }
 
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
 

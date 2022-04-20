@@ -22,7 +22,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32SocketPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( SocketSystem, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( SocketSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

@@ -1,6 +1,7 @@
 #include "DevToDebugService.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "DevToDebugTab.h"
 
@@ -17,12 +18,17 @@
 #include "DevToDebugWidgetButton.h"
 #include "DevToDebugWidgetCheckbox.h"
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#include "DevToDebugScriptEmbedding.h"
+#endif
+
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/JSONHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -140,11 +146,30 @@ namespace Mengine
 
         m_timerId = timerId;
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+        {
+            SCRIPT_SERVICE()
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "DevToDebugScriptEmbedding" ), Helper::makeFactorableUnique<DevToDebugScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+        {
+            SCRIPT_SERVICE()
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "DevToDebugScriptEmbedding" ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_finalizeService()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+#endif
+
         this->stop();
 
         PROTOTYPE_SERVICE()

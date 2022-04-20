@@ -1,12 +1,6 @@
 #include "AmplifierPlugin.h"
 #include "AmplifierInterface.h"
 
-#include "Interface/ScriptServiceInterface.h"
-
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "AmplifierScriptEmbedding.h"
-#endif
-
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
 
@@ -28,32 +22,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AmplifierPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( Amplifier, MENGINE_DOCUMENT_FACTORABLE );
-
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+        if( SERVICE_CREATE( Amplifier, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ), Helper::makeFactorableUnique<AmplifierScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AmplifierPlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         SERVICE_FINALIZE( Amplifier );
     }
     //////////////////////////////////////////////////////////////////////////

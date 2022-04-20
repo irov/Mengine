@@ -24,7 +24,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GOAPPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( GOAPService, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( GOAPService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

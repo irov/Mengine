@@ -29,7 +29,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFontPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( BitmapGlyphService, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( BitmapGlyphService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" )

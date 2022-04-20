@@ -1,11 +1,5 @@
 #include "SteamPlugin.h"
 
-#include "Interface/ScriptServiceInterface.h"
-
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "SteamScriptEmbedding.h"
-#endif
-
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConfigHelper.h"
@@ -95,30 +89,11 @@ namespace Mengine
             return false;
         }
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "SteamScriptEmbedding" ), Helper::makeFactorableUnique<SteamScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "SteamScriptEmbedding" ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SteamPlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
         SERVICE_FINALIZE( SteamService );
     }
     //////////////////////////////////////////////////////////////////////////

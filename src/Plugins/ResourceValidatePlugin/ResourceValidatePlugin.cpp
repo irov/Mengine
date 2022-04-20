@@ -33,7 +33,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidatePlugin::_initializePlugin()
     {
-        SERVICE_CREATE( ResourceValidateService, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( ResourceValidateService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceFile" ), Helper::makeFactorableUnique<ResourceFileValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ), Helper::makeFactorableUnique<ResourceHITValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );

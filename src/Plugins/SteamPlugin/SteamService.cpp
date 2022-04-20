@@ -5,6 +5,11 @@
 
 #include "SteamService.h"
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Interface/ScriptServiceInterface.h"
+#   include "SteamScriptEmbedding.h"
+#endif
+
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -57,6 +62,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SteamService::_initializeService()
     {
+        if( SteamAPI_Init() == false )
+        {
+            LOGGER_ERROR( "[steam] invalid SteamAPI_Init" );
+
+#ifdef MENGINE_DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
+
+        m_steamInitialize = true;
+
         m_iso639_1["brazilian"] = STRINGIZE_STRING_LOCAL( "pt-br" );
         m_iso639_1["bulgarian"] = STRINGIZE_STRING_LOCAL( "bg" );
         m_iso639_1["czech"] = STRINGIZE_STRING_LOCAL( "cs" );
@@ -84,18 +102,19 @@ namespace Mengine
         m_iso639_1["turkish"] = STRINGIZE_STRING_LOCAL( "tr" );
         m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( "ua" );
 
-        if( SteamAPI_Init() == false )
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
-            LOGGER_ERROR( "[steam] invalid SteamAPI_Init" );
+            SCRIPT_SERVICE()
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "SteamScriptEmbedding" ), Helper::makeFactorableUnique<SteamScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 
-#ifdef MENGINE_DEBUG
-            return true;
-#else
-            return false;
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+        {
+            SCRIPT_SERVICE()
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "SteamScriptEmbedding" ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        }
-
-        m_steamInitialize = true;
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PACKAGES_LOAD, &SteamService::notifyPackagesLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -190,6 +209,11 @@ namespace Mengine
         {
             return;
         }
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+#endif
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PACKAGES_LOAD );
 

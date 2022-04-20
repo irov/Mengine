@@ -6,14 +6,14 @@
 
 namespace Mengine
 {    
-    class AppLovinPlugin
+    class AppleAdjustPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Appodeal" )
+        PLUGIN_DECLARE( "AppleAdjust" )
 
     public:
-        AppLovinPlugin();
-        ~AppLovinPlugin() override;
+        AppleAdjustPlugin();
+        ~AppleAdjustPlugin() override;
 
     protected:
         bool _availablePlugin() const override;

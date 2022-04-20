@@ -373,6 +373,18 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL", t
     println 'ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL: FALSE'
 }
 
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", true) == true) {
+    println 'ANDROID_APP_ENABLE_ADJUST: TRUE'
+
+    android.ext.plugins += 'org.Mengine.Plugin.Adjust.MengineAdjustPlugin'
+
+    dependencies {
+        implementation project(':libraries:Adjust')
+    }
+} else {
+    println 'ANDROID_APP_ENABLE_ADJUST: FALSE'
+}
+
 android {
     buildTypes {
         debug {

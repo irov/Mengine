@@ -1,0 +1,46 @@
+import com.Mengine.Utils
+
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", true) == true) {
+//    ANDROID_APP_ENABLE_ADJUST
+    apply plugin: 'com.android.library'
+
+    android {
+        buildToolsVersion '31.0.0'
+        compileSdkVersion 32
+
+        defaultConfig {
+            minSdkVersion 19
+            targetSdkVersion 32
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false
+        }
+
+        sourceSets {
+            main {
+                if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                    res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+                } else {
+                    res.srcDirs += ['../../app/res']
+                }
+            }
+        }
+    }
+
+    dependencies {
+        implementation project(':libraries:Mengine')
+        implementation project(':libraries:SDL2')
+
+        implementation 'com.adjust.sdk:adjust-android:4.30.0'
+        implementation 'com.android.installreferrer:installreferrer:2.2'
+        implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+
+    }
+}

@@ -6,7 +6,7 @@
 @implementation MengineUIKitDelegate
 //////////////////////////////////////////////////////////////////////////
 - (id) init {
-    NSArray *proxysClassed = [[NSArray alloc] initWithObjects:@"AppleMARSDKApplicationDelegate", nil];
+    NSArray *proxysClassed = [[NSArray alloc] initWithObjects:@"AppleMARSDKApplicationDelegate",@"AppleAdjustApplicationDelegate", nil];
 
     self.m_applicationDelegates = [NSMutableArray array];
     

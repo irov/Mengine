@@ -1,0 +1,31 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.Mengine.Plugin.GoogleGameSocial">
+
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+    <application>
+
+        <receiver
+            android:name="com.adjust.sdk.AdjustReferrerReceiver"
+            android:exported="true"
+            android:permission="android.permission.INSTALL_PACKAGES">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+
+        <receiver
+            android:name="com.adjust.sdk.AdjustPreinstallReferrerReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.attribution.SYSTEM_INSTALLER_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

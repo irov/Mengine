@@ -313,6 +313,10 @@ PLUGIN_EXPORT( AppleMARSDK );
 PLUGIN_EXPORT( AppleAppLovinPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
+PLUGIN_EXPORT( AppleAdjustPlugin );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
 PLUGIN_EXPORT( XmlToBin );
 #endif
@@ -1131,6 +1135,10 @@ namespace Mengine
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
         MENGINE_ADD_PLUGIN( AppleAppLovinPlugin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+        
+#ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
+        MENGINE_ADD_PLUGIN( AppleAdjustPlugin, "Plugin Apple Adjust...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC

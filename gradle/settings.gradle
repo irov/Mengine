@@ -16,6 +16,7 @@ include ':libraries:GoogleService'
 include ':libraries:GoogleBilling'
 include ':libraries:GoogleGameSocial'
 include ':libraries:MAR'
+include ':libraries:Adjust'
 
 include ':libraries:OpenAL32'
 include ':libraries:SDL2'

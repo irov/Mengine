@@ -67,7 +67,7 @@
 }
 
 + (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
-    return [[MARSDK sharedInstance] application:app openURL:url options:options];
+    return [[MARSDK sharedInstance] application:application openURL:url options:options];
 }
 
 @end

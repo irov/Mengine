@@ -1,6 +1,6 @@
 include ':app'
 
-if(ANDROID_APP_DELIVERY_DIR) {
+if(ANDROID_APP_ENABLE_DELIVERY_DIR) {
     include ':app:' + ANDROID_APP_DELIVERY_DIR
 }
 

@@ -36,6 +36,11 @@ namespace Mengine
         uint32_t HWWidth = Helper::getTexturePow2( _width );
         uint32_t HWHeight = Helper::getTexturePow2( _height );
 
+        MENGINE_ASSERTION_FATAL( HWWidth != 0 && HWHeight != 0, "width [%u] or height [%u] cannot be zero"
+            , HWWidth
+            , HWHeight
+        );
+
         IDirect3DTexture9 * pD3DTexture = nullptr;
         IF_DXCALL( m_pD3DDevice, CreateTexture, (HWWidth, HWHeight, _mipmaps, 0, D3DFormat, D3DPOOL_MANAGED, &pD3DTexture, NULL) )
         {

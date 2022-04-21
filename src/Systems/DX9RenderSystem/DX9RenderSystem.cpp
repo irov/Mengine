@@ -684,9 +684,9 @@ namespace Mengine
         if( renderImage->initialize( _mipmaps, _width, _height, fix_format ) == false )
         {
             LOGGER_ERROR( "can't initialize image [%ux%u] format [%u] (doc %s)"
-                , renderImage->getHWWidth()
-                , renderImage->getHWHeight()
-                , renderImage->getHWPixelFormat()
+                , _width
+                , _height
+                , _format
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

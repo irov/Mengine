@@ -150,7 +150,7 @@ android {
         }
     }
     
-    if (project.hasProperty("ANDROID_APP_DELIVERY_DIR")) {
+    if (project.hasProperty("ANDROID_APP_ENABLE_DELIVERY_DIR", false) == true) {
         print 'ANDROID_APP_DELIVERY_DIR = '
         println ANDROID_APP_DELIVERY_DIR
         

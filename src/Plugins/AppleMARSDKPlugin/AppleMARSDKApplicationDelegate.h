@@ -6,5 +6,4 @@
 {
 }
 
-@property (class, nonatomic, assign, readonly) BOOL hasInited;
 @end

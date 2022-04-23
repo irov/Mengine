@@ -149,8 +149,8 @@ android {
             }
         }
     }
-    
-    if (project.hasProperty("ANDROID_APP_ENABLE_DELIVERY_DIR", false) == true) {
+
+    if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_DIR") == true) {
         print 'ANDROID_APP_DELIVERY_DIR = '
         println ANDROID_APP_DELIVERY_DIR
         
@@ -291,7 +291,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS",
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'
 }
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_ANALYTICS", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_ANALYTICS", false) == true) {
     println 'ANDROID_APP_ENABLE_FIREBASE_ANALYTICS: TRUE'
 
     dependencies {
@@ -325,7 +325,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_SENTRY", true) == true
     println 'ANDROID_APP_ENABLE_SENTRY: FALSE'
 }
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", false) == true) {
     println 'ANDROID_APP_ENABLE_MAR: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.MAR.MengineMARPlugin'
@@ -373,7 +373,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL", t
     println 'ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL: FALSE'
 }
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", true) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", false) == true) {
     println 'ANDROID_APP_ENABLE_ADJUST: TRUE'
 
     android.ext.plugins += 'org.Mengine.Plugin.Adjust.MengineAdjustPlugin'

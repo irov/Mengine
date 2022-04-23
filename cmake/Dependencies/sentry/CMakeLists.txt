@@ -40,7 +40,7 @@ if(NOT CMAKE_C_STANDARD)
 endif()
 
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 include(GNUInstallDirs)
@@ -161,9 +161,12 @@ if(SENTRY_BACKEND_CRASHPAD AND ANDROID)
 	message(FATAL_ERROR "The Crashpad backend is not currently supported on Android")
 endif()
 
+set(SENTRY_SDK_NAME "" CACHE STRING "The SDK name to report when sending events.")
+
 message(STATUS "SENTRY_TRANSPORT=${SENTRY_TRANSPORT}")
 message(STATUS "SENTRY_BACKEND=${SENTRY_BACKEND}")
 message(STATUS "SENTRY_LIBRARY_TYPE=${SENTRY_LIBRARY_TYPE}")
+message(STATUS "SENTRY_SDK_NAME=${SENTRY_SDK_NAME}")
 
 if(ANDROID)
 	set(SENTRY_WITH_LIBUNWINDSTACK TRUE)
@@ -230,6 +233,10 @@ add_library(sentry ${SENTRY_LIBRARY_TYPE} "${PROJECT_SOURCE_DIR}/vendor/mpack.c"
 target_sources(sentry PRIVATE "${PROJECT_SOURCE_DIR}/include/sentry.h")
 add_library(sentry::sentry ALIAS sentry)
 add_subdirectory(src)
+
+if (NOT SENTRY_SDK_NAME STREQUAL "")
+	target_compile_definitions(sentry PRIVATE SENTRY_SDK_NAME="${SENTRY_SDK_NAME}")
+endif()
 
 # we do not need this on android, only linux
 if(LINUX)
@@ -568,8 +575,6 @@ endif()
 if(SENTRY_BUILD_EXAMPLES)
 	add_executable(sentry_example examples/example.c)
 	target_link_libraries(sentry_example PRIVATE sentry)
-
-	target_compile_definitions(sentry_example PRIVATE SENTRY_PERFORMANCE_MONITORING)
 
 	if(MSVC)
 		target_compile_options(sentry_example PRIVATE $<BUILD_INTERFACE:/wd5105>)

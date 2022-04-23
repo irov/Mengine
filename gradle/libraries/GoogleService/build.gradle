@@ -10,47 +10,43 @@ buildscript {
     }
 }
 
-import com.Mengine.Utils
+apply plugin: 'com.android.library'
+apply plugin: 'com.google.gms.google-services'
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true) {
-    apply plugin: 'com.android.library'
-    apply plugin: 'com.google.gms.google-services'
+android {
+    buildToolsVersion '31.0.0'
+    compileSdkVersion 32
 
-    android {
-        buildToolsVersion '31.0.0'
-        compileSdkVersion 32
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 32
+    }
 
-        defaultConfig {
-            minSdkVersion 19
-            targetSdkVersion 32
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
-        }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 
-        lintOptions {
-            checkReleaseBuilds false
-            abortOnError false
-        }
-
-        sourceSets {
-            main {
-                if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
-                    res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
-                } else {
-                    res.srcDirs += ['../../app/res']
-                }
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['../../app/res']
             }
         }
     }
+}
 
-    dependencies {
-        implementation project(':libraries:Mengine')
-        implementation project(':libraries:SDL2')
+dependencies {
+    implementation project(':libraries:Mengine')
+    implementation project(':libraries:SDL2')
 
-        implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-        implementation 'com.google.android.gms:play-services-basement:18.0.1'
-    }
+    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+    implementation 'com.google.android.gms:play-services-basement:18.0.1'
 }

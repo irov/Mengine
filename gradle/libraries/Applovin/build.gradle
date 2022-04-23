@@ -1,57 +1,53 @@
-import com.Mengine.Utils
-
-if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN", true) == true) {
-    buildscript {
-        repositories {
-            google()
-            maven { url 'https://maven.google.com' }
-            maven { url 'https://artifacts.applovin.com/android' }
-            mavenCentral()
-        }
-
-        dependencies {
-            classpath 'io.sentry:sentry-android-gradle-plugin:2.1.5'
-            classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:4.3.4'
-        }
-    }
-
-    apply plugin: 'com.android.library'
-
-    android {
-        buildToolsVersion '31.0.0'
-        compileSdkVersion 32
-
-        defaultConfig {
-            minSdkVersion 19
-            targetSdkVersion 32
-        }
-
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
-        }
-
-        lintOptions {
-            checkReleaseBuilds false
-            abortOnError false
-        }
-
-        sourceSets {
-            main {
-                if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
-                    res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
-                } else {
-                    res.srcDirs += ['../../app/res']
-                }
-            }
-        }
+buildscript {
+    repositories {
+        google()
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://artifacts.applovin.com/android' }
+        mavenCentral()
     }
 
     dependencies {
-        implementation project(':libraries:Mengine')
-        implementation project(':libraries:SDL2')
-
-        implementation 'com.google.android.gms:play-services-location:19.0.1'
-        implementation 'com.applovin:applovin-sdk:11.3.1'
+        classpath 'io.sentry:sentry-android-gradle-plugin:2.1.5'
+        classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:4.3.4'
     }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    buildToolsVersion '31.0.0'
+    compileSdkVersion 32
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 32
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['../../app/res']
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation project(':libraries:Mengine')
+    implementation project(':libraries:SDL2')
+
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+    implementation 'com.applovin:applovin-sdk:11.3.1'
 }

@@ -3,16 +3,10 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
 project(zlib C)
 
-set(VERSION "1.2.12")
+set(VERSION "1.2.11")
 
 option(ASM686 "Enable building i686 assembly implementation")
 option(AMD64 "Enable building amd64 assembly implementation")
-
-set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installation directory for executables")
-set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Installation directory for libraries")
-set(INSTALL_INC_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH "Installation directory for headers")
-set(INSTALL_MAN_DIR "${CMAKE_INSTALL_PREFIX}/share/man" CACHE PATH "Installation directory for manual pages")
-set(INSTALL_PKGCONFIG_DIR "${CMAKE_INSTALL_PREFIX}/share/pkgconfig" CACHE PATH "Installation directory for pkgconfig (.pc) files")
 
 include(CheckTypeSize)
 include(CheckFunctionExists)
@@ -62,19 +56,6 @@ check_include_file(unistd.h Z_HAVE_UNISTD_H)
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-endif()
-
-if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
-    # If we're doing an out of source build and the user has a zconf.h
-    # in their source tree...
-    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h)
-        message(STATUS "Renaming")
-        message(STATUS "    ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h")
-        message(STATUS "to 'zconf.h.included' because this file is included with zlib")
-        message(STATUS "but CMake generates it automatically in the build directory.")
-        file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.included)
-  endif()
 endif()
 
 set(ZLIB_PC ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/zlib.pc)
@@ -82,8 +63,12 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
 		${ZLIB_PC} @ONLY)
 configure_file(	${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
 		${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/zconf.h @ONLY)
-include_directories(${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME} ${CMAKE_SOURCE_DIR})
+include_directories(${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME})
 
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h)
+    message("zlib remove zconf.h form: ${CMAKE_CURRENT_SOURCE_DIR}") 
+    file(REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h)
+endif()
 
 #============================================================================
 # zlib
@@ -121,12 +106,6 @@ set(ZLIB_SRCS
     uncompr.c
     zutil.c
 )
-
-if(NOT MINGW)
-    set(ZLIB_DLL_SRCS
-        win32/zlib1.rc # If present will override custom build rule below.
-    )
-endif()
 
 if(CMAKE_COMPILER_IS_GNUCC)
     if(ASM686)

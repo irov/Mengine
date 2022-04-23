@@ -19,7 +19,7 @@ DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/st
 
 GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-4")
 GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "4.2.0")
-GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.2.12")
+GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.2.11")
 GIT_CLONE(libogg https://github.com/xiph/ogg.git "v1.3.5")
 GIT_CLONE(libvorbis https://github.com/xiph/vorbis.git "v1.3.7")
 GIT_CLONE(libwebp https://github.com/webmproject/libwebp.git "v1.2.2")

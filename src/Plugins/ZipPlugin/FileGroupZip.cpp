@@ -400,10 +400,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileGroupZip::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
-        MENGINE_UNUSED( _filePath );
-        MENGINE_UNUSED( _fullPath );
-
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        MENGINE_SPRINTF(_fullPath, "zip %s [%s] %s"
+            , this->getName().c_str()
+            , this->getFolderPath().c_str()
+            , _filePath.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::existFile( const FilePath & _filePath, bool _recursive ) const

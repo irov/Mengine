@@ -59,9 +59,13 @@ namespace Mengine
         void getValues( const Char * _section, const Char * _key, VectorString * const _values ) const override;
 
     protected:
-        Tags m_platformTags;                
-        
+        Tags m_platformTags;
+
         VectorJSON m_jsons;
+
+#ifdef MENGINE_DEBUG
+        FilePath m_debugFilePath;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<JSONConfig, ConfigInterface> JSONConfigPtr;

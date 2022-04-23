@@ -212,6 +212,14 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 
+        LOGGER_INFO( "config", "load json config: %s"
+            , Helper::getInputStreamDebugFilePath( _stream ).c_str()
+        );
+
+#ifdef MENGINE_DEBUG
+        m_debugFilePath = Helper::getInputStreamDebugFilePath( _stream );
+#endif
+
         size_t size = _stream->size();
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()

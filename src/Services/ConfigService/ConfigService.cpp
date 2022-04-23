@@ -83,7 +83,7 @@ namespace Mengine
         }
 
         ConfigInterfacePtr config = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, MENGINE_DOCUMENT_FACTORABLE );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config );
 

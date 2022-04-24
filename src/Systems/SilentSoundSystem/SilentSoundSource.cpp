@@ -5,6 +5,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -213,7 +215,7 @@ namespace Mengine
         float posms = m_soundBuffer->getTimePos( m_sourceId );
 
         //timing dont assign to zero when m_soundBuffer is stopped!
-        if( MT_fabsf( posms ) < 0.0001f && MT_fabsf( m_time ) > 0.0001f )
+        if( MENGINE_FABSF( posms ) < 0.0001f && MENGINE_FABSF( m_time ) > 0.0001f )
         {
             posms = m_time;
         }

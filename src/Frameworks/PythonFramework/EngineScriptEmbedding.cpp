@@ -127,6 +127,7 @@
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
+#include "Config/StdMath.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -1991,7 +1992,7 @@ namespace Mengine
 
                     float angle_length = mt::angle_length( isometric_angle, dir_angle );
 
-                    float abs_angle_length = MT_fabsf( angle_length );
+                    float abs_angle_length = MENGINE_FABSF( angle_length );
 
                     if( abs_angle_length < min_angle )
                     {
@@ -2414,7 +2415,7 @@ namespace Mengine
 
                                 float cv_a = cv.getA();
 
-                                float pos_distance = MT_sqrtf( pos_sqrdistance );
+                                float pos_distance = MENGINE_SQRTF( pos_sqrdistance );
 
                                 float a0 = (pos_distance - radius) / penumbra;
 

@@ -1,8 +1,9 @@
 #include "ShapeCircle.h"
 
 #include "Kernel/Surface.h"
-
 #include "Kernel/DocumentHelper.h"
+
+#include "Config/StdMath.h"
 
 namespace Mengine
 {
@@ -61,8 +62,8 @@ namespace Mengine
 
         for( uint32_t index = 0; index != m_quality; ++index )
         {
-            float ct = MT_cosf( t );
-            float st = MT_sinf( t );
+            float ct = MENGINE_COSF( t );
+            float st = MENGINE_SINF( t );
 
             float x = width * ct;
             float y = height * st;

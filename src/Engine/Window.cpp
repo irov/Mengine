@@ -7,6 +7,8 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -476,12 +478,12 @@ namespace Mengine
 
         if( background.initialSize.x > 0.001f )
         {
-            clSize.x = MT_ceilf( clSize.x / background.initialSize.x ) * background.initialSize.x;
+            clSize.x = MENGINE_CEILF( clSize.x / background.initialSize.x ) * background.initialSize.x;
         }
 
         if( background.initialSize.y > 0.001f )
         {
-            clSize.y = MT_ceilf( clSize.y / background.initialSize.y ) * background.initialSize.y;
+            clSize.y = MENGINE_CEILF( clSize.y / background.initialSize.y ) * background.initialSize.y;
         }
 
         this->setClientSize( clSize );

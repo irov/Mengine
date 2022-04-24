@@ -68,6 +68,7 @@ src
     StdIO.h
     StdLib.h
     StdString.h
+    StdMath.h
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h

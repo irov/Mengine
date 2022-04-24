@@ -19,6 +19,7 @@
 #include "Kernel/ConfigHelper.h"
 
 #include "Config/Algorithm.h"
+#include "Config/StdMath.h"
 
 namespace Mengine
 {
@@ -214,8 +215,8 @@ namespace Mengine
 
                 if( layerFrame.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_SCALE || layerFrame.immutable == true )
                 {
-                    if( MT_fabsf( layerFrame.source.scale.x ) < Limit_MovieImageScale ||
-                        MT_fabsf( layerFrame.source.scale.y ) < Limit_MovieImageScale )
+                    if( MENGINE_FABSF( layerFrame.source.scale.x ) < Limit_MovieImageScale ||
+                        MENGINE_FABSF( layerFrame.source.scale.y ) < Limit_MovieImageScale )
                     {
                         LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer [%u] name '%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
                             , _resource->getName().c_str()
@@ -239,14 +240,14 @@ namespace Mengine
 
                     for( uint32_t i = 0; i != layerFrame.count; ++i )
                     {
-                        if( MT_fabsf( layerFrame.scale[i].x ) > scale_max_x )
+                        if( MENGINE_FABSF( layerFrame.scale[i].x ) > scale_max_x )
                         {
-                            scale_max_x = MT_fabsf( layerFrame.scale[i].x );
+                            scale_max_x = MENGINE_FABSF( layerFrame.scale[i].x );
                         }
 
-                        if( MT_fabsf( layerFrame.scale[i].y ) > scale_max_y )
+                        if( MENGINE_FABSF( layerFrame.scale[i].y ) > scale_max_y )
                         {
-                            scale_max_y = MT_fabsf( layerFrame.scale[i].y );
+                            scale_max_y = MENGINE_FABSF( layerFrame.scale[i].y );
                         }
                     }
 

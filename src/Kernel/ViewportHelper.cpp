@@ -1,6 +1,6 @@
 #include "ViewportHelper.h"
 
-#include "math/config.h"
+#include "Config/StdMath.h"
 
 namespace Mengine
 {
@@ -17,7 +17,7 @@ namespace Mengine
 
             for( auto && [aspect, viewport] : _aspectRatioViewports )
             {
-                float deltha_aspect = MT_fabsf( _aspect - aspect );
+                float deltha_aspect = MENGINE_FABSF( _aspect - aspect );
 
                 if( deltha_aspect >= minimal_aspect )
                 {

@@ -9,7 +9,7 @@ SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../download_template.cmake)
 
-DOWNLOAD_URL_HASH(boost https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.7z SHA256 090cefea470bca990fa3f3ed793d865389426915b37a2a3258524a7258f0790c)
+DOWNLOAD_URL_HASH(boost https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.7z SHA256 6c97cf4f4a0eb00ed776c88065ab3f59e183fa5e65f6464ff94f92328352d9d6)
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
 DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip)
 DOWNLOAD_URL(devtodev-android https://github.com/devtodev-analytics/android-sdk-2.0/archive/refs/tags/v2.1.2.zip)

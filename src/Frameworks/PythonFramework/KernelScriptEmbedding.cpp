@@ -89,6 +89,7 @@
 #include "Kernel/ResourceImageDefault.h"
 
 #include "Config/StdIO.h"
+#include "Config/StdMath.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -1884,7 +1885,7 @@ namespace Mengine
                 }
 
                 float invTime = 1.f / _time;
-                float angularSpeed = MT_fabsf( correct_angle_from - correct_angle_to ) * invTime;
+                float angularSpeed = MENGINE_FABSF( correct_angle_from - correct_angle_to ) * invTime;
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 

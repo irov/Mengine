@@ -8,6 +8,8 @@
 #include "Kernel/Document.h"
 #include "Kernel/EventableHelper.h"
 
+#include "Config/StdMath.h"
+
 //ToDo https://github.com/irov/Mengine/issues/94
 
 #ifndef MENGINE_SURFACE_MOCKUP_VIDEO_FRAMERATE
@@ -223,7 +225,7 @@ namespace Mengine
         
         float frameTime = 1000.f / frameRate;
 
-        if( MT_fabsf( m_time - _time ) < frameTime )
+        if( MENGINE_FABSF( m_time - _time ) < frameTime )
         {
             return;
         }

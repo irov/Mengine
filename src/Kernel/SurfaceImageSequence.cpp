@@ -10,6 +10,8 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -251,9 +253,9 @@ namespace Mengine
 
         if( _time >= duration )
         {
-            _time -= MT_floorf( _time / duration ) * duration;
+            _time -= MENGINE_FLOORF( _time / duration ) * duration;
 
-            if( MT_fabsf( _time ) < 0.0001f )
+            if( MENGINE_FABSF( _time ) < 0.0001f )
             {
                 *_deltaTime = 0.f;
 

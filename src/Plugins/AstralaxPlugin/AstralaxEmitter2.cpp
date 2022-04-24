@@ -4,7 +4,7 @@
 
 #include "Kernel/Logger.h"
 
-#include <limits>
+#include "Config/StdMath.h"
 
 namespace Mengine
 {
@@ -422,7 +422,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter2::setAngle( float _radians )
     {
-        m_angle = MT_RAD2DEG( _radians );
+        m_angle = MENGINE_RAD2DEG( _radians );
 
         Magic_SetDiagramAddition( m_emitterId, -1, MAGIC_DIAGRAM_DIRECTION, m_angle );
 

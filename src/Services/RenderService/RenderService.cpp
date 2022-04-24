@@ -26,6 +26,7 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
+#include "Config/StdMath.h"
 
 #include "math/convex8.h"
 
@@ -836,16 +837,16 @@ namespace Mengine
         scaleViewport.begin += renderViewport.begin;
         scaleViewport.end += renderViewport.begin;
 
-        float vp_x = MT_floorf( scaleViewport.begin.x + 0.5f );
-        float vp_y = MT_floorf( scaleViewport.begin.y + 0.5f );
+        float vp_x = MENGINE_FLOORF( scaleViewport.begin.x + 0.5f );
+        float vp_y = MENGINE_FLOORF( scaleViewport.begin.y + 0.5f );
         //float vp_x = renderViewport.begin.x;
         //float vp_y = renderViewport.begin.y;
 
         float width = scaleViewport.getWidth();
         float height = scaleViewport.getHeight();
 
-        float vp_width = MT_floorf( width + 0.5f );
-        float vp_height = MT_floorf( height + 0.5f );
+        float vp_width = MENGINE_FLOORF( width + 0.5f );
+        float vp_height = MENGINE_FLOORF( height + 0.5f );
         //float vp_width = width;
         //float vp_height = height;
 

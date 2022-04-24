@@ -11,6 +11,8 @@
 #include "Kernel/EventableHelper.h"
 #include "Kernel/ResourceHelper.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -314,7 +316,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_setVolume( float _volume )
     {
-        if( MT_fabsf( m_volume - _volume ) < 0.00001f )
+        if( MENGINE_FABSF( m_volume - _volume ) < 0.00001f )
         {
             return;
         }

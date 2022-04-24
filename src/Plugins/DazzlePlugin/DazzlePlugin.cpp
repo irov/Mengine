@@ -24,6 +24,8 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/ConverterFactory.h"
 
+#include "Config/StdMath.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Dazzle, Mengine::DazzlePlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -59,7 +61,7 @@ namespace Mengine
     {
         DZ_UNUSED( _ud );
 
-        float value = MT_sqrtf( _a );
+        float value = MENGINE_SQRTF( _a );
 
         return value;
     }
@@ -68,7 +70,7 @@ namespace Mengine
     {
         DZ_UNUSED( _ud );
 
-        float value = MT_cosf( _a );
+        float value = MENGINE_COSF( _a );
 
         return value;
     }
@@ -77,7 +79,7 @@ namespace Mengine
     {
         DZ_UNUSED( _ud );
 
-        float value = MT_sinf( _a );
+        float value = MENGINE_SINF( _a );
 
         return value;
     }

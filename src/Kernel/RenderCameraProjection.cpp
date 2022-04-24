@@ -2,6 +2,8 @@
 
 #include "Interface/ApplicationInterface.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     ////////////////////////////////////////////////////////////////////////
@@ -214,7 +216,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraProjection::makeViewport_( Viewport * const _viewport ) const
     {
-        float tangent = MT_tanf( m_cameraFov * 0.5f );
+        float tangent = MENGINE_TANF( m_cameraFov * 0.5f );
         float height = 2.f * 1.f * tangent;
         float width = height * m_cameraAspect;
 

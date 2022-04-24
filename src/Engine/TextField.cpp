@@ -4,6 +4,8 @@
 #include "Interface/FontServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
+#include "TextLine.h"
+
 #include "Kernel/StringFormat.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/Logger.h"
@@ -16,13 +18,11 @@
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
-
-#include "TextLine.h"
-
-#include "math/box2.h"
-
 #include "Config/Algorithm.h"
 #include "Config/Iterator.h"
+#include "Config/StdMath.h"
+
+#include "math/box2.h"
 
 #ifndef MENGINE_TEXT_FIELD_MAX_TEXT
 #define MENGINE_TEXT_FIELD_MAX_TEXT 2048
@@ -2361,8 +2361,8 @@ namespace Mengine
         if( m_pixelsnap == true )
         {
             mt::mat4f wm = this->getWorldMatrix();
-            wm.v3.x = MT_floorf( wm.v3.x + 0.5f );
-            wm.v3.y = MT_floorf( wm.v3.y + 0.5f );
+            wm.v3.x = MENGINE_FLOORF( wm.v3.x + 0.5f );
+            wm.v3.y = MENGINE_FLOORF( wm.v3.y + 0.5f );
 
             for( ; it != it_end; ++it, ++it_w )
             {

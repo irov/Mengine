@@ -135,6 +135,8 @@
 
 #include "Kernel/Stringstream.h"
 
+#include "Config/StdMath.h"
+
 #define MENGINE_DEBUG_HOTSPOTS 0x00000001
 #define MENGINE_DEBUG_PHYSICS 0x00000002
 #define MENGINE_DEBUG_NODES 0x00000004
@@ -1967,11 +1969,11 @@ namespace Mengine
                 dw = rh * contentAspect * one_div_width;
             }
 
-            float areaWidth = MT_ceilf( dw * rw );
-            float areaHeight = MT_ceilf( dh * rh );
+            float areaWidth = MENGINE_CEILF( dw * rw );
+            float areaHeight = MENGINE_CEILF( dh * rh );
 
-            _viewport->begin.x = MT_ceilf( (rw - areaWidth) * 0.5f );
-            _viewport->begin.y = MT_ceilf( (rh - areaHeight) * 0.5f );
+            _viewport->begin.x = MENGINE_CEILF( (rw - areaWidth) * 0.5f );
+            _viewport->begin.y = MENGINE_CEILF( (rh - areaHeight) * 0.5f );
             _viewport->end.x = _viewport->begin.x + areaWidth;
             _viewport->end.y = _viewport->begin.y + areaHeight;
         }

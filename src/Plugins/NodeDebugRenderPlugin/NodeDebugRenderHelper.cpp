@@ -4,6 +4,8 @@
 
 #include "Kernel/DocumentHelper.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -54,8 +56,8 @@ namespace Mengine
 
             for( uint32_t i = 0; i != numpoints; ++i )
             {
-                float x = _radius * MT_cosf( mt::constant::two_pi / float( numpoints ) * float( i ) );
-                float y = _radius * MT_sinf( mt::constant::two_pi / float( numpoints ) * float( i ) );
+                float x = _radius * MENGINE_COSF( mt::constant::two_pi / float( numpoints ) * float( i ) );
+                float y = _radius * MENGINE_SINF( mt::constant::two_pi / float( numpoints ) * float( i ) );
 
                 ring[i] = mt::vec2f( x, y );
             }

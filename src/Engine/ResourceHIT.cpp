@@ -11,6 +11,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -192,7 +194,7 @@ namespace Mengine
         uint32_t i = (uint32_t)fi;
         uint32_t j = (uint32_t)fj;
 
-        float radiuslog = MT_logf( _radius );
+        float radiuslog = MENGINE_LOGF( _radius );
 
         float levelF = radiuslog * mt::constant::inv_log2;
         uint32_t level = (uint32_t)levelF;

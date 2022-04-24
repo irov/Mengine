@@ -10,6 +10,8 @@
 #include "Kernel/EventableHelper.h"
 #include "Kernel/ResourceHelper.h"
 
+#include "Config/StdMath.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -426,7 +428,7 @@ namespace Mengine
         float frameRate = m_resourceVideo->getFrameRate();
         float frameTime = 1000.f / frameRate;
 
-        if( MT_fabsf( m_time - _time ) < frameTime )
+        if( MENGINE_FABSF( m_time - _time ) < frameTime )
         {
             return;
         }

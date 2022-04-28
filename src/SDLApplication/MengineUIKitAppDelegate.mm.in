@@ -11,13 +11,13 @@
     self.m_applicationDelegates = [NSMutableArray array];
     
     for (id className in proxysClassed) {
-        Class class = NSClassFromString(className);
+        id c = NSClassFromString(className);
 
-        if( class == nil ) {
+        if( c == nil ) {
             continue;
         }
 
-        [self.m_applicationDelegates addObject: class];
+        [self.m_applicationDelegates addObject: c];
     }
     
     return [super init];

@@ -3580,13 +3580,18 @@ namespace Mengine
                 /* Render events */
                 MENGINE_MESSAGE_CASE( SDL_RENDER_TARGETS_RESET, "The render targets have been reset and their contents need to be updated" );
                 MENGINE_MESSAGE_CASE( SDL_RENDER_DEVICE_RESET, "The device has been reset and all textures need to be recreated" );
-
-                /** Events ::SDL_USEREVENT through ::SDL_LASTEVENT are for your use,
-                 *  and should be allocated with SDL_RegisterEvents()
-                 */
-                MENGINE_MESSAGE_CASE( SDL_USEREVENT, "SDL_USEREVENT" );
             default:
                 break;
+            }
+            
+            if( _eventId >= SDL_USEREVENT )
+            {
+                static MENGINE_THREAD_LOCAL Char userEventMessage[32] = {'\0'};
+                MENGINE_SPRINTF(userEventMessage, "[User event: %u]"
+                    , _eventId
+                    );
+                
+                return userEventMessage;
             }
 
             return "UNKNOWN";

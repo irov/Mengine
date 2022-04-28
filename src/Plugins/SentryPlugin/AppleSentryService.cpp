@@ -54,9 +54,12 @@ namespace Mengine
         );
         
         bool debugMode = Helper::isDebugMode();
+        
+        bool Sentry_Debug = CONFIG_VALUE_CAPTURE_DEFAULT( "Sentry", "Debug", debugMode );
+        
         const Char * BUILD_VERSION = Helper::getBuildVersion();
         
-        if( appleSentryInitialize( Sentry_DSN, debugMode, BUILD_VERSION ) != 0 )
+        if( appleSentryInitialize( Sentry_DSN, Sentry_Debug, BUILD_VERSION ) != 0 )
         {
             return false;
         }

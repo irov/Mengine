@@ -523,6 +523,8 @@ namespace Mengine
             {
                 DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
 
+                jpp::array jwidgets = jpp::make_array();
+
                 jpp::object jwidget = jpp::make_object();
 
                 if( widget->fillJson( jwidget, false ) == false )
@@ -530,7 +532,9 @@ namespace Mengine
                     return;
                 }
 
-                jtab.push_back( jwidget );
+                jwidgets.push_back( jwidget );
+
+                jtab.set( "widgets", jwidgets );
             } );
 
             if( jtab.empty() == true )

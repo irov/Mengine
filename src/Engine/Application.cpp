@@ -1944,8 +1944,10 @@ namespace Mengine
         float rh = (float)height;
 
         float r_aspect = _resolution.getAspectRatio();
+        
+        bool fixedDisplayResolution = this->getFixedDisplayResolution();
 
-        if( m_fixedDisplayResolution == true )
+        if( fixedDisplayResolution == true )
         {
             float c_aspect = m_contentResolution.getAspectRatio();
 
@@ -2254,7 +2256,7 @@ namespace Mengine
         {
             return;
         }
-
+        
         m_fixedDisplayResolution = _fixedDisplayResolution;
 
         this->invalidateWindow_();

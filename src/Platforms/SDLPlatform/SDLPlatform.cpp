@@ -584,10 +584,10 @@ namespace Mengine
 
             ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
 
-            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )("SDL [%s]: %s"
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("SDL [%s]: %s"
                 , Detail::SDL_GetCategoryName( category )
                 , message
-                );
+            );
         }
         //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOWS_UNIVERSAL
@@ -3372,6 +3372,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_IOS)
         windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_SHOWN;
+        windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
         windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;

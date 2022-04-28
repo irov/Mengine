@@ -46,6 +46,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////
     bool AppleMARSDKService::login()
     {
+        LOGGER_INFO( "marsdk", "login" );
+        
         [m_delegate login];
         
         return true;
@@ -53,6 +55,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMARSDKService::logout()
     {
+        LOGGER_INFO( "marsdk", "logout" );
+        
         [m_delegate logout];
         
         return true;
@@ -67,6 +71,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitExtendedData( const MARSDKExtraData & _data )
     {
+        LOGGER_INFO( "marsdk", "submit extended data" );
+        
         MARUserExtraData* extraData = [[MARUserExtraData alloc] init];
         
         extraData.dataType = _data.dataType;
@@ -96,6 +102,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitPaymentData( const MARSDKProductInfo & _info )
     {
+        LOGGER_INFO( "marsdk", "submit payment data" );
+        
         MARProductInfo* productInfo = [[MARProductInfo alloc] init];
         
         productInfo.orderID = [NSString stringWithUTF8String:_info.orderID.c_str()];
@@ -119,6 +127,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogin()
     {
+        LOGGER_INFO( "marsdk", "event user login" );
+        
         if( m_provider == nullptr )
         {
             return;
@@ -129,6 +139,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogout()
     {
+        LOGGER_INFO( "marsdk", "event user logout" );
+        
         if( m_provider == nullptr )
         {
             return;
@@ -139,6 +151,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onPayPaid()
     {
+        LOGGER_INFO( "marsdk", "event pay paid" );
+        
         if( m_provider == nullptr )
         {
             return;

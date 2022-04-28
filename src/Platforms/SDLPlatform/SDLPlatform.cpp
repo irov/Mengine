@@ -3646,11 +3646,14 @@ namespace Mengine
             {
             case SDL_KEYDOWN:
                 {
-                    switch( sdlEvent.key.keysym.sym )
+                    SDL_Keycode keyCode = sdlEvent.key.keysym.sym;
+                    Uint16 keyMod = sdlEvent.key.keysym.mod;
+
+                    switch( keyCode )
                     {
                     case SDLK_RETURN:
                         {
-                            if( sdlEvent.key.keysym.mod & KMOD_ALT )
+                            if( keyMod & KMOD_ALT )
                             {
                                 bool fullscreen = APPLICATION_SERVICE()
                                     ->getFullscreenMode();

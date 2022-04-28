@@ -246,7 +246,7 @@ namespace Mengine
         {
             DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyString( _cb, _args );
 
-            _checkbox->setDataProperty( STRINGIZE_STRING_LOCAL( "title" ), property );
+            _checkbox->setDataProperty( STRINGIZE_STRING_LOCAL( "text" ), property );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_DevToDebugWidgetCheckbox_setValue( DevToDebugWidgetCheckbox * _checkbox, const pybind::object & _cb, const pybind::args & _args )

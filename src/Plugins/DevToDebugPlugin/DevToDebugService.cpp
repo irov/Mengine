@@ -469,26 +469,35 @@ namespace Mengine
 
         jpp::object jstate = jpp::make_object();
 
+        jpp::object jtabs = jpp::make_object();
+
         for( const HashtableDevToDebugTabs::value_type & value : m_tabs )
         {
             const ConstString & key = value.key;
             const DevToDebugTabInterfacePtr & tab = value.element;
 
-            jpp::array jtab = jpp::make_array();
+            jpp::object jtab = jpp::make_object();
 
             tab->foreachWidgets( [&jtab]( const DevToDebugWidgetInterfacePtr & _widget )
             {
                 DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
 
+                jpp::array jwidgets = jpp::make_array();
+
                 jpp::object jwidget = jpp::make_object();
 
                 widget->fillJson( jwidget, true );
 
-                jtab.push_back( jwidget );
+                jwidgets.push_back( jwidget );
+
+                jtab.set( "widgets", jwidgets );
             } );
 
-            jstate.set( key, jtab );
+            jtabs.set( key, jtab );
         }
+
+        jstate.set( "tabs", jtabs );
+
 
         j.set( "state", jstate );
 

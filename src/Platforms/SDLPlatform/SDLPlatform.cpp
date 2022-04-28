@@ -3627,8 +3627,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents_()
     {
-        SDL_PumpEvents();
-
         SDL_Event sdlEvent;
         while( SDL_PollEvent( &sdlEvent ) != 0 )
         {

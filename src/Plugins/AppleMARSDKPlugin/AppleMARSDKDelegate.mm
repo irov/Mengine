@@ -46,6 +46,7 @@
 
 - (BOOL) login; {
     [[MARSDK sharedInstance] login];
+    
     return true;
 }
 

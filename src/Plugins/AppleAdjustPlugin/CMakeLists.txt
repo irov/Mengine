@@ -1,4 +1,4 @@
-MENGINE_PROJECT(AppleAdjust)
+MENGINE_PROJECT(AppleAdjustPlugin)
 
 ADD_FILTER(
 src

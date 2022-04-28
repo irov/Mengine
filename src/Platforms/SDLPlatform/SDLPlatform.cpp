@@ -3706,6 +3706,11 @@ namespace Mengine
                         }break;
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
                         {
+                            Sint32 width = sdlEvent.window.data1;
+                            Sint32 height = sdlEvent.window.data2;
+                            
+                            MENGINE_UNUSED(width);
+                            MENGINE_UNUSED(height);
                             //TODO
                         }break;
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
@@ -3746,6 +3751,59 @@ namespace Mengine
             case SDL_QUIT:
                 {
                     m_shouldQuit = true;
+                }break;
+            /*==================*/
+            /* Apple iOS events */
+            /*==================*/
+            case SDL_APP_TERMINATING:
+                {
+                    /* Terminate the app.
+                       Shut everything down before returning from this function.
+                    */
+                    
+                    //TODO
+                }break;
+            case SDL_APP_LOWMEMORY:
+                {
+                    /* You will get this when your app is paused and iOS wants more memory.
+                       Release as much memory as possible.
+                    */
+                    
+                    //TODO
+                }break;
+            case SDL_APP_WILLENTERBACKGROUND:
+                {
+                    /* Prepare your app to go into the background.  Stop loops, etc.
+                       This gets called when the user hits the home button, or gets a call.
+                    */
+                    
+                    //TODO
+                }break;
+            case SDL_APP_DIDENTERBACKGROUND:
+                {
+                    /* This will get called if the user accepted whatever sent your app to the background.
+                       If the user got a phone call and canceled it, you'll instead get an    SDL_APP_DIDENTERFOREGROUND event and restart your loops.
+                       When you get this, you have 5 seconds to save all your state or the app will be terminated.
+                       Your app is NOT active at this point.
+                    */
+                 
+                    //TODO
+                }break;
+            case SDL_APP_WILLENTERFOREGROUND:
+                {
+                    /* This call happens when your app is coming back to the foreground.
+                       Restore all your state here.
+                    */
+                    
+                    //TODO
+                }break;
+            case SDL_APP_DIDENTERFOREGROUND:
+                {
+                    /* Restart your loops here.
+                       Your app is interactive and getting CPU again.
+                    */
+                
+                    //TODO
                 }break;
             default:
                 break;

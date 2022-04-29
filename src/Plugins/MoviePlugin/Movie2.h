@@ -259,6 +259,8 @@ namespace Mengine
         typedef Vector<MatrixProxyPtr> VectorMatrixProxies;
         VectorMatrixProxies m_matrixProxies;
 
+        ae_bool_t m_compositionAlive;
+
     protected:
         static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud );
         static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _ud );

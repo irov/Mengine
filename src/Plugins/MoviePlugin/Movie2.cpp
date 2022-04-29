@@ -47,6 +47,7 @@ namespace Mengine
         , m_preCompileTime( 0.f )
         , m_hasBounds( false )
         , m_bounds( {0.f, 0.f}, {0.f, 0.f} )
+        , m_compositionAlive( AE_FALSE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2348,11 +2349,15 @@ namespace Mengine
 
         m_preCompileTime = 0.f;
 
+        m_compositionAlive = AE_TRUE;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_release()
     {
+        m_compositionAlive = AE_FALSE;
+
         const Movie2DataInterfacePtr & data = m_resourceMovie2->getData();
 
         const aeMovieCompositionData * compositionData = ae_get_movie_composition_composition_data( m_composition );
@@ -2541,7 +2546,7 @@ namespace Mengine
 
         float totalTime = this->calcTotalTime( _context );
 
-        ae_update_movie_composition( m_composition, totalTime * 0.001f );
+        ae_update_movie_composition( m_composition, totalTime * 0.001f, &m_compositionAlive );
 
         for( const SurfacePtr & surface : m_surfaces )
         {

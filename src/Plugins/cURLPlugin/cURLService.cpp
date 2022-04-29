@@ -233,7 +233,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
     {
         MENGINE_PROFILER_CATEGORY();
 
@@ -246,7 +246,7 @@ namespace Mengine
 
         UniqueId task_id = Helper::generateUniqueIdentity();
 
-        cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
@@ -264,8 +264,13 @@ namespace Mengine
 
         ReceiverDesc desc;
         desc.id = task_id;
+        desc.type = ERT_GET_MESSAGE;
         desc.task = task;
         desc.receiver = _receiver;
+
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
 
         m_receiverDescs.push_back( desc );
 
@@ -279,7 +284,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
     {
         MENGINE_PROFILER_CATEGORY();
 
@@ -292,7 +297,7 @@ namespace Mengine
 
         UniqueId task_id = Helper::generateUniqueIdentity();
 
-        cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
@@ -310,8 +315,13 @@ namespace Mengine
 
         ReceiverDesc desc;
         desc.id = task_id;
+        desc.type = ERT_POST_MESSAGE;
         desc.task = task;
         desc.receiver = _receiver;
+
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
 
         m_receiverDescs.push_back( desc );
 
@@ -325,7 +335,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
     {
         MENGINE_PROFILER_CATEGORY();
 
@@ -338,7 +348,7 @@ namespace Mengine
 
         UniqueId task_id = Helper::generateUniqueIdentity();
 
-        cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
@@ -356,8 +366,13 @@ namespace Mengine
 
         ReceiverDesc desc;
         desc.id = task_id;
+        desc.type = ERT_HEADER_DATA;
         desc.task = task;
         desc.receiver = _receiver;
+
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
 
         m_receiverDescs.push_back( desc );
 
@@ -366,7 +381,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
     {
         MENGINE_PROFILER_CATEGORY();
 
@@ -391,7 +406,7 @@ namespace Mengine
 
         UniqueId task_id = Helper::generateUniqueIdentity();
 
-        cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
@@ -412,8 +427,13 @@ namespace Mengine
 
         ReceiverDesc desc;
         desc.id = task_id;
+        desc.type = ERT_DOWNLOAD_ASSET;
         desc.task = task;
         desc.receiver = _receiver;
+
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
 
         m_receiverDescs.push_back( desc );
 

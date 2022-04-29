@@ -25,12 +25,12 @@ namespace Mengine
         void _stopService() override;
 
     protected:
-        HttpRequestID getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver ) override;
-        HttpRequestID postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver ) override;
-        HttpRequestID headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver ) override;
+        HttpRequestID getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
+        HttpRequestID postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
+        HttpRequestID headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
 
     protected:
-        HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) override;
+        HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
 
     protected:
         bool cancelRequest( HttpRequestID _id ) override;
@@ -64,11 +64,24 @@ namespace Mengine
         typedef Vector<ConstString> VectorThreads;
         VectorThreads m_threads;
 
+        enum EReceiverType
+        {
+            ERT_GET_MESSAGE,
+            ERT_POST_MESSAGE,
+            ERT_HEADER_DATA,
+            ERT_DOWNLOAD_ASSET
+        };
+
         struct ReceiverDesc
         {
             uint32_t id;
+            EReceiverType type;
             ThreadTaskPtr task;
             cURLReceiverInterfacePtr receiver;
+
+#if MENGINE_DOCUMENT_ENABLE
+            DocumentPtr doc;
+#endif
         };
 
         typedef Vector<ReceiverDesc> VectorReceiverDesc;

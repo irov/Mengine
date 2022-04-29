@@ -252,7 +252,7 @@ namespace Mengine
                 cURLHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
-                jpp::object j = this->makeConnectData();
+                jpp::object j = this->makeJsonConnectData();
 
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
@@ -262,7 +262,7 @@ namespace Mengine
                 );
 
                 CURL_SERVICE()
-                    ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ) );
+                    ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
             }break;
         case EDTDS_CONNECT:
             {
@@ -274,13 +274,13 @@ namespace Mengine
                 cURLHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
-                jpp::object j = this->makeProcessData();
+                jpp::object j = this->makeJsonProcessData();
 
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
                 CURL_SERVICE()
-                    ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ) );
+                    ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
             }break;
         default:
             break;
@@ -446,7 +446,39 @@ namespace Mengine
         m_revision = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    jpp::object DevToDebugService::makeConnectData()
+    jpp::object DevToDebugService::makeJsonTabs( bool _force )
+    {
+        jpp::object jtabs = jpp::make_object();
+
+        for( const HashtableDevToDebugTabs::value_type & value : m_tabs )
+        {
+            const ConstString & key = value.key;
+            const DevToDebugTabInterfacePtr & tab = value.element;
+
+            jpp::object jtab = jpp::make_object();
+
+            tab->foreachWidgets( [&jtab, _force]( const DevToDebugWidgetInterfacePtr & _widget )
+            {
+                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
+
+                jpp::array jwidgets = jpp::make_array();
+
+                jpp::object jwidget = jpp::make_object();
+
+                widget->fillJson( jwidget, _force );
+
+                jwidgets.push_back( jwidget );
+
+                jtab.set( "widgets", jwidgets );
+            } );
+
+            jtabs.set( key, jtab );
+        }
+
+        return jtabs;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jpp::object DevToDebugService::makeJsonConnectData()
     {
         jpp::object j = jpp::make_object();
 
@@ -469,42 +501,16 @@ namespace Mengine
 
         jpp::object jstate = jpp::make_object();
 
-        jpp::object jtabs = jpp::make_object();
-
-        for( const HashtableDevToDebugTabs::value_type & value : m_tabs )
-        {
-            const ConstString & key = value.key;
-            const DevToDebugTabInterfacePtr & tab = value.element;
-
-            jpp::object jtab = jpp::make_object();
-
-            tab->foreachWidgets( [&jtab]( const DevToDebugWidgetInterfacePtr & _widget )
-            {
-                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
-
-                jpp::array jwidgets = jpp::make_array();
-
-                jpp::object jwidget = jpp::make_object();
-
-                widget->fillJson( jwidget, true );
-
-                jwidgets.push_back( jwidget );
-
-                jtab.set( "widgets", jwidgets );
-            } );
-
-            jtabs.set( key, jtab );
-        }
+        jpp::object jtabs = this->makeJsonTabs( true );
 
         jstate.set( "tabs", jtabs );
-
 
         j.set( "state", jstate );
 
         return j;
     }
     //////////////////////////////////////////////////////////////////////////
-    jpp::object DevToDebugService::makeProcessData()
+    jpp::object DevToDebugService::makeJsonProcessData()
     {
         jpp::object j = jpp::make_object();
 
@@ -512,41 +518,12 @@ namespace Mengine
 
         jpp::object jstate = jpp::make_object();
 
-        for( const HashtableDevToDebugTabs::value_type & value : m_tabs )
+        jpp::object jtabs = this->makeJsonTabs( true );
+
+        if( jtabs.empty() == false )
         {
-            const ConstString & key = value.key;
-            const DevToDebugTabInterfacePtr & tab = value.element;
+            jstate.set( "tabs", jtabs );
 
-            jpp::array jtab = jpp::make_array();
-
-            tab->foreachWidgets( [&jtab]( const DevToDebugWidgetInterfacePtr & _widget )
-            {
-                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
-
-                jpp::array jwidgets = jpp::make_array();
-
-                jpp::object jwidget = jpp::make_object();
-
-                if( widget->fillJson( jwidget, false ) == false )
-                {
-                    return;
-                }
-
-                jwidgets.push_back( jwidget );
-
-                jtab.set( "widgets", jwidgets );
-            } );
-
-            if( jtab.empty() == true )
-            {
-                continue;
-            }
-
-            jstate.set( key, jtab );
-        }
-
-        if( jstate.empty() == false )
-        {
             j.set( "change_state", jstate );
         }
 
@@ -599,7 +576,7 @@ namespace Mengine
         Helper::writeJSONStringCompact( j, &data );
 
         CURL_SERVICE()
-            ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, nullptr );
+            ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, nullptr, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
 }

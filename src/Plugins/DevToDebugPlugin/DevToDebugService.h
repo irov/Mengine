@@ -51,8 +51,9 @@ namespace Mengine
         void notifyBootstrapperFinalizeGame_();
 
     protected:
-        jpp::object makeConnectData();
-        jpp::object makeProcessData();
+        jpp::object makeJsonTabs( bool _force );
+        jpp::object makeJsonConnectData();
+        jpp::object makeJsonProcessData();
 
     protected:
         typedef Hashtable<ConstString, DevToDebugTabInterfacePtr> HashtableDevToDebugTabs;

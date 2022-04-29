@@ -1,6 +1,7 @@
 #include "TaskcURLHttpHeaderData.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -20,7 +21,7 @@ namespace Mengine
         cURLReceiverInterfacePtr receiver = this->createHttpReceiver_( _node );
 
         HttpRequestID requestId = CURL_SERVICE()
-            ->headerData( m_url, m_headers, m_timeout, m_receiveHeaders, m_data, receiver );
+            ->headerData( m_url, m_headers, m_timeout, m_receiveHeaders, m_data, receiver, MENGINE_DOCUMENT_FUNCTION );
 
         if( requestId == 0 )
         {

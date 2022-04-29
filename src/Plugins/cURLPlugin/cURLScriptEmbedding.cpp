@@ -3,6 +3,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
+#include "Environment/Python/PythonDocumentTraceback.h"
+
 #include "PyCURLReceiver.h"
 
 #include "Kernel/DocumentHelper.h"
@@ -39,21 +41,21 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
         uint32_t id = CURL_SERVICE()
-            ->downloadAsset( _url, _login, _password, fileGroup, _filePath, _timeout, receiver );
+            ->downloadAsset( _url, _login, _password, fileGroup, _filePath, _timeout, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
@@ -66,35 +68,35 @@ namespace Mengine
         }
 
         HttpRequestID id = CURL_SERVICE()
-            ->postMessage( _url, {}, _timeout, false, params, receiver );
+            ->postMessage( _url, {}, _timeout, false, params, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestID id = CURL_SERVICE()
-            ->headerData( _url, _headers, _timeout, false, _data, receiver );
+            ->headerData( _url, _headers, _timeout, false, _data, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::getMessage( const String & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestID id = CURL_SERVICE()
-            ->getMessage( _url, {}, _timeout, false, receiver );
+            ->getMessage( _url, {}, _timeout, false, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }

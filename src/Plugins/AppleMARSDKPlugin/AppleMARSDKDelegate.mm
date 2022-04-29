@@ -6,12 +6,12 @@
 
 @synthesize m_service;
 
-- (instancetype)initWithService: (Mengine::AppleMARSDKServiceInterface* _Nonnull)service {
+- (instancetype _Nonnull)initWithService: (Mengine::AppleMARSDKServiceInterface* _Nonnull)service {
     self = [super init];
     
     self.m_service = service;
     
-    [MARSDK sharedInstance].delegate = self;
+    [[MARSDK sharedInstance] setDelegate:self];
     
     [[MARSDK sharedInstance] performSelector:@selector(setupWithParams:) withObject:nil afterDelay:0];
     

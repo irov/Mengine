@@ -12,24 +12,24 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class PythonEventHandler
+    class PythonEventHandlerInterface
         : public Mixin
     {
     public:
-        virtual void pythonMethod( const String & _plugin, const String & _method, int _id, const String & _args ) = 0;
+        virtual void pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args ) = 0;
         virtual void addPlugin( const String & _name, const jobject & _plugin ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonEventHandler> PythonEventHandlerPtr;
+    typedef IntrusivePtr<PythonEventHandlerInterface> PythonEventHandlerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AndroidNativePythonModule
         : public ModuleBase
-        , public PythonEventHandler
+        , public PythonEventHandlerInterface
     {
         DECLARE_FACTORABLE( AndroidNativePythonModule );
 
     public:
-        typedef AndroidEventation<PythonEventHandler> PythonEventation;
+        typedef AndroidEventation<PythonEventHandlerInterface> PythonEventation;
         typedef typename PythonEventation::LambdaEventHandler LambdaPythonEventHandler;
 
     public:
@@ -47,13 +47,21 @@ namespace Mengine
         void addCommand( const LambdaPythonEventHandler & _command );
 
     public:
-        void pythonMethod( const String & _plugin, const String & _method, int _id, const String & _args ) override;
+        void pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args ) override;
         void addPlugin( const String & _name, const jobject & _plugin ) override;
 
     public:
         void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb );
-        bool androidResponse( int _id, const pybind::object & _result ) const;
-        bool androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
+        bool androidResponse( int32_t _id, const pybind::object & _result ) const;
+        void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
+        bool androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
+        int32_t androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
+        int64_t androidInteger64Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
+        float androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
+        String androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
+
+    protected:
+        bool getAndroidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jstring * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
 
     protected:
         JNIEnv * m_jenv;

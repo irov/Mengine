@@ -45,7 +45,7 @@ extern "C" {
             env->ReleaseStringUTFChars( _method, method_str );
             env->ReleaseStringUTFChars( _args, args_str );
 
-            s_androidNativePythonModule->addCommand( [plugin, method, _id, args]( const Mengine::PythonEventHandlerPtr & _handler )
+            s_androidNativePythonModule->addCommand( [plugin, method, _id, args]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
             {
                 _handler->pythonMethod( plugin, method, _id, args );
             } );
@@ -65,7 +65,7 @@ extern "C" {
 
             jobject new_plugin = env->NewGlobalRef( _plugin );
 
-            s_androidNativePythonModule->addCommand( [name, new_plugin]( const Mengine::PythonEventHandlerPtr & _handler )
+            s_androidNativePythonModule->addCommand( [name, new_plugin]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
             {
                 _handler->addPlugin( name, new_plugin );
             } );
@@ -94,6 +94,11 @@ namespace Mengine
 
         pybind::def_functor( kernel, "setAndroidCallback", this, &AndroidNativePythonModule::setAndroidCallback );
         pybind::def_functor_args( kernel, "androidMethod", this, &AndroidNativePythonModule::androidMethod );
+        pybind::def_functor_args( kernel, "androidBooleanMethod", this, &AndroidNativePythonModule::androidBooleanMethod );
+        pybind::def_functor_args( kernel, "androidInteger32Method", this, &AndroidNativePythonModule::androidInteger32Method );
+        pybind::def_functor_args( kernel, "androidInteger64Method", this, &AndroidNativePythonModule::androidInteger64Method );
+        pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonModule::androidFloatMethod );
+        pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonModule::androidStringMethod );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -109,7 +114,7 @@ namespace Mengine
 
         s_androidNativePythonModule = this;
 
-        m_eventation.setEventHandler( PythonEventHandlerPtr::from( this ) );
+        m_eventation.setEventHandler( PythonEventHandlerInterfacePtr::from( this ) );
 
         AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
@@ -147,7 +152,7 @@ namespace Mengine
         m_eventation.invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int _id, const String & _args )
+    void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args )
     {
         m_eventation.invoke();
 
@@ -208,7 +213,7 @@ namespace Mengine
         m_callbacks.emplace( Helper::makePair( _plugin, _method ), _cb );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonModule::androidResponse( int _id, const pybind::object & _result ) const
+    bool AndroidNativePythonModule::androidResponse( int32_t _id, const pybind::object & _result ) const
     {
         m_eventation.invoke();
 
@@ -280,7 +285,185 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    void AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    {
+        m_eventation.invoke();
+
+        jvalue jargs[32];
+        jstring jfree[32];
+        uint32_t freeCount;
+
+        jobject jplugin;
+        jmethodID jmethodID_method;
+        if( this->getAndroidMethod( _plugin, _method, _args, "V", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        {
+            return;
+        }
+
+        m_jenv->CallVoidMethodA( jplugin, jmethodID_method, jargs );
+
+        for( uint32_t index = 0; index != freeCount; ++index )
+        {
+            jstring j = jfree[index];
+
+            m_jenv->DeleteLocalRef( j );
+        }
+
+        m_eventation.invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativePythonModule::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    {
+        m_eventation.invoke();
+
+        jvalue jargs[32];
+        jstring jfree[32];
+        uint32_t freeCount;
+
+        jobject jplugin;
+        jmethodID jmethodID_method;
+        if( this->getAndroidMethod( _plugin, _method, _args, "Z", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        {
+            return false;
+        }
+
+        jboolean jresult = m_jenv->CallBooleanMethodA( jplugin, jmethodID_method, jargs );
+
+        for( uint32_t index = 0; index != freeCount; ++index )
+        {
+            jstring j = jfree[index];
+
+            m_jenv->DeleteLocalRef( j );
+        }
+
+        m_eventation.invoke();
+
+        return (bool)jresult;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t AndroidNativePythonModule::androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    {
+        m_eventation.invoke();
+
+        jvalue jargs[32];
+        jstring jfree[32];
+        uint32_t freeCount;
+
+        jobject jplugin;
+        jmethodID jmethodID_method;
+        if( this->getAndroidMethod( _plugin, _method, _args, "I", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        {
+            return false;
+        }
+
+        jint jresult = m_jenv->CallBooleanMethodA( jplugin, jmethodID_method, jargs );
+
+        for( uint32_t index = 0; index != freeCount; ++index )
+        {
+            jstring j = jfree[index];
+
+            m_jenv->DeleteLocalRef( j );
+        }
+
+        m_eventation.invoke();
+
+        return (int32_t)jresult;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t AndroidNativePythonModule::androidInteger64Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    {
+        m_eventation.invoke();
+
+        jvalue jargs[32];
+        jstring jfree[32];
+        uint32_t freeCount;
+
+        jobject jplugin;
+        jmethodID jmethodID_method;
+        if( this->getAndroidMethod( _plugin, _method, _args, "J", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        {
+            return false;
+        }
+
+        jlong jresult = m_jenv->CallBooleanMethodA( jplugin, jmethodID_method, jargs );
+
+        for( uint32_t index = 0; index != freeCount; ++index )
+        {
+            jstring j = jfree[index];
+
+            m_jenv->DeleteLocalRef( j );
+        }
+
+        m_eventation.invoke();
+
+        return (int64_t)jresult;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float AndroidNativePythonModule::androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    {
+        m_eventation.invoke();
+
+        jvalue jargs[32];
+        jstring jfree[32];
+        uint32_t freeCount;
+
+        jobject jplugin;
+        jmethodID jmethodID_method;
+        if( this->getAndroidMethod( _plugin, _method, _args, "F", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        {
+            return 0.0;
+        }
+
+        jfloat jresult = m_jenv->CallFloatMethodA( jplugin, jmethodID_method, jargs );
+
+        for( uint32_t index = 0; index != freeCount; ++index )
+        {
+            jstring j = jfree[index];
+
+            m_jenv->DeleteLocalRef( j );
+        }
+
+        m_eventation.invoke();
+
+        return (float)jresult;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    String AndroidNativePythonModule::androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    {
+        m_eventation.invoke();
+
+        jvalue jargs[32];
+        jstring jfree[32];
+        uint32_t freeCount;
+
+        jobject jplugin;
+        jmethodID jmethodID_method;
+        if( this->getAndroidMethod( _plugin, _method, _args, "Ljava/lang/String;", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        {
+            return String();
+        }
+
+        jstring jresult = (jstring)m_jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
+
+        for( uint32_t index = 0; index != freeCount; ++index )
+        {
+            jstring j = jfree[index];
+
+            m_jenv->DeleteLocalRef( j );
+        }
+
+        m_eventation.invoke();
+
+        const Mengine::Char * result_str = m_jenv->GetStringUTFChars( jresult, nullptr );
+
+        Mengine::String result = result_str;
+
+        m_jenv->ReleaseStringUTFChars( jresult, result_str );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativePythonModule::getAndroidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jstring * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const
     {
         MENGINE_ASSERTION_FATAL( _args.size() <= 32, "android method plugin '%s' method '%s' max args [32 < %u]"
             , _plugin.c_str()
@@ -288,16 +471,29 @@ namespace Mengine
             , _args.size()
         );
 
-        m_eventation.invoke();
+        MapAndroidPlugins::const_iterator it_found = m_plugins.find( _plugin );
+
+        if( it_found == m_plugins.end() )
+        {
+            LOGGER_ERROR( "android not found plugin '%s' (call method '%s' args '%s')"
+                , _plugin.c_str()
+                , _method.c_str()
+                , m_kernel->object_repr_type( _args.ptr() ).c_str()
+            );
+
+            return false;
+        }
+
+        jobject jplugin = it_found->second;
+
+        jclass plugin_class = m_jenv->GetObjectClass( jplugin );
 
         Char signature[1024] = {'\0'};
 
         MENGINE_STRCAT( signature, "(" );
 
-        jvalue jargs[32];
-        MENGINE_MEMSET( jargs, 0, sizeof( jvalue ) * 32 );
-
-        jstring jfree[32];
+        MENGINE_MEMSET( _jargs, 0, sizeof( jvalue ) * 32 );
+        MENGINE_MEMSET( _jfree, 0, sizeof( jstring ) * 32 );
 
         uint32_t index_args = 0;
         uint32_t index_free = 0;
@@ -306,35 +502,35 @@ namespace Mengine
         {
             if( arg.is_none() == true )
             {
-                jargs[index_args++].l = nullptr;
+                _jargs[index_args++].l = nullptr;
 
                 MENGINE_STRCAT( signature, "L" );
             }
             else if( arg.is_bool() == true )
             {
                 jboolean jvalue = (bool)arg.extract();
-                jargs[index_args++].z = jvalue;
+                _jargs[index_args++].z = jvalue;
 
                 MENGINE_STRCAT( signature, "Z" );
             }
             else if( arg.is_integer() == true )
             {
                 jint jvalue = (int32_t)arg.extract();
-                jargs[index_args++].i = jvalue;
+                _jargs[index_args++].i = jvalue;
 
                 MENGINE_STRCAT( signature, "I" );
             }
             else if( arg.is_long() == true )
             {
                 jlong jvalue = (int64_t)arg.extract();
-                jargs[index_args++].j = jvalue;
+                _jargs[index_args++].j = jvalue;
 
                 MENGINE_STRCAT( signature, "J" );
             }
             else if( arg.is_float() == true )
             {
                 jfloat jvalue = (float)arg.extract();
-                jargs[index_args++].f = jvalue;
+                _jargs[index_args++].f = jvalue;
 
                 MENGINE_STRCAT( signature, "F" );
             }
@@ -344,8 +540,8 @@ namespace Mengine
 
                 jstring jvalue = m_jenv->NewStringUTF( value_str );
 
-                jargs[index_args++].l = jvalue;
-                jfree[index_free++] = jvalue;
+                _jargs[index_args++].l = jvalue;
+                _jfree[index_free++] = jvalue;
 
                 MENGINE_STRCAT( signature, "Ljava/lang/String;" );
             }
@@ -362,26 +558,12 @@ namespace Mengine
             }
         }
 
-        MENGINE_STRCAT( signature, ")V" );
+        MENGINE_STRCAT( signature, ")" );
+        MENGINE_STRCAT( signature, _retType );
 
-        MapAndroidPlugins::const_iterator it_found = m_plugins.find( _plugin );
+        jmethodID jmethodId = m_jenv->GetMethodID( plugin_class, _method.c_str(), signature );
 
-        if( it_found == m_plugins.end() )
-        {
-            LOGGER_ERROR( "android not found plugin '%s'"
-                , _plugin.c_str()
-            );
-
-            return false;
-        }
-
-        jobject plugin = it_found->second;
-
-        jclass plugin_class = m_jenv->GetObjectClass( plugin );
-
-        jmethodID jmethodID_method = m_jenv->GetMethodID( plugin_class, _method.c_str(), signature );
-
-        if( jmethodID_method == 0 )
+        if( jmethodId == 0 )
         {
             LOGGER_ERROR( "android plugin '%s' not found method '%s' with signature '%s'"
                 , _plugin.c_str()
@@ -392,16 +574,9 @@ namespace Mengine
             return false;
         }
 
-        m_jenv->CallVoidMethodA( plugin, jmethodID_method, jargs );
-
-        for( uint32_t index = 0; index != index_free; ++index )
-        {
-            jstring j = jfree[index];
-
-            m_jenv->DeleteLocalRef( j );
-        }
-
-        m_eventation.invoke();
+        *_freeCount = index_free;
+        *_jplugin = jplugin;
+        *_jmethodId = jmethodId;
 
         return true;
     }

@@ -12,6 +12,8 @@
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
+#pragma mark - UISceneSession lifecycle
+
 + (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [[MARSDK sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }

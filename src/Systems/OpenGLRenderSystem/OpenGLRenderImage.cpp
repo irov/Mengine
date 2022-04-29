@@ -245,14 +245,6 @@ namespace Mengine
 
         GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
-        LOGGER_INFO( "render", "l %u r %u:%u-%u:%u"
-            , _level
-            , lockedRect.left
-            , lockedRect.top
-            , lockedRect.right
-            , lockedRect.bottom
-        );
-
         bool successful = true;
 
         uint32_t miplevel_hwwidth = m_hwWidth >> _level;

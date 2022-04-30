@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "MemoryConfig.h"
 #include "MultiConfig.h"
@@ -36,6 +37,8 @@ namespace Mengine
         const ConfigInterfacePtr & getDefaultConfig() const override;
 
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         MultiConfigPtr m_defaultConfig;
 
         FactoryPtr m_factoryMemoryConfig;

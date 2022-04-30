@@ -29,11 +29,15 @@ println("[+] Include :app")
 include (":app")
 
 if( getBooleanProperty("ANDROID_APP_ENABLE_DELIVERY_DIR", false) == true ) {
-    val ANDROID_APP_DELIVERY_DIR = extra["ANDROID_APP_DELIVERY_DIR"].toString()
+    try {
+        val ANDROID_APP_DELIVERY_DIR = extra["ANDROID_APP_DELIVERY_DIR"].toString()
 
-    println("[+] Include :app:" + ANDROID_APP_DELIVERY_DIR)
+        println("[+] Include :app:" + ANDROID_APP_DELIVERY_DIR)
 
-    include(":app:" + ANDROID_APP_DELIVERY_DIR)
+        include(":app:" + ANDROID_APP_DELIVERY_DIR)
+    } catch (e: Exception) {
+        println("Miss setup app delivery directory [ANDROID_APP_DELIVERY_DIR]")
+    }
 }
 
 includePlugin("ANDROID_APP_ENABLE_MENGINE", true, ":libraries:Mengine")

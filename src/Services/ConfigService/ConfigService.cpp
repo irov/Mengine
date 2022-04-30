@@ -1,7 +1,9 @@
 #include "ConfigService.h"
 
+#include "Interface/ServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Exception.h"
 #include "Kernel/FileStreamHelper.h"
@@ -33,7 +35,33 @@ namespace Mengine
     {
         m_factoryMemoryConfig = Helper::makeFactoryPool<MemoryConfig, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_defaultConfig = Helper::makeFactorableUnique<MultiConfig>( MENGINE_DOCUMENT_FACTORABLE );
+        MultiConfigPtr defaultConfig = Helper::makeFactorableUnique<MultiConfig>( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( defaultConfig );
+
+        m_defaultConfig = defaultConfig;
+
+        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        {
+            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+            m_mutex = mutex;
+
+            m_defaultConfig->setMutex( mutex );
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        {
+            if( m_defaultConfig != nullptr )
+            {
+                m_defaultConfig->setMutex( nullptr );
+            }
+
+            m_mutex = nullptr;
+        } );
 
         return true;
     }

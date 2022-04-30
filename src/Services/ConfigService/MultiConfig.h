@@ -2,6 +2,7 @@
 
 #include "Interface/ConfigInterface.h"
 #include "Interface/InputStreamInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Tags.h"
 
@@ -18,6 +19,10 @@ namespace Mengine
     public:
         MultiConfig();
         ~MultiConfig() override;
+
+    public:
+        void setMutex( const ThreadMutexInterfacePtr & _mutex );
+        const ThreadMutexInterfacePtr & getMutex() const;
 
     public:
         void addConfig( const ConfigInterfacePtr & _config );
@@ -64,6 +69,8 @@ namespace Mengine
         bool hasSection( const Char * _section ) const override;
 
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         Tags m_platformTags;
 
         typedef Vector<ConfigInterfacePtr> VectorConfigs;
@@ -73,5 +80,3 @@ namespace Mengine
     typedef IntrusivePtr<MultiConfig, ConfigInterface> MultiConfigPtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-

@@ -18,7 +18,8 @@ namespace Mengine
         MENGINE_UNUSED( _flag );
         MENGINE_UNUSED( _color );
 
-        int prio;
+        android_LogPriority prio = ANDROID_LOG_UNKNOWN;
+
         switch( _level )
         {
         case LM_SILENT:
@@ -50,7 +51,7 @@ namespace Mengine
             break;
         }
 
-        __android_log_print( prio, "Mengine", "%.*s", (int)_size, _data );
+        __android_log_print( prio, "Mengine", "%.*s", (int32_t)_size, _data );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidLogger::flush()

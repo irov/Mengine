@@ -385,6 +385,23 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", false) == tru
     println 'ANDROID_APP_ENABLE_ADJUST: FALSE'
 }
 
+if(project.hasProperty("MENGINE_APP_OPTIONS")) {
+    print 'MENGINE_APP_OPTIONS: '
+    println MENGINE_APP_OPTIONS
+
+    android {
+        buildTypes {
+            debug {
+                buildConfigField "String", "MENGINE_APP_OPTIONS", "\"${MENGINE_APP_OPTIONS}\""
+            }
+
+            release {
+                buildConfigField "String", "MENGINE_APP_OPTIONS", "\"${MENGINE_APP_OPTIONS}\""
+            }
+        }
+    }
+}
+
 android {
     buildTypes {
         debug {

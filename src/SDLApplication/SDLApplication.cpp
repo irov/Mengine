@@ -13,6 +13,8 @@
 #include "SDLMessageBoxLogger.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Environment/Android/AndroidUtils.h"
+
 #   include "AndroidLogger.h"
 #else
 #   include "SDLStdioLogger.h"
@@ -26,6 +28,7 @@
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Stringstream.h"
 
 #include "Config/Algorithm.h"
 
@@ -40,6 +43,44 @@ SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+        //////////////////////////////////////////////////////////////////////////
+        static bool getAndroidBuildConfigOptions( JNIEnv * _jenv, String * const _options )
+        {
+            jclass jclass_BuildConfig = _jenv->FindClass("org/Mengine/Project/BuildConfig");
+
+            if( jclass_BuildConfig == nullptr )
+            {
+                return false;
+            }
+
+            jfieldID jfield_MENGINE_APP_OPTIONS = _jenv->GetStaticFieldID( jclass_BuildConfig, "MENGINE_APP_OPTIONS", "Ljava/lang/String;" );
+
+            if( jfield_MENGINE_APP_OPTIONS == nullptr )
+            {
+                return false;
+            }
+
+            jobject j_MENGINE_APP_OPTIONS = _jenv->GetStaticObjectField( jclass_BuildConfig, jfield_MENGINE_APP_OPTIONS );
+
+            if( j_MENGINE_APP_OPTIONS == nullptr )
+            {
+                return false;
+            }
+
+            const Char * MENGINE_APP_OPTIONS_str = _jenv->GetStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, nullptr );
+            *_options = MENGINE_APP_OPTIONS_str;
+            _jenv->ReleaseStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, MENGINE_APP_OPTIONS_str );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+#endif
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     SDLApplication::SDLApplication()
     {
@@ -52,6 +93,24 @@ namespace Mengine
     bool SDLApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        String options;
+        if( Detail::getAndroidBuildConfigOptions( jenv, &options ) == true )
+        {
+            IStringstream iss( options, IStringstream::in );
+
+            String option;
+            while (iss >> option)
+            {
+                const Char * arg = option.c_str();
+
+                arguments->addArgument( arg );
+            }
+        }
+#endif
 
         for( int32_t i = 1; i < _argc; ++i )
         {

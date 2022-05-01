@@ -114,8 +114,8 @@ namespace Mengine
         m_jenv = extension->getJENV();
         jobject jActivity = extension->getJObjectActivity();
 
-        PlatformInterface * paltform = PLATFORM_SERVICE();
-        AndroidPlatformExtensionInterface * unknownAndroidPlatform = paltform->getDynamicUnknown();
+        AndroidPlatformExtensionInterface * unknownAndroidPlatform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
 
         jclass jclassActivity = unknownAndroidPlatform->getJClassActivity();
 

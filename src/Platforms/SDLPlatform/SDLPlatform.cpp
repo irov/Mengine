@@ -3018,6 +3018,13 @@ namespace Mengine
     {
         static jmethodID jmethodID_getAndroidId = m_jenv->GetMethodID( jclass_activity, "getAndroidId", "()Ljava/lang/String;" );
 
+        if( jmethodID_getAndroidId == nullptr )
+        {
+            LOGGER_ERROR("invalid get android method 'getAndroidId'");
+
+            return String();
+        }
+
         jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getAndroidId );
 
         const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
@@ -3032,6 +3039,13 @@ namespace Mengine
     String SDLPlatform::getAndroidPackageName() const
     {
         static jmethodID jmethodID_getPackageName = m_jenv->GetMethodID( jclass_activity, "getPackageName", "()Ljava/lang/String;" );
+
+        if( jmethodID_getPackageName == nullptr )
+        {
+            LOGGER_ERROR("invalid get android method 'getPackageName'");
+
+            return String();
+        }
 
         jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getPackageName );
 
@@ -3951,6 +3965,13 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_ANDROID)
         static jmethodID jmethodID_onMengineInitializeBaseServices = m_jenv->GetMethodID( jclass_activity, "onMengineInitializeBaseServices", "()V" );
 
+        if( jmethodID_onMengineInitializeBaseServices == nullptr )
+        {
+            LOGGER_ERROR("invalid get android method 'onMengineInitializeBaseServices'");
+
+            return;
+        }
+
         if( jmethodID_onMengineInitializeBaseServices != NULL )
         {
             m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineInitializeBaseServices );
@@ -3962,6 +3983,13 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_ANDROID)
         static jmethodID jmethodID_onMengineCreateApplication = m_jenv->GetMethodID( jclass_activity, "onMengineCreateApplication", "()V" );
+
+        if( jmethodID_onMengineCreateApplication == nullptr )
+        {
+            LOGGER_ERROR("invalid get android method 'onMengineCreateApplication'");
+
+            return;
+        }
 
         if( jmethodID_onMengineCreateApplication != NULL )
         {

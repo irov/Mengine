@@ -54,20 +54,19 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         MARPlatform.getInstance().init(activity, this);
     }
 
-    public void login(){
+    public void login() {
         MengineActivity activity = this.getActivity();
 
         MARPlatform.getInstance().login(activity);
     }
 
-    public void loginCustom(final String loginType){
+    public void loginCustom(final String loginType) {
         MengineActivity activity = this.getActivity();
 
         MARPlatform.getInstance().loginCustom(activity, loginType);
     }
 
-    public void pay(int coinNum, String productID,
-                                 String productName, String productDesc, int price){
+    public void pay(int coinNum, String productID, String productName, String productDesc, int price) {
         PayParams params = new PayParams();
         params.setCoinNum(coinNum);        //当前玩家身上拥有的游戏币数量
 
@@ -92,23 +91,22 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         MARPlatform.getInstance().pay(activity, params);
     }
 
-    public void redeemCode(String code)
-    {
+    public void redeemCode(String code) {
         this.log("try redeem code %s", code);
         MARPlatform.getInstance().exchangeGift(code);
     }
 
-    public void showAd(){
+    public void showAd() {
         if (MARGgPlatform.getInstance().getVideoFlag()) {
             MARGgPlatform.getInstance().showVideo();
         }
     }
 
-    public void updateData(String json_str){
+    public void updateData(String json_str) {
         MARPlatform.getInstance().updateGameArchive(json_str,1);
     }
 
-    public void marSDKGetData(int serialNumber){
+    public void marSDKGetData(int serialNumber) {
         MengineActivity activity = this.getActivity();
 
         MengineMARPlugin self = this;
@@ -124,27 +122,23 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     }
 
     @Override
-    public void onAppCreate(MengineApplication application)
-    {
+    public void onAppCreate(MengineApplication application) {
         MARSDK.getInstance().onAppCreateAll(application);
         MARSDK.getInstance().onAppCreate(application);
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application)
-    {
+    public void onAppTerminate(MengineApplication application) {
         MARSDK.getInstance().onTerminate();
     }
 
     @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base)
-    {
+    public void onAppAttachBaseContext(MengineApplication application, Context base) {
         MARSDK.getInstance().onAppAttachBaseContext(application, base);
     }
 
     @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig)
-    {
+    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
         MARSDK.getInstance().onAppConfigurationChanged(application, newConfig);
     }
 
@@ -208,8 +202,8 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         int action = event.getAction();
         int keyCode = event.getKeyCode();
 
-        if(keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN ) {
-            MARPlatform.getInstance().exitSDK(new MARExitListener() {
+        if( keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN ) {
+            MARPlatform.getInstance().exitSDK( new MARExitListener() {
                 @Override
                 public void onGameExit() {
                     //游戏自己的退出确认框

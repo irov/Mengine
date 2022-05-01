@@ -51,7 +51,6 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidNativeMengine_getBuildVersion();
     private static native String AndroidNativeMengine_getConfigValue(String section, String key, String default_value);
 
-    private static native void AndroidNativePython_setupPythonJNI();
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, int responseId, String args);
 
@@ -159,7 +158,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         AndroidNativeMengine_setMengineAndroidActivityJNI(this);
-        AndroidNativePython_setupPythonJNI();
 
         AndroidNativePython_addPlugin("Activity", this);
 

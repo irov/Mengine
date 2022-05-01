@@ -18,15 +18,7 @@
 //////////////////////////////////////////////////////////////////////////
 static Mengine::AndroidNativePythonModule * s_androidNativePythonModule = nullptr;
 //////////////////////////////////////////////////////////////////////////
-static jmethodID jmethodID_initializePlugins;
-//////////////////////////////////////////////////////////////////////////
 extern "C" {
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1setupPythonJNI )(JNIEnv * env, jclass cls)
-    {
-        jmethodID_initializePlugins = env->GetMethodID( cls, "pythonInitializePlugins", "()V" );
-    }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
         MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jstring _args)
@@ -121,6 +113,20 @@ namespace Mengine
 
         m_jenv = extension->getJENV();
         jobject jActivity = extension->getJObjectActivity();
+
+        PlatformInterface * paltform = PLATFORM_SERVICE();
+        AndroidPlatformExtensionInterface * unknownAndroidPlatform = paltform->getDynamicUnknown();
+
+        jclass jclassActivity = unknownAndroidPlatform->getJClassActivity();
+
+        jmethodID jmethodID_initializePlugins = m_jenv->GetMethodID( jclassActivity, "pythonInitializePlugins", "()V" );
+
+        if( jmethodID_initializePlugins == nullptr )
+        {
+            LOGGER_ERROR("invalid get android method 'pythonInitializePlugins'");
+
+            return false;
+        }
 
         m_jenv->CallVoidMethod( jActivity, jmethodID_initializePlugins );
 
@@ -224,26 +230,66 @@ namespace Mengine
         if( _result.is_none() == true )
         {
             static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "()V" );
+
+            if( constructor == nullptr )
+            {
+                LOGGER_ERROR("invalid get android method 'java/lang/Object()V'");
+
+                return false;
+            }
+
             jresult = m_jenv->NewObject( cls, constructor );
         }
         else if( _result.is_bool() == true )
         {
             static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(Z)V" );
+
+            if( constructor == nullptr )
+            {
+                LOGGER_ERROR("invalid get android method 'java/lang/Object(Z)V'");
+
+                return false;
+            }
+
             jresult = m_jenv->NewObject( cls, constructor, (bool)_result.extract() );
         }
         else if( _result.is_integer() == true )
         {
             static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(I)V" );
+
+            if( constructor == nullptr )
+            {
+                LOGGER_ERROR("invalid get android method 'java/lang/Object(I)V'");
+
+                return false;
+            }
+
             jresult = m_jenv->NewObject( cls, constructor, (int32_t)_result.extract() );
         }
         else if( _result.is_long() == true )
         {
             static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(L)V" );
+
+            if( constructor == nullptr )
+            {
+                LOGGER_ERROR("invalid get android method 'java/lang/Object(L)V'");
+
+                return false;
+            }
+
             jresult = m_jenv->NewObject( cls, constructor, (int64_t)_result.extract() );
         }
         else if( _result.is_float() == true )
         {
             static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(F)V" );
+
+            if( constructor == nullptr )
+            {
+                LOGGER_ERROR("invalid get android method 'java/lang/Object(F)V'");
+
+                return false;
+            }
+
             jresult = m_jenv->NewObject( cls, constructor, (float)_result.extract() );
         }
         else if( _result.is_string() == true )
@@ -253,6 +299,14 @@ namespace Mengine
             jstring jvalue = m_jenv->NewStringUTF( value_str );
 
             static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(Ljava/lang/String;)V" );
+
+            if( constructor == nullptr )
+            {
+                LOGGER_ERROR("invalid get android method 'java/lang/Object(Ljava/lang/String;)V'");
+
+                return false;
+            }
+
             jresult = m_jenv->NewObject( cls, constructor, jvalue );
 
             m_jenv->DeleteLocalRef( jvalue );
@@ -272,13 +326,20 @@ namespace Mengine
 
         jclass jclass_activity = extension->getJClassActivity();
 
-        static jmethodID jmethodID_method = m_jenv->GetMethodID( jclass_activity, "responseCall", "(ILjava/lang/Object;)V" );
+        static jmethodID jmethodID_responseCall = m_jenv->GetMethodID( jclass_activity, "responseCall", "(ILjava/lang/Object;)V" );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_method != 0, "android activity not found method 'responseCall'" );
+        if( jmethodID_responseCall == nullptr )
+        {
+            LOGGER_ERROR("invalid get android method 'responseCall'");
+
+            return false;
+        }
+
+        MENGINE_ASSERTION_FATAL( jmethodID_responseCall != 0, "android activity not found method 'responseCall'" );
 
         jobject jobject_activity = extension->getJObjectActivity();
 
-        m_jenv->CallVoidMethod( jobject_activity, jmethodID_method, _id, jresult );
+        m_jenv->CallVoidMethod( jobject_activity, jmethodID_responseCall, _id, jresult );
 
         m_eventation.invoke();
 
@@ -563,7 +624,7 @@ namespace Mengine
 
         jmethodID jmethodId = m_jenv->GetMethodID( plugin_class, _method.c_str(), signature );
 
-        if( jmethodId == 0 )
+        if( jmethodId == nullptr )
         {
             LOGGER_ERROR( "android plugin '%s' not found method '%s' with signature '%s'"
                 , _plugin.c_str()

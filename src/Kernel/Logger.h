@@ -78,7 +78,7 @@ namespace Mengine
 #define LOGGER_MESSAGE_RELEASE_ERROR( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0 )( __VA_ARGS__ )
 #define LOGGER_MESSAGE_RELEASE_WARNING( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0 )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
-#if MENGINE_LOGGER_DEBUG
+#if MENGINE_LOGGER_DEBUG == 1
 #   define LOGGER_PERFORMANCE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_PERFOMANCE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
 #   define LOGGER_STATISTIC( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_STATISTIC, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN, nullptr, 0 )( __VA_ARGS__ )
 #   define LOGGER_WARNING( ... ) LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )

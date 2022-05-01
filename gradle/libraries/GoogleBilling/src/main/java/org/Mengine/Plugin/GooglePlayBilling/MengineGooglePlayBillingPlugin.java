@@ -285,12 +285,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                         , sku
                 );
 
-                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingBuyInAppSuccess", true);
+                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingBuyInAppSuccess", sku, true);
                 return true;
             }
             break;
         }
-        MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingBuyInAppSuccess", false);
+        MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingBuyInAppSuccess", sku, false);
 
         return false;
     }

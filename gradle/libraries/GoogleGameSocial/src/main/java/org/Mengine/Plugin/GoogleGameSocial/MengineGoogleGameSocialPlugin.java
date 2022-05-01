@@ -34,15 +34,16 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
      * Авторизация
      * void startSignInIntent()
      * - onGoogleGameSocialOnSign
+     * - onGoogleGameSocialOnSignError
      * <p>
      * Тихая авторизация - если возможно то без вопроса у пользователя произвести авторизацию
      * void signInSilently()
      * - onGoogleGameSocialOnSign
+     * - onGoogleGameSocialOnSignError
      * <p>
      * Выход
      * void signOut()
-     * <p>
-     * - onGoogleGameSocialOnSignError
+     * - onGoogleGameSocialOnSignOut
      *
      * Ачивка этапная - увеличиваем этап и по достижении последнего даётся ачивка
      * boolean incrementAchievement(String achievementId, int numSteps)
@@ -86,7 +87,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                 activity,
                 new GoogleSignInOptions.Builder(m_signInOptions)
 //                .requestEmail()
-//                .requestProfile()
+                        .requestProfile()
                         .build()
         );
     }
@@ -100,6 +101,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 MengineGoogleGameSocialPlugin.this.log("google game social log OUT");
+                MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialSignOut");
             }
         });
     }
@@ -117,6 +119,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                         , result.getStatus().getStatusMessage()
                         , result.getStatus()
                 );
+                MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
             }
         }
     }

@@ -160,6 +160,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args )
     {
+        LOGGER_INFO( "android", "call python plugin '%s' method '%s' args '%s'"
+            , _plugin.c_str()
+            , _method.c_str()
+            , _args.c_str()
+        );
+
         m_eventation.invoke();
 
         ConstString plugin_c = Helper::stringizeString( _plugin );
@@ -348,6 +354,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
+        LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [void]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+        );
+
+
         m_eventation.invoke();
 
         jvalue jargs[32];
@@ -375,6 +388,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonModule::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
+        LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [boolean]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+        );
+
         m_eventation.invoke();
 
         jvalue jargs[32];
@@ -404,6 +423,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t AndroidNativePythonModule::androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
+        LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [int]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+        );
+
         m_eventation.invoke();
 
         jvalue jargs[32];
@@ -433,6 +458,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int64_t AndroidNativePythonModule::androidInteger64Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
+        LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [long]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+        );
+
         m_eventation.invoke();
 
         jvalue jargs[32];
@@ -462,6 +493,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float AndroidNativePythonModule::androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
+        LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [float]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+        );
+
         m_eventation.invoke();
 
         jvalue jargs[32];
@@ -491,6 +528,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     String AndroidNativePythonModule::androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
+        LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [string]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+        );
+
         m_eventation.invoke();
 
         jvalue jargs[32];

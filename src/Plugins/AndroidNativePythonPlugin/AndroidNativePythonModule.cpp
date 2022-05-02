@@ -362,7 +362,7 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [void]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+            , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
 
@@ -396,7 +396,7 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [boolean]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+            , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
         m_eventation.invoke();
@@ -431,7 +431,7 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [int]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+            , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
         m_eventation.invoke();
@@ -466,7 +466,7 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [long]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+            , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
         m_eventation.invoke();
@@ -501,7 +501,7 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [float]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+            , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
         m_eventation.invoke();
@@ -536,7 +536,7 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [string]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr_type( _args.ptr() ).c_str()
+            , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
         m_eventation.invoke();
@@ -587,7 +587,7 @@ namespace Mengine
             LOGGER_ERROR( "android not found plugin '%s' (call method '%s' args '%s')"
                 , _plugin.c_str()
                 , _method.c_str()
-                , m_kernel->object_repr_type( _args.ptr() ).c_str()
+                , m_kernel->object_repr( _args.ptr() ).c_str()
             );
 
             return false;

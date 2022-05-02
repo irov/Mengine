@@ -171,10 +171,15 @@ namespace Mengine
         ConstString plugin_c = Helper::stringizeString( _plugin );
         ConstString method_c = Helper::stringizeString( _method );
 
-        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Helper::makePair( plugin_c, method_c ) );
+        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Helper::makePair( plugin_c, method_c ) );
 
         if( it_found == m_callbacks.end() )
         {
+            LOGGER_ERROR("android not found python '%s' method '%s'"
+                , _plugin.c_str()
+                , _method.c_str()
+            );
+
             return;
         }
 
@@ -648,6 +653,35 @@ namespace Mengine
                 _jfree[index_free++] = jvalue;
 
                 MENGINE_STRCAT( signature, "Ljava/lang/String;" );
+            }
+            else if( arg.is_list() == true )
+            {
+                pybind::list l = arg.extract();
+
+                pybind::list::size_type s = l.size();
+
+                jclass jclass_String = m_jenv->FindClass("java/lang/String");
+                jstring jinitialElement = m_jenv->NewStringUTF("");
+
+                jobjectArray jarray = m_jenv->NewObjectArray( s, jclass_String, jinitialElement );
+
+                uint32_t index = 0;
+                for( const pybind::object & o : l )
+                {
+                    const Char * o_str = (const Char *)o.extract();
+
+                    jstring jelement = m_jenv->NewStringUTF( o_str );
+
+                    m_jenv->SetObjectArrayElement( jarray, index, jelement );
+
+                    _jfree[index_free++] = jelement;
+
+                    ++index;
+                }
+
+                _jargs[index_args++].l = jarray;
+
+                MENGINE_STRCAT( signature, "[Ljava/lang/String;" );
             }
             else
             {

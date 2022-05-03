@@ -61,10 +61,14 @@ namespace Mengine
         String androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
 
     protected:
-        bool getAndroidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jstring * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
+        bool getAndroidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
 
     protected:
         JNIEnv * m_jenv;
+
+        jclass m_jclass_Object;
+        jclass m_jclass_String;
+        jclass m_jclass_ArrayList;
 
         pybind::kernel_interface * m_kernel;
 

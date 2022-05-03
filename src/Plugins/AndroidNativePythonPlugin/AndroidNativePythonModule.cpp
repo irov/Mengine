@@ -114,6 +114,10 @@ namespace Mengine
         m_jenv = extension->getJENV();
         jobject jActivity = extension->getJObjectActivity();
 
+        m_jclass_Object = m_jenv->FindClass( "java/lang/Object" );
+        m_jclass_String = m_jenv->FindClass("java/lang/String");
+        m_jclass_ArrayList = m_jenv->FindClass("java/util/ArrayList");
+
         AndroidPlatformExtensionInterface * unknownAndroidPlatform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
@@ -160,26 +164,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args )
     {
-        LOGGER_INFO( "android", "call python plugin '%s' method '%s' args '%s'"
-            , _plugin.c_str()
-            , _method.c_str()
-            , _args.c_str()
-        );
-
         m_eventation.invoke();
 
         ConstString plugin_c = Helper::stringizeString( _plugin );
         ConstString method_c = Helper::stringizeString( _method );
 
+        LOGGER_INFO( "android", "call python plugin '%s' method '%s' args '%s' [%s]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , _args.c_str()
+            , (m_callbacks.find( Helper::makePair( plugin_c, method_c ) ) != m_callbacks.end() ? "Found" : "NOT-FOUND")
+        );
+
         MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Helper::makePair( plugin_c, method_c ) );
 
         if( it_found == m_callbacks.end() )
         {
-            LOGGER_ERROR("android not found python '%s' method '%s'"
-                , _plugin.c_str()
-                , _method.c_str()
-            );
-
             return;
         }
 
@@ -234,74 +234,47 @@ namespace Mengine
     {
         m_eventation.invoke();
 
-        jclass cls = m_jenv->FindClass( "java/lang/Object" );
-
         jobject jresult;
 
         if( _result.is_none() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "()V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "()V" );
 
-            if( constructor == nullptr )
-            {
-                LOGGER_ERROR("invalid get android method 'java/lang/Object()V'");
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object()V'" );
 
-                return false;
-            }
-
-            jresult = m_jenv->NewObject( cls, constructor );
+            jresult = m_jenv->NewObject( m_jclass_Object, constructor );
         }
         else if( _result.is_bool() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(Z)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(Z)V" );
 
-            if( constructor == nullptr )
-            {
-                LOGGER_ERROR("invalid get android method 'java/lang/Object(Z)V'");
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(Z)V'" );
 
-                return false;
-            }
-
-            jresult = m_jenv->NewObject( cls, constructor, (bool)_result.extract() );
+            jresult = m_jenv->NewObject( m_jclass_Object, constructor, (bool)_result.extract() );
         }
         else if( _result.is_integer() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(I)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(I)V" );
 
-            if( constructor == nullptr )
-            {
-                LOGGER_ERROR("invalid get android method 'java/lang/Object(I)V'");
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(I)V'" );
 
-                return false;
-            }
-
-            jresult = m_jenv->NewObject( cls, constructor, (int32_t)_result.extract() );
+            jresult = m_jenv->NewObject( m_jclass_Object, constructor, (int32_t)_result.extract() );
         }
         else if( _result.is_long() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(L)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(L)V" );
 
-            if( constructor == nullptr )
-            {
-                LOGGER_ERROR("invalid get android method 'java/lang/Object(L)V'");
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(L)V'" );
 
-                return false;
-            }
-
-            jresult = m_jenv->NewObject( cls, constructor, (int64_t)_result.extract() );
+            jresult = m_jenv->NewObject( m_jclass_Object, constructor, (int64_t)_result.extract() );
         }
         else if( _result.is_float() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(F)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(F)V" );
 
-            if( constructor == nullptr )
-            {
-                LOGGER_ERROR("invalid get android method 'java/lang/Object(F)V'");
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(F)V'" );
 
-                return false;
-            }
-
-            jresult = m_jenv->NewObject( cls, constructor, (float)_result.extract() );
+            jresult = m_jenv->NewObject( m_jclass_Object, constructor, (float)_result.extract() );
         }
         else if( _result.is_string() == true )
         {
@@ -309,16 +282,11 @@ namespace Mengine
 
             jstring jvalue = m_jenv->NewStringUTF( value_str );
 
-            static jmethodID constructor = m_jenv->GetMethodID( cls, "<init>", "(Ljava/lang/String;)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(Ljava/lang/String;)V" );
 
-            if( constructor == nullptr )
-            {
-                LOGGER_ERROR("invalid get android method 'java/lang/Object(Ljava/lang/String;)V'");
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(Ljava/lang/String;)V'" );
 
-                return false;
-            }
-
-            jresult = m_jenv->NewObject( cls, constructor, jvalue );
+            jresult = m_jenv->NewObject( m_jclass_Object, constructor, jvalue );
 
             m_jenv->DeleteLocalRef( jvalue );
         }
@@ -339,13 +307,6 @@ namespace Mengine
 
         static jmethodID jmethodID_responseCall = m_jenv->GetMethodID( jclass_activity, "responseCall", "(ILjava/lang/Object;)V" );
 
-        if( jmethodID_responseCall == nullptr )
-        {
-            LOGGER_ERROR("invalid get android method 'responseCall'");
-
-            return false;
-        }
-
         MENGINE_ASSERTION_FATAL( jmethodID_responseCall != 0, "android activity not found method 'responseCall'" );
 
         jobject jobject_activity = extension->getJObjectActivity();
@@ -365,11 +326,10 @@ namespace Mengine
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
-
         m_eventation.invoke();
 
         jvalue jargs[32];
-        jstring jfree[32];
+        jobject jfree[32];
         uint32_t freeCount;
 
         jobject jplugin;
@@ -383,7 +343,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
-            jstring j = jfree[index];
+            jobject j = jfree[index];
 
             m_jenv->DeleteLocalRef( j );
         }
@@ -402,7 +362,7 @@ namespace Mengine
         m_eventation.invoke();
 
         jvalue jargs[32];
-        jstring jfree[32];
+        jobject jfree[32];
         uint32_t freeCount;
 
         jobject jplugin;
@@ -416,7 +376,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
-            jstring j = jfree[index];
+            jobject j = jfree[index];
 
             m_jenv->DeleteLocalRef( j );
         }
@@ -437,7 +397,7 @@ namespace Mengine
         m_eventation.invoke();
 
         jvalue jargs[32];
-        jstring jfree[32];
+        jobject jfree[32];
         uint32_t freeCount;
 
         jobject jplugin;
@@ -451,7 +411,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
-            jstring j = jfree[index];
+            jobject j = jfree[index];
 
             m_jenv->DeleteLocalRef( j );
         }
@@ -472,7 +432,7 @@ namespace Mengine
         m_eventation.invoke();
 
         jvalue jargs[32];
-        jstring jfree[32];
+        jobject jfree[32];
         uint32_t freeCount;
 
         jobject jplugin;
@@ -486,7 +446,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
-            jstring j = jfree[index];
+            jobject j = jfree[index];
 
             m_jenv->DeleteLocalRef( j );
         }
@@ -507,7 +467,7 @@ namespace Mengine
         m_eventation.invoke();
 
         jvalue jargs[32];
-        jstring jfree[32];
+        jobject jfree[32];
         uint32_t freeCount;
 
         jobject jplugin;
@@ -521,7 +481,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
-            jstring j = jfree[index];
+            jobject j = jfree[index];
 
             m_jenv->DeleteLocalRef( j );
         }
@@ -542,7 +502,7 @@ namespace Mengine
         m_eventation.invoke();
 
         jvalue jargs[32];
-        jstring jfree[32];
+        jobject jfree[32];
         uint32_t freeCount;
 
         jobject jplugin;
@@ -556,7 +516,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
-            jstring j = jfree[index];
+            jobject j = jfree[index];
 
             m_jenv->DeleteLocalRef( j );
         }
@@ -572,7 +532,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonModule::getAndroidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jstring * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const
+    bool AndroidNativePythonModule::getAndroidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const
     {
         MENGINE_ASSERTION_FATAL( _args.size() <= 32, "android method plugin '%s' method '%s' max args [32 < %u]"
             , _plugin.c_str()
@@ -584,7 +544,7 @@ namespace Mengine
 
         if( it_found == m_plugins.end() )
         {
-            LOGGER_ERROR( "android not found plugin '%s' (call method '%s' args '%s')"
+            LOGGER_ERROR( "android not register plugin '%s' (call method '%s' args '%s')"
                 , _plugin.c_str()
                 , _method.c_str()
                 , m_kernel->object_repr( _args.ptr() ).c_str()
@@ -596,6 +556,17 @@ namespace Mengine
         jobject jplugin = it_found->second;
 
         jclass plugin_class = m_jenv->GetObjectClass( jplugin );
+
+        if( jplugin == nullptr )
+        {
+            LOGGER_ERROR( "android not found java plugin '%s' (call method '%s' args '%s')"
+                , _plugin.c_str()
+                , _method.c_str()
+                , m_kernel->object_repr( _args.ptr() ).c_str()
+            );
+
+            return false;
+        }
 
         Char signature[1024] = {'\0'};
 
@@ -660,28 +631,34 @@ namespace Mengine
 
                 pybind::list::size_type s = l.size();
 
-                jclass jclass_String = m_jenv->FindClass("java/lang/String");
-                jstring jinitialElement = m_jenv->NewStringUTF("");
+                static jmethodID jmethodID_List_constructor = m_jenv->GetMethodID( m_jclass_ArrayList, "<init>", "(I)V" );
 
-                jobjectArray jarray = m_jenv->NewObjectArray( s, jclass_String, jinitialElement );
+                MENGINE_ASSERTION_FATAL( jmethodID_List_constructor != nullptr );
+
+                jobject jlist = m_jenv->NewObject( m_jclass_ArrayList, jmethodID_List_constructor, s);
 
                 uint32_t index = 0;
                 for( const pybind::object & o : l )
                 {
-                    const Char * o_str = (const Char *)o.extract();
+                    const Char * o_str = o.extract();
 
                     jstring jelement = m_jenv->NewStringUTF( o_str );
 
-                    m_jenv->SetObjectArrayElement( jarray, index, jelement );
+                    static jmethodID jmethodID_List_add = m_jenv->GetMethodID( m_jclass_ArrayList, "add", "(Ljava/lang/Object;)Z" );
 
-                    _jfree[index_free++] = jelement;
+                    MENGINE_ASSERTION_FATAL( jmethodID_List_add != nullptr );
+
+                    jboolean result = m_jenv->CallBooleanMethod( jlist, jmethodID_List_add, jelement );
+
+                    m_jenv->DeleteLocalRef( jelement );
 
                     ++index;
                 }
 
-                _jargs[index_args++].l = jarray;
+                _jargs[index_args++].l = jlist;
+                _jfree[index_free++] = jlist;
 
-                MENGINE_STRCAT( signature, "[Ljava/lang/String;" );
+                MENGINE_STRCAT( signature, "Ljava/util/List;" );
             }
             else
             {

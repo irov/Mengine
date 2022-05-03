@@ -129,6 +129,8 @@ public class MengineActivity extends SDLActivity {
 
     public String getConfigValue(String section, String key, String default_value)
     {
+        Log.i(TAG, String.format("AndroidNativeMengine_getConfigValue: [%s] key '%s' [%s]", section, key, default_value));
+
         return AndroidNativeMengine_getConfigValue(section, key, default_value);
     }
 

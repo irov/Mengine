@@ -102,6 +102,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     public void setSkuList(List<String> skus) {
+        this.log("setSkuList: %s", skus);
+
         m_skusNames = new ArrayList<>(skus);
         this.connectAndQuerySku();
     }

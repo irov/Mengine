@@ -41,6 +41,7 @@ namespace Mengine
 
     protected:
         void process();
+        void sync();
         void stop();
 
     protected:
@@ -56,8 +57,14 @@ namespace Mengine
         jpp::object makeJsonProcessData();
 
     protected:
+        ThreadMutexInterfacePtr m_mutexTabs;
+        ThreadMutexInterfacePtr m_mutexCommands;
+
         typedef Hashtable<ConstString, DevToDebugTabInterfacePtr> HashtableDevToDebugTabs;
-        HashtableDevToDebugTabs m_tabs;
+        HashtableDevToDebugTabs m_tabsProcess;
+        HashtableDevToDebugTabs m_tabsSync;
+
+        VectorDevToDebugWidgetCommands m_tabsCommands;
 
         EDevToDebugStatus m_status;
 

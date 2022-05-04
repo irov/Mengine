@@ -53,7 +53,7 @@ namespace Mengine
         m_threadJob = threadJob;
 
         if( THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->createThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

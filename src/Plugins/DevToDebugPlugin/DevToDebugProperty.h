@@ -15,6 +15,13 @@ namespace Mengine
         ~DevToDebugProperty() override;
 
     public:
+        bool initialize() override;
+        void finalize() override;
+
+    public:
+        void sync() override;
+
+    public:
         virtual bool fillPropertyJson( const ConstString & _name, jpp::object & _jwidget, bool _force ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

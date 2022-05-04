@@ -30,6 +30,16 @@ namespace Mengine
         m_clickEvent = _clickEvent;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidgetCheckbox::_syncPropertis()
+    {
+        for( const HashtableBaseProperties::value_type & value : m_dataProperties )
+        {
+            const DevToDebugPropertyInterfacePtr & property = value.element;
+
+            property->sync();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetCheckbox::_fillTypeJson( jpp::object & _jdata )
     {
         _jdata.set( "type", "check-box" );
@@ -49,7 +59,7 @@ namespace Mengine
         return invalidate;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetCheckbox::process( const jpp::object & _data )
+    void DevToDebugWidgetCheckbox::process( const jpp::object & _data, const ThreadMutexInterfacePtr & _mutex, VectorDevToDebugWidgetCommands * const _commands )
     {
         MENGINE_UNUSED( _data );
 
@@ -60,7 +70,12 @@ namespace Mengine
 
         bool value = _data.get( "value" );
 
-        m_clickEvent( value );
+        _mutex->lock();
+        _commands->emplace_back( [this, value]()
+        {
+            m_clickEvent( value );
+        } );
+        _mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
 }

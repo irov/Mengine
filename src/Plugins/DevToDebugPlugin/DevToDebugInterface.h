@@ -6,15 +6,25 @@
 
 #include "Kernel/Unknowable.h"
 #include "Kernel/String.h"
+#include "Kernel/Vector.h"
 #include "Kernel/Color.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    typedef Lambda<void()> DevToDebugWidgetCommand;
+    typedef Vector<DevToDebugWidgetCommand> VectorDevToDebugWidgetCommands;
+    //////////////////////////////////////////////////////////////////////////
     class DevToDebugPropertyInterface
         : public ServantInterface
         , public Unknowable
     {
+    public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
+    public:
+        virtual void sync() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugPropertyInterface> DevToDebugPropertyInterfacePtr;
@@ -100,6 +110,9 @@ namespace Mengine
     public:
         virtual void setBaseProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
         virtual const DevToDebugPropertyInterfacePtr & getBaseProperty( const ConstString & _name ) const = 0;
+
+    public:
+        virtual void syncProperties() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetInterface> DevToDebugWidgetInterfacePtr;

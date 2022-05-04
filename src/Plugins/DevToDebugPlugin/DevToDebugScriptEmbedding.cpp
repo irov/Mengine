@@ -127,6 +127,11 @@ namespace Mengine
                 DevToDebugPropertyGetterBooleanPtr property_getter = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), MENGINE_DOCUMENT_PYBIND );
 
+                if( property_getter->initialize() == false )
+                {
+                    return nullptr;
+                }
+
                 property_getter->setGetter( [_cb, _args]( bool * const _value )
                 {
                     bool value = _cb.call_args( _args );
@@ -160,6 +165,11 @@ namespace Mengine
                 DevToDebugPropertyGetterStringPtr property_getter = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), MENGINE_DOCUMENT_PYBIND );
 
+                if( property_getter->initialize() == false )
+                {
+                    return nullptr;
+                }
+
                 property_getter->setGetter( [_cb, _args]( String * const _value )
                 {
                     String value = _cb.call_args( _args );
@@ -192,6 +202,11 @@ namespace Mengine
             {
                 DevToDebugPropertyGetterColorPtr property_getter = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), MENGINE_DOCUMENT_PYBIND );
+
+                if( property_getter->initialize() == false )
+                {
+                    return nullptr;
+                }
 
                 property_getter->setGetter( [_cb, _args]( Color * const _value )
                 {

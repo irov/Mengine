@@ -2,11 +2,11 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "DevToDebugTab.h"
 
 #include "DevToDebugPropertyConstBoolean.h"
-#include "DevToDebugPropertyInitialBoolean.h"
 #include "DevToDebugPropertyGetterBoolean.h"
 #include "DevToDebugPropertyConstString.h"
 #include "DevToDebugPropertyGetterString.h"
@@ -29,6 +29,7 @@
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -42,7 +43,6 @@ namespace Mengine
     DevToDebugService::DevToDebugService()
         : m_status( EDTDS_NONE )
         , m_revision( 0 )
-        , m_timerId( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -54,6 +54,7 @@ namespace Mengine
     {
         static ServiceRequiredList required = {
             cURLServiceInterface::getStaticServiceID()
+            , ThreadServiceInterface::getStaticServiceID()
         };
 
         return required;
@@ -94,11 +95,6 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::addDefaultPrototype<DevToDebugPropertyInitialBoolean, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyInitialBoolean" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-
         if( Helper::addDefaultPrototype<DevToDebugPropertyConstString, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
@@ -134,14 +130,27 @@ namespace Mengine
             return false;
         }
 
-        float DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebug", "ProccesTime", 500.f );
+        m_mutexTabs = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_mutexCommands = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebug", "ProccesTime", 500 );
+
+        Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebug" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
+        {
+            this->process();
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        float DevToDebug_SyncTime = CONFIG_VALUE( "DevToDebug", "SyncTime", 500.f );
 
         UniqueId timerId = PLATFORM_SERVICE()
-            ->addTimer( DevToDebug_ProccesTime, [this]( UniqueId _id )
+            ->addTimer( DevToDebug_SyncTime, [this]( UniqueId _id )
         {
             MENGINE_UNUSED( _id );
 
-            this->process();
+            this->sync();
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_timerId = timerId;
@@ -169,6 +178,18 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
+
+        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+
+        if( m_timerId != INVALID_UNIQUE_ID )
+        {
+            PLATFORM_SERVICE()
+                ->removeTimer( m_timerId );
+            m_timerId = INVALID_UNIQUE_ID;
+        }
+
+        m_mutexTabs = nullptr;
+        m_mutexCommands = nullptr;
 
         this->stop();
 
@@ -208,26 +229,55 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab )
     {
-        m_tabs.emplace( _name, _tab );
+        m_mutexTabs->lock();
+        m_tabsProcess.emplace( _name, _tab );
+        m_mutexTabs->unlock();
+
+        m_tabsSync.emplace( _name, _tab );
     }
     //////////////////////////////////////////////////////////////////////////
     const DevToDebugTabInterfacePtr & DevToDebugService::getTab( const ConstString & _name ) const
     {
-        const DevToDebugTabInterfacePtr & tab = m_tabs.find( _name );
+        const DevToDebugTabInterfacePtr & tab = m_tabsSync.find( _name );
 
         return tab;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugService::hasTab( const ConstString & _name ) const
     {
-        bool result = m_tabs.exist( _name );
+        bool result = m_tabsSync.exist( _name );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::removeTab( const ConstString & _name )
     {
-        m_tabs.erase( _name );
+        m_mutexTabs->lock();
+        m_tabsProcess.erase( _name );
+        m_mutexTabs->unlock();
+
+        m_tabsSync.erase( _name );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::sync()
+    {
+        for( const HashtableDevToDebugTabs::value_type & value : m_tabsSync )
+        {
+            const DevToDebugTabInterfacePtr & tab = value.element;
+
+            tab->foreachWidgets( []( const DevToDebugWidgetInterfacePtr & _widget )
+            {
+                _widget->syncProperties();
+            } );
+        }
+
+        m_mutexCommands->lock();
+        for( const DevToDebugWidgetCommand & command : m_tabsCommands )
+        {
+            command();
+        }
+        m_tabsCommands.clear();
+        m_mutexCommands->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::process()
@@ -412,7 +462,9 @@ namespace Mengine
                     ConstString id = a.get( "id" );
                     jpp::object d = a.get( "data" );
 
-                    DevToDebugTabInterfacePtr tab = m_tabs.find( tab_name );
+                    m_mutexTabs->lock();
+                    DevToDebugTabInterfacePtr tab = m_tabsProcess.find( tab_name );
+                    m_mutexTabs->unlock();
 
                     if( tab == nullptr )
                     {
@@ -423,7 +475,7 @@ namespace Mengine
 
                     DevToDebugWidgetPtr widget_base = DevToDebugWidgetPtr::dynamic_from( widget );
 
-                    widget_base->process( d );
+                    widget_base->process( d, m_mutexCommands, &m_tabsCommands );
                 }
             }break;
         default:
@@ -435,13 +487,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::stop()
     {
-        if( m_timerId != INVALID_UNIQUE_ID )
-        {
-            PLATFORM_SERVICE()
-                ->removeTimer( m_timerId );
-            m_timerId = INVALID_UNIQUE_ID;
-        }
-
         m_status = EDTDS_NONE;
         m_revision = 0;
     }
@@ -450,7 +495,9 @@ namespace Mengine
     {
         jpp::object jtabs = jpp::make_object();
 
-        for( const HashtableDevToDebugTabs::value_type & value : m_tabs )
+        m_mutexTabs->lock();
+
+        for( const HashtableDevToDebugTabs::value_type & value : m_tabsProcess )
         {
             const ConstString & key = value.key;
             const DevToDebugTabInterfacePtr & tab = value.element;
@@ -474,6 +521,8 @@ namespace Mengine
 
             jtabs.set( key, jtab );
         }
+
+        m_mutexTabs->unlock();
 
         return jtabs;
     }

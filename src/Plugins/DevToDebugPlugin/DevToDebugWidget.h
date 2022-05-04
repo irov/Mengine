@@ -2,6 +2,8 @@
 
 #include "DevToDebugInterface.h"
 
+#include "Interface/ThreadMutexInterface.h"
+
 #include "Kernel/ConstString.h"
 #include "Kernel/JSON.h"
 #include "Kernel/Identity.h"
@@ -33,6 +35,12 @@ namespace Mengine
         const DevToDebugPropertyInterfacePtr & getBaseProperty( const ConstString & _name ) const override;
 
     public:
+        void syncProperties() override;
+
+    protected:
+        virtual void _syncPropertis() = 0;
+
+    public:
         bool fillJson( jpp::object & _jwidget, bool _force );
 
     protected:
@@ -40,7 +48,7 @@ namespace Mengine
         virtual bool _fillDataJson( jpp::object & _jdata, bool _force ) = 0;
 
     public:
-        virtual void process( const jpp::object & _data ) = 0;
+        virtual void process( const jpp::object & _jdata, const ThreadMutexInterfacePtr & _mutex, VectorDevToDebugWidgetCommands * const _commands ) = 0;
 
     protected:
         ConstString m_id;

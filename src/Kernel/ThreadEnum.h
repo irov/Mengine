@@ -2,9 +2,15 @@
 
 #include "Config/Config.h"
 
-#define MENGINE_THREAD_PRIORITY_LOWEST (-2)
-#define MENGINE_THREAD_PRIORITY_BELOW_NORMAL (-1)
-#define MENGINE_THREAD_PRIORITY_NORMAL (0)
-#define MENGINE_THREAD_PRIORITY_ABOVE_NORMAL (1)
-#define MENGINE_THREAD_PRIORITY_HIGHEST (2)
-#define MENGINE_THREAD_PRIORITY_TIME_CRITICAL (3)
+namespace Mengine
+{
+    enum EThreadPriority
+    {
+        ETP_LOWEST = -2,
+        ETP_BELOW_NORMAL = -1,
+        ETP_NORMAL = 0,
+        ETP_ABOVE_NORMAL = 1,
+        ETP_HIGHEST = 2,
+        ETP_TIME_CRITICAL = 3
+    };
+}

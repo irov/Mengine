@@ -42,7 +42,7 @@ namespace Mengine
 #ifdef MENGINE_WINDOWS_DEBUG
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
-            Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "FileModifyHook" ), 500, [this]()
+            Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "FileModifyHook" ), ETP_BELOW_NORMAL, 500, [this]()
             {
                 this->notifyFileModifies();
             }, [this]()

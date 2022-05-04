@@ -85,7 +85,7 @@ namespace Mengine
         ::ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
+    bool Win32ThreadIdentity::initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -125,27 +125,27 @@ namespace Mengine
 
         switch( _priority )
         {
-        case MENGINE_THREAD_PRIORITY_LOWEST:
+        case ETP_LOWEST:
             {
                 ::SetThreadPriority( m_thread, THREAD_PRIORITY_LOWEST );
             }break;
-        case MENGINE_THREAD_PRIORITY_BELOW_NORMAL:
+        case ETP_BELOW_NORMAL:
             {
                 ::SetThreadPriority( m_thread, THREAD_PRIORITY_BELOW_NORMAL );
             }break;
-        case MENGINE_THREAD_PRIORITY_NORMAL:
+        case ETP_NORMAL:
             {
                 ::SetThreadPriority( m_thread, THREAD_PRIORITY_NORMAL );
             }break;
-        case MENGINE_THREAD_PRIORITY_ABOVE_NORMAL:
+        case ETP_ABOVE_NORMAL:
             {
                 ::SetThreadPriority( m_thread, THREAD_PRIORITY_ABOVE_NORMAL );
             }break;
-        case MENGINE_THREAD_PRIORITY_HIGHEST:
+        case ETP_HIGHEST:
             {
                 ::SetThreadPriority( m_thread, THREAD_PRIORITY_HIGHEST );
             }break;
-        case MENGINE_THREAD_PRIORITY_TIME_CRITICAL:
+        case ETP_TIME_CRITICAL:
             {
                 ::SetThreadPriority( m_thread, THREAD_PRIORITY_TIME_CRITICAL );
             }break;

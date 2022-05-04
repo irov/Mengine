@@ -58,6 +58,30 @@ public class MenginePlugin {
         m_activity.addPythonPlugin(m_pluginName, this);
     }
 
+    public void error(String format, Object ... args)
+    {
+        Formatter formatter = m_formatter.format(format, args);
+        String message = formatter.toString();
+
+        Log.e(m_tag, message);
+    }
+
+    public void warning(String format, Object ... args)
+    {
+        Formatter formatter = m_formatter.format(format, args);
+        String message = formatter.toString();
+
+        Log.w(m_tag, message);
+    }
+
+    public void info(String format, Object ... args)
+    {
+        Formatter formatter = m_formatter.format(format, args);
+        String message = formatter.toString();
+
+        Log.i(m_tag, message);
+    }
+
     public void log(String format, Object ... args)
     {
         Formatter formatter = m_formatter.format(format, args);

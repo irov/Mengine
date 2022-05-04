@@ -37,6 +37,18 @@ namespace Mengine
         return property;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidget::syncProperties()
+    {
+        for( const HashtableBaseProperties::value_type & value : m_baseProperties )
+        {
+            const DevToDebugPropertyInterfacePtr & property = value.element;
+
+            property->sync();
+        }
+
+        this->_syncPropertis();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DevToDebugWidget::fillJson( jpp::object & _jwidget, bool _force )
     {
         MENGINE_ASSERTION_FATAL( m_id.empty() == false, "DevToDebug widget type '%s' miss id"

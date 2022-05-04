@@ -100,12 +100,11 @@ namespace Mengine
         return threadJob;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::createThread( const ConstString & _threadName, int32_t _priority, const DocumentPtr & _doc )
+    bool ThreadService::createThread( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc )
     {
-        if( this->hasThread( _threadName ) == true )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( this->hasThread( _threadName ) == false, "thread '%s' already exist"
+            , _threadName.c_str()
+        );
 
         ThreadIdentityInterfacePtr identity = THREAD_SYSTEM()
             ->createThread( _threadName, _priority, _doc );

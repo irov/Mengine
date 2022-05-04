@@ -25,6 +25,16 @@ namespace Mengine
         return property;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidgetText::_syncPropertis()
+    {
+        for( const HashtableBaseProperties::value_type & value : m_dataProperties )
+        {
+            const DevToDebugPropertyInterfacePtr & property = value.element;
+
+            property->sync();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetText::_fillTypeJson( jpp::object & _jdata )
     {
         _jdata.set( "type", "text" );
@@ -44,9 +54,11 @@ namespace Mengine
         return invalidate;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetText::process( const jpp::object & _data )
+    void DevToDebugWidgetText::process( const jpp::object & _data, const ThreadMutexInterfacePtr & _mutex, VectorDevToDebugWidgetCommands * const _commands )
     {
         MENGINE_UNUSED( _data );
+        MENGINE_UNUSED( _mutex );
+        MENGINE_UNUSED( _commands );
 
         //Emty
     }

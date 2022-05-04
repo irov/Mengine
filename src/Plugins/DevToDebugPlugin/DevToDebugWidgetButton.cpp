@@ -30,6 +30,16 @@ namespace Mengine
         m_clickEvent = _clickEvent;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugWidgetButton::_syncPropertis()
+    {
+        for( const HashtableBaseProperties::value_type & value : m_dataProperties )
+        {
+            const DevToDebugPropertyInterfacePtr & property = value.element;
+
+            property->sync();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidgetButton::_fillTypeJson( jpp::object & _jdata )
     {
         _jdata.set( "type", "button" );
@@ -49,7 +59,7 @@ namespace Mengine
         return invalidate;
     }
     ////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetButton::process( const jpp::object & _data )
+    void DevToDebugWidgetButton::process( const jpp::object & _data, const ThreadMutexInterfacePtr & _mutex, VectorDevToDebugWidgetCommands * const _commands )
     {
         MENGINE_UNUSED( _data );
 
@@ -58,7 +68,12 @@ namespace Mengine
             return;
         }
 
-        m_clickEvent();
+        _mutex->lock();
+        _commands->emplace_back( [this]()
+        {
+            m_clickEvent();
+        } );
+        _mutex->unlock();
     }
     ////////////////////////////////////////////////////////////////////////
 }

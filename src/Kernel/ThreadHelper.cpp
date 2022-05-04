@@ -36,7 +36,10 @@ namespace Mengine
                 {
                     MENGINE_UNUSED( _id );
 
-                    m_update();
+                    if( m_update != nullptr )
+                    {
+                        m_update();
+                    }
                 }
 
                 bool onThreadWorkerWork( uint32_t _id ) override
@@ -62,7 +65,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        bool createSimpleThreadWorker( const ConstString & _threadName, uint32_t _sleep, const LambdaThreadUpdate & _update, const LambdaThreadWorker & _worker, const DocumentPtr & _doc )
+        bool createSimpleThreadWorker( const ConstString & _threadName, EThreadPriority _priority, uint32_t _sleep, const LambdaThreadUpdate & _update, const LambdaThreadWorker & _worker, const DocumentPtr & _doc )
         {
             ThreadJobPtr threadJob = THREAD_SERVICE()
                 ->createJob( _sleep, _doc );
@@ -70,7 +73,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( threadJob, "invalid create thread job" );
 
             if( THREAD_SERVICE()
-                ->createThread( _threadName, MENGINE_THREAD_PRIORITY_NORMAL, _doc ) == false )
+                ->createThread( _threadName, _priority, _doc ) == false )
             {
                 return false;
             }

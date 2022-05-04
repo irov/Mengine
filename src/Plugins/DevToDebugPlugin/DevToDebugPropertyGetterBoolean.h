@@ -2,6 +2,8 @@
 
 #include "DevToDebugProperty.h"
 
+#include "Interface/ThreadMutexInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -21,10 +23,20 @@ namespace Mengine
         void setGetter( const LambdaGetterValue & _getter ) override;
 
     public:
+        bool initialize() override;
+        void finalize() override;
+
+    public:
+        void sync() override;
+
+    public:
         bool fillPropertyJson( const ConstString & _name, jpp::object & _jwidget, bool _force ) const override;
 
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         LambdaGetterValue m_getter;
+        mutable bool m_cache;
         mutable bool m_test;
     };
     //////////////////////////////////////////////////////////////////////////

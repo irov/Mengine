@@ -21,10 +21,7 @@ src
     DevToDebugPropertyConstBoolean.cpp
 
     DevToDebugPropertyGetterBoolean.h
-    DevToDebugPropertyGetterBoolean.cpp
-    
-    DevToDebugPropertyInitialBoolean.h
-    DevToDebugPropertyInitialBoolean.cpp
+    DevToDebugPropertyGetterBoolean.cpp    
     
     DevToDebugPropertyConstString.h
     DevToDebugPropertyConstString.cpp

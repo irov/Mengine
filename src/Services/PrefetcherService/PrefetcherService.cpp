@@ -55,7 +55,7 @@ namespace Mengine
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             THREAD_SERVICE()
-                ->createThread( threadName, MENGINE_THREAD_PRIORITY_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+                ->createThread( threadName, ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
             m_threads.emplace_back( threadName );
 

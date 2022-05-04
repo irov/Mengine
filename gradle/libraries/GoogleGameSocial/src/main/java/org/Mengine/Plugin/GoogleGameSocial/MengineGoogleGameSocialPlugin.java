@@ -189,7 +189,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean showAchievements() {
-        if (mAchievementsClient != null) {
+        if (mAchievementsClient == null) {
             return false;
         }
 
@@ -197,14 +197,14 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                 .addOnSuccessListener(new OnSuccessListener<Intent>() {
                     @Override
                     public void onSuccess(Intent intent) {
-                        pythonCall("onMengineGoogleGameSocialShowAchievementSuccess");
-                        getActivity().startActivityForResult(intent, RC_UNUSED);
+                        MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialShowAchievementSuccess");
+                        MengineGoogleGameSocialPlugin.this.getActivity().startActivityForResult(intent, RC_UNUSED);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        pythonCall("onMengineGoogleGameSocialShowAchievementError");
+                        MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialShowAchievementError");
                         MengineGoogleGameSocialPlugin.this.log("achievements error '%s'"
                                 , e.getLocalizedMessage());
                     }
@@ -214,20 +214,20 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean unlockAchievement(String achievementId) {
-        if (mAchievementsClient != null) {
+        if (mAchievementsClient == null) {
             return false;
         }
 
         mAchievementsClient.unlockImmediate(achievementId).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                pythonCall("onMengineGoogleGameSocialAchievementSuccess", achievementId);
+                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementSuccess", achievementId);
                 MengineGoogleGameSocialPlugin.this.log("unlockAchievement '%s' complete", achievementId);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                pythonCall("onMengineGoogleGameSocialAchievementError", achievementId);
+                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementError", achievementId);
                 MengineGoogleGameSocialPlugin.this.log("unlockAchievement '%s' error '%s'"
                         , achievementId, e.getLocalizedMessage());
             }
@@ -237,7 +237,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
-        if (mAchievementsClient != null) {
+        if (mAchievementsClient == null) {
             return false;
         }
 
@@ -245,12 +245,12 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             @Override
             public void onSuccess(Boolean aBoolean) {
                 MengineGoogleGameSocialPlugin.this.log("incrementImmediate '%s' complete", achievementId);
-                pythonCall("onMengineGoogleGameSocialAchievementIncrementSuccess", achievementId);
+                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementIncrementSuccess", achievementId);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                pythonCall("onMengineGoogleGameSocialAchievementIncrementError", achievementId);
+                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementIncrementError", achievementId);
                 MengineGoogleGameSocialPlugin.this.log("incrementImmediate '%s' error '%s'"
                         , achievementId, e.getLocalizedMessage());
             }

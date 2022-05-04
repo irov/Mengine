@@ -30,7 +30,7 @@ namespace Mengine
         ~Win32ThreadIdentity() override;
 
     public:
-        bool initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
+        bool initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
 
     public:
         void main();

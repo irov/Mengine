@@ -22,7 +22,7 @@ namespace Mengine
         virtual ThreadJobPtr createJob( uint32_t _sleep, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual bool createThread( const ConstString & _threadName, int32_t _priority, const DocumentPtr & _doc ) = 0;
+        virtual bool createThread( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) = 0;
         virtual bool destroyThread( const ConstString & _threadName ) = 0;
 
     public:

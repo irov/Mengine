@@ -1,5 +1,9 @@
 #include "DevToDebugPropertyGetterColor.h"
 
+#include "Interface/ThreadServiceInterface.h"
+
+#include "Kernel/DocumentHelper.h"
+
 #include "Config/StdIO.h"
 
 namespace Mengine
@@ -18,20 +22,44 @@ namespace Mengine
         m_getter = _getter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DevToDebugPropertyGetterColor::fillPropertyJson( const ConstString & _name, jpp::object & _jwidget, bool _force ) const
+    bool DevToDebugPropertyGetterColor::initialize()
+    {
+        m_mutex = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugPropertyGetterColor::finalize()
+    {
+        m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugPropertyGetterColor::sync()
     {
         Color value;
         m_getter( &value );
 
+        m_mutex->lock();
+        m_cache = value;
+        m_mutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugPropertyGetterColor::fillPropertyJson( const ConstString & _name, jpp::object & _jwidget, bool _force ) const
+    {
+        m_mutex->lock();
         if( _force == false )
         {
-            if( m_test == value )
+            if( m_test == m_cache )
             {
+                m_mutex->unlock();
+
                 return false;
             }
         }
 
-        m_test = value;
+        m_test = m_cache;
+        m_mutex->unlock();
 
         ColorValue_ARGB argb = m_test.getAsARGB();
 

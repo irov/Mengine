@@ -40,7 +40,7 @@ namespace Mengine
         m_factoryThreadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( const ConstString & _name, int32_t _priority, const DocumentPtr & _doc )
+    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc )
     {
         SDLThreadIdentityPtr identity = m_factoryThreadIdentity->createObject( _doc );
 

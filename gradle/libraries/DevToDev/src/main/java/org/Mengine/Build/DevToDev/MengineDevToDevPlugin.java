@@ -27,14 +27,24 @@ public class MengineDevToDevPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    }
+
+    public boolean initialize() {
+        MengineActivity activity = this.getActivity();
+
         DTDAnalyticsConfiguration configuration = new DTDAnalyticsConfiguration();
+
         if (BuildConfig.DEBUG) {
             configuration.setLogLevel(DTDLogLevel.Debug);
         } else {
             configuration.setLogLevel(DTDLogLevel.Error);
         }
 
-        DTDAnalytics.INSTANCE.initialize(activity.getString(R.string.dev_to_dev_app_id), configuration, activity);
+        String appKey = activity.getString(R.string.dev_to_dev_app_id);
+
+        DTDAnalytics.INSTANCE.initialize(appKey, configuration, activity);
+
+        return true;
     }
 
     public void onTutorialEvent(int stateOrStep) {

@@ -12,8 +12,6 @@ import android.view.KeyEvent;
 
 import java.util.Formatter;
 
-
-
 public class MenginePlugin {
     private MengineApplication m_application;
     private MengineActivity m_activity;
@@ -32,8 +30,7 @@ public class MenginePlugin {
         return m_activity;
     }
 
-    public boolean onInitialize(MengineApplication application)
-    {
+    public boolean onInitialize(MengineApplication application) {
         m_application = application;
 
         StringBuilder sb = new StringBuilder();
@@ -51,149 +48,123 @@ public class MenginePlugin {
         m_activity = activity;
     }
 
-    protected void addPythonPlugin(String name)
-    {
+    protected void addPythonPlugin(String name) {
         m_pluginName = name;
 
         m_activity.addPythonPlugin(m_pluginName, this);
     }
 
-    public void error(String format, Object ... args)
-    {
+    public void error(String format, Object ... args) {
         Formatter formatter = m_formatter.format(format, args);
         String message = formatter.toString();
 
         Log.e(m_tag, message);
     }
 
-    public void warning(String format, Object ... args)
-    {
+    public void warning(String format, Object ... args) {
         Formatter formatter = m_formatter.format(format, args);
         String message = formatter.toString();
 
         Log.w(m_tag, message);
     }
 
-    public void info(String format, Object ... args)
-    {
+    public void info(String format, Object ... args) {
         Formatter formatter = m_formatter.format(format, args);
         String message = formatter.toString();
 
         Log.i(m_tag, message);
     }
 
-    public void log(String format, Object ... args)
-    {
+    public void log(String format, Object ... args) {
         Formatter formatter = m_formatter.format(format, args);
         String message = formatter.toString();
 
         Log.i(m_tag, message);
     }
 
-    public void pythonCall(String method, Object ... args)
-    {
+    public void pythonCall(String method, Object ... args) {
         m_activity.pythonCall(m_pluginName, method, args);
     }
 
-    public void pythonCallCb(String method, CallbackInterface cb, Object ... args)
-    {
+    public void pythonCallCb(String method, CallbackInterface cb, Object ... args) {
         m_activity.pythonCallCb(m_pluginName, method, cb, args);
     }
 
-    public void onAppCreate(MengineApplication application)
-    {
+    public void onAppCreate(MengineApplication application) {
         //Empty
     }
 
-    public void onAppTerminate(MengineApplication application)
-    {
+    public void onAppTerminate(MengineApplication application) {
         //Empty
     }
 
-    public void onAppAttachBaseContext(MengineApplication application, Context base)
-    {
+    public void onAppAttachBaseContext(MengineApplication application, Context base) {
         //Empty
     }
 
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig)
-    {
+    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
         //Empty
     }
 
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState)
-    {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         //Empty
     }
 
-    public void onMengineInitializeBaseServices(MengineActivity activity)
-    {
+    public void onMengineInitializeBaseServices(MengineActivity activity) {
         //Empty
     }
 
-    public void onMengineCreateApplication(MengineActivity activity)
-    {
+    public void onMengineCreateApplication(MengineActivity activity) {
         //Empty
     }
 
-    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }
 
-    public void onStart(MengineActivity activity)
-    {
+    public void onStart(MengineActivity activity) {
         //Empty
     }
 
-    public void onStop(MengineActivity activity)
-    {
+    public void onStop(MengineActivity activity) {
         //Empty
     }
 
-    public void onPause(MengineActivity activity)
-    {
+    public void onPause(MengineActivity activity) {
         //Empty
     }
 
-    public void onResume(MengineActivity activity)
-    {
+    public void onResume(MengineActivity activity) {
         //Empty
     }
 
-    public void onNewIntent(MengineActivity activity, Intent intent)
-    {
+    public void onNewIntent(MengineActivity activity, Intent intent) {
         //Empty
     }
 
-    public void onDestroy(MengineActivity activity)
-    {
+    public void onDestroy(MengineActivity activity) {
         //Empty
     }
 
-    public void onRestart(MengineActivity activity)
-    {
+    public void onRestart(MengineActivity activity) {
         //Empty
     }
 
-    public void onConfigurationChanged(MengineActivity activity,Configuration newConfig)
-    {
+    public void onConfigurationChanged(MengineActivity activity,Configuration newConfig) {
         //Empty
     }
 
-    public void onRequestPermissionsResult(MengineActivity activity, int requestCode, String[] permissions, int[] grantResults)
-    {
+    public void onRequestPermissionsResult(MengineActivity activity, int requestCode, String[] permissions, int[] grantResults) {
         //Empty
     }
 
-    public boolean dispatchKeyEvent(MengineActivity activity, KeyEvent event)
-    {
+    public boolean dispatchKeyEvent(MengineActivity activity, KeyEvent event) {
         //Empty
 
         return false;
     }
 
-    public void onPythonEmbedding(MengineActivity activity)
-    {
+    public void onPythonEmbedding(MengineActivity activity) {
         //Empty
     }
 }

@@ -25,7 +25,7 @@ namespace Mengine
         ~SDLThreadIdentity() override;
 
     public:
-        bool initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
+        bool initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
 
     public:
         void main();
@@ -38,10 +38,10 @@ namespace Mengine
         void join() override;
 
     public:
-        int32_t getPriority() const;
+        EThreadPriority getPriority() const;
 
     protected:
-        int32_t m_priority;
+        EThreadPriority m_priority;
         ConstString m_name;
 
         ThreadMutexInterfacePtr m_mutex;

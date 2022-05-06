@@ -33,6 +33,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+        //Empty
     }
 
     @Override
@@ -42,6 +43,10 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
             this.pythonCall("onLocalNotificationsPress", id);
         }
+    }
+
+    public boolean initialize() {
+        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -97,6 +102,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
         
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
             jobScheduler.cancelAll();
@@ -123,7 +129,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleJobNotification(int delayMillis, PersistableBundle bundle){
-        this.log("Schedule notification with delay: %u", delayMillis);
+        this.info("Schedule notification with delay: %u", delayMillis);
         
         MengineActivity activity = this.getActivity();
 

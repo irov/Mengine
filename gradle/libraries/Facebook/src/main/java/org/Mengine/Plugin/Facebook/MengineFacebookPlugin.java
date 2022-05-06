@@ -41,13 +41,48 @@ public class MengineFacebookPlugin extends MenginePlugin {
     public void onPythonEmbedding(MengineActivity activity) {
         this.addPythonPlugin("Facebook");
     }
-    
+
+    public boolean initialize() {
+        MengineActivity activity = this.getActivity();
+
+        m_facebookCallbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(m_facebookCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                m_facebookAccessToken = loginResult.getAccessToken();
+
+                String token = m_facebookAccessToken.getToken();
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookLoginSuccess", token);
+            }
+
+            @Override
+            public void onCancel() {
+                MengineFacebookPlugin.this.pythonCall("onFacebookLoginCancel");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                String message = exception.getMessage();
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookLoginError", message);
+            }
+        });
+
+        Application application = activity.getApplication();
+
+        AppEventsLogger.activateApp(application);
+
+        return true;
+    }
+
     public boolean isLoggedIn() {
         return m_facebookAccessToken != null && !m_facebookAccessToken.isExpired();
     }
     
     public String getAccessToken() {
-        if (!this.isLoggedIn()){
+        if (this.isLoggedIn() == false) {
             return "";
         }
         
@@ -79,14 +114,12 @@ public class MengineFacebookPlugin extends MenginePlugin {
             return;
         }
 
-        MengineFacebookPlugin self = this;
-
         new GraphRequest(accessToken, "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
                 String token = accessToken.getToken();
 
-                self.pythonCall("onFacebookLogoutSuccess", token);
+                MengineFacebookPlugin.this.pythonCall("onFacebookLogoutSuccess", token);
 
                 LoginManager.getInstance().logOut();
                 
@@ -102,27 +135,23 @@ public class MengineFacebookPlugin extends MenginePlugin {
             return;
         }
 
-        MengineFacebookPlugin self = this;
-        
-        GraphRequest request = GraphRequest.newMeRequest(m_facebookAccessToken
-            , new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        String objectString = object != null ? object.toString() : "";
-                        String responseString = response != null ? response.toString() : "";
-                        
-                        try {
-                            if (object != null) {
-                                m_facebookUserId = object.getString("id");
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+        GraphRequest request = GraphRequest.newMeRequest(m_facebookAccessToken, new GraphRequest.GraphJSONObjectCallback() {
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) {
+                    String objectString = object != null ? object.toString() : "";
+                    String responseString = response != null ? response.toString() : "";
+
+                    try {
+                        if (object != null) {
+                            m_facebookUserId = object.getString("id");
                         }
-                
-                        self.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
+                    MengineFacebookPlugin.this.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);
                 }
-            );
+            });
                 
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id, name, picture");
@@ -133,26 +162,35 @@ public class MengineFacebookPlugin extends MenginePlugin {
     public void shareLink(String link, String picture, String message) {
         MengineActivity activity = this.getActivity();
 
-        MengineFacebookPlugin self = this;
-
         ShareDialog shareDialog = new ShareDialog(activity);
         shareDialog.registerCallback(m_facebookCallbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
                 String postId = result.getPostId() != null ? result.getPostId() : "";
-                
-                self.pythonCall("onFacebookShareSuccess", postId);
+
+                MengineFacebookPlugin.this.info("facebook success [%s]"
+                    , postId
+                );
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookShareSuccess", postId);
             }
 
             @Override
             public void onCancel() {
-                self.pythonCall("onFacebookShareCancel");
+                MengineFacebookPlugin.this.info("facebook cancel");
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookShareCancel");
             }
 
             @Override
             public void onError(FacebookException exception) {
                 String message = exception.getMessage();
-                self.pythonCall("onFacebookShareError", message);
+
+                MengineFacebookPlugin.this.info("facebook error: %s"
+                    , message
+                );
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookShareError", message);
             }
         });
         
@@ -161,12 +199,13 @@ public class MengineFacebookPlugin extends MenginePlugin {
                     .setContentUrl(Uri.parse(link))
                     .setQuote(message)
                     .build();
+
             shareDialog.show(linkContent);
         }
     }
     
     public void getProfilePictureLink(final String typeParameter) {
-        if (!this.isLoggedIn()) {
+        if (this.isLoggedIn() == false) {
             this.pythonCall("onFacebookProfilePictureLinkGet", m_facebookUserId, false, "");
             
             return;
@@ -180,30 +219,32 @@ public class MengineFacebookPlugin extends MenginePlugin {
             this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
             return;
         }
-
-        MengineFacebookPlugin self = this;
         
         String graphPath = "/" + user_id + "/picture" + typeParameter;
         
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-            m_facebookAccessToken, graphPath, new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        String pictureURL = "";
-                        if (response != null) {
-                            JSONObject responseObject = response.getJSONObject();
-                            if (responseObject != null) {
-                                try {
-                                    pictureURL = responseObject.getJSONObject("data").getString("url");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+        GraphRequest request = GraphRequest.newGraphPathRequest(m_facebookAccessToken, graphPath, new GraphRequest.Callback() {
+                @Override
+                public void onCompleted(GraphResponse response) {
+                    String pictureURL = "";
+                    if (response != null) {
+                        JSONObject responseObject = response.getJSONObject();
+                        if (responseObject != null) {
+                            try {
+                                pictureURL = responseObject.getJSONObject("data").getString("url");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-                        
-                        self.pythonCall("onFacebookProfilePictureLinkGet", user_id, true, pictureURL);
                     }
-                });
+
+                    MengineFacebookPlugin.this.info("request profile user [%s] picture link completed: %s"
+                        , user_id
+                        , pictureURL
+                    );
+
+                    MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, true, pictureURL);
+                }
+            });
 
         Bundle parameters = new Bundle();
         parameters.putBoolean("redirect", false);
@@ -213,36 +254,6 @@ public class MengineFacebookPlugin extends MenginePlugin {
     
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        m_facebookCallbackManager = CallbackManager.Factory.create();
-
-        MengineFacebookPlugin self = this;
-        
-        LoginManager.getInstance().registerCallback(m_facebookCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                m_facebookAccessToken = loginResult.getAccessToken();
-                
-                String token = m_facebookAccessToken.getToken();
-                
-                self.pythonCall("onFacebookLoginSuccess", token);
-            }
-
-            @Override
-            public void onCancel() {
-                self.pythonCall("onFacebookLoginCancel");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                String message = exception.getMessage();
-
-                self.pythonCall("onFacebookLoginError", message);
-            }
-        });
-        
-        Application application = activity.getApplication();
-        
-        AppEventsLogger.activateApp(application);
     }
     
     @Override
@@ -251,12 +262,10 @@ public class MengineFacebookPlugin extends MenginePlugin {
     }
 
     @Override
-    public void onMengineInitializeBaseServices(MengineActivity activity)
-    {
+    public void onMengineInitializeBaseServices(MengineActivity activity) {
     }
 
     @Override
-    public void onMengineCreateApplication(MengineActivity activity)
-    {
+    public void onMengineCreateApplication(MengineActivity activity) {
     }
 }

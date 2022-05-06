@@ -31,11 +31,8 @@ public class MengineAdjustPlugin extends MenginePlugin {
         this.addPythonPlugin("Adjust");
     }
 
-
     @Override
     public void onAppCreate(MengineApplication application) {
-        super.onAppCreate(application);
-        
         String environment = AdjustConfig.ENVIRONMENT_SANDBOX;
         if (!BuildConfig.DEBUG) {
             environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
@@ -51,22 +48,18 @@ public class MengineAdjustPlugin extends MenginePlugin {
         this.log("adjust inited  user id = '%s'", Adjust.getAdid());
     }
 
-
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        super.onCreate(activity, savedInstanceState);
         Adjust.gdprForgetMe(activity);
     }
 
     @Override
     public void onResume(MengineActivity activity) {
-        super.onResume(activity);
         Adjust.onResume();
     }
 
     @Override
     public void onPause(MengineActivity activity) {
-        super.onPause(activity);
         Adjust.onPause();
     }
 

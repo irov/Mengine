@@ -48,10 +48,12 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
         this.addPythonPlugin("MarSDK");
     }
 
-    public void initialize() {
+    public boolean initialize() {
         MengineActivity activity = this.getActivity();
 
         MARPlatform.getInstance().init(activity, this);
+
+        return true;
     }
 
     public void login() {
@@ -109,14 +111,12 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     public void marSDKGetData(int serialNumber) {
         MengineActivity activity = this.getActivity();
 
-        MengineMARPlugin self = this;
-
         MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
             @Override
             public void onCallBack(String var1) {
-                self.log("get data from server, start...");
+                MengineMARPlugin.this.log("get data from server, start...");
 
-                self.pythonCall("onMarSDKGetData", var1);
+                MengineMARPlugin.this.pythonCall("onMarSDKGetData", var1);
             }
         });
     }
@@ -143,18 +143,15 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState)
-    {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
     }
 
     @Override
-    public void onMengineInitializeBaseServices(MengineActivity activity)
-    {
+    public void onMengineInitializeBaseServices(MengineActivity activity) {
     }
 
     @Override
-    public void onMengineCreateApplication(MengineActivity activity)
-    {
+    public void onMengineCreateApplication(MengineActivity activity) {
     }
 
     @Override

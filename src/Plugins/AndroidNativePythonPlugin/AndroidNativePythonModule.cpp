@@ -125,12 +125,7 @@ namespace Mengine
 
         jmethodID jmethodID_initializePlugins = m_jenv->GetMethodID( jclassActivity, "pythonInitializePlugins", "()V" );
 
-        if( jmethodID_initializePlugins == nullptr )
-        {
-            LOGGER_ERROR("invalid get android method 'pythonInitializePlugins'");
-
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( jmethodID_initializePlugins != nullptr, "invalid get android method 'pythonInitializePlugins'" );
 
         m_jenv->CallVoidMethod( jActivity, jmethodID_initializePlugins );
 

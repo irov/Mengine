@@ -358,22 +358,41 @@ public class MengineActivity extends SDLActivity {
                 py_args.append("\"");
             }
             else if(a instanceof String[]) {
-                String[] aa = (String[])a;
-                py_args.append("[");
-                int index = 0;
-                for(String s : aa)
-                {
-                    if(index != 0)
-                    {
-                        py_args.append(",");
-                    }
+                String[] stringArray = (String[])a;
 
+                py_args.append("[");
+
+                for(String s : stringArray)
+                {
                     py_args.append("\"");
                     py_args.append(s);
                     py_args.append("\"");
 
-                    index++;
+                    py_args.append(",");
                 }
+
+                py_args.append("]");
+            }
+            else if(a instanceof ArrayList<?>) {
+                ArrayList<?> unknowArray = (ArrayList<?>)a;
+
+                py_args.append("[");
+
+                if(unknowArray.size() == 0) {
+                    //Empty
+                }else if (unknowArray.get(0) instanceof String) {
+                    ArrayList<String> stringArray = (ArrayList<String>)unknowArray;
+
+                    for(String s : stringArray)
+                    {
+                        py_args.append("\"");
+                        py_args.append(s);
+                        py_args.append("\"");
+
+                        py_args.append(",");
+                    }
+                }
+
                 py_args.append("]");
             }
             else
@@ -395,6 +414,8 @@ public class MengineActivity extends SDLActivity {
     {
         String py_args_str = this.pythonCallBuildArgs(args);
 
+        Log.i(TAG, "pythonCall [" + plugin + "] method [" + method + "] args [" + py_args_str + "]");
+
         AndroidNativePython_call(plugin, method, 0, py_args_str);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -411,6 +432,8 @@ public class MengineActivity extends SDLActivity {
         m_callbackResponses.add(cr);
 
         String py_args_str = this.pythonCallBuildArgs(args);
+
+        Log.i(TAG, "pythonCall [" + plugin + "] method [" + method + "] response [" + id + "] args [" + py_args_str + "]");
 
         AndroidNativePython_call(plugin, method, id, py_args_str);
     }
@@ -437,11 +460,13 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        Log.e(TAG, "MengineActivity.responceCall not found id " + id);
+        Log.e(TAG, "responceCall [" + id + "] not found");
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void addPythonPlugin(String name, Object plugin)
     {
+        Log.i(TAG, "addPythonPlugin [" + name + "] plugin: " + plugin.toString());
+
         AndroidNativePython_addPlugin(name, plugin);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -561,94 +586,4 @@ public class MengineActivity extends SDLActivity {
         m_openFiles.remove(id);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /***********************************************************************************************
-    //OLD PLugins: TODO
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //DevToDev Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void devtodevInitializePlugin(final String appId, final String secret, final String apiKey) {
-        ThreadUtil.performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (_instance != null && _instance.devToDevInteractionLayer == null) {
-                    _instance.devToDevInteractionLayer = new DevToDevInteractionLayer(_instance, appId, secret, apiKey);
-                    AndroidNativeDevToDev_onSDKInitialized();
-                }
-            }
-        });
-    }
-
-    public static boolean devtodevOnTutorialEvent(int stateOrStep) {
-        if (_instance != null && _instance.devToDevInteractionLayer != null) {
-            _instance.devToDevInteractionLayer.onTutorialEvent(stateOrStep);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean devtodevSetCurrentLevel(int level) {
-        if (_instance != null && _instance.devToDevInteractionLayer != null) {
-            _instance.devToDevInteractionLayer.setCurrentLevel(level);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean devtodevOnLevelUp(int level) {
-        if (_instance != null && _instance.devToDevInteractionLayer != null) {
-            _instance.devToDevInteractionLayer.onLevelUp(level);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean devtodevOnCurrencyAccrual(String currencyName, int currencyAmount, int accrualType) {
-        if (_instance != null && _instance.devToDevInteractionLayer != null) {
-            _instance.devToDevInteractionLayer.onCurrencyAccrual(currencyName, currencyAmount, accrualType);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean devtodevOnRealPayment(String paymentId, float inAppPrice, String inAppName, String inAppCurrencyISOCode) {
-        if (_instance != null && _instance.devToDevInteractionLayer != null) {
-            _instance.devToDevInteractionLayer.onRealPayment(paymentId, inAppPrice, inAppName, inAppCurrencyISOCode);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean devtodevOnInAppPurchase(String purchaseId, String purchaseType, int purchaseAmount, int purchasePrice, String purchaseCurrency) {
-        if (_instance != null && _instance.devToDevInteractionLayer != null) {
-            _instance.devToDevInteractionLayer.onInAppPurchase(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean devtodevOnSimpleCustomEvent(String eventName, String intJSON, String floatJSON, String stringJSON) {
-        if (_instance != null && _instance.devToDevInteractionLayer != null) {
-            _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName, intJSON, floatJSON, stringJSON);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    ***********************************************************************************************/
 }

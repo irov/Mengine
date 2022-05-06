@@ -880,6 +880,9 @@ Codec
     DecoderFactory.h
     EncoderFactory.h
     ConverterFactory.h
+    
+    SecureStaticString.cpp
+    SecureStaticString.h
 )
 
 ADD_FILTER(

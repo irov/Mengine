@@ -78,18 +78,22 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        super.onCreate(activity, savedInstanceState);
+    }
 
-        RC_SIGN_IN = this.getActivity().genRequestCode("RC_SIGN_IN");
-        RC_UNUSED = this.getActivity().genRequestCode("RC_UNUSED");
+    public boolean initialize() {
+        MengineActivity activity = this.getActivity();
+
+        RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
+        RC_UNUSED = activity.genRequestCode("RC_UNUSED");
 
         m_signInClient = GoogleSignIn.getClient(
                 activity,
                 new GoogleSignInOptions.Builder(m_signInOptions)
-//                .requestEmail()
-                        .requestProfile()
-                        .build()
+                    .requestProfile()
+                    .build()
         );
+
+        return true;
     }
 
     void startSignInIntent() {
@@ -108,8 +112,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
     @Override
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(activity, requestCode, resultCode, data);
-
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result != null && result.isSuccess()) {
@@ -144,6 +146,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
     public void signInSilently() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity());
+
         if (GoogleSignIn.hasPermissions(account, m_signInOptions.getScopeArray())) {
             // Already signed in.
             // The signed in account is stored in the 'account' variable.
@@ -221,15 +224,22 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         mAchievementsClient.unlockImmediate(achievementId).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                MengineGoogleGameSocialPlugin.this.log("unlockAchievement '%s' complete"
+                    , achievementId
+                );
+
                 MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementSuccess", achievementId);
-                MengineGoogleGameSocialPlugin.this.log("unlockAchievement '%s' complete", achievementId);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementError", achievementId);
                 MengineGoogleGameSocialPlugin.this.log("unlockAchievement '%s' error '%s'"
-                        , achievementId, e.getLocalizedMessage());
+                    , achievementId
+                    , e.getLocalizedMessage()
+                );
+
+                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementError", achievementId);
             }
         });
 
@@ -244,17 +254,24 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         mAchievementsClient.incrementImmediate(achievementId, numSteps).addOnSuccessListener(new OnSuccessListener<Boolean>() {
             @Override
             public void onSuccess(Boolean aBoolean) {
-                MengineGoogleGameSocialPlugin.this.log("incrementImmediate '%s' complete", achievementId);
+                MengineGoogleGameSocialPlugin.this.log("incrementImmediate '%s' complete"
+                    , achievementId
+                );
+
                 MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementIncrementSuccess", achievementId);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementIncrementError", achievementId);
                 MengineGoogleGameSocialPlugin.this.log("incrementImmediate '%s' error '%s'"
-                        , achievementId, e.getLocalizedMessage());
+                    , achievementId
+                    , e.getLocalizedMessage()
+                );
+
+                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementIncrementError", achievementId);
             }
         });
+
         return true;
     }
 }

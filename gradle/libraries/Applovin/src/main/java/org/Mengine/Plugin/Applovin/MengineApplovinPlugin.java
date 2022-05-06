@@ -20,8 +20,6 @@ import org.Mengine.Base.ThreadUtil;
 import java.util.concurrent.TimeUnit;
 
 public class MengineApplovinPlugin extends MenginePlugin {
-
-    //каллебки для всех методов в нутри рекламы + OnDestroy
     /**
      * - onMengineApplovinPluginOnSdkInitialized - вызов после успешной инициализации (после можно загружать рекламу)
      * <p>
@@ -64,7 +62,10 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        super.onCreate(activity, savedInstanceState);
+    }
+
+    public boolean initialize() {
+        MengineActivity activity = this.getActivity();
 
         final Context context = activity.getBaseContext();
 
@@ -75,10 +76,11 @@ public class MengineApplovinPlugin extends MenginePlugin {
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinPluginOnSdkInitialized");
             }
         });
+
+        return true;
     }
 
-
-    void initInterstitial(String interstitial_ad_unit_id) {
+    public void initInterstitial(String interstitial_ad_unit_id) {
         m_interstitialAd = new MaxInterstitialAd(interstitial_ad_unit_id, getActivity());
 
         MaxAdListener maxAdListener = new MaxAdListener() {
@@ -125,13 +127,14 @@ public class MengineApplovinPlugin extends MenginePlugin {
         m_interstitialAd.setListener(maxAdListener);
     }
 
-    void initRewarded(String rewarded_ad_unit_id) {
+    public void initRewarded(String rewarded_ad_unit_id) {
         m_rewardedAd = MaxRewardedAd.getInstance(rewarded_ad_unit_id, getActivity());
 
         MaxRewardedAdListener maxRewardedAdListener = new MaxRewardedAdListener() {
             @Override
             public void onRewardedVideoStarted(MaxAd ad) {
                 m_retryAttemptRewarded = 0;
+
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnRewardedVideoStarted");
             }
 
@@ -142,9 +145,15 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
             @Override
             public void onUserRewarded(MaxAd ad, MaxReward reward) {
-                MengineApplovinPlugin.this.log("rewarded received %d", reward.getAmount());
+                String label = reward.getLabel();
+                int amount = reward.getAmount();
 
-                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnUserRewarded", reward.getAmount());
+                MengineApplovinPlugin.this.info("rewarded %s [%d]"
+                    , label
+                    , amount
+                );
+
+                MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnUserRewarded", label, amount);
             }
 
             @Override
@@ -160,6 +169,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
             @Override
             public void onAdHidden(MaxAd ad) {
                 m_rewardedAd.loadAd();
+
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdHidden");
             }
 
@@ -171,6 +181,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
                 m_retryAttemptRewarded++;
+
                 long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptRewarded)));
 
                 ThreadUtil.performOnMainThread(() -> {
@@ -183,6 +194,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
                 m_rewardedAd.loadAd();
+
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinRewardedOnAdDisplayFailed");
             }
         };
@@ -190,21 +202,21 @@ public class MengineApplovinPlugin extends MenginePlugin {
         m_rewardedAd.setListener(maxRewardedAdListener);
     }
 
-    void loadInterstitial() {
+    public void loadInterstitial() {
         m_interstitialAd.loadAd();
     }
 
-    void loadRewarded() {
+    public void loadRewarded() {
         m_rewardedAd.loadAd();
     }
 
-    void showInterstitial() {
+    public void showInterstitial() {
         if (m_interstitialAd.isReady()) {
             m_interstitialAd.showAd();
         }
     }
 
-    void showRewarded() {
+    public void showRewarded() {
         if (m_rewardedAd.isReady()) {
             m_rewardedAd.showAd();
         }

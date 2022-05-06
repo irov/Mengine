@@ -1,14 +1,15 @@
-#	include "SDLThreadIdentity.h"
+#include "SDLThreadIdentity.h"
 
 #include "Interface/AllocatorServiceInterface.h"
 
-#	include "Kernel/Logger.h"
+#include "Kernel/Logger.h"
+#include "Kernel/ThreadEnum.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::SDLThreadIdentity()
-        : m_priority( 0 )
+        : m_priority( ETP_NORMAL )
         , m_thread( nullptr )
         , m_taskLock( nullptr )
         , m_processLock( nullptr )
@@ -27,31 +28,31 @@ namespace Mengine
     {
         SDLThreadIdentity * thread = reinterpret_cast<SDLThreadIdentity *>(_userData);
 
-        int32_t priority = thread->getPriority();
+        EThreadPriority priority = thread->getPriority();
 
         switch( priority )
         {
-        case MENGINE_THREAD_PRIORITY_LOWEST:
+        case ETP_LOWEST:
             {
                 SDL_SetThreadPriority( SDL_THREAD_PRIORITY_LOW );
             }break;
-        case MENGINE_THREAD_PRIORITY_BELOW_NORMAL:
+        case ETP_BELOW_NORMAL:
             {
                 SDL_SetThreadPriority( SDL_THREAD_PRIORITY_LOW );
             }break;
-        case MENGINE_THREAD_PRIORITY_NORMAL:
+        case ETP_NORMAL:
             {
                 SDL_SetThreadPriority( SDL_THREAD_PRIORITY_NORMAL );
             }break;
-        case MENGINE_THREAD_PRIORITY_ABOVE_NORMAL:
+        case ETP_ABOVE_NORMAL:
             {
                 SDL_SetThreadPriority( SDL_THREAD_PRIORITY_NORMAL );
             }break;
-        case MENGINE_THREAD_PRIORITY_HIGHEST:
+        case ETP_HIGHEST:
             {
                 SDL_SetThreadPriority( SDL_THREAD_PRIORITY_HIGH );
             }break;
-        case MENGINE_THREAD_PRIORITY_TIME_CRITICAL:
+        case ETP_TIME_CRITICAL:
             {
                 SDL_SetThreadPriority( SDL_THREAD_PRIORITY_TIME_CRITICAL );
             }break;
@@ -64,7 +65,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
+    bool SDLThreadIdentity::initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -370,7 +371,7 @@ namespace Mengine
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t SDLThreadIdentity::getPriority() const
+    EThreadPriority SDLThreadIdentity::getPriority() const
     {
         return m_priority;
     }

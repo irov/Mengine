@@ -23,45 +23,59 @@ extern "C" {
     JNIEXPORT void JNICALL
         MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jstring _args)
     {
-        if( s_androidNativePythonModule != nullptr )
+        const Mengine::Char * plugin_str = env->GetStringUTFChars( _plugin, nullptr );
+        const Mengine::Char * method_str = env->GetStringUTFChars( _method, nullptr );
+        const Mengine::Char * args_str = env->GetStringUTFChars( _args, nullptr );
+
+        Mengine::String plugin = plugin_str;
+        Mengine::String method = method_str;
+        Mengine::String args = args_str;
+
+        env->ReleaseStringUTFChars( _plugin, plugin_str );
+        env->ReleaseStringUTFChars( _method, method_str );
+        env->ReleaseStringUTFChars( _args, args_str );
+
+        if( s_androidNativePythonModule == nullptr )
         {
-            const Mengine::Char * plugin_str = env->GetStringUTFChars( _plugin, nullptr );
-            const Mengine::Char * method_str = env->GetStringUTFChars( _method, nullptr );
-            const Mengine::Char * args_str = env->GetStringUTFChars( _args, nullptr );
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android call plugin '%s' method '%s' with args '%s'"
+                , plugin.c_str()
+                , method.c_str()
+                , args.c_str()
+            );
 
-            Mengine::String plugin = plugin_str;
-            Mengine::String method = method_str;
-            Mengine::String args = args_str;
-
-            env->ReleaseStringUTFChars( _plugin, plugin_str );
-            env->ReleaseStringUTFChars( _method, method_str );
-            env->ReleaseStringUTFChars( _args, args_str );
-
-            s_androidNativePythonModule->addCommand( [plugin, method, _id, args]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
-            {
-                _handler->pythonMethod( plugin, method, _id, args );
-            } );
+            return;
         }
+
+        s_androidNativePythonModule->addCommand( [plugin, method, _id, args]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
+        {
+            _handler->pythonMethod( plugin, method, _id, args );
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
         MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
     {
-        if( s_androidNativePythonModule != nullptr )
+        const Mengine::Char * name_str = env->GetStringUTFChars( _name, nullptr );
+
+        Mengine::String name = name_str;
+
+        env->ReleaseStringUTFChars( _name, name_str );
+
+        if( s_androidNativePythonModule == nullptr )
         {
-            const Mengine::Char * name_str = env->GetStringUTFChars( _name, nullptr );
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android add plugin '%s'"
+                , name.c_str()
+            );
 
-            Mengine::String name = name_str;
-
-            env->ReleaseStringUTFChars( _name, name_str );
-
-            jobject new_plugin = env->NewGlobalRef( _plugin );
-
-            s_androidNativePythonModule->addCommand( [name, new_plugin]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
-            {
-                _handler->addPlugin( name, new_plugin );
-            } );
+            return;
         }
+
+        jobject new_plugin = env->NewGlobalRef( _plugin );
+
+        s_androidNativePythonModule->addCommand( [name, new_plugin]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
+        {
+            _handler->addPlugin( name, new_plugin );
+        } );
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

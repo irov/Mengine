@@ -17,7 +17,7 @@ namespace Mengine
     namespace Helper
     {
         template<class ... Args>
-        constexpr void secureStaticString( uint32_t * _data, uint32_t _token, Args ... _args )
+        constexpr void secureStaticString( uint32_t * const _data, uint32_t _token, Args ... _args )
         {
             _data[0] = sizeof...(Args);
             _data[1] = _token;

@@ -242,16 +242,20 @@ extern "C" {
         const Mengine::Char * key_str = env->GetStringUTFChars( _key, nullptr );
         const Mengine::Char * default_str = env->GetStringUTFChars( _default, nullptr );
 
-        const Mengine::Char * value_str;
-        defaultConfig->hasValue( section_str, key_str, default_str, &value_str );
+        const Mengine::Char * value_str = nullptr;
+        bool result = defaultConfig->hasValue( section_str, key_str, default_str, &value_str );
 
         env->ReleaseStringUTFChars( _section, section_str );
         env->ReleaseStringUTFChars( _key, key_str );
         env->ReleaseStringUTFChars( _default, default_str );
 
-        jstring result = env->NewStringUTF( value_str );
+        if( result == false ) {
+            return _default;
+        }
 
-        return result;
+        jstring value = env->NewStringUTF( value_str );
+
+        return value;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL

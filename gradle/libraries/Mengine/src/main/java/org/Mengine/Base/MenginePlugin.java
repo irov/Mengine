@@ -25,8 +25,7 @@ public class MenginePlugin {
     }
 
     public MengineApplication getApplication() { return m_application; }
-    public MengineActivity getActivity()
-    {
+    public MengineActivity getActivity() {
         return m_activity;
     }
 
@@ -83,10 +82,22 @@ public class MenginePlugin {
     }
 
     public void pythonCall(String method, Object ... args) {
+        if(m_pluginName == null) {
+            this.log("invalid python method '%s' call before embedding", method);
+
+            return;
+        }
+
         m_activity.pythonCall(m_pluginName, method, args);
     }
 
     public void pythonCallCb(String method, CallbackInterface cb, Object ... args) {
+        if(m_pluginName == null) {
+            this.log("invalid python method '%s' call before embedding", method);
+
+            return;
+        }
+
         m_activity.pythonCallCb(m_pluginName, method, cb, args);
     }
 

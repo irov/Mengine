@@ -1,29 +1,27 @@
 package org.Mengine.Base;
 
-import org.Mengine.Base.BuildConfig;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MengineActivity;
-
-import android.app.ActivityManager;
 import android.app.Application;
-import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Process;
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MengineApplication extends Application {
     public static final String TAG = "Mengine";
 
-    public ArrayList<MenginePlugin> plugins;
+    public ArrayList<MenginePlugin> m_plugins;
 
     public MengineApplication() {
     }
+
+    public ArrayList<MenginePlugin> getPlugins() {
+        return m_plugins;
+    }
+
 
     protected boolean createPlugin(String name) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
@@ -37,7 +35,7 @@ public class MengineApplication extends Application {
                 return false;
             }
 
-            this.plugins.add(plugin);
+            m_plugins.add(plugin);
 
             Log.i(TAG, "MengineApplication add plugin: " + name);
 
@@ -63,7 +61,7 @@ public class MengineApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        for (MenginePlugin p : this.plugins) {
+        for (MenginePlugin p : this.m_plugins) {
             p.onAppCreate(this);
         }
     }
@@ -72,7 +70,7 @@ public class MengineApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
 
-        for (MenginePlugin p : this.plugins) {
+        for (MenginePlugin p : this.m_plugins) {
             p.onAppTerminate(this);
         }
     }
@@ -81,7 +79,7 @@ public class MengineApplication extends Application {
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 
-        for (MenginePlugin p : this.plugins) {
+        for (MenginePlugin p : this.m_plugins) {
             p.onAppAttachBaseContext(this, base);
         }
     }
@@ -90,7 +88,7 @@ public class MengineApplication extends Application {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        for (MenginePlugin p : this.plugins) {
+        for (MenginePlugin p : this.m_plugins) {
             p.onAppConfigurationChanged(this, newConfig);
         }
     }

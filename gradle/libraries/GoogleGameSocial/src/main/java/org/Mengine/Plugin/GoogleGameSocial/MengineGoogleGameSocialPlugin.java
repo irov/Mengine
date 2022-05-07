@@ -12,9 +12,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.achievement.Achievements;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -64,40 +64,33 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     private int RC_SIGN_IN;
     private int RC_UNUSED;
 
-    private @NonNull
-    GoogleSignInClient m_signInClient;
-
+    private @NonNull GoogleSignInClient m_signInClient;
     private final GoogleSignInOptions m_signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN;
+    private AchievementsClient m_achievementsClient;
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
         this.addPythonPlugin("GoogleGameSocial");
     }
 
-    private AchievementsClient mAchievementsClient;
-
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-    }
-
-    public boolean initialize() {
-        MengineActivity activity = this.getActivity();
-
         RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
         RC_UNUSED = activity.genRequestCode("RC_UNUSED");
 
         m_signInClient = GoogleSignIn.getClient(
                 activity,
                 new GoogleSignInOptions.Builder(m_signInOptions)
-                    .requestProfile()
-                    .build()
+                        .requestProfile()
+                        .build()
         );
-
-        return true;
     }
 
     void startSignInIntent() {
-        getActivity().startActivityForResult(m_signInClient.getSignInIntent(), RC_SIGN_IN);
+        MengineActivity activity = this.getActivity();
+        Intent intent = m_signInClient.getSignInIntent();
+
+        activity.startActivityForResult(intent, RC_SIGN_IN);
     }
 
     void signOut() {
@@ -114,13 +107,17 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result != null && result.isSuccess()) {
-                signInCallback(result.getSignInAccount());
+
+            if (result != null && result.isSuccess() == true) {
+                GoogleSignInAccount account = result.getSignInAccount();
+
+                this.signInCallback(account);
             } else {
                 MengineGoogleGameSocialPlugin.this.log("Google game social error %s status %s"
                         , result.getStatus().getStatusMessage()
                         , result.getStatus()
                 );
+
                 MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
             }
         }
@@ -133,7 +130,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             return;
         }
 
-        mAchievementsClient = Games.getAchievementsClient(this.getActivity(), account);
+        MengineActivity activity = this.getActivity();
+
+        m_achievementsClient = Games.getAchievementsClient(activity, account);
 
         //аккаунт от гугла - профиль от гугла
         MengineGoogleGameSocialPlugin.this.log("player include '%s' ->id = '%s'"
@@ -145,21 +144,27 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public void signInSilently() {
+        MengineActivity activity = this.getActivity();
+
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity());
 
-        if (GoogleSignIn.hasPermissions(account, m_signInOptions.getScopeArray())) {
+        Scope[] scopes = m_signInOptions.getScopeArray();
+
+        if (GoogleSignIn.hasPermissions(account, scopes)) {
             // Already signed in.
             // The signed in account is stored in the 'account' variable.
-            signInCallback(account);
+            this.signInCallback(account);
         } else {
             // Haven't been signed-in before. Try the silent sign-in first.
-            GoogleSignInClient signInClient = GoogleSignIn.getClient(getActivity(), m_signInOptions);
-            signInClient.silentSignIn().addOnCompleteListener(getActivity(), new OnCompleteListener<GoogleSignInAccount>() {
+            GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, m_signInOptions);
+
+            signInClient.silentSignIn().addOnCompleteListener(activity, new OnCompleteListener<GoogleSignInAccount>() {
                 @Override
                 public void onComplete(@NonNull Task<GoogleSignInAccount> googleSignInAccountTask) {
-                    if (googleSignInAccountTask.isSuccessful()) {
+                    if (googleSignInAccountTask.isSuccessful() == true) {
+                        GoogleSignInAccount account = googleSignInAccountTask.getResult();
 
-                        signInCallback(googleSignInAccountTask.getResult());
+                        MengineGoogleGameSocialPlugin.this.signInCallback(account);
                     } else {
                         Exception ex = googleSignInAccountTask.getException();
 
@@ -169,11 +174,12 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
                         if (ex != null) {
                             MengineGoogleGameSocialPlugin.this.log("not success login: %s"
-                                    , ex.getLocalizedMessage()
+                                , ex.getLocalizedMessage()
                             );
                         } else {
                             MengineGoogleGameSocialPlugin.this.log("not success login");
                         }
+
                         MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
                         // Player will need to sign-in explicitly using via UI.
                         // See [sign-in best practices](http://developers.google.com/games/services/checklist) for guidance on how and when to implement Interactive Sign-in,
@@ -183,45 +189,46 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                         /*App.scopeUI.launch {
                             startSignInIntent()
                         }*/
-
                     }
                 }
-
             });
         }
     }
 
     public boolean showAchievements() {
-        if (mAchievementsClient == null) {
+        if (m_achievementsClient == null) {
             return false;
         }
 
-        mAchievementsClient.getAchievementsIntent()
-                .addOnSuccessListener(new OnSuccessListener<Intent>() {
-                    @Override
-                    public void onSuccess(Intent intent) {
-                        MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialShowAchievementSuccess");
-                        MengineGoogleGameSocialPlugin.this.getActivity().startActivityForResult(intent, RC_UNUSED);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialShowAchievementError");
-                        MengineGoogleGameSocialPlugin.this.log("achievements error '%s'"
-                                , e.getLocalizedMessage());
-                    }
-                });
+        m_achievementsClient.getAchievementsIntent()
+            .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                @Override
+                public void onSuccess(Intent intent) {
+                    MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialShowAchievementSuccess");
+
+                    MengineGoogleGameSocialPlugin.this.getActivity().startActivityForResult(intent, RC_UNUSED);
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialShowAchievementError");
+
+                    MengineGoogleGameSocialPlugin.this.log("achievements error '%s'"
+                        , e.getLocalizedMessage()
+                    );
+                }
+            });
 
         return true;
     }
 
     public boolean unlockAchievement(String achievementId) {
-        if (mAchievementsClient == null) {
+        if (m_achievementsClient == null) {
             return false;
         }
 
-        mAchievementsClient.unlockImmediate(achievementId).addOnSuccessListener(new OnSuccessListener<Void>() {
+        m_achievementsClient.unlockImmediate(achievementId).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 MengineGoogleGameSocialPlugin.this.log("unlockAchievement '%s' complete"
@@ -247,11 +254,11 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
-        if (mAchievementsClient == null) {
+        if (m_achievementsClient == null) {
             return false;
         }
 
-        mAchievementsClient.incrementImmediate(achievementId, numSteps).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+        m_achievementsClient.incrementImmediate(achievementId, numSteps).addOnSuccessListener(new OnSuccessListener<Boolean>() {
             @Override
             public void onSuccess(Boolean aBoolean) {
                 MengineGoogleGameSocialPlugin.this.log("incrementImmediate '%s' complete"

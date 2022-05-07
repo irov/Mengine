@@ -137,7 +137,9 @@ public class MengineActivity extends SDLActivity {
     protected ArrayList<MenginePlugin> getPlugins() {
         MengineApplication app = (MengineApplication)this.getApplication();
 
-        return app.plugins;
+        ArrayList<MenginePlugin> plugins = app.getPlugins();
+
+        return plugins;
     }
 
     @Override
@@ -155,15 +157,11 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        for(MenginePlugin p : this.getPlugins()) {
-            p.setActivity(this);
-        }
-
         AndroidNativeMengine_setMengineAndroidActivityJNI(this);
 
-        AndroidNativePython_addPlugin("Activity", this);
-
         for(MenginePlugin p : this.getPlugins()) {
+            p.setActivity(this);
+
             p.onCreate(this, savedInstanceState);
         }
     }
@@ -328,16 +326,24 @@ public class MengineActivity extends SDLActivity {
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public int genRequestCode(String name) {
-        if (!m_requestCodes.containsKey(name)) {
-            m_requestCodes.put(name, m_requestCodes.size());
+        if (m_requestCodes.containsKey(name) == false) {
+            int new_code = m_requestCodes.size();
+
+            m_requestCodes.put(name, new_code);
+
+            return new_code;
         }
 
-        return m_requestCodes.get(name);
+        int code = m_requestCodes.get(name);
+
+        return code;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Python Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonInitializePlugins() {
+        AndroidNativePython_addPlugin("Activity", this);
+
         for(MenginePlugin p : this.getPlugins()) {
             p.onPythonEmbedding(this);
         }

@@ -42,9 +42,8 @@ public class MengineFacebookPlugin extends MenginePlugin {
         this.addPythonPlugin("Facebook");
     }
 
-    public boolean initialize() {
-        MengineActivity activity = this.getActivity();
-
+    @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         m_facebookCallbackManager = CallbackManager.Factory.create();
 
         LoginManager.getInstance().registerCallback(m_facebookCallbackManager, new FacebookCallback<LoginResult>() {
@@ -73,8 +72,19 @@ public class MengineFacebookPlugin extends MenginePlugin {
         Application application = activity.getApplication();
 
         AppEventsLogger.activateApp(application);
+    }
 
-        return true;
+    @Override
+    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+        m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onMengineInitializeBaseServices(MengineActivity activity) {
+    }
+
+    @Override
+    public void onMengineCreateApplication(MengineActivity activity) {
     }
 
     public boolean isLoggedIn() {
@@ -217,6 +227,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
     public void getProfileUserPictureLink(final String user_id, final String typeParameter) {
         if (user_id.isEmpty()) {
             this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
             return;
         }
         
@@ -250,22 +261,5 @@ public class MengineFacebookPlugin extends MenginePlugin {
         parameters.putBoolean("redirect", false);
         request.setParameters(parameters);
         request.executeAsync();
-    }
-    
-    @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-    }
-    
-    @Override
-    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onMengineInitializeBaseServices(MengineActivity activity) {
-    }
-
-    @Override
-    public void onMengineCreateApplication(MengineActivity activity) {
     }
 }

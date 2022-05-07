@@ -38,20 +38,20 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
     @Override
     public void onNewIntent(MengineActivity activity, Intent intent) {
-        if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
-            int id = intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
-
-            this.pythonCall("onLocalNotificationsPress", id);
+        if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID) == false) {
+            return;
         }
-    }
 
-    public boolean initialize() {
-        return true;
+        int id = intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
+
+        this.pythonCall("onLocalNotificationsPress", id);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void scheduleJobServiceNotification(int id, String title, String content, int delay) {
-        this.scheduleJobNotification(delay, NotificationJobService.notificationBundle(id, title, content));
+        PersistableBundle bundle = NotificationJobService.notificationBundle(id, title, content);
+
+        this.scheduleJobNotification(delay, bundle);
     }
 
     public void scheduleNotification(Notification notification, int id, int delay) {
@@ -82,16 +82,18 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
             NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
-            notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(Color.RED);
-            notificationChannel.enableVibration(true);
-            notificationChannel.setVibrationPattern(new long[]{1000, 2000});
-            notificationManager.createNotificationChannel(notificationChannel);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(true);
+            channel.setVibrationPattern(new long[]{1000, 2000});
+            notificationManager.createNotificationChannel(channel);
         }
+
+        Intent intent = activity.getIntent();
         
-        if (activity.getIntent().hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
-            int id = activity.getIntent().getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
+        if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
+            int id = intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
         
             this.pythonCall("onLocalNotificationsPress", id);
         }
@@ -133,12 +135,16 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
         
         MengineActivity activity = this.getActivity();
 
-        JobInfo.Builder builder = new JobInfo.Builder((int)SystemClock.elapsedRealtime(), new ComponentName(activity, NotificationJobService.class));
+        int jobId = (int)SystemClock.elapsedRealtime();
+        ComponentName jobService = new ComponentName(activity, NotificationJobService.class);
+
+        JobInfo.Builder builder = new JobInfo.Builder(jobId, jobService);
         JobInfo jobInfo = builder
                 .setMinimumLatency(delayMillis)
                 .setOverrideDeadline(delayMillis + 10000)
                 .setExtras(bundle)
                 .build();
+
         JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(jobInfo);
     }

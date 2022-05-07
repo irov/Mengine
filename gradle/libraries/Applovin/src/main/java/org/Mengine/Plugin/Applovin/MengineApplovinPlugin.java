@@ -62,22 +62,21 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-    }
-
-    public boolean initialize() {
-        MengineActivity activity = this.getActivity();
-
         final Context context = activity.getBaseContext();
 
         AppLovinSdk.getInstance(context).setMediationProvider("max");
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineApplovinPlugin.this.pythonCall("onMengineApplovinPluginOnSdkInitialized");
+                MengineApplovinPlugin.this.log("AppLovinSdk initialized: consent dialog [%s] country [%s]"
+                        , configuration.getConsentDialogState().toString()
+                        , configuration.getCountryCode()
+                );
+
+                //ToDo
+                //MengineApplovinPlugin.this.pythonCall("onMengineApplovinPluginOnSdkInitialized");
             }
         });
-
-        return true;
     }
 
     public void initInterstitial(String interstitial_ad_unit_id) {
@@ -87,6 +86,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
             @Override
             public void onAdLoaded(MaxAd ad) {
                 m_retryAttemptInterstitial = 0;
+
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdLoaded");
             }
 
@@ -98,6 +98,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
             @Override
             public void onAdHidden(MaxAd ad) {
                 m_interstitialAd.loadAd();
+
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdHidden");
             }
 
@@ -114,12 +115,14 @@ public class MengineApplovinPlugin extends MenginePlugin {
                 ThreadUtil.performOnMainThread(() -> {
                     m_interstitialAd.loadAd();
                 }, delayMillis);
+
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdLoadFailed");
             }
 
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
                 m_interstitialAd.loadAd();
+
                 MengineApplovinPlugin.this.pythonCall("onMengineApplovinInterstitialOnAdDisplayFailed");
             }
         };

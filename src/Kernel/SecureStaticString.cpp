@@ -14,7 +14,7 @@ namespace Mengine
             for( uint32_t index = 0; index != size; ++index )
             {
                 uint32_t d = _data[index + 2];
-                *(str++) = (char)((d) ^ (token = ((token * 1103515245) + 12345) & 0x7fffffff));
+                *(str++) = (char)((d) ^ (token = (token * MENGINE_SECURE_DATA_TOKEN_BASE) + MENGINE_SECURE_DATA_TOKEN_STROKE));
             }
 
             *(str++) = '\0';

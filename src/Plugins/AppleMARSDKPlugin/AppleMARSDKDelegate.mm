@@ -1,5 +1,7 @@
 #import "AppleMARSDKDelegate.h"
 
+#include "Kernel/Logger.h"
+
 @implementation AppleMARSDKDelegate
 
 #pragma mark -
@@ -31,18 +33,26 @@
 }
 
 - (void) OnPlatformInit: (NSDictionary *)params {
+    LOGGER_INFO("marsdk", "OnPlatformInit");
+    
     //ToDo
 }
 
 - (void) OnRealName:(NSDictionary*)params {
+    LOGGER_INFO("marsdk", "OnRealName");
+    
     //ToDo
 }
 
 - (void) OnEventWithCode: (int)code msg: (NSString*)msg {
+    LOGGER_INFO("marsdk", "OnEventWithCode");
+    
     //ToDo
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
+    LOGGER_INFO("marsdk", "OnEventCustom");
+    
     //ToDo
 }
 

@@ -14,9 +14,9 @@ namespace Mengine
         : m_scaleStepMin( 0.f )
         , m_scaleStepStep( 0.f )
         , m_scaleStepMax( 0.f )
-        , m_mouseWheelEventHandle( 0 )
-        , m_mouseMoveEventHandle( 0 )
-        , m_keyEventHandle( 0 )
+        , m_mouseWheelEventHandle( INVALID_UNIQUE_ID )
+        , m_mouseMoveEventHandle( INVALID_UNIQUE_ID )
+        , m_keyEventHandle( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,6 @@ namespace Mengine
             bool mouseRButtonDown = INPUT_SERVICE()
                 ->isMouseButtonDown( MC_RBUTTON );
 
-
             if( controlDown == false || mouseRButtonDown == false )
             {
                 return;
@@ -121,22 +120,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleCameraDebugGizmo::_finalizeModule()
     {
-        if( m_mouseWheelEventHandle != 0 )
+        if( m_mouseWheelEventHandle != INVALID_UNIQUE_ID )
         {
             Helper::removeGlobalHandler( m_mouseWheelEventHandle );
-            m_mouseWheelEventHandle = 0;
+            m_mouseWheelEventHandle = INVALID_UNIQUE_ID;
         }
 
-        if( m_mouseMoveEventHandle != 0 )
+        if( m_mouseMoveEventHandle != INVALID_UNIQUE_ID )
         {
             Helper::removeGlobalHandler( m_mouseMoveEventHandle );
-            m_mouseMoveEventHandle = 0;
+            m_mouseMoveEventHandle = INVALID_UNIQUE_ID;
         }
 
-        if( m_keyEventHandle != 0 )
+        if( m_keyEventHandle != INVALID_UNIQUE_ID )
         {
             Helper::removeGlobalHandler( m_keyEventHandle );
-            m_keyEventHandle = 0;
+            m_keyEventHandle = INVALID_UNIQUE_ID;
         }
     }
     //////////////////////////////////////////////////////////////////////////

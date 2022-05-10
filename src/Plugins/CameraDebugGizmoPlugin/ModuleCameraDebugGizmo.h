@@ -2,6 +2,8 @@
 
 #include "Kernel/ModuleBase.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     class ModuleCameraDebugGizmo
@@ -22,8 +24,8 @@ namespace Mengine
         float m_scaleStepStep;
         float m_scaleStepMax;
 
-        uint32_t m_mouseWheelEventHandle;
-        uint32_t m_mouseMoveEventHandle;
-        uint32_t m_keyEventHandle;
+        UniqueId m_mouseWheelEventHandle;
+        UniqueId m_mouseMoveEventHandle;
+        UniqueId m_keyEventHandle;
     };
 }

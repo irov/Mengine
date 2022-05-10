@@ -6,11 +6,18 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.3'
+        classpath 'com.android.tools.build:gradle:7.2.0'
     }
 }
 
 allprojects {
+    project.ext.ndkVersion = '22.0.7026061'
+    project.ext.buildToolsVersion = '31.0.0'
+    project.ext.cmakeVersion = "3.10.2.4988404"
+    project.ext.minSdkVersion = 19
+    project.ext.targetSdkVersion = 32
+    project.ext.compileSdkVersion = 32
+
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.encoding = 'UTF-8'

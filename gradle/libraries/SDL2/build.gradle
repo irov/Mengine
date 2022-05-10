@@ -1,15 +1,22 @@
-apply plugin: 'com.android.library'
-
 import com.Mengine.Utils
 
+apply plugin: 'com.android.library'
+
 android {
-    ndkVersion '22.0.7026061'
-    buildToolsVersion '31.0.0'
-    compileSdkVersion 32
+    ndkVersion project.ndkVersion
+    buildToolsVersion project.buildToolsVersion
+    compileSdkVersion project.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 32
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
+
+        multiDexEnabled true
 
         if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {
@@ -44,7 +51,7 @@ android {
 
     externalNativeBuild {
         cmake {
-            version "3.10.2.4988404"
+            version project.cmakeVersion
         }
     }
 
@@ -93,11 +100,6 @@ android {
                 }
             }
         }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     externalNativeBuild {

@@ -8,6 +8,7 @@
 #include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
@@ -35,7 +36,7 @@ namespace Mengine
         DocumentPtr m_doc;
 #endif
 
-        uint32_t m_id;
+        UniqueId m_id;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskGlobalKeyPress> TaskGlobalKeyPressPtr;

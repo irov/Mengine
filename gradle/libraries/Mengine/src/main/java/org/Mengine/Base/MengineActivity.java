@@ -362,14 +362,12 @@ public class MengineActivity extends SDLActivity {
                 py_args.append("\"");
                 py_args.append(a);
                 py_args.append("\"");
-            }
-            else if(a instanceof String[]) {
+            } else if(a instanceof String[]) {
                 String[] stringArray = (String[])a;
 
                 py_args.append("[");
 
-                for(String s : stringArray)
-                {
+                for(String s : stringArray) {
                     py_args.append("\"");
                     py_args.append(s);
                     py_args.append("\"");
@@ -378,19 +376,18 @@ public class MengineActivity extends SDLActivity {
                 }
 
                 py_args.append("]");
-            }
-            else if(a instanceof ArrayList<?>) {
+            } else if(a instanceof ArrayList<?>) {
                 ArrayList<?> unknowArray = (ArrayList<?>)a;
 
                 py_args.append("[");
 
                 if(unknowArray.size() == 0) {
                     //Empty
-                }else if (unknowArray.get(0) instanceof String) {
+                } else if (unknowArray.get(0) instanceof String) {
+                    @SuppressWarnings("unchecked")
                     ArrayList<String> stringArray = (ArrayList<String>)unknowArray;
 
-                    for(String s : stringArray)
-                    {
+                    for(String s : stringArray) {
                         py_args.append("\"");
                         py_args.append(s);
                         py_args.append("\"");
@@ -400,9 +397,7 @@ public class MengineActivity extends SDLActivity {
                 }
 
                 py_args.append("]");
-            }
-            else
-            {
+            } else {
                 py_args.append(a);
             }
 

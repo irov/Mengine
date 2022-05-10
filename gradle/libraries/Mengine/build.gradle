@@ -3,19 +3,30 @@ import com.Mengine.Utils
 apply plugin: 'com.android.library'
 
 android {
-    ndkVersion '22.0.7026061'
-    buildToolsVersion '31.0.0'
-    compileSdkVersion 32
+    ndkVersion project.ndkVersion
+    buildToolsVersion project.buildToolsVersion
+    compileSdkVersion project.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 32
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
+
         multiDexEnabled true
 
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false) == false) {
+            ndk {
+                if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+                    abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                } else {
+                    abiFilters "arm64-v8a", "armeabi-v7a"
+                }
+            }
+        }
     }
 
     buildTypes {
@@ -59,7 +70,8 @@ android {
     externalNativeBuild {
         cmake {
             path "../../../cmake/Android_SDL/CMakeLists.txt"
-            version "3.10.2.4988404"
+
+            version project.cmakeVersion
         }
     }
 

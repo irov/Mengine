@@ -69,8 +69,8 @@ public class MengineApplovinPlugin extends MenginePlugin {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
                 MengineApplovinPlugin.this.log("AppLovinSdk initialized: consent dialog [%s] country [%s]"
-                        , configuration.getConsentDialogState().toString()
-                        , configuration.getCountryCode()
+                    , configuration.getConsentDialogState().toString()
+                    , configuration.getCountryCode()
                 );
 
                 //ToDo
@@ -110,6 +110,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
                 m_retryAttemptInterstitial++;
+
                 long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptInterstitial)));
 
                 ThreadUtil.performOnMainThread(() -> {

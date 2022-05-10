@@ -1,23 +1,23 @@
 buildscript {
-repositories {
-    mavenCentral()
-}
+    repositories {
+        mavenCentral()
+    }
 
-dependencies {
-    classpath 'io.sentry:sentry-android-gradle-plugin:2.1.5'
-}
+    dependencies {
+        classpath 'io.sentry:sentry-android-gradle-plugin:2.1.5'
+    }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'io.sentry.android.gradle'
 
 android {
-    buildToolsVersion '31.0.0'
-    compileSdkVersion 32
+    buildToolsVersion project.buildToolsVersion
+    compileSdkVersion project.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 32
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
     }
 
     compileOptions {

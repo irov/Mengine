@@ -118,7 +118,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALID_UNIQUE_ID );
         }
 
-        uint32_t idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
+        UniqueId idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
         {
             MENGINE_UNUSED( _event );
 
@@ -194,16 +194,16 @@ namespace Mengine
 
         m_archivator = nullptr;
 
-        if( m_globalKeyHandlerF2 != 0 )
+        if( m_globalKeyHandlerF2 != INVALID_UNIQUE_ID )
         {
             Helper::removeGlobalHandler( m_globalKeyHandlerF2 );
-            m_globalKeyHandlerF2 = 0;
+            m_globalKeyHandlerF2 = INVALID_UNIQUE_ID;
         }
 
-        if( m_globalKeyHandlerForSendingSelectedNode != 0 )
+        if( m_globalKeyHandlerForSendingSelectedNode != INVALID_UNIQUE_ID )
         {
             Helper::removeGlobalHandler( m_globalKeyHandlerForSendingSelectedNode );
-            m_globalKeyHandlerForSendingSelectedNode = 0;
+            m_globalKeyHandlerForSendingSelectedNode = INVALID_UNIQUE_ID;
         }
 
         if( m_networkLogger != nullptr )

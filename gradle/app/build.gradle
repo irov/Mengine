@@ -3,11 +3,11 @@ apply plugin: 'com.android.application'
 import com.Mengine.Utils
 
 android {
-    ndkVersion '22.0.7026061'
-    buildToolsVersion '31.0.0'
-    compileSdkVersion 32
-
     ext.plugins = []
+
+    ndkVersion project.ndkVersion
+    buildToolsVersion project.buildToolsVersion
+    compileSdkVersion project.compileSdkVersion
 
     signingConfigs {
         config {
@@ -57,8 +57,8 @@ android {
 
         println applicationId
 
-        minSdkVersion 19
-        targetSdkVersion 32
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
 
         print 'ANDROID_APP_BUILD_NUMBER = '
         println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", "0")

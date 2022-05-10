@@ -88,23 +88,17 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
         @Override
         public void consume(ArrayList<String> skus) {
-            String[] stringArray = skus.toArray(new String[0]);
-
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnConsume", stringArray);
+            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnConsume", skus);
         }
 
         @Override
         public void hasAcknowledge(ArrayList<String> skus, CallbackInterface cb) {
-            String[] stringArray = skus.toArray(new String[0]);
-
-            MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, stringArray);
+            MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, skus);
         }
 
         @Override
         public void acknowledge(ArrayList<String> skus) {
-            String[] stringArray = skus.toArray(new String[0]);
-
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingAcknowledge", stringArray);
+            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingAcknowledge", skus);
         }
     };
 

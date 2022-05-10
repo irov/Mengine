@@ -17,7 +17,7 @@ namespace Mengine
 #if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
 #endif
-        , m_id( 0 )
+        , m_id( INVALID_UNIQUE_ID )
     {
         MENGINE_UNUSED( _doc );
     }
@@ -50,9 +50,9 @@ namespace Mengine
             return false;
         };
 
-        uint32_t id = Helper::addGlobalKeyHandler( m_code, m_isDown, lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
+        UniqueId id = Helper::addGlobalKeyHandler( m_code, m_isDown, lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
-        if( id == 0 )
+        if( id == INVALID_UNIQUE_ID )
         {
             LOGGER_ERROR( "invalid add global key event" );
 
@@ -66,10 +66,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TaskGlobalKeyPress::_onFinally()
     {
-        if( m_id != 0 )
+        if( m_id != INVALID_UNIQUE_ID )
         {
             Helper::removeGlobalHandler( m_id );
-            m_id = 0;
+            m_id = INVALID_UNIQUE_ID;
         }
 
         m_filter = nullptr;

@@ -35,7 +35,7 @@ namespace Mengine
         DocumentPtr m_doc;
 #endif
 
-        uint32_t m_id;
+        UniqueId m_id;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskGlobalMouseButton> TaskGlobalMouseButtonPtr;

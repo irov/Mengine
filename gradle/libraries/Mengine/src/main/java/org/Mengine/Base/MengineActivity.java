@@ -349,8 +349,13 @@ public class MengineActivity extends SDLActivity {
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private String pythonCallBuildArgs(Object ... args)
-    {
+    private static void appendBuildArgsString(StringBuilder py_args, String s) {
+        py_args.append("\"");
+        py_args.append(s.replaceAll("\"","\\\\\""));
+        py_args.append("\"");
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private String pythonCallBuildArgs(Object ... args) {
         StringBuilder py_args = new StringBuilder();
 
         py_args.append("(");
@@ -359,18 +364,16 @@ public class MengineActivity extends SDLActivity {
             Object a = args[i];
 
             if(a instanceof String) {
-                py_args.append("\"");
-                py_args.append(a);
-                py_args.append("\"");
+                String s = (String)a;
+
+                this.appendBuildArgsString(py_args, s);
             } else if(a instanceof String[]) {
                 String[] stringArray = (String[])a;
 
                 py_args.append("[");
 
                 for(String s : stringArray) {
-                    py_args.append("\"");
-                    py_args.append(s);
-                    py_args.append("\"");
+                    this.appendBuildArgsString(py_args, s);
 
                     py_args.append(",");
                 }
@@ -388,9 +391,7 @@ public class MengineActivity extends SDLActivity {
                     ArrayList<String> stringArray = (ArrayList<String>)unknowArray;
 
                     for(String s : stringArray) {
-                        py_args.append("\"");
-                        py_args.append(s);
-                        py_args.append("\"");
+                        this.appendBuildArgsString(py_args, s);
 
                         py_args.append(",");
                     }

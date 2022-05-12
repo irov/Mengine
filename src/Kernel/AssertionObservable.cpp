@@ -1,4 +1,4 @@
-#include "Kernel/AssertionObservable.h"
+#include "AssertionObservable.h"
 
 #if MENGINE_ASSERTION_DEBUG
 #include "Interface/NotificationServiceInterface.h"

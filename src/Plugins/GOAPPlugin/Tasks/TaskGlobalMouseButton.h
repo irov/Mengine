@@ -7,6 +7,7 @@
 #include "Kernel/MouseCode.h"
 #include "Kernel/Document.h"
 
+#include "Config/UniqueId.h"
 #include "Config/Lambda.h"
 
 namespace Mengine

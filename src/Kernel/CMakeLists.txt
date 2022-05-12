@@ -463,6 +463,8 @@ Assertion
     AssertionOptional.h
     AssertionUnique.h
     AssertionJSONInvalid.h
+    AssertionCharacter.cpp
+    AssertionCharacter.h
 )
 
 ADD_FILTER(
@@ -838,6 +840,9 @@ Core
     
     EnumeratorHelper.cpp
     EnumeratorHelper.h
+    
+    CharacterHelper.cpp
+    CharacterHelper.h
 )
 
 ADD_FILTER(

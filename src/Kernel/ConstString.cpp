@@ -61,4 +61,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    const ConstString::value_type * ConstString::begin() const
+    {
+        const value_type * holder_str = m_holder->c_str();
+
+        return holder_str;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString::value_type * ConstString::end() const
+    {
+        const size_type holder_size = m_holder->size();
+        const value_type * holder_str = m_holder->c_str();
+
+        return holder_str + holder_size;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

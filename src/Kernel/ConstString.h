@@ -131,6 +131,9 @@ namespace Mengine
             }
         };
 
+        const value_type * begin() const;
+        const value_type * end() const;
+
     private:
         bool operator == ( std::nullptr_t ) const = delete;
 

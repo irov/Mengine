@@ -1,4 +1,4 @@
-#include "Factory.h"
+#include "AssertionVocabulary.h"
 
 #if MENGINE_ASSERTION_DEBUG
 #include "Interface/VocabularyServiceInterface.h"
@@ -14,11 +14,6 @@ namespace Mengine
     {
         void assertionVocabularyEmpty( const ConstString & _category, const Char * _file, uint32_t _line )
         {
-            MENGINE_UNUSED( _category );
-            MENGINE_UNUSED( _file );
-            MENGINE_UNUSED( _line );
-
-#ifndef MENGINE_MASTER_RELEASE
             uint32_t count = 0;
 
             VOCABULARY_SERVICE()
@@ -52,7 +47,6 @@ namespace Mengine
             );
 
             Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Vocabulary Empty" );
-#endif
         }
     }
 }

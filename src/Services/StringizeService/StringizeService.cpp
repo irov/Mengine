@@ -4,6 +4,7 @@
 #include "Kernel/HashHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionCharacter.h"
 
 #include "Config/StdString.h"
 
@@ -273,6 +274,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstStringHolder * StringizeService::testHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash ) const
     {
+        MENGINE_ASSERTION_STANDARD_CHARACTER_SET( _str, _size );
+
         const IntrusiveListConstStringHolder & list = this->getList_( _hash );
 
         for( const ConstStringHolder * holder : list )

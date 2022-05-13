@@ -131,7 +131,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleJobNotification(int delayMillis, PersistableBundle bundle){
-        this.info("Schedule notification with delay: %u", delayMillis);
+        this.logInfo("Schedule notification with delay: %u", delayMillis);
         
         MengineActivity activity = this.getActivity();
 

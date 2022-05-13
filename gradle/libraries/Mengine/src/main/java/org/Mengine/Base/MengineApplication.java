@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 public class MengineApplication extends Application {
-    public static final String TAG = "Mengine";
+    public static final String TAG = "MengineApplication";
 
     public ArrayList<MenginePlugin> m_plugins;
 
@@ -21,7 +21,6 @@ public class MengineApplication extends Application {
     public ArrayList<MenginePlugin> getPlugins() {
         return m_plugins;
     }
-
 
     protected boolean createPlugin(String name) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
@@ -61,6 +60,8 @@ public class MengineApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Log.i(TAG, "onCreate");
+
         for (MenginePlugin p : this.m_plugins) {
             p.onAppCreate(this);
         }
@@ -69,6 +70,8 @@ public class MengineApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
+
+        Log.i(TAG, "onTerminate");
 
         for (MenginePlugin p : this.m_plugins) {
             p.onAppTerminate(this);
@@ -79,6 +82,8 @@ public class MengineApplication extends Application {
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 
+        Log.i(TAG, "attachBaseContext");
+
         for (MenginePlugin p : this.m_plugins) {
             p.onAppAttachBaseContext(this, base);
         }
@@ -87,6 +92,8 @@ public class MengineApplication extends Application {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+
+        Log.i(TAG, "onConfigurationChanged");
 
         for (MenginePlugin p : this.m_plugins) {
             p.onAppConfigurationChanged(this, newConfig);

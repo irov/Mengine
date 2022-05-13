@@ -6,7 +6,7 @@ extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     static pthread_key_t mThreadKey;
-    static JavaVM *mJavaVM;
+    static JavaVM * mJavaVM;
     //////////////////////////////////////////////////////////////////////////
     static void Mengine_JNI_ThreadDestroyed( void *value )
     {
@@ -18,7 +18,7 @@ extern "C"
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEnv *Mengine_JNI_GetEnv( void )
+    JNIEnv * Mengine_JNI_GetEnv( void )
     {
         /* From http://developer.android.com/guide/practices/jni.html
         * All threads are Linux threads, scheduled by the kernel.

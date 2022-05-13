@@ -20,8 +20,7 @@ static Mengine::AndroidNativePythonModule * s_androidNativePythonModule = nullpt
 //////////////////////////////////////////////////////////////////////////
 extern "C" {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jstring _args)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jstring _args)
     {
         const Mengine::Char * plugin_str = env->GetStringUTFChars( _plugin, nullptr );
         const Mengine::Char * method_str = env->GetStringUTFChars( _method, nullptr );
@@ -52,8 +51,7 @@ extern "C" {
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
     {
         const Mengine::Char * name_str = env->GetStringUTFChars( _name, nullptr );
 

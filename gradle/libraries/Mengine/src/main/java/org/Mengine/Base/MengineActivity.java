@@ -7,6 +7,7 @@ import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
 import java.io.IOException;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,15 +21,14 @@ import android.provider.Settings.Secure;
 import android.view.KeyEvent;
 
 public class MengineActivity extends SDLActivity {
-    public static final String TAG = "Mengine";
+    public static final String TAG = "MengineActivity";
 
     private Map<Integer, InputStream> m_openFiles;
     private int m_fileEnumerator;
 
     private Map<String, Integer> m_requestCodes;
 
-    class CallbackResponse
-    {
+    class CallbackResponse {
         public Integer id;
         public MenginePlugin.CallbackInterface cb;
     };
@@ -72,65 +72,51 @@ public class MengineActivity extends SDLActivity {
         };
     }
 
-    public String getCompanyName()
-    {
+    public String getCompanyName() {
        return AndroidNativeMengine_getCompanyName();
     }
 
-    public String getProjectName()
-    {
+    public String getProjectName() {
         return AndroidNativeMengine_getProjectName();
     }
 
-    public int getProjectVersion()
-    {
+    public int getProjectVersion() {
         return AndroidNativeMengine_getProjectVersion();
     }
 
-    public boolean isDebugMode()
-    {
+    public boolean isDebugMode() {
         return AndroidNativeMengine_isDebugMode();
     }
 
-    public boolean isDevelopmentMode()
-    {
+    public boolean isDevelopmentMode() {
         return AndroidNativeMengine_isDevelopmentMode();
     }
 
-    public boolean isMasterRelease()
-    {
+    public boolean isMasterRelease() {
         return AndroidNativeMengine_isMasterRelease();
     }
 
-    public boolean isBuildPublish()
-    {
+    public boolean isBuildPublish() {
         return AndroidNativeMengine_isBuildPublish();
     }
 
-    public String getEngineGITSHA1()
-    {
+    public String getEngineGITSHA1() {
         return AndroidNativeMengine_getEngineGITSHA1();
     }
 
-    public String getBuildTimestamp()
-    {
+    public String getBuildTimestamp() {
         return AndroidNativeMengine_getBuildTimestamp();
     }
 
-    public String getBuildUsername()
-    {
+    public String getBuildUsername() {
         return AndroidNativeMengine_getBuildUsername();
     }
 
-    public String getBuildVersion()
-    {
+    public String getBuildVersion() {
         return AndroidNativeMengine_getBuildVersion();
     }
 
-    public String getConfigValue(String section, String key, String default_value)
-    {
-        Log.i(TAG, String.format("AndroidNativeMengine_getConfigValue: [%s] key '%s' [%s]", section, key, default_value));
-
+    public String getConfigValue(String section, String key, String default_value) {
         return AndroidNativeMengine_getConfigValue(section, key, default_value);
     }
 
@@ -146,11 +132,10 @@ public class MengineActivity extends SDLActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i(TAG, "MengineActivity.onCreate()");
+        Log.i(TAG, "onCreate");
 
-        if(mBrokenLibraries == true)
-        {
-            Log.e(TAG, "MengineActivity.onCreate: broken libraries");
+        if(mBrokenLibraries == true) {
+            Log.e(TAG, "onCreate: broken libraries");
 
             AndroidNativeMengine_quitMengineAndroidActivityJNI();
 
@@ -171,17 +156,17 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void onMengineInitializeBaseServices() {
-        Log.i(TAG, "MengineActivity.onMengineInitializeBaseServices()");
+        MengineLog.onMengineInitializeBaseServices();
+
+        MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onMengineInitializeBaseServices(this);
         }
-
-        Log.i(TAG, "MengineActivity.onMengineInitializeBaseServices()");
     }
 
     public void onMengineCreateApplication() {
-        Log.i(TAG, "MengineActivity.onMengineCreateApplication()");
+        MengineLog.logInfo(TAG, "onMengineCreateApplication");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onMengineCreateApplication(this);
@@ -192,7 +177,7 @@ public class MengineActivity extends SDLActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.i(TAG, "MengineActivity.onActivityResult()");
+        MengineLog.logInfo(TAG, "onActivityResult");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onActivityResult(this, requestCode, resultCode, data);
@@ -203,7 +188,7 @@ public class MengineActivity extends SDLActivity {
     public void onStart(){
         super.onStart();
 
-        Log.i(TAG, "MengineActivity.onStart()");
+        MengineLog.logInfo(TAG, "onStart");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onStart(this);
@@ -214,7 +199,7 @@ public class MengineActivity extends SDLActivity {
     protected void onStop() {
         super.onStop();
 
-        Log.i(TAG, "MengineActivity.onStop()");
+        MengineLog.logInfo(TAG, "onStop");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onStop(this);
@@ -225,7 +210,7 @@ public class MengineActivity extends SDLActivity {
     public void onPause() {
         super.onPause();
 
-        Log.i(TAG, "MengineActivity.onPause()");
+        MengineLog.logInfo(TAG, "onPause");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onPause(this);
@@ -236,7 +221,7 @@ public class MengineActivity extends SDLActivity {
     public void onResume() {
         super.onResume();
 
-        Log.i(TAG, "MengineActivity.onResume()");
+        MengineLog.logInfo(TAG, "onResume");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onResume(this);
@@ -247,7 +232,7 @@ public class MengineActivity extends SDLActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        Log.i(TAG, "MengineActivity.onNewIntent()");
+        MengineLog.logInfo(TAG, "onNewIntent");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onNewIntent(this, intent);
@@ -258,7 +243,7 @@ public class MengineActivity extends SDLActivity {
     public void onDestroy(){
         super.onDestroy();
 
-        Log.i(TAG, "MengineActivity.onDestroy()");
+        MengineLog.logInfo(TAG, "onDestroy");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onDestroy(this);
@@ -269,7 +254,7 @@ public class MengineActivity extends SDLActivity {
     public void onRestart(){
         super.onRestart();
 
-        Log.i(TAG, "MengineActivity.onRestart()");
+        MengineLog.logInfo(TAG, "onRestart");
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onRestart(this);
@@ -296,7 +281,7 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event){
-        Log.i(TAG, "MengineActivity.dispatchKeyEvent() action: " + event.getAction() + " code: " + event.getKeyCode());
+        MengineLog.logInfo(TAG, "dispatchKeyEvent() action: " + event.getAction() + " code: " + event.getKeyCode());
 
         for(MenginePlugin p : this.getPlugins()) {
             if (p.dispatchKeyEvent(this, event) == true) {
@@ -309,13 +294,11 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected SDLSurface createSDLSurface(Context context) {
-        Log.i(TAG, "MengineActivity.createSDLSurface()");
-
         return new MengineSurface(context);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Kernel Methods    
+    //Kernel Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getAndroidId() {
         ContentResolver resolver = this.getContext().getContentResolver();
@@ -412,17 +395,15 @@ public class MengineActivity extends SDLActivity {
         return py_args_str;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void pythonCall(String plugin, String method, Object ... args)
-    {
+    public void pythonCall(String plugin, String method, Object ... args) {
         String py_args_str = this.pythonCallBuildArgs(args);
 
-        Log.i(TAG, "pythonCall [" + plugin + "] method [" + method + "] args [" + py_args_str + "]");
+        MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] args [" + py_args_str + "]");
 
         AndroidNativePython_call(plugin, method, 0, py_args_str);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void pythonCallCb(String plugin, String method, MenginePlugin.CallbackInterface cb, Object ... args)
-    {
+    public void pythonCallCb(String plugin, String method, MenginePlugin.CallbackInterface cb, Object ... args) {
         m_callbackResponseEnumerator++;
 
         int id = m_callbackResponseEnumerator;
@@ -435,14 +416,13 @@ public class MengineActivity extends SDLActivity {
 
         String py_args_str = this.pythonCallBuildArgs(args);
 
-        Log.i(TAG, "pythonCall [" + plugin + "] method [" + method + "] response [" + id + "] args [" + py_args_str + "]");
+        MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] response [" + id + "] args [" + py_args_str + "]");
 
         AndroidNativePython_call(plugin, method, id, py_args_str);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void responseCall(int id, Object result)
-    {
-        Log.i(TAG, "responseCall [" + id + "] result [" + result.toString() + "]");
+    public void responseCall(int id, Object result) {
+        MengineLog.logInfo(TAG, "responseCall [" + id + "] result [" + result.toString() + "]");
 
         Iterator itr = m_callbackResponses.iterator();
 
@@ -462,12 +442,11 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        Log.e(TAG, "responceCall [" + id + "] not found");
+        MengineLog.logError(TAG, "responceCall [" + id + "] not found");
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void addPythonPlugin(String name, Object plugin)
-    {
-        Log.i(TAG, "addPythonPlugin [" + name + "] plugin: " + plugin.toString());
+    public void addPythonPlugin(String name, Object plugin) {
+        MengineLog.logInfo(TAG, "addPythonPlugin [" + name + "] plugin: " + plugin.toString());
 
         AndroidNativePython_addPlugin(name, plugin);
     }
@@ -493,8 +472,7 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Asset Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public int openAssetFile(String path)
-    {
+    public int openAssetFile(String path) {
         try {
             InputStream stream = getAssets().open(path);
 
@@ -505,14 +483,13 @@ public class MengineActivity extends SDLActivity {
 
             return id;
         } catch(IOException ex) {
-            Log.e(TAG, "open asset file [" + path + "] ex: " + ex);
+            MengineLog.logError(TAG, "open asset file [" + path + "] ex: " + ex);
 
             return 0;
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public int availableAssetFile(int id)
-    {
+    public int availableAssetFile(int id) {
         InputStream stream = m_openFiles.get(id);
 
         int size = 0;
@@ -520,7 +497,7 @@ public class MengineActivity extends SDLActivity {
         try {
             size = stream.available();
         } catch (IOException ex) {
-            Log.e(TAG, "available asset file [" + id + "] ex: " + ex);
+            MengineLog.logError(TAG, "available asset file [" + id + "] ex: " + ex);
 
             return 0;
         }
@@ -528,8 +505,7 @@ public class MengineActivity extends SDLActivity {
         return size;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public byte[] readAssetFile(int id, int offset, int size)
-    {
+    public byte[] readAssetFile(int id, int offset, int size) {
         InputStream stream = m_openFiles.get(id);
 
         byte[] buffer = new byte[size];
@@ -539,7 +515,7 @@ public class MengineActivity extends SDLActivity {
         try {
             read = stream.read(buffer, offset, size);
         } catch (IOException ex) {
-            Log.e(TAG, "read asset file [" + id + "] offset [" + offset + "] size [" + size + "] ex: " + ex);
+            MengineLog.logError(TAG, "read asset file [" + id + "] offset [" + offset + "] size [" + size + "] ex: " + ex);
 
             return null;
         }
@@ -547,8 +523,7 @@ public class MengineActivity extends SDLActivity {
         return buffer;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public long skipAssetFile(int id, long offset)
-    {
+    public long skipAssetFile(int id, long offset) {
         InputStream stream = m_openFiles.get(id);
 
         long skip;
@@ -556,7 +531,7 @@ public class MengineActivity extends SDLActivity {
         try {
             skip = stream.skip(offset);
         } catch (IOException ex) {
-            Log.e(TAG, "skip asset file [" + id + "] offset [" + offset + "] ex: " + ex);
+            MengineLog.logError(TAG, "skip asset file [" + id + "] offset [" + offset + "] ex: " + ex);
 
             return 0;
         }
@@ -564,25 +539,23 @@ public class MengineActivity extends SDLActivity {
         return skip;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void resetAssetFile(int id)
-    {
+    public void resetAssetFile(int id) {
         InputStream stream = m_openFiles.get(id);
 
         try {
             stream.reset();
         } catch (IOException ex) {
-            Log.e(TAG, "reset asset file [" + id + "] ex: " + ex);
+            MengineLog.logError(TAG, "reset asset file [" + id + "] ex: " + ex);
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void closeAssetFile(int id)
-    {
+    public void closeAssetFile(int id) {
         InputStream stream = m_openFiles.get(id);
 
         try {
             stream.close();
         } catch (IOException ex) {
-            Log.e(TAG, "close asset file [" + id + "] ex: " + ex);
+            MengineLog.logError(TAG, "close asset file [" + id + "] ex: " + ex);
         }
 
         m_openFiles.remove(id);

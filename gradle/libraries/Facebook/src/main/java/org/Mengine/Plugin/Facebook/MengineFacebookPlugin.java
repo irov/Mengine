@@ -178,7 +178,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
             public void onSuccess(Sharer.Result result) {
                 String postId = result.getPostId() != null ? result.getPostId() : "";
 
-                MengineFacebookPlugin.this.info("facebook success [%s]"
+                MengineFacebookPlugin.this.logInfo("facebook success [%s]"
                     , postId
                 );
 
@@ -187,7 +187,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
             @Override
             public void onCancel() {
-                MengineFacebookPlugin.this.info("facebook cancel");
+                MengineFacebookPlugin.this.logInfo("facebook cancel");
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookShareCancel");
             }
@@ -196,7 +196,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
             public void onError(FacebookException exception) {
                 String message = exception.getMessage();
 
-                MengineFacebookPlugin.this.info("facebook error: %s"
+                MengineFacebookPlugin.this.logInfo("facebook error: %s"
                     , message
                 );
 
@@ -248,7 +248,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
                         }
                     }
 
-                    MengineFacebookPlugin.this.info("request profile user [%s] picture link completed: %s"
+                    MengineFacebookPlugin.this.logInfo("request profile user [%s] picture link completed: %s"
                         , user_id
                         , pictureURL
                     );

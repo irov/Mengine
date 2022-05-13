@@ -45,7 +45,9 @@ public class MengineAdjustPlugin extends MenginePlugin {
         config.setPreinstallTrackingEnabled(true);
         Adjust.onCreate(config);
 
-        this.log("adjust inited  user id = '%s'", Adjust.getAdid());
+        this.logInfo("adjust inited  user id = '%s'"
+            , Adjust.getAdid()
+        );
     }
 
     @Override

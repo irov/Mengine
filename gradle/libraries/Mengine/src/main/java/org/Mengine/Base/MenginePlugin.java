@@ -32,11 +32,6 @@ public class MenginePlugin {
     public boolean onInitialize(MengineApplication application) {
         m_application = application;
 
-        StringBuilder sb = new StringBuilder();
-        Formatter formatter = new Formatter(sb);
-
-        m_formatter = formatter;
-
         m_tag = this.getClass().getSimpleName();
 
         return true;
@@ -53,37 +48,21 @@ public class MenginePlugin {
         m_activity.addPythonPlugin(m_pluginName, this);
     }
 
-    public void error(String format, Object ... args) {
-        Formatter formatter = m_formatter.format(format, args);
-        String message = formatter.toString();
-
-        Log.e(m_tag, message);
+    public void logWarning(String format, Object ... args) {
+        MengineLog.logWarning(m_tag, format, args);
     }
 
-    public void warning(String format, Object ... args) {
-        Formatter formatter = m_formatter.format(format, args);
-        String message = formatter.toString();
-
-        Log.w(m_tag, message);
+    public void logInfo(String format, Object ... args) {
+        MengineLog.logInfo(m_tag, format, args);
     }
 
-    public void info(String format, Object ... args) {
-        Formatter formatter = m_formatter.format(format, args);
-        String message = formatter.toString();
-
-        Log.i(m_tag, message);
-    }
-
-    public void log(String format, Object ... args) {
-        Formatter formatter = m_formatter.format(format, args);
-        String message = formatter.toString();
-
-        Log.i(m_tag, message);
+    public void logError(String format, Object ... args) {
+        MengineLog.logError(m_tag, format, args);
     }
 
     public void pythonCall(String method, Object ... args) {
         if(m_pluginName == null) {
-            this.log("invalid python method '%s' call before embedding", method);
+            this.logError("invalid python method '%s' call before embedding", method);
 
             return;
         }
@@ -93,7 +72,7 @@ public class MenginePlugin {
 
     public void pythonCallCb(String method, CallbackInterface cb, Object ... args) {
         if(m_pluginName == null) {
-            this.log("invalid python method '%s' call before embedding", method);
+            this.logError("invalid python method '%s' call before embedding", method);
 
             return;
         }

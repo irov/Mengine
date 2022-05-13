@@ -103,22 +103,19 @@ static jobject jobject_activity;
 //////////////////////////////////////////////////////////////////////////
 extern "C" {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
     {
         jclass_activity = (jclass)(env->NewGlobalRef( cls ));
         jobject_activity = (jclass)(env->NewGlobalRef( obj ));
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1quitMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1quitMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
     {
         PLATFORM_SERVICE()
             ->closeWindow();
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getCompanyName )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getCompanyName )(JNIEnv * env, jclass cls)
     {
         Mengine::Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()
@@ -129,8 +126,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getProjectName )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getProjectName )(JNIEnv * env, jclass cls)
     {
         Mengine::Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()
@@ -141,8 +137,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getProjectVersion )(JNIEnv * env, jclass cls)
+    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getProjectVersion )(JNIEnv * env, jclass cls)
     {
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
@@ -152,8 +147,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isDebugMode )(JNIEnv * env, jclass cls)
+    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isDebugMode )(JNIEnv * env, jclass cls)
     {
         bool mode = Mengine::Helper::isDebugMode();
 
@@ -162,8 +156,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isDevelopmentMode )(JNIEnv * env, jclass cls)
+    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isDevelopmentMode )(JNIEnv * env, jclass cls)
     {
         bool mode = Mengine::Helper::isDevelopmentMode();
 
@@ -172,8 +165,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isMasterRelease )(JNIEnv * env, jclass cls)
+    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isMasterRelease )(JNIEnv * env, jclass cls)
     {
         bool mode = Mengine::Helper::isMasterRelease();
 
@@ -182,8 +174,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isBuildPublish )(JNIEnv * env, jclass cls)
+    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1isBuildPublish )(JNIEnv * env, jclass cls)
     {
         bool mode = Mengine::Helper::isBuildPublish();
 
@@ -192,8 +183,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();
 
@@ -202,8 +192,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildTimestamp )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildTimestamp )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * BUILD_TIMESTAMP = Mengine::Helper::getBuildTimestamp();
 
@@ -212,8 +201,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildUsername )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildUsername )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * BUILD_USERNAME = Mengine::Helper::getBuildUsername();
 
@@ -222,8 +210,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildVersion )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getBuildVersion )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();
 
@@ -232,8 +219,7 @@ extern "C" {
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getConfigValue )(JNIEnv * env, jclass cls, jstring _section, jstring _key, jstring _default)
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1getConfigValue )(JNIEnv * env, jclass cls, jstring _section, jstring _key, jstring _default)
     {
         const Mengine::ConfigInterfacePtr & defaultConfig = CONFIG_SERVICE()
             ->getDefaultConfig();
@@ -258,17 +244,59 @@ extern "C" {
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeKernel_1hasPlugin )(JNIEnv * env, jclass cls, jstring name)
+    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logInfo )(JNIEnv * env, jclass cls, jstring _msg)
     {
-        const Mengine::Char * name_str = env->GetStringUTFChars( name, nullptr );
+        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        bool exist = PLUGIN_SERVICE()
-            ->hasPlugin( name_str );
+        LOGGER_INFO("android", "%s"
+            , msg_str
+        );
 
-        env->ReleaseStringUTFChars( name, name_str );
+        env->ReleaseStringUTFChars( _msg, msg_str );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logWarning )(JNIEnv * env, jclass cls, jstring _msg)
+    {
+        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        return (jboolean)exist;
+        LOGGER_WARNING( "%s"
+            , msg_str
+        );
+
+        env->ReleaseStringUTFChars( _msg, msg_str );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logMessage )(JNIEnv * env, jclass cls, jstring _msg)
+    {
+        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
+
+        LOGGER_MESSAGE( "%s"
+            , msg_str
+        );
+
+        env->ReleaseStringUTFChars( _msg, msg_str );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logMessageRelease )(JNIEnv * env, jclass cls, jstring _msg)
+    {
+        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
+
+        LOGGER_MESSAGE_RELEASE( "%s"
+            , msg_str
+        );
+
+        env->ReleaseStringUTFChars( _msg, msg_str );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logError )(JNIEnv * env, jclass cls, jstring _msg)
+    {
+        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
+
+        LOGGER_ERROR( "%s"
+            , msg_str
+        );
+
+        env->ReleaseStringUTFChars( _msg, msg_str );
     }
     //////////////////////////////////////////////////////////////////////////
 }

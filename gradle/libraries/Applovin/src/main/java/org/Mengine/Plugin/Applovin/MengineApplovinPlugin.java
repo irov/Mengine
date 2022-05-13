@@ -68,7 +68,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineApplovinPlugin.this.log("AppLovinSdk initialized: consent dialog [%s] country [%s]"
+                MengineApplovinPlugin.this.logInfo("AppLovinSdk initialized: consent dialog [%s] country [%s]"
                     , configuration.getConsentDialogState().toString()
                     , configuration.getCountryCode()
                 );
@@ -152,7 +152,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
                 String label = reward.getLabel();
                 int amount = reward.getAmount();
 
-                MengineApplovinPlugin.this.info("rewarded %s [%d]"
+                MengineApplovinPlugin.this.logInfo("rewarded %s [%d]"
                     , label
                     , amount
                 );

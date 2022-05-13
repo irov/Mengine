@@ -13,7 +13,7 @@ public class MengineSentryPlugin extends MenginePlugin {
         SentryAndroid.init(activity, options -> {
             String SENTRY_DNS = activity.getConfigValue("Sentry", "DSN", "");
             options.setDsn(SENTRY_DNS);
-            this.log("Sentry DNS: %s", SENTRY_DNS);
+            this.logInfo("Sentry DNS: %s", SENTRY_DNS);
 
             String buildVersion = activity.getBuildVersion();
             options.setRelease(buildVersion);

@@ -2,6 +2,8 @@
 
 #include "Interface/EventationInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
+
 #include "Kernel/Eventable.h"
 #include "Kernel/Identity.h"
 #include "Kernel/FactorableUnique.h"
@@ -10,10 +12,6 @@
 #include "Kernel/String.h"
 
 #include "Config/Char.h"
-
-#include "pybind/object.hpp"
-#include "pybind/dict.hpp"
-#include "pybind/module.hpp"
 
 namespace Mengine
 {

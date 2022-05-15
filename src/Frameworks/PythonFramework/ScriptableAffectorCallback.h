@@ -1,10 +1,9 @@
 #pragma once
 
+#include "Environment/Python/PythonIncluder.h"
+
 #include "Kernel/AffectorCallbackInterface.h"
-
 #include "Kernel/Scriptable.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

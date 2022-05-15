@@ -3,10 +3,9 @@
 #include "Interface/ScriptModuleInterface.h"
 #include "Interface/LoggerInterface.h"
 
-#include "Kernel/Factorable.h"
+#include "Environment/Python/PythonIncluder.h"
 
-#include "pybind/types.hpp"
-#include "pybind/pybind.hpp"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {

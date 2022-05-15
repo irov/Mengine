@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Environment/Python/PythonIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHolder.h"
 #include "Kernel/IntrusiveLinked.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

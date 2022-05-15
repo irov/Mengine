@@ -113,6 +113,8 @@ namespace Mengine
         }
 
         m_globals = pybind::make_dict_t( kernel );
+        m_globals.set( "True", kernel->get_true() );
+        m_globals.set( "False", kernel->get_false() );
 
         m_kernel = kernel;
 
@@ -127,8 +129,8 @@ namespace Mengine
         jobject jActivity = extension->getJObjectActivity();
 
         m_jclass_Object = m_jenv->FindClass( "java/lang/Object" );
-        m_jclass_String = m_jenv->FindClass("java/lang/String");
-        m_jclass_ArrayList = m_jenv->FindClass("java/util/ArrayList");
+        m_jclass_String = m_jenv->FindClass( "java/lang/String" );
+        m_jclass_ArrayList = m_jenv->FindClass( "java/util/ArrayList" );
 
         AndroidPlatformExtensionInterface * unknownAndroidPlatform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
@@ -193,6 +195,13 @@ namespace Mengine
         const Char * args_str = _args.c_str();
 
         PyObject * py_args = m_kernel->eval_string( args_str, m_globals.ptr(), nullptr );
+
+        MENGINE_ASSERTION_FATAL( py_args != nullptr, "android plugin '%s' method '%s' id [%d] invalid eval args: %s"
+            , _plugin.c_str()
+            , _method.c_str()
+            , _id
+            , _args.c_str()
+        );
 
         const pybind::object & cb = it_found->second;
 

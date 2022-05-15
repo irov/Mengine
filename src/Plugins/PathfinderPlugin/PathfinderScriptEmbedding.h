@@ -2,11 +2,11 @@
 
 #include "Interface/ScriptEmbeddingInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
+
 #include "PathfinderInterface.h"
 
 #include "Kernel/Factorable.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

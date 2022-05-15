@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Kernel/Entity.h"
+#include "Environment/Python/PythonIncluder.h"
 
-#include "pybind/object.hpp"
+#include "Kernel/Entity.h"
 
 namespace Mengine
 {

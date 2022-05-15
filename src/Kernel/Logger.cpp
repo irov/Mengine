@@ -19,8 +19,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line )
-        : m_level( _level )
+    LoggerOperator::LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line )
+        : m_category( _category )
+        , m_level( _level )
         , m_filter( _filter )
         , m_color( _color )
         , m_file( _file )
@@ -56,18 +57,6 @@ namespace Mengine
     bool LoggerOperator::getNewline() const
     {
         return m_newline;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    LoggerOperator & LoggerOperator::setCategory( const ConstString & _category )
-    {
-        m_category = _category;
-
-        return *this;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & LoggerOperator::getCategory() const
-    {
-        return m_category;
     }
     //////////////////////////////////////////////////////////////////////////
     const LoggerOperator & LoggerOperator::operator () ( const Char * _format, ... ) const

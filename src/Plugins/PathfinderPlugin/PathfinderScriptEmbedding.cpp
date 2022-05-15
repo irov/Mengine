@@ -2,6 +2,7 @@
 
 #include "Interface/VocabularyServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
@@ -12,8 +13,6 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

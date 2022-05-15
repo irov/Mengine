@@ -14,6 +14,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
 
 #include "PythonScriptModuleLoader.h"
@@ -41,12 +42,6 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
-
-#include "pybind/debug.hpp"
-
-#include "pybind/list.hpp"
-#include "pybind/dict.hpp"
-
 #include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -55,10 +50,19 @@ SERVICE_FACTORY( ScriptService, Mengine::PythonScriptService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
-    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
+        static void s_pybind_logger( void * _user, const char * _msg )
+        {
+            MENGINE_UNUSED( _user );
+
+            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0 )( "%s"
+                        , _msg
+                );
+        }
+        //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_DEBUG
         //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_WINDOWS_DEBUG
         //////////////////////////////////////////////////////////////////////////
@@ -116,9 +120,11 @@ namespace Mengine
                 MENGINE_UNUSED( _functionName );
                 MENGINE_UNUSED( _className );
 
-                LOGGER_INFO( "script", "pybind call begin '%s::%s'"
+                LOGGER_INFO( "script", "pybind call begin '%s::%s' args '%s' kwds '%s'"
                     , _className
                     , _functionName
+                    , _kernel->object_repr( _args ).c_str()
+                    , _kernel->object_repr( _kwds ).c_str()
                 );
 
                 uint32_t count = LOGGER_SERVICE()
@@ -222,9 +228,10 @@ namespace Mengine
             uint32_t m_prev_handler_count;
 #endif
         };
-    }
-    //////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
 #endif
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     PythonScriptService::PythonScriptService()
         : m_kernel( nullptr )
@@ -236,15 +243,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PythonScriptService::~PythonScriptService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_pybind_logger( void * _user, const char * _msg )
-    {
-        MENGINE_UNUSED( _user );
-
-        LOGGER_ERROR( "%s"
-            , _msg
-        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::_initializeService()
@@ -261,7 +259,7 @@ namespace Mengine
 
         m_kernel = kernel;
 
-        pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, nullptr );
+        pybind::set_logger( (pybind::pybind_logger_t)&Detail::s_pybind_logger, nullptr );
 
         m_moduleMengine = this->initModule( "Menge" );
 
@@ -288,7 +286,7 @@ namespace Mengine
         pybind::def_functor( m_kernel, "setTracebackOffset", this, &PythonScriptService::setTracebackOffset );
 
         pybind::interface_<PythonScriptLogger>( m_kernel, "PythonScriptLogger", true )
-            .def_native_kernel( "write", &PythonScriptLogger::py_write )
+            .def_native_silent_kernel( "write", &PythonScriptLogger::py_write )
             .def_property( "softspace", &PythonScriptLogger::getSoftspace, &PythonScriptLogger::setSoftspace )
             ;
 

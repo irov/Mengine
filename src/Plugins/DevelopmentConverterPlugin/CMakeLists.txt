@@ -35,6 +35,7 @@ src
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+add_definitions(-DP2T_STATIC_EXPORTS)
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/poly2tri)

@@ -59,9 +59,9 @@ al::optional<std::string> getenv(const char *envname)
 al::optional<std::wstring> getenv(const WCHAR *envname)
 {
 #if !defined(MENGINE_WINDOWS_UNIVERSAL)
-    const WCHAR * str{_wgetenv( envname )};
-    if( str && str[0] != L'\0' )
-        return al::make_optional<std::wstring>( str );
+    const WCHAR *str{_wgetenv(envname)};
+    if(str && str[0] != L'\0')
+        return al::make_optional<std::wstring>(str);
 #else
     (void)envname;
 #endif

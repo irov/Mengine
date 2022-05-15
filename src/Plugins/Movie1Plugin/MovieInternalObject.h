@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Kernel/Node.h"
-#include "Kernel/BaseRender.h"
+#include "Environment/Python/PythonIncluder.h"
 
 #include "ResourceInternalObject.h"
 
-#include "pybind/pybind.hpp"
+#include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 
 namespace Mengine
 {

@@ -346,7 +346,15 @@ public class MengineActivity extends SDLActivity {
         for(int i = 0; i != args.length; ++i) {
             Object a = args[i];
 
-            if(a instanceof String) {
+            if(a instanceof Boolean) {
+                Boolean s = (Boolean) a;
+
+                if(s == true) {
+                    py_args.append("True");
+                } else {
+                    py_args.append("False");
+                }
+            } else if(a instanceof String) {
                 String s = (String)a;
 
                 this.appendBuildArgsString(py_args, s);

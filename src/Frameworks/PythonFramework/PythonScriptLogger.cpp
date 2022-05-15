@@ -1,9 +1,9 @@
 #include "PythonScriptLogger.h"
 
+#include "Environment/Python/PythonIncluder.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/OptionHelper.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

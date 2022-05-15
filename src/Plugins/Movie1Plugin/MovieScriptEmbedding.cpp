@@ -4,6 +4,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
@@ -25,8 +26,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/RenderContextHelper.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

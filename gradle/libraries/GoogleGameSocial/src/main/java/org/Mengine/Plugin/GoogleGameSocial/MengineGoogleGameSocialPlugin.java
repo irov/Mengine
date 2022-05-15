@@ -47,18 +47,18 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
      *
      * Ачивка этапная - увеличиваем этап и по достижении последнего даётся ачивка
      * boolean incrementAchievement(String achievementId, int numSteps)
-     *  - onMengineGoogleGameSocialAchievementIncrementError(String achievementId)
-     *  - onMengineGoogleGameSocialAchievementIncrementSuccess(String achievementId)
+     *  - onGoogleGameSocialAchievementIncrementError(String achievementId)
+     *  - onGoogleGameSocialAchievementIncrementSuccess(String achievementId)
      *
      * Ачивка событияная - открываем сразу
      * boolean unlockAchievement(String achievementId)
-     *  - onMengineGoogleGameSocialAchievementSuccess(String achievementId)
-     *  - onMengineGoogleGameSocialAchievementError(String achievementId)
+     *  - onGoogleGameSocialAchievementSuccess(String achievementId)
+     *  - onGoogleGameSocialAchievementError(String achievementId)
      *
      * Показать окно ачивок
      * boolean showAchievements()
-     *  - onMengineGoogleGameSocialShowAchievementSuccess()
-     *  - onMengineGoogleGameSocialShowAchievementError()
+     *  - onGoogleGameSocialShowAchievementSuccess()
+     *  - onGoogleGameSocialShowAchievementError()
      */
 
     private int RC_SIGN_IN;
@@ -205,7 +205,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnSuccessListener(new OnSuccessListener<Intent>() {
                 @Override
                 public void onSuccess(Intent intent) {
-                    MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialShowAchievementSuccess");
+                    MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
 
                     MengineGoogleGameSocialPlugin.this.getActivity().startActivityForResult(intent, RC_UNUSED);
                 }
@@ -217,7 +217,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                             , e.getLocalizedMessage()
                     );
 
-                    MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialShowAchievementError");
+                    MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementError");
                 }
             });
 
@@ -236,7 +236,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                     , achievementId
                 );
 
-                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementSuccess", achievementId);
+                MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialAchievementSuccess", achievementId);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -247,7 +247,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                     , e.getLocalizedMessage()
                 );
 
-                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementError", achievementId);
+                MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialAchievementError", achievementId);
             }
         });
 
@@ -266,7 +266,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                     , achievementId
                 );
 
-                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementIncrementSuccess", achievementId);
+                MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialAchievementIncrementSuccess", achievementId);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -276,7 +276,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                     , e.getLocalizedMessage()
                 );
 
-                MengineGoogleGameSocialPlugin.this.pythonCall("onMengineGoogleGameSocialAchievementIncrementError", achievementId);
+                MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialAchievementIncrementError", achievementId);
             }
         });
 

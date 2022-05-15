@@ -1,24 +1,7 @@
-/**
- * OpenAL cross platform audio library
- * Copyright (C) 2011 by authors.
- * This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public
- *  License as published by the Free Software Foundation; either
- *  version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- *  License along with this library; if not, write to the
- *  Free Software Foundation, Inc.,
- *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * Or go to http://www.gnu.org/copyleft/lgpl.html
- */
 
 #include "config.h"
+
+#include "helpers.h"
 
 #include <algorithm>
 #include <cerrno>
@@ -27,17 +10,26 @@
 #include <cstdio>
 #include <cstring>
 #include <mutex>
+#include <limits>
 #include <string>
+#include <tuple>
 
-#include "alcmain.h"
 #include "almalloc.h"
 #include "alfstream.h"
+#include "alnumeric.h"
+#include "aloptional.h"
 #include "alspan.h"
 #include "alstring.h"
-#include "compat.h"
-#include "core/logging.h"
+#include "logging.h"
 #include "strutils.h"
 #include "vector.h"
+
+
+/* Mixing thread piority level */
+int RTPrioLevel{1};
+
+/* Allow reducing the process's RTTime limit for RTKit. */
+bool AllowRTTimeLimit{true};
 
 
 #ifdef _WIN32
@@ -46,18 +38,21 @@
 
 const PathNamePair &GetProcBinary()
 {
-    static PathNamePair ret;
-    if(!ret.fname.empty() || !ret.path.empty())
-        return ret;
+    static al::optional<PathNamePair> procbin;
+    if(procbin) return *procbin;
 
     auto fullpath = al::vector<WCHAR>(256);
-    DWORD len;
-    while((len=GetModuleFileNameW(nullptr, fullpath.data(), static_cast<DWORD>(fullpath.size()))) == fullpath.size())
+    DWORD len{GetModuleFileNameW(nullptr, fullpath.data(), static_cast<DWORD>(fullpath.size()))};
+    while(len == fullpath.size())
+    {
         fullpath.resize(fullpath.size() << 1);
+        len = GetModuleFileNameW(nullptr, fullpath.data(), static_cast<DWORD>(fullpath.size()));
+    }
     if(len == 0)
     {
         ERR("Failed to get process name: error %lu\n", GetLastError());
-        return ret;
+        procbin = al::make_optional<PathNamePair>();
+        return *procbin;
     }
 
     fullpath.resize(len);
@@ -69,14 +64,14 @@ const PathNamePair &GetProcBinary()
     if(sep != fullpath.rend())
     {
         *sep = 0;
-        ret.fname = wstr_to_utf8(&*sep + 1);
-        ret.path = wstr_to_utf8(fullpath.data());
+        procbin = al::make_optional<PathNamePair>(wstr_to_utf8(fullpath.data()),
+            wstr_to_utf8(&*sep + 1));
     }
     else
-        ret.fname = wstr_to_utf8(fullpath.data());
+        procbin = al::make_optional<PathNamePair>(std::string{}, wstr_to_utf8(fullpath.data()));
 
-    TRACE("Got binary: %s, %s\n", ret.path.c_str(), ret.fname.c_str());
-    return ret;
+    TRACE("Got binary: %s, %s\n", procbin->path.c_str(), procbin->fname.c_str());
+    return *procbin;
 }
 
 namespace {
@@ -114,8 +109,63 @@ void DirectorySearch(const char *path, const char *ext, al::vector<std::string> 
 
 al::vector<std::string> SearchDataFiles(const char *ext, const char *subdir)
 {
+    auto is_slash = [](int c) noexcept -> int { return (c == '\\' || c == '/'); };
+
+    static std::mutex search_lock;
+    std::lock_guard<std::mutex> _{search_lock};
+
     /* If the path is absolute, use it directly. */
     al::vector<std::string> results;
+    if(isalpha(subdir[0]) && subdir[1] == ':' && is_slash(subdir[2]))
+    {
+        std::string path{subdir};
+        std::replace(path.begin(), path.end(), '/', '\\');
+        DirectorySearch(path.c_str(), ext, &results);
+        return results;
+    }
+    if(subdir[0] == '\\' && subdir[1] == '\\' && subdir[2] == '?' && subdir[3] == '\\')
+    {
+        DirectorySearch(subdir, ext, &results);
+        return results;
+    }
+
+    std::string path;
+
+    /* Search the app-local directory. */
+    if(auto localpath = al::getenv(L"ALSOFT_LOCAL_PATH"))
+    {
+        path = wstr_to_utf8(localpath->c_str());
+        if(is_slash(path.back()))
+            path.pop_back();
+    }
+    else if(WCHAR *cwdbuf{_wgetcwd(nullptr, 0)})
+    {
+        path = wstr_to_utf8(cwdbuf);
+        if(is_slash(path.back()))
+            path.pop_back();
+        free(cwdbuf);
+    }
+    else
+        path = ".";
+    std::replace(path.begin(), path.end(), '/', '\\');
+    DirectorySearch(path.c_str(), ext, &results);
+
+    /* Search the local and global data dirs. */
+    static const int ids[2]{ CSIDL_APPDATA, CSIDL_COMMON_APPDATA };
+    for(int id : ids)
+    {
+        WCHAR buffer[MAX_PATH];
+        if(SHGetSpecialFolderPathW(nullptr, buffer, id, FALSE) == FALSE)
+            continue;
+
+        path = wstr_to_utf8(buffer);
+        if(!is_slash(path.back()))
+            path += '\\';
+        path += subdir;
+        std::replace(path.begin(), path.end(), '/', '\\');
+
+        DirectorySearch(path.c_str(), ext, &results);
+    }
 
     return results;
 }
@@ -147,12 +197,21 @@ void SetRTPriority(void)
 #include <pthread.h>
 #include <sched.h>
 #endif
+#ifdef HAVE_RTKIT
+#include <sys/time.h>
+#include <sys/resource.h>
+
+#include "dbus_wrap.h"
+#include "rtkit.h"
+#ifndef RLIMIT_RTTIME
+#define RLIMIT_RTTIME 15
+#endif
+#endif
 
 const PathNamePair &GetProcBinary()
 {
-    static PathNamePair ret;
-    if(!ret.fname.empty() || !ret.path.empty())
-        return ret;
+    static al::optional<PathNamePair> procbin;
+    if(procbin) return *procbin;
 
     al::vector<char> pathname;
 #ifdef __FreeBSD__
@@ -186,6 +245,7 @@ const PathNamePair &GetProcBinary()
             pathname.insert(pathname.end(), procpath, procpath+strlen(procpath));
     }
 #endif
+#ifndef __SWITCH__
     if(pathname.empty())
     {
         static const char SelfLinkNames[][32]{
@@ -214,25 +274,25 @@ const PathNamePair &GetProcBinary()
         if(len <= 0)
         {
             WARN("Failed to readlink %s: %s\n", selfname, strerror(errno));
-            return ret;
+            len = 0;
         }
 
         pathname.resize(static_cast<size_t>(len));
     }
+#endif
     while(!pathname.empty() && pathname.back() == 0)
         pathname.pop_back();
 
     auto sep = std::find(pathname.crbegin(), pathname.crend(), '/');
     if(sep != pathname.crend())
-    {
-        ret.path = std::string(pathname.cbegin(), sep.base()-1);
-        ret.fname = std::string(sep.base(), pathname.cend());
-    }
+        procbin = al::make_optional<PathNamePair>(std::string(pathname.cbegin(), sep.base()-1),
+            std::string(sep.base(), pathname.cend()));
     else
-        ret.fname = std::string(pathname.cbegin(), pathname.cend());
+        procbin = al::make_optional<PathNamePair>(std::string{},
+            std::string(pathname.cbegin(), pathname.cend()));
 
-    TRACE("Got binary: %s, %s\n", ret.path.c_str(), ret.fname.c_str());
-    return ret;
+    TRACE("Got binary: \"%s\", \"%s\"\n", procbin->path.c_str(), procbin->fname.c_str());
+    return *procbin;
 }
 
 namespace {
@@ -351,30 +411,147 @@ al::vector<std::string> SearchDataFiles(const char *ext, const char *subdir)
     return results;
 }
 
+namespace {
+
+bool SetRTPriorityPthread(int prio)
+{
+    int err{ENOTSUP};
+#if defined(HAVE_PTHREAD_SETSCHEDPARAM) && !defined(__OpenBSD__)
+    /* Get the min and max priority for SCHED_RR. Limit the max priority to
+     * half, for now, to ensure the thread can't take the highest priority and
+     * go rogue.
+     */
+    int rtmin{sched_get_priority_min(SCHED_RR)};
+    int rtmax{sched_get_priority_max(SCHED_RR)};
+    rtmax = (rtmax-rtmin)/2 + rtmin;
+
+    struct sched_param param{};
+    param.sched_priority = clampi(prio, rtmin, rtmax);
+#ifdef SCHED_RESET_ON_FORK
+    err = pthread_setschedparam(pthread_self(), SCHED_RR|SCHED_RESET_ON_FORK, &param);
+    if(err == EINVAL)
+#endif
+        err = pthread_setschedparam(pthread_self(), SCHED_RR, &param);
+    if(err == 0) return true;
+
+#else
+
+    std::ignore = prio;
+#endif
+    WARN("pthread_setschedparam failed: %s (%d)\n", std::strerror(err), err);
+    return false;
+}
+
+bool SetRTPriorityRTKit(int prio)
+{
+#ifdef HAVE_RTKIT
+    if(!HasDBus())
+    {
+        WARN("D-Bus not available\n");
+        return false;
+    }
+    dbus::Error error;
+    dbus::ConnectionPtr conn{dbus_bus_get(DBUS_BUS_SYSTEM, &error.get())};
+    if(!conn)
+    {
+        WARN("D-Bus connection failed with %s: %s\n", error->name, error->message);
+        return false;
+    }
+
+    /* Don't stupidly exit if the connection dies while doing this. */
+    dbus_connection_set_exit_on_disconnect(conn.get(), false);
+
+    auto limit_rttime = [](DBusConnection *c) -> int
+    {
+        using ulonglong = unsigned long long;
+        long long maxrttime{rtkit_get_rttime_usec_max(c)};
+        if(maxrttime <= 0) return static_cast<int>(std::abs(maxrttime));
+        const ulonglong umaxtime{static_cast<ulonglong>(maxrttime)};
+
+        struct rlimit rlim{};
+        if(getrlimit(RLIMIT_RTTIME, &rlim) != 0)
+            return errno;
+
+        TRACE("RTTime max: %llu (hard: %llu, soft: %llu)\n", umaxtime, ulonglong{rlim.rlim_max},
+            ulonglong{rlim.rlim_cur});
+        if(rlim.rlim_max > umaxtime)
+        {
+            rlim.rlim_max = static_cast<rlim_t>(umaxtime);
+            rlim.rlim_cur = std::min(rlim.rlim_cur, rlim.rlim_max);
+            if(setrlimit(RLIMIT_RTTIME, &rlim) != 0)
+                return errno;
+        }
+        return 0;
+    };
+
+    int nicemin{};
+    int err{rtkit_get_min_nice_level(conn.get(), &nicemin)};
+    if(err == -ENOENT)
+    {
+        err = std::abs(err);
+        ERR("Could not query RTKit: %s (%d)\n", std::strerror(err), err);
+        return false;
+    }
+    int rtmax{rtkit_get_max_realtime_priority(conn.get())};
+    TRACE("Maximum real-time priority: %d, minimum niceness: %d\n", rtmax, nicemin);
+
+    if(rtmax > 0)
+    {
+        if(AllowRTTimeLimit)
+        {
+            err = limit_rttime(conn.get());
+            if(err != 0)
+                WARN("Failed to set RLIMIT_RTTIME for RTKit: %s (%d)\n",
+                    std::strerror(err), err);
+        }
+
+        /* Limit the maximum real-time priority to half. */
+        rtmax = (rtmax+1)/2;
+        prio = clampi(prio, 1, rtmax);
+
+        TRACE("Making real-time with priority %d (max: %d)\n", prio, rtmax);
+        err = rtkit_make_realtime(conn.get(), 0, prio);
+        if(err == 0) return true;
+
+        err = std::abs(err);
+        WARN("Failed to set real-time priority: %s (%d)\n", std::strerror(err), err);
+    }
+    /* Don't try to set the niceness for non-Linux systems. Standard POSIX has
+     * niceness as a per-process attribute, while the intent here is for the
+     * audio processing thread only to get a priority boost. Currently only
+     * Linux is known to have per-thread niceness.
+     */
+#ifdef __linux__
+    if(nicemin < 0)
+    {
+        TRACE("Making high priority with niceness %d\n", nicemin);
+        err = rtkit_make_high_priority(conn.get(), 0, nicemin);
+        if(err == 0) return true;
+
+        err = std::abs(err);
+        WARN("Failed to set high priority: %s (%d)\n", std::strerror(err), err);
+    }
+#endif /* __linux__ */
+
+#else
+
+    std::ignore = prio;
+    WARN("D-Bus not supported\n");
+#endif
+    return false;
+}
+
+} // namespace
+
 void SetRTPriority()
 {
-#if defined(HAVE_PTHREAD_SETSCHEDPARAM) && !defined(__OpenBSD__)
-    if(RTPrioLevel > 0)
-    {
-        struct sched_param param{};
-        /* Use the minimum real-time priority possible for now (on Linux this
-         * should be 1 for SCHED_RR).
-         */
-        param.sched_priority = sched_get_priority_min(SCHED_RR);
-        int err;
-#ifdef SCHED_RESET_ON_FORK
-        err = pthread_setschedparam(pthread_self(), SCHED_RR|SCHED_RESET_ON_FORK, &param);
-        if(err == EINVAL)
-#endif
-            err = pthread_setschedparam(pthread_self(), SCHED_RR, &param);
-        if(err != 0)
-            ERR("Failed to set real-time priority for thread: %s (%d)\n", std::strerror(err), err);
-    }
-#else
-    /* Real-time priority not available */
-    if(RTPrioLevel > 0)
-        ERR("Cannot set priority level for thread\n");
-#endif
+    if(RTPrioLevel <= 0)
+        return;
+
+    if(SetRTPriorityPthread(RTPrioLevel))
+        return;
+    if(SetRTPriorityRTKit(RTPrioLevel))
+        return;
 }
 
 #endif

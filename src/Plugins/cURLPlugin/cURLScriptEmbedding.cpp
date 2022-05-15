@@ -3,6 +3,7 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "PyCURLReceiver.h"
@@ -13,9 +14,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
-
-#include "pybind/pybind.hpp"
-#include "pybind/stl/stl_type_cast.hpp"
 
 #include "curl/curl.h"
 

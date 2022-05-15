@@ -4,9 +4,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "pybind/kernel_interface.hpp"
-#endif
+#include "Environment/Python/PythonIncluder.h"
 
 namespace Mengine
 {

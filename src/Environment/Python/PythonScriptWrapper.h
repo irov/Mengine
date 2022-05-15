@@ -16,8 +16,6 @@
 
 #include "Config/Typeinfo.h"
 
-#include "pybind/pybind.hpp"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -29,6 +29,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AnalyticsSystemInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
@@ -135,8 +136,6 @@
 #include "math/mat4.h"
 #include "math/quat.h"
 #include "math/utils.h"
-
-#include "pybind/stl/stl_type_cast.hpp"
 
 #include "xmlsax/xmlsax.hpp"
 

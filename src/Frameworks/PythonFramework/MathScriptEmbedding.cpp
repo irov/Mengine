@@ -2,6 +2,8 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
+
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Color.h"
@@ -9,9 +11,6 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/Rect.h"
-
-#include "pybind/pybind.hpp"
-#include "pybind/stl/stl_type_cast.hpp"
 
 #include "math/angle.h"
 #include "math/vec4.h"

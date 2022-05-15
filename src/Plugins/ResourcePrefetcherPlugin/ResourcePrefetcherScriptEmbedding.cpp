@@ -6,14 +6,13 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "ResourcePrefetcherServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

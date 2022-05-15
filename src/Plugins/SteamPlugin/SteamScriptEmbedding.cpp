@@ -2,17 +2,16 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
-#include "SteamServiceInterface.h"
-
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+
+#include "SteamServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

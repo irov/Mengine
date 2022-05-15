@@ -6,14 +6,15 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
-#include "ConstStringHolderPythonString.h"
+#include "Environment/Python/PythonIncluder.h"
 
-#include "Kernel/ServiceBase.h"
+#include "ConstStringHolderPythonString.h"
 
 #include "PythonScriptLogger.h"
 #include "PythonScriptModule.h"
 #include "PythonScriptModuleFinder.h"
 
+#include "Kernel/ServiceBase.h"
 #include "Kernel/Entity.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
@@ -21,8 +22,6 @@
 #include "Kernel/Map.h"
 #include "Kernel/Vector.h"
 #include "Kernel/IntrusiveList.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

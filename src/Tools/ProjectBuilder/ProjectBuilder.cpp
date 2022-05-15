@@ -1094,7 +1094,7 @@ bool run()
     pybind::registration_stl_map_type_cast<Mengine::MapWParams>(kernel);
 
     pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module )
-        .def_native_kernel( "write", &Mengine::PythonLogger::py_write )
+        .def_native_silent_kernel( "write", &Mengine::PythonLogger::py_write )
         .def_native_kernel( "flush", &Mengine::PythonLogger::py_flush )
         .def_property( "softspace", &Mengine::PythonLogger::getSoftspace, &Mengine::PythonLogger::setSoftspace )
         .def_property( "errors", &Mengine::PythonLogger::getErrors, &Mengine::PythonLogger::setErrors )

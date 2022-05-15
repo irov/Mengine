@@ -5,6 +5,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
@@ -23,8 +24,6 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Config/Algorithm.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

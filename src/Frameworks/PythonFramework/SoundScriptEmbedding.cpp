@@ -7,6 +7,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Kernel/FactoryPool.h"
@@ -22,8 +23,6 @@
 #include "Kernel/ResourceSound.h"
 
 #include "Config/Lambda.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

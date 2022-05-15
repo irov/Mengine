@@ -3,6 +3,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
@@ -17,8 +18,6 @@
 #include "Kernel/Error.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

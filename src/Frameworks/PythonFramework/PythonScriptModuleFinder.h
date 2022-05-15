@@ -4,6 +4,8 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/DataflowInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
+
 #include "PythonScriptModuleLoader.h"
 
 #include "Kernel/Factory.h"
@@ -14,8 +16,6 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/VectorFilePath.h"
 #include "Kernel/ThreadGuard.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

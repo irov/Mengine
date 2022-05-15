@@ -186,17 +186,6 @@ if(WITH_TSAN_OPTION)
 	link_libraries(-fsanitize=thread)
 endif()
 
-if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
-endif()
-
-# use -O3 when doing `RelWithDebInfo` builds
-if(NOT MSVC)
-	foreach(lang ASM C CXX)
-		string(REPLACE "-O2" "-O3" CMAKE_${lang}_FLAGS_RELWITHDEBINFO "${CMAKE_${lang}_FLAGS_RELWITHDEBINFO}")
-	endforeach()
-endif()
-
 # https://gitlab.kitware.com/cmake/cmake/issues/20256
 if(APPLE)
 	find_program(DSYMUTIL_PROGRAM dsymutil)

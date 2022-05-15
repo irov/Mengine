@@ -4,6 +4,8 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
+
 #define MENGINE_WINDOWS_VERSION_WIN8
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -14,8 +16,6 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
-
-#include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 FILE _iob[] = {*stdin, *stdout, *stderr};
@@ -148,7 +148,7 @@ namespace Mengine
         PyObject * module_builtins = kernel->get_builtins();
 
         pybind::interface_<XlsScriptLogger>( kernel, "XlsScriptLogger", true, module_builtins )
-            .def_native_kernel( "write", &XlsScriptLogger::py_write )
+            .def_native_silent_kernel( "write", &XlsScriptLogger::py_write )
             .def_native_kernel( "flush", &XlsScriptLogger::py_flush )
             .def_property( "softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )
             ;

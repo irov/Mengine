@@ -127,6 +127,10 @@ namespace Mengine
             , alGetString( AL_RENDERER )
         );
 
+        LOGGER_MESSAGE( "OpenAL extensions: %s"
+            , alGetString( AL_EXTENSIONS )
+        );
+
         ALfloat lposition[] = { 0.f, 0.f, 0.f };
         OPENAL_CALL( alListenerfv, (AL_POSITION, lposition) );
 

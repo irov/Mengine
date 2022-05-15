@@ -24,7 +24,10 @@ public class MenginePlugin {
         void callback(Object result);
     }
 
-    public MengineApplication getApplication() { return m_application; }
+    public MengineApplication getApplication() {
+        return m_application;
+    }
+
     public MengineActivity getActivity() {
         return m_activity;
     }
@@ -37,8 +40,7 @@ public class MenginePlugin {
         return true;
     }
 
-    public void setActivity(MengineActivity activity)
-    {
+    public void setActivity(MengineActivity activity) {
         m_activity = activity;
     }
 

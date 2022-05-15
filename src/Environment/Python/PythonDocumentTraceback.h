@@ -3,9 +3,9 @@
 #include "Interface/DocumentServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 
-#include "Kernel/Win32Helper.h"
+#include "Environment/Python/PythonIncluder.h"
 
-#include "pybind/kernel_interface.hpp"
+#include "Kernel/Win32Helper.h"
 
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_PYBIND_TRACEBACK() \

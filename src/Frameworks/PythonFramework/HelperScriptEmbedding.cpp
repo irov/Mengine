@@ -24,6 +24,7 @@
 #   include "Interface/AndroidPlatformExtensionInterface.h"
 #endif
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Engine/HotSpotPolygon.h"
@@ -73,10 +74,6 @@
 #include "math/angle.h"
 #include "math/vec2.h"
 #include "math/vec3.h"
-
-#include "pybind/pybind.hpp"
-#include "pybind/pickle.hpp"
-#include "pybind/stl/stl_type_cast.hpp"
 
 namespace Mengine
 {

@@ -2,13 +2,13 @@
 
 #include "Interface/ScriptEmbeddingInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
+
 #include "cURLInterface.h"
 
 #include "Kernel/Params.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

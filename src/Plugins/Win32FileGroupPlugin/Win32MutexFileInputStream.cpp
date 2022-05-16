@@ -58,7 +58,7 @@ namespace Mengine
         {
             if( _offset + _size > size )
             {
-                LOGGER_ERROR( "invalid file '%ls' range %zu:%zu size %zu"
+                LOGGER_ERROR( "invalid file '%s' range %zu:%zu size %zu"
                     , _filePath.c_str()
                     , _offset
                     , _size

@@ -423,7 +423,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::textEvent_( const InputTextEvent & _event )
     {
-        LOGGER_INFO( "input", "handle text char [%lc]"
+        LOGGER_INFO( "input", "handle text char [%C]"
             , _event.key
         );
 

@@ -1387,7 +1387,7 @@ namespace Mengine
             ULONG ref = m_pD3DDevice->Release();
             MENGINE_UNUSED( ref );
 
-            MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%ull]", ref );
+            MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%lu]", ref );
 
             m_pD3DDevice = nullptr;
         }
@@ -1397,7 +1397,7 @@ namespace Mengine
             ULONG ref = m_pD3D->Release();
             MENGINE_UNUSED( ref );
 
-            MENGINE_ASSERTION( ref == 0, "D3D has refcount [%ull]", ref );
+            MENGINE_ASSERTION( ref == 0, "D3D has refcount [%lu]", ref );
 
             m_pD3D = nullptr;
         }

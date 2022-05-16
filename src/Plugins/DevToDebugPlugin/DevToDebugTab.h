@@ -2,6 +2,8 @@
 
 #include "DevToDebugInterface.h"
 
+#include "Interface/ThreadMutexInterface.h"
+
 #include "Kernel/Vector.h"
 #include "Kernel/Identity.h"
 
@@ -25,6 +27,10 @@ namespace Mengine
         ~DevToDebugTab() override;
 
     public:
+        bool initialize() override;
+        void finalize() override;
+
+    public:
         void addWidget( const DevToDebugWidgetInterfacePtr & _widget ) override;
         const DevToDebugWidgetInterfacePtr & findWidget( const ConstString & _id ) const;
 
@@ -32,6 +38,8 @@ namespace Mengine
         void foreachWidgets( const LambdaForeachWidgets & _lambda ) override;
 
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         typedef Vector<DevToDebugWidgetInterfacePtr> VectorDevToDebugWidgets;
         VectorDevToDebugWidgets m_widgets;
     };

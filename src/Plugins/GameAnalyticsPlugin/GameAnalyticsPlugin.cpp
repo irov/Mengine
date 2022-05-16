@@ -140,15 +140,6 @@ namespace Mengine
         MENGINE_STRCAT( analyticsPath, userPath );
         MENGINE_STRCAT( analyticsPath, MENGINE_GAMEANALYTICS_FOLDER );
 
-        if( MENGINE_STRLEN( analyticsPath ) >= 65 )
-        {
-            LOGGER_ERROR( "[GameAnalytics] path '%s' length more 65 [https://github.com/GameAnalytics/GA-SDK-CPP/issues/114]"
-                , analyticsPath
-            );
-
-            return false;
-        }
-
         gameanalytics::GameAnalytics::configureWritablePath( analyticsPath );
 
         bool GameAnalytics_InfoLog = CONFIG_VALUE( "GameAnalytics", "InfoLog", false );

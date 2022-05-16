@@ -32,10 +32,15 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        DevToDebugTabPtr s_addDevToDebugTab( const ConstString & _name )
+        static DevToDebugTabPtr s_addDevToDebugTab( const ConstString & _name )
         {
             DevToDebugTabInterfacePtr tab = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_PYBIND );
+
+            if( tab->initialize() == false )
+            {
+                return nullptr;
+            }
 
             DEVTODEBUG_SERVICE()
                 ->addTab( _name, tab );
@@ -43,7 +48,7 @@ namespace Mengine
             return DevToDebugTabPtr::dynamic_from( tab );
         }
         //////////////////////////////////////////////////////////////////////////
-        DevToDebugTabPtr s_getDevToDebugTab( const ConstString & _name )
+        static DevToDebugTabPtr s_getDevToDebugTab( const ConstString & _name )
         {
             const DevToDebugTabInterfacePtr & tab = DEVTODEBUG_SERVICE()
                 ->getTab( _name );
@@ -51,7 +56,7 @@ namespace Mengine
             return DevToDebugTabPtr::dynamic_from( tab );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasDevToDebugTab( const ConstString & _name )
+        static bool s_hasDevToDebugTab( const ConstString & _name )
         {
             bool result = DEVTODEBUG_SERVICE()
                 ->hasTab( _name );

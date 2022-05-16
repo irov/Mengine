@@ -37,6 +37,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -46,76 +47,81 @@ PLUGIN_FACTORY( Movie, Mengine::MoviePlugin )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static ae_voidptr_t stdex_movie_alloc( ae_userdata_t _userdata, ae_size_t _size )
+    namespace Detail
     {
-        AE_UNUSED( _userdata );
-
-        return ALLOCATOR_SERVICE()
-            ->malloc( _size, "movie" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static ae_voidptr_t stdex_movie_alloc_n( ae_userdata_t _userdata, ae_size_t _size, ae_size_t _count )
-    {
-        AE_UNUSED( _userdata );
-
-        size_t total = _size * _count;
-
-        return ALLOCATOR_SERVICE()
-            ->malloc( total, "movie" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_free( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
-    {
-        AE_UNUSED( _userdata );
-
-        ALLOCATOR_SERVICE()
-            ->free( (void *)_ptr, "movie" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_free_n( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
-    {
-        AE_UNUSED( _userdata );
-
-        ALLOCATOR_SERVICE()
-            ->free( (void *)_ptr, "movie" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_logerror( ae_userdata_t _userdata, aeMovieErrorCode _code, const ae_char_t * _format, ... )
-    {
-        AE_UNUSED( _userdata );
-
-        switch( _code )
+        //////////////////////////////////////////////////////////////////////////
+        static ae_voidptr_t stdex_movie_alloc( ae_userdata_t _userdata, ae_size_t _size )
         {
-        case AE_ERROR_STREAM:
-            {
-                return;
-            }break;
-        default:
-            {
-            }break;
+            AE_UNUSED( _userdata );
+
+            return ALLOCATOR_SERVICE()
+                ->malloc( _size, "movie" );
         }
-
-        Char msg[4096] = {'\0'};
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _format );
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 4096, _format, args );
-        MENGINE_VA_LIST_END( args );
-
-        if( size_vsnprintf < 0 )
+        //////////////////////////////////////////////////////////////////////////
+        static ae_voidptr_t stdex_movie_alloc_n( ae_userdata_t _userdata, ae_size_t _size, ae_size_t _count )
         {
-            LOGGER_ERROR( "invalid format error '%s' code [%u]"
-                , _format
+            AE_UNUSED( _userdata );
+
+            size_t total = _size * _count;
+
+            return ALLOCATOR_SERVICE()
+                ->malloc( total, "movie" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void stdex_movie_free( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
+        {
+            AE_UNUSED( _userdata );
+
+            ALLOCATOR_SERVICE()
+                ->free( (void *)_ptr, "movie" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void stdex_movie_free_n( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
+        {
+            AE_UNUSED( _userdata );
+
+            ALLOCATOR_SERVICE()
+                ->free( (void *)_ptr, "movie" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void stdex_movie_logerror( ae_userdata_t _userdata, aeMovieErrorCode _code, const ae_char_t * _format, ... )
+        {
+            AE_UNUSED( _userdata );
+
+            switch( _code )
+            {
+            case AE_ERROR_STREAM:
+                {
+                    return;
+                }break;
+            default:
+                {
+                }break;
+            }
+
+            Char msg[4096] = {'\0'};
+
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _format );
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 4096, _format, args );
+            MENGINE_VA_LIST_END( args );
+
+            if( size_vsnprintf < 0 )
+            {
+                LOGGER_ERROR( "invalid format error '%s' code [%u]"
+                    , _format
+                    , _code
+                );
+
+                return;
+            }
+
+            LOGGER_ERROR( "error '%s' code [%u]"
+                , msg
                 , _code
             );
-
-            return;
         }
-
-        LOGGER_ERROR( "error '%s' code [%u]"
-            , msg
-            , _code
-        );
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     MoviePlugin::MoviePlugin()
@@ -133,7 +139,7 @@ namespace Mengine
 
         m_hashkey = MoviePlugin_HASHKEY;
 
-        m_movieInstance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
+        m_movieInstance = ae_create_movie_instance( m_hashkey.c_str(), &Detail::stdex_movie_alloc, &Detail::stdex_movie_alloc_n, &Detail::stdex_movie_free, &Detail::stdex_movie_free_n, 0, &Detail::stdex_movie_logerror, this );
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [MENGINE_DEBUG_ARGUMENTS( this )]()
@@ -149,31 +155,20 @@ namespace Mengine
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie2, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addNodePrototype<Movie2, 128>( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie2Slot, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addNodePrototype<Movie2Slot, 128>( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<Movie2SubComposition, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addObjectPrototype<Movie2SubComposition, 128>( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
-#else
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<Movie2SubComposition, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-#endif
 
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {
@@ -204,8 +199,7 @@ namespace Mengine
             dataflow->finalize();
         } );
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceMovie2, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( Helper::addResourcePrototype<ResourceMovie2, 128>( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

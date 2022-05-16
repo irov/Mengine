@@ -64,4 +64,16 @@ namespace Mengine
             return resource;
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class Type, uint32_t Count>
+        FactoryPrototypeGeneratorPtr makeResourcePrototypeGenerator( const DocumentPtr & _doc )
+        {
+            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<ResourcePrototypeGenerator<Type, Count>>( _doc );
+
+            return generator;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

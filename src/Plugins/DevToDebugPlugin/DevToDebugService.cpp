@@ -77,6 +77,12 @@ namespace Mengine
             , m_pid.c_str()
         );
 
+        m_mutexTabs = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_mutexCommands = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &DevToDebugService::notifyBootstrapperRunComplete_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &DevToDebugService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -129,12 +135,6 @@ namespace Mengine
         {
             return false;
         }
-
-        m_mutexTabs = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_mutexCommands = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebug", "ProccesTime", 500 );
 

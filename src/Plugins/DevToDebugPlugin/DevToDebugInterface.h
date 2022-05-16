@@ -159,6 +159,10 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
+    public:
         virtual void addWidget( const DevToDebugWidgetInterfacePtr & _widget ) = 0;
         virtual const DevToDebugWidgetInterfacePtr & findWidget( const ConstString & _id ) const = 0;
 

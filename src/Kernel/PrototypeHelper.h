@@ -5,6 +5,8 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ObjectPrototypeGenerator.h"
 #include "Kernel/IdentityPrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ResourcePrototypeGenerator.h"
 
 namespace Mengine
 {
@@ -37,6 +39,28 @@ namespace Mengine
         bool addIdentityPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
         {
             PrototypeGeneratorInterfacePtr generator = Helper::makeIdentityPrototypeGenerator<T, Count>( _doc );
+
+            bool result = PROTOTYPE_SERVICE()
+                ->addPrototype( _category, _prototype, generator );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T, uint32_t Count>
+        bool addNodePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        {
+            PrototypeGeneratorInterfacePtr generator = Helper::makeNodePrototypeGenerator<T, Count>( _doc );
+
+            bool result = PROTOTYPE_SERVICE()
+                ->addPrototype( _category, _prototype, generator );
+
+            return result;            
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T, uint32_t Count>
+        bool addResourcePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        {
+            PrototypeGeneratorInterfacePtr generator = Helper::makeResourcePrototypeGenerator<T, Count>( _doc );
 
             bool result = PROTOTYPE_SERVICE()
                 ->addPrototype( _category, _prototype, generator );

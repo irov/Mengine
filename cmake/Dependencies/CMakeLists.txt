@@ -707,6 +707,7 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/strutils.cpp ${THIRDPARTY_DIR}/openal-soft/common/strutils.cpp COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/alconfig.cpp ${THIRDPARTY_DIR}/openal-soft/alc/alconfig.cpp COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/helpers.cpp ${THIRDPARTY_DIR}/openal-soft/core/helpers.cpp COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/alstring.h ${THIRDPARTY_DIR}/openal-soft/common/alstring.h COPYONLY)
     
     if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_IOS_SIMULATOR AND NOT MENGINE_TARGET_ANDROID)        
         if(MENGINE_WINDOWS_UNIVERSAL)

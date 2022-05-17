@@ -12,10 +12,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_TOOLCHAIN_MSVC)
-    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && (MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA)
+        //////////////////////////////////////////////////////////////////////////
         const DWORD MS_VC_EXCEPTION = 0x406D1388;
 #pragma pack(push,8)  
         typedef struct tagTHREADNAME_INFO
@@ -44,9 +45,10 @@ namespace Mengine
             }
 #pragma warning(pop)  
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
 #endif
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadIdentity::Win32ThreadIdentity()
         : m_thread( INVALID_HANDLE_VALUE )
@@ -118,9 +120,12 @@ namespace Mengine
 
         m_thread = thread;
 
-#if defined(MENGINE_TOOLCHAIN_MSVC) && (MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA)
-        DWORD threadId = ::GetThreadId( m_thread );
-        Detail::SetThreadName( threadId, _name.c_str() );
+#if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && (MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA)
+        if( ::IsDebuggerPresent() == TRUE )
+        {
+            DWORD threadId = ::GetThreadId( m_thread );
+            Detail::SetThreadName( threadId, _name.c_str() );
+        }
 #endif
 
         switch( _priority )

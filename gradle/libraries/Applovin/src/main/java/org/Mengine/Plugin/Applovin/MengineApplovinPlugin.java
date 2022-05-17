@@ -225,4 +225,11 @@ public class MengineApplovinPlugin extends MenginePlugin {
             m_rewardedAd.showAd();
         }
     }
+
+    public void showMediationDebugger() {
+        MengineActivity activity = this.getActivity();
+        final Context context = activity.getBaseContext();
+
+        AppLovinSdk.getInstance(context).showMediationDebugger();
+    }
 }

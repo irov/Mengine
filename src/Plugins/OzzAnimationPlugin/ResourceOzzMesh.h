@@ -5,7 +5,6 @@
 #include "OzzDetail.h"
 
 #include "Kernel/Resource.h"
-
 #include "Kernel/Vector.h"
 
 #include "ozz/animation/runtime/skeleton.h"

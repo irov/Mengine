@@ -2,13 +2,13 @@
 
 #include "OzzAnimationInterface.h"
 
-#include "Kernel/BaseAnimation.h"
-#include "Kernel/BaseUpdation.h"
-#include "Kernel/BaseEventation.h"
-
 #include "OzzDetail.h"
 #include "ResourceOzzAnimation.h"
 #include "ResourceOzzSkeleton.h"
+
+#include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseEventation.h"
 
 #include "ozz/animation/runtime/sampling_job.h"
 

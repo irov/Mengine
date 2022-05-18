@@ -21,6 +21,7 @@
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/Document.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 

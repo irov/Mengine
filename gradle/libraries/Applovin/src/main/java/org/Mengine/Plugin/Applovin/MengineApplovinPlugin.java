@@ -65,16 +65,21 @@ public class MengineApplovinPlugin extends MenginePlugin {
         final Context context = activity.getBaseContext();
 
         AppLovinSdk.getInstance(context).setMediationProvider("max");
+    }
+
+    public void initialize() {
+        MengineActivity activity = this.getActivity();
+        final Context context = activity.getBaseContext();
+
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
                 MengineApplovinPlugin.this.logInfo("AppLovinSdk initialized: consent dialog [%s] country [%s]"
-                    , configuration.getConsentDialogState().toString()
-                    , configuration.getCountryCode()
+                        , configuration.getConsentDialogState().toString()
+                        , configuration.getCountryCode()
                 );
 
-                //ToDo
-                //MengineApplovinPlugin.this.pythonCall("onApplovinPluginOnSdkInitialized");
+                MengineApplovinPlugin.this.pythonCall("onApplovinPluginOnSdkInitialized");
             }
         });
     }

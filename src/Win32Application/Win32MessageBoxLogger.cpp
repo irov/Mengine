@@ -22,7 +22,7 @@ namespace Mengine
         MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _count );
 
-        Char message[4096] = {'0'};
+        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
         MENGINE_SNPRINTF( message, 4096, "%.*s", _count, _data );
 
         ::MessageBoxA( NULL, message, "Mengine critical error", MB_OK );

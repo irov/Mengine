@@ -1160,7 +1160,7 @@ namespace Mengine
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_ERROR( "failed to load plugin '%s'"
+                LOGGER_CRITICAL( "failed to load plugin '%s'"
                     , pluginName.c_str()
                 );
 

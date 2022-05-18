@@ -46,15 +46,15 @@ namespace Mengine
 {
     namespace Detail
     {
-        class MyPythonAllocator
+        class PybindAllocator
             : public pybind::allocator_interface
         {
         public:
-            MyPythonAllocator()
+            PybindAllocator()
             {
             }
 
-            ~MyPythonAllocator() override
+            ~PybindAllocator() override
             {
             }
 
@@ -99,7 +99,7 @@ namespace Mengine
                 return true;
             }
 
-            bool Debug_Pybind = CONFIG_VALUE( "Debug", "Pybind", true );
+            bool Debug_Pybind = CONFIG_VALUE( "Pybind", "Debug", true );
 
             return Debug_Pybind;
         }
@@ -123,7 +123,7 @@ namespace Mengine
         int32_t crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
 #endif
 
-        pybind::allocator_interface * allocator = Helper::newT<Detail::MyPythonAllocator>();
+        pybind::allocator_interface * allocator = Helper::newT<Detail::PybindAllocator>();
 
         bool debugMode = Detail::getPybindDebugMode();
 
@@ -149,7 +149,7 @@ namespace Mengine
         m_kernel->destroy();
         m_kernel = nullptr;
 
-        Helper::deleteT( static_cast<Detail::MyPythonAllocator *>(allocator) );
+        Helper::deleteT( static_cast<Detail::PybindAllocator *>(allocator) );
 
         MENGINE_ASSERTION_ALLOCATOR( "pybind" );
         MENGINE_ASSERTION_ALLOCATOR( "python" );

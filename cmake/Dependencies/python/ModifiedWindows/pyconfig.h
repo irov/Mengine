@@ -77,10 +77,8 @@ WIN32 is still required for the locale module.
 #define PREFIX ""
 #define EXEC_PREFIX ""
 
-#ifdef WIN32
 #define MS_WIN32 /* only support win32 and greater. */
 #define MS_WINDOWS
-#endif
 
 #ifndef PYTHONPATH
 #	define PYTHONPATH ".\\DLLs;.\\lib;.\\lib\\plat-win;.\\lib\\lib-tk"
@@ -90,23 +88,7 @@ WIN32 is still required for the locale module.
 #define USE_SOCKET
 #endif
 
-/* CE6 doesn't have strdup() but _strdup(). Assume the same for earlier versions. */
-#if defined(MS_WINCE)
-#  include <stdlib.h>
-#  define strdup _strdup
-#endif
-
-#ifdef MS_WINCE
-/* Windows CE does not support environment variables */
-#define getenv(v) (NULL)
-#define environ (NULL)
-#endif
-
 /* Compiler specific defines */
-
-/* ------------------------------------------------------------------------*/
-/* Microsoft C defines _MSC_VER */
-#ifdef _MSC_VER
 
 /* We want COMPILER to expand to a string containing _MSC_VER's *value*.
  * This is horridly tricky, because the stringization operator only works
@@ -144,37 +126,15 @@ WIN32 is still required for the locale module.
 #define MS_WIN64
 #endif
 
-/* set the COMPILER */
-#ifdef MS_WIN64
-#if defined(_M_IA64)
-#define COMPILER _Py_PASTE_VERSION("64 bit (Itanium)")
-#define MS_WINI64
-#elif defined(_M_X64) || defined(_M_AMD64)
-#ifdef __INTEL_COMPILER
-#define COMPILER ("[ICC v." _Py_STRINGIZE(__INTEL_COMPILER) " 64 bit (amd64) with MSC v." _Py_STRINGIZE(_MSC_VER) " CRT]")
-#else
-#define COMPILER _Py_PASTE_VERSION("64 bit (AMD64)")
-#endif /* __INTEL_COMPILER */
-#define MS_WINX64
-#else
-#define COMPILER _Py_PASTE_VERSION("64 bit (Unknown)")
-#endif
-#endif /* MS_WIN64 */
-
 /* set the version macros for the windows headers */
-#ifdef MS_WINX64
-/* 64 bit only runs on XP or greater */
-#define Py_WINVER _WIN32_WINNT_WINXP
-#define Py_NTDDI NTDDI_WINXP
-#else
 /* Python 2.6+ requires Windows 2000 or greater */
-#ifdef _WIN32_WINNT_WIN2K
-#define Py_WINVER _WIN32_WINNT_WIN2K
+#ifdef _WIN32_WINNT_VISTA
+#	define Py_WINVER _WIN32_WINNT_VISTA
 #else
-#define Py_WINVER 0x0500
+#	define Py_WINVER 0x0600
 #endif
-#define Py_NTDDI NTDDI_WIN2KSP4
-#endif
+
+#define Py_NTDDI NTDDI_VISTA
 
 /* We only set these values when building Python - we don't want to force
    these values on extensions, as that will affect the prototypes and
@@ -183,16 +143,16 @@ WIN32 is still required for the locale module.
    structures etc so it can optionally use new Windows features if it
    determines at runtime they are available.
 */
-#if defined(Py_BUILD_CORE) || defined(Py_BUILD_CORE_MODULE)
 #ifndef NTDDI_VERSION
-#define NTDDI_VERSION Py_NTDDI
+#	define NTDDI_VERSION Py_NTDDI
 #endif
+
 #ifndef WINVER
-#define WINVER Py_WINVER
+#	define WINVER Py_WINVER
 #endif
+
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT Py_WINVER
-#endif
+#	define _WIN32_WINNT Py_WINVER
 #endif
 
 /* _W64 is not defined for VC6 or eVC4 */
@@ -206,29 +166,13 @@ typedef __int64 ssize_t;
 #else
 typedef _W64 int ssize_t;
 #endif
+
 #define HAVE_SSIZE_T 1
-
-#if defined(MS_WIN32) && !defined(MS_WIN64)
-#ifdef _M_IX86
-#ifdef __INTEL_COMPILER
-#define COMPILER ("[ICC v." _Py_STRINGIZE(__INTEL_COMPILER) " 32 bit (Intel) with MSC v." _Py_STRINGIZE(_MSC_VER) " CRT]")
-#else
-#define COMPILER _Py_PASTE_VERSION("32 bit (Intel)")
-#endif /* __INTEL_COMPILER */
-#else
-#define COMPILER _Py_PASTE_VERSION("32 bit (Unknown)")
-#endif
-#endif /* MS_WIN32 && !MS_WIN64 */
-
-typedef int pid_t;
 
 #include <float.h>
 #define Py_IS_NAN _isnan
 #define Py_IS_INFINITY(X) (!_finite(X) && !_isnan(X))
 #define Py_IS_FINITE(X) _finite(X)
-#define copysign _copysign
-
-#endif /* _MSC_VER */
 
 /* define some ANSI types that are not defined in earlier Win headers */
 #if defined(_MSC_VER) && _MSC_VER >= 1200
@@ -236,76 +180,13 @@ typedef int pid_t;
 #include <basetsd.h>
 #endif
 
-/* ------------------------------------------------------------------------*/
-/* The Borland compiler defines __BORLANDC__ */
-/* XXX These defines are likely incomplete, but should be easy to fix. */
-#ifdef __BORLANDC__
-#define COMPILER "[Borland]"
-
-#ifdef _WIN32
-/* tested with BCC 5.5 (__BORLANDC__ >= 0x0550)
- */
-
-typedef int pid_t;
-/* BCC55 seems to understand __declspec(dllimport), it is used in its
-   own header files (winnt.h, ...) - so we can do nothing and get the default*/
-
-#undef HAVE_SYS_UTIME_H
-#define HAVE_UTIME_H
-#define HAVE_DIRENT_H
-
-/* rename a few functions for the Borland compiler */
-#include <io.h>
-#define _chsize chsize
-#define _setmode setmode
-
-#else /* !_WIN32 */
-#error "Only Win32 and later are supported"
-#endif /* !_WIN32 */
-
-#endif /* BORLANDC */
-
-/* ------------------------------------------------------------------------*/
-/* egcs/gnu-win32 defines __GNUC__ and _WIN32 */
-#if defined(__GNUC__) && defined(_WIN32)
-/* XXX These defines are likely incomplete, but should be easy to fix.
-   They should be complete enough to build extension modules. */
-/* Suggested by Rene Liebscher <R.Liebscher@gmx.de> to avoid a GCC 2.91.*
-   bug that requires structure imports.  More recent versions of the
-   compiler don't exhibit this bug.
-*/
-#if (__GNUC__==2) && (__GNUC_MINOR__<=91)
-#warning "Please use an up-to-date version of gcc! (>2.91 recommended)"
-#endif
-
-#define COMPILER "[gcc]"
-#define PY_LONG_LONG long long
-#define PY_LLONG_MIN LLONG_MIN
-#define PY_LLONG_MAX LLONG_MAX
-#define PY_ULLONG_MAX ULLONG_MAX
-#endif /* GNUC */
-
-/* ------------------------------------------------------------------------*/
-/* lcc-win32 defines __LCC__ */
-#if defined(__LCC__)
-/* XXX These defines are likely incomplete, but should be easy to fix.
-   They should be complete enough to build extension modules. */
-
-#define COMPILER "[lcc-win32]"
-typedef int pid_t;
-/* __declspec() is supported here too - do nothing to get the defaults */
-
-#endif /* LCC */
-
-/* ------------------------------------------------------------------------*/
-/* End of compilers - finish up */
-
 #ifndef NO_STDIO_H
 #	include <stdio.h>
 #endif
 
 /* 64 bit ints are usually spelt __int64 unless compiler has overridden */
 #define HAVE_LONG_LONG 1
+
 #ifndef PY_LONG_LONG
 #	define PY_LONG_LONG __int64
 #	define PY_LLONG_MAX _I64_MAX
@@ -340,7 +221,6 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* maintain "win32" sys.platform for backward compatibility of Python code,
    the Win64 API should be close enough to the Win32 API to make this
    preferable */
-#	define PLATFORM "win32"
 #	define SIZEOF_VOID_P 8
 #	define SIZEOF_TIME_T 8
 #	define SIZEOF_OFF_T 4
@@ -354,7 +234,6 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
    should define this. */
 #	define HAVE_LARGEFILE_SUPPORT
 #elif defined(MS_WIN32)
-#	define PLATFORM "win32"
 #	define HAVE_LARGEFILE_SUPPORT
 #	define SIZEOF_VOID_P 4
 #	define SIZEOF_OFF_T 4

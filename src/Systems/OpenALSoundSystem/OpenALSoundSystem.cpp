@@ -96,24 +96,16 @@ namespace Mengine
         ALCint minorVersion;
         OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MINOR_VERSION, 1, &minorVersion) );
 
-        LOGGER_MESSAGE_RELEASE( "OpenAL version %d.%d"
+        LOGGER_MESSAGE_RELEASE( "OpenAL version: %d.%d"
             , majorVersion
             , minorVersion
         );
 
-        RET_OPENAL_CALL( const ALCchar *, defaultDeviceSprcifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
+        RET_OPENAL_CALL( const ALCchar *, defaultDeviceSpecifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
 
-        LOGGER_MESSAGE_RELEASE( "OpenAL default device specifier [%s]"
-            , defaultDeviceSprcifier
+        LOGGER_MESSAGE_RELEASE( "OpenAL device specifier: %s"
+            , defaultDeviceSpecifier
         );
-
-        RET_OPENAL_CALL( const ALCchar *, captureDeviceSpecifier, alcGetString, (m_device, ALC_CAPTURE_DEVICE_SPECIFIER) );
-
-        LOGGER_MESSAGE_RELEASE( "OpenAL capture device specifier [%s]"
-            , captureDeviceSpecifier
-        );
-
-        LOGGER_MESSAGE_RELEASE( "OpenAL driver properties" );
 
         LOGGER_MESSAGE_RELEASE( "OpenAL version: %s"
             , alGetString( AL_VERSION )

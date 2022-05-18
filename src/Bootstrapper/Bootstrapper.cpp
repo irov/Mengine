@@ -313,6 +313,10 @@ PLUGIN_EXPORT( AppleMARSDK );
 PLUGIN_EXPORT( AppleAppLovinPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
+PLUGIN_EXPORT( AppleFacebookPlugin );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
 PLUGIN_EXPORT( AppleAdjustPlugin );
 #endif
@@ -1135,6 +1139,10 @@ namespace Mengine
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
         MENGINE_ADD_PLUGIN( AppleAppLovinPlugin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
+        MENGINE_ADD_PLUGIN( AppleFacebookPlugin, "Plugin Apple Facebook...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
         
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC

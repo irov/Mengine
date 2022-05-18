@@ -4,9 +4,9 @@
 
 #include "Kernel/ServiceBase.h"
 
-#import <FBSDKCoreKit.h>
-#import <FBSDKLoginKit.h>
-#import <FBSDKShareKit.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
 namespace Mengine
 {

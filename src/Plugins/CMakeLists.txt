@@ -254,6 +254,10 @@ if(MENGINE_PLUGIN_APPLE_APPLOVIN)
     ADD_SUBDIRECTORY(AppleAppLovinPlugin)
 endif()
 
+if(MENGINE_PLUGIN_APPLE_FACEBOOK)
+    ADD_SUBDIRECTORY(AppleFacebookPlugin)
+endif()
+
 if(MENGINE_PLUGIN_APPLE_ADJUST)
     ADD_SUBDIRECTORY(AppleAdjustPlugin)
 endif()

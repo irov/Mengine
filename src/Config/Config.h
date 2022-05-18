@@ -48,8 +48,12 @@
 #   error "undefine platform"
 #endif
 
-#if defined(__MINGW32__)
+#if defined(__MINGW64__)
 #   define MENGINE_TOOLCHAIN_MINGW
+#   define MENGINE_TOOLCHAIN_MINGW64
+#elif defined(__MINGW32__)
+#   define MENGINE_TOOLCHAIN_MINGW
+#   define MENGINE_TOOLCHAIN_MINGW32
 #elif defined(_MSC_VER)
 #   define MENGINE_TOOLCHAIN_MSVC
 #endif

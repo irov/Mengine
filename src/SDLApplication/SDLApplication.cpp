@@ -59,6 +59,13 @@ namespace Mengine
 
             jfieldID jfield_MENGINE_APP_OPTIONS = _jenv->GetStaticFieldID( jclass_BuildConfig, "MENGINE_APP_OPTIONS", "Ljava/lang/String;" );
 
+            if( _jenv->ExceptionCheck() == true )
+            {
+                _jenv->ExceptionClear();
+
+                return false;
+            }
+
             if( jfield_MENGINE_APP_OPTIONS == nullptr )
             {
                 return false;

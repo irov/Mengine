@@ -43,6 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32MutexFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
+        MENGINE_UNUSED( _relationPath );
+        MENGINE_UNUSED( _folderPath );
+        MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 

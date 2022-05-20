@@ -31,6 +31,8 @@ namespace Mengine
 
                 my_json_load_data_t * jd = static_cast<my_json_load_data_t *>(_ud);
 
+                MENGINE_UNUSED( jd );
+
                 LOGGER_ERROR( "jpp error: %s\nline: %d\n column: %d\nposition: %d\nsource: %s\ndoc: %s"
                     , _text
                     , _line

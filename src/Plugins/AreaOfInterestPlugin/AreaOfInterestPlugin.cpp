@@ -1,5 +1,7 @@
 #include "AreaOfInterestPlugin.h"
 
+#include "Interface/ServiceInterface.h"
+
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////

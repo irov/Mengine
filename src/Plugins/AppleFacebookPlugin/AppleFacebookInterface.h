@@ -14,21 +14,20 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onFacebookLoginSuccess( const char* token ) = 0;
+        virtual void onFacebookLoginSuccess( const Char * token ) = 0;
         virtual void onFacebookLoginCancel( ) = 0;
         
-        virtual void onFacebookError( const char* errorMessage ) = 0;
+        virtual void onFacebookError( const Char * errorMessage ) = 0;
         
         
-        virtual void onFacebookShareSuccess(const char* postId) = 0;
+        virtual void onFacebookShareSuccess( const Char * postId ) = 0;
         virtual void onFacebookShareCancel() = 0;
-        virtual void onFacebookShareError(const char* errorMessage) = 0;
+        virtual void onFacebookShareError( const Char * errorMessage ) = 0;
         
-        virtual void onFacebookProfilePictureLinkGet(const char* userId, bool success, const char* pictureURL) = 0;
+        virtual void onFacebookProfilePictureLinkGet( const Char * userId, bool success, const Char * pictureURL ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleFacebookProviderInterface> AppleFacebookProviderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     class AppleFacebookServiceInterface
         : public ServiceInterface
@@ -42,9 +41,9 @@ namespace Mengine
     public:
         virtual void login() = 0;
         virtual void logout() = 0;
-        virtual bool isLoggedIn() const = 0 ;
-        virtual const char* getAccessToken() const = 0 ;
-        virtual void shareLink(const char* link,const char* picture) = 0;
+        virtual bool isLoggedIn() const = 0;
+        virtual const Char * getAccessToken() const = 0;
+        virtual void shareLink( const Char * link, const Char * picture ) = 0;
         virtual void getProfilePictureLink() = 0;
         
     };

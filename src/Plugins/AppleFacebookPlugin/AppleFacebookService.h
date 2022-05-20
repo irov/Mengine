@@ -3,14 +3,11 @@
 #include "AppleFacebookInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/ConstString.h"
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
-
-#include "Kernel/ConstString.h"
-
-
 
 namespace Mengine
 {
@@ -19,7 +16,7 @@ namespace Mengine
     {
     public:
         AppleFacebookService();
-        ~AppleFacebookService();
+        ~AppleFacebookService() override;
 
     protected:
         bool _initializeService() override;
@@ -33,18 +30,16 @@ namespace Mengine
         virtual void login() override;
         virtual void logout() override;
         virtual bool isLoggedIn() const override;
-        virtual const char* getAccessToken() const override;
-        virtual void shareLink(const char* link,const char* picture) override;
+        virtual const Char * getAccessToken() const override;
+        virtual void shareLink( const Char * link, const Char * picture ) override;
         virtual void getProfilePictureLink() override;
         
-    private:
+    protected:
         AppleFacebookProviderInterfacePtr m_provider;
-        FBSDKLoginManager *m_loginManager;
+        FBSDKLoginManager * m_loginManager;
         
         bool m_isProcessed;
-        NSString *m_userID;
-        NSString *m_imageUrl;
-        
-        
+        NSString * m_userID;
+        NSString * m_imageURL;
     };
 }

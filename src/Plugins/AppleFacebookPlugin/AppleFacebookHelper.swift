@@ -2,16 +2,13 @@ import Foundation
 import FBSDKCoreKit
 import FBSDKShareKit
 
-
-
-
 typealias cb_SwiftToObjC  = (Int, String?) -> Void;
 
-class FBDelegate : FBSDKShareKit.SharingDelegate{
+class FBDelegate : FBSDKShareKit.SharingDelegate {
     
     var m_cb:cb_SwiftToObjC;
     
-    public init(cb: cb_SwiftToObjC!){
+    public init(cb: cb_SwiftToObjC!) {
         m_cb = cb;
     }
     
@@ -29,15 +26,14 @@ class FBDelegate : FBSDKShareKit.SharingDelegate{
     
     
 }
+
 @objc
-class AppleFacebookHelper:NSObject{
+class AppleFacebookHelper:NSObject {
     
     @objc
     static func ShareImageLink(link:String, image:String,cb:@escaping cb_SwiftToObjC) {
         DispatchQueue.main.async {
-            
             if image.isEmpty {
-                
                 let content = ShareLinkContent()
                 content.contentURL = URL(string: link)
                 
@@ -46,8 +42,8 @@ class AppleFacebookHelper:NSObject{
                     content: content,
                     delegate: FBDelegate.init(cb: cb)
                 )
-                dialog.show()
                 
+                dialog.show()
             }
             else
             
@@ -56,7 +52,7 @@ class AppleFacebookHelper:NSObject{
             if let data = try? Data(contentsOf: URL(string: image)!) {
                 if let image = UIImage(data: data) {
                     
-                    DispatchQueue.main.async{
+                    DispatchQueue.main.async {
                         let photo = SharePhoto(image: image, isUserGenerated:true)
                         
                         let content = ShareMediaContent()
@@ -68,15 +64,14 @@ class AppleFacebookHelper:NSObject{
                             content: content,
                             delegate: FBDelegate.init(cb: cb)
                         )
+                        
                         dialog.show()
                     }
-                    
                 }
             }
             
             else
             {
-
                 cb(1, "empty data");
             }
         }

@@ -41,35 +41,11 @@ namespace Mengine
         void setGlobalFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
         const FileGroupInterfacePtr & getGlobalFileGroup() const override;
 
-
-    public:
-        bool setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda ) override;
-        void removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
-
-    protected:
-        void notifyFileModifies() const;
-        void checkFileModifies() const;
-
     protected:
         FileGroupInterfacePtr m_defaultFileGroup;
         FileGroupInterfacePtr m_globalFileGroup;
 
         typedef Hashtable<ConstString, FileGroupInterfacePtr> HashtableFileGroups;
         HashtableFileGroups m_fileGroups;
-
-        ThreadMutexInterfacePtr m_fileModifyMutex;
-
-        struct FileModifyDesc
-        {
-            Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-
-            LambdaFileModifyHook lambda;
-
-            mutable uint64_t time;
-            mutable bool modify;
-        };
-
-        typedef Vector<FileModifyDesc> VectorFileModifyDesc;
-        VectorFileModifyDesc m_fileModifies;
     };
 }

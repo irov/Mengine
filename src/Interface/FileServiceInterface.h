@@ -28,11 +28,6 @@ namespace Mengine
     public:
         virtual void setGlobalFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
         virtual const FileGroupInterfacePtr & getGlobalFileGroup() const = 0;
-
-    public:
-        typedef Lambda<void()> LambdaFileModifyHook;
-        virtual bool setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda ) = 0;
-        virtual void removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

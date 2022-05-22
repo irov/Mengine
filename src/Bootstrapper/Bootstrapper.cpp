@@ -281,6 +281,10 @@ PLUGIN_EXPORT( ImGUI );
 PLUGIN_EXPORT( CameraDebugGizmo );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_FILEMODIFYHOOK_STATIC
+PLUGIN_EXPORT( FileModifyHook );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC
 PLUGIN_EXPORT( Win32AntifreezeMonitor );
 #endif
@@ -1107,6 +1111,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_CAMERADEBUGGIZMO_STATIC
         MENGINE_ADD_PLUGIN( CameraDebugGizmo, "Plugin Camera Debug Gizmo...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_FILEMODIFYHOOK_STATIC
+        MENGINE_ADD_PLUGIN( FileModifyHook, "Plugin File Modify Hook...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_WIN32_CONSOLELOGGER_STATIC

@@ -1,0 +1,3 @@
+LIBRARY "FileModifyHookPlugin"
+EXPORTS
+    dllCreatePlugin @1

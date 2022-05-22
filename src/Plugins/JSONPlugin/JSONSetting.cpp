@@ -1,6 +1,8 @@
 #include "JSONSetting.h"
 
-#include "Interface/FileServiceInterface.h"
+#ifdef MENGINE_DEBUG
+#include "Plugins/FileModifyHookPlugin/FileModifyHookInterface.h"
+#endif
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionJSONInvalid.h"
@@ -28,7 +30,8 @@ namespace Mengine
 
         m_json = json;
 
-        FILE_SERVICE()
+#ifdef MENGINE_DEBUG
+        FILEMODIFYHOOK_SERVICE()
             ->setFileModifyHook( m_fileGroup, m_filePath, [this, _doc]()
         {
             jpp::object new_json = Helper::loadJSON( m_fileGroup, m_filePath, _doc );
@@ -37,14 +40,17 @@ namespace Mengine
 
             m_json = new_json;
         } );
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONSetting::finalize()
     {
-        FILE_SERVICE()
+#ifdef MENGINE_DEBUG
+        FILEMODIFYHOOK_SERVICE()
             ->removeFileModifyHook( m_fileGroup, m_filePath );
+#endif
 
         m_fileGroup = nullptr;
         m_json = nullptr;

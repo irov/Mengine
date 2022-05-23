@@ -22,11 +22,11 @@ fun includePlugin(name: String, d: Boolean, path: String) {
 
     println("[+] Include plugin: " + path)
 
-    include (path)
+    include(path)
 }
 
 println("[+] Include :app")
-include (":app")
+include(":app")
 
 if( getBooleanProperty("ANDROID_APP_ENABLE_DELIVERY_DIR", false) == true ) {
     try {

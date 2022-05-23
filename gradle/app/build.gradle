@@ -291,7 +291,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS",
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'
 }
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_ANALYTICS", false) == true) {
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_ANALYTICS", true) == true) {
     println 'ANDROID_APP_ENABLE_FIREBASE_ANALYTICS: TRUE'
 
     dependencies {

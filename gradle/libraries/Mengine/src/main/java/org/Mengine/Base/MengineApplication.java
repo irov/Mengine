@@ -16,6 +16,17 @@ public class MengineApplication extends Application {
     public ArrayList<MenginePlugin> m_plugins;
 
     public MengineApplication() {
+        this.m_plugins = new ArrayList<MenginePlugin>();
+
+        for (String n : this.getGradleAndroidPlugins()) {
+            this.createPlugin(n);
+        }
+    }
+
+    public String[] getGradleAndroidPlugins() {
+        String[] empty = {};
+
+        return empty;
     }
 
     public ArrayList<MenginePlugin> getPlugins() {

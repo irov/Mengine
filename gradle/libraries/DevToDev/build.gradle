@@ -37,8 +37,8 @@ dependencies {
     implementation "androidx.preference:preference:1.2.0"
     implementation 'com.android.installreferrer:installreferrer:2.2'
     implementation 'com.google.android.gms:play-services-base:18.0.1'
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.google.firebase:firebase-core:20.1.2'
+    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'com.google.firebase:firebase-core:21.0.0'
 
     implementation 'com.devtodev:android-analytics:2.0.0'
 }

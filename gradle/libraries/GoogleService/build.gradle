@@ -48,5 +48,5 @@ dependencies {
     implementation project(':libraries:SDL2')
 
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.android.gms:play-services-basement:18.0.1'
+    implementation 'com.google.android.gms:play-services-basement:18.0.2'
 }

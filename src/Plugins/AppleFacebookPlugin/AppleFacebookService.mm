@@ -79,7 +79,7 @@ namespace Mengine
                 
                 if( imageURL != nullptr && imageURL.absoluteString )
                 {
-                    m_imageUrl = imageURL.absoluteString;
+                    m_imageURL = imageURL.absoluteString;
                 }
             }
             
@@ -145,13 +145,13 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     void AppleFacebookService::getProfilePictureLink()
     {
-        if( m_imageUrl != nullptr )
+        if( m_imageURL != nullptr )
         {
             if( m_provider != nullptr )
             {
-                const Char* userId = m_userID != nullptr ? m_userID.UTF8String : nullptr;
+                const Char * userId = m_userID != nullptr ? m_userID.UTF8String : nullptr;
                 
-                m_provider->onFacebookProfilePictureLinkGet( userId, true, m_imageUrl.UTF8String );
+                m_provider->onFacebookProfilePictureLinkGet( userId, true, m_imageURL.UTF8String );
             }
             
             return;
@@ -175,11 +175,11 @@ namespace Mengine
             {
                 if( profile.imageURL.absoluteURL )
                 {
-                    m_imageUrl = profile.imageURL.absoluteURL.absoluteString;
+                    m_imageURL = profile.imageURL.absoluteURL.absoluteString;
                     
                     if( m_provider != nullptr )
                     {
-                        m_provider->onFacebookProfilePictureLinkGet( profile.userID.UTF8String, true, m_imageUrl.UTF8String );
+                        m_provider->onFacebookProfilePictureLinkGet( profile.userID.UTF8String, true, m_imageURL.UTF8String );
                         
                         return;
                     }

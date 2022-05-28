@@ -5,7 +5,7 @@
 
 #include "Kernel/Params.h"
 #include "Kernel/KeyCode.h"
-#include "Kernel/MouseCode.h"
+#include "Kernel/MouseButtonCode.h"
 #include "Kernel/WheelCode.h"
 #include "Kernel/TouchCode.h"
 #include "Kernel/Viewport.h"
@@ -70,14 +70,14 @@ namespace Mengine
         virtual void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
         virtual bool onGameKey( const InputKeyEvent & _event ) = 0;
-        virtual bool onGameText( WChar _key, float _x, float _y ) = 0;
-        virtual bool onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) = 0;
-        virtual bool onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) = 0;
-        virtual bool onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) = 0;
-        virtual bool onGameMouseMove( ETouchCode _touchId, float _x, float _y, float _dx, float _dy ) = 0;
-        virtual bool onGameMouseWheel( float _x, float _y, EWheelCode _button, int32_t _wheel ) = 0;
-        virtual void onGameAppMouseEnter( float _x, float _y ) = 0;
-        virtual void onGameAppMouseLeave() = 0;
+        virtual bool onGameText( const InputTextEvent & _event ) = 0;
+        virtual bool onGameMouseButton( const InputMouseButtonEvent & _event ) = 0;
+        virtual bool onGameMouseButtonBegin( const InputMouseButtonEvent & _event ) = 0;
+        virtual bool onGameMouseButtonEnd( const InputMouseButtonEvent & _event ) = 0;
+        virtual bool onGameMouseMove( const InputMouseMoveEvent & _event ) = 0;
+        virtual bool onGameMouseWheel( const InputMouseWheelEvent & _event ) = 0;
+        virtual void onGameAppMouseEnter( const InputMouseEnterEvent & _event ) = 0;
+        virtual void onGameAppMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
         virtual void onGameTimeFactor( float _timeFactor ) = 0;
         virtual bool onGamePreparation( bool _debug ) = 0;
         virtual void onGameRun() = 0;

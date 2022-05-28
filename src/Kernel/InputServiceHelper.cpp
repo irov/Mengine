@@ -35,7 +35,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseButtonEvent( ETouchCode _touchId, float _x, float _y, EMouseCode _code, float _pressure, bool _isDown )
+        void pushMouseButtonEvent( ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown )
         {
             float vx;
             float vy;
@@ -52,7 +52,7 @@ namespace Mengine
             ev.data.button.touchId = _touchId;
             ev.data.button.x = vx;
             ev.data.button.y = vy;
-            ev.data.button.code = _code;
+            ev.data.button.button = _button;
             ev.data.button.pressure = _pressure;
             ev.data.button.isDown = _isDown;
             ev.data.button.isPressed = true;
@@ -101,7 +101,7 @@ namespace Mengine
 
             ev.data.text.x = vx;
             ev.data.text.y = vy;
-            ev.data.text.key = _key;
+            ev.data.text.symbol = _key;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -153,7 +153,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseWheelEvent( float _x, float _y, EWheelCode _code, int32_t _scroll )
+        void pushMouseWheelEvent( float _x, float _y, EWheelCode _wheel, int32_t _scroll )
         {
             float vx;
             float vy;
@@ -169,7 +169,7 @@ namespace Mengine
 
             ev.data.wheel.x = vx;
             ev.data.wheel.y = vy;
-            ev.data.wheel.code = _code;
+            ev.data.wheel.wheel = _wheel;
             ev.data.wheel.scroll = _scroll;
 
             INPUT_SERVICE()

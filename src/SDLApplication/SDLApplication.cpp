@@ -50,7 +50,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool getAndroidBuildConfigOptions( JNIEnv * _jenv, String * const _options )
         {
-            jclass jclass_BuildConfig = _jenv->FindClass("org/Mengine/Project/BuildConfig");
+            jclass jclass_BuildConfig = _jenv->FindClass( "org/Mengine/Project/BuildConfig" );
 
             if( jclass_BuildConfig == nullptr )
             {
@@ -110,7 +110,7 @@ namespace Mengine
             IStringstream iss( options, IStringstream::in );
 
             String option;
-            while (iss >> option)
+            while( iss >> option )
             {
                 const Char * arg = option.c_str();
 

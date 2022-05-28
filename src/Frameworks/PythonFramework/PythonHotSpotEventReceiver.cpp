@@ -40,22 +40,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotText( const InputTextEvent & _event )
     {
-        return m_cb.call( _event.x, _event.y, _event.key );
+        return m_cb.call( _event.x, _event.y, _event.symbol );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseButton( const InputMouseButtonEvent & _event )
     {
-        return m_cb.call( _event.touchId, _event.x, _event.y, _event.code, _event.pressure, _event.isDown, _event.isPressed );
+        return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event )
     {
-        return m_cb.call( _event.touchId, _event.x, _event.y, _event.code, _event.pressure, _event.isDown, _event.isPressed );
+        return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event )
     {
-        return m_cb.call( _event.touchId, _event.x, _event.y, _event.code, _event.pressure, _event.isDown, _event.isPressed );
+        return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseMove( const InputMouseMoveEvent & _event )
@@ -65,7 +65,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseWheel( const InputMouseWheelEvent & _event )
     {
-        return m_cb.call( _event.x, _event.y, _event.code, _event.scroll );
+        return m_cb.call( _event.x, _event.y, _event.wheel, _event.scroll );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonHotSpotEventReceiver::onHotSpotMouseOverDestroy()

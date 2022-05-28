@@ -142,8 +142,8 @@ namespace Mengine
                 : public GlobalBaseHandler
             {
             public:
-                GlobalMouseButtonHandler( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event )
-                    : m_code( _code )
+                GlobalMouseButtonHandler( EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _event )
+                    : m_code( _button )
                     , m_isDown( _isDown )
                     , m_event( _event )
                 {
@@ -156,7 +156,7 @@ namespace Mengine
             protected:
                 bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
                 {
-                    if( m_code != _event.code || m_isDown != _event.isDown )
+                    if( m_code != _event.button || m_isDown != _event.isDown )
                     {
                         return false;
                     }
@@ -167,7 +167,7 @@ namespace Mengine
                 }
 
             protected:
-                EMouseCode m_code;
+                EMouseButtonCode m_code;
                 bool m_isDown;
 
                 LambdaInputMouseButtonEvent m_event;
@@ -255,12 +255,12 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        UniqueId addGlobalMouseButtonEvent( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentPtr & _doc )
+        UniqueId addGlobalMouseButtonEvent( EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseButtonHandler>( _doc, _code, _isDown, _event );
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseButtonHandler>( _doc, _button, _isDown, _event );
 
             UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 

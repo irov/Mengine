@@ -27,6 +27,8 @@ namespace Mengine
     void DevToDebugTab::finalize()
     {
         m_mutex = nullptr;
+
+        m_widgets.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugTab::addWidget( const DevToDebugWidgetInterfacePtr & _widget )

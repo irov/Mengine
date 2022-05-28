@@ -6,7 +6,7 @@
 #include "Interface/InputMousePositionProviderInterface.h"
 
 #include "Kernel/KeyCode.h"
-#include "Kernel/MouseCode.h"
+#include "Kernel/MouseButtonCode.h"
 #include "Kernel/TouchCode.h"
 
 #include "Config/Typedef.h"
@@ -56,7 +56,7 @@ namespace Mengine
 
     public:
         virtual bool isAnyMouseButtonDown() const = 0;
-        virtual bool isMouseButtonDown( EMouseCode _buttonId ) const = 0;
+        virtual bool isMouseButtonDown( EMouseButtonCode _button ) const = 0;
 
     public:
         virtual void setCursorPosition( ETouchCode _touchId, const mt::vec2f & _point, float _pressure ) = 0;

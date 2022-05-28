@@ -49,12 +49,6 @@ namespace Mengine
 
         if( handle == false )
         {
-            mt::vec2f point( _event.x, _event.y );
-
-            mt::vec2f wp;
-            PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, &wp );
-
             handle = EVENTABLE_METHODR( EVENT_GAME_KEY, handle )
                 ->onGameKey( _event );
         }
@@ -74,14 +68,8 @@ namespace Mengine
 
         if( handle == false )
         {
-            mt::vec2f point( _event.x, _event.y );
-
-            mt::vec2f wp;
-            PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, &wp );
-
             handle = EVENTABLE_METHODR( EVENT_GAME_TEXT, handle )
-                ->onGameText( _event.key, wp.x, wp.y );
+                ->onGameText( _event );
         }
 
         if( handle == false )
@@ -99,14 +87,8 @@ namespace Mengine
 
         if( handle == false )
         {
-            mt::vec2f point( _event.x, _event.y );
-
-            mt::vec2f wp;
-            PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, &wp );
-
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON, handle )
-                ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.code, _event.isDown );
+                ->onGameMouseButton( _event );
         }
 
         if( handle == false )
@@ -124,14 +106,8 @@ namespace Mengine
 
         if( handle == false )
         {
-            mt::vec2f point( _event.x, _event.y );
-
-            mt::vec2f wp;
-            PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, &wp );
-
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
-                ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.code, _event.isDown );
+                ->onGameMouseButtonBegin( _event );
         }
 
         if( handle == false )
@@ -149,14 +125,8 @@ namespace Mengine
 
         if( handle == false )
         {
-            mt::vec2f point( _event.x, _event.y );
-
-            mt::vec2f wp;
-            PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, &wp );
-
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON_END, handle )
-                ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.code, _event.isDown );
+                ->onGameMouseButtonEnd( _event );
         }
 
         if( handle == false )
@@ -174,19 +144,8 @@ namespace Mengine
 
         if( handle == false )
         {
-            mt::vec2f point( _event.x, _event.y );
-            mt::vec2f delta( _event.dx, _event.dy );
-
-            mt::vec2f wp;
-            PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, &wp );
-
-            mt::vec2f wd;
-            PLAYER_SERVICE()
-                ->calcGlobalMouseWorldDelta( delta, &wd );
-
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_MOVE, handle )
-                ->onGameMouseMove( _event.touchId, wp.x, wp.y, wd.x, wd.y );
+                ->onGameMouseMove( _event );
         }
 
         if( handle == false )
@@ -205,7 +164,7 @@ namespace Mengine
         if( handle == false )
         {
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_WHEEL, handle )
-                ->onGameMouseWheel( _event.x, _event.y, _event.code, _event.scroll );
+                ->onGameMouseWheel( _event );
         }
 
         if( handle == false )
@@ -220,7 +179,7 @@ namespace Mengine
     bool GameService::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
         EVENTABLE_METHOD( EVENT_GAME_APP_MOUSE_ENTER )
-            ->onGameAppMouseEnter( _event.x, _event.y );
+            ->onGameAppMouseEnter( _event );
 
         PLAYER_SERVICE()
             ->handleMouseEnter( _event );
@@ -231,7 +190,7 @@ namespace Mengine
     void GameService::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
         EVENTABLE_METHOD( EVENT_GAME_APP_MOUSE_LEAVE )
-            ->onGameAppMouseLeave();
+            ->onGameAppMouseLeave( _event );
 
         PLAYER_SERVICE()
             ->handleMouseLeave( _event );

@@ -19,7 +19,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskPickerableMouseButton( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc );
+        TaskPickerableMouseButton( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc );
         ~TaskPickerableMouseButton() override;
 
     protected:
@@ -29,7 +29,7 @@ namespace Mengine
 
     protected:
         PickerablePtr m_pickerable;
-        EMouseCode m_code;
+        EMouseButtonCode m_button;
         bool m_isDown;
         bool m_isPressed;
 

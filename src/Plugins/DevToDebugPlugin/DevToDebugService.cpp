@@ -253,7 +253,8 @@ namespace Mengine
     void DevToDebugService::removeTab( const ConstString & _name )
     {
         m_mutexTabs->lock();
-        m_tabsProcess.erase( _name );
+        DevToDebugTabInterfacePtr tab = m_tabsProcess.erase( _name );
+        tab->finalize();
         m_mutexTabs->unlock();
 
         m_tabsSync.erase( _name );

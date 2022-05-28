@@ -89,9 +89,9 @@ namespace Mengine
             Cook::addTask<TaskNodeEnable>( _source, _node );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc )
+        void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskPickerableMouseButton>( _source, _pickerable, _code, _isDown, _isPressed, _filter, _doc );
+            Cook::addTask<TaskPickerableMouseButton>( _source, _pickerable, _button, _isDown, _isPressed, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void addPickerableMouseEnter( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentPtr & _doc )
@@ -211,9 +211,9 @@ namespace Mengine
             Cook::addTask<TaskGlobalKeyPress>( _source, _code, _isDown, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////    
-        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc )
+        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskGlobalMouseButton>( _source, _code, _isDown, _filter, _doc );
+            Cook::addTask<TaskGlobalMouseButton>( _source, _button, _isDown, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter, const DocumentPtr & _doc )

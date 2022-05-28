@@ -118,7 +118,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALID_UNIQUE_ID );
         }
 
-        UniqueId idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
+        UniqueId idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseButtonCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
         {
             MENGINE_UNUSED( _event );
 

@@ -21,7 +21,7 @@ namespace Mengine
         Algorithm::fill_n( m_cursorPosition, MENGINE_INPUT_MAX_TOUCH, mt::vec2f( 0.f, 0.f ) );
         Algorithm::fill_n( m_cursorPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
         Algorithm::fill_n( m_keyBuffer, MENGINE_INPUT_MAX_KEY_CODE, false );
-        Algorithm::fill_n( m_mouseBuffer, MENGINE_INPUT_MAX_MOUSE_CODE, false );
+        Algorithm::fill_n( m_mouseBuffer, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
     InputService::~InputService()
@@ -223,14 +223,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isAnyMouseButtonDown() const
     {
-        std::ptrdiff_t mouseDownCount = Algorithm::count( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_CODE, true );
+        std::ptrdiff_t mouseDownCount = Algorithm::count( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, true );
 
         return mouseDownCount != 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool InputService::isMouseButtonDown( EMouseCode _button ) const
+    bool InputService::isMouseButtonDown( EMouseButtonCode _button ) const
     {
-        MENGINE_ASSERTION_FATAL( _button < MENGINE_INPUT_MAX_MOUSE_CODE );
+        MENGINE_ASSERTION_FATAL( _button < MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE );
 
         bool isDown = m_mouseBuffer[_button];
 
@@ -402,7 +402,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::keyEvent_( const InputKeyEvent & _event )
     {
-        LOGGER_INFO( "input", "handle key code [%u] down [%u] repeat [%u]"
+        LOGGER_INFO( "input", "handle symbol code [%u] down [%u] repeat [%u]"
             , _event.code
             , _event.isDown
             , _event.isRepeat
@@ -413,7 +413,7 @@ namespace Mengine
         m_keyBuffer[_event.code] = _event.isDown;
 
         InputKeyEvent event = _event;
-        
+
         //ToDo
         event.isRepeat = isRepeat;
 
@@ -424,7 +424,7 @@ namespace Mengine
     void InputService::textEvent_( const InputTextEvent & _event )
     {
         LOGGER_INFO( "input", "handle text char [%C]"
-            , _event.key
+            , _event.symbol
         );
 
         APPLICATION_SERVICE()
@@ -438,20 +438,20 @@ namespace Mengine
             return;
         }
 
-        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH);
-        MENGINE_ASSERTION_FATAL( _event.code < MENGINE_INPUT_MAX_MOUSE_CODE );
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
+        MENGINE_ASSERTION_FATAL( _event.button < MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE );
 
-        LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] code [%u] down [%u] pressed [%u] pressure [%f]"
+        LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] button [%u] down [%u] pressed [%u] pressure [%f]"
             , _event.touchId
             , _event.x
             , _event.y
-            , _event.code
+            , _event.button
             , _event.isDown
             , _event.isPressed
             , _event.pressure
         );
 
-        m_mouseBuffer[_event.code] = _event.isDown;
+        m_mouseBuffer[_event.button] = _event.isDown;
 
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
@@ -491,10 +491,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseWheelEvent_( const InputMouseWheelEvent & _event )
     {
-        LOGGER_INFO( "input", "handle mouse wheel pos [%.4f:%.4f] code [%u] scroll [%d]"
+        LOGGER_INFO( "input", "handle mouse wheel pos [%.4f:%.4f] wheel [%u] scroll [%d]"
             , _event.x
             , _event.y
-            , _event.code
+            , _event.wheel
             , _event.scroll
         );
 

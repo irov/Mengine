@@ -2,11 +2,11 @@
 
 #include "Config/Typedef.h"
 
-#define MENGINE_INPUT_MAX_MOUSE_CODE (3)
+#define MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE (3)
 
 namespace Mengine
 {
-    enum EMouseCode : uint8_t
+    enum EMouseButtonCode : uint8_t
     {
         MC_LBUTTON = 0x00,
         MC_RBUTTON = 0x01,

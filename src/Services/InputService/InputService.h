@@ -39,7 +39,7 @@ namespace Mengine
         bool isAnyKeyDown() const override;
 
         bool isAnyMouseButtonDown() const override;
-        bool isMouseButtonDown( EMouseCode _button ) const override;
+        bool isMouseButtonDown( EMouseButtonCode _button ) const override;
 
     public:
         void setCursorPosition( ETouchCode _touchId, const mt::vec2f & _point, float _pressure ) override;
@@ -94,6 +94,6 @@ namespace Mengine
         VectorInputEvents m_events;
 
         bool m_keyBuffer[MENGINE_INPUT_MAX_KEY_CODE];
-        bool m_mouseBuffer[MENGINE_INPUT_MAX_MOUSE_CODE];
+        bool m_mouseBuffer[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
     };
 }

@@ -752,7 +752,7 @@ Core
     LoggerLevel.h
     
     KeyCode.h
-    MouseCode.h
+    MouseButtonCode.h
     WheelCode.h
     TouchCode.h
     

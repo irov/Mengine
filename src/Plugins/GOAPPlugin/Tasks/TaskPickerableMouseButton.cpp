@@ -21,9 +21,9 @@ namespace Mengine
             , public Factorable
         {
         public:
-            TaskPickerableMouseButtonEventReceiver( GOAP::NodeInterface * _node, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter )
+            TaskPickerableMouseButtonEventReceiver( GOAP::NodeInterface * _node, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter )
                 : m_node(_node)
-                , m_code( _code )
+                , m_button( _button )
                 , m_isDown( _isDown )
                 , m_isPressed( _isPressed )
                 , m_filter( _filter )
@@ -37,7 +37,7 @@ namespace Mengine
         protected:
             bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
             {
-                if( _event.code != m_code )
+                if( _event.button != m_button )
                 {
                     return false;
                 }
@@ -186,17 +186,17 @@ namespace Mengine
 
         protected:
             GOAP::NodeInterface * m_node;
-            EMouseCode m_code;
+            EMouseButtonCode m_button;
             bool m_isDown;
             bool m_isPressed;
             LambdaPickerMouseButtonEvent m_filter;
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseButton::TaskPickerableMouseButton( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc )
+    TaskPickerableMouseButton::TaskPickerableMouseButton( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_pickerable( _pickerable )
-        , m_code( _code )
+        , m_button( _button )
         , m_isDown( _isDown )
         , m_isPressed( _isPressed )
 #if MENGINE_DOCUMENT_ENABLE
@@ -219,7 +219,7 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_code, m_isDown, m_isPressed, m_filter );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_button, m_isDown, m_isPressed, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, newreceiver );
 

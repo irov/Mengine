@@ -1630,7 +1630,7 @@ namespace Mengine
                 Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseCode _code, bool _isDown )
+            void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseButtonCode _button, bool _isDown )
             {
                 mt::vec2f pos_screen;
                 if( this->s_calcMouseScreenPosition( _pos, &pos_screen ) == false )
@@ -1638,7 +1638,7 @@ namespace Mengine
                     return;
                 }
 
-                Helper::pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _code, 0.f, _isDown );
+                Helper::pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_platformEvent( const ConstString & _event, const MapWParams & _params )
@@ -3359,7 +3359,11 @@ namespace Mengine
                     PLAYER_SERVICE()
                         ->calcGlobalMouseWorldPosition( point, &wp );
 
-                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, m_args );
+                    InputMouseLeaveEvent ev = _event;
+                    ev.x = wp.x;
+                    ev.y = wp.y;
+
+                    pybind::object py_result = m_cb.call_args( ev, m_args );
 
                     if( py_result.is_none() == false )
                     {
@@ -3456,7 +3460,7 @@ namespace Mengine
                     PLAYER_SERVICE()
                         ->calcGlobalMouseWorldPosition( point, &wp );
 
-                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.code, _event.pressure, _event.isDown, _event.isPressed, m_args );
+                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
                     if( py_result.is_none() == false )
                     {
@@ -3504,7 +3508,7 @@ namespace Mengine
                     PLAYER_SERVICE()
                         ->calcGlobalMouseWorldPosition( point, &wp );
 
-                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.code, _event.pressure, _event.isDown, _event.isPressed, m_args );
+                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
                     if( py_result.is_none() == false )
                     {
@@ -3528,6 +3532,56 @@ namespace Mengine
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseHandlerButtonEndPtr handler = m_factoryPyGlobalMouseHandlerButtonEnds
+                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+
+                handler->initialize( _cb, _args );
+
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            class PyGlobalMouseHandlerButtonBegin
+                : public PyGlobalBaseHandler
+            {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerButtonBegin );
+
+            protected:
+                //////////////////////////////////////////////////////////////////////////
+                bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
+                {
+                    mt::vec2f point( _event.x, _event.y );
+
+                    mt::vec2f wp;
+                    PLAYER_SERVICE()
+                        ->calcGlobalMouseWorldPosition( point, &wp );
+
+                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
+
+                    if( py_result.is_none() == false )
+                    {
+                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
+                        );
+                    }
+
+                    return false;
+                }
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<PyGlobalMouseHandlerButtonBegin> PyGlobalMouseHandlerButtonBeginPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factoryPyGlobalMouseHandlerButtonBegins;
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
+            {
+                const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                    ->getGlobalInputHandler();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
+
+                PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins
                     ->createObject( MENGINE_DOCUMENT_PYBIND );
 
                 handler->initialize( _cb, _args );
@@ -3572,56 +3626,6 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
 
                 const PyGlobalMouseHandlerWheelPtr & handler = m_factoryPyGlobalMouseHandlerWheels
-                    ->createObject( MENGINE_DOCUMENT_PYBIND );
-
-                handler->initialize( _cb, _args );
-
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
-
-                return id;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            class PyGlobalMouseHandlerButtonBegin
-                : public PyGlobalBaseHandler
-            {
-                DECLARE_FACTORABLE( PyGlobalMouseHandlerButtonBegin );
-
-            protected:
-                //////////////////////////////////////////////////////////////////////////
-                bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
-                {
-                    mt::vec2f point( _event.x, _event.y );
-
-                    mt::vec2f wp;
-                    PLAYER_SERVICE()
-                        ->calcGlobalMouseWorldPosition( point, &wp );
-
-                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.code, _event.pressure, _event.isDown, _event.isPressed, m_args );
-
-                    if( py_result.is_none() == false )
-                    {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr().c_str()
-                            , py_result.repr().c_str()
-                        );
-                    }
-
-                    return false;
-                }
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<PyGlobalMouseHandlerButtonBegin> PyGlobalMouseHandlerButtonBeginPtr;
-            //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalMouseHandlerButtonBegins;
-            //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
-            {
-                const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                    ->getGlobalInputHandler();
-
-                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
-
-                PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins
                     ->createObject( MENGINE_DOCUMENT_PYBIND );
 
                 handler->initialize( _cb, _args );
@@ -3682,7 +3686,7 @@ namespace Mengine
             protected:
                 bool handleTextEvent( const InputTextEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( _event.key, _event.x, _event.y, m_args );
+                    pybind::object py_result = m_cb.call_args( _event.symbol, _event.x, _event.y, m_args );
 
                     if( py_result.is_none() == false )
                     {
@@ -4381,6 +4385,57 @@ namespace Mengine
             .def_member( "code", &InputKeyEvent::code )
             .def_member( "isDown", &InputKeyEvent::isDown )
             .def_member( "isRepeat", &InputKeyEvent::isRepeat )
+            ;
+
+        pybind::struct_<InputTextEvent>( _kernel, "InputTextEvent" )
+            .def_member( "special", &InputTextEvent::special )
+            .def_member( "x", &InputTextEvent::x )
+            .def_member( "y", &InputTextEvent::y )
+            .def_member( "symbol", &InputTextEvent::symbol )
+            ;
+
+        pybind::struct_<InputMouseButtonEvent>( _kernel, "InputMouseButtonEvent" )
+            .def_member( "special", &InputMouseButtonEvent::special )
+            .def_member( "touchId", &InputMouseButtonEvent::touchId )
+            .def_member( "x", &InputMouseButtonEvent::x )
+            .def_member( "y", &InputMouseButtonEvent::y )
+            .def_member( "button", &InputMouseButtonEvent::button )
+            .def_member( "isDown", &InputMouseButtonEvent::isDown )
+            .def_member( "isPressed", &InputMouseButtonEvent::isPressed )
+            ;
+
+        pybind::struct_<InputMouseWheelEvent>( _kernel, "InputMouseWheelEvent" )
+            .def_member( "special", &InputMouseWheelEvent::special )
+            .def_member( "x", &InputMouseWheelEvent::x )
+            .def_member( "y", &InputMouseWheelEvent::y )
+            .def_member( "wheel", &InputMouseWheelEvent::wheel )
+            .def_member( "scroll", &InputMouseWheelEvent::scroll )
+            ;
+
+        pybind::struct_<InputMouseMoveEvent>( _kernel, "InputMouseMoveEvent" )
+            .def_member( "special", &InputMouseMoveEvent::special )
+            .def_member( "touchId", &InputMouseMoveEvent::touchId )
+            .def_member( "x", &InputMouseMoveEvent::x )
+            .def_member( "y", &InputMouseMoveEvent::y )
+            .def_member( "dx", &InputMouseMoveEvent::dx )
+            .def_member( "dy", &InputMouseMoveEvent::dy )
+            .def_member( "pressure", &InputMouseMoveEvent::pressure )
+            ;
+
+        pybind::struct_<InputMouseEnterEvent>( _kernel, "InputMouseEnterEvent" )
+            .def_member( "special", &InputMouseEnterEvent::special )
+            .def_member( "touchId", &InputMouseEnterEvent::touchId )
+            .def_member( "x", &InputMouseEnterEvent::x )
+            .def_member( "y", &InputMouseEnterEvent::y )
+            .def_member( "pressure", &InputMouseEnterEvent::pressure )
+            ;
+
+        pybind::struct_<InputMouseLeaveEvent>( _kernel, "InputMouseLeaveEvent" )
+            .def_member( "special", &InputMouseLeaveEvent::special )
+            .def_member( "touchId", &InputMouseLeaveEvent::touchId )
+            .def_member( "x", &InputMouseLeaveEvent::x )
+            .def_member( "y", &InputMouseLeaveEvent::y )
+            .def_member( "pressure", &InputMouseLeaveEvent::pressure )
             ;
 
         pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower>>( _kernel, "PythonValueFollowerLinear" )

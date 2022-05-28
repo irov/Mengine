@@ -9,9 +9,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalMouseButton::TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc )
+    TaskGlobalMouseButton::TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
-        , m_code( _code )
+        , m_button( _button )
         , m_isDown( _isDown )
         , m_filter( _filter )
 #if MENGINE_DOCUMENT_ENABLE
@@ -45,7 +45,7 @@ namespace Mengine
             return false;
         };
 
-        uint32_t id = Helper::addGlobalMouseButtonEvent( m_code, m_isDown, lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
+        uint32_t id = Helper::addGlobalMouseButtonEvent( m_button, m_isDown, lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
         if( id == INVALID_UNIQUE_ID )
         {

@@ -173,25 +173,25 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( _sdlWindow, _event.button.x, _event.button.y, &point );
 
-                EMouseCode code;
+                EMouseButtonCode button;
 
                 switch( _event.button.button )
                 {
                 case SDL_BUTTON_LEFT:
-                    code = MC_LBUTTON;
+                    button = MC_LBUTTON;
                     break;
                 case SDL_BUTTON_RIGHT:
-                    code = MC_RBUTTON;
+                    button = MC_RBUTTON;
                     break;
                 case SDL_BUTTON_MIDDLE:
-                    code = MC_MBUTTON;
+                    button = MC_MBUTTON;
                     break;
                 default:
-                    code = static_cast<EMouseCode>(_event.button.button - 1);
+                    button = static_cast<EMouseButtonCode>(_event.button.button - 1);
                     break;
                 };
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, code, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, button, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
             }
             break;
         case SDL_FINGERMOTION:

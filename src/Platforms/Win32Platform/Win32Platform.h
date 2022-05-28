@@ -9,7 +9,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
-#include "Kernel/MouseCode.h"
+#include "Kernel/MouseButtonCode.h"
 #include "Kernel/StaticString.h"
 #include "Kernel/StaticWString.h"
 #include "Kernel/SHA1.h"
@@ -307,7 +307,7 @@ namespace Mengine
         float m_pauseUpdatingTime;
 
         bool m_cursorInArea;
-        bool m_clickOutArea[MENGINE_INPUT_MAX_MOUSE_CODE];
+        bool m_clickOutArea[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
         bool m_cursorMode;
 
         HCURSOR m_cursor;
@@ -325,7 +325,7 @@ namespace Mengine
         int32_t m_lastMouseX;
         int32_t m_lastMouseY;
 
-        bool m_isDoubleClick[MENGINE_INPUT_MAX_MOUSE_CODE];
+        bool m_isDoubleClick[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
         bool m_touchpad;
         bool m_desktop;
         bool m_sessionLock;

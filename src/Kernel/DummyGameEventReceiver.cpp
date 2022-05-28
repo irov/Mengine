@@ -51,84 +51,63 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameText( WChar _key, float _x, float _y )
+    bool DummyGameEventReceiver::onGameText( const InputTextEvent & _event )
     {
-        MENGINE_UNUSED( _key );
-        MENGINE_UNUSED( _x );
-        MENGINE_UNUSED( _y );
+        MENGINE_UNUSED( _event );
         // Empty
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
+    bool DummyGameEventReceiver::onGameMouseButton( const InputMouseButtonEvent & _event )
     {
-        MENGINE_UNUSED( _touchId );
-        MENGINE_UNUSED( _x );
-        MENGINE_UNUSED( _y );
-        MENGINE_UNUSED( _code );
-        MENGINE_UNUSED( _isDown );
+        MENGINE_UNUSED( _event );
         // Empty
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
+    bool DummyGameEventReceiver::onGameMouseButtonBegin( const InputMouseButtonEvent & _event )
     {
-        MENGINE_UNUSED( _touchId );
-        MENGINE_UNUSED( _x );
-        MENGINE_UNUSED( _y );
-        MENGINE_UNUSED( _code );
-        MENGINE_UNUSED( _isDown );
+        MENGINE_UNUSED( _event );
         // Empty
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
+    bool DummyGameEventReceiver::onGameMouseButtonEnd( const InputMouseButtonEvent & _event )
     {
-        MENGINE_UNUSED( _touchId );
-        MENGINE_UNUSED( _x );
-        MENGINE_UNUSED( _y );
-        MENGINE_UNUSED( _code );
-        MENGINE_UNUSED( _isDown );
+        MENGINE_UNUSED( _event );
         // Empty
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseMove( ETouchCode _touchId, float _x, float _y, float _dx, float _dy )
+    bool DummyGameEventReceiver::onGameMouseMove( const InputMouseMoveEvent & _event )
     {
-        MENGINE_UNUSED( _touchId );
-        MENGINE_UNUSED( _x );
-        MENGINE_UNUSED( _y );
-        MENGINE_UNUSED( _dx );
-        MENGINE_UNUSED( _dy );
+        MENGINE_UNUSED( _event );
         // Empty
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseWheel( float _x, float _y, EWheelCode _code, int32_t _scroll )
+    bool DummyGameEventReceiver::onGameMouseWheel( const InputMouseWheelEvent & _event )
     {
-        MENGINE_UNUSED( _x );
-        MENGINE_UNUSED( _y );
-        MENGINE_UNUSED( _code );
-        MENGINE_UNUSED( _scroll );
+        MENGINE_UNUSED( _event );
         // Empty
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameAppMouseEnter( float _x, float _y )
+    void DummyGameEventReceiver::onGameAppMouseEnter( const InputMouseEnterEvent & _event )
     {
-        MENGINE_UNUSED( _x );
-        MENGINE_UNUSED( _y );
+        MENGINE_UNUSED( _event );
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameAppMouseLeave()
+    void DummyGameEventReceiver::onGameAppMouseLeave( const InputMouseLeaveEvent & _event )
     {
+        MENGINE_UNUSED( _event );
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////

@@ -365,7 +365,7 @@ namespace Mengine
                     ->isAnyMouseButtonDown();
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_isMouseButtonDown( EMouseCode _button ) const
+            bool s_isMouseButtonDown( EMouseButtonCode _button ) const
             {
                 return INPUT_SERVICE()
                     ->isMouseButtonDown( _button );
@@ -3733,7 +3733,7 @@ namespace Mengine
             .def( "KC_OEM_CLEAR", KC_OEM_CLEAR )
             ;
 
-        pybind::enum_<EMouseCode>( _kernel, "MouseCode" )
+        pybind::enum_<EMouseButtonCode>( _kernel, "MouseButtonCode" )
             .def( "MC_LBUTTON", MC_LBUTTON )
             .def( "MC_RBUTTON", MC_RBUTTON )
             .def( "MC_MBUTTON", MC_MBUTTON )

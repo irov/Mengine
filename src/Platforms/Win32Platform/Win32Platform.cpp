@@ -120,8 +120,8 @@ namespace Mengine
         , m_fullscreen( false )
         , m_sessionLock( false )
     {
-        Algorithm::fill_n( m_clickOutArea, MENGINE_INPUT_MAX_MOUSE_CODE, false );
-        Algorithm::fill_n( m_isDoubleClick, MENGINE_INPUT_MAX_MOUSE_CODE, false );
+        Algorithm::fill_n( m_clickOutArea, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
+        Algorithm::fill_n( m_isDoubleClick, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
     }
     //////////////////////////////////////////////////////////////////////////
     Win32Platform::~Win32Platform()

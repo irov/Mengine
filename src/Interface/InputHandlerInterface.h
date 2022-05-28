@@ -3,7 +3,7 @@
 #include "Interface/Interface.h"
 
 #include "Kernel/KeyCode.h"
-#include "Kernel/MouseCode.h"
+#include "Kernel/MouseButtonCode.h"
 #include "Kernel/WheelCode.h"
 #include "Kernel/TouchCode.h"
 
@@ -48,7 +48,7 @@ namespace Mengine
 
         float x;
         float y;
-        WChar key;
+        WChar symbol;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseButtonEvent
@@ -58,7 +58,7 @@ namespace Mengine
         ETouchCode touchId;
         float x;
         float y;
-        EMouseCode code;
+        EMouseButtonCode button;
         float pressure;
         bool isDown;
         bool isPressed;
@@ -70,7 +70,7 @@ namespace Mengine
 
         float x;
         float y;
-        EWheelCode code;
+        EWheelCode wheel;
         int32_t scroll;
     };
     //////////////////////////////////////////////////////////////////////////

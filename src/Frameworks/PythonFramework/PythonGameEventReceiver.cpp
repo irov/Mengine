@@ -1,5 +1,7 @@
 #include "PythonGameEventReceiver.h"
 
+#include "Interface/PlayerServiceInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -38,47 +40,128 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameKey( const InputKeyEvent & _event )
     {
-        return m_cb.call( _event );
+        mt::vec2f point( _event.x, _event.y );
+
+        mt::vec2f wp;
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( point, &wp );
+
+        InputKeyEvent ev = _event;
+        ev.x = wp.x;
+        ev.y = wp.y;
+
+        bool result = m_cb.call( ev );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameText( WChar _key, float _x, float _y )
+    bool PythonGameEventReceiver::onGameText( const InputTextEvent & _event )
     {
-        return m_cb.call( _key, _x, _y );
+        mt::vec2f point( _event.x, _event.y );
+
+        mt::vec2f wp;
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( point, &wp );
+
+        InputTextEvent ev = _event;
+        ev.x = wp.x;
+        ev.y = wp.y;
+
+        bool result = m_cb.call( ev );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButton( const InputMouseButtonEvent & _event )
     {
-        return m_cb.call( _touchId, _x, _y, _code, _isDown );
+        mt::vec2f point( _event.x, _event.y );
+
+        mt::vec2f wp;
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( point, &wp );
+
+        InputMouseButtonEvent ev = _event;
+        ev.x = wp.x;
+        ev.y = wp.y;
+
+        bool result = m_cb.call( ev );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButtonBegin( const InputMouseButtonEvent & _event )
     {
-        return m_cb.call( _touchId, _x, _y, _code, _isDown );
+        mt::vec2f point( _event.x, _event.y );
+
+        mt::vec2f wp;
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( point, &wp );
+
+        InputMouseButtonEvent ev = _event;
+        ev.x = wp.x;
+        ev.y = wp.y;
+
+        bool result = m_cb.call( ev );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _code, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButtonEnd( const InputMouseButtonEvent & _event )
     {
-        return m_cb.call( _touchId, _x, _y, _code, _isDown );
+        mt::vec2f point( _event.x, _event.y );
+
+        mt::vec2f wp;
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( point, &wp );
+
+        InputMouseButtonEvent ev = _event;
+        ev.x = wp.x;
+        ev.y = wp.y;
+
+        bool result = m_cb.call( ev );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseMove( ETouchCode _touchId, float _x, float _y, float _dx, float _dy )
+    bool PythonGameEventReceiver::onGameMouseMove( const InputMouseMoveEvent & _event )
     {
-        return m_cb.call( _touchId, _x, _y, _dx, _dy );
+        mt::vec2f point( _event.x, _event.y );
+        mt::vec2f delta( _event.dx, _event.dy );
+
+        mt::vec2f wp;
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldPosition( point, &wp );
+
+        mt::vec2f wd;
+        PLAYER_SERVICE()
+            ->calcGlobalMouseWorldDelta( delta, &wd );
+
+        InputMouseMoveEvent ev;
+        ev.x = wp.x;
+        ev.y = wp.y;
+        ev.dx = wd.x;
+        ev.dy = wd.y;
+
+        bool result = m_cb.call( ev );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseWheel( float _x, float _y, EWheelCode _code, int32_t _wheel )
+    bool PythonGameEventReceiver::onGameMouseWheel( const InputMouseWheelEvent & _event )
     {
-        return m_cb.call( _x, _y, _code, _wheel );
+        bool result = m_cb.call( _event );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameAppMouseEnter( float _x, float _y )
+    void PythonGameEventReceiver::onGameAppMouseEnter( const InputMouseEnterEvent & _event )
     {
-        m_cb.call( _x, _y );
+        m_cb.call( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameAppMouseLeave()
+    void PythonGameEventReceiver::onGameAppMouseLeave( const InputMouseLeaveEvent & _event )
     {
-        m_cb.call();
+        m_cb.call( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameTimeFactor( float _timeFactor )
@@ -88,7 +171,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGamePreparation( bool _debug )
     {
-        return m_cb.call( _debug );
+        bool result = m_cb.call( _debug );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameRun()
@@ -108,7 +193,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameInitialize()
     {
-        return m_cb.call();
+        bool result = m_cb.call();
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameInitializeRenderResources()
@@ -198,7 +285,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameClose()
     {
-        return m_cb.call();
+        bool result = m_cb.call();
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameOverFillrate( double _fillrate )

@@ -15,8 +15,6 @@
     
     [[MARSDK sharedInstance] setDelegate:self];
     
-    [[MARSDK sharedInstance] performSelector:@selector(setupWithParams:) withObject:nil afterDelay:0];
-    
     return self;
 }
 

@@ -3,7 +3,5 @@
 #import <Foundation/Foundation.h>
 
 @interface AppleMARSDKApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface>
-{
-}
 
 @end

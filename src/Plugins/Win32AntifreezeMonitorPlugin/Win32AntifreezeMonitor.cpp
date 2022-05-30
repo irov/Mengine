@@ -59,7 +59,7 @@ namespace Mengine
         }
 
         if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), m_threadJob ) == false )
+            ->addTask( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

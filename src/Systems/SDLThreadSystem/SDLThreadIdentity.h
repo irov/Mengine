@@ -31,6 +31,9 @@ namespace Mengine
         void main();
 
     public:
+        uint64_t getThreadId() const override;
+
+    public:
         bool processTask( ThreadTaskInterface * _task ) override;
         void removeTask() override;
 
@@ -38,11 +41,16 @@ namespace Mengine
         void join() override;
 
     public:
+        bool isCurrentThread() const override;
+
+    public:
         EThreadPriority getPriority() const;
 
     protected:
         EThreadPriority m_priority;
         ConstString m_name;
+
+        SDL_threadID m_threadId;
 
         ThreadMutexInterfacePtr m_mutex;
 

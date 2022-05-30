@@ -3460,7 +3460,11 @@ namespace Mengine
                     PLAYER_SERVICE()
                         ->calcGlobalMouseWorldPosition( point, &wp );
 
-                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
+                    InputMouseButtonEvent ev = _event;
+                    ev.x = wp.x;
+                    ev.y = wp.y;
+
+                    pybind::object py_result = m_cb.call_args( ev, m_args );
 
                     if( py_result.is_none() == false )
                     {
@@ -3508,7 +3512,11 @@ namespace Mengine
                     PLAYER_SERVICE()
                         ->calcGlobalMouseWorldPosition( point, &wp );
 
-                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
+                    InputMouseButtonEvent ev = _event;
+                    ev.x = wp.x;
+                    ev.y = wp.y;
+
+                    pybind::object py_result = m_cb.call_args( ev, m_args );
 
                     if( py_result.is_none() == false )
                     {
@@ -3556,7 +3564,11 @@ namespace Mengine
                     PLAYER_SERVICE()
                         ->calcGlobalMouseWorldPosition( point, &wp );
 
-                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
+                    InputMouseButtonEvent ev = _event;
+                    ev.x = wp.x;
+                    ev.y = wp.y;
+
+                    pybind::object py_result = m_cb.call_args( ev, m_args );
 
                     if( py_result.is_none() == false )
                     {
@@ -3600,7 +3612,7 @@ namespace Mengine
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( _event.x, _event.y, _event.scroll, m_args );
+                    pybind::object py_result = m_cb.call_args( _event, m_args );
 
                     if( py_result.is_none() == false )
                     {
@@ -3686,7 +3698,7 @@ namespace Mengine
             protected:
                 bool handleTextEvent( const InputTextEvent & _event ) override
                 {
-                    pybind::object py_result = m_cb.call_args( _event.symbol, _event.x, _event.y, m_args );
+                    pybind::object py_result = m_cb.call_args( _event, m_args );
 
                     if( py_result.is_none() == false )
                     {

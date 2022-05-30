@@ -73,7 +73,7 @@ namespace Mengine
             }
 
             if( THREAD_SERVICE()
-                ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate ) == false )
+                ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 return false;
             }

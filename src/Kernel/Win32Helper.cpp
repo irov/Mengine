@@ -79,15 +79,15 @@ namespace Mengine
             return dllPath;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t Win32GetCurrentThreadId()
+        uint64_t Win32GetCurrentThreadId()
         {
 #if defined(MENGINE_PLATFORM_WINDOWS)
-            uint32_t id = ::GetCurrentThreadId();
+            DWORD id = ::GetCurrentThreadId();
 #else
-            uint32_t id = 0;
+            DWORD id = 0;
 #endif
 
-            return id;
+            return (uint64_t)id;
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetLastErrorMessage()

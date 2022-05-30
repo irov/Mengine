@@ -26,10 +26,10 @@ namespace Mengine
         virtual bool destroyThread( const ConstString & _threadName ) = 0;
 
     public:
-        virtual bool hasThread( const ConstString & _name ) const = 0;
+        virtual bool hasThread( const ConstString & _threadName ) const = 0;
 
     public:
-        virtual bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) = 0;
+        virtual bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentPtr & _doc ) = 0;
         virtual bool joinTask( const ThreadTaskInterfacePtr & _task ) = 0;
 
     public:
@@ -48,6 +48,10 @@ namespace Mengine
     public:
         virtual bool isMainThread() const = 0;
         virtual uint64_t getMainThreadId() const = 0;
+
+    public:
+        virtual const ConstString & getCurrentThreadName() const = 0;
+        virtual const ConstString & findThreadNameById( uint64_t _id ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

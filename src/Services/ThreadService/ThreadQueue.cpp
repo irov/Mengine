@@ -151,12 +151,13 @@ namespace Mengine
 
             if( packet->countTask() > 0 )
             {
-                m_threadSampler = (m_threadSampler + 1) % m_threads.size();
+                VectorThreads::size_type threadCount = m_threads.size();
+                m_threadSampler = (m_threadSampler + 1) % threadCount;
 
                 const ConstString & threadName = m_threads[m_threadSampler];
 
                 if( THREAD_SERVICE()
-                    ->addTask( threadName, packet ) == false )
+                    ->addTask( threadName, packet, MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     uint32_t count = packet->countTask();
 

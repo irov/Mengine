@@ -7,34 +7,38 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ThreadGuard::ThreadGuard()
-        : m_id( 0 )
-        , m_lock( false )
+        : m_lock( false )
+        , m_lockThreadId( 0 )
     {
-        uint32_t id = Helper::Win32GetCurrentThreadId();
+        uint64_t id = Helper::Win32GetCurrentThreadId();
 
-        m_id = id;
+        m_initThreadId = id;
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadGuard::~ThreadGuard()
     {
-
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t ThreadGuard::getLockThreadId() const
+    {
+        return m_lockThreadId;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadGuard::reset()
     {
-        m_id = 0;
+        m_initThreadId = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadGuard::check( const Char * _doc ) const
     {
-        if( m_id == 0 )
+        if( m_initThreadId == 0 )
         {
             return;
         }
 
-        uint32_t id = Helper::Win32GetCurrentThreadId();
+        uint64_t id = Helper::Win32GetCurrentThreadId();
 
-        if( m_id == id )
+        if( m_initThreadId == id )
         {
             return;
         }
@@ -45,6 +49,9 @@ namespace Mengine
     bool ThreadGuard::lock( bool _value ) const
     {
         bool lock = m_lock;
+
+        //ToDo
+        m_lockThreadId = Helper::Win32GetCurrentThreadId();
 
         m_lock = _value;
 

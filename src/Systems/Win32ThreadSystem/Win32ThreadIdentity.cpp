@@ -48,10 +48,37 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #endif
         //////////////////////////////////////////////////////////////////////////
+        static DWORD WINAPI s_treadJob( LPVOID lpThreadParameter )
+        {
+            Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity *>(lpThreadParameter);
+
+#ifdef MENGINE_DEBUG
+            try
+#endif
+            {
+                thread->main();
+            }
+#ifdef MENGINE_DEBUG
+            catch( const std::exception & ex )
+            {
+                LOGGER_ERROR( "std::exception exception '%s'"
+                    , ex.what()
+                );
+            }
+            catch( ... )
+            {
+                LOGGER_ERROR( "unknown exception" );
+            }
+#endif
+
+            ::ExitThread( 0 );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadIdentity::Win32ThreadIdentity()
         : m_thread( INVALID_HANDLE_VALUE )
+        , m_threadId( 0 )
         , m_task( nullptr )
         , m_exit( false )
     {
@@ -59,32 +86,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadIdentity::~Win32ThreadIdentity()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static DWORD WINAPI s_tread_job( LPVOID lpThreadParameter )
-    {
-        Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity *>(lpThreadParameter);
-
-#ifdef MENGINE_DEBUG
-        try
-#endif
-        {
-            thread->main();
-        }
-#ifdef MENGINE_DEBUG
-        catch( const std::exception & ex )
-        {
-            LOGGER_ERROR( "std::exception exception '%s'"
-                , ex.what()
-            );
-        }
-        catch( ... )
-        {
-            LOGGER_ERROR( "unknown exception" );
-        }
-#endif
-
-        ::ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
@@ -107,7 +108,7 @@ namespace Mengine
         ::InitializeConditionVariable( &m_conditionVariable );
 #endif
 
-        HANDLE thread = ::CreateThread( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
+        HANDLE thread = ::CreateThread( NULL, 0, &Detail::s_treadJob, (LPVOID)this, 0, NULL );
 
         if( thread == NULL )
         {
@@ -165,8 +166,27 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32ThreadIdentity::finalize()
+    {
+        ::CloseHandle( m_thread );
+        m_thread = INVALID_HANDLE_VALUE;
+
+        ::DeleteCriticalSection( &m_taskLock );
+        ::DeleteCriticalSection( &m_processLock );
+
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+        ::DeleteCriticalSection( &m_conditionLock );
+#endif
+
+        m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
     {
+        DWORD threadId = ::GetCurrentThreadId();
+
+        m_threadId = (uint64_t)threadId;
+
         ALLOCATOR_SERVICE()
             ->startThread();
 
@@ -218,6 +238,11 @@ namespace Mengine
 
         ALLOCATOR_SERVICE()
             ->stopThread();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t Win32ThreadIdentity::getThreadId() const
+    {
+        return m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
@@ -294,17 +319,20 @@ namespace Mengine
 #endif
 
         ::WaitForSingleObject( m_thread, INFINITE );
-        ::CloseHandle( m_thread );
-        m_thread = INVALID_HANDLE_VALUE;
 
-        ::DeleteCriticalSection( &m_taskLock );
-        ::DeleteCriticalSection( &m_processLock );
+        this->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32ThreadIdentity::isCurrentThread() const
+    {
+        HANDLE handle = ::GetCurrentThread();
 
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
-        ::DeleteCriticalSection( &m_conditionLock );
-#endif
+        if( m_thread != handle )
+        {
+            return false;
+        }
 
-        m_mutex = nullptr;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

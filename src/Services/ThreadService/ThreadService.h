@@ -33,10 +33,10 @@ namespace Mengine
         bool destroyThread( const ConstString & _threadName ) override;
 
     public:
-        bool hasThread( const ConstString & _name ) const override;
+        bool hasThread( const ConstString & _threadName ) const override;
 
     public:
-        bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) override;
+        bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentPtr & _doc ) override;
         bool joinTask( const ThreadTaskInterfacePtr & _task ) override;
 
     public:
@@ -59,8 +59,14 @@ namespace Mengine
         bool isMainThread() const override;
         uint64_t getMainThreadId() const override;
 
+    public:
+        const ConstString & getCurrentThreadName() const override;
+        const ConstString & findThreadNameById( uint64_t _id ) const override;
+
     protected:
         uint32_t m_threadCount;
+
+        ThreadMutexInterfacePtr m_mutex;
 
         struct ThreadTaskDesc
         {
@@ -69,6 +75,10 @@ namespace Mengine
             ConstString threadName;
             bool progress;
             bool complete;
+
+#if MENGINE_DOCUMENT_ENABLE
+            DocumentPtr doc;
+#endif
         };
 
         typedef Vector<ThreadTaskDesc> VectorThreadTaskDesc;

@@ -79,7 +79,7 @@ namespace Mengine
             }
 
             if( THREAD_SERVICE()
-                ->addTask( _threadName, threadJob ) == false )
+                ->addTask( _threadName, threadJob, _doc ) == false )
             {
                 return false;
             }

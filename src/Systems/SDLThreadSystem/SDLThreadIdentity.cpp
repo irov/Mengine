@@ -8,8 +8,55 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static int s_treadJob( void * _userData )
+        {
+            SDLThreadIdentity * thread = reinterpret_cast<SDLThreadIdentity *>(_userData);
+
+            EThreadPriority priority = thread->getPriority();
+
+            switch( priority )
+            {
+            case ETP_LOWEST:
+                {
+                    SDL_SetThreadPriority( SDL_THREAD_PRIORITY_LOW );
+                }break;
+            case ETP_BELOW_NORMAL:
+                {
+                    SDL_SetThreadPriority( SDL_THREAD_PRIORITY_LOW );
+                }break;
+            case ETP_NORMAL:
+                {
+                    SDL_SetThreadPriority( SDL_THREAD_PRIORITY_NORMAL );
+                }break;
+            case ETP_ABOVE_NORMAL:
+                {
+                    SDL_SetThreadPriority( SDL_THREAD_PRIORITY_NORMAL );
+                }break;
+            case ETP_HIGHEST:
+                {
+                    SDL_SetThreadPriority( SDL_THREAD_PRIORITY_HIGH );
+                }break;
+            case ETP_TIME_CRITICAL:
+                {
+                    SDL_SetThreadPriority( SDL_THREAD_PRIORITY_TIME_CRITICAL );
+                }break;
+            default:
+                break;
+            }
+
+            thread->main();
+
+            return 0;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::SDLThreadIdentity()
         : m_priority( ETP_NORMAL )
+        , m_threadId( 0 )
         , m_thread( nullptr )
         , m_taskLock( nullptr )
         , m_processLock( nullptr )
@@ -22,47 +69,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::~SDLThreadIdentity()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static int s_tread_job( void * _userData )
-    {
-        SDLThreadIdentity * thread = reinterpret_cast<SDLThreadIdentity *>(_userData);
-
-        EThreadPriority priority = thread->getPriority();
-
-        switch( priority )
-        {
-        case ETP_LOWEST:
-            {
-                SDL_SetThreadPriority( SDL_THREAD_PRIORITY_LOW );
-            }break;
-        case ETP_BELOW_NORMAL:
-            {
-                SDL_SetThreadPriority( SDL_THREAD_PRIORITY_LOW );
-            }break;
-        case ETP_NORMAL:
-            {
-                SDL_SetThreadPriority( SDL_THREAD_PRIORITY_NORMAL );
-            }break;
-        case ETP_ABOVE_NORMAL:
-            {
-                SDL_SetThreadPriority( SDL_THREAD_PRIORITY_NORMAL );
-            }break;
-        case ETP_HIGHEST:
-            {
-                SDL_SetThreadPriority( SDL_THREAD_PRIORITY_HIGH );
-            }break;
-        case ETP_TIME_CRITICAL:
-            {
-                SDL_SetThreadPriority( SDL_THREAD_PRIORITY_TIME_CRITICAL );
-            }break;
-        default:
-            break;
-        }
-
-        thread->main();
-
-        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadIdentity::initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
@@ -129,7 +135,7 @@ namespace Mengine
         m_conditionLock = conditionLock;
         m_conditionVariable = conditionVariable;
 
-        SDL_Thread * thread = SDL_CreateThread( &s_tread_job, m_name.c_str(), reinterpret_cast<void *>(this) );
+        SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_name.c_str(), reinterpret_cast<void *>(this) );
 
         if( thread == nullptr )
         {
@@ -147,6 +153,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::main()
     {
+        m_threadId = SDL_ThreadID();
+
         ALLOCATOR_SERVICE()
             ->startThread();
 
@@ -223,6 +231,11 @@ namespace Mengine
 
         ALLOCATOR_SERVICE()
             ->stopThread();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t SDLThreadIdentity::getThreadId() const
+    {
+        return (uint64_t)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadIdentity::processTask( ThreadTaskInterface * _task )
@@ -369,6 +382,18 @@ namespace Mengine
 
         m_thread = nullptr;
         m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLThreadIdentity::isCurrentThread() const
+    {
+        SDL_threadID threadId = SDL_ThreadID();
+
+        if( m_threadId != threadId )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     EThreadPriority SDLThreadIdentity::getPriority() const

@@ -13,6 +13,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include "Config/Algorithm.h"
 
@@ -38,6 +39,9 @@ namespace Mengine
         m_factoryThreadJob = Helper::makeFactoryPool<ThreadJob, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
+
+        m_mutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
@@ -78,6 +82,8 @@ namespace Mengine
         }
 
         m_threads.clear();
+
+        m_mutex = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadJob );
@@ -146,11 +152,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::hasThread( const ConstString & _name ) const
+    bool ThreadService::hasThread( const ConstString & _threadName ) const
     {
         for( const ThreadDesc & td : m_threads )
         {
-            if( td.name == _name )
+            if( td.name == _threadName )
             {
                 return true;
             }
@@ -159,8 +165,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task )
+    bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentPtr & _doc )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _task, "thread [%s] add null task (doc: %s)"
+            , _threadName.c_str()
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
+
         if( this->hasThread( _threadName ) == false )
         {
             return false;
@@ -174,10 +185,18 @@ namespace Mengine
         desc.progress = false;
         desc.complete = false;
 
-        m_tasks.emplace_back( desc );
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
 
+        m_mutex->lock();
+        m_tasks.emplace_back( desc );
+        m_mutex->unlock();
+
+        m_mutex->lock();
         ThreadTaskDesc & try_desc = m_tasks.back();
         this->tryFastProcessTask_( try_desc );
+        m_mutex->unlock();
 
         return true;
     }
@@ -185,6 +204,8 @@ namespace Mengine
     bool ThreadService::joinTask( const ThreadTaskInterfacePtr & _task )
     {
         _task->cancel();
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( VectorThreadTaskDesc::iterator
             it = m_tasks.begin(),
@@ -212,6 +233,8 @@ namespace Mengine
             *it = m_tasks.back();
             m_tasks.pop_back();
 
+            m_mutex->unlock();
+
             return true;
         }
 
@@ -220,6 +243,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::stopTasks()
     {
+        m_mutex->lock();
+
         for( const ThreadTaskDesc & desc : m_tasks )
         {
             const ThreadTaskInterfacePtr & task = desc.task;
@@ -236,6 +261,8 @@ namespace Mengine
         }
 
         m_tasks.clear();
+
+        m_mutex->unlock();
 
         for( const ThreadQueuePtr & queue : m_threadQueues )
         {
@@ -297,6 +324,8 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////
     void ThreadService::update()
     {
+        m_mutex->lock();
+
         for( ThreadTaskDesc & desc_task : m_tasks )
         {
             if( desc_task.complete == true )
@@ -335,6 +364,10 @@ namespace Mengine
             }
         }
 
+        m_mutex->unlock();
+
+        m_mutex->lock();
+
         for( VectorThreadTaskDesc::size_type
             it_task = 0,
             it_task_end = m_tasks.size();
@@ -358,6 +391,8 @@ namespace Mengine
                 --it_task_end;
             }
         }
+
+        m_mutex->unlock();
 
         for( VectorThreadQueues::size_type
             it_task = 0,
@@ -412,6 +447,46 @@ namespace Mengine
     uint64_t ThreadService::getMainThreadId() const
     {
         return m_mainThreadId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ThreadService::getCurrentThreadName() const
+    {
+        if( this->isMainThread() == true )
+        {
+            return STRINGIZE_STRING_LOCAL( "MengineMainThread" );
+        }
+
+        for( const ThreadDesc & desc : m_threads )
+        {
+            if( desc.identity->isCurrentThread() == false )
+            {
+                continue;
+            }
+
+            return desc.name;
+        }
+
+        return STRINGIZE_STRING_LOCAL( "MengineUnknownThread" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ThreadService::findThreadNameById( uint64_t _id ) const
+    {
+        if( m_mainThreadId == _id )
+        {
+            return STRINGIZE_STRING_LOCAL( "MengineMainThread" );
+        }
+
+        for( const ThreadDesc & desc : m_threads )
+        {
+            if( desc.identity->isCurrentThread() == false )
+            {
+                continue;
+            }
+
+            return desc.name;
+        }
+
+        return STRINGIZE_STRING_LOCAL( "MengineUnknownThread" );
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::tryFastProcessTask_( ThreadTaskDesc & _desc )

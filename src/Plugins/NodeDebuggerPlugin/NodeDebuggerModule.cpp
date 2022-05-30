@@ -643,7 +643,7 @@ namespace Mengine
             ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
         THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob );
+            ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE );
 
         m_dataMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );

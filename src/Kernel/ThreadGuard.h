@@ -21,12 +21,16 @@ namespace Mengine
         ~ThreadGuard();
 
     public:
+        uint64_t getLockThreadId() const;
+
+    public:
         void reset();
         void check( const Char * _doc ) const;
         bool lock( bool _value ) const;
 
     protected:
-        AtomicUInt32 m_id;
+        uint64_t m_initThreadId;
+        mutable uint64_t m_lockThreadId;
         mutable AtomicBool m_lock;
     };
 }

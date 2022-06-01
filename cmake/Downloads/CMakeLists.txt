@@ -57,7 +57,7 @@ GIT_CLONE(box2d https://github.com/erincatto/Box2D.git "v2.4.0")
 GIT_CLONE(graphics https://github.com/irov/graphics.git)
 GIT_CLONE(cmake-modules https://github.com/rpavlik/cmake-modules.git "228f41efa54d6b552f5ef65e5ef46b14f8316f8b")
 GIT_CLONE(openssl https://github.com/janbar/openssl-cmake.git "1.1.1n-20220327")
-GIT_CLONE(rpmalloc https://github.com/mjansson/rpmalloc.git "1.4.3")
+GIT_CLONE(rpmalloc https://github.com/mjansson/rpmalloc.git "1.4.4")
 GIT_CLONE(libspng https://github.com/randy408/libspng.git "v0.7.1")
 
 IF(WIN32)

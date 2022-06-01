@@ -23,6 +23,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadQueue::initialize()
     {
+        m_mutex = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
         m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -30,6 +33,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::finalize()
     {
+        m_mutex = nullptr;
+
         m_threads.clear();
         m_threadTasks.clear();
         m_currentThreadTasks.clear();
@@ -60,7 +65,9 @@ namespace Mengine
 
         _task->preparation();
 
+        m_mutex->lock();
         m_threadTasks.emplace_back( _task );
+        m_mutex->unlock();
 
         for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
         {
@@ -85,10 +92,14 @@ namespace Mengine
 
         m_currentThreadTasks.clear();
 
-        while( m_threadTasks.empty() == false )
+        m_mutex->lock();
+        ListThreadTasks threadTasks = std::move( m_threadTasks );
+        m_mutex->unlock();
+
+        while( threadTasks.empty() == false )
         {
-            ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
-            m_threadTasks.pop_front();
+            ThreadTaskInterfacePtr threadTask = threadTasks.front();
+            threadTasks.pop_front();
 
             threadTask->cancel();
         }
@@ -113,67 +124,79 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask )
     {
-        if( _currentTask == nullptr ||
-            _currentTask->isComplete() == true ||
-            _currentTask->isCancel() == true )
+        if( _currentTask != nullptr &&
+            _currentTask->isComplete() == false &&
+            _currentTask->isCancel() == false )
         {
-            _currentTask = nullptr;
-
-            if( m_threadTasks.empty() == true )
-            {
-                return;
-            }
-
-            ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-            if( packet->initialize( m_packetSize ) == false )
-            {
-                return;
-            }
-
-            uint32_t packetIterator = m_packetSize;
-
-            while( m_threadTasks.empty() == false && packetIterator > 0 )
-            {
-                ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
-                m_threadTasks.pop_front();
-
-                if( threadTask->isComplete() == true ||
-                    threadTask->isCancel() == true )
-                {
-                    continue;
-                }
-
-                packet->addTask( threadTask );
-
-                --packetIterator;
-            }
-
-            if( packet->countTask() > 0 )
-            {
-                VectorThreads::size_type threadCount = m_threads.size();
-                m_threadSampler = (m_threadSampler + 1) % threadCount;
-
-                const ConstString & threadName = m_threads[m_threadSampler];
-
-                if( THREAD_SERVICE()
-                    ->addTask( threadName, packet, MENGINE_DOCUMENT_FACTORABLE ) == false )
-                {
-                    uint32_t count = packet->countTask();
-
-                    for( uint32_t i = 0; i != count; ++i )
-                    {
-                        const ThreadTaskPtr & task = packet->getTask( i );
-
-                        m_threadTasks.emplace_back( task );
-                    }
-
-                    return;
-                }
-
-                _currentTask = packet;
-            }
+            return;
         }
+
+        _currentTask = nullptr;
+
+        m_mutex->lock();
+        if( m_threadTasks.empty() == true )
+        {
+            m_mutex->unlock();
+
+            return;
+        }
+        m_mutex->unlock();
+
+        ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( packet->initialize( m_packetSize ) == false )
+        {
+            return;
+        }
+
+        uint32_t packetIterator = m_packetSize;
+
+        m_mutex->lock();        
+        while( m_threadTasks.empty() == false && packetIterator != 0 )
+        {
+            ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
+            m_threadTasks.pop_front();
+
+            if( threadTask->isComplete() == true ||
+                threadTask->isCancel() == true )
+            {
+                continue;
+            }
+
+            packet->addTask( threadTask );
+
+            --packetIterator;
+        }
+        m_mutex->unlock();
+
+        if( packet->countTask() == 0 )
+        {
+            return;
+        }
+
+        VectorThreads::size_type threadCount = m_threads.size();
+        m_threadSampler = (m_threadSampler + 1) % threadCount;
+
+        const ConstString & threadName = m_threads[m_threadSampler];
+
+        if( THREAD_SERVICE()
+            ->addTask( threadName, packet, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            uint32_t count = packet->countTask();
+
+            m_mutex->lock();
+            for( uint32_t i = 0; i != count; ++i )
+            {
+                const ThreadTaskPtr & task = packet->getTask( i );
+
+                m_threadTasks.emplace_back( task );
+            }
+            m_mutex->unlock();
+
+            return;
+        }
+
+        _currentTask = packet;
     }
     //////////////////////////////////////////////////////////////////////////
 }

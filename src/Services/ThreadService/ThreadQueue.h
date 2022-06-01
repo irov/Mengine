@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ThreadQueueInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ThreadTaskPacket.h"
 #include "Kernel/ConstString.h"
@@ -45,6 +46,8 @@ namespace Mengine
     protected:
         uint32_t m_packetSize;
         uint32_t m_threadSampler;
+
+        ThreadMutexInterfacePtr m_mutex;
 
         typedef Vector<ConstString> VectorThreads;
         VectorThreads m_threads;

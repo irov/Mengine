@@ -62,7 +62,7 @@ namespace Mengine
     static char * stdex_curl_strdup_callback( const char * str )
     {
         size_t len = MENGINE_STRLEN( str ) + 1;
-        
+
         void * p = Helper::allocateMemory( len, "curl" );
 
         if( p == nullptr )
@@ -74,7 +74,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     static void * stdex_curl_calloc_callback( size_t _nmemb, size_t _size )
-    { 
+    {
         void * p = Helper::callocateMemory( _nmemb, _size, "curl" );
 
         return p;
@@ -178,16 +178,6 @@ namespace Mengine
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
-
-        m_factoryTaskDownloadAsset = nullptr;
-        m_factoryTaskPostMessage = nullptr;
-        m_factoryTaskHeaderData = nullptr;
-        m_factoryTaskGetMessage = nullptr;
-
 #ifdef MENGINE_DEBUG
         for( const RequestListenerDesk & desc : m_networkListeners )
         {
@@ -197,6 +187,19 @@ namespace Mengine
             );
         }
 #endif
+
+        m_receiverDescs.clear();
+        m_networkListeners.clear();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
+
+        m_factoryTaskDownloadAsset = nullptr;
+        m_factoryTaskPostMessage = nullptr;
+        m_factoryTaskHeaderData = nullptr;
+        m_factoryTaskGetMessage = nullptr;
 
         curl_global_cleanup();
     }
@@ -256,7 +259,7 @@ namespace Mengine
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
-        
+
         if( task->initialize() == false )
         {
             return 0;
@@ -307,7 +310,7 @@ namespace Mengine
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
-        
+
         if( task->initialize( _params ) == false )
         {
             return 0;
@@ -358,7 +361,7 @@ namespace Mengine
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
-        
+
         if( task->initialize( _data ) == false )
         {
             return 0;
@@ -414,7 +417,7 @@ namespace Mengine
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
-        
+
         if( task->initialize( _login, _password, _fileGroup, _filePath, filePathTmp ) == false )
         {
             LOGGER_ERROR( "url '%s' file '%s' invalid initialize task"
@@ -492,10 +495,10 @@ namespace Mengine
     void cURLService::removeRequestListener( int32_t _id )
     {
         m_networkListeners.erase( Algorithm::remove_if( m_networkListeners.begin(), m_networkListeners.end(),
-            [_id]( const RequestListenerDesk  & _desc )
+            [_id]( const RequestListenerDesk & _desc )
         {
             return _desc.id == _id;
-        } ));
+        } ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::onHttpRequestComplete( const cURLResponseData & _response )

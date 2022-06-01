@@ -40,44 +40,49 @@ SERVICE_FACTORY( cURLService, Mengine::cURLService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void * stdex_curl_malloc_callback( size_t _size )
+    namespace Detail
     {
-        void * p = Helper::allocateMemory( _size, "curl" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void stdex_curl_free_callback( void * _ptr )
-    {
-        Helper::deallocateMemory( _ptr, "curl" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * stdex_curl_realloc_callback( void * _ptr, size_t _size )
-    {
-        void * p = Helper::reallocateMemory( _ptr, _size, "curl" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static char * stdex_curl_strdup_callback( const char * str )
-    {
-        size_t len = MENGINE_STRLEN( str ) + 1;
-
-        void * p = Helper::allocateMemory( len, "curl" );
-
-        if( p == nullptr )
+        //////////////////////////////////////////////////////////////////////////
+        static void * stdex_curl_malloc_callback( size_t _size )
         {
-            return nullptr;
+            void * p = Helper::allocateMemory( _size, "curl" );
+
+            return p;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static void stdex_curl_free_callback( void * _ptr )
+        {
+            Helper::deallocateMemory( _ptr, "curl" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * stdex_curl_realloc_callback( void * _ptr, size_t _size )
+        {
+            void * p = Helper::reallocateMemory( _ptr, _size, "curl" );
 
-        return (char *)MENGINE_MEMCPY( p, str, len );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * stdex_curl_calloc_callback( size_t _nmemb, size_t _size )
-    {
-        void * p = Helper::callocateMemory( _nmemb, _size, "curl" );
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static char * stdex_curl_strdup_callback( const char * str )
+        {
+            size_t len = MENGINE_STRLEN( str ) + 1;
 
-        return p;
+            void * p = Helper::allocateMemory( len, "curl" );
+
+            if( p == nullptr )
+            {
+                return nullptr;
+            }
+
+            return (char *)MENGINE_MEMCPY( p, str, len );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * stdex_curl_calloc_callback( size_t _nmemb, size_t _size )
+        {
+            void * p = Helper::callocateMemory( _nmemb, _size, "curl" );
+
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     cURLService::cURLService()
@@ -96,11 +101,11 @@ namespace Mengine
     bool cURLService::_initializeService()
     {
         CURLcode code = curl_global_init_mem( CURL_GLOBAL_ALL
-            , &stdex_curl_malloc_callback
-            , &stdex_curl_free_callback
-            , &stdex_curl_realloc_callback
-            , &stdex_curl_strdup_callback
-            , &stdex_curl_calloc_callback );
+            , &Detail::stdex_curl_malloc_callback
+            , &Detail::stdex_curl_free_callback
+            , &Detail::stdex_curl_realloc_callback
+            , &Detail::stdex_curl_strdup_callback
+            , &Detail::stdex_curl_calloc_callback );
 
         if( code != CURLE_OK )
         {

@@ -3413,7 +3413,13 @@ namespace Mengine
                     PLAYER_SERVICE()
                         ->calcGlobalMouseWorldDelta( delta, &wd );
 
-                    pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, wd.x, wd.y, m_args );
+                    InputMouseMoveEvent ev = _event;
+                    ev.x = wp.x;
+                    ev.y = wp.y;
+                    ev.dx = wd.x;
+                    ev.dy = wd.y;
+
+                    pybind::object py_result = m_cb.call_args( ev, m_args );
 
                     if( py_result.is_none() == false )
                     {

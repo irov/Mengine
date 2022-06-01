@@ -56,9 +56,9 @@ namespace Mengine
         const AffectorHubInterfacePtr & getGlobalAffectorHub() const override;
 
     public:
-        const RenderCameraOrthogonalPtr & getDefaultCamera2D() const override;
-        const RenderViewportPtr & getDefaultViewport2D() const override;
-        const RenderCameraOrthogonalPtr & getDefaultArrowCamera2D() const override;
+        const RenderCameraOrthogonalPtr & getDefaultSceneRenderCamera2D() const override;
+        const RenderViewportPtr & getDefaultRenderViewport2D() const override;
+        const RenderCameraOrthogonalPtr & getDefaultArrowRenderCamera2D() const override;
 
     public:
         void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;

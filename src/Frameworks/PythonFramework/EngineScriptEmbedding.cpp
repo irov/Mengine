@@ -1661,6 +1661,30 @@ namespace Mengine
                     ->sleep( _time );
             }
             //////////////////////////////////////////////////////////////////////////
+            const RenderCameraOrthogonalPtr & s_getDefaultSceneRenderCamera2D()
+            {
+                const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
+                    ->getDefaultSceneRenderCamera2D();
+
+                return camera;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const RenderViewportPtr & s_getDefaultRenderViewport2D()
+            {
+                const RenderViewportPtr & viewport = PLAYER_SERVICE()
+                    ->getDefaultRenderViewport2D();
+
+                return viewport;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const RenderCameraOrthogonalPtr & s_getDefaultArrowRenderCamera2D()
+            {
+                const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
+                    ->getDefaultArrowRenderCamera2D();
+
+                return camera;
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_mountResourcePackage( const ConstString & _fileGroupName
                 , const ConstString & _name
                 , const ConstString & _type
@@ -4325,6 +4349,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "getProjectCodename", nodeScriptMethod, &EngineScriptMethod::s_getProjectCodename );
 
         pybind::def_functor( _kernel, "sleep", nodeScriptMethod, &EngineScriptMethod::s_sleep );
+
+        pybind::def_functor( _kernel, "getDefaultSceneRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultSceneRenderCamera2D );
+        pybind::def_functor( _kernel, "getDefaultRenderViewport2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultRenderViewport2D );
+        pybind::def_functor( _kernel, "getDefaultArrowRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultArrowRenderCamera2D );
 
 
 

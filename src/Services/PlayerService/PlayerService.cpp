@@ -596,17 +596,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderCameraOrthogonalPtr & PlayerService::getDefaultCamera2D() const
+    const RenderCameraOrthogonalPtr & PlayerService::getDefaultSceneRenderCamera2D() const
     {
         return m_defaultCamera2D;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderViewportPtr & PlayerService::getDefaultViewport2D() const
+    const RenderViewportPtr & PlayerService::getDefaultRenderViewport2D() const
     {
         return m_defaultViewport2D;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderCameraOrthogonalPtr & PlayerService::getDefaultArrowCamera2D() const
+    const RenderCameraOrthogonalPtr & PlayerService::getDefaultArrowRenderCamera2D() const
     {
         return m_defaultArrowCamera2D;
     }

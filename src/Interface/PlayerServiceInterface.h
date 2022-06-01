@@ -53,9 +53,9 @@ namespace Mengine
         virtual bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) = 0;
 
     public:
-        virtual const RenderCameraOrthogonalPtr & getDefaultCamera2D() const = 0;
-        virtual const RenderViewportPtr & getDefaultViewport2D() const = 0;
-        virtual const RenderCameraOrthogonalPtr & getDefaultArrowCamera2D() const = 0;
+        virtual const RenderCameraOrthogonalPtr & getDefaultSceneRenderCamera2D() const = 0;
+        virtual const RenderViewportPtr & getDefaultRenderViewport2D() const = 0;
+        virtual const RenderCameraOrthogonalPtr & getDefaultArrowRenderCamera2D() const = 0;
 
     public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _renderViewport ) = 0;

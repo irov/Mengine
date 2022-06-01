@@ -83,11 +83,11 @@ namespace Mengine
         {
 #if defined(MENGINE_PLATFORM_WINDOWS)
             DWORD id = ::GetCurrentThreadId();
-#else
-            DWORD id = 0;
-#endif
 
             return (uint64_t)id;
+#else
+            return 0;
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetLastErrorMessage()

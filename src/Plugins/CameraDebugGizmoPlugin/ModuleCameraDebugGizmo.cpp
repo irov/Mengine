@@ -40,7 +40,7 @@ namespace Mengine
             }
 
             const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
-                ->getDefaultCamera2D();
+                ->getDefaultSceneRenderCamera2D();
 
             const mt::vec2f & camera_offset = camera->getCameraOffset();
             const mt::vec2f & camera_scale = camera->getCameraScale();
@@ -92,7 +92,7 @@ namespace Mengine
             }
 
             const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
-                ->getDefaultCamera2D();
+                ->getDefaultSceneRenderCamera2D();
 
             const mt::vec2f & camera_offset = camera->getCameraOffset();
 
@@ -109,7 +109,7 @@ namespace Mengine
             MENGINE_UNUSED( _event );
 
             const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
-                ->getDefaultCamera2D();
+                ->getDefaultSceneRenderCamera2D();
 
             camera->setCameraOffset( mt::vec2f( 0.f, 0.f ) );
             camera->setCameraScale( mt::vec2f( 1.f, 1.f ) );

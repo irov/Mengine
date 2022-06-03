@@ -321,6 +321,10 @@ PLUGIN_EXPORT( AppleAppLovinPlugin );
 PLUGIN_EXPORT( AppleFacebookPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_REVIEW_STATIC
+PLUGIN_EXPORT( AppleReviewPlugin );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
 PLUGIN_EXPORT( AppleAdjustPlugin );
 #endif
@@ -1151,6 +1155,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
         MENGINE_ADD_PLUGIN( AppleFacebookPlugin, "Plugin Apple Facebook...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_REVIEW_STATIC
+        MENGINE_ADD_PLUGIN( AppleReviewPlugin, "Plugin Apple Raview...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
         
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC

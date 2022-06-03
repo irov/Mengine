@@ -11,12 +11,14 @@ buildscript {
 }
 
 allprojects {
-    project.ext.ndkVersion = '22.0.7026061'
-    project.ext.buildToolsVersion = '31.0.0'
-    project.ext.cmakeVersion = "3.18.1"
-    project.ext.minSdkVersion = 19
-    project.ext.targetSdkVersion = 32
-    project.ext.compileSdkVersion = 32
+    project.ext {
+        ndkVersion = '22.0.7026061'
+        buildToolsVersion = '31.0.0'
+        cmakeVersion = "3.18.1"
+        minSdkVersion = 19
+        targetSdkVersion = 32
+        compileSdkVersion = 32
+    }
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {

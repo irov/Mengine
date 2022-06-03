@@ -373,6 +373,18 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL", t
     println 'ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL: FALSE'
 }
 
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS", true) == true) {
+    println 'ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS: TRUE'
+
+    android.ext.plugins += 'org.Mengine.Plugin.GoogleInAppReviews.MengineGoogleInAppReviewsPlugin'
+
+    dependencies {
+        implementation project(':libraries:GoogleInAppReviews')
+    }
+} else {
+    println 'ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS: FALSE'
+}
+
 if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", false) == true) {
     println 'ANDROID_APP_ENABLE_ADJUST: TRUE'
 

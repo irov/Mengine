@@ -56,5 +56,6 @@ includePlugin("ANDROID_APP_ENABLE_GOOGLE_BILLING", true, ":libraries:GoogleBilli
 includePlugin("ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL",true, ":libraries:GoogleGameSocial")
 includePlugin("ANDROID_APP_ENABLE_MAR", false, ":libraries:MAR")
 includePlugin("ANDROID_APP_ENABLE_ADJUST", false, ":libraries:Adjust")
+includePlugin("ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS",true, ":libraries:GoogleInAppReviews")
 
 println("Complete settings")

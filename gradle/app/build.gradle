@@ -204,7 +204,7 @@ android {
     }
 
 
-    preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
+// test c++ debug -> preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
     afterEvaluate {
         if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {

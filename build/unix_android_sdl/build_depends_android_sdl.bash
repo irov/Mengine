@@ -5,7 +5,7 @@ BUILD_TYPE=$1
 echo Starting dependencies build $BUILD_TYPE configuration...
 
 ANDROID_NDK_VERSION=android-ndk-r22
-ANDROID_CMAKE_VERSION=3.10.2.4988404
+ANDROID_CMAKE_VERSION=3.18.1
 
 ANDROID_PLATFORM=android-19
 ANDROID_SDK=/opt/android/sdk

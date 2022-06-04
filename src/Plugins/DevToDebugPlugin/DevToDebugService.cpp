@@ -505,20 +505,20 @@ namespace Mengine
 
             jpp::object jtab = jpp::make_object();
 
-            tab->foreachWidgets( [&jtab, _force]( const DevToDebugWidgetInterfacePtr & _widget )
-            {
-                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
+            jpp::array jwidgets = jpp::make_array();
 
-                jpp::array jwidgets = jpp::make_array();
+            tab->foreachWidgets( [&jwidgets, _force]( const DevToDebugWidgetInterfacePtr & _widget )
+            {
+                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );                
 
                 jpp::object jwidget = jpp::make_object();
 
                 widget->fillJson( jwidget, _force );
 
-                jwidgets.push_back( jwidget );
-
-                jtab.set( "widgets", jwidgets );
+                jwidgets.push_back( jwidget );                
             } );
+
+            jtab.set( "widgets", jwidgets );
 
             jtabs.set( key, jtab );
         }

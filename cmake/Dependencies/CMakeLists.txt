@@ -579,7 +579,7 @@ if(MENGINE_DEPENDENCE_CURL)
     add_dependencies(libcurl zlib)
 endif()
 
-if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX OR MENGINE_TARGET_MACOS)
+if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/CMakeLists.txt ${THIRDPARTY_DIR}/sentry/CMakeLists.txt COPYONLY)

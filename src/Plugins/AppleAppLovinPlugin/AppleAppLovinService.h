@@ -23,10 +23,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool hasLoadedinterstitial() const override;
+        bool hasLoadedInterstitial() const override;
         bool showInterstitial() override;
 
-        bool hasLoadedrewarded() const override;
+        bool hasLoadedRewarded() const override;
         bool showRewarded() override;
 
     public:

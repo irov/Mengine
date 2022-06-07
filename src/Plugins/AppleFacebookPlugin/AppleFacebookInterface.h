@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 
 #include "Kernel/ConstString.h"
 
@@ -11,14 +11,13 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AppleFacebookProviderInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void onFacebookLoginSuccess( const Char * token ) = 0;
         virtual void onFacebookLoginCancel( ) = 0;
         
         virtual void onFacebookError( const Char * errorMessage ) = 0;
-        
         
         virtual void onFacebookShareSuccess( const Char * postId ) = 0;
         virtual void onFacebookShareCancel() = 0;
@@ -45,7 +44,6 @@ namespace Mengine
         virtual const Char * getAccessToken() const = 0;
         virtual void shareLink( const Char * link, const Char * picture ) = 0;
         virtual void getProfilePictureLink() = 0;
-        
     };
     //////////////////////////////////////////////////////////////////////////
 }

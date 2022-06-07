@@ -21,10 +21,10 @@ namespace Mengine
         SERVICE_DECLARE( "AppleAppLovinService" )
 
     public:
-        virtual bool hasLoadedinterstitial() const = 0;
+        virtual bool hasLoadedInterstitial() const = 0;
         virtual bool showInterstitial() = 0;
 
-        virtual bool hasLoadedrewarded() const = 0;
+        virtual bool hasLoadedRewarded() const = 0;
         virtual bool showRewarded() = 0;
 
     public:

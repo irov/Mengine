@@ -68,16 +68,18 @@ namespace Mengine
     {
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAdjustService::eventTraking(const ConstString& token) const
+    void AppleAdjustService::eventTraking( const ConstString & _token )
     {
-        ADJEvent *event = [ADJEvent eventWithEventToken: [NSString stringWithUTF8String:token.c_str()] ];
+        ADJEvent *event = [ADJEvent eventWithEventToken: [NSString stringWithUTF8String:_token.c_str()]];
+        
         [Adjust trackEvent:event];
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAdjustService::revenueTracking(const ConstString& token,double amount,const ConstString& currency) const
+    void AppleAdjustService::revenueTracking( const ConstString & _token, double _amount, const ConstString & _currency )
     {
-        ADJEvent *event = [ADJEvent eventWithEventToken: [NSString stringWithUTF8String:token.c_str()] ];
-        [event setRevenue:amount currency:[NSString stringWithUTF8String:currency.c_str()]];
+        ADJEvent *event = [ADJEvent eventWithEventToken: [NSString stringWithUTF8String:_token.c_str()]];
+        
+        [event setRevenue:_amount currency:[NSString stringWithUTF8String:_currency.c_str()]];
 
         [Adjust trackEvent:event];
     }

@@ -81,24 +81,32 @@ namespace Mengine
         m_banner = nil;
     }
     /////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::hasLoadedinterstitial() const
+    bool AppleAppLovinService::hasLoadedInterstitial() const
     {
-        return [m_interstitial hasLoaded];
+        BOOL result = [m_interstitial hasLoaded];
+        
+        return result;
     }
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::showInterstitial()
     {
-        return [m_interstitial show];
+        BOOL result = [m_interstitial show];
+        
+        return result;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::hasLoadedrewarded() const
+    bool AppleAppLovinService::hasLoadedRewarded() const
     {
-        return [m_rewarded hasLoaded];
+        BOOL result = [m_rewarded hasLoaded];
+        
+        return result;
     }
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::showRewarded()
     {
-        return [m_rewarded show];
+        BOOL result = [m_rewarded show];
+        
+        return result;
     }
     ////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::showBanner()

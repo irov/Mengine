@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class AppleMARSDKScriptEmbedding
+    class AppleAdjustScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        AppleMARSDKScriptEmbedding();
-        ~AppleMARSDKScriptEmbedding() override;
+        AppleAdjustScriptEmbedding();
+        ~AppleAdjustScriptEmbedding() override;
 
     public:
         bool embed( pybind::kernel_interface * _kernel ) override;

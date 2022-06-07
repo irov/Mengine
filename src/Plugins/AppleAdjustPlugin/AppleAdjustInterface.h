@@ -12,9 +12,8 @@ namespace Mengine
         SERVICE_DECLARE( "AppleAdjustService" )
 
     public:
-
-        virtual void eventTraking( const ConstString& token ) const = 0;
-        virtual void revenueTracking( const ConstString& token, double amount, const ConstString& currency ) const = 0;
+        virtual void eventTraking( const ConstString & _token ) = 0;
+        virtual void revenueTracking( const ConstString & _token, double _amount, const ConstString & _currency ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

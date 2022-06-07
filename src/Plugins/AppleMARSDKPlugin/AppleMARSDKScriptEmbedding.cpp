@@ -23,10 +23,8 @@ namespace Mengine
             : public AppleMARSDKProviderInterface
         {
         public:
-            PythonAppleMARSDKProvider( const pybind::object & _cbUserLogin, const pybind::object & _cbUserLogout, const pybind::object & _cbPayPaid, const pybind::args & _args )
-                : m_cbUserLogin( _cbUserLogin )
-                , m_cbUserLogout( _cbUserLogout )
-                , m_cbPayPaid( _cbPayPaid )
+            PythonAppleMARSDKProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : m_cbs( _cbs )
                 , m_args( _args )
             {
             }
@@ -34,31 +32,35 @@ namespace Mengine
         protected:
             void onUserLogin() override
             {
-                m_cbUserLogin.call_args( m_args );
+                pybind::object cb = m_cbs["onUserLogin"];
+                
+                cb.call_args( m_args );
             }
 
             void onUserLogout() override
             {
-                m_cbUserLogout.call_args( m_args );
+                pybind::object cb = m_cbs["onUserLogout"];
+                
+                cb.call_args( m_args );
             }
 
             void onPayPaid() override
             {
-                m_cbPayPaid.call_args( m_args );
+                pybind::object cb = m_cbs["onPayPaid"];
+                
+                cb.call_args( m_args );
             }
 
         protected:
-            pybind::object m_cbUserLogin;
-            pybind::object m_cbUserLogout;
-            pybind::object m_cbPayPaid;
+            pybind::dict m_cbs;
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleMARSDKProvider, AppleMARSDKProviderInterface> PythonAppleMARSDKProviderPtr;
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_setProvider( const pybind::object & _cbUserLogin, const pybind::object & _cbUserLogout, const pybind::object & _cbPayPaid, const pybind::args & _args )
+        static void s_AppleMARSDK_setProvider( const pybind::dict & _cbs, const pybind::args & _args )
         {
-            PythonAppleMARSDKProviderPtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _cbUserLogin, _cbUserLogout, _cbPayPaid, _args );
+            PythonAppleMARSDKProviderPtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
             APPLE_MARSDK_SERVICE()
                 ->setProvider( provider );

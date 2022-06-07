@@ -1,6 +1,6 @@
-#include "AppleMARSDKScriptEmbedding.h"
+#include "AppleFacebookScriptEmbedding.h"
 
-#include "AppleMARSDKInterface.h"
+#include "AppleFacebookInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -19,172 +19,156 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        class PythonAppleMARSDKProvider
-            : public AppleMARSDKProviderInterface
+        class PythonAppleFacebookProvider
+            : public AppleFacebookProviderInterface
         {
         public:
-            PythonAppleMARSDKProvider( const pybind::object & _cbUserLogin, const pybind::object & _cbUserLogout, const pybind::object & _cbPayPaid, const pybind::args & _args )
-                : m_cbUserLogin( _cbUserLogin )
-                , m_cbUserLogout( _cbUserLogout )
-                , m_cbPayPaid( _cbPayPaid )
+            PythonAppleFacebookProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : m_cbs( _cbs )
                 , m_args( _args )
             {
             }
 
         protected:
-            void onUserLogin() override
+            void onFacebookLoginSuccess( const Char * token ) override
             {
-                m_cbUserLogin.call_args( m_args );
+                pybind::object cb = m_cbs["onFacebookLoginSuccess"];
+                
+                cb.call_args( token, m_args );
+            };
+            
+            void onFacebookLoginCancel() override
+            {
+                pybind::object cb = m_cbs["onFacebookLoginCancel"];
+                
+                cb.call_args( m_args );
             }
-
-            void onUserLogout() override
+            
+            void onFacebookError( const Char * errorMessage ) override
             {
-                m_cbUserLogout.call_args( m_args );
+                pybind::object cb = m_cbs["onFacebookError"];
+                
+                cb.call_args( errorMessage, m_args );
             }
-
-            void onPayPaid() override
+            
+            void onFacebookShareSuccess( const Char * postId ) override
             {
-                m_cbPayPaid.call_args( m_args );
+                pybind::object cb = m_cbs["onFacebookShareSuccess"];
+                
+                cb.call_args( postId, m_args );
+            }
+            
+            void onFacebookShareCancel() override
+            {
+                pybind::object cb = m_cbs["onFacebookShareCancel"];
+                
+                cb.call_args( m_args );
+            }
+            
+            void onFacebookShareError( const Char * errorMessage ) override
+            {
+                pybind::object cb = m_cbs["onFacebookShareError"];
+                
+                cb.call_args( errorMessage, m_args );
+            }
+                        
+            void onFacebookProfilePictureLinkGet( const Char * userId, bool success, const Char * pictureURL ) override
+            {
+                pybind::object cb = m_cbs["onFacebookProfilePictureLinkGet"];
+                
+                cb.call_args( userId, success, pictureURL, m_args );
             }
 
         protected:
-            pybind::object m_cbUserLogin;
-            pybind::object m_cbUserLogout;
-            pybind::object m_cbPayPaid;
+            pybind::dict m_cbs;
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PythonAppleMARSDKProvider, AppleMARSDKProviderInterface> PythonAppleMARSDKProviderPtr;
+        typedef IntrusivePtr<PythonAppleFacebookProvider, AppleFacebookProviderInterface> PythonAppleFacebookProviderPtr;
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_setProvider( const pybind::object & _cbUserLogin, const pybind::object & _cbUserLogout, const pybind::object & _cbPayPaid, const pybind::args & _args )
+        static void s_AppleFacebook_setProvider( const pybind::dict & _cbs, const pybind::args & _args )
         {
-            PythonAppleMARSDKProviderPtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _cbUserLogin, _cbUserLogout, _cbPayPaid, _args );
+            PythonAppleFacebookProviderPtr provider = Helper::makeFactorableUnique<PythonAppleFacebookProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
-            APPLE_MARSDK_SERVICE()
+            APPLE_FACEBOOK_SERVICE()
                 ->setProvider( provider );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleMARSDK_login()
+        static void s_AppleFacebook_login()
         {
-            bool result = APPLE_MARSDK_SERVICE()
+            APPLE_FACEBOOK_SERVICE()
                 ->login();
-
-            return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleMARSDK_logout()
+        static void s_AppleFacebook_logout()
         {
-            bool result = APPLE_MARSDK_SERVICE()
+            APPLE_FACEBOOK_SERVICE()
                 ->logout();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_AppleFacebook_isLoggedIn()
+        {
+            bool result = APPLE_FACEBOOK_SERVICE()
+                ->isLoggedIn();
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleMARSDK_switchAccount()
+        static const Char * s_AppleFacebook_getAccessToken()
         {
-            bool result = APPLE_MARSDK_SERVICE()
-                ->switchAccount();
+            const Char * token = APPLE_FACEBOOK_SERVICE()
+                ->getAccessToken();
 
-            return result;
+            return token;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_submitExtendedData( const pybind::dict & _d )
+        static void s_AppleFacebook_shareLink( const Char * link, const Char * picture )
         {
-            MARSDKExtraData data;
-
-            data.dataType = _d["dataType"];
-            data.opType = _d["opType"];
-            data.roleID = _d["roleID"];
-            data.roleName = _d["roleName"];
-            data.roleLevel = _d["roleLevel"];
-            data.serverID = _d["serverID"];
-            data.serverName = _d["serverName"];
-            data.moneyNum = _d["moneyNum"];
-            data.roleCreateTime = _d["roleCreateTime"];
-            data.roleLevelUpTime = _d["roleLevelUpTime"];
-
-            data.vip = _d["vip"];
-            data.roleGender = _d["roleGender"];
-            data.professionID = _d["professionID"];
-            data.professionName = _d["professionName"];
-            data.power = _d["power"];
-            data.partyID = _d["partyID"];
-            data.partyName = _d["partyName"];
-            data.partyMasterID = _d["partyMasterID"];
-            data.partyMasterName = _d["partyMasterName"];
-
-            data.serverId = _d["serverId"];
-
-            APPLE_MARSDK_SERVICE()
-                ->submitExtendedData( data );
+            APPLE_FACEBOOK_SERVICE()
+                ->shareLink(link, picture);
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_submitPaymentData( const pybind::dict & _d )
+        static void s_AppleFacebook_getProfilePictureLink( const Char * link, const Char * picture )
         {
-            MARSDKProductInfo info;
-
-            info.orderID = _d["orderID"];
-            info.productId = _d["productId"];
-            info.productName = _d["productName"];
-            info.productDesc = _d["productDesc"];
-
-            info.price = _d["price"];
-            info.buyNum = _d["buyNum"];
-            info.coinNum = _d["coinNum"];
-
-            info.roleId = _d["roleId"];
-            info.roleName = _d["roleName"];
-            info.roleLevel = _d["roleLevel"];
-            info.vip = _d["vip"];
-            info.serverId = _d["serverId"];
-            info.serverName = _d["serverName"];
-            info.notifyUrl = _d["notifyUrl"];
-
-            APPLE_MARSDK_SERVICE()
-                ->submitPaymentData( info );
+            APPLE_FACEBOOK_SERVICE()
+                ->getProfilePictureLink();
         }
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleMARSDKScriptEmbedding::AppleMARSDKScriptEmbedding()
+    AppleFacebookScriptEmbedding::AppleFacebookScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleMARSDKScriptEmbedding::~AppleMARSDKScriptEmbedding()
+    AppleFacebookScriptEmbedding::~AppleFacebookScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleMARSDKScriptEmbedding::embed( pybind::kernel_interface * _kernel )
+    bool AppleFacebookScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleMARSDK", true );
+            ->setAvailablePlugin( "AppleFacebook", true );
 
-        pybind::enum_<EMARSDKDataType>( _kernel, "MARSDKDataType" )
-            .def( "TYPE_SELECT_SERVER", TYPE_SELECT_SERVER )
-            .def( "TYPE_CREATE_ROLE", TYPE_CREATE_ROLE )
-            .def( "TYPE_ENTER_GAME", TYPE_ENTER_GAME )
-            .def( "TYPE_LEVEL_UP", TYPE_LEVEL_UP )
-            .def( "TYPE_EXIT_GAME", TYPE_EXIT_GAME )
-            ;
-
-        pybind::def_function_args( _kernel, "appleMARSDKSetProvider", &Detail::s_AppleMARSDK_setProvider );
-        pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::s_AppleMARSDK_login );
-        pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::s_AppleMARSDK_logout );
-        pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );
-        pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_AppleMARSDK_submitExtendedData );
-        pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::s_AppleMARSDK_submitPaymentData );
-
+        pybind::def_function_args( _kernel, "appleFacebookSetProvider", &Detail::s_AppleFacebook_setProvider );
+        
+        pybind::def_function( _kernel, "appleFacebookLogin", &Detail::s_AppleFacebook_login );
+        pybind::def_function( _kernel, "appleFacebookLogout", &Detail::s_AppleFacebook_logout );
+        pybind::def_function( _kernel, "appleFacebookIsLoggedIn", &Detail::s_AppleFacebook_isLoggedIn );
+        pybind::def_function( _kernel, "appleFacebookGetAccessToken", &Detail::s_AppleFacebook_getAccessToken );
+        pybind::def_function( _kernel, "appleFacebookShareLink", &Detail::s_AppleFacebook_shareLink );
+        pybind::def_function( _kernel, "appleFacebookGetProfilePictureLink", &Detail::s_AppleFacebook_getProfilePictureLink );
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKScriptEmbedding::eject( pybind::kernel_interface * _kernel )
+    void AppleFacebookScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleMARSDKSetProvider", nullptr );
-        _kernel->remove_from_module( "appleMARSDKLogin", nullptr );
-        _kernel->remove_from_module( "appleMARSDKLogout", nullptr );
-        _kernel->remove_from_module( "appleMARSDKSwitchAccount", nullptr );
-        _kernel->remove_from_module( "appleMARSDKSubmitExtendedData", nullptr );
-        _kernel->remove_from_module( "appleMARSDKSubmitPaymentData", nullptr );
+        _kernel->remove_from_module( "appleFacebookLogin", nullptr );
+        _kernel->remove_from_module( "appleFacebookLogout", nullptr );
+        _kernel->remove_from_module( "appleFacebookIsLoggedIn", nullptr );
+        _kernel->remove_from_module( "appleFacebookGetAccessToken", nullptr );
+        _kernel->remove_from_module( "appleFacebookShareLink", nullptr );
+        _kernel->remove_from_module( "appleFacebookGetProfilePictureLink", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

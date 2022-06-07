@@ -20,9 +20,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-
-        void eventTraking(const ConstString& token) const override;
-        void revenueTracking(const ConstString& token,double amount,const ConstString& currency /*= "EUR"*/) const override;
-
+        void eventTraking( const ConstString & token ) override;
+        void revenueTracking( const ConstString & token, double amount, const ConstString & currency /*= "EUR"*/) override;
     };
 }

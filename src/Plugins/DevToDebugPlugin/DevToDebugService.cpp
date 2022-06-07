@@ -308,12 +308,15 @@ namespace Mengine
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
-                LOGGER_INFO( "devtodebug", "Data: %s"
-                    , data.c_str()
-                );
-
-                CURL_SERVICE()
+                HttpRequestID id = CURL_SERVICE()
                     ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+
+                MENGINE_UNUSED( id );
+
+                LOGGER_INFO( "devtodebug", "Data: %s [id %u]"
+                    , data.c_str()
+                    , id
+                );
             }break;
         case EDTDS_CONNECT:
             {
@@ -348,9 +351,10 @@ namespace Mengine
             {
                 if( _response.successful == false )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s [%u]"
+                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s [code %u] [id %u]"
                         , _response.error.c_str()
                         , _response.code
+                        , _response.id
                     );
 
                     this->stop();
@@ -360,10 +364,11 @@ namespace Mengine
 
                 if( _response.code / 100 != 2 )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s data: %s [code %u]"
+                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s data: %s [code %u] [id %u]"
                         , _response.error.c_str()
                         , _response.data.c_str()
                         , _response.code
+                        , _response.id
                     );
 
                     this->stop();
@@ -377,9 +382,10 @@ namespace Mengine
 
                 if( m_uuid.empty() == true )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connecting response error: %s [%u]"
+                    LOGGER_ERROR( "[DevToDebug] Connecting response error: %s [code %u] [id %u]"
                         , _response.data.c_str()
                         , _response.code
+                        , _response.id
                     );
 
                     this->stop();
@@ -397,9 +403,10 @@ namespace Mengine
             {
                 if( _response.successful == false )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s [%u]"
+                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s [code %u] [id %u]"
                         , _response.error.c_str()
                         , _response.code
+                        , _response.id
                     );
 
                     this->stop();
@@ -409,10 +416,11 @@ namespace Mengine
 
                 if( _response.code / 100 != 2 )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s data: %s [%u]"
+                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s data: %s [code %u] [id %u]"
                         , _response.error.c_str()
                         , _response.data.c_str()
                         , _response.code
+                        , _response.id
                     );
 
                     this->stop();
@@ -427,11 +435,12 @@ namespace Mengine
 
                 if( m_revision != revision_from )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connect out of sync revision %u != from %u: %s [%u]"
+                    LOGGER_ERROR( "[DevToDebug] Connect out of sync revision %u != from %u: %s [code %u] [id %u]"
                         , m_revision
                         , revision_from
                         , _response.data.c_str()
                         , _response.code
+                        , _response.id
                     );
 
                     this->stop();

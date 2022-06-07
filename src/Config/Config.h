@@ -2,6 +2,15 @@
 
 #if defined(_MSC_VER)
 #   define MENGINE_COMPILER_MSVC
+#   if _MSC_VER >= 1930
+#       define MENGINE_COMPILER_MSVC17
+#   elif _MSC_VER >= 1920
+#       define MENGINE_COMPILER_MSVC16
+#   elif _MSC_VER >= 1910
+#       define MENGINE_COMPILER_MSVC15
+#   elif _MSC_VER >= 1900
+#       define MENGINE_COMPILER_MSVC14
+#   endif
 #elif defined(__GNUC__)
 #   define MENGINE_COMPILER_GCC
 #elif defined(__clang__)
@@ -9,9 +18,12 @@
 #elif defined(__EMSCRIPTEN__)
 #   define MENGINE_COMPILER_EMSCRIPTEN
 #elif defined(__MINGW32__)
-#   define MENGINE_COMPILER_MINGW32
-#elif defined(__MINGW64__)
-#   define MENGINE_COMPILER_MINGW64
+#   define MENGINE_COMPILER_MINGW
+#   ifdef defined(__MINGW64__)
+#       define MENGINE_COMPILER_MINGW64
+#   else
+#       define MENGINE_COMPILER_MINGW32
+#   endif
 #else
 #   error "undefine compiler"
 #endif
@@ -19,7 +31,6 @@
 #if defined(_WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #   define MENGINE_PLATFORM_DESKTOP
-
 #   if defined(_WIN64)
 #       define MENGINE_PLATFORM_WINDOWS64
 #   else
@@ -297,11 +308,11 @@
 #endif
 
 #ifndef MENGINE_PP_STRINGIZE
-#   define MENGINE_PP_STRINGIZE_I(X) #X
-#   define MENGINE_PP_STRINGIZE(X) MENGINE_PP_STRINGIZE_I(X)
+#define MENGINE_PP_STRINGIZE_I(X) #X
+#define MENGINE_PP_STRINGIZE(X) MENGINE_PP_STRINGIZE_I(X)
 #endif
 
 #ifndef MENGINE_PP_CONCATENATE
-#   define MENGINE_PP_CONCATENATE_I(X, Y) X ## Y
-#   define MENGINE_PP_CONCATENATE(X, Y) MENGINE_PP_CONCATENATE_I(X, Y)
+#define MENGINE_PP_CONCATENATE_I(X, Y) X ## Y
+#define MENGINE_PP_CONCATENATE(X, Y) MENGINE_PP_CONCATENATE_I(X, Y)
 #endif

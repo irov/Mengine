@@ -17,10 +17,9 @@
 extern "C" {
 #   include "Apple/AppleOpenUrlInDefaultBrowser.h"
 
-#if defined(MENGINE_PLATFORM_OSX)
-#   include "OSX/OSXSetDesktopWallpaper.h"
-#endif
-
+#   if defined(MENGINE_PLATFORM_OSX)
+#       include "OSX/OSXSetDesktopWallpaper.h"
+#   endif
 }
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   include "Android/AndroidAssetFile.h"

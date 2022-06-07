@@ -204,7 +204,7 @@ android {
     }
 
 
-    preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
+// test c++ debug -> preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
     afterEvaluate {
         if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
@@ -371,6 +371,18 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL", t
     }
 } else {
     println 'ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL: FALSE'
+}
+
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS", true) == true) {
+    println 'ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS: TRUE'
+
+    android.ext.plugins += 'org.Mengine.Plugin.GoogleInAppReviews.MengineGoogleInAppReviewsPlugin'
+
+    dependencies {
+        implementation project(':libraries:GoogleInAppReviews')
+    }
+} else {
+    println 'ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS: FALSE'
 }
 
 if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", false) == true) {

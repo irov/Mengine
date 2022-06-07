@@ -14,6 +14,16 @@ src
     AppleAdjustApplicationDelegate.mm
 )
 
+if(MENGINE_USE_SCRIPT_SERVICE)
+    ADD_FILTER(
+    embedding
+        AppleAdjustScriptEmbedding.h
+        AppleAdjustScriptEmbedding.cpp
+    )
+    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+endif()
+
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_ADJUST)
 
 ADD_MENGINE_COCOAPOD("Adjust" "https://github.com/adjust/ios_sdk.git" "v4.29.7")
@@ -28,3 +38,7 @@ IF(MENGINE_TARGET_IOS)
     ADD_APPLE_FRAMEWORK(AppTrackingTransparency)
     ADD_APPLE_FRAMEWORK(WebKit)
 ENDIF()
+
+if(MENGINE_USE_SCRIPT_SERVICE)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
+endif()

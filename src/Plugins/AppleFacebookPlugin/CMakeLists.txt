@@ -17,6 +17,16 @@ src
     ObjC-Bridging-Header.h
 )
 
+if(MENGINE_USE_SCRIPT_SERVICE)
+    ADD_FILTER(
+    embedding
+        AppleFacebookScriptEmbedding.h
+        AppleFacebookScriptEmbedding.cpp
+    )
+    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+endif()
+
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_FACEBOOK)
 
 ADD_MENGINE_COCOAPOD("FBSDKCoreKit" "NO-GIT" "13.2.0")
@@ -33,3 +43,7 @@ set_target_properties(
     PROPERTIES
     XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES  
 )
+
+if(MENGINE_USE_SCRIPT_SERVICE)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
+endif()

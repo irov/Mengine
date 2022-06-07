@@ -2,19 +2,18 @@
 
 @implementation AppleAppLovinBannerDelegate
 
-
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) AdUnitIdentifier rect:(CGRect) rect {
     self = [super init];
     
     self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: AdUnitIdentifier];
     self.m_adView.delegate = self;
 
-    self.m_adView.frame = rect;//CGRectMake(x, y, width, height);
+    self.m_adView.frame = rect;
 
     // Set background or background color for banners to be fully functional
     self.m_adView.backgroundColor = UIColor.blackColor;
 
-    [self.rootViewController addSubview: self.m_adView];
+    [self.rootViewController.view addSubview: self.m_adView];
 
     // Load the ad
     [self.m_adView loadAd];
@@ -36,7 +35,10 @@
 
 - (UIViewController* _Nullable) rootViewController {
     UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
-    return appWindow.rootViewController;
+    
+    UIViewController* controller = appWindow.rootViewController;
+    
+    return controller;
 }
 
 #pragma mark - MAAdDelegate Protocol

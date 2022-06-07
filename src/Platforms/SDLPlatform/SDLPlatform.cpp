@@ -17,7 +17,7 @@
 extern "C" {
 #   include "Apple/AppleOpenUrlInDefaultBrowser.h"
 
-#if TARGET_OS_MAC
+#if defined(MENGINE_PLATFORM_OSX)
 #   include "OSX/OSXSetDesktopWallpaper.h"
 #endif
 

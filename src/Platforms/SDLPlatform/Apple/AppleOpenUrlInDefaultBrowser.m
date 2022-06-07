@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_MAC
+#if defined(MENGINE_PLATFORM_OSX)
 #import <AppKit/AppKit.h>
 #else
 #import <UIKit/UIKit.h>
@@ -12,7 +12,7 @@ int AppleOpenUrlInDefaultBrowser( const char * _url )
 {
     NSString * url = [NSString stringWithUTF8String: _url];
     
-#if TARGET_OS_MAC
+#if defined(MENGINE_PLATFORM_OSX)
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
 #else
     if( [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:url]] == TRUE )

@@ -1158,7 +1158,7 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_REVIEW_STATIC
-        MENGINE_ADD_PLUGIN( AppleReviewPlugin, "Plugin Apple Raview...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleReviewPlugin, "Plugin Apple Review...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
         
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC

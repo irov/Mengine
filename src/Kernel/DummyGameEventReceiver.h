@@ -49,7 +49,7 @@ namespace Mengine
         void onGameCursorMode( bool _mode ) override;
         void onGameUser( const ConstString & _event, const MapWParams & _params ) override;
         bool onGameClose() override;
-        void onGameOverFillrate( double _fillrate ) override;
+        void onGameOverFillrate( double _fillrate, double _limit ) override;
         void onGameFrameEnd() override;
     };
 }

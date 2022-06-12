@@ -290,9 +290,9 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameOverFillrate( double _fillrate )
+    void PythonGameEventReceiver::onGameOverFillrate( double _fillrate, double _limit )
     {
-        m_cb.call( _fillrate );
+        m_cb.call( _fillrate, _limit );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameFrameEnd()

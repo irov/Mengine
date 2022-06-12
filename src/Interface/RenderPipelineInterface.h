@@ -72,6 +72,9 @@ namespace Mengine
         virtual bool decrefDebugLimitRenderObjects() = 0;
 
     public:
+        virtual void enableDebugFillrateCalcMode( bool _enable ) = 0;
+        virtual bool isDebugFillrateCalcMode() const = 0;
+
         virtual void enableDebugStepRenderMode( bool _enable ) = 0;
         virtual bool isDebugStepRenderMode() const = 0;
 

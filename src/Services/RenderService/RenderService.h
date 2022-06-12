@@ -82,10 +82,6 @@ namespace Mengine
         bool isWindowCreated() const override;
 
     public:
-        const RenderServiceDebugInfo & getDebugInfo() const override;
-        void resetFrameCount() override;
-
-    public:
         void setVSync( bool _vSync ) override;
         bool getVSync() const override;
 
@@ -106,10 +102,6 @@ namespace Mengine
     protected:
         bool makeBatches_( const RenderPipelineInterfacePtr & _renderPipeline );
         void flushRender_( const RenderPipelineInterfacePtr & _renderPipeline );
-
-    protected:
-        void calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const Viewport & _viewport );
-        void calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const RenderIndex * _indices, uint32_t _indicesNum, const Viewport & _viewport );
 
     protected:
         bool createNullTexture_();
@@ -167,8 +159,6 @@ namespace Mengine
 
         RenderContext m_currentRenderContext;
         
-        RenderServiceDebugInfo m_debugInfo;
-
         Viewport m_renderViewport;
 
         typedef List<VectorRenderVertex2D> ListDebugVertices;

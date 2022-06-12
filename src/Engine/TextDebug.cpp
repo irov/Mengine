@@ -15,6 +15,7 @@
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -38,10 +39,12 @@ namespace Mengine
                 ->getLineDelims();
 
             VectorU32String drawTexts;
-            if( Helper::u32split3( &drawTexts, cacheText, lineDelims ) == false )
-            {
-                return;
-            }
+            Helper::u32split2( &drawTexts, cacheText, true, lineDelims );
+
+            float fontLineOffset = _font->getLineOffset();
+            float fontBearingYA = _font->getFontBearingYA();
+
+            float offset_y = 0.f;
 
             for( const U32String & text : drawTexts )
             {
@@ -87,7 +90,7 @@ namespace Mengine
                         tl.calcCharPosition( cd, offset, 1.f, i, &v.position );
 
                         v.position.x += _pos.x;
-                        v.position.y += _pos.y;
+                        v.position.y += _pos.y + offset_y;
                         v.color = _argb;
                         v.uv[0] = cd.uv[i];
 
@@ -137,11 +140,27 @@ namespace Mengine
 
                     _renderPipeline->addDebugRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, _doc );
                 }
+
+                offset_y += fontBearingYA + fontLineOffset;
             }
         }
         //////////////////////////////////////////////////////////////////////////
         void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, const Color & _color, const DocumentPtr & _doc, const Char * _format, ... )
         {
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _format );
+
+            Char msg[2048] = {'\0'};
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 2048, _format, args );
+
+            MENGINE_VA_LIST_END( args );
+
+            MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid string format '%s'"
+                , _format
+            );
+
+            ColorValue_ARGB argb = _color.getAsARGB();
+
             TextFontInterfacePtr font = _font;
 
             if( font == nullptr )
@@ -159,26 +178,12 @@ namespace Mengine
             {
                 return;
             }
-
+           
             uint32_t fontLayoutCount = font->getLayoutCount();
 
             if( fontLayoutCount == 1 )
             {
-                ColorValue_ARGB argb = _color.getAsARGB();
-
-                MENGINE_VA_LIST_TYPE args;
-                MENGINE_VA_LIST_START( args, _format );
-
-                Char msg[2048] = {'\0'};
-                int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 2048, _format, args );
-
-                MENGINE_VA_LIST_END( args );
-
-                MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid string format '%s'"
-                    , _format
-                );
-
-                Helper::drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, (size_t)size_vsnprintf, _doc );
+                Helper::drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, size_vsnprintf, _doc );
             }
 
             font->releaseFont();

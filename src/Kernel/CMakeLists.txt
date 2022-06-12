@@ -646,8 +646,8 @@ Core
     Base64.h
     Base64.cpp
         
-    RenderUtils.h
-    RenderUtils.cpp
+    RenderHelper.h
+    RenderHelper.cpp
     
     RenderPrimitive.h
     
@@ -843,6 +843,8 @@ Core
     
     CharacterHelper.cpp
     CharacterHelper.h
+    
+    StatisticHelper.h
 )
 
 ADD_FILTER(

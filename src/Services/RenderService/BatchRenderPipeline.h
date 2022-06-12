@@ -121,6 +121,9 @@ namespace Mengine
         bool decrefDebugLimitRenderObjects() override;
 
     public:
+        void enableDebugFillrateCalcMode( bool _enable ) override;
+        bool isDebugFillrateCalcMode() const override;
+
         void enableDebugStepRenderMode( bool _enable ) override;
         bool isDebugStepRenderMode() const override;
 
@@ -188,6 +191,7 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_DEBUG
+        bool m_debugFillrateCalcMode;
         bool m_debugStepRenderMode;
         bool m_debugStopRenderObjects;
         uint32_t m_debugLimitRenderObjects;

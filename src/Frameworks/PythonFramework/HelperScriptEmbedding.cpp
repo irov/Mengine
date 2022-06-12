@@ -19,6 +19,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/StatisticServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Interface/AndroidPlatformExtensionInterface.h"
@@ -2026,6 +2027,62 @@ namespace Mengine
                 return s_changeAccountSettingStrings( accountID, _setting, _values );
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_addStatisticInteger( const ConstString & _name, int64_t _value )
+            {
+                STATISTIC_SERVICE()
+                    ->addStatisticInteger( _name, _value );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_hasStatisticInteger( const ConstString & _name ) const
+            {
+                bool result = STATISTIC_SERVICE()
+                    ->hasStatisticInteger( _name );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            int64_t s_getStatisticInteger( const ConstString & _name ) const
+            {
+                int64_t value = STATISTIC_SERVICE()
+                    ->getStatisticInteger( _name );
+
+                return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_resetStatisticInteger( const ConstString & _name )
+            {
+                STATISTIC_SERVICE()
+                    ->resetStatisticInteger( _name );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_addStatisticDouble( const ConstString & _name, double _value )
+            {
+                STATISTIC_SERVICE()
+                    ->addStatisticDouble( _name, _value );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_hasStatisticDouble( const ConstString & _name ) const
+            {
+                bool result = STATISTIC_SERVICE()
+                    ->hasStatisticDouble( _name );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            double s_getStatisticDouble( const ConstString & _name ) const
+            {
+                double value = STATISTIC_SERVICE()
+                    ->getStatisticDouble( _name );
+
+                return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_resetStatisticDouble( const ConstString & _name )
+            {
+                STATISTIC_SERVICE()
+                    ->resetStatisticDouble( _name );
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_hasSetting( const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
@@ -3939,6 +3996,16 @@ namespace Mengine
         pybind::def_functor( _kernel, "changeGlobalSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingUInt64 );
         pybind::def_functor( _kernel, "changeGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingFloat );
         pybind::def_functor( _kernel, "changeGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingStrings );
+
+        pybind::def_functor( _kernel, "addStatisticInteger", helperScriptMethod, &HelperScriptMethod::s_addStatisticInteger );
+        pybind::def_functor( _kernel, "hasStatisticInteger", helperScriptMethod, &HelperScriptMethod::s_hasStatisticInteger );
+        pybind::def_functor( _kernel, "getStatisticInteger", helperScriptMethod, &HelperScriptMethod::s_getStatisticInteger );
+        pybind::def_functor( _kernel, "resetStatisticInteger", helperScriptMethod, &HelperScriptMethod::s_resetStatisticInteger );
+
+        pybind::def_functor( _kernel, "addStatisticDouble", helperScriptMethod, &HelperScriptMethod::s_addStatisticDouble );
+        pybind::def_functor( _kernel, "hasStatisticDouble", helperScriptMethod, &HelperScriptMethod::s_hasStatisticDouble );
+        pybind::def_functor( _kernel, "getStatisticDouble", helperScriptMethod, &HelperScriptMethod::s_getStatisticDouble );
+        pybind::def_functor( _kernel, "resetStatisticDouble", helperScriptMethod, &HelperScriptMethod::s_resetStatisticDouble );
 
         pybind::def_functor_kernel( _kernel, "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
         pybind::def_functor_kernel( _kernel, "createGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_createGlobalAccount );

@@ -5,6 +5,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/StatisticServiceInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -199,20 +200,20 @@ namespace Mengine
     void GameService::update()
     {
 #ifdef MENGINE_DEBUG
-        const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
-            ->getDebugInfo();
-
-        float Limit_Fillrate = CONFIG_VALUE( "Limit", "Fillrate", 100.f );
+        double Limit_Fillrate = CONFIG_VALUE( "Limit", "Fillrate", 100.0 );
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
-        double sreenFillrate = debugInfo.fillrate / double( (uint64_t)contentResolution.getWidth() * (uint64_t)contentResolution.getHeight() );
+        double fillrate = STATISTIC_SERVICE()
+            ->getStatisticDouble( STRINGIZE_STRING_LOCAL( "fillrate" ) );
+
+        double sreenFillrate = fillrate / double( (uint64_t)contentResolution.getWidth() * (uint64_t)contentResolution.getHeight() );
 
         if( sreenFillrate > Limit_Fillrate )
         {
             EVENTABLE_METHOD( EVENT_GAME_OVER_FILLRATE )
-                ->onGameOverFillrate( sreenFillrate );
+                ->onGameOverFillrate( sreenFillrate, Limit_Fillrate );
         }
 #endif
 

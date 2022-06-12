@@ -133,6 +133,7 @@ Common
     SecureValueInterface.h
     UIKitProxyApplicationDelegateInterface.h
     ExecutorInterface.h
+    StatisticServiceInterface.h
 )
 
 ADD_FILTER(

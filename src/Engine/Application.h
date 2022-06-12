@@ -128,6 +128,9 @@ namespace Mengine
         bool getInputMouseButtonEventBlock() const override;
 
     public:
+        const RenderPipelineInterfacePtr & getRenderPipeline() const override;
+
+    public:
         void minimizeWindow() override;
 
         uint32_t getDebugMask() const override;

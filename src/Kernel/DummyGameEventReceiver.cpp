@@ -14,18 +14,21 @@ namespace Mengine
     void DummyGameEventReceiver::onGameFullscreen( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameFixedContentResolution( bool _fixed )
     {
         MENGINE_UNUSED( _fixed );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameFixedDisplayResolution( bool _fixed )
     {
         MENGINE_UNUSED( _fixed );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,6 +36,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _viewport );
         MENGINE_UNUSED( _contentResolution );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -40,12 +44,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _viewport );
         MENGINE_UNUSED( _aspect );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool DummyGameEventReceiver::onGameKey( const InputKeyEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
 
         return false;
@@ -54,6 +60,7 @@ namespace Mengine
     bool DummyGameEventReceiver::onGameText( const InputTextEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
 
         return false;
@@ -62,6 +69,7 @@ namespace Mengine
     bool DummyGameEventReceiver::onGameMouseButton( const InputMouseButtonEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
 
         return false;
@@ -70,6 +78,7 @@ namespace Mengine
     bool DummyGameEventReceiver::onGameMouseButtonBegin( const InputMouseButtonEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
 
         return false;
@@ -78,6 +87,7 @@ namespace Mengine
     bool DummyGameEventReceiver::onGameMouseButtonEnd( const InputMouseButtonEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
 
         return false;
@@ -86,6 +96,7 @@ namespace Mengine
     bool DummyGameEventReceiver::onGameMouseMove( const InputMouseMoveEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
 
         return false;
@@ -94,6 +105,7 @@ namespace Mengine
     bool DummyGameEventReceiver::onGameMouseWheel( const InputMouseWheelEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
 
         return false;
@@ -102,24 +114,28 @@ namespace Mengine
     void DummyGameEventReceiver::onGameAppMouseEnter( const InputMouseEnterEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameAppMouseLeave( const InputMouseLeaveEvent & _event )
     {
         MENGINE_UNUSED( _event );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameTimeFactor( float _timeFactor )
     {
         MENGINE_UNUSED( _timeFactor );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool DummyGameEventReceiver::onGamePreparation( bool _debug )
     {
         MENGINE_UNUSED( _debug );
+
         // Empty
 
         return true;
@@ -170,6 +186,7 @@ namespace Mengine
     void DummyGameEventReceiver::onGameFocus( bool _focus )
     {
         MENGINE_UNUSED( _focus );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -198,12 +215,14 @@ namespace Mengine
     void DummyGameEventReceiver::onGameDeleteAccount( const ConstString & _accountID )
     {
         MENGINE_UNUSED( _accountID );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameSelectAccount( const ConstString & _accountID )
     {
         MENGINE_UNUSED( _accountID );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -216,6 +235,7 @@ namespace Mengine
     void DummyGameEventReceiver::onGameTurnSound( bool _turn )
     {
         MENGINE_UNUSED( _turn );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -224,12 +244,14 @@ namespace Mengine
         MENGINE_UNUSED( _sound );
         MENGINE_UNUSED( _music );
         MENGINE_UNUSED( _voice );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameCursorMode( bool _mode )
     {
         MENGINE_UNUSED( _mode );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -237,6 +259,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _event );
         MENGINE_UNUSED( _params );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -247,9 +270,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameOverFillrate( double _fillrate )
+    void DummyGameEventReceiver::onGameOverFillrate( double _fillrate, double _limit )
     {
         MENGINE_UNUSED( _fillrate );
+        MENGINE_UNUSED( _limit );
+
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////

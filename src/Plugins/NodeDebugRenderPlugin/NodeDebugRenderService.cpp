@@ -26,6 +26,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/StatisticHelper.h"
 
 #include <iomanip>
 
@@ -80,13 +81,12 @@ namespace Mengine
         {
             MENGINE_UNUSED( _id );
 
-            const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
-                ->getDebugInfo();
+            int64_t Statistic_RenderFrame = STATISTIC_GET_INTEGER( "RenderFrame" );
 
-            m_fps = debugInfo.frameCount;
+            m_fps = (uint32_t)Statistic_RenderFrame;
 
-            RENDER_SERVICE()
-                ->resetFrameCount();
+            STATISTIC_RESET_INTEGER( "RenderFrame" );
+
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -228,33 +228,37 @@ namespace Mengine
             return;
         }
 
+        const RenderPipelineInterfacePtr & renderPipeline = APPLICATION_SERVICE()
+            ->getRenderPipeline();
+
         if( m_showDebugText == 0 )
         {
-            //RENDER_SERVICE()
-            //    ->enableDebugFillrateCalcMode( false );
+            renderPipeline->enableDebugFillrateCalcMode( false );
         }
 
         if( m_showDebugText != 0 )
         {
-            const RenderServiceDebugInfo & rdi = RENDER_SERVICE()
-                ->getDebugInfo();
-
             Stringstream ss;
 
             ss << "FPS: " << m_fps << std::endl;
 
             if( m_showDebugText > 1 )
             {
-                //RENDER_SERVICE()
-                //    ->enableDebugFillrateCalcMode( true );
+                renderPipeline->enableDebugFillrateCalcMode( true );
 
                 const Resolution & contentResolution = APPLICATION_SERVICE()
                     ->getContentResolution();
 
-                double sreenfillrate = rdi.fillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
+                double Statistic_RenderFillrate = STATISTIC_GET_DOUBLE( "RenderFillrate" );
 
-                ss << "Fillrate " << std::setiosflags( std::ios::fixed ) << std::setprecision( 2 ) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
-                ss << "DIP: " << rdi.dips << std::endl;
+                double sreenfillrate = Statistic_RenderFillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
+
+                int64_t Statistic_RenderObjects = STATISTIC_GET_INTEGER( "RenderObjects" );
+                int64_t Statistic_RenderTriangles = STATISTIC_GET_INTEGER( "RenderTriangles" );
+                int64_t Statistic_DrawIndexPrimitives = STATISTIC_GET_INTEGER( "DrawIndexPrimitives" );
+
+                ss << "Fillrate " << std::setiosflags( std::ios::fixed ) << std::setprecision( 2 ) << sreenfillrate << " (Object " << Statistic_RenderObjects << " Triangle " << Statistic_RenderTriangles << ")" << std::endl;
+                ss << "DIP: " << Statistic_DrawIndexPrimitives << std::endl;
 
                 //ERenderBatchMode mode = RENDER_SERVICE()
                 //    ->getBatchMode();

@@ -102,7 +102,7 @@ namespace Mengine
         virtual void onGameCursorMode( bool _mode ) = 0;
         virtual void onGameUser( const ConstString & _event, const MapWParams & _params ) = 0;
         virtual bool onGameClose() = 0;
-        virtual void onGameOverFillrate( double _fillrate ) = 0;
+        virtual void onGameOverFillrate( double _fillrate, double _limit ) = 0;
         virtual void onGameFrameEnd() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

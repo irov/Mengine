@@ -11,7 +11,7 @@
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/UnknownResourceImageDataInterface.h"
 #include "Kernel/PolygonHelper.h"
-#include "Kernel/RenderUtils.h"
+#include "Kernel/RenderHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/ConstStringHelper.h"

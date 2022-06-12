@@ -1651,6 +1651,11 @@ namespace Mengine
         return m_nopause;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderPipelineInterfacePtr & Application::getRenderPipeline() const
+    {
+        return m_renderPipeline;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Application::minimizeWindow()
     {
         PLATFORM_SERVICE()

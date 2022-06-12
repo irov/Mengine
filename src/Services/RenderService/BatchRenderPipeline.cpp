@@ -1,12 +1,13 @@
 #include "BatchRenderPipeline.h"
 
 #include "Kernel/ConfigHelper.h"
-#include "Kernel/RenderUtils.h"
+#include "Kernel/RenderHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -32,6 +33,7 @@ namespace Mengine
         : m_renderService( nullptr )
         , m_batchMode( ERBM_NORMAL )
 #ifdef MENGINE_DEBUG
+        , m_debugFillrateCalcMode( false )
         , m_debugStepRenderMode( false )
         , m_debugStopRenderObjects( false )
         , m_debugLimitRenderObjects( 0 )
@@ -267,26 +269,28 @@ namespace Mengine
 
         RenderPass & renderPass = this->requestRenderPass_( _context, batch, vertexBuffer, indexBuffer, vertexAttribute, _programVariable );
 
-        //#ifdef MENGINE_DEBUG
-        //        if( m_debugFillrateCalcMode == true && _debug == false )
-        //        {
-        //            EPrimitiveType primitiveType = _material->getPrimitiveType();
-        //
-        //            switch( primitiveType )
-        //            {
-        //            case PT_TRIANGLELIST:
-        //                {
-        //                    const RenderViewportInterfacePtr & viewport = rp->viewport;
-        //                    const Viewport & vp = viewport->getViewport();
-        //
-        //                    this->calcQuadSquare_( _vertices, _vertexCount, vp );
-        //                }break;
-        //            default:
-        //                {
-        //                }break;
-        //            }
-        //        }
-        //#endif
+#if defined(MENGINE_DEBUG) && MENGINE_STATISTIC == 1
+        if( m_debugFillrateCalcMode == true && _debug == false )
+        {
+            EPrimitiveType primitiveType = _material->getPrimitiveType();
+
+            switch( primitiveType )
+            {
+            case PT_TRIANGLELIST:
+                {
+                    const RenderViewportInterface * viewport = renderPass.context.viewport;
+                    const Viewport & vp = viewport->getViewport();
+
+                    double fillrate = Helper::calcRenderQuadSquare( _vertices, _vertexCount, vp );
+
+                    STATISTIC_ADD_DOUBLE( "RenderFillrate", fillrate );
+                }break;
+            default:
+                {
+                }break;
+            }
+        }
+#endif
 
         ++renderPass.countRenderObject;
 
@@ -559,6 +563,24 @@ namespace Mengine
         RenderIndex * indices = m_indicesLine.buff();
 
         this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug, _doc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::enableDebugFillrateCalcMode( bool _enable )
+    {
+        MENGINE_UNUSED( _enable );
+
+#ifdef MENGINE_DEBUG
+        m_debugFillrateCalcMode = _enable;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BatchRenderPipeline::isDebugFillrateCalcMode() const
+    {
+#ifdef MENGINE_DEBUG
+        return m_debugFillrateCalcMode;
+#else
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::enableDebugStepRenderMode( bool _enable )

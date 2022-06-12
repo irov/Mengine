@@ -45,18 +45,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct RenderServiceDebugInfo
-    {
-        uint32_t frameCount = 0;
-        uint32_t dips = 0;
-
-        float fillrate = 0.f;
-        uint32_t object = 0;
-        uint32_t triangle = 0;
-        uint32_t batch = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class RenderServiceInterface
         : public ServiceInterface
     {
@@ -109,12 +97,7 @@ namespace Mengine
         virtual void onDeviceLostPrepare() = 0;
         virtual bool onDeviceLostRestore() = 0;
         virtual bool isWindowCreated() const = 0;
-
-    public:
-        virtual const RenderServiceDebugInfo & getDebugInfo() const = 0;
-        virtual void resetFrameCount() = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define RENDER_SERVICE()\

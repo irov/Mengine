@@ -93,6 +93,7 @@ SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( TimepipeService );
+SERVICE_EXTERN( StatisticService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
@@ -751,6 +752,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
 
         LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
@@ -1703,6 +1705,7 @@ namespace Mengine
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( TimepipeService );
+        SERVICE_FINALIZE( StatisticService );
 
         if( m_loggerFile != nullptr )
         {
@@ -1775,6 +1778,7 @@ namespace Mengine
         SERVICE_DESTROY( FileService );
         SERVICE_DESTROY( ThreadSystem );
         SERVICE_DESTROY( TimepipeService );
+        SERVICE_DESTROY( StatisticService );
         SERVICE_DESTROY( Platform );
         SERVICE_DESTROY( NotificationService );
         SERVICE_DESTROY( LoggerService );

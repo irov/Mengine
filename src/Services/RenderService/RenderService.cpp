@@ -13,7 +13,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-#include "Kernel/RenderUtils.h"
+#include "Kernel/RenderHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -24,11 +24,10 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ColorHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/Algorithm.h"
 #include "Config/StdMath.h"
-
-#include "math/convex8.h"
 
 #include "stdex/memorycopy.h"
 
@@ -71,11 +70,11 @@ namespace Mengine
         m_maxVertexCount = CONFIG_VALUE( "Engine", "RenderMaxVertexCount", 32000U );
         m_maxIndexCount = CONFIG_VALUE( "Engine", "RenderMaxIndexCount", 48000U );
 
-        m_debugInfo.dips = 0;
-        m_debugInfo.frameCount = 0;
-        m_debugInfo.fillrate = 0.f;
-        m_debugInfo.object = 0;
-        m_debugInfo.triangle = 0;
+        STATISTIC_RESET_INTEGER( "DrawIndexPrimitives" );
+        STATISTIC_RESET_INTEGER( "RenderFrame" );
+        STATISTIC_RESET_DOUBLE( "RenderFillrate" );
+        STATISTIC_RESET_INTEGER( "RenderObjects" );
+        STATISTIC_RESET_INTEGER( "RenderTriangles" );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), Helper::makeDefaultPrototypeGenerator<BatchRenderPipeline, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -487,7 +486,7 @@ namespace Mengine
 
         m_renderSystem->endScene();
 
-        m_debugInfo.frameCount += 1;
+        STATISTIC_ADD_INTEGER( "RenderFrame", 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::swapBuffers()
@@ -699,7 +698,7 @@ namespace Mengine
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( material );
 
-        ++m_debugInfo.dips;
+        STATISTIC_ADD_INTEGER( "DrawIndexPrimitives", 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreTextureStage_( uint32_t _stage )
@@ -735,9 +734,9 @@ namespace Mengine
         m_debugRenderVertices.clear();
         m_debugRenderIndices.clear();
 
-        m_debugInfo.fillrate = 0.f;
-        m_debugInfo.object = 0;
-        m_debugInfo.triangle = 0;
+        STATISTIC_RESET_DOUBLE( "RenderFillrate" );
+        STATISTIC_RESET_DOUBLE( "RenderObjects" );
+        STATISTIC_RESET_DOUBLE( "RenderTriangles" );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreRenderSystemStates_()
@@ -887,16 +886,6 @@ namespace Mengine
         }
 
         *_renderViewport = scaleViewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderServiceDebugInfo & RenderService::getDebugInfo() const
-    {
-        return m_debugInfo;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::resetFrameCount()
-    {
-        m_debugInfo.frameCount = 0U;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
@@ -1184,8 +1173,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::flushRender_( const RenderPipelineInterfacePtr & _renderPipeline )
     {
-        m_debugInfo.batch = 0;
-        m_debugInfo.dips = 0;
+        STATISTIC_RESET_INTEGER( "RenderBatch" );
+        STATISTIC_RESET_INTEGER( "DrawIndexPrimitives" );
 
         if( this->makeBatches_( _renderPipeline ) == false )
         {
@@ -1234,85 +1223,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_renderViewport.end.x != 0.f && m_renderViewport.end.y != 0.f );
 
         return m_renderViewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexCount, const Viewport & _viewport )
-    {
-        uint32_t triangleCount2 = (_vertexCount / 4);
-
-        for( uint32_t i = 0; i != triangleCount2; ++i )
-        {
-            const RenderVertex2D & v0 = _vertex[i * 4 + 0];
-            const RenderVertex2D & v1 = _vertex[i * 4 + 1];
-            const RenderVertex2D & v2 = _vertex[i * 4 + 2];
-            const RenderVertex2D & v3 = _vertex[i * 4 + 3];
-
-            mt::convex8 tri1;
-            tri1.add( v0.position.to_vec2f() );
-            tri1.add( v1.position.to_vec2f() );
-            tri1.add( v2.position.to_vec2f() );
-
-            mt::convex8 tri2;
-            tri2.add( v0.position.to_vec2f() );
-            tri2.add( v2.position.to_vec2f() );
-            tri2.add( v3.position.to_vec2f() );
-
-            mt::convex8 cv;
-            cv.add( mt::vec2f( _viewport.begin.x, _viewport.begin.y ) );
-            cv.add( mt::vec2f( _viewport.end.x, _viewport.begin.y ) );
-            cv.add( mt::vec2f( _viewport.end.x, _viewport.end.y ) );
-            cv.add( mt::vec2f( _viewport.begin.x, _viewport.end.y ) );
-
-            mt::convex8 tric1;
-            mt::convex8_intersect( tri1, cv, tric1 );
-
-            mt::convex8 tric2;
-            mt::convex8_intersect( tri2, cv, tric2 );
-
-            float tric1_area = mt::convex8_area( tric1 );
-            float tric2_area = mt::convex8_area( tric2 );
-
-            m_debugInfo.fillrate += tric1_area;
-            m_debugInfo.fillrate += tric2_area;
-        }
-
-        m_debugInfo.triangle += triangleCount2 * 2;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexCount, const RenderIndex * _indices, uint32_t _indicesCount, const Viewport & _viewport )
-    {
-        MENGINE_UNUSED( _vertexCount );
-
-        for( uint32_t i = 0; i != (_indicesCount / 3); ++i )
-        {
-            RenderIndex i0 = _indices[i + 0];
-            RenderIndex i1 = _indices[i + 1];
-            RenderIndex i2 = _indices[i + 2];
-
-            const RenderVertex2D & v0 = _vertex[i0];
-            const RenderVertex2D & v1 = _vertex[i1];
-            const RenderVertex2D & v2 = _vertex[i2];
-
-            mt::convex8 tri;
-            tri.add( v0.position.to_vec2f() );
-            tri.add( v1.position.to_vec2f() );
-            tri.add( v2.position.to_vec2f() );
-
-            mt::convex8 cv;
-            cv.add( mt::vec2f( _viewport.begin.x, _viewport.begin.y ) );
-            cv.add( mt::vec2f( _viewport.end.x, _viewport.begin.y ) );
-            cv.add( mt::vec2f( _viewport.end.x, _viewport.end.y ) );
-            cv.add( mt::vec2f( _viewport.begin.x, _viewport.end.y ) );
-
-            mt::convex8 tric;
-            mt::convex8_intersect( tri, cv, tric );
-
-            float tric_area = mt::convex8_area( tric );
-
-            m_debugInfo.fillrate += tric_area;
-
-            m_debugInfo.triangle += 1;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -101,7 +101,10 @@ namespace Mengine
 
                 if( pos == T::npos )
                 {
-                    _outStrings->emplace_back( _str.substr( start ) );
+                    if( start != T::npos )
+                    {
+                        _outStrings->emplace_back( _str.substr( start ) );
+                    }
 
                     break;
                 }

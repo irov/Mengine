@@ -33,6 +33,9 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         m_manager = ReviewManagerFactory.create(activity);
+    }
+
+    public void initialize() {
         Task<ReviewInfo> request = m_manager.requestReviewFlow();
         request.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -44,11 +47,12 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
         });
     }
 
-    void launchTheInAppReview() {
+    public void launchTheInAppReview() {
         if (m_reviewInfo == null) {
             this.logInfo("reviewInfo == null -> laynchTheInAppReview disable");
             return;
         }
+
         Task<Void> flow = m_manager.launchReviewFlow(this.getActivity(), m_reviewInfo);
         flow.addOnCompleteListener(task -> {
             this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewCompleted");

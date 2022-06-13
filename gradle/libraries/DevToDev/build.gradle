@@ -40,5 +40,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.8'
     implementation 'com.google.firebase:firebase-core:21.0.0'
 
-    implementation 'com.devtodev:android-analytics:2.0.0'
+    implementation 'com.devtodev:android-analytics:2.1.4'
 }

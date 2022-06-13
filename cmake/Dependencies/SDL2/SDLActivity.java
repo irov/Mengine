@@ -378,7 +378,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mHIDDeviceManager = HIDDeviceManager.acquire(this);
 
         // Set up the surface
-        mSurface = SDLActivity.mSingleton.createSDLSurface(getApplication());
+        mSurface = this.createSDLSurface(getApplication());
 
         mLayout = new RelativeLayout(this);
         mLayout.addView(mSurface);
@@ -398,8 +398,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         }
 
         setContentView(mLayout);
-
-        setWindowStyle(false);
 
         getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(this);
 

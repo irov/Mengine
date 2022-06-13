@@ -45,5 +45,5 @@ dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
 
-    implementation 'io.sentry:sentry-android:5.2.3'
+    implementation 'io.sentry:sentry-android:6.0.0'
 }

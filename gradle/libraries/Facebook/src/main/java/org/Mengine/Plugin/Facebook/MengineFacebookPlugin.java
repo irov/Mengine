@@ -45,7 +45,28 @@ public class MengineFacebookPlugin extends MenginePlugin {
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         m_facebookCallbackManager = CallbackManager.Factory.create();
+    }
 
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
+        m_facebookCallbackManager = null;
+    }
+
+    @Override
+    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+        m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onMengineInitializeBaseServices(MengineActivity activity) {
+    }
+
+    @Override
+    public void onMengineCreateApplication(MengineActivity activity) {
+    }
+
+    public void initialize() {
         LoginManager.getInstance().registerCallback(m_facebookCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -69,22 +90,9 @@ public class MengineFacebookPlugin extends MenginePlugin {
             }
         });
 
-        Application application = activity.getApplication();
+        Application application = this.getApplication();
 
         AppEventsLogger.activateApp(application);
-    }
-
-    @Override
-    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onMengineInitializeBaseServices(MengineActivity activity) {
-    }
-
-    @Override
-    public void onMengineCreateApplication(MengineActivity activity) {
     }
 
     public boolean isLoggedIn() {

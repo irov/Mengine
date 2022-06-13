@@ -50,6 +50,11 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    }
+
+    public void initialize() {
+        MengineActivity activity = this.getActivity();
+
         MARPlatform.getInstance().init(activity, this);
     }
 

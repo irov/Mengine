@@ -1179,6 +1179,13 @@ SDL_GetWindowDisplayMode(SDL_Window * window, SDL_DisplayMode * mode)
 
     display = SDL_GetDisplayForWindow(window);
 
+    //MENGINE: fix orientation mode
+    if(display->orientation == SDL_ORIENTATION_LANDSCAPE || display->orientation == SDL_ORIENTATION_LANDSCAPE_FLIPPED) {
+        int w = fullscreen_mode.w;
+        fullscreen_mode.w = fullscreen_mode.h;
+        fullscreen_mode.h = w;
+    }
+
     /* if in desktop size mode, just return the size of the desktop */
     if ((window->flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP) {
         fullscreen_mode = display->desktop_mode;

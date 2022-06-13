@@ -111,6 +111,19 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    }
+
+    @Override
+    public void onResume(MengineActivity activity) {
+        this.connectAndQuerySku();
+    }
+
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        m_billingClient.endConnection();
+    }
+
+    public void initialize() {
         final PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
             @Override
             public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchases) {
@@ -167,20 +180,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             }
         };
 
+        MengineActivity activity = this.getActivity();
+
         m_billingClient = BillingClient.newBuilder(activity.getBaseContext())
                 .setListener(purchasesUpdatedListener)
                 .enablePendingPurchases()
                 .build();
-    }
-
-    @Override
-    public void onResume(MengineActivity activity) {
-        this.connectAndQuerySku();
-    }
-
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        m_billingClient.endConnection();
     }
 
     private void connectAndQuerySku() {

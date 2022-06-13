@@ -48,6 +48,6 @@ dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
 
-    implementation 'com.google.android.gms:play-services-location:19.0.1'
-    implementation 'com.applovin:applovin-sdk:11.3.1'
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
+    implementation 'com.applovin:applovin-sdk:11.4.3'
 }

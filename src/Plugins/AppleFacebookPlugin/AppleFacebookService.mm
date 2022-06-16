@@ -61,14 +61,7 @@ namespace Mengine
                 
                 return;
             }
-            
-            if( result.isCancelled == true )
-            {
-                m_isProcessed = false;
-                
-                return;
-            }
-                
+                            
             m_userID = FBSDKProfile.currentProfile.userID;
                 
             NSString * m_idTokenString = FBSDKAuthenticationToken.currentAuthenticationToken.tokenString;

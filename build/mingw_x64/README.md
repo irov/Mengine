@@ -1,7 +1,9 @@
 download: [msys2](https://www.msys2.org/)
 
 pacman -Syu
+
 [restart]
+
 pacman -Syu
 pacman -Su
 pacman -S mingw-w64-x86_64-uasm

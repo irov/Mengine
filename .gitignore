@@ -4,3 +4,4 @@
 /solutions/
 /contributing/cppcheck/
 **.exe
+**.DS_Store

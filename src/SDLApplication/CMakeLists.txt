@@ -482,6 +482,7 @@ IF(MENGINE_TARGET_MACOS)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} iconv)
 ENDIF()
 
+/************************************************************
 foreach(NAME ${APPLICATION_APPLE_FRAMEWORKS})
     find_library(FRAMEWORK_${NAME} ${NAME})
 
@@ -518,6 +519,7 @@ foreach(APPLICATION_APPLE_FRAMEWORK_WITH_PATH__INDEX RANGE 0 ${LENGTH_APPLICATIO
         MESSAGE(STATUS "Framework ${NAME} found at ${FRAMEWORK_${NAME}}")
     endif()
 endforeach()
+************************************************************/
 
 IF(MENGINE_TARGET_ANDROID)
     IF(UNIX)

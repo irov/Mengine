@@ -93,7 +93,11 @@ if(MENGINE_TARGET_ANDROID)
 endif()
 
 if((MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR) AND NOT MENGINE_BUILD_ONLY_EXECUTABLE_MODULE)
-    include("${MENGINE_XCODE_DEPLOY_PATH}/project_ios_prepare.cmake")
+    if(MENGINE_XCODE_DEPLOY_PATH)
+        if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/project_ios_prepare.cmake")
+            include("${MENGINE_XCODE_DEPLOY_PATH}/project_ios_prepare.cmake")
+        endif()
+    endif()
     
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${MENGINE_XCODE_DEPLOY_PATH}/deploy-ios-plist")
     
@@ -147,7 +151,11 @@ if((MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR) AND NOT MENGINE_BUILD_ON
         SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME ${MENGINE_IOS_RESOURCE_MEDIA_LAUNCHIMAGE_NAME})
     endif()
     
-    include("${MENGINE_XCODE_DEPLOY_PATH}/project_ios_deploy.cmake")
+    if(MENGINE_XCODE_DEPLOY_PATH)
+        if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/project_ios_deploy.cmake")
+            include("${MENGINE_XCODE_DEPLOY_PATH}/project_ios_deploy.cmake")
+        endif()
+    endif()
     
     get_target_property(MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_NAME} XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER)
 
@@ -159,6 +167,12 @@ if((MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR) AND MENGINE_BUILD_ONLY_E
 endif()
 
 if(MENGINE_TARGET_MACOS)
+    if(MENGINE_XCODE_DEPLOY_PATH)
+        if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/project_mac_prepare.cmake")
+            include("${MENGINE_XCODE_DEPLOY_PATH}/project_mac_prepare.cmake")
+        endif()
+    endif()
+
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${MENGINE_XCODE_DEPLOY_PATH}/deploy-mac-plist")
 
     set(myApp_ICONS "${MENGINE_XCODE_DEPLOY_PATH}/deploy-mac-icons.icns")
@@ -206,7 +220,11 @@ if(MENGINE_TARGET_MACOS)
     SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_GENERATE_SCHEME TRUE)
     SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "--deep")
 
-    include("${MENGINE_XCODE_DEPLOY_PATH}/project_mac_deploy.cmake")
+    if(MENGINE_XCODE_DEPLOY_PATH)
+        if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/project_mac_deploy.cmake")
+            include("${MENGINE_XCODE_DEPLOY_PATH}/project_mac_deploy.cmake")
+        endif()
+    endif()
 
     get_target_property(MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_NAME} XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER)
     SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST info.plist.in)

@@ -23,7 +23,9 @@ if(MENGINE_SECURE_VALUE)
 endif()
 
 if(MENGINE_XCODE_DEPLOY_PATH)
-    include("${MENGINE_XCODE_DEPLOY_PATH}/mengine_ios_prepare.cmake")
+    if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/mengine_ios_prepare.cmake")
+        include("${MENGINE_XCODE_DEPLOY_PATH}/mengine_ios_prepare.cmake")
+    endif()
 endif()
 
 INCLUDE_DIRECTORIES(${MENGINE_SOURCE_DIR})

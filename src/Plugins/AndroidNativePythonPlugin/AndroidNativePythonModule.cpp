@@ -155,6 +155,7 @@ namespace Mengine
         s_androidNativePythonModule = nullptr;
 
         m_callbacks.clear();
+        m_plugins.clear();
 
         m_eventation.finalize();
     }
@@ -235,6 +236,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::addPlugin( const String & _name, const jobject & _plugin )
     {
+        MENGINE_ASSERTION_FATAL( m_plugins.find( Helper::stringizeString( _name ) ) == m_plugins.end(), "invalid add plugin '%s' [double]"
+            , _name.c_str()
+        );
+
         SCRIPT_SERVICE()
             ->setAvailablePlugin( _name.c_str(), true );
 
@@ -243,6 +248,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
     {
+        MENGINE_ASSERTION_FATAL( m_callbacks.find( Helper::makePair( _plugin, _method ) ) == m_callbacks.end(), "invalid add plugin '%s' callback '%s' [double]"
+            , _plugin.c_str()
+            , _method.c_str()
+        );
+
         m_callbacks.emplace( Helper::makePair( _plugin, _method ), _cb );
     }
     //////////////////////////////////////////////////////////////////////////

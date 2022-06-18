@@ -1,10 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.Mengine.Plugin.Facebook">
 
+    <queries>
+        <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
+    </queries>
+
     <application>
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+
+        <meta-data android:name="com.facebook.sdk.AutoInitEnabled" android:value="true"/>
+        <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled" android:value="false"/>
+        <meta-data android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled" android:value="false"/>
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -27,6 +34,7 @@
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="@string/fb_content_provider_id"
-            android:exported="true"></provider>
+            android:exported="true">
+        </provider>
     </application>
 </manifest>

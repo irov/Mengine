@@ -7,9 +7,11 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.LoggingBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
@@ -18,6 +20,7 @@ import com.facebook.share.widget.ShareDialog;
 import com.facebook.appevents.AppEventsLogger;
 
 import android.app.Application;
+import android.content.Context;
 import android.net.Uri;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,13 +47,14 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        m_facebookCallbackManager = CallbackManager.Factory.create();
     }
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
-        m_facebookCallbackManager = null;
+        if (m_facebookCallbackManager != null) {
+            LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
+            m_facebookCallbackManager = null;
+        }
     }
 
     @Override
@@ -67,6 +71,13 @@ public class MengineFacebookPlugin extends MenginePlugin {
     }
 
     public void initialize() {
+        if (BuildConfig.DEBUG) {
+            FacebookSdk.setIsDebugEnabled(true);
+            FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
+        }
+
+        m_facebookCallbackManager = CallbackManager.Factory.create();
+
         LoginManager.getInstance().registerCallback(m_facebookCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -91,7 +102,6 @@ public class MengineFacebookPlugin extends MenginePlugin {
         });
 
         Application application = this.getApplication();
-
         AppEventsLogger.activateApp(application);
     }
 

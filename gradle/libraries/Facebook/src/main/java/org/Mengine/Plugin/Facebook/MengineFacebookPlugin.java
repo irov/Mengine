@@ -119,14 +119,14 @@ public class MengineFacebookPlugin extends MenginePlugin {
         return token;
     }
     
-    public void performLogin(String[] readPermissions) {
+    public void performLogin(List<String> readPermissions) {
         MengineActivity activity = this.getActivity();
 
         List<String> permissions;
         if (readPermissions == null) {
             permissions = Arrays.asList(PROFILE, EMAIL);
         } else {
-            permissions = Arrays.asList(readPermissions);
+            permissions = readPermissions;
         }
         
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);

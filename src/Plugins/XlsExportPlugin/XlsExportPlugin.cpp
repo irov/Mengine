@@ -19,6 +19,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 FILE _iob[] = {*stdin, *stdout, *stderr};
+//////////////////////////////////////////////////////////////////////////
 extern "C" FILE * __cdecl __iob_func( void )
 {
     return _iob;
@@ -222,7 +223,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::notifyBootstrapperCreateApplication_()
     {
-        this->proccess_();
+        if( this->proccess_() == false )
+        {
+            APPLICATION_SERVICE()
+                ->quit();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::notifyReloadLocale()
@@ -267,7 +272,7 @@ namespace Mengine
 
         kernel->decref( py_xlsxExporter );
 
-        return successful;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::warning_( const WChar * _msg )

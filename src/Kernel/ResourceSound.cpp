@@ -7,6 +7,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/DocumentableHelper.h"
 
 namespace Mengine
 {
@@ -19,7 +20,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceSound::~ResourceSound()
     {
-        MENGINE_ASSERTION_FATAL( m_soundBufferNoStreamableCache == nullptr );
+        MENGINE_ASSERTION_FATAL( m_soundBufferNoStreamableCache == nullptr, "resource sound invalid release no streamable cache '%s' type '%s' (doc: % s)"
+            , this->getName().c_str()
+            , this->getType().c_str()
+            , MENGINE_DOCUMENTABLE_STR( this, "None" )
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceSound::setStreamable( bool _streamable )

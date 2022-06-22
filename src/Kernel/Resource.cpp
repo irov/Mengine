@@ -7,6 +7,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/DocumentableHelper.h"
 
 namespace Mengine
 {
@@ -24,9 +25,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource::~Resource()
     {
-        MENGINE_ASSERTION_FATAL( m_initialize == false, "destroy without finalize resource '%s' type '%s'"
+        MENGINE_ASSERTION_FATAL( m_initialize == false, "destroy without finalize resource '%s' type '%s' (doc: %s)"
             , this->getName().c_str()
             , this->getType().c_str()
+            , MENGINE_DOCUMENTABLE_STR( this, "None" )
         );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -25,10 +25,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource::~Resource()
     {
-        MENGINE_ASSERTION_FATAL( m_initialize == false, "destroy without finalize resource '%s' type '%s' (doc: %s)"
+        MENGINE_ASSERTION_FATAL( m_initialize == false, "destroy without finalize resource '%s' type '%s'"
             , this->getName().c_str()
             , this->getType().c_str()
-            , MENGINE_DOCUMENTABLE_STR( this, "None" )
         );
     }
     //////////////////////////////////////////////////////////////////////////

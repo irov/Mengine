@@ -24,8 +24,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource::~Resource()
     {
-        MENGINE_ASSERTION_FATAL( m_initialize == false );
-        MENGINE_ASSERTION_FATAL( m_resourceBank == nullptr );
+        MENGINE_ASSERTION_FATAL( m_initialize == false, "destroy without finalize resource '%s' type '%s'"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setResourceBank( ResourceBankInterface * _bank )

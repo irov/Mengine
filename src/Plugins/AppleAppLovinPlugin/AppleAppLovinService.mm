@@ -10,9 +10,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleAppLovinService::AppleAppLovinService()
-        : m_banner(nil)
-        , m_interstitial(nil)
-        , m_rewarded(nil)
+        : m_banner( nil )
+        , m_interstitial( nil )
+        , m_rewarded( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,33 @@ namespace Mengine
         [[ALSdk shared] initializeSdkWithCompletionHandler:^(ALSdkConfiguration *configuration) {
             LOGGER_MESSAGE("AppLovin initialize");
         }];
-
+        
+        return true;
+    }
+    ////////////////////////////////////////////////////////////////////////
+    void AppleAppLovinService::_finalizeService()
+    {
+        if( m_rewarded != nil )
+        {
+            [m_rewarded release];
+            m_rewarded = nil;
+        }
+        
+        if( m_interstitial != nil )
+        {
+            [m_interstitial release];
+            m_interstitial = nil;
+        }
+        
+        if( m_banner != nil )
+        {
+            [m_banner release];
+            m_banner = nil;
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////
+    void AppleAppLovinService::initBanner()
+    {
         const Char * AppLovin_BannerAdUnit = CONFIG_VALUE("AppLovin", "BannerAdUnit", "");
 
         LOGGER_INFO("applovin", "Banner AdUnit '%s'"
@@ -45,7 +71,10 @@ namespace Mengine
         CGRect bannerRect = CGRectMake(0, 0, width, height);
         
         m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit rect:bannerRect];
-
+    }
+    /////////////////////////////////////////////////////////////////////////
+    void AppleAppLovinService::initInterstitial()
+    {
         const Char * AppLovin_InterstitialAdUnit = CONFIG_VALUE("AppLovin", "InterstitialAdUnit", "");
 
         LOGGER_INFO("applovin", "Interstitial AdUnit '%s'"
@@ -55,7 +84,10 @@ namespace Mengine
         NSString * interstitialAdUnit = [NSString stringWithUTF8String:AppLovin_InterstitialAdUnit];
 
         m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit];
-
+    }
+    /////////////////////////////////////////////////////////////////////////
+    void AppleAppLovinService::initRewarded()
+    {
         const Char * AppLovin_RewardedAdUnit = CONFIG_VALUE("AppLovin", "RewardedAdUnit", "");
 
         LOGGER_INFO("applovin", "Rewarded AdUnit '%s'"
@@ -65,20 +97,6 @@ namespace Mengine
         NSString * rewardedAdUnit = [NSString stringWithUTF8String:AppLovin_RewardedAdUnit];
 
         m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:rewardedAdUnit rewardCallback:this];
-        
-        return true;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::_finalizeService()
-    {
-        [m_rewarded release];
-        m_rewarded = nil;
-        
-        [m_interstitial release];
-        m_interstitial = nil;
-        
-        [m_banner release];
-        m_banner = nil;
     }
     /////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::hasLoadedInterstitial() const

@@ -21,6 +21,11 @@ namespace Mengine
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
+        
+    public:
+        void initBanner() override;
+        void initInterstitial() override;
+        void initRewarded() override;
 
     public:
         bool hasLoadedInterstitial() const override;

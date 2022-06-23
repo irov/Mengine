@@ -19,6 +19,24 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        static void s_appleAppLovin_initBanner()
+        {
+            APPLE_APPLOVIN_SERVICE()
+                ->initBanner();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_appleAppLovin_initInterstitial()
+        {
+            APPLE_APPLOVIN_SERVICE()
+                ->initInterstitial();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_appleAppLovin_initRewarded()
+        {
+            APPLE_APPLOVIN_SERVICE()
+                ->initRewarded();
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool s_appleAppLovin_hasLoadedinterstitial()
         {
             bool result = APPLE_APPLOVIN_SERVICE()
@@ -84,6 +102,9 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleAppLovin", true );
         
+        pybind::def_function( _kernel, "appleAppLovinInitBanner", &Detail::s_appleAppLovin_initBanner );
+        pybind::def_function( _kernel, "appleAppLovinInitInterstitial", &Detail::s_appleAppLovin_initInterstitial );
+        pybind::def_function( _kernel, "appleAppLovinInitRewarded", &Detail::s_appleAppLovin_initRewarded );
         pybind::def_function( _kernel, "appleAppLovinHasLoadedinterstitial", &Detail::s_appleAppLovin_hasLoadedinterstitial );
         pybind::def_function( _kernel, "appleAppLovinShowInterstitial", &Detail::s_appleAppLovin_showInterstitial );
         pybind::def_function( _kernel, "appleAppLovinHasLoadedRewarded", &Detail::s_appleAppLovin_hasLoadedRewarded );

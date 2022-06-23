@@ -67,6 +67,19 @@ public class MengineApplovinPlugin extends MenginePlugin {
         AppLovinSdk.getInstance(context).setMediationProvider("max");
     }
 
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        if  (m_interstitialAd != null) {
+            m_interstitialAd.destroy();
+            m_interstitialAd = null;
+        }
+
+        if  (m_rewardedAd != null) {
+            m_rewardedAd.destroy();
+            m_rewardedAd = null;
+        }
+    }
+
     public void initialize() {
         MengineActivity activity = this.getActivity();
         final Context context = activity.getBaseContext();
@@ -84,8 +97,11 @@ public class MengineApplovinPlugin extends MenginePlugin {
         });
     }
 
-    public void initInterstitial(String interstitial_ad_unit_id) {
-        m_interstitialAd = new MaxInterstitialAd(interstitial_ad_unit_id, getActivity());
+    public void initInterstitial() {
+        MengineActivity activity = this.getActivity();
+
+        String Applovin_InterstitialAdUnitId = activity.getConfigValue("Applovin", "InterstitialAdUnitId", "");
+        m_interstitialAd = new MaxInterstitialAd(Applovin_InterstitialAdUnitId, activity);
 
         MaxAdListener maxAdListener = new MaxAdListener() {
             @Override
@@ -136,8 +152,11 @@ public class MengineApplovinPlugin extends MenginePlugin {
         m_interstitialAd.setListener(maxAdListener);
     }
 
-    public void initRewarded(String rewarded_ad_unit_id) {
-        m_rewardedAd = MaxRewardedAd.getInstance(rewarded_ad_unit_id, getActivity());
+    public void initRewarded() {
+        MengineActivity activity = this.getActivity();
+
+        String Applovin_RewardedAdUnitId = activity.getConfigValue("Applovin", "RewardedAdUnitId", "");
+        m_rewardedAd = MaxRewardedAd.getInstance(Applovin_RewardedAdUnitId, activity);
 
         MaxRewardedAdListener maxRewardedAdListener = new MaxRewardedAdListener() {
             @Override

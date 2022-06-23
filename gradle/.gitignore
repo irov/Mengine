@@ -3,6 +3,7 @@
 **/.transforms
 .idea
 .gradle
+.safedk
 /local.properties
 /gradle.properties
 .DS_Store

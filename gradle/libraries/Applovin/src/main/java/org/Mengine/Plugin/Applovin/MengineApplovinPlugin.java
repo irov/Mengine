@@ -100,7 +100,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
     public void initInterstitial() {
         MengineActivity activity = this.getActivity();
 
-        String Applovin_InterstitialAdUnitId = activity.getConfigValue("Applovin", "InterstitialAdUnitId", "");
+        String Applovin_InterstitialAdUnitId = activity.getConfigValue("AppLovin", "InterstitialAdUnitId", "");
         m_interstitialAd = new MaxInterstitialAd(Applovin_InterstitialAdUnitId, activity);
 
         MaxAdListener maxAdListener = new MaxAdListener() {
@@ -155,7 +155,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
     public void initRewarded() {
         MengineActivity activity = this.getActivity();
 
-        String Applovin_RewardedAdUnitId = activity.getConfigValue("Applovin", "RewardedAdUnitId", "");
+        String Applovin_RewardedAdUnitId = activity.getConfigValue("AppLovin", "RewardedAdUnitId", "");
         m_rewardedAd = MaxRewardedAd.getInstance(Applovin_RewardedAdUnitId, activity);
 
         MaxRewardedAdListener maxRewardedAdListener = new MaxRewardedAdListener() {

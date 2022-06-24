@@ -118,6 +118,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleAppLovinScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "appleAppLovinInitBanner", nullptr );
+        _kernel->remove_from_module( "appleAppLovinInitInterstitial", nullptr );
+        _kernel->remove_from_module( "appleAppLovinInitRewarded", nullptr );
         _kernel->remove_from_module( "appleAppLovinHasLoadedinterstitial", nullptr );
         _kernel->remove_from_module( "appleAppLovinShowInterstitial", nullptr );
         _kernel->remove_from_module( "appleAppLovinHasLoadedrewarded", nullptr );

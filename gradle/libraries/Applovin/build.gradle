@@ -7,7 +7,6 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.sentry:sentry-android-gradle-plugin:2.1.5'
         classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:4.3.4'
     }
 }
@@ -49,5 +48,6 @@ dependencies {
     implementation project(':libraries:SDL2')
 
     implementation 'com.google.android.gms:play-services-location:20.0.0'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'com.applovin:applovin-sdk:11.4.3'
 }

@@ -20,10 +20,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceSound::~ResourceSound()
     {
-        MENGINE_ASSERTION_FATAL( m_soundBufferNoStreamableCache == nullptr, "resource sound invalid release no streamable cache '%s' type '%s' (doc: % s)"
+        MENGINE_ASSERTION_FATAL( m_soundBufferNoStreamableCache == nullptr, "resource sound invalid release no streamable cache '%s' type '%s'"
             , this->getName().c_str()
             , this->getType().c_str()
-            , MENGINE_DOCUMENTABLE_STR( this, "None" )
         );
     }
     //////////////////////////////////////////////////////////////////////////

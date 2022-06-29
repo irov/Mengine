@@ -1,8 +1,4 @@
 post_install do |installer|
-  installer.pods_project.build_configurations.each do |config|
-    config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
-  end
-
   work_dir = Dir.pwd
   installer.aggregate_targets.each do |target|
     if target.name != "Pods-SDLApplication"

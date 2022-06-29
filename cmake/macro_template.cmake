@@ -167,12 +167,6 @@ MACRO(SET_MENGINE_ENVIRONMENT MENGINE_TARGET MENGINE_RENDER MENGINE_PLATFORM MEN
 ENDMACRO()
 
 MACRO(SET_MENGINE_OUTPUT_DIRECTORY)
-    if(MENGINE_XCODE_DEPLOY_PATH)
-        if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/mengine_ios_prepare.cmake")
-            include("${MENGINE_XCODE_DEPLOY_PATH}/mengine_ios_prepare.cmake")
-        endif()
-    endif()
-
     get_directory_property(DirDefs COMPILE_DEFINITIONS)
     foreach(d ${DirDefs})
         LIST(APPEND MENGINE_DEFINITIONS_SHA1_LIST "${d}: [${${d}}]")

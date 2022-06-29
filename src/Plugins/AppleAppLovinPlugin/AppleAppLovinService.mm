@@ -1,7 +1,10 @@
 #include "AppleAppLovinService.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
+
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleAppLovinService, Mengine::AppleAppLovinService );
@@ -58,6 +61,8 @@ namespace Mengine
     {
         const Char * AppLovin_BannerAdUnit = CONFIG_VALUE("AppLovin", "BannerAdUnit", "");
 
+        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovin_BannerAdUnit, "" ) == 0 );
+
         LOGGER_INFO("applovin", "Banner AdUnit '%s'"
             , AppLovin_BannerAdUnit
         );
@@ -77,6 +82,8 @@ namespace Mengine
     {
         const Char * AppLovin_InterstitialAdUnit = CONFIG_VALUE("AppLovin", "InterstitialAdUnit", "");
 
+        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovin_InterstitialAdUnit, "" ) == 0 );
+
         LOGGER_INFO("applovin", "Interstitial AdUnit '%s'"
             , AppLovin_InterstitialAdUnit
         );
@@ -89,6 +96,8 @@ namespace Mengine
     void AppleAppLovinService::initRewarded()
     {
         const Char * AppLovin_RewardedAdUnit = CONFIG_VALUE("AppLovin", "RewardedAdUnit", "");
+        
+        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovin_RewardedAdUnit, "" ) == 0 );
 
         LOGGER_INFO("applovin", "Rewarded AdUnit '%s'"
             , AppLovin_RewardedAdUnit

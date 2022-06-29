@@ -57,7 +57,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("Applovin");
+        this.addPythonPlugin("AppLovin");
     }
 
     @Override
@@ -97,10 +97,15 @@ public class MengineApplovinPlugin extends MenginePlugin {
         });
     }
 
-    public void initInterstitial() {
+    public void initInterstitial() throws Exception {
         MengineActivity activity = this.getActivity();
 
         String Applovin_InterstitialAdUnitId = activity.getConfigValue("AppLovin", "InterstitialAdUnitId", "");
+
+        if (Applovin_InterstitialAdUnitId == "") {
+            throw new Exception("Need to add config value for [AppLovin] InterstitialAdUnitId");
+        }
+
         m_interstitialAd = new MaxInterstitialAd(Applovin_InterstitialAdUnitId, activity);
 
         MaxAdListener maxAdListener = new MaxAdListener() {
@@ -152,10 +157,15 @@ public class MengineApplovinPlugin extends MenginePlugin {
         m_interstitialAd.setListener(maxAdListener);
     }
 
-    public void initRewarded() {
+    public void initRewarded() throws Exception {
         MengineActivity activity = this.getActivity();
 
         String Applovin_RewardedAdUnitId = activity.getConfigValue("AppLovin", "RewardedAdUnitId", "");
+
+        if (Applovin_RewardedAdUnitId == "") {
+            throw new Exception("Need to add config value for [AppLovin] RewardedAdUnitId");
+        }
+
         m_rewardedAd = MaxRewardedAd.getInstance(Applovin_RewardedAdUnitId, activity);
 
         MaxRewardedAdListener maxRewardedAdListener = new MaxRewardedAdListener() {

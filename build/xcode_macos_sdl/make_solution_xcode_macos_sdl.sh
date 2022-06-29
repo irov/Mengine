@@ -23,10 +23,21 @@ fi
 
 mkdir -p ../../solutions/solution_xcode_macos_sdl/$CONFIGURATION
 pushd ../../solutions/solution_xcode_macos_sdl/$CONFIGURATION
+
 $CMAKE -G"Xcode" "$PWD/../../../cmake/Xcode_MacOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9 -DMENGINE_XCODE_DEPLOY_PATH="$DEPLOY_PATH"
+
 if [ $? -ne 0 ]; then
     echo "please fix CMake"
     exit 0
 fi
-pod install --repo-update
+
+if test -f "Podfile"; then
+    pod install --repo-update
+    
+    if [ $? -ne 0 ]; then
+        echo "please fix Cocoapods"
+        exit 0
+    fi
+fi
+
 popd

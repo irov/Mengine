@@ -17,6 +17,14 @@ fi
 
 mkdir -p ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
 pushd ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
+
 $CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION
+
+if [ $? -ne 0 ]; then
+    echo "please fix CMake"
+    exit 0
+fi
+
 $CMAKE --build ./ --config $CONFIGURATION
+
 popd

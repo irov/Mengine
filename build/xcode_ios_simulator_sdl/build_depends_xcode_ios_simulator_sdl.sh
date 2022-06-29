@@ -15,9 +15,16 @@ if test -z "$CONFIGURATION"; then
     exit 0
 fi
 
-
 mkdir -p ../../solutions/dependencies_xcode_ios_simulator_sdl/$CONFIGURATION
 pushd ../../solutions/dependencies_xcode_ios_simulator_sdl/$CONFIGURATION
+
 $CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_IOS_Simulator_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION
+
+if [ $? -ne 0 ]; then
+    echo "please fix CMake"
+    exit 0
+fi
+
 $CMAKE --build ./ --config $CONFIGURATION
+
 popd

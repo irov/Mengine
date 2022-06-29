@@ -17,6 +17,14 @@ fi
 
 mkdir -p ../../solutions/dependencies_xcode_macos_sdl/$CONFIGURATION
 pushd ../../solutions/dependencies_xcode_macos_sdl/$CONFIGURATION
+
 $CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_MacOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9
+
+if [ $? -ne 0 ]; then
+    echo "please fix CMake"
+    exit 0
+fi
+
 $CMAKE --build ./ --config $CONFIGURATION
+
 popd

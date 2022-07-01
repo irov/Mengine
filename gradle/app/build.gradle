@@ -30,7 +30,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    
+
     bundle {
         language {
             enableSplit = false
@@ -120,7 +120,7 @@ android {
 
             reset()
 
-            if (Utils.getBooleanProperty(project,"ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+            if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             } else {
                 include "arm64-v8a", "armeabi-v7a"
@@ -151,10 +151,10 @@ android {
     }
 
     if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_DIR") == true) {
-        print 'ANDROID_APP_DELIVERY_DIR = '
-        println ANDROID_APP_DELIVERY_DIR
-        
-        assetPacks += [ANDROID_APP_DELIVERY_DIR]
+        print 'ANDROID_DELIVERY_APP_ID = '
+        println ANDROID_DELIVERY_APP_ID
+
+        assetPacks += [ANDROID_DELIVERY_APP_ID]
     }
 
     sourceSets {
@@ -186,8 +186,7 @@ android {
             if (project.hasProperty("ANDROID_APP_ASSETS_SRC_DIR")) {
                 print 'ANDROID_APP_ASSETS_SRC_DIR = '
                 println ANDROID_APP_ASSETS_SRC_DIR
-
-                assets.srcDirs += [ANDROID_APP_ASSETS_SRC_DIR]
+                assets.srcDirs += [Utils.normalizeAsssetsPath(project, ANDROID_APP_ASSETS_SRC_DIR)]
             } else {
                 print 'ANDROID_APP_ASSETS_SRC_DIR = '
                 println 'data'
@@ -397,7 +396,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", false) == tru
     println 'ANDROID_APP_ENABLE_ADJUST: FALSE'
 }
 
-if(project.hasProperty("MENGINE_APP_OPTIONS")) {
+if (project.hasProperty("MENGINE_APP_OPTIONS")) {
     print 'MENGINE_APP_OPTIONS: '
     println MENGINE_APP_OPTIONS
 

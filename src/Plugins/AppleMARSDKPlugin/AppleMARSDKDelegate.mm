@@ -54,7 +54,7 @@
     //ToDo
 }
 
-- (BOOL) login; {
+- (BOOL) login {
     LOGGER_INFO("marsdk", "login");
     
     [[MARSDK sharedInstance] login];

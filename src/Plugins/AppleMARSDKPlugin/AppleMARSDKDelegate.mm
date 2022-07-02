@@ -55,41 +55,58 @@
 }
 
 - (BOOL) login; {
+    LOGGER_INFO("marsdk", "login");
+    
     [[MARSDK sharedInstance] login];
     
     return true;
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
+    LOGGER_INFO("marsdk", "OnUserLogin");
+    
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
     provider->onUserLogin();
 }
 
 - (BOOL) logout {
+    LOGGER_INFO("marsdk", "logout");
+    
     [[MARSDK sharedInstance] logout];
+    
     return true;
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
+    LOGGER_INFO("marsdk", "OnUserLogout");
+    
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
     provider->onUserLogout();
 }
 
 - (void) switchAccount {
+    LOGGER_INFO("marsdk", "switchAccount");
+    
     [[MARSDK sharedInstance] switchAccount];
 }
 
 - (void) submitExtendedData:(MARUserExtraData*_Nonnull)extraData {
+    LOGGER_INFO("marsdk", "submitExtendedData");
+    
     [[MARSDK sharedInstance] submitExtraData:extraData];
 }
 
 - (void) submitPaymentData:(MARProductInfo* _Nonnull)productInfo {
+    LOGGER_INFO("marsdk", "submitPaymentData");
+    
     [[MARSDK sharedInstance] pay:productInfo];
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
+    LOGGER_INFO("marsdk", "OnPayPaid");
+    
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
     provider->onPayPaid();

@@ -65,22 +65,7 @@ namespace Mengine
                 return;
             }
 
-            Char message[2048] = {'\0'};
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, 2048, _format, _args );
-
-            if( size_vsnprintf < 0 )
-            {
-                LOGGER_ERROR( "invalid string format '%s'"
-                    , _format
-                );
-
-                return;
-            }
-
-            MENGINE_STRCAT( message, "\n" );
-
-            LOGGER_SERVICE()
-                ->logMessage( level, 0, LCOLOR_GREEN, message, (size_t)size_vsnprintf + 1 );
+            LoggerOperator( STRINGIZE_STRING_LOCAL( "sentry" ), level, 0, LCOLOR_GREEN, nullptr, 0 ).logMessageArgs( _format, _args );
         }
     }
     //////////////////////////////////////////////////////////////////////////

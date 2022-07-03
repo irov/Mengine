@@ -59,15 +59,7 @@ namespace Mengine
                 break;
             }
 
-            StaticString<4096> messageln;
-            messageln.assign( _message );
-            messageln.append( '\n' );
-
-            const Char * messageln_str = messageln.c_str();
-            size_t messageln_len = messageln.size();
-
-            LOGGER_SERVICE()
-                ->logMessage( level, 0, LCOLOR_GREEN, messageln_str, messageln_len );
+            LoggerOperator( STRINGIZE_STRING_LOCAL( "gameanalytics" ), level, 0, LCOLOR_GREEN, nullptr, 0 )("%s", _message);
         }
         //////////////////////////////////////////////////////////////////////////
     }

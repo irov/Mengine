@@ -119,24 +119,21 @@ namespace Mengine
         }
         else
         {
-            const Char msg[] = "invalid message :(\n";
-            this->logMessage( msg, MENGINE_STATIC_STRING_LENGTH( msg ) );
-
-            int32_t size_sprintf = MENGINE_SPRINTF( str, "%s"
+            int32_t size_snprintf = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "invalid message format: %s"
                 , _format
             );
 
-            if( size_sprintf < 0 )
+            if( size_snprintf < 0 )
             {
                 return;
             }
 
-            size += size_sprintf;
+            size += size_snprintf;
 
             str[size + 0] = '\n';
             str[size + 1] = '\0';
 
-            this->logMessage( _format, (size_t)(size + 1) );
+            this->logMessage( LCOLOR_RED, str, size + 1 );
 
             return;
         }
@@ -151,7 +148,7 @@ namespace Mengine
             str[size + 0] = '\n';
             str[size + 1] = '\0';
 
-            this->logMessage( str, (size_t)(size + 1) );
+            this->logMessage( m_color, str, size + 1 );
         }
         else
         {
@@ -162,14 +159,14 @@ namespace Mengine
 
             str[size + 0] = '\0';
 
-            this->logMessage( str, size );
+            this->logMessage( m_color, str, size );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessage( const Char * _msg, size_t _size ) const
+    void LoggerOperator::logMessage( uint32_t _color, const Char * _msg, size_t _size ) const
     {
         LOGGER_SERVICE()
-            ->logMessage( m_level, m_filter, m_color, _msg, _size );
+            ->logMessage( m_level, m_filter, _color, _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
 }

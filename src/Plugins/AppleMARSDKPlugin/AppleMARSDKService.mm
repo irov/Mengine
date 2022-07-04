@@ -64,6 +64,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMARSDKService::switchAccount()
     {
+        LOGGER_INFO( "marsdk", "switchAccount" );
+        
         [m_delegate switchAccount];
         
         return true;

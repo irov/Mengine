@@ -272,7 +272,7 @@ namespace Mengine
 
         kernel->decref( py_xlsxExporter );
 
-        return false;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::warning_( const WChar * _msg )

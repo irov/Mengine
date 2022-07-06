@@ -10,10 +10,6 @@
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
-#   include "Kernel/Win32Helper.h"
-#endif
-
 #include "Config/StdString.h"
 
 namespace Mengine

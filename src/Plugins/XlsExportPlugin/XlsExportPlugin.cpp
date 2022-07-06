@@ -123,6 +123,11 @@ namespace Mengine
 
         if( ShortPathNameLen == 0 )
         {
+            LOGGER_ERROR( "invalid GetShortPathName '%ls' get error %s"
+                , exportPath
+                , Helper::Win32GetLastErrorMessage()
+            );
+
             return false;
         }
 

@@ -35,23 +35,23 @@ if( getBooleanProperty("ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false) == true ) {
 
     val ANDROID_APP_DELIVERY_PACKAGE_NAME = extra["ANDROID_APP_DELIVERY_PACKAGE_NAME"].toString()
 
-    println("[+] Include :app:" + ANDROID_APP_DELIVERY_PACKAGE_NAME)
+    println("[+] Include :app:$ANDROID_APP_DELIVERY_PACKAGE_NAME")
 
-    include(":app:" + ANDROID_APP_DELIVERY_PACKAGE_NAME)
+    include(":app:$ANDROID_APP_DELIVERY_PACKAGE_NAME")
 
-    if( extra.has("ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH") == true ) {
+    if( extra.has("ANDROID_APP_DELIVERY_PACKAGE_EXT>RA_PATH") == true ) {
         val ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH = extra["ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH"].toString()
 
-        println("ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH: " + ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH)
+        println("ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH: $ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH")
 
         val f = File(ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH)
 
         if( f.exists() == false ) {
-            println("Not exist delivery extra path [ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH]: " + ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH)
-            throw kotlin.Exception("Not exist delivery directory: " + ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH)
+            println("Not exist delivery extra path [ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH]: $ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH")
+            throw kotlin.Exception("Not exist delivery directory: $ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH")
         }
 
-        project(":app:" + ANDROID_APP_DELIVERY_PACKAGE_NAME).projectDir = File(ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH)
+        project(":app:$ANDROID_APP_DELIVERY_PACKAGE_NAME").projectDir = File(ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH)
     }
 }
 

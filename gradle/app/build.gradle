@@ -1,4 +1,10 @@
+import com.Mengine.Utils
+
 apply plugin: 'com.android.application'
+
+if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+    apply plugin: 'com.google.firebase.crashlytics'
+}
 
 import com.Mengine.Utils
 
@@ -30,7 +36,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    
+
     bundle {
         language {
             enableSplit = false
@@ -120,7 +126,7 @@ android {
 
             reset()
 
-            if (Utils.getBooleanProperty(project,"ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
+            if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             } else {
                 include "arm64-v8a", "armeabi-v7a"
@@ -153,7 +159,7 @@ android {
     if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_PACKAGE") == true) {
         print 'ANDROID_APP_DELIVERY_PACKAGE_NAME = '
         println ANDROID_APP_DELIVERY_PACKAGE_NAME
-        
+
         assetPacks += [ANDROID_APP_DELIVERY_PACKAGE_NAME]
     }
 
@@ -397,7 +403,7 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", false) == tru
     println 'ANDROID_APP_ENABLE_ADJUST: FALSE'
 }
 
-if(project.hasProperty("MENGINE_APP_OPTIONS")) {
+if (project.hasProperty("MENGINE_APP_OPTIONS")) {
     print 'MENGINE_APP_OPTIONS: '
     println MENGINE_APP_OPTIONS
 

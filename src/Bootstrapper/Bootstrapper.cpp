@@ -318,6 +318,14 @@ PLUGIN_EXPORT( AppleMARSDK );
 PLUGIN_EXPORT( AppleAppLovinPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC
+PLUGIN_EXPORT( AppleFirebaseAnalyticsPlugin );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS_STATIC
+PLUGIN_EXPORT( AppleFirebaseCrashlyticsPlugin );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AppleFacebookPlugin );
 #endif
@@ -1153,6 +1161,14 @@ namespace Mengine
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
         MENGINE_ADD_PLUGIN( AppleAppLovinPlugin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+        
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC
+        MENGINE_ADD_PLUGIN( AppleFirebaseAnalyticsPlugin, "Plugin Apple Firebase Analytics...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS_STATIC
+        MENGINE_ADD_PLUGIN( AppleFirebaseCrashlyticsPlugin, "Plugin Apple Firebase Crashlytics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC

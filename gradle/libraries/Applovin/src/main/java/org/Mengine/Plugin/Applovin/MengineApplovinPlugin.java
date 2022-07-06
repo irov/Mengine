@@ -2,16 +2,24 @@ package org.Mengine.Plugin.Applovin;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
+import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.MaxReward;
 import com.applovin.mediation.MaxRewardedAdListener;
+import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
+import com.applovin.sdk.AppLovinAdSize;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
+import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
@@ -55,6 +63,8 @@ public class MengineApplovinPlugin extends MenginePlugin {
     private MaxRewardedAd m_rewardedAd;
     private int m_retryAttemptRewarded;
 
+    private MaxAdView m_adView;
+
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
         this.addPythonPlugin("AppLovin");
@@ -69,14 +79,19 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        if  (m_interstitialAd != null) {
+        if (m_interstitialAd != null) {
             m_interstitialAd.destroy();
             m_interstitialAd = null;
         }
 
-        if  (m_rewardedAd != null) {
+        if (m_rewardedAd != null) {
             m_rewardedAd.destroy();
             m_rewardedAd = null;
+        }
+
+        if (m_adView != null) {
+            m_adView.destroy();
+            m_adView = null;
         }
     }
 
@@ -95,6 +110,90 @@ public class MengineApplovinPlugin extends MenginePlugin {
                 MengineApplovinPlugin.this.pythonCall("onApplovinPluginOnSdkInitialized");
             }
         });
+    }
+
+    public void initBanner() throws Exception {
+        MengineActivity activity = this.getActivity();
+
+        String Applovin_BannerAdUnitId = activity.getConfigValue("AppLovin", "BannerAdUnitId", "");
+
+        if (Applovin_BannerAdUnitId == "") {
+            throw new Exception("Need to add config value for [AppLovin] BannerAdUnitId");
+        }
+
+        m_adView = new MaxAdView(Applovin_BannerAdUnitId, activity);
+        MaxAdViewAdListener maxAdViewAdListener = new MaxAdViewAdListener() {
+
+            @Override
+            public void onAdLoaded(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdDisplayed(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdHidden(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdClicked(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdLoadFailed(String adUnitId, MaxError error) {
+
+            }
+
+            @Override
+            public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+
+            }
+
+            @Override
+            public void onAdExpanded(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdCollapsed(MaxAd ad) {
+
+            }
+        };
+        m_adView.setListener(maxAdViewAdListener);
+
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+        int heightPx = (AppLovinSdkUtils.isTablet(activity) ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER).getHeight();
+
+        m_adView.setLayoutParams(new FrameLayout.LayoutParams(width, heightPx));
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+
+//        int height = activity.getWindow().getDecorView().getHeight()
+
+        m_adView.setTranslationY(height - heightPx);
+//        ViewGroup rootView = findViewById(android.R.id.content);
+        ViewGroup rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        rootView.addView(m_adView);
+
+        // Load the ad
+        m_adView.loadAd();
+    }
+
+    public void bannerVisible(boolean show) {
+        if (show) {
+            m_adView.startAutoRefresh();
+            m_adView.setVisibility(View.VISIBLE);
+        } else {
+            m_adView.stopAutoRefresh();
+            m_adView.setVisibility(View.GONE);
+        }
     }
 
     public void initInterstitial() throws Exception {
@@ -187,8 +286,8 @@ public class MengineApplovinPlugin extends MenginePlugin {
                 int amount = reward.getAmount();
 
                 MengineApplovinPlugin.this.logInfo("rewarded %s [%d]"
-                    , label
-                    , amount
+                        , label
+                        , amount
                 );
 
                 MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnUserRewarded", label, amount);

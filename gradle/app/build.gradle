@@ -74,7 +74,7 @@ android {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
         }
 
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH") == true) {
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false) == true) {
             versionCode = 400000000 + buildNumber
         } else {
             versionCode = 300000000 + buildNumber
@@ -97,12 +97,9 @@ android {
         multiDexEnabled true
 
         print 'ANDROID_APP_SPLIT_ENABLE = '
-        println Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE")
+        println Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false)
 
-        print 'ANDROID_APP_EMULATOR_ENABLE = '
-        println Utils.getBooleanProperty(project, "ANDROID_APP_EMULATOR_ENABLE")
-
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE") == false) {
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {
                 if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
                     abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
@@ -118,7 +115,7 @@ android {
 
     splits {
         abi {
-            if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE") == true) {
+            if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false) == true) {
                 enable true
             } else {
                 enable false
@@ -136,7 +133,7 @@ android {
         }
     }
 
-    if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+    if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
         buildTypes {
             debug {
                 externalNativeBuild {
@@ -156,7 +153,7 @@ android {
         }
     }
 
-    if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_PACKAGE") == true) {
+    if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false) == true) {
         print 'ANDROID_APP_DELIVERY_PACKAGE_NAME = '
         println ANDROID_APP_DELIVERY_PACKAGE_NAME
 
@@ -213,7 +210,7 @@ android {
 // test c++ debug -> preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
     afterEvaluate {
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
             build.finalizedBy(uploadCrashlyticsSymbolFileRelease)
         }
     }

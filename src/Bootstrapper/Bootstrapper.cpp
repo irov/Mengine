@@ -761,6 +761,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
 
         LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
@@ -864,7 +865,6 @@ namespace Mengine
 
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
 
-        BOOTSTRAPPER_SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
 
         BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1154,11 +1154,11 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_APPLE_APPTRACKING_STATIC
         MENGINE_ADD_PLUGIN( AppleAppTracking, "Plugin Apple AppTracking...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_APPLE_MARSDK_STATIC
         MENGINE_ADD_PLUGIN( AppleMARSDK, "Plugin Apple MARSDK...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
         MENGINE_ADD_PLUGIN( AppleAppLovinPlugin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1178,7 +1178,7 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_APPLE_REVIEW_STATIC
         MENGINE_ADD_PLUGIN( AppleReviewPlugin, "Plugin Apple Review...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
         MENGINE_ADD_PLUGIN( AppleAdjustPlugin, "Plugin Apple Adjust...", MENGINE_DOCUMENT_FACTORABLE );
 #endif

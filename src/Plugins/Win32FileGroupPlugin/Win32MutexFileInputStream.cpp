@@ -300,7 +300,7 @@ namespace Mengine
 
         if( ::GetFileTime( hFile, &creation, &access, &write ) == FALSE )
         {
-            LOGGER_ERROR( "invalid get file time %s"
+            LOGGER_ERROR( "invalid GetFileTime get error %s"
                 , Helper::Win32GetLastErrorMessage()
             );
 

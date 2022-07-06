@@ -112,7 +112,7 @@ namespace Mengine
 
         if( thread == NULL )
         {
-            LOGGER_ERROR( "invalid create thread %s"
+            LOGGER_ERROR( "invalid CreateThread get error %s"
                 , Helper::Win32GetLastErrorMessage()
             );
 

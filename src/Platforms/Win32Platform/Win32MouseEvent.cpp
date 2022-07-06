@@ -1,6 +1,7 @@
 #include "Win32MouseEvent.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Win32Helper.h"
 
 namespace Mengine
 {
@@ -89,12 +90,19 @@ namespace Mengine
 
         UINT uElapse = 20;
 
-        m_uTimer = ::SetTimer( m_hWnd, MENGINE_UTIMER_MOUSE_EVENT, uElapse, NULL );
+        UINT_PTR uTimer = ::SetTimer( m_hWnd, MENGINE_UTIMER_MOUSE_EVENT, uElapse, NULL );
 
-        if( m_uTimer == 0 )
+        if( uTimer == 0 )
         {
+            LOGGER_ERROR( "SetTimer [%u] get error %s"
+                , uElapse
+                , Helper::Win32GetLastErrorMessage()
+            );
+
             return;
         }
+
+        m_uTimer = uTimer;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32MouseEvent::stop()

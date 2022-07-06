@@ -132,7 +132,7 @@ namespace Mengine
         DWORD bytesWritten = 0;
         if( ::WriteFile( m_hFile, _data, (DWORD)_size, &bytesWritten, NULL ) == FALSE )
         {
-            LOGGER_ERROR( "invalid write %zu %s"
+            LOGGER_ERROR( "invalid write %zu get error %s"
                 , _size
                 , Helper::Win32GetLastErrorMessage()
             );
@@ -154,7 +154,7 @@ namespace Mengine
     {
         if( ::FlushFileBuffers( m_hFile ) == FALSE )
         {
-            LOGGER_ERROR( "invalid FlushFileBuffers %s"
+            LOGGER_ERROR( "invalid FlushFileBuffers get error %s"
                 , Helper::Win32GetLastErrorMessage()
             );
 

@@ -1,6 +1,7 @@
 #include "ThreadGuard.h"
 
-#include "Kernel/Win32Helper.h"
+#include "Interface/ThreadSystemInterface.h"
+
 #include "Kernel/Crash.h"
 
 namespace Mengine
@@ -10,7 +11,8 @@ namespace Mengine
         : m_lock( false )
         , m_lockThreadId( 0 )
     {
-        uint64_t id = Helper::Win32GetCurrentThreadId();
+        uint64_t id = THREAD_SYSTEM()
+            ->getCurrentThreadId();
 
         m_initThreadId = id;
     }
@@ -36,7 +38,8 @@ namespace Mengine
             return;
         }
 
-        uint64_t id = Helper::Win32GetCurrentThreadId();
+        uint64_t id = THREAD_SYSTEM()
+            ->getCurrentThreadId();
 
         if( m_initThreadId == id )
         {
@@ -51,7 +54,8 @@ namespace Mengine
         bool lock = m_lock;
 
         //ToDo
-        m_lockThreadId = Helper::Win32GetCurrentThreadId();
+        m_lockThreadId = THREAD_SYSTEM()
+            ->getCurrentThreadId();
 
         m_lock = _value;
 

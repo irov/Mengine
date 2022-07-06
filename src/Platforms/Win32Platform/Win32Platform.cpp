@@ -345,7 +345,7 @@ namespace Mengine
                 return false;
             }
 
-            WChar currentPathW[MENGINE_MAX_PATH];
+            WChar currentPathW[MENGINE_MAX_PATH] = {L'\0'};
             if( Helper::utf8ToUnicode( currentPath, currentPathW, MENGINE_MAX_PATH, nullptr ) == false )
             {
                 return false;
@@ -353,7 +353,8 @@ namespace Mengine
 
             if( ::SetDllDirectoryW( currentPathW ) == FALSE )
             {
-                LOGGER_ERROR( "SetDllDirectoryA invalid %s"
+                LOGGER_ERROR( "SetDllDirectoryA [%ls] invalid %s"
+                    , currentPathW
                     , Helper::Win32GetLastErrorMessage()
                 );
 
@@ -454,8 +455,9 @@ namespace Mengine
         {
             if( ::UnregisterClass( m_windowClassName.c_str(), m_hInstance ) == FALSE )
             {
-                LOGGER_ERROR( "invalid UnregisterClass '%ls'"
+                LOGGER_ERROR( "invalid UnregisterClass [%ls] get error %s"
                     , m_windowClassName.c_str()
+                    , Helper::Win32GetLastErrorMessage()
                 );
             }
 
@@ -1614,6 +1616,15 @@ namespace Mengine
                     if( m_cursor == NULL )
                     {
                         m_cursor = ::LoadCursor( NULL, IDC_ARROW );
+
+                        if( m_cursor == NULL )
+                        {
+                            LOGGER_ERROR( "LoadCursor [IDC_ARROW] get error %s"
+                                , Helper::Win32GetLastErrorMessage()
+                            );
+
+                            return 0;
+                        }
                     }
 
                     ::SetCursor( m_cursor );
@@ -2381,6 +2392,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::atachWindow( HWND _hWnd, bool _fullscreen )
     {
+        MENGINE_ASSERTION_FATAL( _hWnd == NULL );
+
         m_hWnd = _hWnd;
 
         HWND hWndFgnd = ::GetForegroundWindow();
@@ -2590,7 +2603,7 @@ namespace Mengine
         if( cursor == NULL )
         {
             LOGGER_ERROR( "icon file '%ls' %s"
-                , unicode_icoFullFile.c_str()
+                , unicode_icoFile_str
                 , Helper::Win32GetLastErrorMessage()
             );
 
@@ -2880,6 +2893,11 @@ namespace Mengine
         DWORD attributes = ::GetFileAttributes( pathFull );
 
         if( attributes == INVALID_FILE_ATTRIBUTES )
+        {
+            return false;
+        }
+
+        if( (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
         {
             return false;
         }
@@ -3349,7 +3367,9 @@ namespace Mengine
         FILETIME access;
         FILETIME write;
 
-        if( ::GetFileTime( handle, &creation, &access, &write ) == FALSE )
+        BOOL result = ::GetFileTime( handle, &creation, &access, &write );
+
+        if( result == FALSE )
         {
             ::CloseHandle( handle );
 
@@ -3502,6 +3522,11 @@ namespace Mengine
 
         if( ::SystemParametersInfo( SPI_SETDESKWALLPAPER, 0, szPath, SPIF_UPDATEINIFILE ) == FALSE )
         {
+            LOGGER_ERROR( "SystemParametersInfo [%ls] get error %s"
+                , szPath
+                , Helper::Win32GetLastErrorMessage()
+            );
+
             return false;
         }
 
@@ -3659,7 +3684,9 @@ namespace Mengine
 
             if( hPsapi == NULL )
             {
-                LOGGER_ERROR( "invalid open psapi.dll" );
+                LOGGER_ERROR( "invalid open psapi.dll get error %s"
+                    , Helper::Win32GetLastErrorMessage() 
+                );
 
                 return FALSE;
             }
@@ -3671,7 +3698,9 @@ namespace Mengine
 
             if( (pEnumProcessModules == NULL) || (pGetModuleFileNameExA == NULL) || (pGetModuleBaseNameA == NULL) || (pGetModuleInformation == NULL) )
             {
-                LOGGER_ERROR( "invalid load function psapi.dll" );
+                LOGGER_ERROR( "invalid load function psapi.dll get error %s"
+                    , Helper::Win32GetLastErrorMessage() 
+                );
 
                 ::FreeLibrary( hPsapi );
 
@@ -3683,10 +3712,8 @@ namespace Mengine
             DWORD cbNeeded;
             if( (*pEnumProcessModules)(hProcess, hMods, sizeof( hMods ), &cbNeeded) == FALSE )
             {
-                DWORD le = ::GetLastError();
-
-                LOGGER_ERROR( "invalid enum process modules psapi.dll [%lu]"
-                    , le
+                LOGGER_ERROR( "invalid enum process modules psapi.dll get error %s"
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 ::FreeLibrary( hPsapi );
@@ -3709,7 +3736,9 @@ namespace Mengine
                 MODULEINFO mi;
                 if( (*pGetModuleInformation)(hProcess, hMods[i], &mi, sizeof mi) == FALSE )
                 {
-                    LOGGER_ERROR( "invalid get module information psapi.dll" );
+                    LOGGER_ERROR( "invalid get module information psapi.dll get error %s"
+                        , Helper::Win32GetLastErrorMessage() 
+                    );
 
                     ::FreeLibrary( hPsapi );
 
@@ -3733,9 +3762,10 @@ namespace Mengine
 
                 if( pSymLoadModule64( hProcess, 0, mFileName, mBaseName, (DWORD64)mi.lpBaseOfDll, mi.SizeOfImage ) == FALSE )
                 {
-                    LOGGER_ERROR( "invalid load module file '%s' base '%s' psapi.dll"
+                    LOGGER_ERROR( "invalid load module file '%s' base '%s' psapi.dll get error %s"
                         , mFileName
                         , mBaseName
+                        , Helper::Win32GetLastErrorMessage()
                     );
 
                     ::FreeLibrary( hPsapi );
@@ -4073,7 +4103,9 @@ namespace Mengine
 
         if( hDbhHelp == NULL )
         {
-            LOGGER_ERROR( "invalid load 'dbghelp.dll'" );
+            LOGGER_ERROR( "invalid load 'dbghelp.dll' get error %s"
+                , Helper::Win32GetLastErrorMessage() 
+            );
 
             return false;
         }
@@ -4096,14 +4128,18 @@ namespace Mengine
         {
             ::FreeLibrary( hDbhHelp );
 
-            LOGGER_ERROR( "invalid load Kernel32.dll" );
+            LOGGER_ERROR( "invalid load Kernel32.dll get error %s"
+                , Helper::Win32GetLastErrorMessage() 
+            );
 
             return false;
         }
 
         if( (*pSymInitialize)(hProcess, NULL, FALSE) == FALSE )
         {
-            LOGGER_ERROR( "invalid SymInitialize" );
+            LOGGER_ERROR( "invalid SymInitialize get error %s"
+                , Helper::Win32GetLastErrorMessage() 
+            );
 
             ::FreeLibrary( hDbhHelp );
             ::FreeLibrary( hKernel32 );
@@ -4124,13 +4160,10 @@ namespace Mengine
 
         if( hThread == NULL )
         {
-            LOGGER_ERROR( "invalid open thread [%llu] ShowWindow %s"
+            LOGGER_ERROR( "invalid open thread [%llu] ShowWindow get error %s"
                 , _threadId
                 , Helper::Win32GetLastErrorMessage()
             );
-
-
-            LOGGER_ERROR( "invalid load 'dbghelp.dll'" );
 
             ::FreeLibrary( hDbhHelp );
             ::FreeLibrary( hKernel32 );
@@ -4295,6 +4328,16 @@ namespace Mengine
                 FILE_ATTRIBUTE_TEMPORARY,
                 NULL );
 
+            if( hWriteTempFile == INVALID_HANDLE_VALUE )
+            {
+                LOGGER_ERROR( "CreateFile '%ls' get error %s"
+                    , tempFileNameBuffer
+                    , Helper::Win32GetLastErrorMessage()
+                );
+
+                return false;
+            }
+
             STARTUPINFO startupInfo = {0};
             startupInfo.cb = sizeof( STARTUPINFO );
             startupInfo.dwFlags = STARTF_USESTDHANDLES;
@@ -4352,6 +4395,16 @@ namespace Mengine
                     OPEN_ALWAYS,
                     FILE_ATTRIBUTE_TEMPORARY,
                     NULL );
+
+                if( hReadTempFile == INVALID_HANDLE_VALUE )
+                {
+                    LOGGER_ERROR( "CreateFile '%ls' get error %s"
+                        , tempFileNameBuffer
+                        , Helper::Win32GetLastErrorMessage()
+                    );
+
+                    return false;
+                }
 
                 DWORD tempFileSizeHigh;
                 DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
@@ -4594,7 +4647,9 @@ namespace Mengine
 
         if( result == FALSE )
         {
-            LOGGER_ERROR( "SHGetPathFromIDListW invalid" );
+            LOGGER_ERROR( "SHGetPathFromIDListW invalid get error %s"
+                , Helper::Win32GetLastErrorMessage() 
+            );
 
             return 0;
         }
@@ -4783,7 +4838,26 @@ namespace Mengine
             return false;
         }
 
-        ::ShellExecute( NULL, L"open", unicode_url, NULL, NULL, SW_SHOWNORMAL );
+        SHELLEXECUTEINFO ExecuteInfo;
+        ExecuteInfo.cbSize = sizeof( ExecuteInfo );
+        ExecuteInfo.fMask = 0;
+        ExecuteInfo.hwnd = 0;
+        ExecuteInfo.lpVerb = L"open";
+        ExecuteInfo.lpFile = unicode_url;
+        ExecuteInfo.lpParameters = 0;
+        ExecuteInfo.lpDirectory = 0;
+        ExecuteInfo.nShow = SW_SHOWNORMAL;
+        ExecuteInfo.hInstApp = 0;
+
+        if( ::ShellExecuteEx( &ExecuteInfo ) == FALSE )
+        {
+            LOGGER_ERROR( "ShellExecuteEx [%ls] get error %s"
+                , unicode_url
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return false;
+        }
 
         return true;
     }
@@ -4883,10 +4957,30 @@ namespace Mengine
     bool Win32Platform::setClipboardText( const Char * _value ) const
     {
         size_t len = MENGINE_STRLEN( _value );
+        size_t len_alloc = len + 1;
 
-        HGLOBAL hGlb = ::GlobalAlloc( GMEM_MOVEABLE, len + 1 );
+        HGLOBAL hGlb = ::GlobalAlloc( GMEM_MOVEABLE, len_alloc );
+
+        if( hGlb == NULL )
+        {
+            LOGGER_ERROR( "failed GlobalAlloc [%zu] %s"
+                , len_alloc
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return false;
+        }
 
         LPVOID memGlb = ::GlobalLock( hGlb );
+
+        if( hGlb == NULL )
+        {
+            LOGGER_ERROR( "failed GlobalLock %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return false;
+        }
 
         MENGINE_MEMCPY( memGlb, _value, len );
 
@@ -5084,9 +5178,11 @@ namespace Mengine
 
         if( winDirLen == 0 )
         {
-            LOGGER_ERROR( "failed GetWindowsDirectory %s"
+            LOGGER_ERROR( "failed GetWindowsDirectory get error %s"
                 , Helper::Win32GetLastErrorMessage()
             );
+
+            return false;
         }
 
         if( winDirLen >= MENGINE_MAX_PATH )

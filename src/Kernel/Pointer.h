@@ -307,7 +307,7 @@ namespace Mengine
         {
         }
 
-        PointerT( PointerT && _pointer )
+        PointerT( PointerT && _pointer ) noexcept
             : m_pointer( std::forward<PointerT &&>( _pointer.m_pointer ) )
         {
         }

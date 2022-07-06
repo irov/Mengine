@@ -1,11 +1,12 @@
 #include "Win32SocketSystem.h"
 
+#include "Win32Socket.h"
+
+#include "Kernel/Logger.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentHelper.h"
-
-#include "Win32Socket.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SocketSystem, Mengine::Win32SocketSystem );
@@ -29,6 +30,10 @@ namespace Mengine
 
         if( WSAStartup_result != 0 )
         {
+            LOGGER_ERROR( "invalid WSAStartup [%d]"
+                , WSAStartup_result
+            );
+
             return false;
         }
 

@@ -1,8 +1,8 @@
 #include "ThreadGuardScope.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
-#include "Kernel/Win32Helper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Crash.h"
 
@@ -21,7 +21,8 @@ namespace Mengine
             const ConstString & lockThreadName = THREAD_SERVICE()
                 ->findThreadNameById( lockThreadId );
 
-            uint64_t currentThreadId = Helper::Win32GetCurrentThreadId();
+            uint64_t currentThreadId = THREAD_SYSTEM()
+                ->getCurrentThreadId();
 
             const ConstString & currentThreadName = THREAD_SERVICE()
                 ->findThreadNameById( currentThreadId );
@@ -45,7 +46,8 @@ namespace Mengine
             const ConstString & lockThreadName = THREAD_SERVICE()
                 ->findThreadNameById( lockThreadId );
 
-            uint64_t currentThreadId = Helper::Win32GetCurrentThreadId();
+            uint64_t currentThreadId = THREAD_SYSTEM()
+                ->getCurrentThreadId();
 
             const ConstString & currentThreadName = THREAD_SERVICE()
                 ->findThreadNameById( currentThreadId );

@@ -78,6 +78,11 @@ namespace Mengine
 
         if( szArglist == NULL )
         {
+            LOGGER_ERROR( "invalid CommandLineToArgvW [%ls] get error %s"
+                , lpCmdLine
+                , Helper::Win32GetLastErrorMessage()
+            );
+
             return false;
         }
 
@@ -98,6 +103,11 @@ namespace Mengine
 
             if( utf_arg_size <= 0 )
             {
+                LOGGER_ERROR( "unicode '%ls' WideCharToMultiByte [CP_UTF8] get error %s"
+                    , arg
+                    , Helper::Win32GetLastErrorMessage()
+                );
+
                 return false;
             }
 

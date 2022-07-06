@@ -59,7 +59,7 @@ namespace Mengine
 
             if( hFind == INVALID_HANDLE_VALUE )
             {
-                LOGGER_ERROR( "file invalid find ??? (%ls) %s"
+                LOGGER_ERROR( "file invalid find ??? (%ls) get error %s"
                     , _path
                     , Helper::Win32GetLastErrorMessage()
                 );

@@ -82,6 +82,16 @@ namespace Mengine
 
         FARPROC proc = ::GetProcAddress( m_hInstance, _name );
 
+        if( proc == NULL )
+        {
+            LOGGER_ERROR( "GetProcAddress [%s] get error %s"
+                , _name
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return NULL;
+        }
+
         TDynamicLibraryFunction dlfunc = (TDynamicLibraryFunction)proc;
 
         return dlfunc;

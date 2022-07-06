@@ -15,12 +15,12 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
 
 fun includePlugin(name: String, d: Boolean, path: String) {
     if( getBooleanProperty(name, d) == false ) {
-        println("[-] Exclude plugin: " + path)
+        println("[-] Exclude plugin: $path")
 
         return;
     }
 
-    println("[+] Include plugin: " + path)
+    println("[+] Include plugin: $path")
 
     include(path)
 }
@@ -28,14 +28,18 @@ fun includePlugin(name: String, d: Boolean, path: String) {
 println("[+] Include :app")
 include(":app")
 
-if( getBooleanProperty("ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false) == true ) {
+var ANDROID_APP_ENABLE_DELIVERY_PACKAGE = getBooleanProperty("ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false)
+
+println("ANDROID_APP_ENABLE_DELIVERY_PACKAGE: $ANDROID_APP_ENABLE_DELIVERY_PACKAGE")
+
+if( ANDROID_APP_ENABLE_DELIVERY_PACKAGE == true ) {
     if( extra.has("ANDROID_APP_DELIVERY_PACKAGE_NAME") == false ) {
         throw kotlin.Exception("Miss setup app delivery package name [ANDROID_APP_DELIVERY_PACKAGE_NAME]")
     }
 
     val ANDROID_APP_DELIVERY_PACKAGE_NAME = extra["ANDROID_APP_DELIVERY_PACKAGE_NAME"].toString()
 
-    println("[+] Include :app:$ANDROID_APP_DELIVERY_PACKAGE_NAME")
+    println("[+] Include delivery: :app:$ANDROID_APP_DELIVERY_PACKAGE_NAME")
 
     include(":app:$ANDROID_APP_DELIVERY_PACKAGE_NAME")
 
@@ -73,4 +77,4 @@ includePlugin("ANDROID_APP_ENABLE_MAR", false, ":libraries:MAR")
 includePlugin("ANDROID_APP_ENABLE_ADJUST", false, ":libraries:Adjust")
 includePlugin("ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS",true, ":libraries:GoogleInAppReviews")
 
-println("Complete settings")
+println("Mengine complete settings")

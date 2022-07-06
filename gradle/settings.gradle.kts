@@ -1,4 +1,8 @@
 fun getBooleanProperty(name: String, d: Boolean): Boolean {
+    if( extra.has(name) == false ) {
+        return d;
+    }
+
     try {
         val value = extra[name].toString()
 

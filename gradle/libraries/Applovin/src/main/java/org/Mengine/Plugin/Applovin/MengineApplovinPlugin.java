@@ -55,6 +55,17 @@ public class MengineApplovinPlugin extends MenginePlugin {
      * - onApplovinRewardedOnAdClicked
      * - onApplovinRewardedOnAdLoadFailed
      * - onApplovinRewardedOnAdDisplayFailed
+     * <p>
+     * установка Banner
+     * void initBanner()
+     * void bannerVisible(boolean show)
+     *  - onApplovinBannerOnAdDisplayed
+     *  - onApplovinBannerOnAdHidden
+     *  - onApplovinBannerOnAdClicked
+     *  - onApplovinBannerOnAdLoadFailed
+     *  - onApplovinBannerOnAdDisplayFailed
+     *  - onApplovinBannerOnAdExpanded
+     *  - onApplovinBannerOnAdCollapsed
      */
 
     private MaxInterstitialAd m_interstitialAd;
@@ -126,64 +137,61 @@ public class MengineApplovinPlugin extends MenginePlugin {
 
             @Override
             public void onAdLoaded(MaxAd ad) {
-
+                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdLoaded");
             }
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
-
+                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdDisplayed");
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
-
+                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdHidden");
             }
 
             @Override
             public void onAdClicked(MaxAd ad) {
-
+                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdClicked");
             }
 
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
-
+                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdLoadFailed");
             }
 
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-
+                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdDisplayFailed");
             }
 
             @Override
             public void onAdExpanded(MaxAd ad) {
-
+                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdExpanded");
             }
 
             @Override
             public void onAdCollapsed(MaxAd ad) {
-
+                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdCollapsed");
             }
         };
         m_adView.setListener(maxAdViewAdListener);
 
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
-        int heightPx = (AppLovinSdkUtils.isTablet(activity) ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER).getHeight();
+        int heightPx = AppLovinSdkUtils.dpToPx(activity, (AppLovinSdkUtils.isTablet(activity) ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER).getHeight());
 
         m_adView.setLayoutParams(new FrameLayout.LayoutParams(width, heightPx));
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-
-//        int height = activity.getWindow().getDecorView().getHeight()
+        int height = activity.getWindow().getDecorView().getHeight();
 
         m_adView.setTranslationY(height - heightPx);
-//        ViewGroup rootView = findViewById(android.R.id.content);
         ViewGroup rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         rootView.addView(m_adView);
 
         // Load the ad
         m_adView.loadAd();
+
+        bannerVisible(false);
     }
 
     public void bannerVisible(boolean show) {

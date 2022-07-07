@@ -2,10 +2,12 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {
    
+    typedef Map<ConstString, ConstString> FirebaseAnalyticsParams;
   //////////////////////////////////////////////////////////////////////////
     class AppleFirebaseAnalyticsServiceInterface
         : public ServiceInterface
@@ -13,7 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "AppleFirebaseAnalyticsService" )
 
     public:
-        virtual bool sendEvent() = 0;
+        virtual bool sendEvent(const ConstString& _name,const FirebaseAnalyticsParams& _params) = 0;
         
     };
     //////////////////////////////////////////////////////////////////////////

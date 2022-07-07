@@ -5,6 +5,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/VectorConstString.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {
@@ -20,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        bool sendEvent() override;
+        bool sendEvent(const ConstString& _name, const FirebaseAnalyticsParams& _params) override;
         
     };
 }

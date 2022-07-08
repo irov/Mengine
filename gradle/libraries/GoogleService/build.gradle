@@ -6,12 +6,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.gms:google-services:4.3.13'
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     buildToolsVersion project.buildToolsVersion
@@ -48,5 +47,5 @@ dependencies {
     implementation project(':libraries:SDL2')
 
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.android.gms:play-services-basement:18.0.2'
+    implementation 'com.google.android.gms:play-services-basement:18.1.0'
 }

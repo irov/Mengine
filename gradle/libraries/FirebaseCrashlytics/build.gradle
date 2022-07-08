@@ -11,7 +11,6 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     buildToolsVersion project.buildToolsVersion

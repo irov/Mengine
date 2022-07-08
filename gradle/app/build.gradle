@@ -2,11 +2,13 @@ import com.Mengine.Utils
 
 apply plugin: 'com.android.application'
 
-if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
-    apply plugin: 'com.google.firebase.crashlytics'
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true) {
+    apply plugin: 'com.google.gms.google-services'
 }
 
-import com.Mengine.Utils
+if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
+    apply plugin: 'com.google.firebase.crashlytics'
+}
 
 android {
     ext.plugins = []

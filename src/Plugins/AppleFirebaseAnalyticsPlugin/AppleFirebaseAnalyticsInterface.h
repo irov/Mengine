@@ -15,7 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "AppleFirebaseAnalyticsService" )
 
     public:
-        virtual bool sendEvent(const ConstString& _name,const FirebaseAnalyticsParams& _params) = 0;
+        virtual void sendEvent(const ConstString& _name,const FirebaseAnalyticsParams& _params) = 0;
         
     };
     //////////////////////////////////////////////////////////////////////////

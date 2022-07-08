@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        bool sendEvent(const ConstString& _name, const FirebaseAnalyticsParams& _params) override;
+        void sendEvent(const ConstString & _name, const FirebaseAnalyticsParams & _params) override;
         
     };
 }

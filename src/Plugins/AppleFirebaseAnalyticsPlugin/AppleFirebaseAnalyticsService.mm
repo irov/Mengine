@@ -22,16 +22,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseAnalyticsService::_initializeService()
     {
-        [FIRApp configure];
+        @try {
+            [FIRApp configure];
+        }
+        @catch (NSException *exception) {
+           NSLog(@"%@", exception.reason);
+        }
         
         return true;
     }
-////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::_finalizeService()
     {
     }
     //////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseAnalyticsService::sendEvent(const ConstString& _name,const FirebaseAnalyticsParams& _params)
+    void AppleFirebaseAnalyticsService::sendEvent(const ConstString & _name,const FirebaseAnalyticsParams & _params)
     {
         LOGGER_INFO( "FirebaseAnalytics", "sendEvent" );
         
@@ -44,7 +49,6 @@ namespace Mengine
         [FIRAnalytics logEventWithName:[NSString stringWithUTF8String: _name.c_str()]
                             parameters:event_params];
         
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

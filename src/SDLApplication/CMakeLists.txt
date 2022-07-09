@@ -436,3 +436,11 @@ ENDIF()
 if(MENGINE_TARGET_IOS AND (MENGINE_PLUGIN_APPLE_MARSDK OR MENGINE_PLUGIN_APPLE_ADJUST OR MENGINE_PLUGIN_APPLE_FACEBOOK))
     set_target_properties(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_OTHER_LDFLAGS "-ObjC")
 endif()
+
+
+# if(MENGINE_TARGET_IOS AND MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS)
+#     add_custom_command(TARGET "SDLApplication" POST_BUILD
+#         COMMENT "upload DWARF sumbols"
+#         COMMAND "${PODS_ROOT}/FirebaseCrashlytics/upload-symbols" -gsp "${PROJECT_DIR}/../../../Resources/deploy-evilmonkey-ios/deploy-ios-data/GoogleService-Info.plist" -p ios "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}"
+#     )
+# endif()

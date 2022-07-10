@@ -28,6 +28,7 @@
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidIncluder.h"
 #   include "Environment/Android/AndroidUtils.h"
+#   include "Environment/Android/AndroidEventationHub.h"
 #endif
 
 #include "SDLInput.h"
@@ -256,6 +257,10 @@ namespace Mengine
         int32_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) override;
         void androidResetAssetFile( int32_t _fileId ) override;
         void androidCloseAssetFile( int32_t _fileId ) override;
+
+    protected:
+        void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
+        void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
 #endif
 
     protected:
@@ -311,12 +316,14 @@ namespace Mengine
         FactoryPtr m_factoryDynamicLibraries;
         FactoryPtr m_factoryDateTimeProviders;
 
-#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         SDL_GLContext m_glContext;
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         JNIEnv * m_jenv;
+
+        AndroidEventationHubPtr m_androidEventationHub;
 #endif
 
         SDLInputPtr m_sdlInput;

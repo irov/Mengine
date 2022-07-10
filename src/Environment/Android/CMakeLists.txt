@@ -4,6 +4,9 @@ ADD_FILTER(
 src
     AndroidIncluder.h
     AndroidEventation.h
+    AndroidEventationInterface.h
+    AndroidEventationHub.h
+    AndroidEventationHub.cpp
     AndroidUtils.h
     AndroidUtils.cpp
 )

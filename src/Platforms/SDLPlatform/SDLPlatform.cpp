@@ -914,7 +914,6 @@ namespace Mengine
         m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDateTimeProviders = Helper::makeFactoryPool<SDLDateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-
 #if defined(MENGINE_PLATFORM_ANDROID)
         int AndroidSDKVersion = SDL_GetAndroidSDKVersion();
         SDL_bool AndroidTV = SDL_IsAndroidTV();
@@ -942,6 +941,13 @@ namespace Mengine
         JNIEnv * env = Mengine_JNI_GetEnv();
 
         m_jenv = env;
+
+        m_androidEventationHub = Helper::makeFactorableUnique<AndroidEventationHub>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( m_androidEventationHub->initialize() == false )
+        {
+            return false;
+        }
 #endif
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &SDLPlatform::notifyInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
@@ -1169,6 +1175,11 @@ namespace Mengine
         m_updates.clear();
 
         this->destroyWindow_();
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        m_androidEventationHub->finalize();
+        m_androidEventationHub = nullptr;
+#endif
 
         SDL_Quit();
 
@@ -3065,6 +3076,8 @@ namespace Mengine
 
         m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
 
+        m_androidEventationHub->invoke();
+
         return stringValue;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3086,6 +3099,8 @@ namespace Mengine
         String stringValue = jStringValue;
 
         m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+
+        m_androidEventationHub->invoke();
 
         return stringValue;
     }
@@ -4004,10 +4019,9 @@ namespace Mengine
             return;
         }
 
-        if( jmethodID_onMengineInitializeBaseServices != NULL )
-        {
-            m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineInitializeBaseServices );
-        }
+        m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineInitializeBaseServices );
+
+        m_androidEventationHub->invoke();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -4023,10 +4037,9 @@ namespace Mengine
             return;
         }
 
-        if( jmethodID_onMengineCreateApplication != NULL )
-        {
-            m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineCreateApplication );
-        }
+        m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineCreateApplication );
+
+        m_androidEventationHub->invoke();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -4068,6 +4081,16 @@ namespace Mengine
     void SDLPlatform::androidCloseAssetFile( int32_t _fileId )
     {
         AndroidCloseAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::addAndroidEventation( const AndroidEventationInterfacePtr & _eventation )
+    {
+        m_androidEventationHub->addAndroidEventation( _eventation );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation )
+    {
+        m_androidEventationHub->removeAndroidEventation( _eventation );
     }
     //////////////////////////////////////////////////////////////////////////
 #endif

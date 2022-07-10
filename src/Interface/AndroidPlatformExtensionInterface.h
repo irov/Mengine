@@ -3,6 +3,7 @@
 #include "Interface/UnknownInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
+#include "Environment/Android/AndroidEventationInterface.h"
 
 #include "Kernel/String.h"
 
@@ -27,5 +28,9 @@ namespace Mengine
         virtual int32_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) = 0;
         virtual void androidResetAssetFile( int32_t _fileId ) = 0;
         virtual void androidCloseAssetFile( int32_t _fileId ) = 0;
+
+    public:
+        virtual void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) = 0;
+        virtual void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) = 0;
     };
 }

@@ -30,6 +30,7 @@ namespace Mengine
 
     public:
         typedef AndroidEventation<PythonEventHandlerInterface> PythonEventation;
+        typedef IntrusivePtr<PythonEventation> PythonEventationPtr;
         typedef typename PythonEventation::LambdaEventHandler LambdaPythonEventHandler;
 
     public:
@@ -80,7 +81,7 @@ namespace Mengine
         typedef Map<ConstString, jobject> MapAndroidPlugins;
         MapAndroidPlugins m_plugins;
 
-        mutable PythonEventation m_eventation;
+        PythonEventationPtr m_eventation;
     };
     //////////////////////////////////////////////////////////////////////////
 }

@@ -91,7 +91,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::removeAnimationSampler( const ConstString & _samplerName )
     {
-        VectorSamplerAnimations::iterator it_found = std::find_if( m_samplers.begin(), m_samplers.end()
+        VectorSamplerAnimations::iterator it_found = Algorithm::find_if( m_samplers.begin(), m_samplers.end()
             , [_samplerName]( const SamplerSpineAnimationPtr & _sampler )
         {
             return _sampler->getName() == _samplerName;

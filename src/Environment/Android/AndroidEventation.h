@@ -2,15 +2,17 @@
 
 #include "Interface/ThreadMutexInterface.h"
 
+#include "AndroidEventationInterface.h"
+
 #include "Kernel/Vector.h"
 
 #include "Config/Lambda.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     template<class T>
     class AndroidEventation
+        : public AndroidEventationInterface
     {
     public:
         typedef IntrusivePtr<T> EventHandlerPtr;
@@ -45,7 +47,7 @@ namespace Mengine
             m_mutex->unlock();
         }
 
-        void invoke()
+        void invoke() override
         {
             VectorEventHandlerCommand commands;
 

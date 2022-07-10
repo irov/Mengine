@@ -104,10 +104,12 @@ namespace Mengine
         pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonModule::androidFloatMethod );
         pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonModule::androidStringMethod );
 
+        m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
+
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( m_eventation.initialize( mutex ) == false )
+        if( m_eventation->initialize( mutex ) == false )
         {
             return false;
         }
@@ -120,10 +122,12 @@ namespace Mengine
 
         s_androidNativePythonModule = this;
 
-        m_eventation.setEventHandler( PythonEventHandlerInterfacePtr::from( this ) );
+        m_eventation->setEventHandler( PythonEventHandlerInterfacePtr::from( this ) );
 
         AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
+
+        extension->addAndroidEventation( m_eventation );
 
         m_jenv = extension->getJENV();
         jobject jActivity = extension->getJObjectActivity();
@@ -143,7 +147,7 @@ namespace Mengine
 
         m_jenv->CallVoidMethod( jActivity, jmethodID_initializePlugins );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         return true;
     }
@@ -157,24 +161,30 @@ namespace Mengine
         m_callbacks.clear();
         m_plugins.clear();
 
-        m_eventation.finalize();
+        AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+        extension->removeAndroidEventation( m_eventation );
+
+        m_eventation->finalize();
+        m_eventation = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::addCommand( const LambdaPythonEventHandler & _command )
     {
-        m_eventation.addCommand( _command );
+        m_eventation->addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::_update( bool _focus )
     {
         MENGINE_UNUSED( _focus );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args )
     {
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         ConstString plugin_c = Helper::stringizeString( _plugin );
         ConstString method_c = Helper::stringizeString( _method );
@@ -258,7 +268,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonModule::androidResponse( int32_t _id, const pybind::object & _result ) const
     {
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         jobject jresult;
 
@@ -339,7 +349,7 @@ namespace Mengine
 
         m_jenv->CallVoidMethod( jobject_activity, jmethodID_responseCall, _id, jresult );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         return true;
     }
@@ -352,7 +362,7 @@ namespace Mengine
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -374,7 +384,7 @@ namespace Mengine
             m_jenv->DeleteLocalRef( j );
         }
 
-        m_eventation.invoke();
+        m_eventation->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonModule::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
@@ -385,7 +395,7 @@ namespace Mengine
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -407,7 +417,7 @@ namespace Mengine
             m_jenv->DeleteLocalRef( j );
         }
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         return (bool)jresult;
     }
@@ -420,7 +430,7 @@ namespace Mengine
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -442,7 +452,7 @@ namespace Mengine
             m_jenv->DeleteLocalRef( j );
         }
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         return (int32_t)jresult;
     }
@@ -455,7 +465,7 @@ namespace Mengine
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -477,7 +487,7 @@ namespace Mengine
             m_jenv->DeleteLocalRef( j );
         }
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         return (int64_t)jresult;
     }
@@ -490,7 +500,7 @@ namespace Mengine
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -512,7 +522,7 @@ namespace Mengine
             m_jenv->DeleteLocalRef( j );
         }
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         return (float)jresult;
     }
@@ -525,7 +535,7 @@ namespace Mengine
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -547,7 +557,7 @@ namespace Mengine
             m_jenv->DeleteLocalRef( j );
         }
 
-        m_eventation.invoke();
+        m_eventation->invoke();
 
         const Mengine::Char * result_str = m_jenv->GetStringUTFChars( jresult, nullptr );
 

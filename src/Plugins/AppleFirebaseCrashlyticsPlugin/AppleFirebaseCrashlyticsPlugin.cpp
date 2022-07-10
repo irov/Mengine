@@ -1,6 +1,5 @@
 #include "AppleFirebaseCrashlyticsPlugin.h"
 
-
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/FactorableUnique.h"
@@ -31,12 +30,12 @@ namespace Mengine
 
         if( HAS_OPTION( "applefirebasecrashlytics" ) == false )
         {
-            if( CONFIG_VALUE( "applefirebasecrashlytics", "Enable", false ) == false )
+            if( CONFIG_VALUE( "AppleFirebaseCrashlytics", "Enable", true ) == false )
             {
                 return false;
             }
         }
-      
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -47,26 +46,25 @@ namespace Mengine
             return false;
         }
 
-//#ifdef MENGINE_USE_SCRIPT_SERVICE
-//        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-//        {
-//            SCRIPT_SERVICE()
-//                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleFirebaseCrashlyticsScriptEmbedding" ), Helper::makeFactorableUnique<AppleFirebaseCrashlyticsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-//        }, MENGINE_DOCUMENT_FACTORABLE );
-//
-//        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-//        {
-//            SCRIPT_SERVICE()
-//                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleFirebaseCrashlyticsScriptEmbedding" ) );
-//        }, MENGINE_DOCUMENT_FACTORABLE );
-//#endif
+        //#ifdef MENGINE_USE_SCRIPT_SERVICE
+        //        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+        //        {
+        //            SCRIPT_SERVICE()
+        //                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleFirebaseCrashlyticsScriptEmbedding" ), Helper::makeFactorableUnique<AppleFirebaseCrashlyticsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        //        }, MENGINE_DOCUMENT_FACTORABLE );
+        //
+        //        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+        //        {
+        //            SCRIPT_SERVICE()
+        //                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleFirebaseCrashlyticsScriptEmbedding" ) );
+        //        }, MENGINE_DOCUMENT_FACTORABLE );
+        //#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsPlugin::_finalizePlugin()
     {
-
         SERVICE_FINALIZE( AppleFirebaseCrashlyticsService );
     }
     //////////////////////////////////////////////////////////////////////////

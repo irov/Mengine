@@ -26,7 +26,9 @@ namespace Mengine
             [FIRApp configure];
         }
         @catch (NSException *exception) {
-           NSLog(@"%@", exception.reason);
+            LOGGER_ERROR( "%s"
+                , [exception.reason UTF8String]
+            );
         }
         
         return true;
@@ -36,19 +38,30 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////
-    void AppleFirebaseAnalyticsService::sendEvent(const ConstString & _name,const FirebaseAnalyticsParams & _params)
+    void AppleFirebaseAnalyticsService::sendEvent( const ConstString & _name, const FirebaseAnalyticsParams & _params )
     {
-        LOGGER_INFO( "FirebaseAnalytics", "sendEvent" );
+        LOGGER_INFO( "firebaseanalytics", "sendEvent" );
         
-        NSMutableDictionary *event_params = [[NSMutableDictionary alloc] init];
-        for(FirebaseAnalyticsParams::const_iterator it = _params.begin(),it_e = _params.end(); it != it_e; ++it)
+        NSMutableDictionary * event_params = [[NSMutableDictionary alloc] init];
+
+        for( auto && [key, value] : _params )
         {
-            [event_params setObject:[NSString stringWithUTF8String:it->second.c_str()]  forKey:[NSString stringWithUTF8String:it->first.c_str()]];
+            LOGGER_INFO( "firebaseanalytics", "['%s' : '%s']"
+                , key.c_str()
+                , value.c_str()
+            );
+
+            const Char * key_str = key.c_str();
+            const Char * value_str = value.c_str();
+
+            [event_params setObject:[NSString stringWithUTF8String:value_str]  forKey:[NSString stringWithUTF8String:key_str]];
         }
+
+        const Char * name_str = _name.c_str();
         
-        [FIRAnalytics logEventWithName:[NSString stringWithUTF8String: _name.c_str()]
-                            parameters:event_params];
-        
+        [FIRAnalytics logEventWithName:[NSString stringWithUTF8String: name_str]
+            parameters:event_params
+        ];
     }
     //////////////////////////////////////////////////////////////////////////
 }

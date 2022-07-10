@@ -12,7 +12,6 @@ src
     AppleFirebaseAnalyticsService.mm
 )
 
-
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS)
 
 ADD_MENGINE_COCOAPOD("Firebase" "NO-GIT" "9.2.0")

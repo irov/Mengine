@@ -22,7 +22,7 @@ namespace Mengine
         void sendValue( const ConstString & _val ) override;
         void sendKeyAndValue( const ConstString & _key, const ConstString & _val ) override;
         void sendKeyAndValues( const FirebaseCrashlyticsParams & _params ) override;
-        void recordError( const ConstString & _name, long _code, const FirebaseCrashlyticsParams & _params ) override;
+        void recordError( const ConstString & _name, uint32_t _code, const FirebaseCrashlyticsParams & _params ) override;
         void recordError( NSError * _error ) override;
     };
 }

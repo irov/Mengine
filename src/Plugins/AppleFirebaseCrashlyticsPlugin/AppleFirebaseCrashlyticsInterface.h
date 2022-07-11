@@ -20,7 +20,7 @@ namespace Mengine
         virtual void sendValue( const ConstString & _val ) = 0;
         virtual void sendKeyAndValue( const ConstString & _key, const ConstString & _val ) = 0;
         virtual void sendKeyAndValues( const FirebaseCrashlyticsParams & _params ) = 0;
-        virtual void recordError( const ConstString & _name, long _code, const FirebaseCrashlyticsParams & _params ) = 0;
+        virtual void recordError( const ConstString & _name, uint32_t _code, const FirebaseCrashlyticsParams & _params ) = 0;
         virtual void recordError( NSError * _error ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -93,7 +93,7 @@ namespace Mengine
         [[FIRCrashlytics crashlytics] setCustomKeysAndValues: keysAndValues];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseCrashlyticsService::recordError(const ConstString& _name, uint32_t _code, const FirebaseCrashlyticsParams& _params)
+    void AppleFirebaseCrashlyticsService::recordError( const ConstString & _name, uint32_t _code, const FirebaseCrashlyticsParams & _params )
     {
         LOGGER_INFO( "firebasecrashlytics", "record error '%s' code [%u]"
             , _name.c_str()
@@ -118,17 +118,17 @@ namespace Mengine
         const Char * name_str = _name.c_str();
         
         NSError *error = [NSError errorWithDomain:[NSString stringWithUTF8String:name_str]
-            code: _code
+            code:_code
             userInfo:userInfo];
 
-        [[FIRCrashlytics crashlytics] recordError: error];
+        [[FIRCrashlytics crashlytics] recordError:error];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsService::recordError( NSError * _error )
     {
         LOGGER_INFO( "firebasecrashlytics", "record error" );
 
-        [[FIRCrashlytics crashlytics] recordError: _error];
+        [[FIRCrashlytics crashlytics] recordError:_error];
     }
     //////////////////////////////////////////////////////////////////////////
 }

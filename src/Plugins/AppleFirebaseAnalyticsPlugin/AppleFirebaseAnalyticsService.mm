@@ -59,7 +59,7 @@ namespace Mengine
 
         const Char * name_str = _name.c_str();
         
-        [FIRAnalytics logEventWithName:[NSString stringWithUTF8String: name_str]
+        [FIRAnalytics logEventWithName:[NSString stringWithUTF8String:name_str]
             parameters:event_params
         ];
     }

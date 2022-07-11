@@ -3,6 +3,8 @@
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 
+#include "Kernel/Logger.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -46,6 +48,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::initializeModule()
     {
+        LOGGER_INFO( "module", "initialize '%s'"
+            , this->getName().c_str()
+        );
+
         m_availableModule = this->_availableModule();
 
         if( m_availableModule == false )
@@ -69,6 +75,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::finalizeModule()
     {
+        LOGGER_INFO( "module", "finalize '%s'"
+            , this->getName().c_str()
+        );
+
         if( m_availableModule == false )
         {
             return;

@@ -100,7 +100,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32Platform::Win32Platform()
-        : m_hInstance( NULL )
+        : m_beginTime( 0 )
+        , m_hInstance( NULL )
         , m_hWnd( NULL )
         , m_performanceSupport( false )
         , m_active( false )
@@ -130,6 +131,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
+        m_beginTime = Helper::getTimeMilliseconds();
+
 #if MENGINE_SETLOCALE_ENABLE
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
@@ -830,26 +833,13 @@ namespace Mengine
         desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t Win32Platform::getTicks() const
+    TimeMilliseconds Win32Platform::getPlatfomTime() const
     {
-        if( m_performanceSupport == false )
-        {
-            return 0ULL;
-        }
+        TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
 
-        LARGE_INTEGER performanceCount;
-        if( ::QueryPerformanceCounter( &performanceCount ) == FALSE )
-        {
-            LOGGER_ERROR( "invalid query performance counter %s"
-                , Helper::Win32GetLastErrorMessage()
-            );
+        TimeMilliseconds platformTime = currentTime - m_beginTime;
 
-            return 0ULL;
-        }
-
-        LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
-
-        return (uint64_t)ticks;
+        return platformTime;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::runPlatform()

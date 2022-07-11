@@ -79,7 +79,7 @@ namespace Mengine
         bool getSleepMode() const override;
 
     public:
-        uint64_t getTicks() const override;
+        TimeMilliseconds getPlatfomTime() const override;
 
     public:
         void setProjectTitle( const Char * _projectTitle ) override;
@@ -270,6 +270,8 @@ namespace Mengine
         SDL_free_func m_old_SDL_free_func;
 
     protected:
+        TimeMilliseconds m_beginTime;
+
         Tags m_platformTags;
 
         SDL_Window * m_sdlWindow;

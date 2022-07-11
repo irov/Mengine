@@ -235,7 +235,8 @@ extern "C" {
         env->ReleaseStringUTFChars( _key, key_str );
         env->ReleaseStringUTFChars( _default, default_str );
 
-        if( result == false ) {
+        if( result == false )
+        {
             return _default;
         }
 
@@ -248,9 +249,9 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL("android"), Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0 )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0 )("%s"
             , msg_str
-        );
+            );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
     }
@@ -259,9 +260,9 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0 )( "%s"
+        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0 )("%s"
             , msg_str
-        );
+            );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
     }
@@ -270,9 +271,9 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( "%s"
+        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )("%s"
             , msg_str
-        );
+            );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
     }
@@ -281,9 +282,9 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( "%s"
+        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )("%s"
             , msg_str
-        );
+            );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
     }
@@ -292,9 +293,9 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0 )( "%s"
+        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0 )("%s"
             , msg_str
-        );
+            );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
     }
@@ -307,7 +308,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLPlatform::SDLPlatform()
-        : m_sdlWindow( nullptr )
+        : m_beginTime( 0 )
+        , m_sdlWindow( nullptr )
         , m_sdlAccelerometer( nullptr )
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
@@ -619,7 +621,7 @@ namespace Mengine
             LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("SDL [%s]: %s"
                 , Detail::SDL_GetCategoryName( category )
                 , message
-            );
+                );
         }
         //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOWS_UNIVERSAL
@@ -655,6 +657,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
+        m_beginTime = Helper::getTimeMilliseconds();
+
 #if MENGINE_SETLOCALE_ENABLE
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
@@ -1370,7 +1374,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         LOGGER_INFO( "platform", "open url in default browser '%s'"
             , _url
         );
@@ -1385,7 +1389,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         LOGGER_INFO( "platform", "open url in default browser '%s'"
             , _url
         );
@@ -1514,11 +1518,13 @@ namespace Mengine
         return m_sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t SDLPlatform::getTicks() const
+    TimeMilliseconds SDLPlatform::getPlatfomTime() const
     {
-        Uint32 ticks = SDL_GetTicks();
+        TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
 
-        return (uint64_t)ticks;
+        TimeMilliseconds platformTime = currentTime - m_beginTime;
+
+        return platformTime;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setProjectTitle( const Char * _projectTitle )
@@ -3063,7 +3069,7 @@ namespace Mengine
 
         if( jmethodID_getAndroidId == nullptr )
         {
-            LOGGER_ERROR("invalid get android method 'getAndroidId'");
+            LOGGER_ERROR( "invalid get android method 'getAndroidId'" );
 
             return String();
         }
@@ -3087,7 +3093,7 @@ namespace Mengine
 
         if( jmethodID_getPackageName == nullptr )
         {
-            LOGGER_ERROR("invalid get android method 'getPackageName'");
+            LOGGER_ERROR( "invalid get android method 'getPackageName'" );
 
             return String();
         }
@@ -3261,7 +3267,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_IOS)
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
-	
+
         uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
@@ -3645,14 +3651,14 @@ namespace Mengine
             default:
                 break;
             }
-            
+
             if( _eventId >= SDL_USEREVENT )
             {
                 static MENGINE_THREAD_LOCAL Char userEventMessage[32] = {'\0'};
-                MENGINE_SPRINTF(userEventMessage, "[User event: %u]"
+                MENGINE_SPRINTF( userEventMessage, "[User event: %u]"
                     , _eventId
-                    );
-                
+                );
+
                 return userEventMessage;
             }
 
@@ -3778,9 +3784,9 @@ namespace Mengine
                         {
                             Sint32 width = sdlEvent.window.data1;
                             Sint32 height = sdlEvent.window.data2;
-                            
-                            MENGINE_UNUSED(width);
-                            MENGINE_UNUSED(height);
+
+                            MENGINE_UNUSED( width );
+                            MENGINE_UNUSED( height );
                             //TODO
                         }break;
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
@@ -3830,7 +3836,7 @@ namespace Mengine
                     /* Terminate the app.
                        Shut everything down before returning from this function.
                     */
-                    
+
                     //TODO
                 }break;
             case SDL_APP_LOWMEMORY:
@@ -3838,7 +3844,7 @@ namespace Mengine
                     /* You will get this when your app is paused and iOS wants more memory.
                        Release as much memory as possible.
                     */
-                    
+
                     //TODO
                 }break;
             case SDL_APP_WILLENTERBACKGROUND:
@@ -3846,7 +3852,7 @@ namespace Mengine
                     /* Prepare your app to go into the background.  Stop loops, etc.
                        This gets called when the user hits the home button, or gets a call.
                     */
-                    
+
                     //TODO
                 }break;
             case SDL_APP_DIDENTERBACKGROUND:
@@ -3856,7 +3862,7 @@ namespace Mengine
                        When you get this, you have 5 seconds to save all your state or the app will be terminated.
                        Your app is NOT active at this point.
                     */
-                 
+
                     //TODO
                 }break;
             case SDL_APP_WILLENTERFOREGROUND:
@@ -3864,7 +3870,7 @@ namespace Mengine
                     /* This call happens when your app is coming back to the foreground.
                        Restore all your state here.
                     */
-                    
+
                     //TODO
                 }break;
             case SDL_APP_DIDENTERFOREGROUND:
@@ -3872,7 +3878,7 @@ namespace Mengine
                     /* Restart your loops here.
                        Your app is interactive and getting CPU again.
                     */
-                
+
                     //TODO
                 }break;
             default:
@@ -4014,7 +4020,7 @@ namespace Mengine
 
         if( jmethodID_onMengineInitializeBaseServices == nullptr )
         {
-            LOGGER_ERROR("invalid get android method 'onMengineInitializeBaseServices'");
+            LOGGER_ERROR( "invalid get android method 'onMengineInitializeBaseServices'" );
 
             return;
         }
@@ -4032,7 +4038,7 @@ namespace Mengine
 
         if( jmethodID_onMengineCreateApplication == nullptr )
         {
-            LOGGER_ERROR("invalid get android method 'onMengineCreateApplication'");
+            LOGGER_ERROR( "invalid get android method 'onMengineCreateApplication'" );
 
             return;
         }

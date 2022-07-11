@@ -1,16 +1,8 @@
 package org.Mengine.Plugin.FirebaseCrashlytics;
 
-import android.app.Application;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Process;
-import android.provider.SyncStateContract;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
@@ -19,11 +11,6 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.lang.reflect.Method;
 
 public class MengineCrashlyticsPlugin extends MenginePlugin {
 
@@ -40,9 +27,9 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
 
     @Override
     public void onAppCreate(MengineApplication application) {
-
-
-        if (!BuildConfig.DEBUG) return;
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
 

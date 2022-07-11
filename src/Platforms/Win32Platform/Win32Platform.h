@@ -47,7 +47,7 @@ namespace Mengine
         bool getSleepMode() const override;
 
     public:
-        uint64_t getTicks() const override;
+        TimeMilliseconds getPlatfomTime() const override;
 
     public:
         bool runPlatform() override;
@@ -231,6 +231,8 @@ namespace Mengine
         void updateWndMessage_();
 
     protected:
+        TimeMilliseconds m_beginTime;
+
         StaticWString<MENGINE_MAX_PATH> m_windowClassName;
         
         HINSTANCE m_hInstance;

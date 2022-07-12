@@ -113,6 +113,14 @@ android {
 
         print 'ANDROID_APP_ARCH_86_64_ENABLE = '
         println Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true)
+
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+//                strippedNativeLibsRootDir "$rootDir/libraries/Mengine/build/intermediates/stripped_native_libs/release/out/lib/"
+                unstrippedNativeLibsDir "$rootDir/libraries/Mengine/build/intermediates/merged_native_libs/release/out/lib/"
+            }
+        }
     }
 
     splits {
@@ -132,26 +140,6 @@ android {
             }
 
             universalApk false
-        }
-    }
-
-    if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
-        buildTypes {
-            debug {
-                externalNativeBuild {
-                    firebaseCrashlytics {
-                        mappingFileUploadEnabled true
-                    }
-                }
-            }
-
-            release {
-                externalNativeBuild {
-                    firebaseCrashlytics {
-                        nativeSymbolUploadEnabled true
-                    }
-                }
-            }
         }
     }
 
@@ -212,8 +200,18 @@ android {
 // test c++ debug -> preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
     afterEvaluate {
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
-            build.finalizedBy(uploadCrashlyticsSymbolFileRelease)
+        if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
+
+            android.applicationVariants.all { variant ->
+                if (variant.buildType.name != "debug") {
+                    def variantName = variant.name.capitalize()
+//                    println("symbols will be added on variant ${variantName}")
+                    def task = tasks.findByName("assemble${variantName}")
+                    def uploader = "uploadCrashlyticsSymbolFile${variantName}"
+
+                    task?.finalizedBy(uploader)
+                }
+            }
         }
     }
     androidResources {
@@ -288,6 +286,8 @@ if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true)
 
 if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
     println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
+
+    android.ext.plugins += 'org.Mengine.Plugin.FirebaseCrashlytics.MengineCrashlyticsPlugin'
 
     dependencies {
         implementation project(':libraries:FirebaseCrashlytics')

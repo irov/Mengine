@@ -1,15 +1,3 @@
-buildscript {
-    repositories {
-        google()
-        maven { url 'https://maven.google.com' }
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
-    }
-}
-
 apply plugin: 'com.android.library'
 
 android {
@@ -48,4 +36,6 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk'
+    implementation 'com.google.firebase:firebase-analytics'
 }

@@ -114,13 +114,6 @@ android {
         print 'ANDROID_APP_ARCH_86_64_ENABLE = '
         println Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true)
 
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
-            firebaseCrashlytics {
-                nativeSymbolUploadEnabled true
-//                strippedNativeLibsRootDir "$rootDir/libraries/Mengine/build/intermediates/stripped_native_libs/release/out/lib/"
-                unstrippedNativeLibsDir "$rootDir/libraries/Mengine/build/intermediates/merged_native_libs/release/out/lib/"
-            }
-        }
     }
 
     splits {
@@ -199,18 +192,43 @@ android {
 
 // test c++ debug -> preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
-    afterEvaluate {
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true) {
+    if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true &&
+            Utils.getBooleanProperty(project, "ANDROID_APP_UPLOAD_CRASHLYTICS", true) == true) {
+
+        buildTypes {
+            debug {
+                externalNativeBuild {
+                    firebaseCrashlytics {
+                        nativeSymbolUploadEnabled true
+//                        strippedNativeLibsRootDir "$rootDir/libraries/Mengine/build/intermediates/stripped_native_libs/release/out/lib/"
+                        unstrippedNativeLibsDir "$rootDir/libraries/Mengine/build/intermediates/merged_native_libs/debug/out/lib/"
+                    }
+                }
+            }
+
+            release {
+                externalNativeBuild {
+                    firebaseCrashlytics {
+                        nativeSymbolUploadEnabled true
+//                        strippedNativeLibsRootDir "$rootDir/libraries/Mengine/build/intermediates/stripped_native_libs/release/out/lib/"
+                        unstrippedNativeLibsDir "$rootDir/libraries/Mengine/build/intermediates/merged_native_libs/release/out/lib/"
+                    }
+                }
+            }
+        }
+
+
+        afterEvaluate {
 
             android.applicationVariants.all { variant ->
-                if (variant.buildType.name != "debug") {
-                    def variantName = variant.name.capitalize()
+//                if (variant.buildType.name != "debug") {
+                def variantName = variant.name.capitalize()
 //                    println("symbols will be added on variant ${variantName}")
-                    def task = tasks.findByName("assemble${variantName}")
-                    def uploader = "uploadCrashlyticsSymbolFile${variantName}"
+                def task = tasks.findByName("assemble${variantName}")
+                def uploader = "uploadCrashlyticsSymbolFile${variantName}"
 
-                    task?.finalizedBy(uploader)
-                }
+                task?.finalizedBy(uploader)
+//                }
             }
         }
     }

@@ -461,6 +461,7 @@ namespace Mengine
             _packet.payload.resize( _hdr.uncompressedSize );
 
             const int result = ::LZ4_decompress_safe( reinterpret_cast<const char *>(_receivedData), reinterpret_cast<char *>(_packet.payload.data()), static_cast<int>(_hdr.compressedSize), static_cast<int>(_hdr.uncompressedSize) );
+            MENGINE_UNUSED( result );
             assert( static_cast<uint32_t>(result) == _hdr.uncompressedSize );
         }
     }
@@ -1889,7 +1890,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUISettingsTab()
     {
-        const float leftPanelWidth = 400.0f;
+        //const float leftPanelWidth = 400.0f;
 
         ImGui::Columns( 2, nullptr, true );
         //ImGui::SetColumnWidth( 0, leftPanelWidth );
@@ -2886,8 +2887,6 @@ namespace Mengine
 
         if( !packet.payload.empty() )
         {
-            const uint32_t payloadLength = static_cast<uint32_t>(packet.payload.size());
-
             PacketHeader hdr;
             hdr.magic = PACKET_MAGIC;
 

@@ -37,6 +37,10 @@ namespace Mengine
         bool isSilent() const override;
 
     public:
+        void setSilentMessageRelease( bool _silentMessageRelease ) override;
+        bool isSilentMessageRelease() const override;
+
+    public:
         void setHistorically( bool _historically ) override;
         bool getHistorically() const override;
 
@@ -72,6 +76,7 @@ namespace Mengine
         ELoggerLevel m_verboseLevel;
         uint32_t m_verboseFilter;
         bool m_silent;
+        bool m_silentMessageRelease;
 
         typedef Vector<ConstString> VectorVerboses;
         VectorVerboses m_verboses;

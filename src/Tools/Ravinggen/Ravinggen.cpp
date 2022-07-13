@@ -104,7 +104,10 @@ namespace Mengine
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
         LOGGER_SERVICE()
-            ->setVerboseLevel( LM_WARNING );
+            ->setVerboseLevel( LM_ERROR );
+
+        LOGGER_SERVICE()
+            ->setSilentMessageRelease( true );
 
         LOGGER_SERVICE()
             ->registerLogger( Helper::makeFactorableUnique<ToolLogger>( MENGINE_DOCUMENT_FUNCTION ) );
@@ -133,11 +136,10 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR _lpCmdLine, int nShowCmd )
+int main( int argc, char * argv[] )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( argc );
+    MENGINE_UNUSED( argv );
 
     try
     {
@@ -157,11 +159,11 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR _lpCmd
         return EXIT_FAILURE;
     }
 
-    PWSTR lpCmdLine = GetCommandLineW();
+    PWSTR pwCmdLine = GetCommandLineW();
 
-    Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
-    Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
-    Mengine::WString secure = parse_kwds( lpCmdLine, L"--secure", Mengine::WString() );
+    Mengine::WString in = parse_kwds( pwCmdLine, L"--in", Mengine::WString() );
+    Mengine::WString out = parse_kwds( pwCmdLine, L"--out", Mengine::WString() );
+    Mengine::WString secure = parse_kwds( pwCmdLine, L"--secure", Mengine::WString() );
 
     if( in.empty() == true )
     {

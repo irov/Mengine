@@ -26,6 +26,11 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/FactorableUnique.h"
 
+static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
+{
+    _value = Mengine::WString( _str.begin(), _str.end() );
+}
+
 #include "ToolUtils/ToolUtils.h"
 #include "ToolUtils/ToolLogger.h"
 
@@ -53,6 +58,7 @@ SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( ConfigService );
+SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
@@ -92,6 +98,7 @@ namespace Mengine
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
 
+        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
@@ -108,21 +115,19 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
-{
-    _value = Mengine::WString( _str.begin(), _str.end() );
-}
-//////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
     {
-        Mengine::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Mengine::WString() );
-        Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
-        Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
+        PWSTR pwCmdLine = GetCommandLineW();
+
+        Mengine::WString protocol = parse_kwds( pwCmdLine, L"--protocol", Mengine::WString() );
+        Mengine::WString in = parse_kwds( pwCmdLine, L"--in", Mengine::WString() );
+        Mengine::WString out = parse_kwds( pwCmdLine, L"--out", Mengine::WString() );
 
         if( in.empty() == true )
         {

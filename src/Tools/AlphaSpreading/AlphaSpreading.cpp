@@ -10,16 +10,19 @@
 #include <malloc.h>
 
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     (void)hInstance;
     (void)hPrevInstance;
+    (void)lpCmdLine;
     (void)nShowCmd;
 
-    std::wstring in_path = parse_kwds( lpCmdLine, L"--in", std::wstring() );
-    std::wstring out_path = parse_kwds( lpCmdLine, L"--out", std::wstring() );
+    PWSTR pwCmdLine = GetCommandLineW();
 
-    bool premultiply = has_args( lpCmdLine, L"--premultiply" );
+    std::wstring in_path = parse_kwds( pwCmdLine, L"--in", std::wstring() );
+    std::wstring out_path = parse_kwds( pwCmdLine, L"--out", std::wstring() );
+
+    bool premultiply = has_args( pwCmdLine, L"--premultiply" );
 
     if( in_path.empty() == true )
     {

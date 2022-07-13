@@ -343,18 +343,34 @@ include_directories(${THIRDPARTY_CONFIG_DIR}/openssl)
 
 if(WIN32)
   include_directories(
-    ${SOURCE_DIR}/PC 
-    ${SOURCE_DIR}/Python 
+    ${SOURCE_DIR}/PC
+    ${SOURCE_DIR}/Python
     ${SOURCE_DIR}/Modules/expat
     )
+    
+  add_definitions(-D_WINDOWS)
 
   if(MSVC)
-	  add_definitions(-DWIN32 -D_WINDOWS)
-  else()
-	  add_definitions(-D_WINDOWS)
+      if(WIN64)
+        add_definitions(-DWIN64)
+      else()
+        add_definitions(-DWIN32)
+      endif()
   endif()
 endif()
 
+if(MINGW)
+  MESSAGE("MINGW: ${MINGW}")
+  
+  include_directories(
+    ${SOURCE_DIR}/PC
+    ${SOURCE_DIR}/Python
+    ${SOURCE_DIR}/Modules/expat
+    )
+    
+  add_definitions(-D_WINDOWS)
+  add_definitions(-DWIN64)
+endif()
 
 add_definitions(-DPYEXPAT_EXPORTS)
 add_definitions(-DHAVE_EXPAT_H)
@@ -369,9 +385,8 @@ add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPy_BUILD_CORE_BUILTIN)
 
-		  
-add_library( ${PROJECT_NAME} STATIC
-			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
+add_library(${PROJECT_NAME} STATIC
+              ${SOURCE_DIR}/Modules/getbuildinfo.c 
               ${PARSER_SRCS}
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}

@@ -11,19 +11,22 @@
 #include "jansson.h"
 
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
+    PWSTR pwCmdLine = GetCommandLineW();
+
     //uint32_t image_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
-    std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
-    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
-    std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
-    std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker_path", std::wstring() );
-    std::wstring log_path = parse_kwds( lpCmdLine, L"--log_path", std::wstring() );
-    std::wstring premultiply = parse_kwds( lpCmdLine, L"--premultiply", std::wstring() );
+    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( pwCmdLine, L"--out_path", std::wstring() );
+    std::wstring result_path = parse_kwds( pwCmdLine, L"--result_path", std::wstring() );
+    std::wstring texturepacker_path = parse_kwds( pwCmdLine, L"--texturepacker_path", std::wstring() );
+    std::wstring log_path = parse_kwds( pwCmdLine, L"--log_path", std::wstring() );
+    std::wstring premultiply = parse_kwds( pwCmdLine, L"--premultiply", std::wstring() );
 
     std::vector<std::wstring> images_path;
 

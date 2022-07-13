@@ -22,6 +22,11 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PixelFormatHelper.h"
 
+static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
+{
+    _value = Mengine::WString( _str.begin(), _str.end() );
+}
+
 #include "ToolUtils/ToolUtils.h"
 #include "ToolUtils/ToolLogger.h"
 
@@ -45,6 +50,7 @@ SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( ConfigService );
+SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
@@ -84,6 +90,7 @@ namespace Mengine
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
 
+        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
@@ -597,24 +604,22 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
-{
-    _value = Mengine::WString( _str.begin(), _str.end() );
-}
-//////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
     {
-        Mengine::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Mengine::WString() );
-        Mengine::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Mengine::WString() );
-        Mengine::WString result_path = parse_kwds( lpCmdLine, L"--result_path", Mengine::WString() );
-        Mengine::WString border = parse_kwds( lpCmdLine, L"--border", Mengine::WString() );
-        Mengine::WString trim = parse_kwds( lpCmdLine, L"--trim", Mengine::WString() );
-        Mengine::WString premultiplied = parse_kwds( lpCmdLine, L"--premultiplied", Mengine::WString() );
+        PWSTR pwCmdLine = GetCommandLineW();
+
+        Mengine::WString in_path = parse_kwds( pwCmdLine, L"--in_path", Mengine::WString() );
+        Mengine::WString out_path = parse_kwds( pwCmdLine, L"--out_path", Mengine::WString() );
+        Mengine::WString result_path = parse_kwds( pwCmdLine, L"--result_path", Mengine::WString() );
+        Mengine::WString border = parse_kwds( pwCmdLine, L"--border", Mengine::WString() );
+        Mengine::WString trim = parse_kwds( pwCmdLine, L"--trim", Mengine::WString() );
+        Mengine::WString premultiplied = parse_kwds( pwCmdLine, L"--premultiplied", Mengine::WString() );
 
         if( in_path.empty() == true )
         {

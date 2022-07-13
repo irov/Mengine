@@ -11,6 +11,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -21,6 +22,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PythonScriptModuleFinder::PythonScriptModuleFinder()
+        : m_availableSourceCode( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -50,6 +52,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::initialize()
     {
+        bool OPTION_pythonavailablesourcecode = HAS_OPTION( "pythonavailablesourcecode" );
+        MENGINE_UNUSED( OPTION_pythonavailablesourcecode );
+
+        bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", MENGINE_MASTER_RELEASE_VALUE( OPTION_pythonavailablesourcecode, true ) );
+
+        m_availableSourceCode = PythonScript_AvailableSourceCode;
+
         m_factoryScriptModuleLoader = Helper::makeFactoryPool<PythonScriptModuleLoader, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -106,9 +115,7 @@ namespace Mengine
 
         MENGINE_THREAD_GUARD_SCOPE( PythonScriptModuleFinder, this, "PythonScriptModuleFinder::find_module" );
 
-        static bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", MENGINE_MASTER_RELEASE_VALUE( false, true ) );
-
-        if( PythonScript_AvailableSourceCode == true )
+        if( m_availableSourceCode == true )
         {
             ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FACTORABLE );
 

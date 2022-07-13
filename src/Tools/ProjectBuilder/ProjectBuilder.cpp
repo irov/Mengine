@@ -88,6 +88,7 @@ SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( ConverterService );
 SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
+SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
@@ -189,6 +190,7 @@ namespace Mengine
         SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );

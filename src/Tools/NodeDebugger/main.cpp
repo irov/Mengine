@@ -31,11 +31,14 @@ static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
     return result;
 }
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
+
+    PWSTR pwCmdLine = GetCommandLineW();
 
     {
         Mengine::ServiceProviderInterface * serviceProvider;
@@ -54,7 +57,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             Mengine::String address;
             uint16_t port = 0;
 
-            Mengine::WString cmdLine( lpCmdLine );
+            Mengine::WString cmdLine( pwCmdLine );
             if( !cmdLine.empty() )
             {
                 Mengine::WString::size_type columnPos = cmdLine.find( TEXT( ':' ) );

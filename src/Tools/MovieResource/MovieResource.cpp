@@ -657,15 +657,18 @@ static bool save_xml( const pugi::xml_document & xmldoc, const std::wstring & ou
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
+    MENGINE_UNUSED( nShowCmd );
 
-    std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
-    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
-    std::wstring movie_name = parse_kwds( lpCmdLine, L"--movie_name", std::wstring() );
+    PWSTR pwCmdLine = GetCommandLineW();
+
+    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( pwCmdLine, L"--out_path", std::wstring() );
+    std::wstring movie_name = parse_kwds( pwCmdLine, L"--movie_name", std::wstring() );
 
     if( in_path.empty() == true )
     {

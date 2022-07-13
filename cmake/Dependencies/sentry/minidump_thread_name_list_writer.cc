@@ -190,6 +190,6 @@ MinidumpStreamType MinidumpThreadNameListWriter::StreamType() const {
   return kMinidumpStreamTypeThreadNameList;
 }
 
-#endif
-
 }  // namespace crashpad
+
+#endif

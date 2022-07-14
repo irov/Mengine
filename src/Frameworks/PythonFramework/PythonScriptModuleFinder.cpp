@@ -53,11 +53,17 @@ namespace Mengine
     bool PythonScriptModuleFinder::initialize()
     {
         bool OPTION_pythonavailablesourcecode = HAS_OPTION( "pythonavailablesourcecode" );
-        MENGINE_UNUSED( OPTION_pythonavailablesourcecode );
+        
+        if( OPTION_pythonavailablesourcecode == true )
+        {
+            m_availableSourceCode = true;
+        }
+        else
+        {
+            bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", MENGINE_MASTER_RELEASE_VALUE( false, true ) );
 
-        bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", MENGINE_MASTER_RELEASE_VALUE( OPTION_pythonavailablesourcecode, true ) );
-
-        m_availableSourceCode = PythonScript_AvailableSourceCode;
+            m_availableSourceCode = PythonScript_AvailableSourceCode;
+        }
 
         m_factoryScriptModuleLoader = Helper::makeFactoryPool<PythonScriptModuleLoader, 8>( MENGINE_DOCUMENT_FACTORABLE );
 

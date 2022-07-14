@@ -130,14 +130,17 @@ static bool writeCompress( const std::wstring & _filepath, const Blobject & _buf
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
-    std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
-    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
+    PWSTR pwCmdLine = GetCommandLineW();
+
+    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( pwCmdLine, L"--out_path", std::wstring() );
 
     if( in_path.empty() == true )
     {

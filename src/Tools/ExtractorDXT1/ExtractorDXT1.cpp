@@ -80,14 +80,17 @@ typedef struct
 //////////////////////////////////////////////////////////////////////////
 #   define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
+    PWSTR pwCmdLine = GetCommandLineW();
+
     int cmd_num;
-    LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
+    LPWSTR * cmd_args = CommandLineToArgvW( pwCmdLine, &cmd_num );
 
     std::wstring in;
     std::wstring out;

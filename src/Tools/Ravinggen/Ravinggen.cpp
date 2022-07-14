@@ -19,7 +19,6 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
-
 #include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 
 #include "Kernel/Logger.h"
@@ -35,6 +34,11 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/SHA1.h"
+
+static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
+{
+    _value = Mengine::WString( _str.begin(), _str.end() );
+}
 
 #include "ToolUtils/ToolUtils.h"
 #include "ToolUtils/ToolLogger.h"
@@ -100,7 +104,10 @@ namespace Mengine
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
         LOGGER_SERVICE()
-            ->setVerboseLevel( LM_WARNING );
+            ->setVerboseLevel( LM_ERROR );
+
+        LOGGER_SERVICE()
+            ->setSilentMessageRelease( true );
 
         LOGGER_SERVICE()
             ->registerLogger( Helper::makeFactorableUnique<ToolLogger>( MENGINE_DOCUMENT_FUNCTION ) );
@@ -129,16 +136,10 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
+int main( int argc, char * argv[] )
 {
-    _value = Mengine::WString( _str.begin(), _str.end() );
-}
-//////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
-{
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( argc );
+    MENGINE_UNUSED( argv );
 
     try
     {
@@ -158,9 +159,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return EXIT_FAILURE;
     }
 
-    Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
-    Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
-    Mengine::WString secure = parse_kwds( lpCmdLine, L"--secure", Mengine::WString() );
+    PWSTR pwCmdLine = GetCommandLineW();
+
+    Mengine::WString in = parse_kwds( pwCmdLine, L"--in", Mengine::WString() );
+    Mengine::WString out = parse_kwds( pwCmdLine, L"--out", Mengine::WString() );
+    Mengine::WString secure = parse_kwds( pwCmdLine, L"--secure", Mengine::WString() );
 
     if( in.empty() == true )
     {

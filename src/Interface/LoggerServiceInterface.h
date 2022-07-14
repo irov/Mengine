@@ -26,6 +26,10 @@ namespace Mengine
         virtual bool isSilent() const = 0;
 
     public:
+        virtual void setSilentMessageRelease( bool _silentMessageRelease ) = 0;
+        virtual bool isSilentMessageRelease() const = 0;
+
+    public:
         virtual void setHistorically( bool _historically ) = 0;
         virtual bool getHistorically() const = 0;
 

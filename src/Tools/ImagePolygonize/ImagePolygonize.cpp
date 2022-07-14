@@ -9,20 +9,23 @@
 #include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
-    std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
-    std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
-    std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
-    uint32_t offset_x = parse_kwds( lpCmdLine, L"--offset_x", 0U );
-    uint32_t offset_y = parse_kwds( lpCmdLine, L"--offset_y", 0U );
-    float width = parse_kwds( lpCmdLine, L"--width", -1.f );
-    float height = parse_kwds( lpCmdLine, L"--height", -1.f );
-    uint32_t tolerance = parse_kwds( lpCmdLine, L"--tolerance", 200U );
+    PWSTR pwCmdLine = GetCommandLineW();
+
+    std::wstring texturepacker_path = parse_kwds( pwCmdLine, L"--texturepacker", std::wstring() );
+    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
+    std::wstring result_path = parse_kwds( pwCmdLine, L"--result_path", std::wstring() );
+    uint32_t offset_x = parse_kwds( pwCmdLine, L"--offset_x", 0U );
+    uint32_t offset_y = parse_kwds( pwCmdLine, L"--offset_y", 0U );
+    float width = parse_kwds( pwCmdLine, L"--width", -1.f );
+    float height = parse_kwds( pwCmdLine, L"--height", -1.f );
+    uint32_t tolerance = parse_kwds( pwCmdLine, L"--tolerance", 200U );
 
     if( texturepacker_path.empty() == true )
     {

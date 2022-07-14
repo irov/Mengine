@@ -40,18 +40,21 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
-    std::wstring astralax_path = parse_kwds( lpCmdLine, L"--astralax_path", std::wstring() );
-    std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
-    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
-    std::wstring csa_path = parse_kwds( lpCmdLine, L"--csa_path", std::wstring() );
-    std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
-    std::wstring convert = parse_kwds( lpCmdLine, L"--convert", std::wstring() );
+    PWSTR pwCmdLine = GetCommandLineW();
+
+    std::wstring astralax_path = parse_kwds( pwCmdLine, L"--astralax_path", std::wstring() );
+    std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( pwCmdLine, L"--out_path", std::wstring() );
+    std::wstring csa_path = parse_kwds( pwCmdLine, L"--csa_path", std::wstring() );
+    std::wstring result_path = parse_kwds( pwCmdLine, L"--result_path", std::wstring() );
+    std::wstring convert = parse_kwds( pwCmdLine, L"--convert", std::wstring() );
 
     if( in_path.empty() == true )
     {

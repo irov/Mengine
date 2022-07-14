@@ -14,5 +14,3 @@ TARGET_LINK_LIBRARIES( ${PROJECT_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX}    
     ToolUtils
     )
-    
-set_target_properties( ${PROJECT_NAME} PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib" )    

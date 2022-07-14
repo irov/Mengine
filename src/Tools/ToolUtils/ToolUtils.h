@@ -59,7 +59,7 @@ static T parse_args( PWSTR lpCmdLine, uint32_t _index )
 }
 //////////////////////////////////////////////////////////////////////////
 template<class T>
-static T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
+T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
 {
     int cmd_num;
     LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );

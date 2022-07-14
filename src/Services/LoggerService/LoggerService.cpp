@@ -37,6 +37,7 @@ namespace Mengine
         : m_verboseLevel( LM_ERROR )
         , m_verboseFilter( 0xFFFFFFFF )
         , m_silent( false )
+        , m_silentMessageRelease( false )
         , m_historically( true )
         , m_historyLimit( MENGINE_LOGGER_HISTORY_MAX )
     {
@@ -54,6 +55,13 @@ namespace Mengine
         if( OPTION_nologs == true )
         {
             m_silent = true;
+        }
+
+        bool OPTION_nomessagerelease = HAS_OPTION( "nomessagerelease" );
+
+        if( OPTION_nomessagerelease == true )
+        {
+            m_silentMessageRelease = true;
         }
 
         ELoggerLevel logLevel;
@@ -247,6 +255,16 @@ namespace Mengine
         return m_silent;
     }
     //////////////////////////////////////////////////////////////////////////
+    void LoggerService::setSilentMessageRelease( bool _silentMessageRelease )
+    {
+        m_silentMessageRelease = _silentMessageRelease;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerService::isSilentMessageRelease() const
+    {
+        return m_silentMessageRelease;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void LoggerService::setHistorically( bool _historically )
     {
         m_historically = _historically;
@@ -328,6 +346,14 @@ namespace Mengine
             }
 
             if( Algorithm::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
+            {
+                return false;
+            }
+        }
+
+        if( m_silentMessageRelease == true )
+        {
+            if( _level == LM_MESSAGE_RELEASE )
             {
                 return false;
             }

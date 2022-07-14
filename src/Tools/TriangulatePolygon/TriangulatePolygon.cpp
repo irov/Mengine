@@ -449,10 +449,11 @@ static bool polygonize( const vec2f & image_base_size, const vec2f & image_trim_
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
     (void)hInstance;
     (void)hPrevInstance;
+    (void)lpCmdLine;
     (void)nShowCmd;
 
     std::wstring arg_image_bb;
@@ -461,16 +462,18 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     std::wstring arg_image_trim_offset;
     std::wstring arg_polygon_input;
 
-    bool image_bb = parse_kwds( lpCmdLine, L"--bb", false );
-    float base_width = parse_kwds( lpCmdLine, L"--base_width", 0.f );
-    float base_height = parse_kwds( lpCmdLine, L"--base_height", 0.f );
-    float trim_width = parse_kwds( lpCmdLine, L"--trim_width", 0.f );
-    float trim_height = parse_kwds( lpCmdLine, L"--trim_height", 0.f );
-    float trim_offset_x = parse_kwds( lpCmdLine, L"--trim_offset_x", 0.f );
-    float trim_offset_y = parse_kwds( lpCmdLine, L"--trim_offset_y", 0.f );
-    bool image_subtract = parse_kwds( lpCmdLine, L"--subtract", false );
-    TVectorPoints points = parse_kwds( lpCmdLine, L"--points", TVectorPoints() );
-    std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
+    PWSTR pwCmdLine = GetCommandLineW();
+
+    bool image_bb = parse_kwds( pwCmdLine, L"--bb", false );
+    float base_width = parse_kwds( pwCmdLine, L"--base_width", 0.f );
+    float base_height = parse_kwds( pwCmdLine, L"--base_height", 0.f );
+    float trim_width = parse_kwds( pwCmdLine, L"--trim_width", 0.f );
+    float trim_height = parse_kwds( pwCmdLine, L"--trim_height", 0.f );
+    float trim_offset_x = parse_kwds( pwCmdLine, L"--trim_offset_x", 0.f );
+    float trim_offset_y = parse_kwds( pwCmdLine, L"--trim_offset_y", 0.f );
+    bool image_subtract = parse_kwds( pwCmdLine, L"--subtract", false );
+    TVectorPoints points = parse_kwds( pwCmdLine, L"--points", TVectorPoints() );
+    std::wstring result_path = parse_kwds( pwCmdLine, L"--result_path", std::wstring() );
 
     vec2f image_base_size( base_width, base_height );
     vec2f image_trim_size( trim_width, trim_height );

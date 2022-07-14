@@ -81,7 +81,7 @@ WIN32 is still required for the locale module.
 
 /* ------------------------------------------------------------------------*/
 /* Microsoft C defines _MSC_VER */
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
 
 /* We want COMPILER to expand to a string containing _MSC_VER's *value*.
  * This is horridly tricky, because the stringization operator only works
@@ -113,7 +113,7 @@ WIN32 is still required for the locale module.
    guarded as follows:
         #if defined(MS_WIN32) && !defined(MS_WIN64)
 */
-#ifdef _WIN64
+#if defined(_WIN64) || defined(__MINGW64__)
 #define MS_WIN64
 #endif
 
@@ -187,7 +187,9 @@ typedef _W64 int ssize_t;
 #endif
 #endif /* MS_WIN32 && !MS_WIN64 */
 
+#ifndef __MINGW32__
 typedef int pid_t;
+#endif
 
 #include <float.h>
 #define Py_IS_NAN _isnan

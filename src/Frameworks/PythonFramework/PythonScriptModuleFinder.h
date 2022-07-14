@@ -89,6 +89,8 @@ namespace Mengine
 
         mutable PathString m_cacheFullPath;
 
+        bool m_availableSourceCode;
+
         MENGINE_THREAD_GUARD_INIT( PythonScriptModuleFinder );
     };
     //////////////////////////////////////////////////////////////////////////

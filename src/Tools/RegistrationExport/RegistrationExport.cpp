@@ -21,11 +21,7 @@ LRESULT CALLBACK WindowProcedure( HWND, UINT, WPARAM, LPARAM );
 /*  Make the class name into a global variable  */
 WCHAR szClassName[] = L"RegistrationExport";
 
-int WINAPI wWinMain( HINSTANCE hThisInstance,
-    HINSTANCE hPrevInstance,
-    PWSTR lpszArgument,
-    int nFunsterStil )
-
+int WINAPI WinMain( HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nFunsterStil )
 {
     (void)lpszArgument;
     (void)hPrevInstance;

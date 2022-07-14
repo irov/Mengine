@@ -10,7 +10,7 @@ set "CONFIGURATION=%1"
 @echo Starting build solution tools mingw %CONFIGURATION% configuration...
 
 @pushd %~dp0..
-@call cmake_configure CMake "%CD%\..\cmake\Tools_MinGW" "%CD%\..\solutions\solution_tools_mingw\%CONFIGURATION%" "MinGW Makefiles" %CONFIGURATION%
+@call build_solution.bat "SOLUTION_NAME=solution_tools_mingw64" "SOURCE_DIRECTORY=%CD%\..\cmake\Tools_MinGW64" "GENERATOR=Ninja" "CONFIGURATION=%CONFIGURATION%"
 @popd
 
 if %errorlevel% NEQ 0 (

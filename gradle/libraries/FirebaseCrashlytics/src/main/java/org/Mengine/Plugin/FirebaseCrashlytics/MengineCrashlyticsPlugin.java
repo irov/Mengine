@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.FirebaseCrashlytics;
 
 import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
@@ -17,7 +18,7 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
     /**
      * <p>
      * void recordException(Throwable throwable)
-     *  void recordLog(String msg)
+     * void recordLog(String msg)
      */
 
     @Override
@@ -40,12 +41,10 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
                 throwable.printStackTrace();
 
                 FirebaseCrashlytics.getInstance().recordException(throwable);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        System.exit(0);
-                    }
+
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(0);
                 }, 1000L);
             }
         });

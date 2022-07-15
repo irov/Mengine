@@ -60,9 +60,9 @@ android {
 
             externalNativeBuild {
                 cmake {
-                    cFlags "-std=c11 -g -D_DEBUG"
-                    cppFlags "-std=c++17 -frtti -fexceptions -g -D_DEBUG"
-                    arguments "-DANDROID_PLATFORM=android-19",
+                    cFlags "-std=c11 -O0 -g -D_DEBUG"
+                    cppFlags "-std=c++17 -frtti -fexceptions -O0 -g -D_DEBUG"
+                    arguments "-DANDROID_PLATFORM=android-" + project.minSdkVersion,
                             "-DANDROID_ARM_NEON=TRUE",
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
@@ -84,7 +84,7 @@ android {
                 cmake {
                     cFlags "-std=c11 -O3 -DNDEBUG"
                     cppFlags "-std=c++17 -frtti -fexceptions -O3 -DNDEBUG"
-                    arguments "-DANDROID_PLATFORM=android-19",
+                    arguments "-DANDROID_PLATFORM=android-" + project.minSdkVersion,
                             "-DANDROID_ARM_NEON=TRUE",
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",

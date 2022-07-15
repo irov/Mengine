@@ -52,9 +52,10 @@ namespace Mengine
         uint32_t m_seconds;
         UniqueId m_workerId;
 
-        Atomic<uint32_t> m_refalive;
-        Atomic<uint32_t> m_reflogger;
-        Atomic<uint32_t> m_oldrefalive;
+        Atomic<uint32_t> m_refAlive;
+        Atomic<uint32_t> m_refLogger;
+        Atomic<uint32_t> m_refAbort;
+        Atomic<uint32_t> m_oldRefAlive;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32AntifreezeMonitor> Win32AntifreezeMonitorPtr;

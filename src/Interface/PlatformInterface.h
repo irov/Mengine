@@ -93,6 +93,7 @@ namespace Mengine
         virtual bool setProcessDPIAware() = 0;
 
         virtual bool isDebuggerPresent() const = 0;
+        virtual void debugBreak() = 0;
         virtual bool createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full ) = 0;
 
         virtual size_t getCurrentPath( Char * const _filePath ) const = 0;

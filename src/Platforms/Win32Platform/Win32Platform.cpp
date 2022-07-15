@@ -664,6 +664,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::debugBreak()
+    {
+        ::DebugBreak();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full )
     {
         MENGINE_UNUSED( _dumpPath );
@@ -2382,7 +2387,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::atachWindow( HWND _hWnd, bool _fullscreen )
     {
-        MENGINE_ASSERTION_FATAL( _hWnd == NULL );
+        MENGINE_ASSERTION_FATAL( _hWnd != NULL );
 
         m_hWnd = _hWnd;
 

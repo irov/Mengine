@@ -26,9 +26,10 @@ namespace Mengine
     Win32AntifreezeMonitor::Win32AntifreezeMonitor()
         : m_seconds( 0 )
         , m_workerId( 0 )
-        , m_refalive( 0 )
-        , m_reflogger( 0 )
-        , m_oldrefalive( 0 )
+        , m_refAlive( 0 )
+        , m_refLogger( 0 )
+        , m_refAbort( 0 )
+        , m_oldRefAlive( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -106,7 +107,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()
     {
-        m_refalive++;
+        ++m_refAlive;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::onThreadWorkerUpdate( uint32_t _id )
@@ -118,30 +119,43 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        uint32_t refalive = m_refalive;
-        uint32_t oldrefalive = m_oldrefalive;
+        uint32_t refalive = m_refAlive;
+        uint32_t oldrefalive = m_oldRefAlive;
 
-        m_oldrefalive = refalive;
+        m_oldRefAlive = refalive;
 
         if( oldrefalive == 0 )
         {
             return true;
         }
 
-        if( oldrefalive != m_refalive )
+        if( oldrefalive != m_refAlive )
         {
             return true;
         }
 
-        if( m_reflogger != 0 )
+        if( m_refLogger != 0 )
         {
             return true;
         }
 
-        if( PLATFORM_SERVICE()
-            ->isDebuggerPresent() == true && HAS_OPTION( "antifreezemonitordebug" ) == false )
+        if( m_refAbort != 0 )
         {
             return true;
+        }
+
+        if( HAS_OPTION( "antifreezemonitordebug" ) == false )
+        {
+            if( PLATFORM_SERVICE()
+                ->isDebuggerPresent() == true )
+            {
+                return true;
+            }
+        }
+        else
+        {
+            PLATFORM_SERVICE()
+                ->debugBreak();
         }
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
@@ -190,10 +204,14 @@ namespace Mengine
         bool sceneProcess = SCENE_SERVICE()
             ->isProcess();
 
-        MENGINE_ERROR_FATAL( "Antifreeze monitor detect freeze process for [%u] seconds, and create dump '%s' [scene process: %s]"
+        const ScenePtr & currentScene = SCENE_SERVICE()
+            ->getCurrentScene();
+
+        MENGINE_ERROR_FATAL( "Antifreeze monitor detect freeze process for [%u] seconds, and create dump '%s' [scene process: %s] [scene: %s]"
             , m_seconds
             , processDumpPath.c_str()
             , sceneProcess == true ? "yes" : "no"
+            , currentScene == nullptr ? "" : currentScene->getName().c_str()
         );
 
         return true;
@@ -211,7 +229,7 @@ namespace Mengine
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
 
-        ++m_reflogger;
+        ++m_refLogger;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyChangeLocalePost( const ConstString & _prevLocale, const ConstString & _currentlocale )
@@ -219,11 +237,11 @@ namespace Mengine
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
 
-        MENGINE_ASSERTION_FATAL( m_reflogger != 0 );
+        MENGINE_ASSERTION_FATAL( m_refLogger != 0 );
 
-        --m_reflogger;
+        --m_refLogger;
         
-        m_refalive++;
+        ++m_refAlive;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
@@ -234,7 +252,7 @@ namespace Mengine
         MENGINE_UNUSED( _message );
         MENGINE_UNUSED( _size );
 
-        ++m_reflogger;
+        ++m_refLogger;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyLoggerEnd( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
@@ -245,18 +263,18 @@ namespace Mengine
         MENGINE_UNUSED( _message );
         MENGINE_UNUSED( _size );
 
-        MENGINE_ASSERTION_FATAL( m_reflogger != 0 );
+        MENGINE_ASSERTION_FATAL( m_refLogger != 0 );
 
-        --m_reflogger;
+        --m_refLogger;
 
-        m_refalive++;
+        ++m_refAlive;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyAbort( const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
-        m_reflogger += 1024;
+        ++m_refAbort;
     }
     //////////////////////////////////////////////////////////////////////////
 }

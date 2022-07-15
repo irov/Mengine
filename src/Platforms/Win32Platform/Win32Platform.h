@@ -175,6 +175,7 @@ namespace Mengine
 
     public:
         bool isDebuggerPresent() const override;
+        void debugBreak() override;
         bool createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full ) override;
 
     public:

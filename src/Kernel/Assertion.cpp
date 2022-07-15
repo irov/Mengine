@@ -88,6 +88,14 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( argList );
 
+            Char assertion_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+            MENGINE_SNPRINTF( assertion_info, MENGINE_ASSERTION_MAX_MESSAGE, "File %s [line:%d] Assertion [%s]: %s"
+                , _file
+                , _line
+                , _test
+                , str_info
+            );
+
             if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
             {
                 NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _level, _test, _file, _line, str_info );
@@ -95,7 +103,7 @@ namespace Mengine
 
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {
-                Helper::crash( str_info );
+                Helper::crash( assertion_info );
 
                 return;
             }
@@ -103,23 +111,20 @@ namespace Mengine
             if( _level == ASSERTION_LEVEL_EXCEPTION )
             {
                 MENGINE_THROW_EXCEPTION( "%s"
-                    , str_info
+                    , assertion_info
                 );
             }
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
-                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("File %s [line:%d] Assertion [%s]: %s"
-                    , _file
-                    , _line
-                    , _test
-                    , str_info
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("%s"
+                    , assertion_info
                     );
             }
 
             if( _level == ASSERTION_LEVEL_FATAL )
             {
-                Helper::abort( str_info );
+                Helper::abort( assertion_info );
             }
 
             if( Assertion_NotDebugBreak == true && _level >= ASSERTION_LEVEL_WARNING )

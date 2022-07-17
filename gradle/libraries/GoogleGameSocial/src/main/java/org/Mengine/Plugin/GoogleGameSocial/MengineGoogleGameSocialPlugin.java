@@ -29,41 +29,41 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     //глянуть id по возврату в Activity
 
     /**
-     * Метода для  библиотеки
-     * <p>
-     * Авторизация
-     * void startSignInIntent()
-     * - onGoogleGameSocialOnSign
-     * - onGoogleGameSocialOnSignError
-     * - onGoogleGameSocialOnSignFailed
-     * <p>
-     * Тихая авторизация - если возможно то без вопроса у пользователя произвести авторизацию
-     * void signInSilently()
-     * - onGoogleGameSocialOnSign
-     * - onGoogleGameSocialOnSignError
-     * <p>
-     * Выход
-     * void signOut()
-     * - onGoogleGameSocialSignOutComplete
-     * - onGoogleGameSocialSignOutFailure
-     * - onGoogleGameSocialSignOutCanceled
-     * - onGoogleGameSocialSignOutSuccess
-     *
-     * Ачивка этапная - увеличиваем этап и по достижении последнего даётся ачивка
-     * boolean incrementAchievement(String achievementId, int numSteps)
-     *  - onGoogleGameSocialAchievementIncrementError(String achievementId)
-     *  - onGoogleGameSocialAchievementIncrementSuccess(String achievementId)
-     *
-     * Ачивка событияная - открываем сразу
-     * boolean unlockAchievement(String achievementId)
-     *  - onGoogleGameSocialAchievementSuccess(String achievementId)
-     *  - onGoogleGameSocialAchievementError(String achievementId)
-     *
-     * Показать окно ачивок
-     * boolean showAchievements()
-     *  - onGoogleGameSocialShowAchievementSuccess()
-     *  - onGoogleGameSocialShowAchievementError()
-     */
+    * Метода для  библиотеки
+    * <p>
+    * Авторизация
+    * void startSignInIntent()
+    * - onGoogleGameSocialOnSign
+    * - onGoogleGameSocialOnSignError
+    * - onGoogleGameSocialOnSignFailed
+    * <p>
+    * Тихая авторизация - если возможно то без вопроса у пользователя произвести авторизацию
+    * void signInSilently()
+    * - onGoogleGameSocialOnSign
+    * - onGoogleGameSocialOnSignError
+    * <p>
+    * Выход
+    * void signOut()
+    * - onGoogleGameSocialSignOutComplete
+    * - onGoogleGameSocialSignOutFailure
+    * - onGoogleGameSocialSignOutCanceled
+    * - onGoogleGameSocialSignOutSuccess
+    * <p>
+    * Ачивка этапная - увеличиваем этап и по достижении последнего даётся ачивка
+    * boolean incrementAchievement(String achievementId, int numSteps)
+    * - onGoogleGameSocialAchievementIncrementSuccess(String achievementId)
+    * - onGoogleGameSocialAchievementIncrementError(String achievementId)
+    * <p>
+    * Ачивка событияная - открываем сразу
+    * boolean unlockAchievement(String achievementId)
+    *  - onGoogleGameSocialAchievementSuccess(String achievementId)
+    *  - onGoogleGameSocialAchievementError(String achievementId)
+    * <p>
+    * Показать окно ачивок
+    * boolean showAchievements()
+    *  - onGoogleGameSocialShowAchievementSuccess()
+    *  - onGoogleGameSocialShowAchievementError()
+    **/
 
     private int RC_SIGN_IN;
     private int RC_UNUSED;

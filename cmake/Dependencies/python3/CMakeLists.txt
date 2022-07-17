@@ -318,9 +318,8 @@ set(MODULE_SRCS
                 
                 
                 ${SOURCE_DIR}/Modules/timemodule.c
-                ${SOURCE_DIR}/Modules/selectmodule.c		
+                ${SOURCE_DIR}/Modules/selectmodule.c
                 ${MOD_SRCS} )
-				
 if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
 else()
@@ -348,14 +347,10 @@ if(WIN32)
     ${SOURCE_DIR}/Modules/expat
     )
     
-  add_definitions(-D_WINDOWS)
-
   if(MSVC)
-      if(WIN64)
-        add_definitions(-DWIN64)
-      else()
-        add_definitions(-DWIN32)
-      endif()
+    add_definitions(-DWIN32 -D_WINDOWS)
+  else()
+    add_definitions(-D_WINDOWS)
   endif()
 endif()
 

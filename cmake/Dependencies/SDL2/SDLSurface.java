@@ -138,7 +138,10 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             // In case we're waiting on a size change after going fullscreen, send a notification.
             SDLActivity.getContext().notifyAll();
         }
+        
+        int orientation = SDLActivity.mSingleton.getResources().getConfiguration().orientation;
 
+        Log.v("SDL", "orientation mode: " + orientation);
         Log.v("SDL", "Window size: " + width + "x" + height);
         Log.v("SDL", "Device size: " + nDeviceWidth + "x" + nDeviceHeight);
         SDLActivity.nativeSetScreenResolution(width, height, nDeviceWidth, nDeviceHeight, mDisplay.getRefreshRate());

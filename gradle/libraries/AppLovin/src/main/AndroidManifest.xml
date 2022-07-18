@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.Mengine.Plugin.Applovin">
-
+    package="org.Mengine.Plugin.AppLovin">
 
     <application>
         <meta-data
@@ -11,5 +10,4 @@
             android:name="applovin.sdk.verbose_logging"
             android:value="true" />-->
     </application>
-
 </manifest>

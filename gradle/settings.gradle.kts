@@ -69,7 +69,7 @@ includePlugin("ANDROID_APP_ENABLE_SDL2", true, ":libraries:SDL2")
 
 includePlugin("ANDROID_APP_ENABLE_FIREBASE_ANALYTICS", true,":libraries:FirebaseAnalytics")
 includePlugin("ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true,":libraries:FirebaseCrashlytics")
-includePlugin("ANDROID_APP_ENABLE_APPLOVIN", true, ":libraries:Applovin")
+includePlugin("ANDROID_APP_ENABLE_APPLOVIN", true, ":libraries:AppLovin")
 includePlugin("ANDROID_APP_ENABLE_SENTRY",true, ":libraries:Sentry")
 includePlugin("ANDROID_APP_ENABLE_FACEBOOK", true,":libraries:Facebook")
 includePlugin("ANDROID_APP_ENABLE_DEVTODEV", true, ":libraries:DevToDev")

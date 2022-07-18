@@ -1,4 +1,4 @@
-package org.Mengine.Plugin.Applovin;
+package org.Mengine.Plugin.AppLovin;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -27,12 +27,14 @@ import org.Mengine.Base.ThreadUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class MengineApplovinPlugin extends MenginePlugin {
+public class MengineAppLovinPlugin extends MenginePlugin {
     /**
-     * - onApplovinPluginOnSdkInitialized - вызов после успешной инициализации (после можно загружать рекламу)
      * <p>
-     * Interstitial
-     * void initInterstitial(String interstitial_ad_unit_id)
+     * void initialize()
+     * - onApplovinPluginOnSdkInitialized
+     * <p>
+     * установка Interstitial
+     * void initInterstitial()
      * void loadInterstitial()
      * void showInterstitial()
      * - onApplovinInterstitialOnAdLoaded
@@ -43,7 +45,7 @@ public class MengineApplovinPlugin extends MenginePlugin {
      * - onApplovinInterstitialOnAdDisplayFailed
      * <p>
      * установка Rewarded
-     * void initRewarded(String rewarded_ad_unit_id)
+     * void initRewarded()
      * void loadRewarded()
      * void showRewarded()
      * - onApplovinRewardedOnRewardedVideoStarted
@@ -113,12 +115,12 @@ public class MengineApplovinPlugin extends MenginePlugin {
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineApplovinPlugin.this.logInfo("AppLovinSdk initialized: consent dialog [%s] country [%s]"
+                MengineAppLovinPlugin.this.logInfo("AppLovinSdk initialized: consent dialog [%s] country [%s]"
                         , configuration.getConsentDialogState().toString()
                         , configuration.getCountryCode()
                 );
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinPluginOnSdkInitialized");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinPluginOnSdkInitialized");
             }
         });
     }
@@ -126,53 +128,53 @@ public class MengineApplovinPlugin extends MenginePlugin {
     public void initBanner() throws Exception {
         MengineActivity activity = this.getActivity();
 
-        String Applovin_BannerAdUnitId = activity.getConfigValue("AppLovin", "BannerAdUnitId", "");
+        String AppLovin_BannerAdUnitId = activity.getConfigValue("AppLovin", "BannerAdUnitId", "");
 
-        if (Applovin_BannerAdUnitId == "") {
+        if (AppLovin_BannerAdUnitId == "") {
             throw new Exception("Need to add config value for [AppLovin] BannerAdUnitId");
         }
 
-        m_adView = new MaxAdView(Applovin_BannerAdUnitId, activity);
+        m_adView = new MaxAdView(AppLovin_BannerAdUnitId, activity);
         MaxAdViewAdListener maxAdViewAdListener = new MaxAdViewAdListener() {
 
             @Override
             public void onAdLoaded(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdLoaded");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdLoaded");
             }
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdDisplayed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdDisplayed");
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdHidden");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdHidden");
             }
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdClicked");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdClicked");
             }
 
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdLoadFailed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdLoadFailed");
             }
 
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdDisplayFailed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdDisplayFailed");
             }
 
             @Override
             public void onAdExpanded(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdExpanded");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdExpanded");
             }
 
             @Override
             public void onAdCollapsed(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinBannerOnAdCollapsed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdCollapsed");
             }
         };
         m_adView.setListener(maxAdViewAdListener);
@@ -207,37 +209,37 @@ public class MengineApplovinPlugin extends MenginePlugin {
     public void initInterstitial() throws Exception {
         MengineActivity activity = this.getActivity();
 
-        String Applovin_InterstitialAdUnitId = activity.getConfigValue("AppLovin", "InterstitialAdUnitId", "");
+        String AppLovin_InterstitialAdUnitId = activity.getConfigValue("AppLovin", "InterstitialAdUnitId", "");
 
-        if (Applovin_InterstitialAdUnitId == "") {
+        if (AppLovin_InterstitialAdUnitId == "") {
             throw new Exception("Need to add config value for [AppLovin] InterstitialAdUnitId");
         }
 
-        m_interstitialAd = new MaxInterstitialAd(Applovin_InterstitialAdUnitId, activity);
+        m_interstitialAd = new MaxInterstitialAd(AppLovin_InterstitialAdUnitId, activity);
 
         MaxAdListener maxAdListener = new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
                 m_retryAttemptInterstitial = 0;
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinInterstitialOnAdLoaded");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdLoaded");
             }
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinInterstitialOnAdDisplayed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdDisplayed");
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
                 m_interstitialAd.loadAd();
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinInterstitialOnAdHidden");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdHidden");
             }
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinInterstitialOnAdClicked");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdClicked");
             }
 
             @Override
@@ -250,14 +252,14 @@ public class MengineApplovinPlugin extends MenginePlugin {
                     m_interstitialAd.loadAd();
                 }, delayMillis);
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinInterstitialOnAdLoadFailed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdLoadFailed");
             }
 
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
                 m_interstitialAd.loadAd();
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinInterstitialOnAdDisplayFailed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdDisplayFailed");
             }
         };
 
@@ -267,25 +269,25 @@ public class MengineApplovinPlugin extends MenginePlugin {
     public void initRewarded() throws Exception {
         MengineActivity activity = this.getActivity();
 
-        String Applovin_RewardedAdUnitId = activity.getConfigValue("AppLovin", "RewardedAdUnitId", "");
+        String AppLovin_RewardedAdUnitId = activity.getConfigValue("AppLovin", "RewardedAdUnitId", "");
 
-        if (Applovin_RewardedAdUnitId == "") {
+        if (AppLovin_RewardedAdUnitId == "") {
             throw new Exception("Need to add config value for [AppLovin] RewardedAdUnitId");
         }
 
-        m_rewardedAd = MaxRewardedAd.getInstance(Applovin_RewardedAdUnitId, activity);
+        m_rewardedAd = MaxRewardedAd.getInstance(AppLovin_RewardedAdUnitId, activity);
 
         MaxRewardedAdListener maxRewardedAdListener = new MaxRewardedAdListener() {
             @Override
             public void onRewardedVideoStarted(MaxAd ad) {
                 m_retryAttemptRewarded = 0;
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnRewardedVideoStarted");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnRewardedVideoStarted");
             }
 
             @Override
             public void onRewardedVideoCompleted(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnRewardedVideoCompleted");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnRewardedVideoCompleted");
             }
 
             @Override
@@ -293,34 +295,34 @@ public class MengineApplovinPlugin extends MenginePlugin {
                 String label = reward.getLabel();
                 int amount = reward.getAmount();
 
-                MengineApplovinPlugin.this.logInfo("rewarded %s [%d]"
-                        , label
-                        , amount
+                MengineAppLovinPlugin.this.logInfo("rewarded %s [%d]"
+                    , label
+                    , amount
                 );
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnUserRewarded", label, amount);
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnUserRewarded", label, amount);
             }
 
             @Override
             public void onAdLoaded(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnAdLoaded");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdLoaded");
             }
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnAdDisplayed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdDisplayed");
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
                 m_rewardedAd.loadAd();
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnAdHidden");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdHidden");
             }
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnAdClicked");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdClicked");
             }
 
             @Override
@@ -333,14 +335,14 @@ public class MengineApplovinPlugin extends MenginePlugin {
                     m_rewardedAd.loadAd();
                 }, delayMillis);
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnAdLoadFailed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdLoadFailed");
             }
 
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
                 m_rewardedAd.loadAd();
 
-                MengineApplovinPlugin.this.pythonCall("onApplovinRewardedOnAdDisplayFailed");
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdDisplayFailed");
             }
         };
 

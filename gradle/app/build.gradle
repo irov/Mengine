@@ -280,6 +280,8 @@ dependencies {
 println 'ANDROID_APP_ENABLE_DEVTODEV: ' + ANDROID_APP_ENABLE_DEVTODEV
 
 if (ANDROID_APP_ENABLE_DEVTODEV == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.DevToDev.MengineDevToDevPlugin'
+
     dependencies {
         implementation project(':libraries:DevToDev')
     }
@@ -316,6 +318,8 @@ if (ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS == true) {
 println 'ANDROID_APP_ENABLE_FIREBASE_ANALYTICS: ' + ANDROID_APP_ENABLE_FIREBASE_ANALYTICS
 
 if (ANDROID_APP_ENABLE_FIREBASE_ANALYTICS == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseAnalyticsPlugin'
+
     dependencies {
         implementation project(':libraries:FirebaseAnalytics')
     }

@@ -314,16 +314,23 @@ namespace Mengine
         const Char * engineGitURL = Helper::getEngineGITURL();
         const Char * engineGitSHA1 = Helper::getEngineGITSHA1();
         const Char * engineGitBranch = Helper::getEngineGITBranch();
+        const Char * engineGitDate = Helper::getEngineGITDate();
 
         if( HAS_OPTION( "engineinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "url: %s\ncommit: %s\nbranch: %s", engineGitURL, engineGitSHA1, engineGitBranch );
+                ->messageBox( "Mengine", "url: %s\ncommit: %s\nbranch: %s\ndate: %s"
+                    , engineGitURL
+                    , engineGitSHA1
+                    , engineGitBranch
+                    , engineGitDate 
+                );
         }
 
         LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine URL: %s", engineGitURL );
         LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Commit: %s", engineGitSHA1 );
         LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Branch: %s", engineGitBranch );
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Date: %s", engineGitDate );
 
         const Char * contentCommit = Helper::getContentCommit();
 

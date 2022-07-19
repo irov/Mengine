@@ -87,6 +87,13 @@ namespace Mengine
 
             return ENGINE_GIT_BRANCH;
         }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getEngineGITDate()
+        {
+            const Char * ENGINE_GIT_DATE = MENGINE_ENGINE_GIT_DATE;
+
+            return ENGINE_GIT_DATE;
+        }
         //////////////////////////////////////////////////////////////////////////        
         const Char * getContentCommit()
         {

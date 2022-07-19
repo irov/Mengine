@@ -50,4 +50,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:20.0.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'com.applovin:applovin-sdk:11.4.3'
+    implementation 'com.applovin.mediation:amazon-tam-adapter:9.5.4.1'
+    implementation 'com.amazon.android:aps-sdk:9.5.4'
 }

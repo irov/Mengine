@@ -2,14 +2,24 @@
 
 @implementation AppleAppLovinInterstitialDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier{
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier
+                                 amazonInterSlotId:(NSString* _Nullable)amazonInterSlotId{
     self = [super init];
     
     self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_interstitialAd.delegate = self;
     
-    // Load the first ad
-    [self.m_interstitialAd loadAd];
+    
+    if( amazonInterSlotId != NULL && amazonInterSlotId.length>0){
+        DTBAdLoader *adLoader = [[DTBAdLoader alloc] init];
+        [adLoader setAdSizes: @[
+            [[DTBAdSize alloc] initInterstitialAdSizeWithSlotUUID: amazonInterSlotId]
+        ]];
+        [adLoader loadAd: self];
+    }else{
+        // Load the first ad
+        [self.m_interstitialAd loadAd];
+    }
     
     return self;
 }
@@ -26,6 +36,20 @@
     }
 
     return NO;
+}
+#pragma mark - DTBAdCallback Protocol
+
+-(void)onFailure: (DTBAdError)error{}
+
+-(void)onFailure: (DTBAdError)error
+  dtbAdErrorInfo:(DTBAdErrorInfo *) errorInfo{
+    [self.m_interstitialAd setLocalExtraParameterForKey: @"amazon_ad_error" value: errorInfo];
+    [self.m_interstitialAd loadAd];
+}
+
+- (void)onSuccess:(DTBAdResponse *)adResponse{
+    [self.m_interstitialAd setLocalExtraParameterForKey: @"amazon_ad_response" value: adResponse];
+    [self.m_interstitialAd loadAd];
 }
 
 #pragma mark - MAAdDelegate Protocol

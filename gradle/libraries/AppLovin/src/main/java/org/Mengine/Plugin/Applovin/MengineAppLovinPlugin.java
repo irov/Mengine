@@ -125,15 +125,16 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         MengineActivity activity = this.getActivity();
         final Context context = activity.getBaseContext();
 
-        AdRegistration.enableTesting(true);
-        AdRegistration.enableLogging(true);
 
-        String AppLovin_AmazonAppID = activity.getConfigValue("AppLovin", "AmazonAppID", "");
+        String AppLovin_AmazonAppID = activity.getConfigValue("AppLovin", "AmazonAppId", "");
         if (!AppLovin_AmazonAppID.isEmpty()) {
             AdRegistration.getInstance(AppLovin_AmazonAppID, activity);
             AdRegistration.setAdNetworkInfo(new DTBAdNetworkInfo(DTBAdNetwork.MAX));
             AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
             AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
+
+            // AdRegistration.enableTesting(true);
+            // AdRegistration.enableLogging(true);
         }
 
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
@@ -214,37 +215,33 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         ViewGroup rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         rootView.addView(m_adView);
 
-        initAmazonBanner(activity, activity.getWindow().getDecorView().getWidth(), heightPx);
+        String AppLovin_AmazonBannerSlotID = activity.getConfigValue("AppLovin", "AmazonBannerSlotId", "");
+        if (!AppLovin_AmazonBannerSlotID.isEmpty()) {
+            DTBAdSize size = new DTBAdSize(activity.getWindow().getDecorView().getWidth(), height, AppLovin_AmazonBannerSlotID);
 
-        // Load the ad
-        m_adView.loadAd();
+            DTBAdRequest adLoader = new DTBAdRequest();
+            adLoader.setSizes(size);
+            adLoader.loadAd(new DTBAdCallback() {
+                @Override
+                public void onFailure(@NonNull AdError adError) {
+                    // 'adView' is your instance of MaxAdView
+                    m_adView.setLocalExtraParameter("amazon_ad_error", adError);
+                    m_adView.loadAd();
+                }
+
+                @Override
+                public void onSuccess(@NonNull DTBAdResponse dtbAdResponse) {
+                    // 'adView' is your instance of MaxAdView
+                    m_adView.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
+                    m_adView.loadAd();
+                }
+            });
+        } else {
+            // Load the ad
+            m_adView.loadAd();
+        }
 
         this.bannerVisible(false);
-    }
-
-    private void initAmazonBanner(MengineActivity activity, int width, int height) {
-        String AppLovin_AmazonBannerSlotID = activity.getConfigValue("AppLovin", "AmazonBannerSlotID", "");
-        if (AppLovin_AmazonBannerSlotID.isEmpty()) return;
-
-        DTBAdSize size = new DTBAdSize(width, height, AppLovin_AmazonBannerSlotID);
-
-        DTBAdRequest adLoader = new DTBAdRequest();
-        adLoader.setSizes(size);
-        adLoader.loadAd(new DTBAdCallback() {
-            @Override
-            public void onFailure(@NonNull AdError adError) {
-                // 'adView' is your instance of MaxAdView
-                m_adView.setLocalExtraParameter("amazon_ad_error", adError);
-                m_adView.loadAd();
-            }
-
-            @Override
-            public void onSuccess(@NonNull DTBAdResponse dtbAdResponse) {
-                // 'adView' is your instance of MaxAdView
-                m_adView.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
-                m_adView.loadAd();
-            }
-        });
     }
 
     public void bannerVisible(boolean show) {
@@ -316,7 +313,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         m_interstitialAd.setListener(maxAdListener);
 
-        final String AppLovin_AmazonInterSlodID = activity.getConfigValue("AppLovin", "AmazonInterSlodID", "");
+        final String AppLovin_AmazonInterSlodID = activity.getConfigValue("AppLovin", "AmazonInterstitialSlodId", "");
         if (!AppLovin_AmazonInterSlodID.isEmpty()) {
 
             m_loadAmazonInterstitial = () -> {
@@ -424,7 +421,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         m_rewardedAd.setListener(maxRewardedAdListener);
 
 
-        final String AppLovin_AmazonVideoRewardedSlotID = activity.getConfigValue("AppLovin", "AmazonVideoRewardedSlotID", "");
+        final String AppLovin_AmazonVideoRewardedSlotID = activity.getConfigValue("AppLovin", "AmazonVideoRewardedSlotId", "");
         if (!AppLovin_AmazonVideoRewardedSlotID.isEmpty()) {
 
             m_loadAmazonRewarded = () -> {

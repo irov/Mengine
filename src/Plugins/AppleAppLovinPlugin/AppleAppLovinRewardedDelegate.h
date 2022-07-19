@@ -4,10 +4,13 @@
 
 #import <AppLovinSDK/AppLovinSDK.h>
 #import <Foundation/Foundation.h>
+#import <DTBiOSSDK/DTBAdCallback.h>
 
-@interface AppleAppLovinRewardedDelegate : NSObject<MARewardedAdDelegate>
+@interface AppleAppLovinRewardedDelegate : NSObject<MARewardedAdDelegate, DTBAdCallback>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback;
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
+                              amazonRewardedSlotId:(NSString* _Nullable)amazonRewardedSlotId
+                                    rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback;
 
 - (BOOL) hasLoaded;
 - (BOOL) show;

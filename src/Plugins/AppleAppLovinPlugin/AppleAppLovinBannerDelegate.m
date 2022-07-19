@@ -2,7 +2,9 @@
 
 @implementation AppleAppLovinBannerDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) AdUnitIdentifier rect:(CGRect) rect {
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull)AdUnitIdentifier
+                                amazonBannerSlotId:(NSString * _Nullable) amazonAdSlotId
+                                              rect:(CGRect) rect {
     self = [super init];
     
     self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: AdUnitIdentifier];
@@ -14,9 +16,19 @@
     self.m_adView.backgroundColor = UIColor.blackColor;
 
     [self.rootViewController.view addSubview: self.m_adView];
-
-    // Load the ad
-    [self.m_adView loadAd];
+    
+    if( amazonAdSlotId != NULL && amazonAdSlotId.length>0){
+        DTBAdSize *size = [[DTBAdSize alloc] initBannerAdSizeWithWidth: rect.size.width
+                                                                height: rect.size.height
+                                                           andSlotUUID: amazonAdSlotId];
+        
+        DTBAdLoader *adLoader = [[DTBAdLoader alloc] init];
+        [adLoader setAdSizes: @[size]];
+        [adLoader loadAd: self];
+    }else{
+        // Load the ad
+        [self.m_adView loadAd];
+    }
     
     return self;
 }
@@ -39,6 +51,23 @@
     UIViewController* controller = appWindow.rootViewController;
     
     return controller;
+}
+
+#pragma mark - DTBAdCallback Protocol
+
+-(void)onFailure: (DTBAdError)error{}
+
+-(void)onFailure: (DTBAdError)error
+  dtbAdErrorInfo:(DTBAdErrorInfo *) errorInfo{
+    // 'adView' is your instance of MAAdView
+    [self.m_adView setLocalExtraParameterForKey: @"amazon_ad_error" value: errorInfo];
+    [self.m_adView loadAd];
+}
+
+- (void)onSuccess:(DTBAdResponse *)adResponse{
+    // 'adView' is your instance of MAAdView
+    [self.m_adView setLocalExtraParameterForKey: @"amazon_ad_response" value: adResponse];
+    [self.m_adView loadAd];
 }
 
 #pragma mark - MAAdDelegate Protocol

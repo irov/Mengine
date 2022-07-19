@@ -4,7 +4,9 @@
 
 @synthesize m_callback;
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback {
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier
+                              amazonRewardedSlotId:(NSString* _Nullable)amazonRewardedSlotId
+                                    rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback {
     self = [super init];
     
     self.m_callback = callback;
@@ -12,8 +14,21 @@
     self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitIdentifier];
     self.m_rewardedAd.delegate = self;
     
-    // Load the first ad
-    [self.m_rewardedAd loadAd];
+    
+    if( amazonRewardedSlotId != NULL && amazonRewardedSlotId.length>0){
+        DTBAdLoader *adLoader = [[DTBAdLoader alloc] init];
+        
+        // Switch video player width and height values(320, 480) depending on device orientation
+        [adLoader setAdSizes: @[
+            [[DTBAdSize alloc] initVideoAdSizeWithPlayerWidth: UIScreen.mainScreen.bounds.size.width
+                                                       height: UIScreen.mainScreen.bounds.size.height
+                                                  andSlotUUID:amazonRewardedSlotId]
+        ]];
+        [adLoader loadAd: self];
+    }else{
+        // Load the first ad
+        [self.m_rewardedAd loadAd];
+    }
     
     return self;
 }
@@ -30,6 +45,21 @@
     }
 
     return NO;
+}
+
+#pragma mark - DTBAdCallback Protocol
+
+-(void)onFailure: (DTBAdError)error{}
+
+-(void)onFailure: (DTBAdError)error
+  dtbAdErrorInfo:(DTBAdErrorInfo *) errorInfo{
+    [self.m_rewardedAd setLocalExtraParameterForKey: @"amazon_ad_error" value: errorInfo];
+    [self.m_rewardedAd loadAd];
+}
+
+- (void)onSuccess:(DTBAdResponse *)adResponse{
+    [self.m_rewardedAd setLocalExtraParameterForKey: @"amazon_ad_response" value: adResponse];
+    [self.m_rewardedAd loadAd];
 }
 
 #pragma mark - MAAdDelegate Protocol

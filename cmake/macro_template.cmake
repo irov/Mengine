@@ -164,6 +164,13 @@ MACRO(SET_MENGINE_ENVIRONMENT MENGINE_TARGET MENGINE_RENDER MENGINE_PLATFORM MEN
     MESSAGE("MENGINE_SUBFOLDER_NAME: ${MENGINE_SUBFOLDER_NAME}")
     MESSAGE("MENGINE_INSTALL_PATH: ${MENGINE_INSTALL_PATH}")
     MESSAGE("*********************************************")
+    
+    SET(MENGINE_CONFIG_DEFINITIONS)
+ENDMACRO()
+
+MACRO(MENGINE_ADD_DEFINITION Definition)
+    ADD_DEFINITIONS(-D${Definition})
+    SET(MENGINE_CONFIG_DEFINITIONS ${MENGINE_CONFIG_DEFINITIONS} ${Definition})
 ENDMACRO()
 
 MACRO(SET_MENGINE_OUTPUT_DIRECTORY)
@@ -276,7 +283,7 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
             SET(${Plugin}_STATIC ON CACHE BOOL ${MSG} FORCE)
         ENDIF()
         
-        add_definitions(-D${Plugin})
+        MENGINE_ADD_DEFINITION(${Plugin})
     ELSE()
         SET(${Plugin}_DLL OFF CACHE BOOL ${MSG} FORCE)
         SET(${Plugin}_STATIC OFF CACHE BOOL ${MSG} FORCE)
@@ -284,11 +291,11 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
     
     IF(${Plugin})
         IF(${Plugin}_DLL)
-            add_definitions(-D${Plugin}_DLL)
+            MENGINE_ADD_DEFINITION(${Plugin}_DLL)
         ENDIF()
         
         IF(${Plugin}_STATIC)
-            add_definitions(-D${Plugin}_STATIC)
+            MENGINE_ADD_DEFINITION(${Plugin}_STATIC)
         ENDIF()
     ENDIF()
     

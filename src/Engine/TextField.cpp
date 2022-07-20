@@ -1882,31 +1882,82 @@ namespace Mengine
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
-        if( textEntry == nullptr )
-        {
-            *_text = m_text;
-
-            return true;
-        }
-
         size_t textSize;
-        const Char * textValue = textEntry->getValue( &textSize );
+        const Char * textValue;
 
         VectorString textFormatArgs;
 
-        if( TEXT_SERVICE()
-            ->getTextAliasArguments( m_aliasEnvironment, m_textId, &textFormatArgs ) == false )
+        if( textEntry == nullptr )
         {
-            textFormatArgs = m_textFormatArgs;
+            textSize = m_text.size();
+            textValue = m_text.c_str();
+        }
+        else
+        {
+            textValue = textEntry->getValue( &textSize );
+
+            if( TEXT_SERVICE()
+                ->getTextAliasArguments( m_aliasEnvironment, m_textId, &textFormatArgs ) == false )
+            {
+                textFormatArgs = m_textFormatArgs;
+            }
         }
 
-        if( Helper::getStringFormat( _text, textValue, textSize, textFormatArgs ) == false )
+        String fmt;
+        if( Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt ) == false )
         {
-            LOGGER_ERROR( "invalid formating string name '%s' id '%s' format '%s' with args %" PRIuPTR ""
+            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" PRIuPTR " [alias env: %s]"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
+                , m_textId.c_str()
                 , textValue
                 , textFormatArgs.size()
+                , m_aliasEnvironment.c_str()
+            );
+
+            for( const String & arg : m_textFormatArgs )
+            {
+                LOGGER_ERROR( "arg: %s"
+                    , arg.c_str()
+                );
+            }
+
+            return false;
+        }
+
+        const Char * tag_id = "id";
+
+        bool fmtTagMatched;
+        if( Helper::fillStringTag( fmt, tag_id, [this]( const String & _value, String * const _out )
+        {
+            ConstString tagTextId = Helper::stringizeString( _value );
+
+            const ConstString & aliasTestId = TEXT_SERVICE()
+                ->getTextAlias( m_aliasEnvironment, tagTextId );
+
+            if( aliasTestId.empty() == true )
+            {
+                return false;
+            }
+
+            const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
+                ->getTextEntry( aliasTestId );
+
+            size_t textSize;
+            const Char * textValue = textEntry->getValue( &textSize );
+
+            _out->assign( textValue, textSize );
+
+            return true;
+        }, _text, &fmtTagMatched ) == false )
+        {
+            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid tagging string format '%s' with tag '%s' [alias env: %s]"
+                , this->getName().c_str()
+                , this->getTotalTextId().c_str()
+                , m_textId.c_str()
+                , fmt.c_str()
+                , tag_id
+                , m_aliasEnvironment.c_str()
             );
 
             return false;
@@ -2061,61 +2112,22 @@ namespace Mengine
             return true;
         }
 
-        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
-
-        size_t textSize;
-        const Char * textValue;
-
-        VectorString textFormatArgs;
-
-        if( textEntry == nullptr )
+        String text;
+        if( this->calcText( &text ) == false )
         {
-            textSize = m_text.size();
-            textValue = m_text.c_str();
-        }
-        else
-        {
-            textValue = textEntry->getValue( &textSize );
-
-            if( TEXT_SERVICE()
-                ->getTextAliasArguments( m_aliasEnvironment, m_textId, &textFormatArgs ) == false )
-            {
-                textFormatArgs = m_textFormatArgs;
-            }
-        }
-
-        String fmt;
-        if( Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs ) == false )
-        {
-            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" PRIuPTR " [alias env: %s]"
-                , this->getName().c_str()
-                , this->getTotalTextId().c_str()
-                , m_textId.c_str()
-                , textValue
-                , textFormatArgs.size()
-                , m_aliasEnvironment.c_str()
-            );
-
-            for( const String & arg : m_textFormatArgs )
-            {
-                LOGGER_ERROR( "arg: %s"
-                    , arg.c_str()
-                );
-            }
-
             return false;
         }
 
-        const Char * fmt_str = fmt.c_str();
-        size_t fmt_size = fmt.size();
+        const Char * text_str = text.c_str();
+        size_t text_size = text.size();
 
-        if( font->prepareText( fmt_str, fmt_size, _cacheText ) == false )
+        if( font->prepareText( text_str, text_size, _cacheText ) == false )
         {
             LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env: %s]"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_textId.c_str()
-                , fmt.c_str()
+                , text.c_str()
                 , m_aliasEnvironment.c_str()
             );
 

@@ -32,7 +32,7 @@ namespace Mengine
 
     public:
         void addWidget( const DevToDebugWidgetInterfacePtr & _widget ) override;
-        const DevToDebugWidgetInterfacePtr & findWidget( const ConstString & _id ) const;
+        const DevToDebugWidgetInterfacePtr & findWidget( const ConstString & _id ) const override;
 
     public:
         void foreachWidgets( const LambdaForeachWidgets & _lambda ) override;

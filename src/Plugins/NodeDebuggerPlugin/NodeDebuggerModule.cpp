@@ -920,7 +920,7 @@ namespace Mengine
                 const VectorString & textFormatArgs = _textField->getTextFormatArgs();
 
                 String fmt;
-                Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs );
+                Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt );
 
                 Detail::serializeNodeProp( fmt, "Text", xmlNode );
             }
@@ -968,7 +968,7 @@ namespace Mengine
                 }
 
                 String fmt;
-                Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs );
+                Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt );
 
                 Detail::serializeNodeProp( fmt, "Text", xmlNode );
             }

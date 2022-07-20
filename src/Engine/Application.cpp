@@ -337,7 +337,7 @@ namespace Mengine
         if( HAS_OPTION( "contentinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "content commit: %s", contentCommit );
+                ->messageBox( "Mengine", "Content Commit: %s", contentCommit );
         }
 
         LOGGER_MESSAGE_RELEASE_PROTECTED( "Content Commit: %s", contentCommit );

@@ -18,6 +18,7 @@ import com.amazon.device.ads.DTBAdRequest;
 import com.amazon.device.ads.DTBAdResponse;
 import com.amazon.device.ads.DTBAdSize;
 import com.amazon.device.ads.MRAIDPolicy;
+
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdListener;
@@ -82,12 +83,18 @@ public class MengineAppLovinPlugin extends MenginePlugin {
      * - onApplovinBannerOnAdCollapsed
      */
 
+    enum ELoadAdStatus {
+        ADLOAD_NONE,
+        ADLOAD_AMAZON,
+        ADLOAD_READY
+    }
+
     private MaxInterstitialAd m_interstitialAd;
-    private Runnable m_loadAmazonInterstitial;
+    private ELoadAdStatus m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_NONE;
     private int m_retryAttemptInterstitial;
 
     private MaxRewardedAd m_rewardedAd;
-    private Runnable m_loadAmazonRewarded;
+    private ELoadAdStatus m_loadRewardedStatus = ELoadAdStatus.ADLOAD_NONE;
     private int m_retryAttemptRewarded;
 
     private MaxAdView m_adView;
@@ -125,16 +132,25 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         MengineActivity activity = this.getActivity();
         final Context context = activity.getBaseContext();
 
+        String AppLovin_AmazonAppId = activity.getConfigValue("AppLovin", "AmazonAppId", "");
 
-        String AppLovin_AmazonAppID = activity.getConfigValue("AppLovin", "AmazonAppId", "");
-        if (!AppLovin_AmazonAppID.isEmpty()) {
-            AdRegistration.getInstance(AppLovin_AmazonAppID, activity);
+        if (AppLovin_AmazonAppId.isEmpty() == false) {
+            AdRegistration.getInstance(AppLovin_AmazonAppId, activity);
             AdRegistration.setAdNetworkInfo(new DTBAdNetworkInfo(DTBAdNetwork.MAX));
             AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
             AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
 
-            // AdRegistration.enableTesting(true);
-            // AdRegistration.enableLogging(true);
+            boolean AppLovin_AmazonEnableTesting = activity.getConfigValueBoolean("AppLovin", "AmazonEnableTesting", false);
+
+            if (AppLovin_AmazonEnableTesting == true) {
+                AdRegistration.enableTesting(true);
+            }
+
+            boolean AppLovin_AmazonEnableLogging = activity.getConfigValueBoolean("AppLovin", "AmazonEnableLogging", false);
+
+            if (AppLovin_AmazonEnableLogging == true || BuildConfig.DEBUG == true ) {
+                AdRegistration.enableLogging(true);
+            }
         }
 
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
@@ -155,13 +171,13 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         String AppLovin_BannerAdUnitId = activity.getConfigValue("AppLovin", "BannerAdUnitId", "");
 
-        if (AppLovin_BannerAdUnitId == "") {
+        if (AppLovin_BannerAdUnitId.isEmpty() == true) {
             throw new Exception("Need to add config value for [AppLovin] BannerAdUnitId");
         }
 
         m_adView = new MaxAdView(AppLovin_BannerAdUnitId, activity);
-        MaxAdViewAdListener maxAdViewAdListener = new MaxAdViewAdListener() {
 
+        MaxAdViewAdListener maxAdViewAdListener = new MaxAdViewAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdLoaded");
@@ -202,6 +218,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdCollapsed");
             }
         };
+
         m_adView.setListener(maxAdViewAdListener);
 
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -215,9 +232,10 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         ViewGroup rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         rootView.addView(m_adView);
 
-        String AppLovin_AmazonBannerSlotID = activity.getConfigValue("AppLovin", "AmazonBannerSlotId", "");
-        if (!AppLovin_AmazonBannerSlotID.isEmpty()) {
-            DTBAdSize size = new DTBAdSize(activity.getWindow().getDecorView().getWidth(), height, AppLovin_AmazonBannerSlotID);
+        String AppLovin_AmazonBannerSlotId = activity.getConfigValue("AppLovin", "AmazonBannerSlotId", "");
+
+        if (AppLovin_AmazonBannerSlotId.isEmpty() == false) {
+            DTBAdSize size = new DTBAdSize(activity.getWindow().getDecorView().getWidth(), height, AppLovin_AmazonBannerSlotId);
 
             DTBAdRequest adLoader = new DTBAdRequest();
             adLoader.setSizes(size);
@@ -259,7 +277,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         String AppLovin_InterstitialAdUnitId = activity.getConfigValue("AppLovin", "InterstitialAdUnitId", "");
 
-        if (AppLovin_InterstitialAdUnitId == "") {
+        if (AppLovin_InterstitialAdUnitId.isEmpty() == true) {
             throw new Exception("Need to add config value for [AppLovin] InterstitialAdUnitId");
         }
 
@@ -312,29 +330,56 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         };
 
         m_interstitialAd.setListener(maxAdListener);
+    }
 
-        final String AppLovin_AmazonInterSlodID = activity.getConfigValue("AppLovin", "AmazonInterstitialSlodId", "");
-        if (!AppLovin_AmazonInterSlodID.isEmpty()) {
+    public void loadInterstitial() {
+        switch (m_loadInterstitialStatus) {
+            case ADLOAD_NONE:
+                MengineActivity activity = this.getActivity();
 
-            m_loadAmazonInterstitial = () -> {
-                DTBAdRequest adLoader = new DTBAdRequest();
-                adLoader.setSizes(new DTBAdSize.DTBInterstitialAdSize(AppLovin_AmazonInterSlodID));
-                adLoader.loadAd(new DTBAdCallback() {
-                    @Override
-                    public void onSuccess(@NonNull final DTBAdResponse dtbAdResponse) {
-                        // 'interstitialAd' is your instance of MaxInterstitialAd
-                        m_interstitialAd.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
-                        m_interstitialAd.loadAd();
-                    }
+                final String AppLovin_AmazonInterstitialSlotId = activity.getConfigValue("AppLovin", "AmazonInterstitialSlotId", "");
 
-                    @Override
-                    public void onFailure(@NonNull final AdError adError) {
-                        // 'interstitialAd' is your instance of MaxInterstitialAd
-                        m_interstitialAd.setLocalExtraParameter("amazon_ad_error", adError);
-                        m_interstitialAd.loadAd();
-                    }
-                });
-            };
+                if (AppLovin_AmazonInterstitialSlotId.isEmpty() == false) {
+                    m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_AMAZON;
+
+                    DTBAdRequest adLoader = new DTBAdRequest();
+                    adLoader.setSizes(new DTBAdSize.DTBInterstitialAdSize(AppLovin_AmazonInterstitialSlotId));
+                    adLoader.loadAd(new DTBAdCallback() {
+                        @Override
+                        public void onSuccess(@NonNull final DTBAdResponse dtbAdResponse) {
+                            // 'interstitialAd' is your instance of MaxInterstitialAd
+                            m_interstitialAd.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
+                            m_interstitialAd.loadAd();
+
+                            m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_READY;
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull final AdError adError) {
+                            // 'interstitialAd' is your instance of MaxInterstitialAd
+                            m_interstitialAd.setLocalExtraParameter("amazon_ad_error", adError);
+                            m_interstitialAd.loadAd();
+
+                            m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_READY;
+                        }
+                    });
+                } else {
+                    m_interstitialAd.loadAd();
+
+                    m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_READY;
+                }
+                break;
+            case ADLOAD_AMAZON:
+                break;
+            case ADLOAD_READY:
+                m_interstitialAd.loadAd();
+                break;
+        }
+    }
+
+    public void showInterstitial() {
+        if (m_interstitialAd.isReady()) {
+            m_interstitialAd.showAd();
         }
     }
 
@@ -343,7 +388,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         String AppLovin_RewardedAdUnitId = activity.getConfigValue("AppLovin", "RewardedAdUnitId", "");
 
-        if (AppLovin_RewardedAdUnitId == "") {
+        if (AppLovin_RewardedAdUnitId.isEmpty() == true) {
             throw new Exception("Need to add config value for [AppLovin] RewardedAdUnitId");
         }
 
@@ -419,59 +464,55 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         };
 
         m_rewardedAd.setListener(maxRewardedAdListener);
-
-
-        final String AppLovin_AmazonVideoRewardedSlotID = activity.getConfigValue("AppLovin", "AmazonVideoRewardedSlotId", "");
-        if (!AppLovin_AmazonVideoRewardedSlotID.isEmpty()) {
-
-            m_loadAmazonRewarded = () -> {
-                DTBAdRequest loader = new DTBAdRequest();
-                // Switch video player width and height values(320, 480) depending on device orientation
-
-                int width = activity.getWindow().getDecorView().getWidth();
-                int height = activity.getWindow().getDecorView().getHeight();
-
-                loader.setSizes(new DTBAdSize.DTBVideo(width, height, AppLovin_AmazonVideoRewardedSlotID));
-                loader.loadAd(new DTBAdCallback() {
-                    @Override
-                    public void onSuccess(@NonNull final DTBAdResponse dtbAdResponse) {
-                        // 'rewardedAd' is your instance of MaxRewardedAd
-                        m_rewardedAd.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
-                        m_rewardedAd.loadAd();
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull final AdError adError) {
-                        // 'rewardedAd' is your instance of MaxRewardedAd
-                        m_rewardedAd.setLocalExtraParameter("amazon_ad_error", adError);
-                        m_rewardedAd.loadAd();
-                    }
-                });
-            };
-        }
-    }
-
-    public void loadInterstitial() {
-        if (m_loadAmazonInterstitial != null) {
-            m_loadAmazonInterstitial.run();
-            m_loadAmazonInterstitial = null;
-        } else {
-            m_interstitialAd.loadAd();
-        }
     }
 
     public void loadRewarded() {
-        if (m_loadAmazonRewarded != null) {
-            m_loadAmazonRewarded.run();
-            m_loadAmazonRewarded = null;
-        } else {
-            m_rewardedAd.loadAd();
-        }
-    }
+        switch (m_loadRewardedStatus) {
+            case ADLOAD_NONE:
+                MengineActivity activity = this.getActivity();
 
-    public void showInterstitial() {
-        if (m_interstitialAd.isReady()) {
-            m_interstitialAd.showAd();
+                final String AppLovin_AmazonVideoRewardedSlotId = activity.getConfigValue("AppLovin", "AmazonVideoRewardedSlotId", "");
+
+                if (AppLovin_AmazonVideoRewardedSlotId.isEmpty() == false) {
+                    m_loadRewardedStatus = ELoadAdStatus.ADLOAD_AMAZON;
+
+                    DTBAdRequest loader = new DTBAdRequest();
+                    // Switch video player width and height values(320, 480) depending on device orientation
+
+                    int width = activity.getWindow().getDecorView().getWidth();
+                    int height = activity.getWindow().getDecorView().getHeight();
+
+                    loader.setSizes(new DTBAdSize.DTBVideo(width, height, AppLovin_AmazonVideoRewardedSlotId));
+                    loader.loadAd(new DTBAdCallback() {
+                        @Override
+                        public void onSuccess(@NonNull final DTBAdResponse dtbAdResponse) {
+                            // 'rewardedAd' is your instance of MaxRewardedAd
+                            m_rewardedAd.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
+                            m_rewardedAd.loadAd();
+
+                            m_loadRewardedStatus = ELoadAdStatus.ADLOAD_READY;
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull final AdError adError) {
+                            // 'rewardedAd' is your instance of MaxRewardedAd
+                            m_rewardedAd.setLocalExtraParameter("amazon_ad_error", adError);
+                            m_rewardedAd.loadAd();
+
+                            m_loadRewardedStatus = ELoadAdStatus.ADLOAD_READY;
+                        }
+                    });
+                } else {
+                    m_rewardedAd.loadAd();
+
+                    m_loadRewardedStatus = ELoadAdStatus.ADLOAD_READY;
+                }
+                break;
+            case ADLOAD_AMAZON:
+                break;
+            case ADLOAD_READY:
+                m_rewardedAd.loadAd();
+                break;
         }
     }
 

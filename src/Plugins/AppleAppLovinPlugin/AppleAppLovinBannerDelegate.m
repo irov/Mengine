@@ -2,7 +2,7 @@
 
 @implementation AppleAppLovinBannerDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull)AdUnitIdentifier
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) AdUnitIdentifier
                                 amazonBannerSlotId:(NSString * _Nullable) amazonAdSlotId
                                               rect:(CGRect) rect {
     self = [super init];

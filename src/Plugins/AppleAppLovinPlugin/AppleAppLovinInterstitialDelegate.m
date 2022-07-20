@@ -3,12 +3,11 @@
 @implementation AppleAppLovinInterstitialDelegate
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier
-                                 amazonInterSlotId:(NSString* _Nullable)amazonInterSlotId{
+                                 amazonInterSlotId:(NSString* _Nullable) amazonInterSlotId {
     self = [super init];
     
     self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_interstitialAd.delegate = self;
-    
     
     if( amazonInterSlotId != NULL && amazonInterSlotId.length>0){
         DTBAdLoader *adLoader = [[DTBAdLoader alloc] init];
@@ -37,6 +36,7 @@
 
     return NO;
 }
+
 #pragma mark - DTBAdCallback Protocol
 
 -(void)onFailure: (DTBAdError)error{}

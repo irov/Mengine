@@ -5,7 +5,7 @@
 @synthesize m_callback;
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier
-                              amazonRewardedSlotId:(NSString* _Nullable)amazonRewardedSlotId
+                              amazonRewardedSlotId:(NSString* _Nullable) amazonRewardedSlotId
                                     rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback {
     self = [super init];
     
@@ -14,7 +14,6 @@
     self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitIdentifier];
     self.m_rewardedAd.delegate = self;
     
-    
     if( amazonRewardedSlotId != NULL && amazonRewardedSlotId.length>0){
         DTBAdLoader *adLoader = [[DTBAdLoader alloc] init];
         
@@ -22,7 +21,7 @@
         [adLoader setAdSizes: @[
             [[DTBAdSize alloc] initVideoAdSizeWithPlayerWidth: UIScreen.mainScreen.bounds.size.width
                                                        height: UIScreen.mainScreen.bounds.size.height
-                                                  andSlotUUID:amazonRewardedSlotId]
+                                                  andSlotUUID: amazonRewardedSlotId]
         ]];
         [adLoader loadAd: self];
     }else{

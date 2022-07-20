@@ -2,6 +2,7 @@
 
 #include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
@@ -27,7 +28,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::_initializeService()
     {
-        [ALSdk shared].settings.isVerboseLogging = YES;
+        bool OPTION_applovinverbose = HAS_OPTION("applovinverbose");
+        bool AppLovin_VerboseLogging = CONFIG_VALUE("AppLovin", "VerboseLogging", false);
+        
+        if( OPTION_applovinverbose == true || AppLovin_VerboseLogging == true )
+        {
+            [ALSdk shared].settings.isVerboseLogging = YES;
+        }
 
         [ALSdk shared].mediationProvider = @"max";
     
@@ -37,7 +44,8 @@ namespace Mengine
         
         const Char * AppLovin_AmazoneAppId = CONFIG_VALUE("AppLovin", "AmazonAppId", "");
 
-        if(MENGINE_STRCMP( AppLovin_AmazoneAppId, "" ) != 0){
+        if( MENGINE_STRCMP( AppLovin_AmazoneAppId, "" ) != 0 )
+        {
             LOGGER_INFO("applovin", "Amazone AppID '%s'", AppLovin_AmazoneAppId);
             
             NSString * appId = [NSString stringWithUTF8String:AppLovin_AmazoneAppId];
@@ -47,11 +55,11 @@ namespace Mengine
             [DTBAds sharedInstance].mraidCustomVersions = @[@"1.0", @"2.0", @"3.0"];
             [[DTBAds sharedInstance] setAdNetworkInfo: adNetworkInfo];
             [DTBAds sharedInstance].mraidPolicy = CUSTOM_MRAID;
-            
-            
+                        
 //            DTBAds.sharedInstance().setLogLevel(DTBLogLevelAll)
 //            DTBAds.sharedInstance().testMode = true
         }
+        
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
@@ -157,9 +165,9 @@ namespace Mengine
                         );
         }
 
-        m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:rewardedAdUnit
-                                                                amazonRewardedSlotId:amazonRewardedSlotId
-                                                                      rewardCallback:this];
+        m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier: rewardedAdUnit
+                                                                amazonRewardedSlotId: amazonRewardedSlotId
+                                                                      rewardCallback: this];
     }
     /////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::hasLoadedInterstitial() const

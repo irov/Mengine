@@ -4,6 +4,14 @@ buildscript {
         maven { url 'https://maven.google.com' }
         maven { url 'https://artifacts.applovin.com/android' }
         mavenCentral()
+
+        if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VERVE")) {
+            maven { url "https://verve.jfrog.io/artifactory/verve-gradle-release" }
+        }
+
+        if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YAHOO")) {
+            maven { url "https://artifactory.yahooinc.com/artifactory/maven" }
+        }
     }
 
     dependencies {
@@ -49,7 +57,106 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-location:20.0.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
-    implementation 'com.applovin:applovin-sdk:11.4.3'
-    implementation 'com.applovin.mediation:amazon-tam-adapter:9.5.4.1'
-    implementation 'com.amazon.android:aps-sdk:9.5.4'
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADCOLONY")) {
+        implementation 'com.applovin.mediation:adcolony-adapter:4.8.0.1'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_AMAZON")) {
+        implementation 'com.applovin:applovin-sdk:11.4.3'
+        implementation 'com.applovin.mediation:amazon-tam-adapter:9.5.4.1'
+        implementation 'com.amazon.android:aps-sdk:9.5.4'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_CHARTBOOST")) {
+        implementation 'com.applovin.mediation:chartboost-adapter:8.4.3.1'
+        implementation 'com.google.android.gms:play-services-base:16.1.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_CRITEO")) {
+        implementation 'com.applovin.mediation:criteo-adapter:4.6.1.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_DTEXCHANGE")) {
+        implementation 'com.applovin.mediation:fyber-adapter:8.1.5.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADMOB")) {
+        implementation 'com.applovin.mediation:google-adapter:21.1.0.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_HYPRMX")) {
+        implementation 'com.applovin.mediation:hyprmx-adapter:6.0.3.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_INMOBI")) {
+        implementation 'com.applovin.mediation:inmobi-adapter:10.0.8.0'
+        implementation 'com.squareup.picasso:picasso:2.71828'
+        implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_IRONSOURCE")) {
+        implementation 'com.applovin.mediation:ironsource-adapter:7.2.3.1.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_LINE")) {
+        implementation 'com.applovin.mediation:line-adapter:2022.2.16.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MAIO")) {
+        implementation 'com.applovin.mediation:maio-adapter:1.1.16.2'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_META")) {
+        implementation 'com.applovin.mediation:facebook-adapter:6.11.0.4'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MINTEGRAL")) {
+        implementation 'com.applovin.mediation:mintegral-adapter:16.1.81.0'
+        implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MYTARGET")) {
+        implementation 'com.applovin.mediation:mytarget-adapter:5.15.1.6'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_NEND")) {
+        implementation 'com.applovin.mediation:nend-adapter:8.2.0.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_OGURY")) {
+        implementation 'com.applovin.mediation:ogury-presage-adapter:5.3.0.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_PANGLE")) {
+        implementation 'com.applovin.mediation:bytedance-adapter:4.5.0.6.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_SMAATO")) {
+        implementation 'com.applovin.mediation:smaato-adapter:21.8.3.1'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_TAPJOY")) {
+        implementation 'com.applovin.mediation:tapjoy-adapter:12.10.0.1'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_UNITYADS")) {
+        implementation 'com.applovin.mediation:unityads-adapter:4.2.1.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VERVE")) {
+        implementation 'com.applovin.mediation:verve-adapter:2.14.0.0'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VUNGLE")) {
+        implementation 'com.applovin.mediation:vungle-adapter:6.11.0.1'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YAHOO")) {
+        implementation 'com.applovin.mediation:verizonads-adapter:2.0.0.10'
+    }
+
+    if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YANDEX")) {
+        implementation 'com.applovin.mediation:yandex-adapter:5.2.0.0'
+    }
 }

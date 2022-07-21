@@ -2,12 +2,13 @@
 
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
-#import <DTBiOSSDK/DTBAdCallback.h>
 
-@interface AppleAppLovinBannerDelegate : NSObject<MAAdViewAdDelegate, DTBAdCallback>
+#import "AppleAppLovinBannerAmazonLoader.h"
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) AdUnitIdentifier
-                                amazonBannerSlotId:(NSString * _Nullable) amazonAdSlotId
+@interface AppleAppLovinBannerDelegate : NSObject<MAAdViewAdDelegate>
+
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) AdUnitIdentifier
+                                      amazonSlotId:(NSString* _Nullable) amazonSlotId
                                               rect:(CGRect) rect;
 
 - (void) show;
@@ -16,5 +17,6 @@
 - (UIViewController* _Nullable) rootViewController;
 
 @property (nonatomic, strong) MAAdView * _Nonnull m_adView;
+@property (nonatomic, strong) AppleAppLovinBannerAmazonLoader * m_amazonLoader;
 
 @end

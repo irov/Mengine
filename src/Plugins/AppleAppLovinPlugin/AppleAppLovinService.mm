@@ -105,7 +105,8 @@ namespace Mengine
         NSString * amazonBannerSlotId = NULL;
         const Char * AppLovin_amazonBannerSlotId = CONFIG_VALUE("AppLovin", "AmazonBannerSlotId", "");
 
-        if(MENGINE_STRCMP( AppLovin_BannerAdUnit, "" ) != 0 ){
+        if( MENGINE_STRCMP( AppLovin_BannerAdUnit, "" ) != 0 )
+        {
             amazonBannerSlotId = [NSString stringWithUTF8String:AppLovin_BannerAdUnit];
             
             LOGGER_INFO("applovin", "Interstitial Amazon AdUnit '%s'"

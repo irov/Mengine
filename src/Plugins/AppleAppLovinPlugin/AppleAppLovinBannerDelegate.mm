@@ -3,7 +3,7 @@
 @implementation AppleAppLovinBannerDelegate
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) AdUnitIdentifier
-                                amazonBannerSlotId:(NSString * _Nullable) amazonAdSlotId
+                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
                                               rect:(CGRect) rect {
     self = [super init];
     
@@ -17,20 +17,23 @@
 
     [self.rootViewController.view addSubview: self.m_adView];
     
-    if( amazonAdSlotId != NULL && amazonAdSlotId.length>0){
-        DTBAdSize *size = [[DTBAdSize alloc] initBannerAdSizeWithWidth: rect.size.width
-                                                                height: rect.size.height
-                                                           andSlotUUID: amazonAdSlotId];
-        
-        DTBAdLoader *adLoader = [[DTBAdLoader alloc] init];
-        [adLoader setAdSizes: @[size]];
-        [adLoader loadAd: self];
-    }else{
+    if( [amazonSlotId length] != 0 ) {
+        self.m_amazonLoader = [[AppleAppLovinBannerAmazonLoader alloc] initWithSlotId: amazonSlotId adView: self.m_adView rect: rect];
+    } else {
         // Load the ad
         [self.m_adView loadAd];
     }
     
     return self;
+}
+
+-(void)dealloc {
+    if( self.m_amazonLoader != nil ) {
+        [self.m_amazonLoader release];
+        self.m_amazonLoader = nil;
+    }
+    
+    [super dealloc];
 }
 
 - (void) show {
@@ -53,26 +56,9 @@
     return controller;
 }
 
-#pragma mark - DTBAdCallback Protocol
-
--(void)onFailure: (DTBAdError)error{}
-
--(void)onFailure: (DTBAdError)error
-  dtbAdErrorInfo:(DTBAdErrorInfo *) errorInfo{
-    // 'adView' is your instance of MAAdView
-    [self.m_adView setLocalExtraParameterForKey: @"amazon_ad_error" value: errorInfo];
-    [self.m_adView loadAd];
-}
-
-- (void)onSuccess:(DTBAdResponse *)adResponse{
-    // 'adView' is your instance of MAAdView
-    [self.m_adView setLocalExtraParameterForKey: @"amazon_ad_response" value: adResponse];
-    [self.m_adView loadAd];
-}
-
 #pragma mark - MAAdDelegate Protocol
 
-- (void)didLoadAd:(MAAd *)ad {
+- (void)didLoadAd:(MAAd *) ad {
     CGSize adViewSize = ad.size;
     CGFloat widthDp = adViewSize.width;
     CGFloat heightDp = adViewSize.height;
@@ -80,24 +66,24 @@
     //ToDo
 }
 
-- (void)didFailToLoadAdForAdUnitIdentifier:(NSString *)adUnitIdentifier withError:(MAError *)error {}
+- (void)didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {}
 
-- (void)didClickAd:(MAAd *)ad {}
+- (void)didClickAd:(MAAd *) ad {}
 
-- (void)didFailToDisplayAd:(MAAd *)ad withError:(MAError *)error {}
+- (void)didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {}
 
 
 #pragma mark - MAAdViewAdDelegate Protocol
 
-- (void)didExpandAd:(MAAd *)ad {}
+- (void)didExpandAd:(MAAd *) ad {}
 
-- (void)didCollapseAd:(MAAd *)ad {}
+- (void)didCollapseAd:(MAAd *) ad {}
 
 #pragma mark - Deprecated Callbacks
 
 /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
-- (void)didDisplayAd:(MAAd *)ad {}
-- (void)didHideAd:(MAAd *)ad {}
+- (void)didDisplayAd:(MAAd *) ad {}
+- (void)didHideAd:(MAAd *) ad {}
 /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
     
 @end

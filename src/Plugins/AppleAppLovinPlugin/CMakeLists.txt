@@ -8,16 +8,28 @@ src
     AppleAppLovinInterface.h
 
     AppleAppLovinInterstitialDelegate.h
-    AppleAppLovinInterstitialDelegate.m
+    AppleAppLovinInterstitialDelegate.mm
 
     AppleAppLovinRewardedDelegate.h
     AppleAppLovinRewardedDelegate.mm
 
     AppleAppLovinBannerDelegate.h
-    AppleAppLovinBannerDelegate.m
+    AppleAppLovinBannerDelegate.mm
 
     AppleAppLovinService.h
     AppleAppLovinService.mm
+)
+
+ADD_FILTER(
+amazon
+    AppleAppLovinInterstitialAmazonLoader.h
+    AppleAppLovinInterstitialAmazonLoader.mm
+    
+    AppleAppLovinRewardedAmazonLoader.h
+    AppleAppLovinRewardedAmazonLoader.mm
+    
+    AppleAppLovinBannerAmazonLoader.h
+    AppleAppLovinBannerAmazonLoader.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

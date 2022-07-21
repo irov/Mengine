@@ -261,8 +261,20 @@ MACRO(ADD_MENGINE_FRAMEWORK)
     ENDIF()
 ENDMACRO()
 
+MACRO(ENABLE_PLUGIN Plugin)
+    SET(${Plugin}_FORCE_ENABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_FORCE_ENABLE" FORCE)
+ENDMACRO()
+
 MACRO(DISABLE_PLUGIN Plugin)
     SET(${Plugin}_FORCE_DISABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_FORCE_DISABLE" FORCE)
+ENDMACRO()
+
+MACRO(ENABLE_PLUGIN_OPTION Plugin Option)
+    SET(${Plugin}_${Option}_FORCE_ENABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_${Option}_FORCE_ENABLE" FORCE)
+ENDMACRO()
+
+MACRO(DISABLE_PLUGIN_OPTION Plugin Option)
+    SET(${Plugin}_${Option}_FORCE_DISABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_${Option}_FORCE_DISABLE" FORCE)
 ENDMACRO()
 
 MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
@@ -339,6 +351,24 @@ MACRO(ADD_PLUGIN_IF Plugin Toggle DLL MSG DIRECTORY)
     ENDIF()
     
     MESSAGE("PLUGIN: ${Plugin} = ${${Plugin}} [${${Plugin}_DLL}]")
+ENDMACRO()
+
+MACRO(ADD_PLUGIN_OPTION Plugin Option Toggle MSG)
+    IF(${Plugin})
+        IF(${Plugin}_${Option}_FORCE_ENABLE AND ${Plugin}_${Option}_FORCE_ENABLE STREQUAL ${MENGINE_VARIABLES_CACHE_TIMESTEMP})
+            SET(${Plugin}_${Option} ON CACHE BOOL ${MSG} FORCE)
+        ELSEIF(${Plugin}_${Option}_FORCE_DISABLE AND ${Plugin}_${Option}_FORCE_DISABLE STREQUAL ${MENGINE_VARIABLES_CACHE_TIMESTEMP})
+            SET(${Plugin}_${Option} OFF CACHE BOOL ${MSG} FORCE)
+        ELSE()
+            SET(${Plugin}_${Option} ${Toggle} CACHE BOOL ${MSG} FORCE)
+        ENDIF()
+        
+        IF(${Plugin}_${Option})
+            MENGINE_ADD_DEFINITION(${Plugin}_${Option})
+        ENDIF()
+        
+        MESSAGE("PLUGIN OPTION: ${Plugin}_${Option} = ${${Plugin}_${Option}}")
+    ENDIF()
 ENDMACRO()
 
 MACRO(CREATE_PRECOMPILED_HEADER)

@@ -3,7 +3,9 @@
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
 #import "AppleAppLovinBannerAmazonLoader.h"
+#endif
 
 @interface AppleAppLovinBannerDelegate : NSObject<MAAdViewAdDelegate>
 
@@ -17,6 +19,9 @@
 - (UIViewController* _Nullable) rootViewController;
 
 @property (nonatomic, strong) MAAdView * _Nonnull m_adView;
+
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
 @property (nonatomic, strong) AppleAppLovinBannerAmazonLoader * m_amazonLoader;
+#endif
 
 @end

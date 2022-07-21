@@ -20,17 +20,19 @@ src
     AppleAppLovinService.mm
 )
 
-ADD_FILTER(
-amazon
-    AppleAppLovinInterstitialAmazonLoader.h
-    AppleAppLovinInterstitialAmazonLoader.mm
-    
-    AppleAppLovinRewardedAmazonLoader.h
-    AppleAppLovinRewardedAmazonLoader.mm
-    
-    AppleAppLovinBannerAmazonLoader.h
-    AppleAppLovinBannerAmazonLoader.mm
-)
+if(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
+    ADD_FILTER(
+    amazon
+        AppleAppLovinInterstitialAmazonLoader.h
+        AppleAppLovinInterstitialAmazonLoader.mm
+        
+        AppleAppLovinRewardedAmazonLoader.h
+        AppleAppLovinRewardedAmazonLoader.mm
+        
+        AppleAppLovinBannerAmazonLoader.h
+        AppleAppLovinBannerAmazonLoader.mm
+    )
+endif()
 
 if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(

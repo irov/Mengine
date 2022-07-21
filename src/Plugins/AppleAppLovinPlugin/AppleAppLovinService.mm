@@ -7,7 +7,9 @@
 
 #include "Config/StdString.h"
 
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
 #import <DTBiOSSDK/DTBAds.h>
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleAppLovinService, Mengine::AppleAppLovinService );
@@ -42,6 +44,7 @@ namespace Mengine
             LOGGER_MESSAGE("AppLovin initialize");
         }];
         
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         const Char * AppLovin_AmazoneAppId = CONFIG_VALUE("AppLovin", "AmazonAppId", "");
 
         if( MENGINE_STRCMP( AppLovin_AmazoneAppId, "" ) != 0 )
@@ -59,6 +62,7 @@ namespace Mengine
 //            DTBAds.sharedInstance().setLogLevel(DTBLogLevelAll)
 //            DTBAds.sharedInstance().testMode = true
         }
+#endif
         
         return true;
     }
@@ -101,8 +105,10 @@ namespace Mengine
         // Stretch to the width of the screen for banners to be fully functional
         CGFloat width = CGRectGetWidth(UIScreen.mainScreen.bounds);
         CGRect bannerRect = CGRectMake(0, 0, width, height);
+
+        NSString * amazonBannerSlotId = nil;
         
-        NSString * amazonBannerSlotId = NULL;
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         const Char * AppLovin_amazonBannerSlotId = CONFIG_VALUE("AppLovin", "AmazonBannerSlotId", "");
 
         if( MENGINE_STRCMP( AppLovin_BannerAdUnit, "" ) != 0 )
@@ -113,6 +119,7 @@ namespace Mengine
                 , AppLovin_amazonBannerSlotId
             );
         }
+#endif
         
         m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit amazonBannerSlotId:amazonBannerSlotId rect:bannerRect];
     }
@@ -129,7 +136,9 @@ namespace Mengine
         
         NSString * interstitialAdUnit = [NSString stringWithUTF8String:AppLovin_InterstitialAdUnit];
         
-        NSString * amazonInterSlotId = NULL;
+        NSString * amazonInterSlotId = nil;
+        
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         const Char * AppLovin_amazonInterSlotId = CONFIG_VALUE("AppLovin", "AmazonInterstitialSlodId", "");
         
         if(MENGINE_STRCMP( AppLovin_amazonInterSlotId, "" ) != 0 ){
@@ -139,6 +148,7 @@ namespace Mengine
                         , AppLovin_amazonInterSlotId
                         );
         }
+#endif
 
         m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit amazonInterSlotId:amazonInterSlotId];
     }
@@ -155,7 +165,9 @@ namespace Mengine
 
         NSString * rewardedAdUnit = [NSString stringWithUTF8String:AppLovin_RewardedAdUnit];
         
-        NSString * amazonRewardedSlotId = NULL;
+        NSString * amazonRewardedSlotId = nil;
+        
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         const Char * AppLovin_amazonRewardedSlotId = CONFIG_VALUE("AppLovin", "AmazonVideoRewardedSlotId", "");
         
         if(MENGINE_STRCMP( AppLovin_amazonRewardedSlotId, "" ) != 0 ){
@@ -165,6 +177,7 @@ namespace Mengine
                         , AppLovin_amazonRewardedSlotId
                         );
         }
+#endif
 
         m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier: rewardedAdUnit
                                                                 amazonRewardedSlotId: amazonRewardedSlotId

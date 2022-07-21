@@ -9,21 +9,26 @@
     self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_interstitialAd.delegate = self;
     
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( [amazonSlotId length] != 0 ) {
         self.m_amazonLoader = [[AppleAppLovinInterstitialAmazonLoader alloc] initWithSlotId: amazonSlotId interstitialAd: self.m_interstitialAd];
     }else{
-        // Load the first ad
         [self.m_interstitialAd loadAd];
     }
+#else
+    [self.m_interstitialAd loadAd];
+#endif
     
     return self;
 }
 
 -(void)dealloc {
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
+#endif
     
     [super dealloc];
 }

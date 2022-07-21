@@ -14,21 +14,27 @@
     self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitIdentifier];
     self.m_rewardedAd.delegate = self;
     
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( [amazonSlotId length] != 0 ) {
         self.m_amazonLoader = [[AppleAppLovinRewardedAmazonLoader alloc] initWithSlotId: amazonSlotId rewardedAd: self.m_rewardedAd];
     }else{
         // Load the first ad
         [self.m_rewardedAd loadAd];
     }
+#else
+    [self.m_rewardedAd loadAd];
+#endif
     
     return self;
 }
 
 -(void)dealloc {
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
+#endif
     
     [super dealloc];
 }

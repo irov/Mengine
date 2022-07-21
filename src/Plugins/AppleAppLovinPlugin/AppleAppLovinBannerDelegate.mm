@@ -17,21 +17,27 @@
 
     [self.rootViewController.view addSubview: self.m_adView];
     
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( [amazonSlotId length] != 0 ) {
         self.m_amazonLoader = [[AppleAppLovinBannerAmazonLoader alloc] initWithSlotId: amazonSlotId adView: self.m_adView rect: rect];
     } else {
         // Load the ad
         [self.m_adView loadAd];
     }
+#else
+    [self.m_adView loadAd];
+#endif
     
     return self;
 }
 
 -(void)dealloc {
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
+#endif
     
     [super dealloc];
 }

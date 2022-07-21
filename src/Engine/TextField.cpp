@@ -1927,40 +1927,57 @@ namespace Mengine
 
         const Char * tag_id = "id";
 
-        bool fmtTagMatched;
-        if( Helper::fillStringTag( fmt, tag_id, [this]( const String & _value, String * const _out )
+        if( fmt.find( tag_id ) == String::npos )
         {
-            ConstString tagTextId = Helper::stringizeString( _value );
+            *_text = fmt;
 
-            const ConstString & aliasTestId = TEXT_SERVICE()
-                ->getTextAlias( m_aliasEnvironment, tagTextId );
+            return true;
+        }
 
-            if( aliasTestId.empty() == true )
+        for( ;; )
+        {
+            bool fmtTagMatched;
+            if( Helper::fillStringTag( fmt, tag_id, [this]( const String & _value, String * const _out )
             {
+                ConstString tagTextId = Helper::stringizeString( _value );
+
+                const ConstString & aliasTestId = TEXT_SERVICE()
+                    ->getTextAlias( m_aliasEnvironment, tagTextId );
+
+                if( aliasTestId.empty() == true )
+                {
+                    return false;
+                }
+
+                const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
+                    ->getTextEntry( aliasTestId );
+
+                size_t textSize;
+                const Char * textValue = textEntry->getValue( &textSize );
+
+                _out->assign( textValue, textSize );
+
+                return true;
+            }, _text, &fmtTagMatched ) == false )
+            {
+                LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid tagging string format '%s' with tag '%s' [alias env: %s]"
+                    , this->getName().c_str()
+                    , this->getTotalTextId().c_str()
+                    , m_textId.c_str()
+                    , fmt.c_str()
+                    , tag_id
+                    , m_aliasEnvironment.c_str()
+                );
+
                 return false;
             }
 
-            const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
-                ->getTextEntry( aliasTestId );
+            if( fmtTagMatched == false )
+            {
+                break;
+            }
 
-            size_t textSize;
-            const Char * textValue = textEntry->getValue( &textSize );
-
-            _out->assign( textValue, textSize );
-
-            return true;
-        }, _text, &fmtTagMatched ) == false )
-        {
-            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid tagging string format '%s' with tag '%s' [alias env: %s]"
-                , this->getName().c_str()
-                , this->getTotalTextId().c_str()
-                , m_textId.c_str()
-                , fmt.c_str()
-                , tag_id
-                , m_aliasEnvironment.c_str()
-            );
-
-            return false;
+            fmt = *_text;
         }
 
         return true;

@@ -106,14 +106,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool fillStringTag( const String & _text, const Char * _tag, const LambdaStringTag & _lambda, String * const _out, bool * const _matched )
         {
-            if( _text.find( _tag ) == String::npos )
-            {
-                *_out = _text;
-                *_matched = false;
-
-                return true;
-            }
-
             _out->clear();
 
             Char regex_format[64] = {'\0'};

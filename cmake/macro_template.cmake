@@ -645,3 +645,26 @@ macro(ADD_MENGINE_APPLE_APPLICATION_DELEGATE DELEGATE)
     
     SET(APPLICATION_APPLE_APPLICATION_DELEGATE ${APPLICATION_APPLE_APPLICATION_DELEGATE} PARENT_SCOPE)
 endmacro()
+
+macro(ADD_LIBRARY_IMPORTED NAME PATH)
+    add_library(${NAME}
+            SHARED
+            IMPORTED)
+             
+    set_target_properties(
+            # Specifies the target library.
+            ${NAME}
+            
+            # Specifies the parameter you want to define.
+            PROPERTIES IMPORTED_LOCATION
+
+            # Provides the path to the library you want to import.
+            ${PATH}
+            )
+            
+    get_property(${NAME}_location TARGET ${NAME} PROPERTY LOCATION)
+            
+    MESSAGE("link imported library ${NAME}: ${${NAME}_location}")
+
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${NAME})
+endmacro()

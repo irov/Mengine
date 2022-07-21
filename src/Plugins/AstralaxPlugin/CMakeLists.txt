@@ -117,18 +117,5 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})
 
 if(MENGINE_TARGET_ANDROID)
-    add_library(amagic3d
-            SHARED
-            IMPORTED )
-             
-    set_target_properties( # Specifies the target library.
-            amagic3d
-            # Specifies the parameter you want to define.
-            PROPERTIES IMPORTED_LOCATION
-
-            # Provides the path to the library you want to import.
-            ${THIRDPARTY_DIR}/astralax_android/3d/so/${ANDROID_ABI}/libamagic3d.so
-            )
-
-    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} amagic3d)
+    ADD_LIBRARY_IMPORTED(amagic3d "${THIRDPARTY_DIR}/astralax_android/3d/so/${ANDROID_ABI}/libamagic3d.so")
 endif()

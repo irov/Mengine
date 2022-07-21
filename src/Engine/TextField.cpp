@@ -1927,7 +1927,7 @@ namespace Mengine
 
         const Char * tag_id = "id";
 
-        if( fmt.find( tag_id ) == String::npos )
+        if( fmt.find( "<id>" ) == String::npos )
         {
             *_text = fmt;
 

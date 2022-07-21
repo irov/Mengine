@@ -109,7 +109,7 @@ namespace Mengine
             _out->clear();
 
             Char regex_format[64] = {'\0'};
-            MENGINE_SNPRINTF( regex_format, 64, "<%s>(.+?)</%s>"
+            MENGINE_SNPRINTF( regex_format, 64, "<%s>(\\w+)</%s>"
                 , _tag
                 , _tag
             );

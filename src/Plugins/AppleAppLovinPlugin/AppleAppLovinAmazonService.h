@@ -2,51 +2,13 @@
 
 #include "AppleAppLovinInterface.h"
 
-#include "Kernel/ServiceBase.h"
+#import <Foundation/Foundation.h>
 
-#import "AppleAppLovinInterstitialDelegate.h"
-#import "AppleAppLovinRewardedDelegate.h"
-#import "AppleAppLovinBannerDelegate.h"
+@interface AppleAppLovinAmazonService : NSObject
 
-namespace Mengine
-{
-    class AppleAppLovinService
-        : public ServiceBase<AppleAppLovinServiceInterface>
-        , public AppleAppLovinRewardCallbackInterface
-    {
-    public:
-        AppleAppLovinService();
-        ~AppleAppLovinService();
+- (instancetype _Nonnull) init;
+- (NSString * _Nullable) getAmazonBannerSlotId;
+- (NSString * _Nullable) getAmazonInterstitialSlotId;
+- (NSString * _Nullable) getAmazonRewardedSlotId;
 
-    protected:
-        bool _initializeService() override;
-        void _finalizeService() override;
-        
-    public:
-        void initBanner() override;
-        void initInterstitial() override;
-        void initRewarded() override;
-
-    public:
-        bool hasLoadedInterstitial() const override;
-        bool showInterstitial() override;
-
-        bool hasLoadedRewarded() const override;
-        bool showRewarded() override;
-
-    public:
-        void showBanner() override;
-        void hideBanner() override;
-
-    public:
-        void showMediationDebugger() override;
-
-    protected:
-        void onAppLovinRewardReceivedReward( uint64_t _amount ) override;
-
-    protected:
-        AppleAppLovinBannerDelegate * m_banner;
-        AppleAppLovinInterstitialDelegate * m_interstitial;
-        AppleAppLovinRewardedDelegate * m_rewarded;        
-    };
-}
+@end

@@ -7,10 +7,6 @@
 
 #include "Config/StdString.h"
 
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-#import <DTBiOSSDK/DTBAds.h>
-#endif
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleAppLovinService, Mengine::AppleAppLovinService );
 //////////////////////////////////////////////////////////////////////////
@@ -45,23 +41,7 @@ namespace Mengine
         }];
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-        const Char * AppLovin_AmazoneAppId = CONFIG_VALUE("AppLovin", "AmazonAppId", "");
-
-        if( MENGINE_STRCMP( AppLovin_AmazoneAppId, "" ) != 0 )
-        {
-            LOGGER_INFO("applovin", "Amazone AppID '%s'", AppLovin_AmazoneAppId);
-            
-            NSString * appId = [NSString stringWithUTF8String:AppLovin_AmazoneAppId];
-            
-            [[DTBAds sharedInstance] setAppKey: appId];
-            DTBAdNetworkInfo *adNetworkInfo = [[DTBAdNetworkInfo alloc] initWithNetworkName: DTBADNETWORK_MAX];
-            [DTBAds sharedInstance].mraidCustomVersions = @[@"1.0", @"2.0", @"3.0"];
-            [[DTBAds sharedInstance] setAdNetworkInfo: adNetworkInfo];
-            [DTBAds sharedInstance].mraidPolicy = CUSTOM_MRAID;
-                        
-//            DTBAds.sharedInstance().setLogLevel(DTBLogLevelAll)
-//            DTBAds.sharedInstance().testMode = true
-        }
+        m_amazonService = [[AppleAppLovinAmazonService alloc] init];
 #endif
         
         return true;
@@ -109,16 +89,7 @@ namespace Mengine
         NSString * amazonBannerSlotId = nil;
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-        const Char * AppLovin_amazonBannerSlotId = CONFIG_VALUE("AppLovin", "AmazonBannerSlotId", "");
-
-        if( MENGINE_STRCMP( AppLovin_BannerAdUnit, "" ) != 0 )
-        {
-            amazonBannerSlotId = [NSString stringWithUTF8String:AppLovin_BannerAdUnit];
-            
-            LOGGER_INFO("applovin", "Interstitial Amazon AdUnit '%s'"
-                , AppLovin_amazonBannerSlotId
-            );
-        }
+        amazonBannerSlotId = [m_amazonService getAmazonBannerSlotId];
 #endif
         
         m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit amazonBannerSlotId:amazonBannerSlotId rect:bannerRect];
@@ -136,21 +107,13 @@ namespace Mengine
         
         NSString * interstitialAdUnit = [NSString stringWithUTF8String:AppLovin_InterstitialAdUnit];
         
-        NSString * amazonInterSlotId = nil;
+        NSString * amazonInterstitialSlotId = nil;
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-        const Char * AppLovin_amazonInterSlotId = CONFIG_VALUE("AppLovin", "AmazonInterstitialSlodId", "");
-        
-        if(MENGINE_STRCMP( AppLovin_amazonInterSlotId, "" ) != 0 ){
-            amazonInterSlotId = [NSString stringWithUTF8String:AppLovin_amazonInterSlotId];
-            
-            LOGGER_INFO("applovin", "Interstitial Amazon AdUnit '%s'"
-                        , AppLovin_amazonInterSlotId
-                        );
-        }
+        amazonInterstitialSlotId = [m_amazonService getAmazonInterstitialSlotId];
 #endif
 
-        m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit amazonInterSlotId:amazonInterSlotId];
+        m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit amazonInterSlotId:amazonInterstitialSlotId];
     }
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initRewarded()
@@ -168,15 +131,7 @@ namespace Mengine
         NSString * amazonRewardedSlotId = nil;
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-        const Char * AppLovin_amazonRewardedSlotId = CONFIG_VALUE("AppLovin", "AmazonVideoRewardedSlotId", "");
-        
-        if(MENGINE_STRCMP( AppLovin_amazonRewardedSlotId, "" ) != 0 ){
-            amazonRewardedSlotId = [NSString stringWithUTF8String:AppLovin_amazonRewardedSlotId];
-            
-            LOGGER_INFO("applovin", "Rewarded Amazon AdUnit '%s'"
-                        , AppLovin_amazonRewardedSlotId
-                        );
-        }
+        amazonRewardedSlotId = [m_amazonService getAmazonRewardedSlotId];
 #endif
 
         m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier: rewardedAdUnit

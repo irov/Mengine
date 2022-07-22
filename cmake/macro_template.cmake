@@ -344,9 +344,9 @@ MACRO(ADD_PLUGIN_IF Plugin Toggle DLL MSG DIRECTORY)
     
     IF(${Plugin})
         IF(${Plugin}_DLL)
-            add_definitions(-D${Plugin}_DLL)
+            MENGINE_ADD_DEFINITION(${Plugin}_DLL)
         ELSE()
-            add_definitions(-D${Plugin}_STATIC)
+            MENGINE_ADD_DEFINITION(${Plugin}_STATIC)
         ENDIF()
     ENDIF()
     

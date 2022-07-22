@@ -23,6 +23,9 @@ src
 if(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     ADD_FILTER(
     amazon
+        AppleAppLovinAmazonService.h
+        AppleAppLovinAmazonService.mm
+        
         AppleAppLovinInterstitialAmazonLoader.h
         AppleAppLovinInterstitialAmazonLoader.mm
         

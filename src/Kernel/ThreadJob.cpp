@@ -28,32 +28,38 @@ namespace Mengine
 
             bool successful = false;
 
-            if( desc.status == ETS_FREE )
-            {
-                desc.mutex->lock();
-                desc.mutex_progress->lock();
+            desc.mutex->lock();
+            desc.mutex_progress->lock();
 
+            if( desc.status == ETS_FREE && desc.pause == false )
+            {
                 desc.worker = _worker;
 
                 desc.id = _id;
                 desc.status = ETS_WORK;
                 desc.pause = false;
+                desc.process = false;
 
 #if MENGINE_DOCUMENT_ENABLE
                 desc.doc = _doc;
 #endif
 
                 successful = true;
-
-                desc.mutex_progress->unlock();
-                desc.mutex->unlock();
             }
+
+            desc.mutex_progress->unlock();
+            desc.mutex->unlock();
 
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool threadRemoveWorker( ThreadJobWorkerDesc & desc, uint32_t _id )
         {
+            if( desc.status == ETS_FREE )
+            {
+                return false;
+            }
+
             if( desc.id != _id )
             {
                 return false;
@@ -63,9 +69,10 @@ namespace Mengine
 
             ThreadWorkerInterfacePtr worker;
 
-            if( desc.status != ETS_FREE )
+            desc.mutex->lock();
+
+            if( desc.status != ETS_FREE && desc.id == _id && desc.process == false )
             {
-                desc.mutex->lock();
                 desc.mutex_progress->lock();
 
                 worker = desc.worker;
@@ -82,8 +89,9 @@ namespace Mengine
                 successful = true;
 
                 desc.mutex_progress->unlock();
-                desc.mutex->unlock();
             }
+
+            desc.mutex->unlock();
 
             if( successful == true )
             {
@@ -95,7 +103,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void threadMainWorker( ThreadJobWorkerDesc & desc )
         {
-            if( desc.status != ETS_WORK || desc.pause == true )
+            if( desc.status != ETS_WORK )
+            {
+                return;
+            }
+
+            if( desc.pause == true )
             {
                 return;
             }
@@ -103,25 +116,34 @@ namespace Mengine
             ThreadWorkerInterface * worker = nullptr;
             uint32_t id = 0;
 
-            desc.mutex_progress->lock();
-
             desc.mutex->lock();
+
             if( desc.status == ETS_WORK && desc.pause == false )
             {
                 worker = desc.worker.get();
                 id = desc.id;
+                desc.process = true;
             }
+
             desc.mutex->unlock();
 
-            if( worker != nullptr )
+            if( worker == nullptr )
             {
-                if( worker->onThreadWorkerWork( id ) == false )
-                {
-                    desc.status = ETS_DONE;
-                }
+                return;
+            }
+            
+            desc.mutex_progress->lock();
+
+            if( desc.worker->onThreadWorkerWork( desc.id ) == false )
+            {
+                desc.status = ETS_DONE;
             }
 
             desc.mutex_progress->unlock();
+
+            desc.mutex->lock();
+            desc.process = false;
+            desc.mutex->unlock();
         }
         //////////////////////////////////////////////////////////////////////////
         static void threadUpdateWorker( ThreadJobWorkerDesc & desc )
@@ -138,50 +160,62 @@ namespace Mengine
 
             switch( status )
             {
-            case ETS_DONE:
-                {
-                    desc.mutex->lock();
-                    desc.mutex_progress->lock();
-
-                    worker = std::move( desc.worker );
-
-                    id = desc.id;
-                    desc.id = 0;
-
-                    desc.status = ETS_FREE;
-                    desc.pause = false;
-
-#if MENGINE_DOCUMENT_ENABLE
-                    desc.doc = nullptr;
-#endif
-
-                    desc.mutex_progress->unlock();
-                    desc.mutex->unlock();
-                }break;
             case ETS_WORK:
                 {
                     desc.mutex->lock();
-                    worker = desc.worker;
 
-                    id = desc.id;
+                    if( desc.pause == false )
+                    {
+                        worker = desc.worker;
+
+                        id = desc.id;
+                    }
+
+                    desc.mutex->unlock();
+                }break;
+            case ETS_DONE:
+                {
+                    desc.mutex->lock();
+
+                    if( desc.pause == false )
+                    {
+                        desc.mutex_progress->lock();
+
+                        worker = std::move( desc.worker );
+
+                        id = desc.id;
+                        desc.id = 0;
+
+                        desc.status = ETS_FREE;
+
+#if MENGINE_DOCUMENT_ENABLE
+                        desc.doc = nullptr;
+#endif
+
+                        desc.mutex_progress->unlock();
+                    }
+
                     desc.mutex->unlock();
                 }break;
             default:
                 break;
             }
 
-            switch( status )
+            if( worker != nullptr )
             {
-            case ETS_WORK:
+                switch( status )
                 {
-                    worker->onThreadWorkerUpdate( id );
-                }break;
-            case ETS_DONE:
-                {
-                    worker->onThreadWorkerDone( id );
-                }break;
-            default:
-                break;
+                case ETS_WORK:
+                    {
+                        worker->onThreadWorkerUpdate( id );
+                    }break;
+                case ETS_DONE:
+                    {
+                        worker->onThreadWorkerDone( id );
+                    }break;
+                default:
+                    break;
+                }
             }
         }
     }
@@ -194,7 +228,7 @@ namespace Mengine
     ThreadJob::~ThreadJob()
     {
     }
-    //////////////////////////////////////////////////////////////////////////        
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::initialize( uint32_t _sleep, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
@@ -227,6 +261,7 @@ namespace Mengine
             desc.id = 0;
             desc.status = ETS_FREE;
             desc.pause = false;
+            desc.process = false;
         }
 
         return true;

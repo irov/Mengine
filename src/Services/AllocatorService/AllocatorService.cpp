@@ -131,8 +131,9 @@ namespace Mengine
 
         void * p = ::malloc( _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu'"
+        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu' [%s]"
             , _size
+            , _doc
         );
 
         Detail::setMemoryOverrideCorruptionTrap( p, _size );
@@ -193,8 +194,9 @@ namespace Mengine
 
         void * p = ::malloc( total + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu'"
+        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu' [%s]"
             , _size
+            , _doc
         );
 
         MENGINE_MEMSET( p, 0x00, total );
@@ -226,8 +228,9 @@ namespace Mengine
         {
             p = ::realloc( nullptr, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' from nullptr"
+            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' from nullptr [%s]"
                 , _size
+                , _doc
             );
 
             Detail::setMemoryOverrideCorruptionTrap( p, _size );
@@ -247,9 +250,10 @@ namespace Mengine
 
             p = ::realloc( _mem, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' from '%p'"
+            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' from '%p' [%s]"
                 , _size
                 , _mem
+                , _doc
             );
 
             Detail::setMemoryOverrideCorruptionTrap( p, _size );

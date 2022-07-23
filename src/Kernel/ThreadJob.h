@@ -35,6 +35,7 @@ namespace Mengine
         AtomicUInt32 id;
         Atomic<EThreadStatus> status;
         AtomicBool pause;
+        AtomicBool process;
 
 #if MENGINE_DOCUMENT_ENABLE
         DocumentPtr doc;

@@ -50,6 +50,16 @@ public class MenginePlugin {
         m_activity.addPythonPlugin(m_pluginName, this);
     }
 
+    public String getTag() {
+        return m_tag;
+    }
+
+    public <T> T newInstance( String name ) {
+        T instance = MengineUtils.newInstance(m_tag, name);
+
+        return instance;
+    }
+
     public void logWarning(String format, Object ... args) {
         MengineLog.logWarning(m_tag, format, args);
     }

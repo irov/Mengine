@@ -2,6 +2,7 @@
 
 #include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
@@ -25,13 +26,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::_initializeService()
     {
-        [ALSdk shared].settings.isVerboseLogging = YES;
+        bool OPTION_applovinverbose = HAS_OPTION("applovinverbose");
+        bool AppLovin_VerboseLogging = CONFIG_VALUE("AppLovin", "VerboseLogging", false);
+        
+        if( OPTION_applovinverbose == true || AppLovin_VerboseLogging == true )
+        {
+            [ALSdk shared].settings.isVerboseLogging = YES;
+        }
 
         [ALSdk shared].mediationProvider = @"max";
     
         [[ALSdk shared] initializeSdkWithCompletionHandler:^(ALSdkConfiguration *configuration) {
             LOGGER_MESSAGE("AppLovin initialize");
         }];
+        
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+        m_amazonService = [[AppleAppLovinAmazonService alloc] init];
+#endif
         
         return true;
     }
@@ -74,23 +85,35 @@ namespace Mengine
         // Stretch to the width of the screen for banners to be fully functional
         CGFloat width = CGRectGetWidth(UIScreen.mainScreen.bounds);
         CGRect bannerRect = CGRectMake(0, 0, width, height);
+
+        NSString * amazonBannerSlotId = nil;
         
-        m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit rect:bannerRect];
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+        amazonBannerSlotId = [m_amazonService getAmazonBannerSlotId];
+#endif
+        
+        m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit amazonBannerSlotId:amazonBannerSlotId rect:bannerRect];
     }
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initInterstitial()
     {
         const Char * AppLovin_InterstitialAdUnit = CONFIG_VALUE("AppLovin", "InterstitialAdUnit", "");
-
+        
         MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovin_InterstitialAdUnit, "" ) == 0 );
-
+        
         LOGGER_INFO("applovin", "Interstitial AdUnit '%s'"
-            , AppLovin_InterstitialAdUnit
-        );
-
+                    , AppLovin_InterstitialAdUnit
+                    );
+        
         NSString * interstitialAdUnit = [NSString stringWithUTF8String:AppLovin_InterstitialAdUnit];
+        
+        NSString * amazonInterstitialSlotId = nil;
+        
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+        amazonInterstitialSlotId = [m_amazonService getAmazonInterstitialSlotId];
+#endif
 
-        m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit];
+        m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit amazonInterSlotId:amazonInterstitialSlotId];
     }
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initRewarded()
@@ -104,8 +127,16 @@ namespace Mengine
         );
 
         NSString * rewardedAdUnit = [NSString stringWithUTF8String:AppLovin_RewardedAdUnit];
+        
+        NSString * amazonRewardedSlotId = nil;
+        
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+        amazonRewardedSlotId = [m_amazonService getAmazonRewardedSlotId];
+#endif
 
-        m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:rewardedAdUnit rewardCallback:this];
+        m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier: rewardedAdUnit
+                                                                amazonRewardedSlotId: amazonRewardedSlotId
+                                                                      rewardCallback: this];
     }
     /////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::hasLoadedInterstitial() const

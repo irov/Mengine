@@ -8,6 +8,10 @@
 #import "AppleAppLovinRewardedDelegate.h"
 #import "AppleAppLovinBannerDelegate.h"
 
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#import "AppleAppLovinAmazonService.h"
+#endif
+
 namespace Mengine
 {
     class AppleAppLovinService
@@ -47,6 +51,10 @@ namespace Mengine
     protected:
         AppleAppLovinBannerDelegate * m_banner;
         AppleAppLovinInterstitialDelegate * m_interstitial;
-        AppleAppLovinRewardedDelegate * m_rewarded;        
+        AppleAppLovinRewardedDelegate * m_rewarded;
+        
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+        AppleAppLovinAmazonService * m_amazonService;
+#endif
     };
 }

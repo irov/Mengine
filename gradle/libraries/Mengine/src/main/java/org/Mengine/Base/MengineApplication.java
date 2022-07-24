@@ -1,5 +1,8 @@
 package org.Mengine.Base;
 
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MengineUtils;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -36,35 +39,23 @@ public class MengineApplication extends Application {
     protected boolean createPlugin(String name) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
 
-        try {
-            Class<?> clazz = cl.loadClass(name);
-            Constructor<?> ctr = clazz.getConstructor();
-            MenginePlugin plugin = (MenginePlugin) ctr.newInstance(new Object[]{});
+        MenginePlugin plugin = MengineUtils.newInstance(TAG, name);
 
-            if (plugin.onInitialize(this) == false) {
-                return false;
-            }
+        if (plugin == null) {
+            Log.e(TAG, "MengineApplication not found plugin: " + name);
 
-            m_plugins.add(plugin);
-
-            Log.i(TAG, "MengineApplication add plugin: " + name);
-
-            return true;
-        } catch (ClassNotFoundException ex) {
-            Log.e(TAG, "MengineApplication not found plugin: " + name + " ClassNotFoundException: " + ex.toString());
-        } catch (NoSuchMethodException ex) {
-            Log.e(TAG, "MengineApplication not found plugin: " + name + " NoSuchMethodException: " + ex.toString());
-        } catch (IllegalAccessException ex) {
-            Log.e(TAG, "MengineApplication not found plugin: " + name + " IllegalAccessException: " + ex.toString());
-        } catch (InstantiationException ex) {
-            Log.e(TAG, "MengineApplication not found plugin: " + name + " InstantiationException: " + ex.toString());
-        } catch (InvocationTargetException ex) {
-            Log.e(TAG, "MengineApplication not found plugin: " + name + " InvocationTargetException: " + ex.toString());
-        } catch (NullPointerException ex) {
-            Log.e(TAG, "MengineApplication not found plugin: " + name + " NullPointerException: " + ex.toString());
+            return false;
         }
 
-        return false;
+        if (plugin.onInitialize(this) == false) {
+            return false;
+        }
+
+        m_plugins.add(plugin);
+
+        Log.i(TAG, "MengineApplication add plugin: " + name);
+
+        return true;
     }
 
     @Override

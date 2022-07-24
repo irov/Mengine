@@ -1,10 +1,11 @@
 package org.Mengine.Plugin.AppLovin;
 
+import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.MengineAppLovinMediationInterface;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.ThreadUtil;
+import org.Mengine.Base.MengineUtils;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -128,37 +129,11 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         }
     }
 
-    protected MengineAppLovinMediationInterface createMediation(String name) {
-        ClassLoader cl = MengineActivity.class.getClassLoader();
-
-        try {
-            Class<?> clazz = cl.loadClass(name);
-            Constructor<?> ctr = clazz.getConstructor();
-            MengineAppLovinMediationInterface mediation = (MengineAppLovinMediationInterface) ctr.newInstance(new Object[]{});
-
-            return mediation;
-        } catch (ClassNotFoundException ex) {
-            this.logError("MengineAppLovin invalid create mediation extension: " + name + " ClassNotFoundException: " + ex.toString());
-        } catch (NoSuchMethodException ex) {
-            this.logError("MengineAppLovin invalid create mediation extension: " + name + " NoSuchMethodException: " + ex.toString());
-        } catch (IllegalAccessException ex) {
-            this.logError("MengineAppLovin invalid create mediation extension: " + name + " IllegalAccessException: " + ex.toString());
-        } catch (InstantiationException ex) {
-            this.logError("MengineAppLovin invalid create mediation extension: " + name + " InstantiationException: " + ex.toString());
-        } catch (InvocationTargetException ex) {
-            this.logError("MengineAppLovin invalid create mediation extension: " + name + " InvocationTargetException: " + ex.toString());
-        } catch (NullPointerException ex) {
-            this.logError("MengineAppLovin invalid create mediation extension: " + name + " NullPointerException: " + ex.toString());
-        }
-
-        return null;
-    }
-
     public void initialize() {
         MengineActivity activity = this.getActivity();
         final Context context = activity.getBaseContext();
 
-        m_mediationAmazon = this.createMediation("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon");
+        m_mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon");
 
         if (m_mediationAmazon != null) {
             try {
@@ -309,7 +284,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
                 long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptInterstitial)));
 
-                ThreadUtil.performOnMainThread(() -> {
+                MengineUtils.performOnMainThread(() -> {
                     m_interstitialAd.loadAd();
                 }, delayMillis);
 
@@ -411,7 +386,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
                 long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptRewarded)));
 
-                ThreadUtil.performOnMainThread(() -> {
+                MengineUtils.performOnMainThread(() -> {
                     m_rewardedAd.loadAd();
                 }, delayMillis);
 

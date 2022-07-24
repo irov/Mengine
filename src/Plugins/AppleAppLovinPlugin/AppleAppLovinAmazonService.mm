@@ -74,16 +74,16 @@
 }
 
 - (NSString * _Nullable) getAmazonRewardedSlotId {
-    const Mengine::Char * AppLovin_AmazonVideoRewardedSlotId = CONFIG_VALUE("AppLovin", "AmazonVideoRewardedSlotId", "");
+    const Mengine::Char * AppLovin_AmazonRewardedSlotId = CONFIG_VALUE("AppLovin", "AmazonRewardedSlotId", "");
     
-    if( MENGINE_STRCMP( AppLovin_AmazonVideoRewardedSlotId, "" ) == 0 ) {
+    if( MENGINE_STRCMP( AppLovin_AmazonRewardedSlotId, "" ) == 0 ) {
         return nil;
     }
      
-    NSString * amazonRewardedSlotId = [NSString stringWithUTF8String:AppLovin_AmazonVideoRewardedSlotId];
+    NSString * amazonRewardedSlotId = [NSString stringWithUTF8String:AppLovin_AmazonRewardedSlotId];
         
     LOGGER_INFO("applovin", "Rewarded Amazon AdUnit '%s'"
-        , AppLovin_AmazonVideoRewardedSlotId
+        , AppLovin_AmazonRewardedSlotId
     );
     
     return amazonRewardedSlotId;

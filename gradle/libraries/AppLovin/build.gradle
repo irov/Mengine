@@ -42,6 +42,10 @@ android {
 
     sourceSets {
         main {
+            if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_AMAZON")) {
+                java.srcDirs += ['mediationAmazon']
+            }
+
             if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
@@ -58,12 +62,13 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:20.0.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
 
+    implementation 'com.applovin:applovin-sdk:11.4.3'
+
     if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADCOLONY")) {
         implementation 'com.applovin.mediation:adcolony-adapter:4.8.0.1'
     }
 
     if (project.hasProperty("ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_AMAZON")) {
-        implementation 'com.applovin:applovin-sdk:11.4.3'
         implementation 'com.applovin.mediation:amazon-tam-adapter:9.5.4.1'
         implementation 'com.amazon.android:aps-sdk:9.5.4'
     }

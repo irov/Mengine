@@ -1,23 +1,10 @@
 package org.Mengine.Plugin.AppLovin;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import org.Mengine.Plugin.AppLovin.MengineAppLovinMediationInterface;
 
-import androidx.annotation.NonNull;
-
-import com.amazon.device.ads.AdError;
-import com.amazon.device.ads.AdRegistration;
-import com.amazon.device.ads.DTBAdCallback;
-import com.amazon.device.ads.DTBAdNetwork;
-import com.amazon.device.ads.DTBAdNetworkInfo;
-import com.amazon.device.ads.DTBAdRequest;
-import com.amazon.device.ads.DTBAdResponse;
-import com.amazon.device.ads.DTBAdSize;
-import com.amazon.device.ads.MRAIDPolicy;
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.ThreadUtil;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -29,15 +16,24 @@ import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
+
 import com.applovin.sdk.AppLovinAdSize;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.applovin.sdk.AppLovinSdkUtils;
 
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.ThreadUtil;
+import android.content.Context;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import androidx.annotation.NonNull;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MengineAppLovinPlugin extends MenginePlugin {
@@ -90,14 +86,14 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     }
 
     private MaxInterstitialAd m_interstitialAd;
-    private ELoadAdStatus m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_NONE;
     private int m_retryAttemptInterstitial;
 
     private MaxRewardedAd m_rewardedAd;
-    private ELoadAdStatus m_loadRewardedStatus = ELoadAdStatus.ADLOAD_NONE;
     private int m_retryAttemptRewarded;
 
     private MaxAdView m_adView;
+
+    private MengineAppLovinMediationInterface m_mediationAmazon;
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
@@ -112,6 +108,10 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     @Override
     public void onDestroy(MengineActivity activity) {
+        if (m_mediationAmazon != null) {
+            m_mediationAmazon = null;
+        }
+
         if (m_interstitialAd != null) {
             m_interstitialAd.destroy();
             m_interstitialAd = null;
@@ -128,28 +128,43 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         }
     }
 
+    protected MengineAppLovinMediationInterface createMediation(String name) {
+        ClassLoader cl = MengineActivity.class.getClassLoader();
+
+        try {
+            Class<?> clazz = cl.loadClass(name);
+            Constructor<?> ctr = clazz.getConstructor();
+            MengineAppLovinMediationInterface mediation = (MengineAppLovinMediationInterface) ctr.newInstance(new Object[]{});
+
+            return mediation;
+        } catch (ClassNotFoundException ex) {
+            this.logError("MengineAppLovin invalid create mediation extension: " + name + " ClassNotFoundException: " + ex.toString());
+        } catch (NoSuchMethodException ex) {
+            this.logError("MengineAppLovin invalid create mediation extension: " + name + " NoSuchMethodException: " + ex.toString());
+        } catch (IllegalAccessException ex) {
+            this.logError("MengineAppLovin invalid create mediation extension: " + name + " IllegalAccessException: " + ex.toString());
+        } catch (InstantiationException ex) {
+            this.logError("MengineAppLovin invalid create mediation extension: " + name + " InstantiationException: " + ex.toString());
+        } catch (InvocationTargetException ex) {
+            this.logError("MengineAppLovin invalid create mediation extension: " + name + " InvocationTargetException: " + ex.toString());
+        } catch (NullPointerException ex) {
+            this.logError("MengineAppLovin invalid create mediation extension: " + name + " NullPointerException: " + ex.toString());
+        }
+
+        return null;
+    }
+
     public void initialize() {
         MengineActivity activity = this.getActivity();
         final Context context = activity.getBaseContext();
 
-        String AppLovin_AmazonAppId = activity.getConfigValue("AppLovin", "AmazonAppId", "");
+        m_mediationAmazon = this.createMediation("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon");
 
-        if (AppLovin_AmazonAppId.isEmpty() == false) {
-            AdRegistration.getInstance(AppLovin_AmazonAppId, activity);
-            AdRegistration.setAdNetworkInfo(new DTBAdNetworkInfo(DTBAdNetwork.MAX));
-            AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
-            AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
+        if (m_mediationAmazon != null) {
+            try {
+                m_mediationAmazon.initializeMediator(activity);
+            } catch (Exception e) {
 
-            boolean AppLovin_AmazonEnableTesting = activity.getConfigValueBoolean("AppLovin", "AmazonEnableTesting", false);
-
-            if (AppLovin_AmazonEnableTesting == true) {
-                AdRegistration.enableTesting(true);
-            }
-
-            boolean AppLovin_AmazonEnableLogging = activity.getConfigValueBoolean("AppLovin", "AmazonEnableLogging", false);
-
-            if (AppLovin_AmazonEnableLogging == true || BuildConfig.DEBUG == true ) {
-                AdRegistration.enableLogging(true);
             }
         }
 
@@ -232,28 +247,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         ViewGroup rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         rootView.addView(m_adView);
 
-        String AppLovin_AmazonBannerSlotId = activity.getConfigValue("AppLovin", "AmazonBannerSlotId", "");
-
-        if (AppLovin_AmazonBannerSlotId.isEmpty() == false) {
-            DTBAdSize size = new DTBAdSize(activity.getWindow().getDecorView().getWidth(), height, AppLovin_AmazonBannerSlotId);
-
-            DTBAdRequest adLoader = new DTBAdRequest();
-            adLoader.setSizes(size);
-            adLoader.loadAd(new DTBAdCallback() {
-                @Override
-                public void onFailure(@NonNull AdError adError) {
-                    // 'adView' is your instance of MaxAdView
-                    m_adView.setLocalExtraParameter("amazon_ad_error", adError);
-                    m_adView.loadAd();
-                }
-
-                @Override
-                public void onSuccess(@NonNull DTBAdResponse dtbAdResponse) {
-                    // 'adView' is your instance of MaxAdView
-                    m_adView.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
-                    m_adView.loadAd();
-                }
-            });
+        if (m_mediationAmazon != null) {
+            m_mediationAmazon.initializeMediatorBanner(activity, m_adView);
         } else {
             // Load the ad
             m_adView.loadAd();
@@ -333,47 +328,15 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     }
 
     public void loadInterstitial() {
-        switch (m_loadInterstitialStatus) {
-            case ADLOAD_NONE:
-                MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getActivity();
 
-                final String AppLovin_AmazonInterstitialSlotId = activity.getConfigValue("AppLovin", "AmazonInterstitialSlotId", "");
-
-                if (AppLovin_AmazonInterstitialSlotId.isEmpty() == false) {
-                    m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_AMAZON;
-
-                    DTBAdRequest adLoader = new DTBAdRequest();
-                    adLoader.setSizes(new DTBAdSize.DTBInterstitialAdSize(AppLovin_AmazonInterstitialSlotId));
-                    adLoader.loadAd(new DTBAdCallback() {
-                        @Override
-                        public void onSuccess(@NonNull final DTBAdResponse dtbAdResponse) {
-                            // 'interstitialAd' is your instance of MaxInterstitialAd
-                            m_interstitialAd.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
-                            m_interstitialAd.loadAd();
-
-                            m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_READY;
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull final AdError adError) {
-                            // 'interstitialAd' is your instance of MaxInterstitialAd
-                            m_interstitialAd.setLocalExtraParameter("amazon_ad_error", adError);
-                            m_interstitialAd.loadAd();
-
-                            m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_READY;
-                        }
-                    });
-                } else {
-                    m_interstitialAd.loadAd();
-
-                    m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_READY;
-                }
-                break;
-            case ADLOAD_AMAZON:
-                break;
-            case ADLOAD_READY:
-                m_interstitialAd.loadAd();
-                break;
+        if (m_mediationAmazon != null) {
+            try {
+                m_mediationAmazon.loadMediatorInterstitial(activity, m_interstitialAd);
+            } catch (Exception e) {
+            }
+        } else {
+            m_interstitialAd.loadAd();
         }
     }
 
@@ -467,52 +430,15 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     }
 
     public void loadRewarded() {
-        switch (m_loadRewardedStatus) {
-            case ADLOAD_NONE:
-                MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getActivity();
 
-                final String AppLovin_AmazonVideoRewardedSlotId = activity.getConfigValue("AppLovin", "AmazonVideoRewardedSlotId", "");
-
-                if (AppLovin_AmazonVideoRewardedSlotId.isEmpty() == false) {
-                    m_loadRewardedStatus = ELoadAdStatus.ADLOAD_AMAZON;
-
-                    DTBAdRequest loader = new DTBAdRequest();
-                    // Switch video player width and height values(320, 480) depending on device orientation
-
-                    int width = activity.getWindow().getDecorView().getWidth();
-                    int height = activity.getWindow().getDecorView().getHeight();
-
-                    loader.setSizes(new DTBAdSize.DTBVideo(width, height, AppLovin_AmazonVideoRewardedSlotId));
-                    loader.loadAd(new DTBAdCallback() {
-                        @Override
-                        public void onSuccess(@NonNull final DTBAdResponse dtbAdResponse) {
-                            // 'rewardedAd' is your instance of MaxRewardedAd
-                            m_rewardedAd.setLocalExtraParameter("amazon_ad_response", dtbAdResponse);
-                            m_rewardedAd.loadAd();
-
-                            m_loadRewardedStatus = ELoadAdStatus.ADLOAD_READY;
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull final AdError adError) {
-                            // 'rewardedAd' is your instance of MaxRewardedAd
-                            m_rewardedAd.setLocalExtraParameter("amazon_ad_error", adError);
-                            m_rewardedAd.loadAd();
-
-                            m_loadRewardedStatus = ELoadAdStatus.ADLOAD_READY;
-                        }
-                    });
-                } else {
-                    m_rewardedAd.loadAd();
-
-                    m_loadRewardedStatus = ELoadAdStatus.ADLOAD_READY;
-                }
-                break;
-            case ADLOAD_AMAZON:
-                break;
-            case ADLOAD_READY:
-                m_rewardedAd.loadAd();
-                break;
+        if (m_mediationAmazon != null) {
+            try {
+                m_mediationAmazon.loadMediatorRewarded(activity, m_rewardedAd);
+            } catch (Exception e) {
+            }
+        } else {
+            m_rewardedAd.loadAd();
         }
     }
 

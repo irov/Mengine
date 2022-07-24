@@ -133,7 +133,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         MengineActivity activity = this.getActivity();
         final Context context = activity.getBaseContext();
 
-        m_mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon");
+        m_mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
         if (m_mediationAmazon != null) {
             try {

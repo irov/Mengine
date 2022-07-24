@@ -8,7 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class MengineUtils {
-    public static <T> T newInstance(String TAG, String name) {
+    public static <T> T newInstance(String TAG, String name, boolean exist) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
 
         try {
@@ -18,7 +18,9 @@ public class MengineUtils {
 
             return mediation;
         } catch (ClassNotFoundException ex) {
-            Log.e(TAG, "invalid create new instance: " + name + " ClassNotFoundException: " + ex.toString());
+            if (exist == true) {
+                Log.e(TAG, "invalid create new instance: " + name + " ClassNotFoundException: " + ex.toString());
+            }
         } catch (NoSuchMethodException ex) {
             Log.e(TAG, "invalid create mediation extension: " + name + " NoSuchMethodException: " + ex.toString());
         } catch (IllegalAccessException ex) {

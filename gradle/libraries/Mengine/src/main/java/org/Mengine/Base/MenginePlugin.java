@@ -54,8 +54,8 @@ public class MenginePlugin {
         return m_tag;
     }
 
-    public <T> T newInstance( String name ) {
-        T instance = MengineUtils.newInstance(m_tag, name);
+    public <T> T newInstance( String name, boolean exist ) {
+        T instance = MengineUtils.newInstance(m_tag, name, exist);
 
         return instance;
     }

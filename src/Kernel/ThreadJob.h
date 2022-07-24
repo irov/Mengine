@@ -19,10 +19,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum EThreadStatus
     {
+        ETS_FREE,
         ETS_WORK,
-        ETS_PAUSE,
-        ETS_DONE,
-        ETS_FREE
+        ETS_DONE
     };
     //////////////////////////////////////////////////////////////////////////
     struct ThreadJobWorkerDesc
@@ -36,6 +35,7 @@ namespace Mengine
         Atomic<EThreadStatus> status;
         AtomicBool pause;
         AtomicBool process;
+        AtomicBool remove;
 
 #if MENGINE_DOCUMENT_ENABLE
         DocumentPtr doc;
@@ -62,7 +62,7 @@ namespace Mengine
         bool resumeWorker( uint32_t _id );
 
     protected:
-        bool _onThreadTaskMain() override;
+        bool _onThreadTaskProcess() override;
         void _onThreadTaskUpdate() override;
         void _onThreadTaskFinally() override;
 

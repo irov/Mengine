@@ -25,7 +25,7 @@ namespace Mengine
         uint32_t countTask() const;
 
     protected:
-        bool _onThreadTaskMain() override;
+        bool _onThreadTaskProcess() override;
 
     protected:
         bool _onThreadTaskRun() override;

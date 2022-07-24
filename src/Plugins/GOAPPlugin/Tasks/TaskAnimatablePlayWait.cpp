@@ -94,6 +94,10 @@ namespace Mengine
         m_receiver = nullptr;
         m_animatable = nullptr;
         m_eventable = nullptr;
+
+#if MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

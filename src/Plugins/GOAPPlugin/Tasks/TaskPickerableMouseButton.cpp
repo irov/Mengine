@@ -245,6 +245,10 @@ namespace Mengine
 
         m_pickerable = nullptr;
         m_filter = nullptr;
+
+#if MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool TaskPickerableMouseButton::_onSkipable() const

@@ -35,10 +35,6 @@ namespace Mengine
     protected:
         void * m_memory;
         size_t m_size;
-
-#if MENGINE_DOCUMENT_ENABLE
-        DocumentPtr m_doc;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE Pointer MemoryBuffer::getBuffer() const

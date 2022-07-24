@@ -97,6 +97,10 @@ namespace Mengine
         }
 
         m_scheduler = nullptr;
+
+#if MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

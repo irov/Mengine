@@ -79,7 +79,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchDataflow::_onThreadTaskMain()
+    bool ThreadTaskPrefetchDataflow::_onThreadTaskProcess()
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, ~0U, false, false ) == false )
         {

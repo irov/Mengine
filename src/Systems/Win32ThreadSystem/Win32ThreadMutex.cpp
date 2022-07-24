@@ -24,6 +24,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32ThreadMutex::finalize()
+    {
+#if MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::lock()
     {
         ::EnterCriticalSection( &m_cs );

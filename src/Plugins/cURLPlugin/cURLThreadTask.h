@@ -40,7 +40,7 @@ namespace Mengine
 
     protected:
         bool _onThreadTaskRun() override;
-        bool _onThreadTaskMain() override;
+        bool _onThreadTaskProcess() override;
 
     protected:
         virtual void _onCURL( CURL * _curl ) = 0;

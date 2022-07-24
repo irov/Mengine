@@ -31,7 +31,7 @@ namespace Mengine
 
     protected:
         bool _onThreadTaskRun() override;
-        bool _onThreadTaskMain() override;
+        bool _onThreadTaskProcess() override;
         void _onThreadTaskComplete( bool _successful ) override;
 
     protected:

@@ -48,7 +48,7 @@ namespace Mengine
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPacket::_onThreadTaskMain()
+    bool ThreadTaskPacket::_onThreadTaskProcess()
     {
         for( const ThreadTaskPtr & task : m_tasks )
         {

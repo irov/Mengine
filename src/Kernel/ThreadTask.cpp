@@ -38,7 +38,7 @@ namespace Mengine
             return;
         }
 
-        bool successful = this->_onThreadTaskMain();
+        bool successful = this->_onThreadTaskProcess();
 
         if( m_cancel == true )
         {
@@ -100,7 +100,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTask::_onThreadTaskMain()
+    bool ThreadTask::_onThreadTaskProcess()
     {
         return true;
     }

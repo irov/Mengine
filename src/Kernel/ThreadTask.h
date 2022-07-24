@@ -40,7 +40,7 @@ namespace Mengine
 
     protected:
         virtual void _onThreadTaskPreparation();
-        virtual bool _onThreadTaskMain();
+        virtual bool _onThreadTaskProcess();
 
     protected:
         virtual bool _onThreadTaskRun();

@@ -66,7 +66,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskMain()
+    bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskProcess()
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, ~0U, false, false ) == false )
         {

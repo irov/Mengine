@@ -28,7 +28,7 @@ namespace Mengine
 
     protected:
         bool _onThreadTaskRun() override;
-        bool _onThreadTaskMain() override;
+        bool _onThreadTaskProcess() override;
 
     protected:
         ConstString m_codecType;

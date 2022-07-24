@@ -73,6 +73,10 @@ namespace Mengine
         }
 
         m_filter = nullptr;
+
+#if MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

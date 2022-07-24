@@ -101,6 +101,10 @@ namespace Mengine
             scheduler->remove( m_id );
             m_id = 0;
         }
+
+#if MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

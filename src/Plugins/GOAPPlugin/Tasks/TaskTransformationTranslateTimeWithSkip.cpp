@@ -159,6 +159,10 @@ namespace Mengine
 
         m_affectorable = nullptr;
         m_transformable = nullptr;
+
+#if MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

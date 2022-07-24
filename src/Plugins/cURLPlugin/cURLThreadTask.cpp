@@ -150,7 +150,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLThreadTask::_onThreadTaskMain()
+    bool cURLThreadTask::_onThreadTaskProcess()
     {
         CURL * curl = curl_easy_init();
 

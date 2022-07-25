@@ -1,4 +1,4 @@
-package org.Mengine.Build.DevToDev;
+package org.Mengine.Plugin.DevToDev;
 
 import android.os.Bundle;
 
@@ -14,10 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
-
-/**
- * Created by sweatcoin7 on 7/13/18.
- */
 
 public class MengineDevToDevPlugin extends MenginePlugin {
     @Override

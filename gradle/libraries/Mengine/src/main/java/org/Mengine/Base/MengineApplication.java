@@ -39,7 +39,7 @@ public class MengineApplication extends Application {
     protected boolean createPlugin(String name) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
 
-        MenginePlugin plugin = MengineUtils.newInstance(TAG, name, false);
+        MenginePlugin plugin = MengineUtils.newInstance(TAG, name, true);
 
         if (plugin == null) {
             Log.e(TAG, "MengineApplication not found plugin: " + name);

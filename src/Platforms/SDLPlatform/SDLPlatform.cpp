@@ -267,6 +267,21 @@ extern "C" {
         return value_boolean;
     }
     //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1hasOption )(JNIEnv * env, jclass cls, jstring _option)
+    {
+        const Mengine::ConfigInterfacePtr & defaultConfig = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+        const Mengine::Char * option_str = env->GetStringUTFChars( _option, nullptr );
+
+        bool result = OPTIONS_SERVICE()
+                ->hasOption( option_str );
+
+        env->ReleaseStringUTFChars( _option, option_str );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logInfo )(JNIEnv * env, jclass cls, jstring _msg)
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );

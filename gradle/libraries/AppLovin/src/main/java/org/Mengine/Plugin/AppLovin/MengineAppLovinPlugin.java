@@ -1,8 +1,8 @@
 package org.Mengine.Plugin.AppLovin;
 
-import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.MengineAppLovinMediationInterface;
 
+import org.Mengine.Base.MengineUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineUtils;
@@ -143,6 +143,13 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         }
 
+        boolean OPTION_applovinverbose = activity.hasOption("applovinverbose");
+        boolean AppLovin_VerboseLogging = activity.getConfigValueBoolean("AppLovin", "VerboseLogging", false);
+
+        if( OPTION_applovinverbose == true || AppLovin_VerboseLogging == true ) {
+            AppLovinSdk.getInstance(context).getSettings().setVerboseLogging(true);
+        }
+
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
@@ -154,6 +161,12 @@ public class MengineAppLovinPlugin extends MenginePlugin {
                 MengineAppLovinPlugin.this.pythonCall("onApplovinPluginOnSdkInitialized");
             }
         });
+
+        boolean OPTION_applovindebugger = activity.hasOption("applovindebugger");
+
+        if (OPTION_applovindebugger == true) {
+            this.showMediationDebugger();
+        }
     }
 
     public void initBanner() throws Exception {

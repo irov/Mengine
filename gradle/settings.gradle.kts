@@ -67,18 +67,35 @@ includePlugin("MENGINE_APP_PLUGIN_MENGINE", true, ":libraries:Mengine")
 includePlugin("MENGINE_APP_PLUGIN_OPENAL32", true, ":libraries:OpenAL32")
 includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 
+
+/**
+/ * - MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS [https://firebase.google.com]
+/ * - MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS [https://firebase.google.com]
+/ * - MENGINE_APP_PLUGIN_APPLOVIN [https://www.applovin.com]
+/ * - MENGINE_APP_PLUGIN_SENTRY [https://sentry.io]
+/ * - MENGINE_APP_PLUGIN_FACEBOOK [https://developers.facebook.com]
+/ * - MENGINE_APP_PLUGIN_DEVTODEV [https://www.devtodev.com]
+/ * - MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS
+/ * - MENGINE_APP_PLUGIN_GOOGLE_SERVICE [https://developers.google.com]
+/ * - MENGINE_APP_PLUGIN_GOOGLE_BILLING [https://developers.google.com]
+/ * - MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL [https://developers.google.com]
+/ * - MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS [https://developers.google.com]
+/ * - MENGINE_APP_PLUGIN_MAR 
+/ * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
+**/
+
+includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":libraries:LocalNotifications")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false, ":libraries:GoogleService")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_BILLING", false, ":libraries:GoogleBilling")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL",false, ":libraries:GoogleGameSocial")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS",false, ":libraries:GoogleInAppReviews")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", false,":libraries:FirebaseAnalytics")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false,":libraries:FirebaseCrashlytics")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", false, ":libraries:AppLovin")
 includePlugin("MENGINE_APP_PLUGIN_SENTRY",false, ":libraries:Sentry")
 includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", false,":libraries:Facebook")
 includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", false, ":libraries:DevToDev")
-includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":libraries:LocalNotifications")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false, ":libraries:GoogleService")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_BILLING", false, ":libraries:GoogleBilling")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL",false, ":libraries:GoogleGameSocial")
 includePlugin("MENGINE_APP_PLUGIN_MAR", false, ":libraries:MAR")
 includePlugin("MENGINE_APP_PLUGIN_ADJUST", false, ":libraries:Adjust")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS",false, ":libraries:GoogleInAppReviews")
 
 println("Mengine complete settings")

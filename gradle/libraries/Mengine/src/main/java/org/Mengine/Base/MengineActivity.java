@@ -51,6 +51,7 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidNativeMengine_getBuildVersion();
     private static native String AndroidNativeMengine_getConfigValue(String section, String key, String default_value);
     private static native boolean AndroidNativeMengine_getConfigValueBoolean(String section, String key, boolean default_value);
+    private static native boolean AndroidNativeMengine_hasOption(String option);
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, int responseId, String args);
@@ -123,6 +124,10 @@ public class MengineActivity extends SDLActivity {
 
     public boolean getConfigValueBoolean(String section, String key, boolean default_value) {
         return AndroidNativeMengine_getConfigValueBoolean(section, key, default_value);
+    }
+
+    public boolean hasOption(String option) {
+        return AndroidNativeMengine_hasOption(option);
     }
 
     protected ArrayList<MenginePlugin> getPlugins() {

@@ -7,25 +7,26 @@ def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty(project, "ANDROID_APP_B
 def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false);
 def ANDROID_APP_ARCH_86_64_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true);
 def ANDROID_APP_ENABLE_DELIVERY_PACKAGE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false);
-def ANDROID_APP_ENABLE_DEVTODEV = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DEVTODEV", true);
-def ANDROID_APP_ENABLE_FACEBOOK = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FACEBOOK", true);
-def ANDROID_APP_ENABLE_GOOGLE_SERVICE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_SERVICE", true);
-def ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true);
-def ANDROID_APP_ENABLE_FIREBASE_ANALYTICS = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_FIREBASE_ANALYTICS", true);
-def ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS", true);
-def ANDROID_APP_ENABLE_SENTRY = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_SENTRY", true);
-def ANDROID_APP_ENABLE_MAR = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_MAR", false);
-def ANDROID_APP_ENABLE_GOOGLE_BILLING = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_BILLING", true);
-def ANDROID_APP_ENABLE_APPLOVIN = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN", true);
-def ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL", true);
-def ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS", true);
-def ANDROID_APP_ENABLE_ADJUST = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_ADJUST", false);
 
-if (ANDROID_APP_ENABLE_GOOGLE_SERVICE == true) {
+def MENGINE_APP_PLUGIN_DEVTODEV = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_DEVTODEV", false);
+def MENGINE_APP_PLUGIN_FACEBOOK = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_FACEBOOK", false);
+def MENGINE_APP_PLUGIN_GOOGLE_SERVICE = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false);
+def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false);
+def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", false);
+def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false);
+def MENGINE_APP_PLUGIN_SENTRY = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_SENTRY", false);
+def MENGINE_APP_PLUGIN_MAR = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_MAR", false);
+def MENGINE_APP_PLUGIN_GOOGLE_BILLING = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_GOOGLE_BILLING", false);
+def MENGINE_APP_PLUGIN_APPLOVIN = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN", false);
+def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false);
+def MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", false);
+def MENGINE_APP_PLUGIN_ADJUST = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_ADJUST", false);
+
+if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
     apply plugin: 'com.google.gms.google-services'
 }
 
-if (ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS == true) {
+if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
     apply plugin: 'com.google.firebase.crashlytics'
 }
 
@@ -206,7 +207,7 @@ android {
 
 // test c++ debug -> preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 
-    if (ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS == true && ANDROID_APP_UPLOAD_CRASHLYTICS == true) {
+    if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && ANDROID_APP_UPLOAD_CRASHLYTICS == true) {
         buildTypes {
             debug {
                 externalNativeBuild {
@@ -277,9 +278,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 
-println 'ANDROID_APP_ENABLE_DEVTODEV: ' + ANDROID_APP_ENABLE_DEVTODEV
+println 'MENGINE_APP_PLUGIN_DEVTODEV: ' + MENGINE_APP_PLUGIN_DEVTODEV
 
-if (ANDROID_APP_ENABLE_DEVTODEV == true) {
+if (MENGINE_APP_PLUGIN_DEVTODEV == true) {
     android.ext.plugins += 'org.Mengine.Plugin.DevToDev.MengineDevToDevPlugin'
 
     dependencies {
@@ -287,9 +288,9 @@ if (ANDROID_APP_ENABLE_DEVTODEV == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_FACEBOOK: ' + ANDROID_APP_ENABLE_FACEBOOK
+println 'MENGINE_APP_PLUGIN_FACEBOOK: ' + MENGINE_APP_PLUGIN_FACEBOOK
 
-if (ANDROID_APP_ENABLE_FACEBOOK == true) {
+if (MENGINE_APP_PLUGIN_FACEBOOK == true) {
     android.ext.plugins += 'org.Mengine.Plugin.Facebook.MengineFacebookPlugin'
 
     dependencies {
@@ -297,17 +298,17 @@ if (ANDROID_APP_ENABLE_FACEBOOK == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: ' + ANDROID_APP_ENABLE_GOOGLE_SERVICE
+println 'MENGINE_APP_PLUGIN_GOOGLE_SERVICE: ' + MENGINE_APP_PLUGIN_GOOGLE_SERVICE
 
-if (ANDROID_APP_ENABLE_GOOGLE_SERVICE == true) {
+if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
     dependencies {
         implementation project(':libraries:GoogleService')
     }
 }
 
-println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: ' + ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS
+println 'MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS: ' + MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS
 
-if (ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS == true) {
+if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseCrashlytics.MengineCrashlyticsPlugin'
 
     dependencies {
@@ -315,9 +316,9 @@ if (ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_FIREBASE_ANALYTICS: ' + ANDROID_APP_ENABLE_FIREBASE_ANALYTICS
+println 'MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS: ' + MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS
 
-if (ANDROID_APP_ENABLE_FIREBASE_ANALYTICS == true) {
+if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseAnalyticsPlugin'
 
     dependencies {
@@ -325,9 +326,9 @@ if (ANDROID_APP_ENABLE_FIREBASE_ANALYTICS == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS: ' + ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS
+println 'MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS: ' + MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS
 
-if (ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS == true) {
+if (MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS == true) {
     android.ext.plugins += 'org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationsPlugin'
 
     dependencies {
@@ -335,9 +336,9 @@ if (ANDROID_APP_ENABLE_LOCAL_NOTIFICATIONS == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_SENTRY: ' + ANDROID_APP_ENABLE_SENTRY
+println 'MENGINE_APP_PLUGIN_SENTRY: ' + MENGINE_APP_PLUGIN_SENTRY
 
-if (ANDROID_APP_ENABLE_SENTRY == true) {
+if (MENGINE_APP_PLUGIN_SENTRY == true) {
     android.ext.plugins += 'org.Mengine.Plugin.Sentry.MengineSentryPlugin'
 
     dependencies {
@@ -345,9 +346,9 @@ if (ANDROID_APP_ENABLE_SENTRY == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_MAR: ' + ANDROID_APP_ENABLE_MAR
+println 'MENGINE_APP_PLUGIN_MAR: ' + MENGINE_APP_PLUGIN_MAR
 
-if (ANDROID_APP_ENABLE_MAR == true) {
+if (MENGINE_APP_PLUGIN_MAR == true) {
     android.ext.plugins += 'org.Mengine.Plugin.MAR.MengineMARPlugin'
 
     dependencies {
@@ -355,9 +356,9 @@ if (ANDROID_APP_ENABLE_MAR == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_GOOGLE_BILLING: ' + ANDROID_APP_ENABLE_GOOGLE_BILLING
+println 'MENGINE_APP_PLUGIN_GOOGLE_BILLING: ' + MENGINE_APP_PLUGIN_GOOGLE_BILLING
 
-if (ANDROID_APP_ENABLE_GOOGLE_BILLING == true) {
+if (MENGINE_APP_PLUGIN_GOOGLE_BILLING == true) {
     android.ext.plugins += 'org.Mengine.Plugin.GooglePlayBilling.MengineGooglePlayBillingPlugin'
 
     dependencies {
@@ -365,9 +366,9 @@ if (ANDROID_APP_ENABLE_GOOGLE_BILLING == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_APPLOVIN: ' + ANDROID_APP_ENABLE_APPLOVIN
+println 'MENGINE_APP_PLUGIN_APPLOVIN: ' + MENGINE_APP_PLUGIN_APPLOVIN
 
-if (ANDROID_APP_ENABLE_APPLOVIN == true) {
+if (MENGINE_APP_PLUGIN_APPLOVIN == true) {
     android.ext.plugins += 'org.Mengine.Plugin.AppLovin.MengineAppLovinPlugin'
 
     dependencies {
@@ -375,9 +376,9 @@ if (ANDROID_APP_ENABLE_APPLOVIN == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL: ' + ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL
+println 'MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL: ' + MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL
 
-if (ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL == true) {
+if (MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL == true) {
     android.ext.plugins += 'org.Mengine.Plugin.GoogleGameSocial.MengineGoogleGameSocialPlugin'
 
     dependencies {
@@ -385,9 +386,9 @@ if (ANDROID_APP_ENABLE_GOOGLE_GAME_SOCIAL == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS: ' + ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS
+println 'MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS: ' + MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS
 
-if (ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS == true) {
+if (MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS == true) {
     android.ext.plugins += 'org.Mengine.Plugin.GoogleInAppReviews.MengineGoogleInAppReviewsPlugin'
 
     dependencies {
@@ -395,9 +396,9 @@ if (ANDROID_APP_ENABLE_GOOGLE_INAPP_REVIEWS == true) {
     }
 }
 
-println 'ANDROID_APP_ENABLE_ADJUST: ' + ANDROID_APP_ENABLE_ADJUST
+println 'MENGINE_APP_PLUGIN_ADJUST: ' + MENGINE_APP_PLUGIN_ADJUST
 
-if (ANDROID_APP_ENABLE_ADJUST == true) {
+if (MENGINE_APP_PLUGIN_ADJUST == true) {
     android.ext.plugins += 'org.Mengine.Plugin.Adjust.MengineAdjustPlugin'
 
     dependencies {

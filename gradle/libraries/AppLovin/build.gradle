@@ -1,29 +1,29 @@
 import com.Mengine.Utils
 
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADCOLONY = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADCOLONY", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_AMAZON = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_AMAZON", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_CHARTBOOST = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_CHARTBOOST", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_CRITEO = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_CRITEO", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_DTEXCHANGE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_DTEXCHANGE", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADMOB = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADMOB", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_HYPRMX = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_HYPRMX", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_INMOBI = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_INMOBI", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_IRONSOURCE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_IRONSOURCE", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_LINE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_LINE", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MAIO = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MAIO", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_META = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_META", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MINTEGRAL = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MINTEGRAL", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MYTARGET = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MYTARGET", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_NEND = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_NEND", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_OGURY = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_OGURY", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_PANGLE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_PANGLE", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_SMAATO = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_SMAATO", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_TAPJOY = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_TAPJOY", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_UNITYADS = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_UNITYADS", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VERVE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VERVE", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VUNGLE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VUNGLE", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YAHOO = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YAHOO", false)
-def ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YANDEX = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YANDEX", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADCOLONY = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADCOLONY", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CRITEO = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CRITEO", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_DTEXCHANGE = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_DTEXCHANGE", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_NEND = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_NEND", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VUNGLE = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VUNGLE", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YAHOO = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YAHOO", false)
+def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX", false)
 
 buildscript {
     repositories {
@@ -32,11 +32,11 @@ buildscript {
         maven { url 'https://artifacts.applovin.com/android' }
         mavenCentral()
 
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VUNGLE", false) == true) {
+        if (Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VUNGLE", false) == true) {
             maven { url "https://verve.jfrog.io/artifactory/verve-gradle-release" }
         }
 
-        if (Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VUNGLE", false) == true) {
+        if (Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VUNGLE", false) == true) {
             maven { url "https://artifactory.yahooinc.com/artifactory/maven" }
         }
     }
@@ -69,7 +69,7 @@ android {
 
     sourceSets {
         main {
-            if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_AMAZON == true) {
+            if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
                 java.srcDirs += ['mediationAmazon']
             }
 
@@ -91,104 +91,104 @@ dependencies {
 
     implementation 'com.applovin:applovin-sdk:11.4.3'
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADCOLONY == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADCOLONY == true) {
         implementation 'com.applovin.mediation:adcolony-adapter:4.8.0.1'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_AMAZON == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
         implementation 'com.applovin.mediation:amazon-tam-adapter:9.5.4.1'
         implementation 'com.amazon.android:aps-sdk:9.5.4'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_CHARTBOOST == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST == true) {
         implementation 'com.applovin.mediation:chartboost-adapter:8.4.3.1'
         implementation 'com.google.android.gms:play-services-base:16.1.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_CRITEO == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CRITEO == true) {
         implementation 'com.applovin.mediation:criteo-adapter:4.6.1.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_DTEXCHANGE == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_DTEXCHANGE == true) {
         implementation 'com.applovin.mediation:fyber-adapter:8.1.5.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_ADMOB == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
         implementation 'com.applovin.mediation:google-adapter:21.1.0.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_HYPRMX == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX == true) {
         implementation 'com.applovin.mediation:hyprmx-adapter:6.0.3.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_INMOBI == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI == true) {
         implementation 'com.applovin.mediation:inmobi-adapter:10.0.8.0'
         implementation 'com.squareup.picasso:picasso:2.71828'
         implementation 'androidx.recyclerview:recyclerview:1.1.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_IRONSOURCE == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
         implementation 'com.applovin.mediation:ironsource-adapter:7.2.3.1.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_LINE == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {
         implementation 'com.applovin.mediation:line-adapter:2022.2.16.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MAIO == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO == true) {
         implementation 'com.applovin.mediation:maio-adapter:1.1.16.2'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_META == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META == true) {
         implementation 'com.applovin.mediation:facebook-adapter:6.11.0.4'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MINTEGRAL == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
         implementation 'com.applovin.mediation:mintegral-adapter:16.1.81.0'
         implementation 'androidx.recyclerview:recyclerview:1.1.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_MYTARGET == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET == true) {
         implementation 'com.applovin.mediation:mytarget-adapter:5.15.1.6'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_NEND == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_NEND == true) {
         implementation 'com.applovin.mediation:nend-adapter:8.2.0.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_OGURY == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY == true) {
         implementation 'com.applovin.mediation:ogury-presage-adapter:5.3.0.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_PANGLE == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {
         implementation 'com.applovin.mediation:bytedance-adapter:4.5.0.6.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_SMAATO == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO == true) {
         implementation 'com.applovin.mediation:smaato-adapter:21.8.3.1'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_TAPJOY == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY == true) {
         implementation 'com.applovin.mediation:tapjoy-adapter:12.10.0.1'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_UNITYADS == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {
         implementation 'com.applovin.mediation:unityads-adapter:4.2.1.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VERVE == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE == true) {
         implementation 'com.applovin.mediation:verve-adapter:2.14.0.0'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_VUNGLE == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VUNGLE == true) {
         implementation 'com.applovin.mediation:vungle-adapter:6.11.0.1'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YAHOO == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YAHOO == true) {
         implementation 'com.applovin.mediation:verizonads-adapter:2.0.0.10'
     }
 
-    if (ANDROID_APP_ENABLE_APPLOVIN_MEDIATION_YANDEX == true) {
+    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX == true) {
         implementation 'com.applovin.mediation:yandex-adapter:5.2.0.0'
     }
 }

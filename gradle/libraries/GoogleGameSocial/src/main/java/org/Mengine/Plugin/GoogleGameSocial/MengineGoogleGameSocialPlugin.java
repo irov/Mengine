@@ -91,7 +91,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     void startSignInIntent() {
-        MengineGoogleGameSocialPlugin.this.logInfo("startSignInIntent");
+        this.logInfo("startSignInIntent");
 
         MengineActivity activity = this.getActivity();
         Intent intent = m_signInClient.getSignInIntent();
@@ -100,7 +100,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     void signOut() {
-        MengineGoogleGameSocialPlugin.this.logInfo("signOut");
+        this.logInfo("signOut");
 
         MengineActivity activity = this.getActivity();
 
@@ -144,23 +144,25 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
             if (result != null && result.isSuccess() == true) {
+                this.logInfo("resign");
+
                 GoogleSignInAccount account = result.getSignInAccount();
 
                 this.signInCallback(account);
             } else {
-                MengineGoogleGameSocialPlugin.this.logError("Google game social error %s status %s"
+                this.logError("Google game social error %s status %s"
                         , result.getStatus().getStatusMessage()
                         , result.getStatus()
                 );
 
-                MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
+                this.pythonCall("onGoogleGameSocialOnSignError");
             }
         }
     }
 
     private void signInCallback(@Nullable GoogleSignInAccount account) {
         if (account == null) {
-            MengineGoogleGameSocialPlugin.this.logError("GoogleSignInAccount == null");
+            this.logError("GoogleSignInAccount == null");
 
             return;
         }
@@ -170,7 +172,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         m_achievementsClient = Games.getAchievementsClient(activity, account);
 
         //аккаунт от гугла - профиль от гугла
-        MengineGoogleGameSocialPlugin.this.logInfo("player include '%s' ->id = '%s'"
+        this.logInfo("player include '%s' ->id = '%s'"
                 , account.getDisplayName()
                 , account.getId()
         );
@@ -179,7 +181,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public void signInSilently() {
-        MengineGoogleGameSocialPlugin.this.logInfo("signInSilently");
+        this.logInfo("signInSilently");
 
         MengineActivity activity = this.getActivity();
 
@@ -203,49 +205,33 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                 @Override
                 public void onComplete(@NonNull Task<GoogleSignInAccount> googleSignInAccountTask) {
                     if (googleSignInAccountTask.isSuccessful() == true) {
+                        MengineGoogleGameSocialPlugin.this.logInfo("successful silently login");
+
                         GoogleSignInAccount account = googleSignInAccountTask.getResult();
 
                         MengineGoogleGameSocialPlugin.this.signInCallback(account);
                     } else {
-                        Exception ex = googleSignInAccountTask.getException();
+                        MengineGoogleGameSocialPlugin.this.logInfo("failed silently login try intent");
 
-                        if (ex == null) {
-                            ex = googleSignInAccountTask.getException();
-                        }
 
-                        if (ex != null) {
-                            MengineGoogleGameSocialPlugin.this.logError("not success login: %s"
-                                , ex.getLocalizedMessage()
-                            );
-                        } else {
-                            MengineGoogleGameSocialPlugin.this.logInfo("not success login");
-                        }
-
-                        MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
                         // Player will need to sign-in explicitly using via UI.
                         // See [sign-in best practices](http://developers.google.com/games/services/checklist) for guidance on how and when to implement Interactive Sign-in,
                         // and [Performing Interactive Sign-in](http://developers.google.com/games/services/android/signin#performing_interactive_sign-in) for details on how to implement
                         // Interactive Sign-in.
 
-                        /*App.scopeUI.launch {
-                            startSignInIntent()
-                        }*/
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception ex) {
-                    MengineGoogleGameSocialPlugin.this.logError("not success silently login: %s"
-                            , ex.getLocalizedMessage()
-                    );
+                        //MengineGoogleGameSocialPlugin.this.startSignInIntent();
 
-                    MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignFailed");
+                        MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
+
+                        //[ToDo]
+                        //MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialNeedIntentSign");
+                    }
                 }
             });
     }
 
     public boolean showAchievements() {
-        MengineGoogleGameSocialPlugin.this.logInfo("showAchievements");
+        this.logInfo("showAchievements");
 
         if (m_achievementsClient == null) {
             return false;
@@ -275,7 +261,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean unlockAchievement(String achievementId) {
-        MengineGoogleGameSocialPlugin.this.logInfo("unlockAchievement '%s'"
+        this.logInfo("unlockAchievement '%s'"
             , achievementId
         );
 
@@ -310,7 +296,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
-        MengineGoogleGameSocialPlugin.this.logInfo("incrementAchievement '%s' [%d]"
+        this.logInfo("incrementAchievement '%s' [%d]"
                 , achievementId
                 , numSteps
         );

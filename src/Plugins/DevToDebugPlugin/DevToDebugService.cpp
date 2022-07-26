@@ -179,20 +179,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
-
-        if( m_timerId != INVALID_UNIQUE_ID )
-        {
-            PLATFORM_SERVICE()
-                ->removeTimer( m_timerId );
-            m_timerId = INVALID_UNIQUE_ID;
-        }
-
-        m_mutexTabs = nullptr;
-        m_mutexCommands = nullptr;
-
-        this->stop();
-
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), nullptr );
 
@@ -225,6 +211,28 @@ namespace Mengine
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::_stopService()
+    {
+        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+
+        if( m_timerId != INVALID_UNIQUE_ID )
+        {
+            PLATFORM_SERVICE()
+                ->removeTimer( m_timerId );
+            m_timerId = INVALID_UNIQUE_ID;
+        }
+
+        m_mutexTabs = nullptr;
+        m_mutexCommands = nullptr;
+
+        m_tabsProcess.clear();
+        m_tabsSync.clear();
+
+        m_tabsCommands.clear();
+
+        this->stop();
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab )

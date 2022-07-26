@@ -126,6 +126,13 @@ namespace Mengine
 
             _desc.mutex->unlock();
 
+            if( _desc.remove == true )
+            {
+                _desc.mutex_progress->lock();
+                //Wait proccess
+                _desc.mutex_progress->unlock();
+            }
+
             if( successful == true )
             {
                 worker->onThreadWorkerDone( id );
@@ -180,9 +187,11 @@ namespace Mengine
 
             if( work == false )
             {
-                _desc.status = ETS_DONE;
-                _desc.pause = false;
-                _desc.remove = false;
+                if( _desc.remove == false )
+                {
+                    _desc.status = ETS_DONE;
+                    _desc.pause = false;
+                }
             }
 
             _desc.mutex->unlock();

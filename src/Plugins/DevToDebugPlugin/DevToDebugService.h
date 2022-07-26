@@ -32,6 +32,7 @@ namespace Mengine
         const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     protected:
         void addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab ) override;

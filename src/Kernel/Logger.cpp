@@ -1,6 +1,9 @@
 #include "Logger.h"
 
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -79,34 +82,47 @@ namespace Mengine
 
         if( m_timestamp == true )
         {
-            if( m_level > LM_CRITICAL )
+            size_t size_timestamp = LOGGER_SERVICE()
+                ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+
+            if( size_timestamp > 0 )
             {
-                size_t size_timestamp = LOGGER_SERVICE()
-                    ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+                size += size_timestamp;
+            }
+        }
 
-                if( size_timestamp > 0 )
+        if( m_category.empty() == false )
+        {
+            size_t size_category = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "[%s] "
+                , m_category.c_str()
+            );
+
+            if( size_category > 0 )
+            {
+                size += size_category;
+            }
+        }
+
+        size_t size_functionstamp = LOGGER_SERVICE()
+            ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+
+        if( size_functionstamp > 0 )
+        {
+            size += size_functionstamp;
+        }
+        
+        if( SERVICE_EXIST( OptionsServiceInterface ) == true )
+        {
+            bool OPTION_loggermemoryusage = HAS_OPTION( "loggermemoryusage" );
+
+            if( OPTION_loggermemoryusage == true )
+            {
+                size_t size_memoryusage = LOGGER_SERVICE()
+                    ->makeMemoryusage( str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+
+                if( size_memoryusage > 0 )
                 {
-                    size += size_timestamp;
-                }
-
-                if( m_category.empty() == false )
-                {
-                    size_t size_category = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "[%s] "
-                        , m_category.c_str()
-                    );
-
-                    if( size_category > 0 )
-                    {
-                        size += size_category;
-                    }
-                }
-
-                size_t size_functionstamp = LOGGER_SERVICE()
-                    ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
-
-                if( size_functionstamp > 0 )
-                {
-                    size += size_functionstamp;
+                    size += size_memoryusage;
                 }
             }
         }

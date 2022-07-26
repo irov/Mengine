@@ -1,12 +1,16 @@
 #include "AllocatorService.h"
 
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Error.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/LoggerHelper.h"
 
 #include "Config/StdString.h"
 
@@ -100,8 +104,8 @@ namespace Mengine
         {
             this->leaveThread_();
         } );
-
-        return true;
+        \
+            return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::_finalizeService()
@@ -131,8 +135,9 @@ namespace Mengine
 
         void * p = ::malloc( _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu' [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu' total '%zu' [%s]"
             , _size
+            , (uint32_t)m_reportTotal
             , _doc
         );
 
@@ -194,8 +199,9 @@ namespace Mengine
 
         void * p = ::malloc( total + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu' [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid calloc memory '%zu' total '%u' [%s]"
             , _size
+            , (uint32_t)m_reportTotal
             , _doc
         );
 
@@ -228,8 +234,9 @@ namespace Mengine
         {
             p = ::realloc( nullptr, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' from nullptr [%s]"
+            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' total '%u' from nullptr [%s]"
                 , _size
+                , (uint32_t)m_reportTotal
                 , _doc
             );
 
@@ -250,8 +257,9 @@ namespace Mengine
 
             p = ::realloc( _mem, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' from '%p' [%s]"
+            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' total '%u' from '%p' [%s]"
                 , _size
+                , (uint32_t)m_reportTotal
                 , _mem
                 , _doc
             );
@@ -389,21 +397,20 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
     void AllocatorService::report( const Char * _doc, size_t _add, size_t _minus )
     {
-        if( _doc == nullptr )
-        {
-            return;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexReport );
 
         uint32_t report_add = (uint32_t)_add;
         uint32_t report_minus = (uint32_t)_minus;
 
-
         MENGINE_ASSERTION_FATAL( m_reportTotal + report_add >= report_minus );
 
         m_reportTotal += report_add;
         m_reportTotal -= report_minus;
+
+        if( _doc == nullptr )
+        {
+            return;
+        }
 
         for( uint32_t index = 0; index != MENGINE_ALLOCATOR_REPORT_COUNT; ++index )
         {

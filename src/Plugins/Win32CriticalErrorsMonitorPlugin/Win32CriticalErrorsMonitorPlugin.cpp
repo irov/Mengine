@@ -27,12 +27,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32CriticalErrorsMonitorPlugin::_availablePlugin() const
     {
-        if( CONFIG_VALUE( "Platform", "CriticalErrorsMonitor", true ) == false )
+        if( HAS_OPTION( "criticalerrorsmonitor" ) == true )
+        {
+            return true;
+        }
+
+        if( HAS_OPTION( "nocriticalerrorsmonitor" ) == true )
         {
             return false;
         }
 
-        if( HAS_OPTION( "nocriticalerrorsmonitor" ) == true )
+        if( CONFIG_VALUE( "Platform", "CriticalErrorsMonitor", true ) == false )
         {
             return false;
         }

@@ -22,6 +22,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitorPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "antifreezemonitor" ) == true )
+        {
+            return true;
+        }
+
+        if( HAS_OPTION( "noantifreezemonitor" ) == true )
+        {
+            return false;
+        }
+
         if( CONFIG_VALUE( "Platform", "AntifreezeMonitor", true ) == false )
         {
             return false;
@@ -30,11 +40,6 @@ namespace Mengine
         bool Engine_AntifreezeMonitorEnable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
 
         if( Engine_AntifreezeMonitorEnable == false )
-        {
-            return false;
-        }
-
-        if( HAS_OPTION( "noantifreezemonitor" ) == true )
         {
             return false;
         }

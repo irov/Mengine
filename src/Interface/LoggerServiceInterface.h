@@ -37,6 +37,7 @@ namespace Mengine
 
     public:
         virtual size_t makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const = 0;
+        virtual size_t makeMemoryusage( Char * const _buffer, size_t _offset, size_t _capacity ) const = 0;
         virtual size_t makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const = 0;
 
     public:

@@ -23,44 +23,67 @@ namespace Mengine
             : public AppleMARSDKProviderInterface
         {
         public:
-            PythonAppleMARSDKProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
+            PythonAppleMARSDKProvider( pybind::kernel_interface * _kernel, const pybind::dict & _cbs, const pybind::args & _args )
+                : m_kernel( _kernel )
+                , m_cbs( _cbs )
                 , m_args( _args )
             {
             }
 
         protected:
-            void onUserLogin() override
+            void onUserLogin( const MARSDKResultParams & _params ) override
             {
                 pybind::object cb = m_cbs["onUserLogin"];
                 
-                cb.call_args( m_args );
+                pybind::dict d( m_kernel );
+                
+                for( auto && [key, value] : _params )
+                {
+                    d[key] = value;
+                }
+                
+                cb.call_args( d, m_args );
             }
 
-            void onUserLogout() override
+            void onUserLogout( const MARSDKResultParams & _params ) override
             {
                 pybind::object cb = m_cbs["onUserLogout"];
                 
-                cb.call_args( m_args );
+                pybind::dict d( m_kernel );
+                
+                for( auto && [key, value] : _params )
+                {
+                    d[key] = value;
+                }
+                
+                cb.call_args( d, m_args );
             }
 
-            void onPayPaid() override
+            void onPayPaid( const MARSDKResultParams & _params ) override
             {
                 pybind::object cb = m_cbs["onPayPaid"];
                 
-                cb.call_args( m_args );
+                pybind::dict d( m_kernel );
+                
+                for( auto && [key, value] : _params )
+                {
+                    d[key] = value;
+                }
+                
+                cb.call_args( d, m_args );
             }
 
         protected:
+            pybind::kernel_interface * m_kernel;
             pybind::dict m_cbs;
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleMARSDKProvider, AppleMARSDKProviderInterface> PythonAppleMARSDKProviderPtr;
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_setProvider( const pybind::dict & _cbs, const pybind::args & _args )
+        static void s_AppleMARSDK_setProvider( pybind::kernel_interface * _kernel, const pybind::dict & _cbs, const pybind::args & _args )
         {
-            PythonAppleMARSDKProviderPtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            PythonAppleMARSDKProviderPtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _kernel, _cbs, _args );
 
             APPLE_MARSDK_SERVICE()
                 ->setProvider( provider );
@@ -169,7 +192,7 @@ namespace Mengine
             .def( "TYPE_EXIT_GAME", TYPE_EXIT_GAME )
             ;
 
-        pybind::def_function_args( _kernel, "appleMARSDKSetProvider", &Detail::s_AppleMARSDK_setProvider );
+        pybind::def_function_kernel_args( _kernel, "appleMARSDKSetProvider", &Detail::s_AppleMARSDK_setProvider );
         pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::s_AppleMARSDK_login );
         pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::s_AppleMARSDK_logout );
         pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );

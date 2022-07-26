@@ -33,9 +33,9 @@ namespace Mengine
         void submitPaymentData( const MARSDKProductInfo & product ) override;
         
     public:
-        void onUserLogin();
-        void onUserLogout();
-        void onPayPaid();
+        void onUserLogin( const MARSDKResultParams & _params );
+        void onUserLogout( const MARSDKResultParams & _params );
+        void onPayPaid( const MARSDKResultParams & _params );
 
 	protected:
         AppleMARSDKProviderInterfacePtr m_provider;

@@ -3,6 +3,9 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
+#include "Kernel/ConstString.h"
+#include "Kernel/Map.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -61,13 +64,15 @@ namespace Mengine
         ConstString notifyUrl;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef Map<String, String> MARSDKResultParams;
+    //////////////////////////////////////////////////////////////////////////
     class AppleMARSDKProviderInterface
         : public ServantInterface
     {
     public:
-        virtual void onUserLogin() = 0;
-        virtual void onUserLogout() = 0;
-        virtual void onPayPaid() = 0;
+        virtual void onUserLogin( const MARSDKResultParams & _params ) = 0;
+        virtual void onUserLogout( const MARSDKResultParams & _params ) = 0;
+        virtual void onPayPaid( const MARSDKResultParams & _params ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleMARSDKProviderInterface> AppleMARSDKProviderInterfacePtr;

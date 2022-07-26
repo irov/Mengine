@@ -1,5 +1,7 @@
 #import "AppleMARSDKDelegate.h"
 
+#include "Environment/Apple/AppleUtils.h"
+
 #include "Kernel/Logger.h"
 
 @implementation AppleMARSDKDelegate
@@ -31,25 +33,57 @@
 }
 
 - (void) OnPlatformInit: (NSDictionary *)params {
-    LOGGER_INFO("marsdk", "OnPlatformInit");
+    LOGGER_INFO("marsdk", "OnPlatformInit params:");
+    
+#if MENGINE_LOGGER_DEBUG == 1
+    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+        LOGGER_INFO("%s = %s"
+            , [[NSString stringWithFormat:@"%@", key] UTF8String]
+            , [[NSString stringWithFormat:@"%@", value] UTF8String]
+        );
+    }];
+#endif
     
     //ToDo
 }
 
 - (void) OnRealName:(NSDictionary*)params {
-    LOGGER_INFO("marsdk", "OnRealName");
+    LOGGER_INFO("marsdk", "OnRealName params:");
+    
+#if MENGINE_LOGGER_DEBUG == 1
+    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+        LOGGER_INFO("%s = %s"
+            , [[NSString stringWithFormat:@"%@", key] UTF8String]
+            , [[NSString stringWithFormat:@"%@", value] UTF8String]
+        );
+    }];
+#endif
     
     //ToDo
 }
 
 - (void) OnEventWithCode: (int)code msg: (NSString*)msg {
-    LOGGER_INFO("marsdk", "OnEventWithCode");
+    LOGGER_INFO("marsdk", "OnEventWithCode [%d] msg [%s]"
+        , code
+        , [msg UTF8String]
+    );
     
     //ToDo
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
-    LOGGER_INFO("marsdk", "OnEventCustom");
+    LOGGER_INFO("marsdk", "OnEventCustom event '%s' params:"
+        , [eventName UTF8String]
+    );
+    
+#if MENGINE_LOGGER_DEBUG == 1
+    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+        LOGGER_INFO("%s = %s"
+            , [[NSString stringWithFormat:@"%@", key] UTF8String]
+            , [[NSString stringWithFormat:@"%@", value] UTF8String]
+        );
+    }];
+#endif
     
     //ToDo
 }
@@ -61,9 +95,23 @@
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
+    LOGGER_INFO("marsdk", "OnUserLogin params:");
+    
+#if MENGINE_LOGGER_DEBUG == 1
+    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+        LOGGER_INFO("%s = %s"
+            , [[NSString stringWithFormat:@"%@", key] UTF8String]
+            , [[NSString stringWithFormat:@"%@", value] UTF8String]
+        );
+    }];
+#endif
+    
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
-    provider->onUserLogin();
+    Mengine::MARSDKResultParams result_params;
+    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+    
+    provider->onUserLogin( result_params );
 }
 
 - (BOOL) logout {
@@ -73,9 +121,23 @@
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
+    LOGGER_INFO("marsdk", "OnUserLogout params:");
+    
+#if MENGINE_LOGGER_DEBUG == 1
+    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+        LOGGER_INFO("%s = %s"
+            , [[NSString stringWithFormat:@"%@", key] UTF8String]
+            , [[NSString stringWithFormat:@"%@", value] UTF8String]
+        );
+    }];
+#endif
+    
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
-    provider->onUserLogout();
+    Mengine::MARSDKResultParams result_params;
+    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+    
+    provider->onUserLogout( result_params );
 }
 
 - (void) switchAccount {
@@ -91,9 +153,23 @@
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
+    LOGGER_INFO("marsdk", "OnPayPaid params:");
+    
+#if MENGINE_LOGGER_DEBUG == 1
+    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+        LOGGER_INFO("%s = %s"
+            , [[NSString stringWithFormat:@"%@", key] UTF8String]
+            , [[NSString stringWithFormat:@"%@", value] UTF8String]
+        );
+    }];
+#endif
+    
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
-    provider->onPayPaid();
+    Mengine::MARSDKResultParams result_params;
+    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+    
+    provider->onPayPaid( result_params );
 }
 
 @end

@@ -127,7 +127,7 @@ namespace Mengine
         [m_delegate submitPaymentData:productInfo];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::onUserLogin()
+    void AppleMARSDKService::onUserLogin( const MARSDKResultParams & _params )
     {
         LOGGER_INFO( "marsdk", "event user login" );
         
@@ -136,10 +136,10 @@ namespace Mengine
             return;
         }
         
-        m_provider->onUserLogin();
+        m_provider->onUserLogin( _params );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::onUserLogout()
+    void AppleMARSDKService::onUserLogout( const MARSDKResultParams & _params )
     {
         LOGGER_INFO( "marsdk", "event user logout" );
         
@@ -148,10 +148,10 @@ namespace Mengine
             return;
         }
         
-        m_provider->onUserLogout();
+        m_provider->onUserLogout( _params );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::onPayPaid()
+    void AppleMARSDKService::onPayPaid( const MARSDKResultParams & _params )
     {
         LOGGER_INFO( "marsdk", "event pay paid" );
         
@@ -160,7 +160,7 @@ namespace Mengine
             return;
         }
         
-        m_provider->onPayPaid();
+        m_provider->onPayPaid( _params );
     }
     //////////////////////////////////////////////////////////////////////////
 }

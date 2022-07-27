@@ -39,17 +39,28 @@ android {
 
     signingConfigs {
         config {
-            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE")) {
-                print 'ANDROID_APP_RELEASE_STORE_FILE = '
-                println ANDROID_APP_RELEASE_STORE_FILE
+            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+                release {
+                    println "ANDROID_APP_RELEASE_STORE_FILE = $ANDROID_APP_RELEASE_STORE_FILE"
+                    println "ANDROID_APP_RELEASE_KEY_ALIAS = $ANDROID_APP_RELEASE_KEY_ALIAS"
 
-                print 'ANDROID_APP_RELEASE_KEY_ALIAS = '
-                println ANDROID_APP_RELEASE_KEY_ALIAS
+                    storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
+                    storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
+                    keyAlias ANDROID_APP_RELEASE_KEY_ALIAS
+                    keyPassword ANDROID_APP_RELEASE_KEY_PASSWORD
+                }
+            }
 
-                storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
-                storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
-                keyAlias ANDROID_APP_RELEASE_KEY_ALIAS
-                keyPassword ANDROID_APP_RELEASE_KEY_PASSWORD
+            if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
+                debug {
+                    println "ANDROID_APP_DEBUG_STORE_FILE = $ANDROID_APP_DEBUG_STORE_FILE"
+                    println "ANDROID_APP_DEBUG_KEY_ALIAS = $ANDROID_APP_DEBUG_KEY_ALIAS"
+
+                    storeFile file(ANDROID_APP_DEBUG_STORE_FILE)
+                    storePassword ANDROID_APP_DEBUG_STORE_PASSWORD
+                    keyAlias ANDROID_APP_DEBUG_KEY_ALIAS
+                    keyPassword ANDROID_APP_DEBUG_KEY_PASSWORD
+                }
             }
         }
     }
@@ -74,27 +85,26 @@ android {
     defaultConfig {
         if (project.hasProperty("ANDROID_APP_ID")) {
             applicationId ANDROID_APP_ID
-            print 'ANDROID_APP_ID = '
+
+            println "ANDROID_APP_ID = $applicationId"
         } else if (System.getenv('ANDROID_APP_ID')) {
             applicationId System.getenv('ANDROID_APP_ID')
-            print 'ANDROID_APP_ID = '
+
+            println "ANDROID_APP_ID = $applicationId"
         } else {
             applicationId "org.Mengine.ANDROID_APP_ID"
-            print 'HARDCODE ANDROID_APP_ID = '
-        }
 
-        println applicationId
+            println "HARDCODE ANDROID_APP_ID = $applicationId"
+        }
 
         minSdkVersion project.minSdkVersion
         targetSdkVersion project.targetSdkVersion
 
-        print 'ANDROID_APP_BUILD_NUMBER = '
-        println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", "0")
+        def ANDROID_APP_BUILD_NUMBER = project.getProperties().get("ANDROID_APP_BUILD_NUMBER", "0")
 
-        def buildNumber = 0
-        if (project.hasProperty("ANDROID_APP_BUILD_NUMBER")) {
-            buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
-        }
+        println "ANDROID_APP_BUILD_NUMBER = $ANDROID_APP_BUILD_NUMBER"
+
+        def buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
 
         if (ANDROID_APP_BUILD_PUBLISH == true) {
             versionCode = 400000000 + buildNumber
@@ -108,11 +118,8 @@ android {
             versionName versionCode as String
         }
 
-        print 'versionCode = '
-        println versionCode
-
-        print 'versionName = '
-        println versionName
+        println "versionCode = $versionCode"
+        println "versionName = $versionName"
 
         signingConfig signingConfigs.config
 

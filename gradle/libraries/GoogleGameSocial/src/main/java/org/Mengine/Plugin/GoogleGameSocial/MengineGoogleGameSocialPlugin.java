@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.GoogleGameSocial;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,7 +13,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.tasks.OnCanceledListener;
@@ -69,8 +72,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     private int RC_UNUSED;
 
     private @NonNull GoogleSignInClient m_signInClient;
-    private final GoogleSignInOptions m_signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN;
-    private AchievementsClient m_achievementsClient;
+        private AchievementsClient m_achievementsClient;
 
     @Override
     public void onPythonEmbedding(MengineActivity activity) {
@@ -82,18 +84,26 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
         RC_UNUSED = activity.genRequestCode("RC_UNUSED");
 
-        m_signInClient = GoogleSignIn.getClient(
-                activity,
-                new GoogleSignInOptions.Builder(m_signInOptions)
-                        .requestProfile()
-                        .build()
-        );
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestProfile()
+                .requestId()
+                .build();
+
+        m_signInClient = GoogleSignIn.getClient(activity, signInOptions);
+    }
+
+    @Override
+    public void onResume(MengineActivity activity) {
+        super.onResume(activity);
+
+        //this.signInSilently();
     }
 
     void startSignInIntent() {
         this.logInfo("startSignInIntent");
 
         MengineActivity activity = this.getActivity();
+
         Intent intent = m_signInClient.getSignInIntent();
 
         activity.startActivityForResult(intent, RC_SIGN_IN);
@@ -150,12 +160,36 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
                 this.signInCallback(account);
             } else {
-                this.logError("Google game social error %s status %s"
-                        , result.getStatus().getStatusMessage()
-                        , result.getStatus()
-                );
+                Status status = result.getStatus();
 
-                this.pythonCall("onGoogleGameSocialOnSignError");
+                int statusCode = status.getStatusCode();
+
+                switch (statusCode) {
+                    case CommonStatusCodes.SIGN_IN_REQUIRED: {
+                        this.logError("Google game social signIn required" );
+
+                        if (status.hasResolution() == true) {
+                            try {
+                                status.startResolutionForResult(activity, RC_SIGN_IN);
+                            } catch (IntentSender.SendIntentException ex) {
+                                this.logError("!!!!!"
+                                );
+                            }
+                        } else {
+                            this.logError("Google game social signIn required failed has resolution" );
+
+                            this.pythonCall("onGoogleGameSocialOnSignError");
+                        }
+                    }break;
+                    default: {
+                        this.logError("Google game social signIn failed status error '%s' code [%d]"
+                                , status.getStatusMessage()
+                                , status.getStatusCode()
+                        );
+
+                        this.pythonCall("onGoogleGameSocialOnSignError");
+                    }break;
+                }
             }
         }
     }
@@ -171,13 +205,16 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
         m_achievementsClient = Games.getAchievementsClient(activity, account);
 
+        String accountDisplayName = account.getDisplayName();
+        String accountId = account.getId();
+
         //аккаунт от гугла - профиль от гугла
         this.logInfo("player include '%s' ->id = '%s'"
-                , account.getDisplayName()
-                , account.getId()
+                , accountDisplayName
+                , accountId
         );
 
-        this.pythonCall("onGoogleGameSocialOnSign", account.getId());
+        this.pythonCall("onGoogleGameSocialOnSign", accountId);
     }
 
     public void signInSilently() {
@@ -185,11 +222,12 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
         MengineActivity activity = this.getActivity();
 
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity());
+        GoogleSignInOptions signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN;
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(activity);
 
-        Scope[] scopes = m_signInOptions.getScopeArray();
+        Scope[] scopes = signInOptions.getScopeArray();
 
-        if (GoogleSignIn.hasPermissions(account, scopes)) {
+        if (GoogleSignIn.hasPermissions(account, scopes) == true) {
             // Already signed in.
             // The signed in account is stored in the 'account' variable.
             this.signInCallback(account);
@@ -198,16 +236,16 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         }
 
         // Haven't been signed-in before. Try the silent sign-in first.
-        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, m_signInOptions);
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, signInOptions);
 
         signInClient.silentSignIn()
             .addOnCompleteListener(activity, new OnCompleteListener<GoogleSignInAccount>() {
                 @Override
-                public void onComplete(@NonNull Task<GoogleSignInAccount> googleSignInAccountTask) {
-                    if (googleSignInAccountTask.isSuccessful() == true) {
+                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                    if (task.isSuccessful() == true) {
                         MengineGoogleGameSocialPlugin.this.logInfo("successful silently login");
 
-                        GoogleSignInAccount account = googleSignInAccountTask.getResult();
+                        GoogleSignInAccount account = task.getResult();
 
                         MengineGoogleGameSocialPlugin.this.signInCallback(account);
                     } else {

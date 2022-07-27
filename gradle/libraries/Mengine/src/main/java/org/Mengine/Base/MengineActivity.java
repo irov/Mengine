@@ -348,6 +348,50 @@ public class MengineActivity extends SDLActivity {
         py_args.append("\"");
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    private void pythonCallBuildArg(StringBuilder py_args, Object a) {
+        if (a == null) {
+            py_args.append("None");
+        } else if (a instanceof Boolean) {
+            Boolean s = (Boolean) a;
+
+            if(s == true) {
+                py_args.append("True");
+            } else {
+                py_args.append("False");
+            }
+        } else if(a instanceof String) {
+            String s = (String)a;
+
+            this.appendBuildArgsString(py_args, s);
+        } else if(a instanceof String[]) {
+            String[] stringArray = (String[])a;
+
+            py_args.append("[");
+
+            for(String s : stringArray) {
+                this.appendBuildArgsString(py_args, s);
+
+                py_args.append(",");
+            }
+
+            py_args.append("]");
+        } else if(a instanceof ArrayList<?>) {
+            ArrayList<?> unknowArray = (ArrayList<?>)a;
+
+            py_args.append("[");
+
+            for(Object o : unknowArray) {
+                this.pythonCallBuildArg(py_args, o);
+
+                py_args.append(",");
+            }
+
+            py_args.append("]");
+        } else {
+            py_args.append(a);
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     private String pythonCallBuildArgs(Object ... args) {
         StringBuilder py_args = new StringBuilder();
 
@@ -356,52 +400,7 @@ public class MengineActivity extends SDLActivity {
         for(int i = 0; i != args.length; ++i) {
             Object a = args[i];
 
-            if(a instanceof Boolean) {
-                Boolean s = (Boolean) a;
-
-                if(s == true) {
-                    py_args.append("True");
-                } else {
-                    py_args.append("False");
-                }
-            } else if(a instanceof String) {
-                String s = (String)a;
-
-                this.appendBuildArgsString(py_args, s);
-            } else if(a instanceof String[]) {
-                String[] stringArray = (String[])a;
-
-                py_args.append("[");
-
-                for(String s : stringArray) {
-                    this.appendBuildArgsString(py_args, s);
-
-                    py_args.append(",");
-                }
-
-                py_args.append("]");
-            } else if(a instanceof ArrayList<?>) {
-                ArrayList<?> unknowArray = (ArrayList<?>)a;
-
-                py_args.append("[");
-
-                if(unknowArray.size() == 0) {
-                    //Empty
-                } else if (unknowArray.get(0) instanceof String) {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<String> stringArray = (ArrayList<String>)unknowArray;
-
-                    for(String s : stringArray) {
-                        this.appendBuildArgsString(py_args, s);
-
-                        py_args.append(",");
-                    }
-                }
-
-                py_args.append("]");
-            } else {
-                py_args.append(a);
-            }
+            this.pythonCallBuildArg(py_args, a);
 
             py_args.append(",");
         }

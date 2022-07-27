@@ -17,6 +17,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Win32Helper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Algorithm.h"

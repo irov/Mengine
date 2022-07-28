@@ -1,8 +1,12 @@
 package org.Mengine.Plugin.GoogleGameSocial;
 
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
+
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,9 +27,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePlugin;
 
 public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     //добавить каллбеки на ошибку авторизации
@@ -85,8 +86,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         RC_UNUSED = activity.genRequestCode("RC_UNUSED");
 
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                .requestProfile()
-                .requestId()
                 .build();
 
         m_signInClient = GoogleSignIn.getClient(activity, signInOptions);
@@ -201,18 +200,31 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             return;
         }
 
+        this.logInfo("Account sign in");
+
+
         MengineActivity activity = this.getActivity();
 
         m_achievementsClient = Games.getAchievementsClient(activity, account);
 
+        Uri accountPhotoUrl = account.getPhotoUrl();
         String accountDisplayName = account.getDisplayName();
+        String accountEmail = account.getEmail();
+        String accountFamilyName = account.getFamilyName();
+        String accountGivenName = account.getGivenName();
         String accountId = account.getId();
+        String accountIdToken = account.getIdToken();
+        String accountServerAuthCode = account.getServerAuthCode();
 
         //аккаунт от гугла - профиль от гугла
-        this.logInfo("player include '%s' ->id = '%s'"
-                , accountDisplayName
-                , accountId
-        );
+        this.logInfo("PhotoUrl: %s", accountPhotoUrl != null ? accountPhotoUrl.toString() : "");
+        this.logInfo("DisplayName: %s", accountDisplayName);
+        this.logInfo("Email: %s", accountEmail);
+        this.logInfo("FamilyName: %s", accountFamilyName);
+        this.logInfo("GivenName: %s", accountGivenName);
+        this.logInfo("Id: %s", accountId);
+        this.logInfo("IdToken: %s", accountIdToken);
+        this.logInfo("ServerAuthCode: %s", accountServerAuthCode);
 
         this.pythonCall("onGoogleGameSocialOnSign", accountId);
     }

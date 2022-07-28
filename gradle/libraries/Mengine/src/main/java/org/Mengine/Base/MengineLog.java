@@ -17,7 +17,7 @@ public class MengineLog {
         MengineLog.initializeBaseServices = true;
     }
 
-    public static String logBuildTotalMsg(String tag, String format, Object ... args) {
+    private static String logBuildTotalMsg(String tag, String format, Object ... args) {
         StringBuilder sb = new StringBuilder();
         Formatter formatter = new Formatter(sb);
         String msg = formatter.format(format, args).toString();
@@ -32,61 +32,51 @@ public class MengineLog {
     }
 
     public static void logInfo(String tag, String format, Object ... args) {
-        if( MengineLog.initializeBaseServices == true ) {
-            String totalMsg = MengineLog.logBuildTotalMsg(null, format, args);
+        String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
+        if( MengineLog.initializeBaseServices == true ) {
             AndroidNativeMengine_logInfo(totalMsg);
         } else {
-            String totalMsg = MengineLog.logBuildTotalMsg(null, format, args);
-
             Log.i(tag, totalMsg);
         }
     }
 
     public static void logWarning(String tag, String format, Object ... args) {
-        if( MengineLog.initializeBaseServices == true ) {
-            String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
+        String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
+        if( MengineLog.initializeBaseServices == true ) {
             AndroidNativeMengine_logWarning(totalMsg);
         } else {
-            String totalMsg = MengineLog.logBuildTotalMsg(null, format, args);
-
             Log.w(tag, totalMsg);
         }
     }
 
     public static void logMessage(String tag, String format, Object ... args) {
-        if( MengineLog.initializeBaseServices == true ) {
-            String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
+        String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
+        if( MengineLog.initializeBaseServices == true ) {
             AndroidNativeMengine_logMessage(totalMsg);
         } else {
-            String totalMsg = MengineLog.logBuildTotalMsg(null, format, args);
-
             Log.w(tag, totalMsg);
         }
     }
 
     public static void logMessageRelease(String tag, String format, Object ... args) {
-        if( MengineLog.initializeBaseServices == true ) {
-            String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
+        String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
+        if( MengineLog.initializeBaseServices == true ) {
             AndroidNativeMengine_logMessageRelease(totalMsg);
         } else {
-            String totalMsg = MengineLog.logBuildTotalMsg(null, format, args);
-
             Log.w(tag, totalMsg);
         }
     }
 
     public static void logError(String tag, String format, Object ... args) {
-        if( MengineLog.initializeBaseServices == true ) {
-            String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
+        String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
+        if( MengineLog.initializeBaseServices == true ) {
             AndroidNativeMengine_logError(totalMsg);
         } else {
-            String totalMsg = MengineLog.logBuildTotalMsg(null, format, args);
-
             Log.e(tag, totalMsg);
         }
     }

@@ -38,29 +38,27 @@ android {
     compileSdkVersion project.compileSdkVersion
 
     signingConfigs {
-        config {
-            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
-                release {
-                    println "ANDROID_APP_RELEASE_STORE_FILE = $ANDROID_APP_RELEASE_STORE_FILE"
-                    println "ANDROID_APP_RELEASE_KEY_ALIAS = $ANDROID_APP_RELEASE_KEY_ALIAS"
+        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
+            debug {
+                println "ANDROID_APP_DEBUG_STORE_FILE = $ANDROID_APP_DEBUG_STORE_FILE"
+                println "ANDROID_APP_DEBUG_KEY_ALIAS = $ANDROID_APP_DEBUG_KEY_ALIAS"
 
-                    storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
-                    storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
-                    keyAlias ANDROID_APP_RELEASE_KEY_ALIAS
-                    keyPassword ANDROID_APP_RELEASE_KEY_PASSWORD
-                }
+                storeFile file(ANDROID_APP_DEBUG_STORE_FILE)
+                storePassword ANDROID_APP_DEBUG_STORE_PASSWORD
+                keyAlias ANDROID_APP_DEBUG_KEY_ALIAS
+                keyPassword ANDROID_APP_DEBUG_KEY_PASSWORD
             }
+        }
 
-            if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
-                debug {
-                    println "ANDROID_APP_DEBUG_STORE_FILE = $ANDROID_APP_DEBUG_STORE_FILE"
-                    println "ANDROID_APP_DEBUG_KEY_ALIAS = $ANDROID_APP_DEBUG_KEY_ALIAS"
+        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+            release {
+                println "ANDROID_APP_RELEASE_STORE_FILE = $ANDROID_APP_RELEASE_STORE_FILE"
+                println "ANDROID_APP_RELEASE_KEY_ALIAS = $ANDROID_APP_RELEASE_KEY_ALIAS"
 
-                    storeFile file(ANDROID_APP_DEBUG_STORE_FILE)
-                    storePassword ANDROID_APP_DEBUG_STORE_PASSWORD
-                    keyAlias ANDROID_APP_DEBUG_KEY_ALIAS
-                    keyPassword ANDROID_APP_DEBUG_KEY_PASSWORD
-                }
+                storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
+                storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
+                keyAlias ANDROID_APP_RELEASE_KEY_ALIAS
+                keyPassword ANDROID_APP_RELEASE_KEY_PASSWORD
             }
         }
     }
@@ -121,8 +119,6 @@ android {
         println "versionCode = $versionCode"
         println "versionName = $versionName"
 
-        signingConfig signingConfigs.config
-
         multiDexEnabled true
 
         println "ANDROID_APP_SPLIT_ENABLE = $ANDROID_APP_SPLIT_ENABLE"
@@ -138,6 +134,20 @@ android {
         }
 
         println "ANDROID_APP_ARCH_86_64_ENABLE = $ANDROID_APP_ARCH_86_64_ENABLE"
+    }
+
+    buildTypes {
+        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
+            debug {
+                signingConfig signingConfigs.debug
+            }
+        }
+
+        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
     }
 
     splits {
@@ -242,6 +252,7 @@ android {
             }
         }
     }
+
     androidResources {
         noCompress 'pak', 'bin'
     }

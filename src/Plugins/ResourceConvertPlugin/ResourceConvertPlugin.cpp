@@ -32,16 +32,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceConvertPlugin::_availablePlugin() const
     {
-        bool Engine_ResourceConvertPluginAvailable = CONFIG_VALUE( "Engine", "ResourceConvertPluginAvailable", true );
+        bool OPTION_noconvert = HAS_OPTION( "noconvert" );
 
-        if( Engine_ResourceConvertPluginAvailable == false )
+        if( OPTION_noconvert == true )
         {
             return false;
         }
 
-        bool OPTION_noconvert = HAS_OPTION( "noconvert" );
+        bool ResourceConvertPlugin_Available = CONFIG_VALUE( "ResourceConvertPlugin", "Available", true );
 
-        if( OPTION_noconvert == true )
+        if( ResourceConvertPlugin_Available == false )
         {
             return false;
         }

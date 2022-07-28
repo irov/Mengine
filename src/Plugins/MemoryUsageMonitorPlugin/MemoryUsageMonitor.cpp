@@ -29,11 +29,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryUsageMonitor::initialize()
     {
-        uint32_t Engine_MemoryUsageMonitorSeconds = CONFIG_VALUE( "Engine", "MemoryUsageMonitorSeconds", 10U );
+        uint32_t MemoryUsageMonitor_Seconds = CONFIG_VALUE( "MemoryUsageMonitorPlugin", "Seconds", 10U );
 
-        MENGINE_ASSERTION_FATAL( Engine_MemoryUsageMonitorSeconds != 0 );
+        MENGINE_ASSERTION_FATAL( MemoryUsageMonitor_Seconds != 0 );
 
-        m_seconds = Engine_MemoryUsageMonitorSeconds;
+        m_seconds = MemoryUsageMonitor_Seconds;
 
         ThreadJobPtr threadJob = THREAD_SERVICE()
             ->createJob( m_seconds * 1000, MENGINE_DOCUMENT_FACTORABLE );

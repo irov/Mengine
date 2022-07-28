@@ -40,11 +40,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitor::initialize()
     {
-        uint32_t Engine_AntifreezeMonitorSeconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
+        uint32_t Win32AntifreezeMonitorPlugin_Seconds = CONFIG_VALUE( "Win32AntifreezeMonitorPlugin", "Seconds", 10U );
 
-        MENGINE_ASSERTION_FATAL( Engine_AntifreezeMonitorSeconds != 0 );
+        MENGINE_ASSERTION_FATAL( Win32AntifreezeMonitorPlugin_Seconds != 0 );
 
-        m_seconds = Engine_AntifreezeMonitorSeconds;
+        m_seconds = Win32AntifreezeMonitorPlugin_Seconds;
 
         ThreadJobPtr threadJob = THREAD_SERVICE()
             ->createJob( m_seconds * 1000, MENGINE_DOCUMENT_FACTORABLE );

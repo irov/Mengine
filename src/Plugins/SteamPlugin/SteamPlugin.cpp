@@ -29,28 +29,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SteamPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "steam" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "nosteam" ) == true )
         {
             return false;
         }
 
-        if( HAS_OPTION( "steam" ) == false )
-        {
-            bool Steam_Avaliable = CONFIG_VALUE( "Steam", "Avaliable", true );
+        bool SteamPlugin_Available = CONFIG_VALUE( "SteamPlugin", "Available", true );
 
-            if( Steam_Avaliable == false )
-            {
-                return false;
-            }
+        if( SteamPlugin_Available == false )
+        {
+            return false;
         }
 
-        uint32_t Steam_AppId = CONFIG_VALUE( "Steam", "AppId", k_uAppIdInvalid );
+        uint32_t SteamPlugin_AppId = CONFIG_VALUE( "SteamPlugin", "AppId", k_uAppIdInvalid );
 
         if( HAS_OPTION( "steamappid" ) == true )
         {
             const Char * str_steamappid = GET_OPTION_VALUE( "steamappid", "" );
 
-            if( MENGINE_SSCANF( str_steamappid, "%u", &Steam_AppId ) != 0 )
+            if( MENGINE_SSCANF( str_steamappid, "%u", &SteamPlugin_AppId ) != 0 )
             {
                 LOGGER_ERROR( "invalid option steamappid '%s'"
                     , str_steamappid
@@ -60,7 +62,7 @@ namespace Mengine
             }
         }
 
-        if( Steam_AppId == k_uAppIdInvalid )
+        if( SteamPlugin_AppId == k_uAppIdInvalid )
         {
             MENGINE_ERROR_FATAL( "invalid setup Steam_AppId" );
 
@@ -69,10 +71,10 @@ namespace Mengine
 
         if( HAS_OPTION( "norestartsteamapp" ) == false )
         {
-            if( SteamAPI_RestartAppIfNecessary( Steam_AppId ) == true )
+            if( SteamAPI_RestartAppIfNecessary( SteamPlugin_AppId ) == true )
             {
                 LOGGER_ERROR( "invalid SteamAPI_RestartAppIfNecessary [Id = %u]"
-                    , Steam_AppId
+                    , SteamPlugin_AppId
                 );
 
                 return false;

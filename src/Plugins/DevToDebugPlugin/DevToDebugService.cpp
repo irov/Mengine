@@ -62,7 +62,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugService::_initializeService()
     {
-        const Char * DevToDebug_PID = CONFIG_VALUE( "DevToDebug", "PID", "" );
+        const Char * DevToDebug_PID = CONFIG_VALUE( "DevToDebugPlugin", "PID", "" );
 
         if( MENGINE_STRCMP( DevToDebug_PID, "" ) == 0 )
         {
@@ -136,14 +136,14 @@ namespace Mengine
             return false;
         }
 
-        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebug", "ProccesTime", 500 );
+        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 500 );
 
         Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebug" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
         {
             this->process();
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        float DevToDebug_SyncTime = CONFIG_VALUE( "DevToDebug", "SyncTime", 500.f );
+        float DevToDebug_SyncTime = CONFIG_VALUE( "DevToDebugPlugin", "SyncTime", 500.f );
 
         UniqueId timerId = PLATFORM_SERVICE()
             ->addTimer( DevToDebug_SyncTime, [this]( UniqueId _id )

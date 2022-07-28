@@ -44,9 +44,11 @@ namespace Mengine
 
         m_archivator = archivator;
 
-        m_maxParticlesNum = CONFIG_VALUE( "Engine", "ParticleMaxCount", 10000U );
+        uint32_t AstralaxPlugin_ParticleMaxCount = CONFIG_VALUE( "AstralaxPlugin", "ParticleMaxCount", 10000U );
 
-        bool states[17];
+        m_maxParticlesNum = AstralaxPlugin_ParticleMaxCount;
+
+        bool states[17] = {false};
         states[MAGIC_RENDER_STATE_BLENDING] = false;
         states[MAGIC_RENDER_STATE_TEXTURE_COUNT] = false;
         states[MAGIC_RENDER_STATE_TEXTURE] = true;

@@ -26,17 +26,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SentryPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "sentry" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "nosentry" ) == true )
         {
             return false;
         }
+        
+        bool SentryPlugin_Available = CONFIG_VALUE( "SentryPlugin", "Available", true );
 
-        if( HAS_OPTION( "sentry" ) == false )
+        if( SentryPlugin_Available == false )
         {
-            if( CONFIG_VALUE( "Sentry", "Enable", true ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

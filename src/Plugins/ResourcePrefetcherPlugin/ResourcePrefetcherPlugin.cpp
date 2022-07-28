@@ -21,17 +21,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "resourceprefetcher" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "noresourceprefetcher" ) == true )
         {
             return false;
         }
 
-        if( HAS_OPTION( "resourceprefetcher" ) == false )
+        if( CONFIG_VALUE( "ResourcePrefetcherPlugin", "Available", true ) == false )
         {
-            if( CONFIG_VALUE( "ResourcePrefetcher", "Enable", true ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

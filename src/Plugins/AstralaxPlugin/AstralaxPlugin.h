@@ -7,7 +7,7 @@ namespace Mengine
     class AstralaxPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AstralaxParticle" )
+        PLUGIN_DECLARE( "Astralax" )
 
     public:
         AstralaxPlugin();

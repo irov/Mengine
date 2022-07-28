@@ -144,7 +144,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         }
 
         boolean OPTION_applovinverbose = activity.hasOption("applovinverbose");
-        boolean AppLovin_VerboseLogging = activity.getConfigValueBoolean("AppLovin", "VerboseLogging", false);
+        boolean AppLovin_VerboseLogging = activity.getConfigValueBoolean("AppLovinPlugin", "VerboseLogging", false);
 
         if( OPTION_applovinverbose == true || AppLovin_VerboseLogging == true ) {
             AppLovinSdk.getInstance(context).getSettings().setVerboseLogging(true);
@@ -172,7 +172,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     public void initBanner() throws Exception {
         MengineActivity activity = this.getActivity();
 
-        String AppLovin_BannerAdUnitId = activity.getConfigValue("AppLovin", "BannerAdUnitId", "");
+        String AppLovin_BannerAdUnitId = activity.getConfigValue("AppLovinPlugin", "BannerAdUnitId", "");
 
         if (AppLovin_BannerAdUnitId.isEmpty() == true) {
             throw new Exception("Need to add config value for [AppLovin] BannerAdUnitId");
@@ -258,7 +258,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     public void initInterstitial() throws Exception {
         MengineActivity activity = this.getActivity();
 
-        String AppLovin_InterstitialAdUnitId = activity.getConfigValue("AppLovin", "InterstitialAdUnitId", "");
+        String AppLovin_InterstitialAdUnitId = activity.getConfigValue("AppLovinPlugin", "InterstitialAdUnitId", "");
 
         if (AppLovin_InterstitialAdUnitId.isEmpty() == true) {
             throw new Exception("Need to add config value for [AppLovin] InterstitialAdUnitId");
@@ -337,7 +337,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     public void initRewarded() throws Exception {
         MengineActivity activity = this.getActivity();
 
-        String AppLovin_RewardedAdUnitId = activity.getConfigValue("AppLovin", "RewardedAdUnitId", "");
+        String AppLovin_RewardedAdUnitId = activity.getConfigValue("AppLovinPlugin", "RewardedAdUnitId", "");
 
         if (AppLovin_RewardedAdUnitId.isEmpty() == true) {
             throw new Exception("Need to add config value for [AppLovin] RewardedAdUnitId");

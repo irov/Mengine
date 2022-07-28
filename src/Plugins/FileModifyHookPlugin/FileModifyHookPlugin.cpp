@@ -26,17 +26,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileModifyHookPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "filemodifyhook" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "nofilemodifyhook" ) == true )
         {
             return false;
         }
 
-        if( HAS_OPTION( "filemodifyhook" ) == false )
+        if( CONFIG_VALUE( "FileModifyHookPlugin", "Available", true ) == false )
         {
-            if( CONFIG_VALUE( "FileModifyHook", "Enable", true ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

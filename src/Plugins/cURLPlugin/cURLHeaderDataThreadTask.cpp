@@ -37,7 +37,7 @@ namespace Mengine
 
         this->setupWriteResponse( _curl );
 
-        if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
+        if( CONFIG_VALUE( "cURLPlugin", "HTTPLog", false ) == true )
         {
             Stringstream ss;
 

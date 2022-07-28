@@ -91,7 +91,7 @@ namespace Mengine
             , SENTRY_SDK_USER_AGENT
         );
 
-        const Char * Sentry_DSN = CONFIG_VALUE( "Sentry", "DSN", "" );
+        const Char * Sentry_DSN = CONFIG_VALUE( "SentryPlugin", "DSN", "" );
 
         if( MENGINE_STRCMP( Sentry_DSN, "" ) == 0 )
         {
@@ -139,16 +139,16 @@ namespace Mengine
         sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-        const Char * Sentry_Handler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
+        const Char * SentryPlugin_Handler = CONFIG_VALUE( "SentryPlugin", "Handler", "crashpad_handler.exe" );
 #else
-        const Char * Sentry_Handler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler" );
+        const Char * SentryPlugin_Handler = CONFIG_VALUE( "SentryPlugin", "Handler", "crashpad_handler" );
 #endif
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
-            , Sentry_Handler
+            , SentryPlugin_Handler
         );
 
-        sentryHandlerPath.append( Sentry_Handler );
+        sentryHandlerPath.append( SentryPlugin_Handler );
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
             , sentryHandlerPath.c_str()
@@ -255,13 +255,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32SentryService::notifyCreateApplication_()
     {
-        const Char * Sentry_Application = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
+        const Char * SentryPlugin_Application = CONFIG_VALUE( "SentryPlugin", "Application", "Mengine" );
 
         LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
-            , Sentry_Application
+            , SentryPlugin_Application
         );
 
-        sentry_set_extra( "Application", sentry_value_new_string( Sentry_Application ) );
+        sentry_set_extra( "Application", sentry_value_new_string( SentryPlugin_Application ) );
 
         Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()

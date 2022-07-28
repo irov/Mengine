@@ -102,7 +102,7 @@ namespace Mengine
 
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_NOPROGRESS, 0L) );
 
-        if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
+        if( CONFIG_VALUE( "cURLPlugin", "HTTPLog", false ) == true )
         {
             LOGGER_STATISTIC( "HTTP: get asset url '%s' login '%s' password '%s'\nfile: '%s'"
                 , m_url.c_str()

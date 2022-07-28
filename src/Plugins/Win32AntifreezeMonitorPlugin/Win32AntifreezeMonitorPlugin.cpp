@@ -32,14 +32,9 @@ namespace Mengine
             return false;
         }
 
-        if( CONFIG_VALUE( "Platform", "AntifreezeMonitor", true ) == false )
-        {
-            return false;
-        }
+        bool Win32AntifreezeMonitorPlugin_Available = CONFIG_VALUE( "Win32AntifreezeMonitorPlugin", "Available", true );
 
-        bool Engine_AntifreezeMonitorEnable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
-
-        if( Engine_AntifreezeMonitorEnable == false )
+        if( Win32AntifreezeMonitorPlugin_Available == false )
         {
             return false;
         }

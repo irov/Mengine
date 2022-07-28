@@ -27,7 +27,7 @@ namespace Mengine
     {
         this->setupWriteResponse( _curl );
 
-        if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
+        if( CONFIG_VALUE( "cURLPlugin", "HTTPLog", false ) == true )
         {
             LOGGER_STATISTIC( "HTTP: get message url '%s'"
                 , m_url.c_str()

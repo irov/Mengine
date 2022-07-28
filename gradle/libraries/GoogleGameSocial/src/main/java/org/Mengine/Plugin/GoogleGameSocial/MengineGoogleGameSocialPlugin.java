@@ -202,7 +202,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
         this.logInfo("Account sign in");
 
-
         MengineActivity activity = this.getActivity();
 
         m_achievementsClient = Games.getAchievementsClient(activity, account);

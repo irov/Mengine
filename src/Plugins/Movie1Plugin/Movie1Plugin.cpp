@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie1Plugin::_availablePlugin() const
     {
-        bool Engine_Movie1PluginAvailable = CONFIG_VALUE( "Engine", "Movie1PluginAvailable", true );
+        bool Engine_Movie1PluginAvailable = CONFIG_VALUE( "Movie1Plugin", "Available", true );
 
         return Engine_Movie1PluginAvailable;
     }

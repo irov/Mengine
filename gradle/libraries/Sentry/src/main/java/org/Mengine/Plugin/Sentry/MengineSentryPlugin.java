@@ -10,7 +10,7 @@ public class MengineSentryPlugin extends MenginePlugin {
     @Override
     public void onMengineInitializeBaseServices(MengineActivity activity) {
         SentryAndroid.init(activity, options -> {
-            String SENTRY_DNS = activity.getConfigValue("Sentry", "DSN", "");
+            String SENTRY_DNS = activity.getConfigValue("SentryPlugin", "DSN", "");
             options.setDsn(SENTRY_DNS);
             this.logInfo("Sentry DNS: %s", SENTRY_DNS);
 
@@ -22,7 +22,7 @@ public class MengineSentryPlugin extends MenginePlugin {
     @Override
     public void onMengineCreateApplication(MengineActivity activity) {
         Sentry.configureScope(scope -> {
-            String SENTRY_APPLICATION = activity.getConfigValue( "Sentry", "Application", "Mengine" );
+            String SENTRY_APPLICATION = activity.getConfigValue( "SentryPlugin", "Application", "Mengine" );
 
             String companyName = activity.getCompanyName();
             String projectName = activity.getProjectName();

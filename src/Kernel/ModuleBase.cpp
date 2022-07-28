@@ -68,7 +68,9 @@ namespace Mengine
 
         m_initializeModule = true;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_MODULE_INITIALIZE, m_name );
+        const ConstString & name = this->getName();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_MODULE_INITIALIZE, name );
 
         return true;
     }
@@ -91,7 +93,9 @@ namespace Mengine
 
         m_initializeModule = false;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_MODULE_FINALIZE, m_name );
+        const ConstString & name = this->getName();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_MODULE_FINALIZE, name );
 
         this->_finalizeModule();
     }

@@ -191,12 +191,12 @@ namespace Mengine
         Char errorbuf[CURL_ERROR_SIZE] = {'\0'};
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
 
-        if( CONFIG_VALUE( "HTTP", "Verbose", false ) == true )
+        if( CONFIG_VALUE( "cURLPlugin", "HTTPVerbose", false ) == true )
         {
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_VERBOSE, 1) );
         }
 
-        if( CONFIG_VALUE( "HTTP", "Trace", false ) == true )
+        if( CONFIG_VALUE( "cURLPlugin", "HTTPTrace", false ) == true )
         {
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );

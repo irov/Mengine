@@ -74,26 +74,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameAnalyticsPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "analytics" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "noanalytics" ) == true )
         {
             return false;
         }
+         
+        bool Engine_GameAnalyticsPluginAvailable = CONFIG_VALUE( "GameAnalyticsPlugin", "Available", true );
 
-        if( HAS_OPTION( "analytics" ) == false )
+        if( Engine_GameAnalyticsPluginAvailable == false )
         {
-            bool Engine_GameAnalyticsPluginAvailable = CONFIG_VALUE( "Engine", "GameAnalyticsPluginAvailable", true );
-
-            if( Engine_GameAnalyticsPluginAvailable == false )
-            {
-                return false;
-            }
-
-            bool GameAnalytics_Enable = CONFIG_VALUE( "GameAnalytics", "Enable", true );
-
-            if( GameAnalytics_Enable == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;
@@ -101,8 +96,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameAnalyticsPlugin::_initializePlugin()
     {
-        const Char * GameAnalytics_GameKey = CONFIG_VALUE( "GameAnalytics", "GameKey", "00000000000000000000000000000000" );
-        const Char * GameAnalytics_GameSecret = CONFIG_VALUE( "GameAnalytics", "GameSecret", "0000000000000000000000000000000000000000" );
+        const Char * GameAnalytics_GameKey = CONFIG_VALUE( "GameAnalyticsPlugin", "GameKey", "00000000000000000000000000000000" );
+        const Char * GameAnalytics_GameSecret = CONFIG_VALUE( "GameAnalyticsPlugin", "GameSecret", "0000000000000000000000000000000000000000" );
 
         if( MENGINE_STRCMP( GameAnalytics_GameKey, "00000000000000000000000000000000" ) == 0 )
         {
@@ -134,10 +129,10 @@ namespace Mengine
 
         gameanalytics::GameAnalytics::configureWritablePath( analyticsPath );
 
-        bool GameAnalytics_InfoLog = CONFIG_VALUE( "GameAnalytics", "InfoLog", false );
+        bool GameAnalytics_InfoLog = CONFIG_VALUE( "GameAnalyticsPlugin", "InfoLog", false );
         gameanalytics::GameAnalytics::setEnabledInfoLog( GameAnalytics_InfoLog );
 
-        bool GameAnalytics_VerboseLog = CONFIG_VALUE( "GameAnalytics", "VerboseLog", false );
+        bool GameAnalytics_VerboseLog = CONFIG_VALUE( "GameAnalyticsPlugin", "VerboseLog", false );
         gameanalytics::GameAnalytics::setEnabledVerboseLog( GameAnalytics_VerboseLog );
 
         const Char * EngineGITSHA1 = Helper::getEngineGITSHA1();
@@ -187,7 +182,7 @@ namespace Mengine
         MENGINE_STRCAT( configPath, MENGINE_GAMEANALYTICS_FOLDER );
         MENGINE_STRCAT( configPath, "/" );
 
-        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalytics", "Config", "config.json" );
+        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalyticsPlugin", "Config", "config.json" );
 
         MENGINE_STRCAT( configPath, GameAnalytics_Config );
 
@@ -221,7 +216,7 @@ namespace Mengine
         MENGINE_STRCAT( configPath, MENGINE_GAMEANALYTICS_FOLDER );
         MENGINE_STRCAT( configPath, "/" );
 
-        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalytics", "Config", "config.json" );
+        const Char * GameAnalytics_Config = CONFIG_VALUE( "GameAnalyticsPlugin", "Config", "config.json" );
 
         MENGINE_STRCAT( configPath, GameAnalytics_Config );
 

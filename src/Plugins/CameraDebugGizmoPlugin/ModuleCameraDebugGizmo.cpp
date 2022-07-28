@@ -26,9 +26,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleCameraDebugGizmo::_initializeModule()
     {
-        m_scaleStepMin = CONFIG_VALUE( "CameraDebugGizmo", "ScaleStepMin", 0.05f );
-        m_scaleStepStep = CONFIG_VALUE( "CameraDebugGizmo", "ScaleStepStep", 0.05f );
-        m_scaleStepMax = CONFIG_VALUE( "CameraDebugGizmo", "ScaleStepMax", 128.f );
+        m_scaleStepMin = CONFIG_VALUE( "CameraDebugGizmoPlugin", "ScaleStepMin", 0.05f );
+        m_scaleStepStep = CONFIG_VALUE( "CameraDebugGizmoPlugin", "ScaleStepStep", 0.05f );
+        m_scaleStepMax = CONFIG_VALUE( "CameraDebugGizmoPlugin", "ScaleStepMax", 128.f );
 
         m_mouseWheelEventHandle = Helper::addGlobalMouseWheelEvent( [this]( const InputMouseWheelEvent & _event )
         {

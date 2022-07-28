@@ -26,17 +26,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "devtodebug" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "nodevtodebug" ) == true )
         {
             return false;
         }
 
-        if( HAS_OPTION( "devtodebug" ) == false )
+        if( CONFIG_VALUE( "DevToDebugPlugin", "Available", true ) == false )
         {
-            if( CONFIG_VALUE( "DevToDebug", "Enable", true ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

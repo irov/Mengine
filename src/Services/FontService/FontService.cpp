@@ -45,9 +45,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontService::_initializeService()
     {
-        uint32_t Engine_TextServiceReserveFonts = CONFIG_VALUE( "Engine", "TextServiceReserveFonts", 64U );
+        uint32_t Engine_FontServiceReserveFonts = CONFIG_VALUE( "Engine", "FontServiceReserveFonts", 64U );
 
-        m_fonts.reserve( Engine_TextServiceReserveFonts );
+        m_fonts.reserve( Engine_FontServiceReserveFonts );
 
         return true;
     }

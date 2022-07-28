@@ -34,7 +34,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     public void initializeMediator(MengineActivity activity) throws Exception {
         final Context context = activity.getBaseContext();
 
-        String AppLovin_AmazonAppId = activity.getConfigValue("AppLovin", "AmazonAppId", "");
+        String AppLovin_AmazonAppId = activity.getConfigValue("AppLovinPlugin", "AmazonAppId", "");
 
         if (AppLovin_AmazonAppId.isEmpty() == true) {
             throw new Exception("Need to add config value for [AppLovin] AmazonAppId");
@@ -45,13 +45,13 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
         AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
 
-        boolean AppLovin_AmazonEnableTesting = activity.getConfigValueBoolean("AppLovin", "AmazonEnableTesting", false);
+        boolean AppLovin_AmazonEnableTesting = activity.getConfigValueBoolean("AppLovinPlugin", "AmazonEnableTesting", false);
 
         if (AppLovin_AmazonEnableTesting == true) {
             AdRegistration.enableTesting(true);
         }
 
-        boolean AppLovin_AmazonEnableLogging = activity.getConfigValueBoolean("AppLovin", "AmazonEnableLogging", false);
+        boolean AppLovin_AmazonEnableLogging = activity.getConfigValueBoolean("AppLovinPlugin", "AmazonEnableLogging", false);
 
         if (AppLovin_AmazonEnableLogging == true || BuildConfig.DEBUG == true ) {
             AdRegistration.enableLogging(true);
@@ -59,7 +59,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     }
 
     public void initializeMediatorBanner(MengineActivity activity, MaxAdView adView) throws Exception {
-        String AppLovin_AmazonBannerSlotId = activity.getConfigValue("AppLovin", "AmazonBannerSlotId", "");
+        String AppLovin_AmazonBannerSlotId = activity.getConfigValue("AppLovinPlugin", "AmazonBannerSlotId", "");
 
         if (AppLovin_AmazonBannerSlotId.isEmpty() == true) {
             throw new Exception("Need to add config value for [AppLovin] AmazonBannerSlotId");
@@ -92,7 +92,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     public void loadMediatorInterstitial(MengineActivity activity, MaxInterstitialAd interstitialAd) throws Exception {
         switch (m_loadInterstitialStatus) {
             case ADLOAD_NONE:
-                final String AppLovin_AmazonInterstitialSlotId = activity.getConfigValue("AppLovin", "AmazonInterstitialSlotId", "");
+                final String AppLovin_AmazonInterstitialSlotId = activity.getConfigValue("AppLovinPlugin", "AmazonInterstitialSlotId", "");
 
                 if (AppLovin_AmazonInterstitialSlotId.isEmpty() == true) {
                     throw new Exception("Need to add config value for [AppLovin] AmazonInterstitialSlotId");
@@ -133,7 +133,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     public void loadMediatorRewarded(MengineActivity activity, MaxRewardedAd rewardedAd) throws Exception {
         switch (m_loadRewardedStatus) {
             case ADLOAD_NONE:
-                final String AppLovin_AmazonRewardedSlotId = activity.getConfigValue("AppLovin", "AmazonRewardedSlotId", "");
+                final String AppLovin_AmazonRewardedSlotId = activity.getConfigValue("AppLovinPlugin", "AmazonRewardedSlotId", "");
 
                 if (AppLovin_AmazonRewardedSlotId.isEmpty() == true) {
                     throw new Exception("Need to add config value for [AppLovin] AmazonVideoRewardedSlotId");

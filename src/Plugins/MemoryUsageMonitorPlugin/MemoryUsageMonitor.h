@@ -26,8 +26,6 @@ namespace Mengine
         bool initialize();
         void finalize();
 
-        void ping();
-
     protected:
         void onThreadWorkerUpdate( uint32_t _id ) override;
         bool onThreadWorkerWork( uint32_t _id ) override;

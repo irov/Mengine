@@ -2,6 +2,7 @@
 
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
@@ -83,13 +84,17 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
+        const ConstString & currentSceneName = SCENE_SERVICE()
+            ->getCurrentSceneNameThreadSafe();
+
         size_t totalMemoryUsage = ALLOCATOR_SERVICE()
             ->get_report_total();
 
-        LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%zugb %zumb %zukb]"
+        LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%zugb %zumb %zukb] [scene %s]"
             , (totalMemoryUsage / (1024 * 1024 * 1024))
             , ((totalMemoryUsage / (1024 * 1024)) % 1024)
             , (totalMemoryUsage / (1024) % 1024)
+            , currentSceneName.c_str()
         );
 
         return true;

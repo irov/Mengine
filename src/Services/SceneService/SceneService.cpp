@@ -2,6 +2,7 @@
 
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Scene.h"
 #include "Kernel/DocumentHelper.h"
@@ -9,6 +10,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SceneService, Mengine::SceneService );
@@ -27,7 +29,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::_initializeService()
     {
-        //Empty
+        m_mutex = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -58,6 +61,8 @@ namespace Mengine
 
         this->destroyCurrentScene_();
         this->removeGlobalScene();
+
+        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::setCurrentScene( const ScenePtr & _scene, bool _immediately, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb )
@@ -108,13 +113,13 @@ namespace Mengine
             return false;
         }
 
-        if( m_scene == nullptr )
+        if( m_currentScene == nullptr )
         {
             return false;
         }
 
         LOGGER_INFO( "scene", "restart current scene '%s' immediately [%s]"
-            , m_scene->getName().c_str()
+            , m_currentScene->getName().c_str()
             , _immediately == true ? "True" : "False"
         );
 
@@ -144,13 +149,13 @@ namespace Mengine
             return false;
         }
 
-        if( m_scene == nullptr )
+        if( m_currentScene == nullptr )
         {
             return false;
         }
 
         LOGGER_INFO( "scene", "remove current scene '%s' immediately [%s]"
-            , m_scene->getName().c_str()
+            , m_currentScene->getName().c_str()
             , _immediately == true ? "True" : "False"
         );
 
@@ -170,14 +175,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::setCurrentScene_( const SceneCommandDesc & _desc )
     {
-        ScenePtr oldScene = m_scene;
+        ScenePtr oldScene = m_currentScene;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, m_scene, _desc.scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, m_currentScene, _desc.scene );
 
-        if( m_scene != nullptr )
+        if( m_currentScene != nullptr )
         {
-            m_scene->dispose();
-            m_scene = nullptr;
+            m_currentScene->dispose();
+
+            m_mutex->lock();
+            m_currentScene = nullptr;
+            m_mutex->unlock();
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_DESTROY, oldScene );
@@ -189,85 +197,87 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_INITIALIZE, _desc.scene );
 
-        m_scene = _desc.scene;
+        m_mutex->lock();
+        m_currentScene = _desc.scene;
+        m_mutex->unlock();
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, m_currentScene );
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( m_scene, false, false, false );
+            _desc.cb->onSceneChange( m_currentScene, false, false, false );
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, m_currentScene );
 
-        if( m_scene->enableForce() == false )
+        if( m_currentScene->enableForce() == false )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ERROR, m_scene );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ERROR, m_currentScene );
         
             if( _desc.cb != nullptr )
             {
-                _desc.cb->onSceneChange( m_scene, false, false, true );
+                _desc.cb->onSceneChange( m_currentScene, false, false, true );
             }
 
             return;
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ENABLE, m_scene );
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, m_scene );
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_COMPLETE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ENABLE, m_currentScene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, m_currentScene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_COMPLETE, m_currentScene );
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( m_scene, true, false, false );
+            _desc.cb->onSceneChange( m_currentScene, true, false, false );
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_COMPLETE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_COMPLETE, m_currentScene );
     }
     //////////////////////////////////////////////////////////////////////////
     void SceneService::restartCurrentScene_( const SceneCommandDesc & _desc )
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_DISABLE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_DISABLE, m_currentScene );
 
-        m_scene->disable();
+        m_currentScene->disable();
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_DISABLE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_DISABLE, m_currentScene );
 
         if( _desc.cb != nullptr )
         {
             _desc.cb->onSceneChange( nullptr, false, false, false );
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_INITIALIZE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_INITIALIZE, m_currentScene );
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( m_scene, false, false, false );
+            _desc.cb->onSceneChange( m_currentScene, false, false, false );
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, m_currentScene );
 
-        if( m_scene->enableForce() == false )
+        if( m_currentScene->enableForce() == false )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ERROR, m_scene );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ERROR, m_currentScene );
 
             if( _desc.cb != nullptr )
             {
-                _desc.cb->onSceneChange( m_scene, false, false, true );
+                _desc.cb->onSceneChange( m_currentScene, false, false, true );
             }
 
             return;
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ENABLE, m_scene );
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY, m_scene );
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_COMPLETE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ENABLE, m_currentScene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY, m_currentScene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_COMPLETE, m_currentScene );
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( m_scene, true, false, false );
+            _desc.cb->onSceneChange( m_currentScene, true, false, false );
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_COMPLETE, m_scene );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_COMPLETE, m_currentScene );
     }
     //////////////////////////////////////////////////////////////////////////
     void SceneService::removeCurrentScene_( const SceneCommandDesc & _desc )
@@ -286,15 +296,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::destroyCurrentScene_()
     {
-        if( m_scene == m_globalScene )
+        if( m_currentScene == m_globalScene )
         {
             LOGGER_ERROR( "block delete global scene" );
 
             return;
         }
 
-        ScenePtr destroyScene = m_scene;
-        m_scene = nullptr;
+        ScenePtr destroyScene = m_currentScene;
+
+        m_mutex->lock();
+        m_currentScene = nullptr;
+        m_mutex->unlock();
 
         if( destroyScene != nullptr )
         {
@@ -309,7 +322,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ScenePtr & SceneService::getCurrentScene() const
     {
-        return m_scene;
+        return m_currentScene;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::createGlobalScene()
@@ -385,6 +398,20 @@ namespace Mengine
     bool SceneService::isProcess() const
     {
         return m_process > 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & SceneService::getCurrentSceneNameThreadSafe() const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        if( m_currentScene == nullptr )
+        {
+            return ConstString::none();
+        }
+
+        const ConstString & name = m_currentScene->getName();
+
+        return name;
     }
     //////////////////////////////////////////////////////////////////////////
 }

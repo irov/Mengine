@@ -39,10 +39,15 @@ namespace Mengine
     public:
         bool isProcess() const override;
 
+    public:
+        const ConstString & getCurrentSceneNameThreadSafe() const override;
+
     protected:
         void destroyCurrentScene_();
 
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         enum ESceneCommandType
         {
             ESCT_SET,
@@ -61,7 +66,7 @@ namespace Mengine
         typedef Vector<SceneCommandDesc> VectorSceneCommandDesc;
         VectorSceneCommandDesc m_commands;
 
-        ScenePtr m_scene;
+        ScenePtr m_currentScene;
         ScenePtr m_globalScene;
 
         AtomicUInt32 m_process;

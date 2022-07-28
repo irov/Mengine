@@ -204,14 +204,14 @@ namespace Mengine
         bool sceneProcess = SCENE_SERVICE()
             ->isProcess();
 
-        const ScenePtr & currentScene = SCENE_SERVICE()
-            ->getCurrentScene();
+        const ConstString & currentSceneName = SCENE_SERVICE()
+            ->getCurrentSceneNameThreadSafe();
 
         MENGINE_ERROR_FATAL( "Antifreeze monitor detect freeze process for [%u] seconds, and create dump '%s' [scene process: %s] [scene: %s]"
             , m_seconds
             , processDumpPath.c_str()
             , sceneProcess == true ? "yes" : "no"
-            , currentScene == nullptr ? "" : currentScene->getName().c_str()
+            , currentSceneName.c_str()
         );
 
         return true;

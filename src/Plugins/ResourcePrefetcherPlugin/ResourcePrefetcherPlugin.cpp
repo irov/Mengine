@@ -31,7 +31,9 @@ namespace Mengine
             return false;
         }
 
-        if( CONFIG_VALUE( "ResourcePrefetcherPlugin", "Available", true ) == false )
+        bool ResourcePrefetcherPlugin_Available = CONFIG_VALUE( "ResourcePrefetcherPlugin", "Available", true );
+
+        if( ResourcePrefetcherPlugin_Available == false )
         {
             return false;
         }

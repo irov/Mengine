@@ -91,9 +91,9 @@ namespace Mengine
             , SENTRY_SDK_USER_AGENT
         );
 
-        const Char * Sentry_DSN = CONFIG_VALUE( "SentryPlugin", "DSN", "" );
+        const Char * SentryPlugin_DSN = CONFIG_VALUE( "SentryPlugin", "DSN", "" );
 
-        if( MENGINE_STRCMP( Sentry_DSN, "" ) == 0 )
+        if( MENGINE_STRCMP( SentryPlugin_DSN, "" ) == 0 )
         {
             LOGGER_WARNING( "Sentry don't setup DSN" );
 
@@ -101,7 +101,7 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "Sentry DSN: %s"
-            , Sentry_DSN
+            , SentryPlugin_DSN
         );
 
         sentry_options_t * options = sentry_options_new();
@@ -165,7 +165,7 @@ namespace Mengine
         sentry_options_set_handler_path( options, str_sentryHandlerPath );
 #endif
 
-        sentry_options_set_dsn( options, Sentry_DSN );
+        sentry_options_set_dsn( options, SentryPlugin_DSN );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
         sentry_options_set_debug( options, MENGINE_DEBUG_VALUE( 1, 0 ) );
 

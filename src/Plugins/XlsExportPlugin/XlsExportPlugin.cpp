@@ -244,7 +244,8 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        ConstString Project_Codename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
+        const ConstString & Project_Codename = APPLICATION_SERVICE()
+            ->getProjectCodename();
 
         if( Project_Codename.empty() == true )
         {

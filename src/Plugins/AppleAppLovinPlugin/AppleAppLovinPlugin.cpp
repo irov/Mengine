@@ -29,17 +29,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "appleapplovin" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "noappleapplovin" ) == true )
         {
             return false;
         }
+        
+        bool AppleAppLovinPlugin_Available = CONFIG_VALUE( "AppleAppLovinPlugin", "Available", true );
 
-        if( HAS_OPTION( "appleapplovin" ) == false )
+        if( AppleAppLovinPlugin_Available == false )
         {
-            if( CONFIG_VALUE( "AppleAppLovin", "Enable", false ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

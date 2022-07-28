@@ -23,17 +23,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseAnalyticsPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "applefirebaseanalytics" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "noapplefirebaseanalytics" ) == true )
         {
             return false;
         }
+        
+        bool AppleFirebaseAnalyticsPlugin_Available = CONFIG_VALUE( "AppleFirebaseAnalyticsPlugin", "Available", true );
 
-        if( HAS_OPTION( "applefirebaseanalytics" ) == false )
+        if( AppleFirebaseAnalyticsPlugin_Available == false )
         {
-            if( CONFIG_VALUE( "AppleFirebaseAnalytics", "Enable", true ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

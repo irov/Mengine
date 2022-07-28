@@ -10,7 +10,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     StatisticService::StatisticService()
-        : m_enable( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -18,20 +17,31 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool StatisticService::_availableService() const
+    {
+        if( HAS_OPTION( "statistic" ) == true )
+        {
+            return true;
+        }
+
+        if( HAS_OPTION( "nostatistic" ) == true )
+        {
+            return false;
+        }
+
+        bool Statistic_Enable = CONFIG_VALUE( "Statistic", "Available", MENGINE_DEBUG_VALUE( true, false ) );
+
+        if( Statistic_Enable == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool StatisticService::_initializeService()
     {
-        bool statistic = HAS_OPTION( "statistic" );
-
-        if( statistic == true )
-        {
-            m_enable = true;
-        }
-        else
-        {
-            bool Statistic_Enable = CONFIG_VALUE( "Statistic", "Enable", MENGINE_DEBUG_VALUE( true, false ) );
-
-            m_enable = Statistic_Enable;
-        }
+        //Empty
 
         return true;
     }
@@ -44,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::addStatisticInteger( const ConstString & _name, int64_t _value )
     {
-        if( m_enable == false )
+        if( this->isAvailableService() == false )
         {
             return;
         }
@@ -54,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StatisticService::hasStatisticInteger( const ConstString & _name ) const
     {
-        if( m_enable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }
@@ -69,16 +79,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int64_t StatisticService::getStatisticInteger( const ConstString & _name ) const
     {
-        if( m_enable == false )
+        if( this->isAvailableService() == false )
         {
-            return 0;
+            return 0LL;
         }
 
         MapStatisticIntegers::const_iterator it_found = m_statisticIntegers.find( _name );
 
         if( it_found == m_statisticIntegers.end() )
         {
-            return 0;
+            return 0LL;
         }
 
         int64_t value = it_found->second;
@@ -88,17 +98,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::resetStatisticInteger( const ConstString & _name )
     {
-        if( m_enable == false )
+        if( this->isAvailableService() == false )
         {
             return;
         }
 
-        m_statisticIntegers[_name] = 0;
+        m_statisticIntegers[_name] = 0LL;
     }
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::addStatisticDouble( const ConstString & _name, double _value )
     {
-        if( m_enable == false )
+        if( this->isAvailableService() == false )
         {
             return;
         }
@@ -108,7 +118,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StatisticService::hasStatisticDouble( const ConstString & _name ) const
     {
-        if( m_enable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }
@@ -123,7 +133,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     double StatisticService::getStatisticDouble( const ConstString & _name ) const
     {
-        if( m_enable == false )
+        if( this->isAvailableService() == false )
         {
             return 0.0;
         }
@@ -132,7 +142,7 @@ namespace Mengine
 
         if( it_found == m_statisticDoubles.end() )
         {
-            return 0;
+            return 0.0;
         }
 
         double value = it_found->second;
@@ -142,7 +152,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::resetStatisticDouble( const ConstString & _name )
     {
-        if( m_enable == false )
+        if( this->isAvailableService() == false )
         {
             return;
         }

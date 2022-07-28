@@ -29,17 +29,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAdjustPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "appleadjust" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "noappleadjust" ) == true )
         {
             return false;
         }
+        
+        bool AppleAdjustPlugin_Available = CONFIG_VALUE( "AppleAdjustPlugin", "Available", true );
 
-        if( HAS_OPTION( "appleadjust" ) == false )
+        if( AppleAdjustPlugin_Available == false )
         {
-            if( CONFIG_VALUE( "AppleAdjust", "Enable", false ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

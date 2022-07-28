@@ -15,6 +15,7 @@ namespace Mengine
         ~StatisticService() override;
 
     public:
+        bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 
@@ -31,8 +32,6 @@ namespace Mengine
         void resetStatisticDouble( const ConstString & _name ) override;
 
     protected:
-        bool m_enable;
-
         typedef Map<ConstString, int64_t> MapStatisticIntegers;
         MapStatisticIntegers m_statisticIntegers;
 

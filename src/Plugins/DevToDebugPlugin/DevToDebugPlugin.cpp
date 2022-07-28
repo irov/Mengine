@@ -36,7 +36,9 @@ namespace Mengine
             return false;
         }
 
-        if( CONFIG_VALUE( "DevToDebugPlugin", "Available", true ) == false )
+        bool DevToDebugPlugin_Available = CONFIG_VALUE( "DevToDebugPlugin", "Available", true );
+
+        if( DevToDebugPlugin_Available == false )
         {
             return false;
         }

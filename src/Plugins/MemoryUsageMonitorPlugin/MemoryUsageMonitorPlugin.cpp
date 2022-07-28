@@ -32,9 +32,9 @@ namespace Mengine
             return false;
         }
 
-        bool MemoryUsageMonitor_Available = CONFIG_VALUE( "MemoryUsageMonitorPlugin", "Available", true );
+        bool MemoryUsageMonitorPlugin_Available = CONFIG_VALUE( "MemoryUsageMonitorPlugin", "Available", true );
 
-        if( MemoryUsageMonitor_Available == false )
+        if( MemoryUsageMonitorPlugin_Available == false )
         {
             return false;
         }

@@ -26,10 +26,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::_initializeService()
     {
-        bool OPTION_applovinverbose = HAS_OPTION("applovinverbose");
-        bool AppLovin_VerboseLogging = CONFIG_VALUE("AppLovin", "VerboseLogging", false);
+        bool OPTION_applovinverbose = HAS_OPTION( "applovinverbose" );
+        bool AppLovinPlugin_VerboseLogging = CONFIG_VALUE( "AppLovinPlugin", "VerboseLogging", false );
         
-        if( OPTION_applovinverbose == true || AppLovin_VerboseLogging == true )
+        if( OPTION_applovinverbose == true || AppLovinPlugin_VerboseLogging == true )
         {
             [ALSdk shared].settings.isVerboseLogging = YES;
         }
@@ -70,15 +70,15 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initBanner()
     {
-        const Char * AppLovin_BannerAdUnit = CONFIG_VALUE("AppLovin", "BannerAdUnit", "");
+        const Char * AppLovinPlugin_BannerAdUnit = CONFIG_VALUE( "AppLovinPlugin", "BannerAdUnit", "" );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovin_BannerAdUnit, "" ) == 0 );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_BannerAdUnit, "" ) == 0 );
 
         LOGGER_INFO("applovin", "Banner AdUnit '%s'"
-            , AppLovin_BannerAdUnit
+            , AppLovinPlugin_BannerAdUnit
         );
 
-        NSString * bannerAdUnit = [NSString stringWithUTF8String:AppLovin_BannerAdUnit];
+        NSString * bannerAdUnit = [NSString stringWithUTF8String:AppLovinPlugin_BannerAdUnit];
 
         // Banner height on iPhone and iPad is 50 and 90, respectively
         CGFloat height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
@@ -97,15 +97,15 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initInterstitial()
     {
-        const Char * AppLovin_InterstitialAdUnit = CONFIG_VALUE("AppLovin", "InterstitialAdUnit", "");
+        const Char * AppLovinPlugin_InterstitialAdUnit = CONFIG_VALUE( "AppLovinPlugin", "InterstitialAdUnit", "" );
         
-        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovin_InterstitialAdUnit, "" ) == 0 );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_InterstitialAdUnit, "" ) == 0 );
         
         LOGGER_INFO("applovin", "Interstitial AdUnit '%s'"
-                    , AppLovin_InterstitialAdUnit
-                    );
+            , AppLovinPlugin_InterstitialAdUnit
+        );
         
-        NSString * interstitialAdUnit = [NSString stringWithUTF8String:AppLovin_InterstitialAdUnit];
+        NSString * interstitialAdUnit = [NSString stringWithUTF8String:AppLovinPlugin_InterstitialAdUnit];
         
         NSString * amazonInterstitialSlotId = nil;
         
@@ -118,15 +118,15 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initRewarded()
     {
-        const Char * AppLovin_RewardedAdUnit = CONFIG_VALUE("AppLovin", "RewardedAdUnit", "");
+        const Char * AppLovinPlugin_RewardedAdUnit = CONFIG_VALUE( "AppLovinPlugin", "RewardedAdUnit", "" );
         
-        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovin_RewardedAdUnit, "" ) == 0 );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_RewardedAdUnit, "" ) == 0 );
 
         LOGGER_INFO("applovin", "Rewarded AdUnit '%s'"
-            , AppLovin_RewardedAdUnit
+            , AppLovinPlugin_RewardedAdUnit
         );
 
-        NSString * rewardedAdUnit = [NSString stringWithUTF8String:AppLovin_RewardedAdUnit];
+        NSString * rewardedAdUnit = [NSString stringWithUTF8String:AppLovinPlugin_RewardedAdUnit];
         
         NSString * amazonRewardedSlotId = nil;
         

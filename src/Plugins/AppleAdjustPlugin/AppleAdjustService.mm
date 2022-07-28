@@ -20,11 +20,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAdjustService::_initializeService()
     {
-        const Char * Adjust_AppToken = CONFIG_VALUE("Adjust", "AppToken", "");
-        double Adjust_DelayStart = CONFIG_VALUET("Adjust", "StartDelay", 0.0, double);
+        const Char * AppleAdjustPlugin_AppToken = CONFIG_VALUE( "AppleAdjustPlugin", "AppToken", "" );
+        double AppleAdjustPlugin_DelayStart = CONFIG_VALUE( "AppleAdjustPlugin", "StartDelay", 0.0 );
         
         LOGGER_INFO("adjust", "App Token '%s'"
-            , Adjust_AppToken
+            , AppleAdjustPlugin_AppToken
         );
         
 #ifdef MENGINE_DEBUG
@@ -32,7 +32,7 @@ namespace Mengine
 #else
         NSString *environment = ADJEnvironmentProduction;
 #endif
-        ADJConfig *adjustConfig = [ADJConfig configWithAppToken:[NSString stringWithUTF8String:Adjust_AppToken]
+        ADJConfig *adjustConfig = [ADJConfig configWithAppToken:[NSString stringWithUTF8String:AppleAdjustPlugin_AppToken]
                                                     environment:environment];
         
 #ifdef MENGINE_DEBUG
@@ -42,21 +42,21 @@ namespace Mengine
         
         [Adjust appDidLaunch:adjustConfig];
         
-        LOGGER_INFO("adjust","adjustUserId = %s",[Adjust adid].UTF8String);
+        LOGGER_INFO( "adjust", "adjustUserId = %s",[Adjust adid].UTF8String );
         
         [Adjust requestTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
             switch (status) {
                 case 0:
-                    LOGGER_INFO("adjust", "ATTrackingManagerAuthorizationStatusNotDetermined");
+                    LOGGER_INFO( "adjust", "ATTrackingManagerAuthorizationStatusNotDetermined" );
                     break;
                 case 1:
-                    LOGGER_INFO("adjust", "ATTrackingManagerAuthorizationStatusRestricted");
+                    LOGGER_INFO( "adjust", "ATTrackingManagerAuthorizationStatusRestricted" );
                     break;
                 case 2:
-                    LOGGER_INFO("adjust", "ATTrackingManagerAuthorizationStatusDenied");
+                    LOGGER_INFO( "adjust", "ATTrackingManagerAuthorizationStatusDenied" );
                     break;
                 case 3:
-                    LOGGER_INFO("adjust", "ATTrackingManagerAuthorizationStatusAuthorized");
+                    LOGGER_INFO( "adjust", "ATTrackingManagerAuthorizationStatusAuthorized" );
                     break;
             }
         }];

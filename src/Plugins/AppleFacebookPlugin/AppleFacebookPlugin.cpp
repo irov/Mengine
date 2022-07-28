@@ -29,19 +29,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFacebookPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "applefacebook" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "noapplefacebook" ) == true )
+        {
+            return false;
+        }        
+        
+        bool AppleFacebookPlugin_Available = CONFIG_VALUE( "AppleFacebookPlugin", "Available", true );
+
+        if( AppleFacebookPlugin_Available == false )
         {
             return false;
         }
         
-        if( HAS_OPTION( "applefacebook" ) == false )
-        {
-            if( CONFIG_VALUE( "AppleFacebook", "Enable", false ) == false )
-            {
-                return false;
-            }
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

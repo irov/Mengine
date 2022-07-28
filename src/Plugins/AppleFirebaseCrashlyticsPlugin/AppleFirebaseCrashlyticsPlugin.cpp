@@ -23,17 +23,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseCrashlyticsPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "applefirebasecrashlytics" ) == true )
+        {
+            return true;
+        }
+
         if( HAS_OPTION( "noapplefirebasecrashlytics" ) == true )
         {
             return false;
         }
+        
+        bool AppleFirebaseCrashlyticsPlugin_Available = CONFIG_VALUE( "AppleFirebaseCrashlyticsPlugin", "Available", true );
 
-        if( HAS_OPTION( "applefirebasecrashlytics" ) == false )
+        if( AppleFirebaseCrashlyticsPlugin_Available == false )
         {
-            if( CONFIG_VALUE( "AppleFirebaseCrashlytics", "Enable", true ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

@@ -84,9 +84,9 @@ namespace Mengine
             return false;
         }
          
-        bool Engine_GameAnalyticsPluginAvailable = CONFIG_VALUE( "GameAnalyticsPlugin", "Available", true );
+        bool GameAnalyticsPlugin_Available = CONFIG_VALUE( "GameAnalyticsPlugin", "Available", true );
 
-        if( Engine_GameAnalyticsPluginAvailable == false )
+        if( GameAnalyticsPlugin_Available == false )
         {
             return false;
         }

@@ -10,15 +10,15 @@
 @implementation AppleAppLovinAmazonService
 
 - (instancetype _Nonnull) init {
-    const Mengine::Char * AppLovin_AmazoneAppKey = CONFIG_VALUE("AppLovin", "AmazonAppKey", "");
+    const Mengine::Char * AppLovinPlugin_AmazoneAppKey = CONFIG_VALUE( "AppLovinPlugin", "AmazonAppKey", "" );
     
-    MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovin_AmazoneAppKey, "" ) == 0 );
+    MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_AmazoneAppKey, "" ) == 0 );
 
     LOGGER_INFO("applovin", "Amazon AppKey '%s'"
-        , AppLovin_AmazoneAppKey
+        , AppLovinPlugin_AmazoneAppKey
     );
         
-    NSString * amazonAppKey = [NSString stringWithUTF8String:AppLovin_AmazoneAppKey];
+    NSString * amazonAppKey = [NSString stringWithUTF8String:AppLovinPlugin_AmazoneAppKey];
         
     [[DTBAds sharedInstance] setAppKey: amazonAppKey];
     DTBAdNetworkInfo *adNetworkInfo = [[DTBAdNetworkInfo alloc] initWithNetworkName: DTBADNETWORK_MAX];
@@ -26,15 +26,15 @@
     [[DTBAds sharedInstance] setAdNetworkInfo: adNetworkInfo];
     [DTBAds sharedInstance].mraidPolicy = CUSTOM_MRAID;
     
-    bool AppLovin_AmazonLogLevelAll = CONFIG_VALUE("AppLovin", "AmazonLogLevelAll", false);
+    bool AppLovinPlugin_AmazonLogLevelAll = CONFIG_VALUE( "AppLovinPlugin", "AmazonLogLevelAll", false );
     
-    if( AppLovin_AmazonLogLevelAll == true ) {
+    if( AppLovinPlugin_AmazonLogLevelAll == true ) {
         [[DTBAds sharedInstance] setLogLevel:DTBLogLevelAll];
     }
     
-    bool AppLovin_AmazonTestMode = CONFIG_VALUE("AppLovin", "AmazonTestMode", false);
+    bool AppLovinPlugin_AmazonTestMode = CONFIG_VALUE( "AppLovinPlugin", "AmazonTestMode", false );
     
-    if( AppLovin_AmazonTestMode == true ) {
+    if( AppLovinPlugin_AmazonTestMode == true ) {
         [DTBAds sharedInstance].testMode = TRUE;
     }
     
@@ -42,29 +42,29 @@
 }
 
 - (NSString * _Nullable) getAmazonBannerSlotId {
-    const Mengine::Char * AppLovin_AmazonBannerSlotId = CONFIG_VALUE("AppLovin", "AmazonBannerSlotId", "");
+    const Mengine::Char * AppLovinPlugin_AmazonBannerSlotId = CONFIG_VALUE( "AppLovinPlugin", "AmazonBannerSlotId", "" );
 
-    if( MENGINE_STRCMP( AppLovin_AmazonBannerSlotId, "" ) == 0 ) {
+    if( MENGINE_STRCMP( AppLovinPlugin_AmazonBannerSlotId, "" ) == 0 ) {
         return nil;
     }
         
-    NSString * amazonBannerSlotId = [NSString stringWithUTF8String:AppLovin_AmazonBannerSlotId];
+    NSString * amazonBannerSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonBannerSlotId];
         
     LOGGER_INFO("applovin", "Interstitial Amazon AdUnit '%s'"
-        , AppLovin_AmazonBannerSlotId
+        , AppLovinPlugin_AmazonBannerSlotId
     );
     
     return amazonBannerSlotId;
 }
 
 - (NSString * _Nullable) getAmazonInterstitialSlotId {
-    const Mengine::Char * AppLovin_AmazonInterstitialSlotId = CONFIG_VALUE("AppLovin", "AmazonInterstitialSlotId", "");
+    const Mengine::Char * AppLovinPlugin_AmazonInterstitialSlotId = CONFIG_VALUE( "AppLovinPlugin", "AmazonInterstitialSlotId", "" );
     
-    if( MENGINE_STRCMP( AppLovin_AmazonInterstitialSlotId, "" ) == 0 ) {
+    if( MENGINE_STRCMP( AppLovinPlugin_AmazonInterstitialSlotId, "" ) == 0 ) {
         return nil;
     }
     
-    NSString * amazonInterstitialSlotId = [NSString stringWithUTF8String:AppLovin_AmazonInterstitialSlotId];
+    NSString * amazonInterstitialSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonInterstitialSlotId];
         
     LOGGER_INFO("applovin", "Interstitial Amazon AdUnit '%s'"
         , AppLovin_AmazonInterstitialSlotId
@@ -74,16 +74,16 @@
 }
 
 - (NSString * _Nullable) getAmazonRewardedSlotId {
-    const Mengine::Char * AppLovin_AmazonRewardedSlotId = CONFIG_VALUE("AppLovin", "AmazonRewardedSlotId", "");
+    const Mengine::Char * AppLovinPlugin_AmazonRewardedSlotId = CONFIG_VALUE( "AppLovinPlugin", "AmazonRewardedSlotId", "" );
     
-    if( MENGINE_STRCMP( AppLovin_AmazonRewardedSlotId, "" ) == 0 ) {
+    if( MENGINE_STRCMP( AppLovinPlugin_AmazonRewardedSlotId, "" ) == 0 ) {
         return nil;
     }
      
-    NSString * amazonRewardedSlotId = [NSString stringWithUTF8String:AppLovin_AmazonRewardedSlotId];
+    NSString * amazonRewardedSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonRewardedSlotId];
         
     LOGGER_INFO("applovin", "Rewarded Amazon AdUnit '%s'"
-        , AppLovin_AmazonRewardedSlotId
+        , AppLovinPlugin_AmazonRewardedSlotId
     );
     
     return amazonRewardedSlotId;

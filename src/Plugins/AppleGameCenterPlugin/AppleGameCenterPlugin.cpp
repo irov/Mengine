@@ -40,7 +40,7 @@ namespace Mengine
             return false;
         }
 
-        bool AppleGameCenterPlugin_Available = CONFIG_VALUE( "AppleGameCenterPlugin", "Available", false );
+        bool AppleGameCenterPlugin_Available = CONFIG_VALUE( "AppleGameCenterPlugin", "Available", true );
         
         if( AppleGameCenterPlugin_Available == false )
         {

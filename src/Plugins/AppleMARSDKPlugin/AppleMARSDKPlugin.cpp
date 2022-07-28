@@ -39,7 +39,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleMARSDKPlugin_Available = CONFIG_VALUE( "AppleMARSDKPlugin", "Available", false );
+        bool AppleMARSDKPlugin_Available = CONFIG_VALUE( "AppleMARSDKPlugin", "Available", true );
 
         if( AppleMARSDKPlugin_Available == false )
         {

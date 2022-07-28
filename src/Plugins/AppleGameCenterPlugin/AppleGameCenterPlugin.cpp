@@ -30,17 +30,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "applegamecenter" ) == true )
+        {
+            return true;
+        }
+        
         if( HAS_OPTION( "noapplegamecenter" ) == true )
         {
             return false;
         }
 
-        if( HAS_OPTION( "applegamecenter" ) == false )
+        bool AppleGameCenterPlugin_Available = CONFIG_VALUE( "AppleGameCenterPlugin", "Available", false );
+        
+        if( AppleGameCenterPlugin_Available == false )
         {
-            if( CONFIG_VALUE( "AppleGameCenter", "Enable", false ) == false )
-            {
-                return false;
-            }
+            return false;
         }
   
         return true;

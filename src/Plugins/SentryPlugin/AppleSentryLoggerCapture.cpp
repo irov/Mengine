@@ -37,7 +37,7 @@ namespace Mengine
          
         m_message.append( _data, _size );
 
-        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "Sentry", "MaxLogSize", 9240 );
+        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "SentryPlugin", "MaxLogSize", 9240 );
 
         String::size_type message_size = m_message.size();
 

@@ -29,17 +29,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "appleapptracking" ) == true )
+        {
+            return true;
+        }
+            
         if( HAS_OPTION( "noappleapptracking" ) == true )
         {
             return false;
         }
-
-        if( HAS_OPTION( "appleapptracking" ) == false )
+        
+        bool AppleAppTrackingPlugin_Available = CONFIG_VALUE( "AppleAppTrackingPlugin", "Available", false );
+        
+        if( AppleAppTrackingPlugin_Available == false )
         {
-            if( CONFIG_VALUE( "AppleAppTracking", "Enable", false ) == false )
-            {
-                return false;
-            }
+            return false;
         }
   
         return true;

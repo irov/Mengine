@@ -29,17 +29,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleReviewPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "applereview" ) == true )
+        {
+            return true;
+        }
+            
         if( HAS_OPTION( "noapplereview" ) == true )
         {
             return false;
         }
         
-        if( HAS_OPTION( "applereview" ) == false )
+        bool AppleReviewPlugin_Available = CONFIG_VALUE( "AppleReviewPlugin", "Available", false );
+        
+        if( AppleReviewPlugin_Available == false )
         {
-            if( CONFIG_VALUE( "AppleReview", "Enable", false ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;

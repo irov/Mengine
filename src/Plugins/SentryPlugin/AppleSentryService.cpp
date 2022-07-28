@@ -40,7 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleSentryService::_initializeService()
     {
-        const Char * Sentry_DSN = CONFIG_VALUE( "Sentry", "DSN", "" );
+        const Char * Sentry_DSN = CONFIG_VALUE( "SentryPlugin", "DSN", "" );
 
         if( MENGINE_STRCMP( Sentry_DSN, "" ) == 0 )
         {
@@ -55,7 +55,7 @@ namespace Mengine
         
         bool debugMode = Helper::isDebugMode();
         
-        bool Sentry_Debug = CONFIG_VALUE_CAPTURE_DEFAULT( "Sentry", "Debug", debugMode );
+        bool Sentry_Debug = CONFIG_VALUE_CAPTURE_DEFAULT( "SentryPlugin", "Debug", debugMode );
         
         const Char * BUILD_VERSION = Helper::getBuildVersion();
         
@@ -104,7 +104,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleSentryService::notifyCreateApplication_()
     {
-        const Char * Sentry_Application = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
+        const Char * Sentry_Application = CONFIG_VALUE( "SentryPlugin", "Application", "Mengine" );
 
         LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
             , Sentry_Application

@@ -859,13 +859,13 @@ namespace Mengine
         if( _compilable->isCompile() == true )
         {
             Detail::serializeNodeProp( _animation->getTime(), "time", xmlNode );
+            Detail::serializeNodeProp( _animation->getDuration(), "duration", xmlNode );
         }
         else
         {
             Detail::serializeNodeProp( 0.f, "time", xmlNode );
+            Detail::serializeNodeProp( 0.f, "duration", xmlNode );
         }
-
-        Detail::serializeNodeProp( _animation->getDuration(), "duration", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode )

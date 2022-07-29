@@ -640,7 +640,7 @@ namespace Mengine
             ->createJob( 50u, MENGINE_DOCUMENT_FACTORABLE );
 
         THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
         THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE );

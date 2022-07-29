@@ -66,5 +66,8 @@ namespace Mengine
         void setCurrentScene_( const SceneCommandDesc & _desc );
         void restartCurrentScene_( const SceneCommandDesc & _desc );
         void removeCurrentScene_( const SceneCommandDesc & _desc, bool _remove );
+
+    protected:
+        void destroyCurrentScene_();
     };
 };

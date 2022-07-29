@@ -57,15 +57,7 @@ namespace Mengine
 
         m_commands.clear();
 
-        ScenePtr currentScene = m_currentScene;
-        m_currentScene = nullptr;
-
-        if( currentScene != nullptr )
-        {
-            currentScene->dispose();
-            currentScene = nullptr;
-        }
-
+        this->destroyCurrentScene_();
         this->removeGlobalScene();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -179,7 +171,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::setCurrentScene_( const SceneCommandDesc & _desc )
     {
-        this->removeCurrentScene_( _desc, false );
+        ScenePtr oldScene = m_currentScene;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, m_currentScene, _desc.scene );
+
+        if( m_currentScene != nullptr )
+        {
+            m_currentScene->dispose();
+            m_currentScene = nullptr;
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_DESTROY, oldScene );
+
+        if( _desc.cb != nullptr )
+        {
+            _desc.cb->onSceneChange( nullptr, false, false, false );
+        }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_INITIALIZE, _desc.scene );
 
@@ -276,12 +283,31 @@ namespace Mengine
             }
         }
 
-        ScenePtr oldScene = m_currentScene;
+        this->destroyCurrentScene_();
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, m_currentScene, nullptr );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_COMPLETE );
+
+        if( _desc.cb != nullptr )
+        {
+            _desc.cb->onSceneChange( nullptr, false, _remove, false );
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_COMPLETE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneService::destroyCurrentScene_()
+    {
+        if( m_currentScene == nullptr )
+        {
+            return;
+        }
+
+        ScenePtr oldScene = m_currentScene;
 
         ScenePtr destroyScene = m_currentScene;
         m_currentScene = nullptr;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, oldScene );
 
         if( destroyScene != nullptr )
         {
@@ -289,12 +315,7 @@ namespace Mengine
             destroyScene = nullptr;
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_DESTROY, oldScene );
-
-        if( _desc.cb != nullptr )
-        {
-            _desc.cb->onSceneChange( nullptr, false, _remove, false );
-        }
+        NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_DESTROY );
     }
     //////////////////////////////////////////////////////////////////////////
     const ScenePtr & SceneService::getCurrentScene() const

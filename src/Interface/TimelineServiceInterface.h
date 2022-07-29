@@ -29,8 +29,15 @@ namespace Mengine
         virtual void end() = 0;
 
     public:
-        virtual void setTimeFactor( float _timeFactor ) = 0;
-        virtual float getTimeFactor() const = 0;
+        virtual float calcTimeFactor() const = 0;
+
+    public:
+        virtual void setTimeFactorBase( float _timeFactor ) = 0;
+        virtual float getTimeFactorBase() const = 0;
+        virtual void setTimeFactorCoefficient( float _timeFactorCoefficient ) = 0;
+        virtual float getTimeFactorCoefficient() const = 0;
+        virtual void setTimeFactorCount( int32_t _timeFactorCount ) = 0;
+        virtual int32_t getTimeFactorCount() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -642,12 +642,6 @@ namespace Mengine
                 return time;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_setTimeFactor( float _factor )
-            {
-                TIMELINE_SERVICE()
-                    ->setTimeFactor( _factor );
-            }
-            //////////////////////////////////////////////////////////////////////////
             void s_addHomeless( Node * _node )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.addHomeless send None object" );
@@ -661,14 +655,6 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "Menge.isHomeless send None object" );
 
                 return _node->hasParent() == false;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            float s_getTimeFactor()
-            {
-                float factor = TIMELINE_SERVICE()
-                    ->getTimeFactor();
-
-                return factor;
             }
             //////////////////////////////////////////////////////////////////////////
             class PythonSceneChangeCallback
@@ -4314,10 +4300,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "testPlatformTags", nodeScriptMethod, &EngineScriptMethod::s_testPlatformTags );
         pybind::def_functor( _kernel, "hasPlatformTag", nodeScriptMethod, &EngineScriptMethod::s_hasPlatformTag );
         pybind::def_functor( _kernel, "hasTouchpad", nodeScriptMethod, &EngineScriptMethod::s_hasTouchpad );
-        pybind::def_functor_deprecated( _kernel, "getTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor, "use getTimeFactor" );
-        pybind::def_functor_deprecated( _kernel, "setTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor, "use setTimeFactor" );
-        pybind::def_functor( _kernel, "getTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor );
-        pybind::def_functor( _kernel, "setTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor );
 
 
         pybind::def_functor( _kernel, "addHomeless", nodeScriptMethod, &EngineScriptMethod::s_addHomeless );

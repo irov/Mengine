@@ -1120,28 +1120,31 @@ namespace Mengine
 
             if( _event.special.isAlt == true && _event.isDown == true )
             {
-                float timeFactor = -1.f;
+                float timeFactorBase = -1.f;
 
                 switch( _event.code )
                 {
-                case KC_P: timeFactor = 0.f; break;
-                case KC_0: timeFactor = 0.5f; break;
-                case KC_1: timeFactor = 1.f; break;
-                case KC_2: timeFactor = 2.f; break;
-                case KC_3: timeFactor = 3.f; break;
-                case KC_4: timeFactor = 4.f; break;
-                case KC_5: timeFactor = 5.f; break;
-                case KC_6: timeFactor = 6.f; break;
-                case KC_7: timeFactor = 7.f; break;
-                case KC_8: timeFactor = 8.f; break;
-                case KC_9: timeFactor = 9.f; break;
+                case KC_P: timeFactorBase = 0.f; break;
+                case KC_0: timeFactorBase = 0.5f; break;
+                case KC_1: timeFactorBase = 1.f; break;
+                case KC_2: timeFactorBase = 2.f; break;
+                case KC_3: timeFactorBase = 3.f; break;
+                case KC_4: timeFactorBase = 4.f; break;
+                case KC_5: timeFactorBase = 5.f; break;
+                case KC_6: timeFactorBase = 6.f; break;
+                case KC_7: timeFactorBase = 7.f; break;
+                case KC_8: timeFactorBase = 8.f; break;
+                case KC_9: timeFactorBase = 9.f; break;
                 default: break;
                 }
 
-                if( timeFactor >= 0.f )
+                if( timeFactorBase >= 0.f )
                 {
                     TIMELINE_SERVICE()
-                        ->setTimeFactor( timeFactor );
+                        ->setTimeFactorBase( timeFactorBase );
+
+                    float timeFactor = TIMELINE_SERVICE()
+                        ->calcTimeFactor();
 
                     LOGGER_MESSAGE( "time factor: %f"
                         , timeFactor
@@ -1151,20 +1154,23 @@ namespace Mengine
 
             if( _event.code == KC_OEM_6 && _event.isDown == true )
             {
-                float timeFactor = TIMELINE_SERVICE()
-                    ->getTimeFactor();
+                int32_t timeFactorCount = TIMELINE_SERVICE()
+                    ->getTimeFactorCount();
 
-                float Debug_TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
+                int32_t timeFactorStep = 1;
 
                 if( _event.special.isAlt == true )
                 {
-                    Debug_TimeFactorStep = 1.f;
+                    timeFactorStep *= 10;
                 }
 
-                timeFactor += Debug_TimeFactorStep;
+                timeFactorCount += timeFactorStep;
 
                 TIMELINE_SERVICE()
-                    ->setTimeFactor( timeFactor );
+                    ->setTimeFactorCount( timeFactorCount );
+
+                float timeFactor = TIMELINE_SERVICE()
+                    ->calcTimeFactor();
 
                 LOGGER_MESSAGE( "time factor: %f"
                     , timeFactor
@@ -1173,25 +1179,23 @@ namespace Mengine
 
             if( _event.code == KC_OEM_4 && _event.isDown == true )
             {
-                float timeFactor = TIMELINE_SERVICE()
-                    ->getTimeFactor();
+                int32_t timeFactorCount = TIMELINE_SERVICE()
+                    ->getTimeFactorCount();
 
-                float Debug_TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
+                int32_t timeFactorStep = -1;
 
                 if( _event.special.isAlt == true )
                 {
-                    Debug_TimeFactorStep = 1.f;
+                    timeFactorStep *= 10;
                 }
 
-                timeFactor -= Debug_TimeFactorStep;
-
-                if( timeFactor < 0.f )
-                {
-                    timeFactor = 0.f;
-                }
+                timeFactorCount += timeFactorStep;
 
                 TIMELINE_SERVICE()
-                    ->setTimeFactor( timeFactor );
+                    ->setTimeFactorCount( timeFactorCount );
+
+                float timeFactor = TIMELINE_SERVICE()
+                    ->calcTimeFactor();
 
                 LOGGER_MESSAGE( "time factor: %f"
                     , timeFactor
@@ -1738,7 +1742,7 @@ namespace Mengine
         }
 
         float timeFactor = TIMELINE_SERVICE()
-            ->getTimeFactor();
+            ->calcTimeFactor();
 
         time *= timeFactor;
 

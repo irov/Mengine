@@ -3,6 +3,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TimelineService, Mengine::TimelineService );
@@ -14,8 +15,10 @@ namespace Mengine
         : m_revision( ~0U )
         , m_current( 0.f )
         , m_time( 0.f )
-        , m_total( 0.f )
-        , m_timeFactor( 1.f )
+        , m_total( 0.f )        
+        , m_timeFactorBase( 1.f )
+        , m_timeFactorCoefficient( 0.f )
+        , m_timeFactorCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,7 +28,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TimelineService::_initializeService()
     {
-        //Empty
+        float Debug_TimeFactorCoefficient = CONFIG_VALUE( "Debug", "TimeFactorCoefficient", 0.0625f );
+
+        m_timeFactorCoefficient = Debug_TimeFactorCoefficient;
 
         return true;
     }
@@ -120,16 +125,58 @@ namespace Mengine
         m_time = -1.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TimelineService::setTimeFactor( float _timeFactor )
+    float TimelineService::calcTimeFactor() const
     {
-        m_timeFactor = _timeFactor;
+        float timeFactor = m_timeFactorBase + m_timeFactorCoefficient * m_timeFactorCount;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_TIME_FACTOR_CHANGE, m_timeFactor );
+        if( timeFactor < 0.f )
+        {
+            return 0.f;
+        }
+
+        return timeFactor;
     }
     //////////////////////////////////////////////////////////////////////////
-    float TimelineService::getTimeFactor() const
+    void TimelineService::setTimeFactorBase( float _timeFactor )
     {
-        return m_timeFactor;
+        m_timeFactorBase = _timeFactor;
+
+        float timeFactor = this->calcTimeFactor();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_TIME_FACTOR_CHANGE, timeFactor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TimelineService::getTimeFactorBase() const
+    {
+        return m_timeFactorBase;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TimelineService::setTimeFactorCoefficient( float _timeFactorCoefficient )
+    {
+        m_timeFactorCoefficient = _timeFactorCoefficient;
+
+        float timeFactor = this->calcTimeFactor();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_TIME_FACTOR_CHANGE, timeFactor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TimelineService::getTimeFactorCoefficient() const
+    {
+        return m_timeFactorCoefficient;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TimelineService::setTimeFactorCount( int32_t _timeFactorCount )
+    {
+        m_timeFactorCount = _timeFactorCount;
+
+        float timeFactor = this->calcTimeFactor();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_TIME_FACTOR_CHANGE, timeFactor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t TimelineService::getTimeFactorCount() const
+    {
+        return m_timeFactorCount;
     }
     //////////////////////////////////////////////////////////////////////////
 }

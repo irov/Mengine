@@ -94,7 +94,7 @@ namespace Mengine
 
         if( uTimer == 0 )
         {
-            LOGGER_ERROR( "SetTimer [%u] get error %s"
+            LOGGER_ERROR( "SetTimer [%u] get error %ls"
                 , uElapse
                 , Helper::Win32GetLastErrorMessage()
             );

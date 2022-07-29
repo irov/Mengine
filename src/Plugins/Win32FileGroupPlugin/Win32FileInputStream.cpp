@@ -58,7 +58,7 @@ namespace Mengine
         LARGE_INTEGER lpFileSize;
         if( ::GetFileSizeEx( m_hFile, &lpFileSize ) == FALSE )
         {
-            LOGGER_ERROR( "invalid file '%ls' size get error %s"
+            LOGGER_ERROR( "invalid file '%ls' size get error %ls"
                 , fullPath
                 , Helper::Win32GetLastErrorMessage()
             );
@@ -107,7 +107,7 @@ namespace Mengine
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
-                LOGGER_ERROR( "seek offset %zu size %zu get error %s"
+                LOGGER_ERROR( "seek offset %zu size %zu get error %ls"
                     , m_offset
                     , m_size
                     , Helper::Win32GetLastErrorMessage()
@@ -141,7 +141,7 @@ namespace Mengine
 
         if( successful == FALSE )
         {
-            LOGGER_ERROR( "invalid close '%s:%s' handle get error %s"
+            LOGGER_ERROR( "invalid close '%s:%s' handle get error %ls"
                 , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
                 , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                 , Helper::Win32GetLastErrorMessage()
@@ -276,7 +276,7 @@ namespace Mengine
         DWORD bytesRead = 0;
         if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
-            LOGGER_ERROR( "read offset %zu size %zu:%zu get error %s"
+            LOGGER_ERROR( "read offset %zu size %zu:%zu get error %ls"
                 , _offset
                 , _size
                 , m_size
@@ -330,7 +330,7 @@ namespace Mengine
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
-                LOGGER_ERROR( "seek %zu:%zu get error %s"
+                LOGGER_ERROR( "seek %zu:%zu get error %ls"
                     , _pos
                     , m_size
                     , Helper::Win32GetLastErrorMessage()
@@ -395,7 +395,7 @@ namespace Mengine
 
         if( ::GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
         {
-            LOGGER_ERROR( "invalid get file time get error %s"
+            LOGGER_ERROR( "invalid get file time get error %ls"
                 , Helper::Win32GetLastErrorMessage()
             );
 

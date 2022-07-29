@@ -190,7 +190,7 @@ namespace Mengine
         LARGE_INTEGER dwPtr;
         if( ::SetFilePointerEx( hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
         {
-            LOGGER_ERROR( "seek %zu:%zu get %s"
+            LOGGER_ERROR( "seek %zu:%zu get %ls"
                 , pos
                 , m_size
                 , Helper::Win32GetLastErrorMessage()
@@ -204,7 +204,7 @@ namespace Mengine
         DWORD bytesRead = 0;
         if( ::ReadFile( hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
-            LOGGER_ERROR( "read offset %zu size %zu:%zu %s"
+            LOGGER_ERROR( "read offset %zu size %zu:%zu %ls"
                 , _offset
                 , _size
                 , m_size
@@ -300,7 +300,7 @@ namespace Mengine
 
         if( ::GetFileTime( hFile, &creation, &access, &write ) == FALSE )
         {
-            LOGGER_ERROR( "invalid GetFileTime get error %s"
+            LOGGER_ERROR( "invalid GetFileTime get error %ls"
                 , Helper::Win32GetLastErrorMessage()
             );
 

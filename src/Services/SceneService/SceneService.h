@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Interface/SceneServiceInterface.h"
@@ -39,20 +38,12 @@ namespace Mengine
     public:
         bool isProcess() const override;
 
-    public:
-        const ConstString & getCurrentSceneNameThreadSafe() const override;
-
     protected:
-        void destroyCurrentScene_();
-
-    protected:
-        ThreadMutexInterfacePtr m_mutex;
-
         enum ESceneCommandType
         {
-            ESCT_SET,
-            ESCT_RESTART,
-            ESCT_REMOVE,
+            ESCT_SET_CURRENT_SCENE,
+            ESCT_RESTART_CURRENT_SCENE,
+            ESCT_REMOVE_CURRENT_SCENE,
         };
 
         struct SceneCommandDesc
@@ -74,6 +65,6 @@ namespace Mengine
     protected:
         void setCurrentScene_( const SceneCommandDesc & _desc );
         void restartCurrentScene_( const SceneCommandDesc & _desc );
-        void removeCurrentScene_( const SceneCommandDesc & _desc );
+        void removeCurrentScene_( const SceneCommandDesc & _desc, bool _remove );
     };
 };

@@ -33,9 +33,6 @@ namespace Mengine
         virtual time_t getFileUnixTime( const FILETIME * filetime ) const = 0;
 
     public:
-        virtual bool getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const = 0;
-
-    public:
         virtual bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size ) = 0;
 
     public:

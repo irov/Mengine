@@ -9,6 +9,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 #include "Kernel/LoggerLevel.h"
+#include "Kernel/Scene.h"
 
 #include "Config/Atomic.h"
 #include "Config/Typedef.h"
@@ -38,6 +39,8 @@ namespace Mengine
         void onThreadWorkerDone( uint32_t _id ) override;
 
     protected:
+        void notifyChangeSceneInitialize( const ScenePtr & _newScene );
+        void notifyChangeSceneDestroy( const ScenePtr & _oldCcene );
         void notifyChangeLocalePrepare( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyChangeLocalePost( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyLoggerBegin( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size );
@@ -45,6 +48,9 @@ namespace Mengine
         void notifyAbort( const Char * _doc );
 
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+        ConstString m_currentSceneName;
+
         ThreadJobPtr m_threadJob;
 
         DateTimeProviderInterfacePtr m_dateTimeProvider;
@@ -58,6 +64,6 @@ namespace Mengine
         Atomic<uint32_t> m_oldRefAlive;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Win32AntifreezeMonitor> Win32AntifreezeMonitorPtr;
+    typedef IntrusivePtr<Win32AntifreezeMonitor, ThreadWorkerInterface> Win32AntifreezeMonitorPtr;
     //////////////////////////////////////////////////////////////////////////
 }

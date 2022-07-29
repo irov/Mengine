@@ -69,7 +69,7 @@ namespace Mengine
 
         if( ::GetFileSizeEx( m_hFile, &m_liSize ) == FALSE )
         {
-            LOGGER_ERROR( "invalid file '%ls' size get error %s"
+            LOGGER_ERROR( "invalid file '%ls' size get error %ls"
                 , fullPath
                 , Helper::Win32GetLastErrorMessage()
             );
@@ -84,7 +84,7 @@ namespace Mengine
 
         if( hMapping == NULL )
         {
-            LOGGER_ERROR( "invalid create file mapping '%ls' get error %s"
+            LOGGER_ERROR( "invalid create file mapping '%ls' get error %ls"
                 , fullPath
                 , Helper::Win32GetLastErrorMessage()
             );

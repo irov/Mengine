@@ -32,7 +32,7 @@ namespace Mengine
 
             if( handle == INVALID_HANDLE_VALUE )
             {
-                LOGGER_ERROR( "invalid create file '%ls' %s"
+                LOGGER_ERROR( "invalid create file '%ls' %ls"
                     , pathCorrect
                     , Helper::Win32GetLastErrorMessage()
                 );
@@ -59,7 +59,7 @@ namespace Mengine
 
             if( hFind == INVALID_HANDLE_VALUE )
             {
-                LOGGER_ERROR( "file invalid find ??? (%ls) get error %s"
+                LOGGER_ERROR( "file invalid find ??? (%ls) get error %ls"
                     , _path
                     , Helper::Win32GetLastErrorMessage()
                 );

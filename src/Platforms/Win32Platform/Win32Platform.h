@@ -216,9 +216,6 @@ namespace Mengine
         time_t getFileUnixTime( const FILETIME * filetime ) const override;
 
     protected:
-        bool getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const override;
-
-    protected:
         bool getCallstack( uint64_t _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const override;
 
     protected:

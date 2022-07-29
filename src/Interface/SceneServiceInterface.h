@@ -40,9 +40,6 @@ namespace Mengine
 
     public:
         virtual bool isProcess() const = 0;
-
-    public:
-        virtual const ConstString & getCurrentSceneNameThreadSafe() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

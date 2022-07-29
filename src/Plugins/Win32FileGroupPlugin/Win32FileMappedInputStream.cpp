@@ -36,7 +36,7 @@ namespace Mengine
 
         if( memory == NULL )
         {
-            LOGGER_ERROR( "invalid map view of file get error %s"
+            LOGGER_ERROR( "invalid map view of file get error %ls"
                 , Helper::Win32GetLastErrorMessage()
             );
 
@@ -58,7 +58,7 @@ namespace Mengine
     {
         if( ::UnmapViewOfFile( m_memoryGranularity ) == FALSE )
         {
-            LOGGER_ERROR( "invalid UnmapViewOfFile [%p] get error %s"
+            LOGGER_ERROR( "invalid UnmapViewOfFile [%p] get error %ls"
                 , m_base
                 , Helper::Win32GetLastErrorMessage()
             );

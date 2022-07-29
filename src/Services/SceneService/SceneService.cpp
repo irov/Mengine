@@ -2,7 +2,6 @@
 
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Scene.h"
 #include "Kernel/DocumentHelper.h"
@@ -29,8 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::_initializeService()
     {
-        m_mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        //Empty
 
         return true;
     }
@@ -41,16 +39,16 @@ namespace Mengine
         {
             switch( desc.type )
             {
-            case ESCT_SET:
+            case ESCT_SET_CURRENT_SCENE:
                 {
                     desc.scene->dispose();
                     desc.scene = nullptr;
                 }break;
-            case ESCT_RESTART:
+            case ESCT_RESTART_CURRENT_SCENE:
                 {
                     //Empty
                 }break;
-            case ESCT_REMOVE:
+            case ESCT_REMOVE_CURRENT_SCENE:
                 {
                     //Empty
                 }break;
@@ -59,10 +57,16 @@ namespace Mengine
 
         m_commands.clear();
 
-        this->destroyCurrentScene_();
-        this->removeGlobalScene();
+        ScenePtr currentScene = m_currentScene;
+        m_currentScene = nullptr;
 
-        m_mutex = nullptr;
+        if( currentScene != nullptr )
+        {
+            currentScene->dispose();
+            currentScene = nullptr;
+        }
+
+        this->removeGlobalScene();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::setCurrentScene( const ScenePtr & _scene, bool _immediately, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb )
@@ -86,7 +90,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _scene, "scene == nullptr" );
 
         SceneCommandDesc desc;
-        desc.type = ESCT_SET;
+        desc.type = ESCT_SET_CURRENT_SCENE;
         desc.scene = _scene;
         desc.destroyOld = _destroyOld;
         desc.cb = _cb;
@@ -124,7 +128,7 @@ namespace Mengine
         );
 
         SceneCommandDesc desc;
-        desc.type = ESCT_RESTART;
+        desc.type = ESCT_RESTART_CURRENT_SCENE;
         desc.cb = _cb;
 
         m_commands.emplace_back( desc );
@@ -160,7 +164,7 @@ namespace Mengine
         );
 
         SceneCommandDesc desc;
-        desc.type = ESCT_REMOVE;
+        desc.type = ESCT_REMOVE_CURRENT_SCENE;
         desc.cb = _cb;
 
         m_commands.emplace_back( desc );
@@ -175,31 +179,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::setCurrentScene_( const SceneCommandDesc & _desc )
     {
-        ScenePtr oldScene = m_currentScene;
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, m_currentScene, _desc.scene );
-
-        if( m_currentScene != nullptr )
-        {
-            m_currentScene->dispose();
-
-            m_mutex->lock();
-            m_currentScene = nullptr;
-            m_mutex->unlock();
-        }
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_DESTROY, oldScene );
-
-        if( _desc.cb != nullptr )
-        {
-            _desc.cb->onSceneChange( nullptr, false, false, false );
-        }
+        this->removeCurrentScene_( _desc, false );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_INITIALIZE, _desc.scene );
 
-        m_mutex->lock();
         m_currentScene = _desc.scene;
-        m_mutex->unlock();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, m_currentScene );
 
@@ -280,21 +264,7 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_COMPLETE, m_currentScene );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SceneService::removeCurrentScene_( const SceneCommandDesc & _desc )
-    {
-        this->destroyCurrentScene_();
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_COMPLETE );
-
-        if( _desc.cb != nullptr )
-        {
-            _desc.cb->onSceneChange( nullptr, false, true, false );
-        }
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_COMPLETE );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SceneService::destroyCurrentScene_()
+    void SceneService::removeCurrentScene_( const SceneCommandDesc & _desc, bool _remove )
     {
         if( m_currentScene == m_globalScene )
         {
@@ -303,20 +273,24 @@ namespace Mengine
             return;
         }
 
-        ScenePtr destroyScene = m_currentScene;
+        ScenePtr oldScene = m_currentScene;
 
-        m_mutex->lock();
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, m_currentScene, nullptr );
+
+        ScenePtr destroyScene = m_currentScene;
         m_currentScene = nullptr;
-        m_mutex->unlock();
 
         if( destroyScene != nullptr )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, (destroyScene) );
-
             destroyScene->dispose();
             destroyScene = nullptr;
+        }
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_DESTROY );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_DESTROY, oldScene );
+
+        if( _desc.cb != nullptr )
+        {
+            _desc.cb->onSceneChange( nullptr, false, _remove, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -374,17 +348,17 @@ namespace Mengine
         {
             switch( desc.type )
             {
-            case ESCT_SET:
+            case ESCT_SET_CURRENT_SCENE:
                 {
                     this->setCurrentScene_( desc );
                 }break;
-            case ESCT_RESTART:
+            case ESCT_RESTART_CURRENT_SCENE:
                 {
                     this->restartCurrentScene_( desc );
                 }break;
-            case ESCT_REMOVE:
+            case ESCT_REMOVE_CURRENT_SCENE:
                 {
-                    this->removeCurrentScene_( desc );
+                    this->removeCurrentScene_( desc, true );
                 }break;
             default:
                 {
@@ -398,20 +372,6 @@ namespace Mengine
     bool SceneService::isProcess() const
     {
         return m_process > 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & SceneService::getCurrentSceneNameThreadSafe() const
-    {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
-
-        if( m_currentScene == nullptr )
-        {
-            return ConstString::none();
-        }
-
-        const ConstString & name = m_currentScene->getName();
-
-        return name;
     }
     //////////////////////////////////////////////////////////////////////////
 }

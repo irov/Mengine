@@ -6,6 +6,8 @@
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Interface/PlatformInterface.h"
 #   include "Interface/Win32PlatformExtensionInterface.h"
+
+#   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
 namespace Mengine
@@ -90,26 +92,40 @@ namespace Mengine
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * Win32GetLastErrorMessage()
+        const WChar * Win32GetErrorMessage( uint32_t _messageId )
+        {
+#if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+            static MENGINE_THREAD_LOCAL WChar errorMessageBuffer[2048] = {L'\0'};
+
+            if( ::FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS
+                , NULL
+                , (DWORD)_messageId
+                , MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US )
+                , (LPTSTR)errorMessageBuffer
+                , 2048
+                , NULL ) != 0 )
+            {
+                MENGINE_WSPRINTF( errorMessageBuffer, L"#Error FormatMessage [%u]#"
+                    , _messageId
+                );
+            }
+
+            return errorMessageBuffer;
+#else
+            return L"";
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const WChar * Win32GetLastErrorMessage()
         {
 #if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
             DWORD error = ::GetLastError();
 
-            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
+            const WChar * errorMessage = Win32GetErrorMessage( error );
 
-            Char str_le[1024] = {'\0'};
-            win32Platform->getErrorMessage( error, str_le, 1024 );
-
-            static MENGINE_THREAD_LOCAL Char message[2048] = {'\0'};
-
-            MENGINE_SPRINTF( message, "[error: %s (%lu)]"
-                , str_le
-                , error );
-
-            return message;
+            return errorMessage;
 #else
-            return "";
+            return L"";
 #endif
         }
         //////////////////////////////////////////////////////////////////////////

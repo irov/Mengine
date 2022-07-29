@@ -10,7 +10,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetCurrentDllPath();
         uint64_t Win32GetCurrentThreadId();
-        const Char * Win32GetLastErrorMessage();
+        const WChar * Win32GetErrorMessage( uint32_t _messageId );
+        const WChar * Win32GetLastErrorMessage();
         //////////////////////////////////////////////////////////////////////////
     }
 }

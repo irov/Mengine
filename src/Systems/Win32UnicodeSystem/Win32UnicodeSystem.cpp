@@ -64,7 +64,7 @@ namespace Mengine
 
         if( utf8_size == 0 && _unicodeSize != 0 )
         {
-            LOGGER_ERROR( "unicode '%ls' WideCharToMultiByte [CP_UTF8] 0 get error %s"
+            LOGGER_ERROR( "unicode '%ls' WideCharToMultiByte [CP_UTF8] 0 get error %ls"
                 , _unicode
                 , Helper::Win32GetLastErrorMessage()
             );
@@ -125,7 +125,7 @@ namespace Mengine
 
         if( (wc_size == 0 || wc_size == 0xFFFD) && _utf8Size != 0 )
         {
-            LOGGER_ERROR( "utf8 '%s' MultiByteToWideChar [CP_UTF8] get error %s"
+            LOGGER_ERROR( "utf8 '%s' MultiByteToWideChar [CP_UTF8] get error %ls"
                 , _utf8
                 , Helper::Win32GetLastErrorMessage()
             );

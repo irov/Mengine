@@ -44,7 +44,7 @@ namespace Mengine
 
         if( hInstance == NULL )
         {
-            LOGGER_ERROR( "invalid load '%s' %s"
+            LOGGER_ERROR( "invalid load '%s' %ls"
                 , m_name.c_str()
                 , Helper::Win32GetLastErrorMessage()
             );
@@ -84,7 +84,7 @@ namespace Mengine
 
         if( proc == NULL )
         {
-            LOGGER_ERROR( "GetProcAddress [%s] get error %s"
+            LOGGER_ERROR( "GetProcAddress [%s] get error %ls"
                 , _name
                 , Helper::Win32GetLastErrorMessage()
             );

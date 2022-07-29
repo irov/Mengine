@@ -36,6 +36,6 @@ namespace Mengine
         AtomicBool m_done;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;
+    typedef IntrusivePtr<ThreadWorkerSoundBufferUpdate, ThreadWorkerInterface> ThreadWorkerSoundBufferUpdatePtr;
     //////////////////////////////////////////////////////////////////////////
 }

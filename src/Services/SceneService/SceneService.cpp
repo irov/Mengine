@@ -266,11 +266,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::removeCurrentScene_( const SceneCommandDesc & _desc, bool _remove )
     {
-        if( m_currentScene == m_globalScene )
+        if( m_globalScene != nullptr )
         {
-            LOGGER_ERROR( "block delete global scene" );
+            if( m_currentScene == m_globalScene )
+            {
+                LOGGER_ERROR( "block delete global scene" );
 
-            return;
+                return;
+            }
         }
 
         ScenePtr oldScene = m_currentScene;

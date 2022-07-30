@@ -101,6 +101,10 @@
 #define MENGINE_UNUSED(X) ((void)sizeof(X))
 #endif
 
+#ifndef MENGINE_NOP
+#define MENGINE_NOP [](){}()
+#endif
+
 #ifndef MENGINE_DEBUG
 #   define MENGINE_RELEASE_UNUSED(X) MENGINE_UNUSED(X)
 #else

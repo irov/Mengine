@@ -1,6 +1,6 @@
 #include "DocumentService.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Assertion.h"
@@ -34,9 +34,9 @@ namespace Mengine
 
         m_factoryDocument = factoryDocument;
 
-        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
-            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
                 ->createMutex( nullptr );
 
             m_factoryDocument->setMutex( mutex );
@@ -44,7 +44,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        SERVICE_LEAVE( ThreadSystemInterface, [this]()
         {
             m_factoryDocument->setMutex( nullptr );
         } );

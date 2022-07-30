@@ -2,7 +2,7 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "OptickThreadProfiler.h"
 #include "OptickFrameProfiler.h"
@@ -39,9 +39,9 @@ namespace Mengine
         m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
-            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             m_factoryThreadProfilers->setMutex( mutex );
@@ -54,7 +54,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        SERVICE_LEAVE( ThreadSystemInterface, [this]()
         {
             m_factoryThreadProfilers->setMutex( nullptr );
             m_factoryFrameProfilers->setMutex( nullptr );

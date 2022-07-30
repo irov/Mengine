@@ -1,6 +1,6 @@
 #include "AllocatorService.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
@@ -93,19 +93,22 @@ namespace Mengine
 #   endif
 #endif
 
-        SERVICE_WAIT( ThreadServiceInterface, [this]()
+#if MENGINE_ALLOCATOR_DEBUG
+        SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
-            this->waitThread_();
+            m_mutexReport = THREAD_SYSTEM()
+                ->createMutex( MENGINE_DOCUMENT_MESSAGE( "AllocatorService" ) );
 
             return true;
         } );
 
-        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        SERVICE_LEAVE( ThreadSystemInterface, [this]()
         {
-            this->leaveThread_();
+            m_mutexReport = nullptr;
         } );
-        \
-            return true;
+#endif
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::_finalizeService()
@@ -313,21 +316,6 @@ namespace Mengine
         return result;
 #else
         return false;
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AllocatorService::waitThread_()
-    {
-#if MENGINE_ALLOCATOR_DEBUG
-        m_mutexReport = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_MESSAGE( "AllocatorService" ) );
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AllocatorService::leaveThread_()
-    {
-#if MENGINE_ALLOCATOR_DEBUG
-        m_mutexReport = nullptr;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

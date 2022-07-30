@@ -1,6 +1,7 @@
 #include "Win32AntifreezeMonitor.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 
@@ -19,6 +20,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/StatisticHelper.h"
 
 namespace Mengine
 {
@@ -76,11 +78,6 @@ namespace Mengine
 
         m_dateTimeProvider = dateTimeProvider;
 
-        m_mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, &Win32AntifreezeMonitor::notifyChangeSceneInitialize, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY, &Win32AntifreezeMonitor::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &Win32AntifreezeMonitor::notifyChangeLocalePrepare, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &Win32AntifreezeMonitor::notifyChangeLocalePost, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_BEGIN, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
@@ -92,8 +89,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::finalize()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_BEGIN );
@@ -110,8 +105,6 @@ namespace Mengine
 
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
-
-        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()
@@ -213,9 +206,7 @@ namespace Mengine
         bool sceneProcess = SCENE_SERVICE()
             ->isProcess();
 
-        m_mutex->lock();
-        ConstString currentSceneName = m_currentSceneName;
-        m_mutex->unlock();
+        const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( "CURRENT_SCENE_NAME" );
 
         MENGINE_ERROR_FATAL( "Antifreeze monitor detect freeze process for [%u] seconds, and create dump '%s' [scene process: %s] [scene: %s]"
             , m_seconds
@@ -232,22 +223,6 @@ namespace Mengine
         MENGINE_UNUSED( _id );
 
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyChangeSceneInitialize( const ScenePtr & _newScene )
-    {
-        m_mutex->lock();
-        m_currentSceneName = _newScene->getName();
-        m_mutex->unlock();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyChangeSceneDestroy( const ScenePtr & _oldCcene )
-    {
-        MENGINE_UNUSED( _oldCcene );
-
-        m_mutex->lock();
-        m_currentSceneName = ConstString::none();
-        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyChangeLocalePrepare( const ConstString & _prevLocale, const ConstString & _currentlocale )

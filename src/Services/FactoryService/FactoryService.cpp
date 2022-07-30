@@ -1,6 +1,6 @@
 #include "FactoryService.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/CRC32.h"
@@ -41,9 +41,9 @@ namespace Mengine
 
         if( m_memleakDetection == true )
         {
-            SERVICE_WAIT( ThreadServiceInterface, [this]()
+            SERVICE_WAIT( ThreadSystemInterface, [this]()
             {
-                ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+                ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
                     ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( mutex );
@@ -53,7 +53,7 @@ namespace Mengine
                 return true;
             } );
 
-            SERVICE_LEAVE( ThreadServiceInterface, [this]()
+            SERVICE_LEAVE( ThreadSystemInterface, [this]()
             {
                 m_mutex = nullptr;
             } );

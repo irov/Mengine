@@ -730,7 +730,7 @@ namespace Mengine
             if( PLUGIN_CREATE(Name, Doc) == false )\
             {\
                 LOGGER_ERROR( "%s [invalid initialize]", Info );\
-            return false;\
+                return false;\
             }\
         }
     //////////////////////////////////////////////////////////////////////////
@@ -738,7 +738,11 @@ namespace Mengine
         {\
             if( SERVICE_CREATE(Name, Doc) == false )\
             {\
-            return false;\
+                if(SERVICE_EXIST(LoggerServiceInterface) == true)\
+                {\
+                    LOGGER_ERROR("invalid create service: " #Name);\
+                }\
+                return false;\
             }\
         }
     //////////////////////////////////////////////////////////////////////////
@@ -753,8 +757,9 @@ namespace Mengine
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( Platform, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
@@ -762,7 +767,6 @@ namespace Mengine
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
 
         LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
@@ -861,6 +865,7 @@ namespace Mengine
         LOGGER_INFO("bootstrapper", "bootstrapper create service: " #Name);\
         if( SERVICE_CREATE(Name, Doc) == false)\
         {\
+            LOGGER_ERROR( "invalid initialize service: " #Name);\
             return false;\
         }
 

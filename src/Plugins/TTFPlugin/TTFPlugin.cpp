@@ -1,7 +1,7 @@
 #include "TTFPlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
@@ -106,7 +106,7 @@ namespace Mengine
 
         VOCABULARY_SET( FontValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_ftMutex = THREAD_SERVICE()
+        m_ftMutex = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()

@@ -108,7 +108,7 @@ namespace Mengine
 
             if( service->availableService() == false )
             {
-                return false;
+                return true;
             }
 
             desc.exist = true;

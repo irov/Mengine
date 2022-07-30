@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Exception.h"
 #include "Kernel/FileStreamHelper.h"
@@ -41,9 +41,9 @@ namespace Mengine
 
         m_defaultConfig = defaultConfig;
 
-        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
-            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             m_mutex = mutex;
@@ -53,7 +53,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        SERVICE_LEAVE( ThreadSystemInterface, [this]()
         {
             if( m_defaultConfig != nullptr )
             {

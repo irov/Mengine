@@ -22,6 +22,8 @@
 #include "Interface/AnimationInterface.h"
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
 #   include "Interface/Win32PlatformExtensionInterface.h"
@@ -645,7 +647,7 @@ namespace Mengine
         THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_dataMutex = THREAD_SERVICE()
+        m_dataMutex = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         UniqueId workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ), MENGINE_DOCUMENT_FACTORABLE );

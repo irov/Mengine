@@ -26,6 +26,12 @@ namespace Mengine
         virtual bool hasStatisticDouble( const ConstString & _name ) const = 0;
         virtual double getStatisticDouble( const ConstString & _name ) const = 0;
         virtual void resetStatisticDouble( const ConstString & _name ) = 0;
+
+    public:
+        virtual void setStatisticConstString( const ConstString & _name, const ConstString & _value ) = 0;
+        virtual bool hasStatisticConstString( const ConstString & _name ) const = 0;
+        virtual const ConstString & getStatisticConstString( const ConstString & _name ) const = 0;
+        virtual void resetStatisticConstString( const ConstString & _name ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

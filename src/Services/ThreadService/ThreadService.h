@@ -50,12 +50,6 @@ namespace Mengine
         void update() override;
 
     public:
-        ThreadMutexInterfacePtr createMutex( const DocumentPtr & _doc ) override;
-
-    public:
-        void sleep( uint32_t _ms ) override;
-
-    public:
         bool isMainThread() const override;
         uint64_t getMainThreadId() const override;
 

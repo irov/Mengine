@@ -39,8 +39,6 @@ namespace Mengine
         void onThreadWorkerDone( uint32_t _id ) override;
 
     protected:
-        void notifyChangeSceneInitialize( const ScenePtr & _newScene );
-        void notifyChangeSceneDestroy( const ScenePtr & _oldCcene );
         void notifyChangeLocalePrepare( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyChangeLocalePost( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyLoggerBegin( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size );
@@ -48,9 +46,6 @@ namespace Mengine
         void notifyAbort( const Char * _doc );
 
     protected:
-        ThreadMutexInterfacePtr m_mutex;
-        ConstString m_currentSceneName;
-
         ThreadJobPtr m_threadJob;
 
         DateTimeProviderInterfacePtr m_dateTimeProvider;

@@ -60,10 +60,6 @@ namespace Mengine
         size_t find_alloc_count( const Char * _doc ) const override;
 
     protected:
-        void waitThread_();
-        void leaveThread_();
-
-    protected:
         void report( const Char * _name, size_t _add, size_t _minus );
 
     protected:

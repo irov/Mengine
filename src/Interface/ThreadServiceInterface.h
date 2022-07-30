@@ -40,12 +40,6 @@ namespace Mengine
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
 
     public:
-        virtual ThreadMutexInterfacePtr createMutex( const DocumentPtr & _doc ) = 0;
-
-    public:
-        virtual void sleep( uint32_t _ms ) = 0;
-
-    public:
         virtual bool isMainThread() const = 0;
         virtual uint64_t getMainThreadId() const = 0;
 

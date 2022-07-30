@@ -3,6 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/AndroidPlatformExtensionInterface.h"
 
@@ -106,7 +107,7 @@ namespace Mengine
 
         m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         if( m_eventation->initialize( mutex ) == false )

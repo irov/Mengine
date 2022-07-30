@@ -31,7 +31,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebugRenderPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE_SAFE( NodeDebugRenderService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( NodeDebugRenderService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( SERVICE_IS_AVAILABLE( NodeDebugRenderServiceInterface ) == false )
         {
             return true;
         }

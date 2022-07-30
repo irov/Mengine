@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/StatisticServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Map.h"
@@ -15,6 +16,7 @@ namespace Mengine
         ~StatisticService() override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;
@@ -31,11 +33,22 @@ namespace Mengine
         double getStatisticDouble( const ConstString & _name ) const override;
         void resetStatisticDouble( const ConstString & _name ) override;
 
+    public:
+        void setStatisticConstString( const ConstString & _name, const ConstString & _value ) override;
+        bool hasStatisticConstString( const ConstString & _name ) const override;
+        const ConstString & getStatisticConstString( const ConstString & _name ) const override;
+        void resetStatisticConstString( const ConstString & _name ) override;
+
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         typedef Map<ConstString, int64_t> MapStatisticIntegers;
         MapStatisticIntegers m_statisticIntegers;
 
         typedef Map<ConstString, double> MapStatisticDoubles;
         MapStatisticDoubles m_statisticDoubles;
+
+        typedef Map<ConstString, ConstString> MapStatisticConstStrings;
+        MapStatisticConstStrings m_statisticConstStrings;
     };
 }

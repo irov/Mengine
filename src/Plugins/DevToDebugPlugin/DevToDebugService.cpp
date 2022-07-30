@@ -2,7 +2,7 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "DevToDebugTab.h"
 
@@ -54,7 +54,7 @@ namespace Mengine
     {
         static ServiceRequiredList required = {
             cURLServiceInterface::getStaticServiceID()
-            , ThreadServiceInterface::getStaticServiceID()
+            , ThreadSystemInterface::getStaticServiceID()
         };
 
         return required;
@@ -77,10 +77,10 @@ namespace Mengine
             , m_pid.c_str()
         );
 
-        m_mutexTabs = THREAD_SERVICE()
+        m_mutexTabs = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_mutexCommands = THREAD_SERVICE()
+        m_mutexCommands = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &DevToDebugService::notifyBootstrapperRunComplete_, MENGINE_DOCUMENT_FACTORABLE );

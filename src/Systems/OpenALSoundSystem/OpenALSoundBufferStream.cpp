@@ -3,7 +3,7 @@
 #include "OpenALSoundErrorHelper.h"
 
 #include "Interface/SoundCodecInterface.h"
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/ThreadMutexScope.h"
@@ -39,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::_acquireSoundBuffer()
     {
-        ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
+        ThreadMutexInterfacePtr mutexUpdating = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutexUpdating );

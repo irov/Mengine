@@ -417,20 +417,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr ThreadService::createMutex( const DocumentPtr & _doc )
-    {
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( _doc );
-
-        return mutex;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ThreadService::sleep( uint32_t _ms )
-    {
-        THREAD_SYSTEM()
-            ->sleep( _ms );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ThreadService::isMainThread() const
     {
         uint64_t id = THREAD_SYSTEM()

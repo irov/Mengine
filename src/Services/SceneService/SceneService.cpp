@@ -10,6 +10,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/StatisticHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SceneService, Mengine::SceneService );
@@ -183,6 +184,8 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_DESTROY, oldScene );
 
+        STATISTIC_SET_CONSTSTRING( "CURRENT_SCENE_NAME", ConstString::none() );
+
         if( _desc.cb != nullptr )
         {
             _desc.cb->onSceneChange( nullptr, false, false, false );
@@ -191,6 +194,8 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_INITIALIZE, _desc.scene );
 
         m_currentScene = _desc.scene;
+
+        STATISTIC_SET_CONSTSTRING( "CURRENT_SCENE_NAME", m_currentScene->getName() );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, m_currentScene );
 
@@ -316,6 +321,8 @@ namespace Mengine
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_DESTROY );
+
+        STATISTIC_SET_CONSTSTRING( "CURRENT_SCENE_NAME", ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     const ScenePtr & SceneService::getCurrentScene() const

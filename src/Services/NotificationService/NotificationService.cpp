@@ -1,6 +1,6 @@
 #include "NotificationService.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Assertion.h"
@@ -37,13 +37,13 @@ namespace Mengine
             }
         }
 
-        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
             for( uint32_t index = 0; index != MENGINE_NOTIFICATOR_MAX_COUNT; ++index )
             {
                 NotificationArea & area = m_areas[index];
 
-                ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+                ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
                     ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( mutex );
@@ -54,7 +54,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        SERVICE_LEAVE( ThreadSystemInterface, [this]()
         {
             for( uint32_t index = 0; index != MENGINE_NOTIFICATOR_MAX_COUNT; ++index )
             {

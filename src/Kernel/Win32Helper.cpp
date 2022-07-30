@@ -94,6 +94,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const WChar * Win32GetErrorMessage( uint32_t _messageId )
         {
+            MENGINE_UNUSED( _messageId );
+
 #if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
             static MENGINE_THREAD_LOCAL WChar errorMessageBuffer[2048] = {L'\0'};
 

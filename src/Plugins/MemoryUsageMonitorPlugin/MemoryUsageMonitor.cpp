@@ -14,6 +14,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/LoggerHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 namespace Mengine
 {
@@ -59,20 +60,11 @@ namespace Mengine
 
         m_workerId = workerId;
 
-        m_mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, &MemoryUsageMonitor::notifyChangeSceneInitialize, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY, &MemoryUsageMonitor::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryUsageMonitor::finalize()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY );
-
         if( m_workerId != 0 )
         {
             m_threadJob->removeWorker( m_workerId );
@@ -83,8 +75,6 @@ namespace Mengine
 
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "MemoryUsageMonitor" ) );
-
-        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryUsageMonitor::onThreadWorkerUpdate( uint32_t _id )
@@ -99,9 +89,7 @@ namespace Mengine
         size_t totalMemoryUsage = ALLOCATOR_SERVICE()
             ->get_report_total();
 
-        m_mutex->lock();
-        ConstString currentSceneName = m_currentSceneName;
-        m_mutex->unlock();
+        const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( "CURRENT_SCENE_NAME" );
 
         LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%zugb %zumb %zukb] [scene %s]"
             , (totalMemoryUsage / (1024 * 1024 * 1024))
@@ -118,22 +106,6 @@ namespace Mengine
         MENGINE_UNUSED( _id );
 
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MemoryUsageMonitor::notifyChangeSceneInitialize( const ScenePtr & _newScene )
-    {
-        m_mutex->lock();
-        m_currentSceneName = _newScene->getName();
-        m_mutex->unlock();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MemoryUsageMonitor::notifyChangeSceneDestroy( const ScenePtr & _oldCcene )
-    {
-        MENGINE_UNUSED( _oldCcene );
-
-        m_mutex->lock();
-        m_currentSceneName = ConstString::none();
-        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
 }

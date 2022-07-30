@@ -3,7 +3,6 @@
 #include "Interface/ThreadWorkerInterface.h"
 
 #include "Kernel/ThreadJob.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
@@ -17,7 +16,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class MemoryUsageMonitor
         : public ThreadWorkerInterface
-        , public Observable
         , public Factorable
     {
     public:
@@ -34,13 +32,6 @@ namespace Mengine
         void onThreadWorkerDone( uint32_t _id ) override;
 
     protected:
-        void notifyChangeSceneInitialize( const ScenePtr & _newScene );
-        void notifyChangeSceneDestroy( const ScenePtr & _oldCcene );
-
-    protected:
-        ThreadMutexInterfacePtr m_mutex;
-        ConstString m_currentSceneName;
-
         ThreadJobPtr m_threadJob;
 
         uint32_t m_seconds;

@@ -1,6 +1,6 @@
 #include "LoggerService.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
@@ -165,9 +165,9 @@ namespace Mengine
 
         this->logHistory_( LM_MESSAGE, 0, LCOLOR_GREEN, loggerLevelMessage, loggerLevelMessageLen );
 
-        SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]()
+        SERVICE_WAIT( Mengine::ThreadSystemInterface, [this]()
         {
-            ThreadMutexInterfacePtr threadMutex = THREAD_SERVICE()
+            ThreadMutexInterfacePtr threadMutex = THREAD_SYSTEM()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( threadMutex );
@@ -177,7 +177,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( Mengine::ThreadServiceInterface, [this]()
+        SERVICE_LEAVE( Mengine::ThreadSystemInterface, [this]()
         {
             m_mutex = nullptr;
         } );

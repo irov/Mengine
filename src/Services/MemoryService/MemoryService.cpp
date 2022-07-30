@@ -1,6 +1,6 @@
 #include "MemoryService.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactoryPool.h"
@@ -36,16 +36,16 @@ namespace Mengine
         m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
-            ThreadMutexInterfacePtr memoryCacheMutex = THREAD_SERVICE()
+            ThreadMutexInterfacePtr memoryCacheMutex = THREAD_SYSTEM()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex );
 
             m_memoryCacheMutex = memoryCacheMutex;
 
-            ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
+            ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SYSTEM()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex );
@@ -60,7 +60,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        SERVICE_LEAVE( ThreadSystemInterface, [this]()
         {
             m_factoryMemoryBuffer->setMutex( nullptr );
             m_factoryMemoryProxy->setMutex( nullptr );

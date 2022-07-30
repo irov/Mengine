@@ -1,6 +1,6 @@
 #include "DevToDebugPropertyGetterString.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/DocumentHelper.h"
 
@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugPropertyGetterString::initialize()
     {
-        m_mutex = THREAD_SERVICE()
+        m_mutex = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;

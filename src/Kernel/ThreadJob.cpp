@@ -1,6 +1,6 @@
 #include "ThreadJob.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -291,14 +291,14 @@ namespace Mengine
         {
             ThreadJobWorkerDesc & desc = m_workers[i];
 
-            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
                 ->createMutex( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
             desc.mutex = mutex;
 
-            ThreadMutexInterfacePtr mutex_progress = THREAD_SERVICE()
+            ThreadMutexInterfacePtr mutex_progress = THREAD_SYSTEM()
                 ->createMutex( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mutex_progress );
@@ -454,7 +454,7 @@ namespace Mengine
 
             if( m_sleep <= 100 )
             {
-                THREAD_SERVICE()
+                THREAD_SYSTEM()
                     ->sleep( m_sleep );
             }
             else
@@ -468,7 +468,7 @@ namespace Mengine
                         break;
                     }
 
-                    THREAD_SERVICE()
+                    THREAD_SYSTEM()
                         ->sleep( sleep_partition );
                 }
             }

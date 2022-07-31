@@ -2,6 +2,7 @@
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/BuildMode.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( DevToDebugService );
@@ -26,6 +27,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugPlugin::_availablePlugin() const
     {
+        if( Helper::isBuildPublish() == true )
+        {
+            return false;
+        }
+
         if( HAS_OPTION( "devtodebug" ) == true )
         {
             return true;

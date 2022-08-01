@@ -1396,7 +1396,7 @@ namespace Mengine
                 return v_accounts;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_addSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+            bool s_addCurrentAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -1414,7 +1414,7 @@ namespace Mengine
                 return s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_changeSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
+            bool s_changeCurrentAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -1432,7 +1432,7 @@ namespace Mengine
                 return s_changeAccountSetting( _kernel, accountID, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_changeSettingBool( const ConstString & _setting, bool _value )
+            bool s_changeCurrentAccountSettingBool( const ConstString & _setting, bool _value )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -1450,7 +1450,7 @@ namespace Mengine
                 return s_changeAccountSettingBool( accountID, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_changeSettingInt( const ConstString & _setting, int32_t _value )
+            bool s_changeCurrentAccountSettingInt( const ConstString & _setting, int32_t _value )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -1468,7 +1468,7 @@ namespace Mengine
                 return s_changeAccountSettingInt( accountID, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_changeSettingUInt( const ConstString & _setting, uint32_t _value )
+            bool s_changeCurrentAccountSettingUInt( const ConstString & _setting, uint32_t _value )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -1486,7 +1486,7 @@ namespace Mengine
                 return s_changeAccountSettingUInt( accountID, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_changeSettingUInt64( const ConstString & _setting, uint64_t _value )
+            bool s_changeCurrentAccountSettingUInt64( const ConstString & _setting, uint64_t _value )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -1504,7 +1504,7 @@ namespace Mengine
                 return s_changeAccountSettingUInt64( accountID, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_changeSettingFloat( const ConstString & _setting, float _value )
+            bool s_changeCurrentAccountSettingFloat( const ConstString & _setting, float _value )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -1522,7 +1522,7 @@ namespace Mengine
                 return s_changeAccountSettingFloat( accountID, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_changeSettingStrings( const ConstString & _setting, const VectorWString & _values )
+            bool s_changeCurrentAccountSettingStrings( const ConstString & _setting, const VectorWString & _values )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2083,7 +2083,7 @@ namespace Mengine
                     ->resetStatisticDouble( _name );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_hasSetting( const ConstString & _setting )
+            bool s_hasCurrentAccountSetting( const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2117,7 +2117,7 @@ namespace Mengine
                 return s_getAccountUID( _kernel, accountID );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
+            PyObject * s_getCurrentAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2135,7 +2135,7 @@ namespace Mengine
                 return s_getAccountSetting( _kernel, accountID, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
+            PyObject * s_getCurrentAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2153,7 +2153,7 @@ namespace Mengine
                 return s_getAccountSettingBool( _kernel, accountID, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
+            PyObject * s_getCurrentAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2171,7 +2171,7 @@ namespace Mengine
                 return s_getAccountSettingInt( _kernel, accountID, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
+            PyObject * s_getCurrentAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2189,7 +2189,7 @@ namespace Mengine
                 return s_getAccountSettingUInt( _kernel, accountID, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _setting )
+            PyObject * s_getCurrentAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2207,7 +2207,7 @@ namespace Mengine
                 return s_getAccountSettingUInt64( _kernel, accountID, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
+            PyObject * s_getCurrentAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2225,7 +2225,7 @@ namespace Mengine
                 return s_getAccountSettingFloat( _kernel, accountID, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_getSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting )
+            PyObject * s_getCurrentAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -2243,7 +2243,7 @@ namespace Mengine
                 return s_getAccountSettingStrings( _kernel, accountID, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
-            float s_getSettingFloatDefault( const ConstString & _setting, float _default )
+            float s_getCurrentAccountSettingFloatDefault( const ConstString & _setting, float _default )
             {
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
@@ -3937,24 +3937,24 @@ namespace Mengine
 
         pybind::def_functor_kernel( _kernel, "getCurrentAccountUID", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountUID );
 
-        pybind::def_functor_kernel( _kernel, "getSetting", helperScriptMethod, &HelperScriptMethod::s_getSetting );
-        pybind::def_functor_kernel( _kernel, "getSettingBool", helperScriptMethod, &HelperScriptMethod::s_getSettingBool );
-        pybind::def_functor_kernel( _kernel, "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
-        pybind::def_functor_kernel( _kernel, "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
-        pybind::def_functor_kernel( _kernel, "getSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt64 );
-        pybind::def_functor_kernel( _kernel, "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
-        pybind::def_functor_kernel( _kernel, "getSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getSettingStrings );
-        pybind::def_functor( _kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
+        pybind::def_functor_kernel( _kernel, "getCurrentAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountSetting );
+        pybind::def_functor_kernel( _kernel, "getCurrentAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountSettingBool );
+        pybind::def_functor_kernel( _kernel, "getCurrentAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountSettingInt );
+        pybind::def_functor_kernel( _kernel, "getCurrentAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountSettingUInt );
+        pybind::def_functor_kernel( _kernel, "getCurrentAccountSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountSettingUInt64 );
+        pybind::def_functor_kernel( _kernel, "getCurrentAccountSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountSettingFloat );
+        pybind::def_functor_kernel( _kernel, "getCurrentAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountSettingStrings );
+        pybind::def_functor( _kernel, "getCurrentAccountSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountSettingFloatDefault );
 
-        pybind::def_functor_kernel_args( _kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
-        pybind::def_functor( _kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
-        pybind::def_functor_kernel( _kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
-        pybind::def_functor( _kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
-        pybind::def_functor( _kernel, "changeSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeSettingInt );
-        pybind::def_functor( _kernel, "changeSettingUInt", helperScriptMethod, &HelperScriptMethod::s_changeSettingUInt );
-        pybind::def_functor( _kernel, "changeSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeSettingUInt64 );
-        pybind::def_functor( _kernel, "changeSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeSettingFloat );
-        pybind::def_functor( _kernel, "changeSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeSettingStrings );
+        pybind::def_functor_kernel_args( _kernel, "addCurrentAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addCurrentAccountSetting );
+        pybind::def_functor( _kernel, "hasCurrentAccountSetting", helperScriptMethod, &HelperScriptMethod::s_hasCurrentAccountSetting );
+        pybind::def_functor_kernel( _kernel, "changeCurrentAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeCurrentAccountSetting );
+        pybind::def_functor( _kernel, "changeCurrentAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeCurrentAccountSettingBool );
+        pybind::def_functor( _kernel, "changeCurrentAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeCurrentAccountSettingInt );
+        pybind::def_functor( _kernel, "changeCurrentAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_changeCurrentAccountSettingUInt );
+        pybind::def_functor( _kernel, "changeCurrentAccountSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeCurrentAccountSettingUInt64 );
+        pybind::def_functor( _kernel, "changeCurrentAccountSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeCurrentAccountSettingFloat );
+        pybind::def_functor( _kernel, "changeCurrentAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeCurrentAccountSettingStrings );
 
         pybind::def_functor_kernel( _kernel, "getAccountUID", helperScriptMethod, &HelperScriptMethod::s_getAccountUID );
 

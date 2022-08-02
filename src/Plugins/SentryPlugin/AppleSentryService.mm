@@ -53,9 +53,7 @@ namespace Mengine
             , Sentry_DSN
         );
         
-        bool debugMode = Helper::isDebugMode();
-        
-        bool Sentry_Debug = CONFIG_VALUE_CAPTURE_DEFAULT( "SentryPlugin", "Debug", debugMode );
+        bool Sentry_Debug = CONFIG_VALUE( "SentryPlugin", "Debug", false );
         
         const Char * BUILD_VERSION = Helper::getBuildVersion();
         

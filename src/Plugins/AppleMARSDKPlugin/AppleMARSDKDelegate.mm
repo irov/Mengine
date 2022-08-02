@@ -99,7 +99,7 @@
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("%s = %s"
+        LOGGER_INFO("marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );
@@ -125,7 +125,7 @@
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("%s = %s"
+        LOGGER_INFO("marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );
@@ -157,7 +157,7 @@
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("%s = %s"
+        LOGGER_INFO("marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );

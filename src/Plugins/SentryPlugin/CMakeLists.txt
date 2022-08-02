@@ -27,7 +27,7 @@ if(MENGINE_TARGET_APPLE)
         AppleSentryLoggerCapture.cpp
     
         AppleSentryService.h
-        AppleSentryService.cpp
+        AppleSentryService.mm
         
         AppleSentryNative.h
         AppleSentryNative.m

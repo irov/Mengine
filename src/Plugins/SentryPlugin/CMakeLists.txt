@@ -29,8 +29,8 @@ if(MENGINE_TARGET_APPLE)
         AppleSentryService.h
         AppleSentryService.mm
         
-        AppleSentryNative.h
-        AppleSentryNative.m
+        AppleSentryHelper.h
+        AppleSentryHelper.mm
     )
 endif()
 
@@ -41,10 +41,6 @@ if(MENGINE_TARGET_WINDOWS)
 endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_SENTRY)
-
-if(MENGINE_TARGET_APPLE)
-    SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_CLANG_ENABLE_MODULES YES)
-endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})
@@ -67,5 +63,5 @@ ENDIF()
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 
 if(MENGINE_TARGET_APPLE)
-    ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "7.20.0")
+    ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "7.23.0")
 endif()

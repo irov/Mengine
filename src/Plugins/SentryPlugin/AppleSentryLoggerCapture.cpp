@@ -1,10 +1,7 @@
 #include "AppleSentryLoggerCapture.h"
+#include "AppleSentryHelper.h"
 
 #include "Kernel/ConfigHelper.h"
-
-extern "C" {
-    #include "AppleSentryNative.h"
-}
 
 namespace Mengine
 {
@@ -45,7 +42,7 @@ namespace Mengine
         {
             const Char * message_str = m_message.c_str();
 
-            appleSentrySetExtraString( "Log", message_str );
+            Helper::appleSentrySetExtraString( "Log", message_str );
         }
         else
         {
@@ -64,7 +61,7 @@ namespace Mengine
 
             const Char * total_message_str = total_message.c_str();
 
-            appleSentrySetExtraString( "Log", total_message_str );
+            Helper::appleSentrySetExtraString( "Log", total_message_str );
         }
     }
     //////////////////////////////////////////////////////////////////////////

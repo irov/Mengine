@@ -1,12 +1,10 @@
 #include "AppleSentryService.h"
 
+#include "AppleSentryHelper.h"
+
 #include "Interface/PlatformInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
-
-extern "C" {
-    #include "AppleSentryNative.h"
-}
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Crash.h"
@@ -23,6 +21,8 @@ extern "C" {
 #include "Config/BuildVersion.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+
+#import <Sentry/Sentry.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SentryService, Mengine::AppleSentryService );
@@ -57,10 +57,12 @@ namespace Mengine
         
         const Char * BUILD_VERSION = Helper::getBuildVersion();
         
-        if( appleSentryInitialize( Sentry_DSN, Sentry_Debug, BUILD_VERSION ) != 0 )
-        {
-            return false;
-        }
+        [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
+            options.dsn = @(Sentry_DSN);
+            options.debug = Sentry_Debug; // Enabled debug when first installing is always helpful
+            options.releaseName = @(BUILD_VERSION);
+            options.attachStacktrace = true;
+        }];
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AppleSentryService::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &AppleSentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
@@ -97,7 +99,7 @@ namespace Mengine
 
         m_loggerCapture = nullptr;
         
-        appleSentryFinalize();
+        [SentrySDK close];
     }    
     //////////////////////////////////////////////////////////////////////////
     void AppleSentryService::notifyCreateApplication_()
@@ -108,7 +110,7 @@ namespace Mengine
             , Sentry_Application
         );
 
-        appleSentrySetExtraString( "Application", Sentry_Application );
+        Helper::appleSentrySetExtraString( "Application", Sentry_Application );
 
         Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()
@@ -118,7 +120,7 @@ namespace Mengine
             , companyName
         );
 
-        appleSentrySetExtraString( "Company", companyName );
+        Helper::appleSentrySetExtraString( "Company", companyName );
 
         Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()
@@ -128,7 +130,7 @@ namespace Mengine
             , projectName
         );
 
-        appleSentrySetExtraString( "Project", projectName );
+        Helper::appleSentrySetExtraString( "Project", projectName );
 
 #ifdef MENGINE_DEBUG
         Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
@@ -139,7 +141,7 @@ namespace Mengine
             , userName
         );
 
-        appleSentrySetExtraString( "User", userName );
+        Helper::appleSentrySetExtraString( "User", userName );
 #endif
 
         uint32_t projectVersion = APPLICATION_SERVICE()
@@ -152,7 +154,7 @@ namespace Mengine
                 , "Error"
             );
 
-            appleSentrySetExtraString( "Version", "Error" );
+            Helper::appleSentrySetExtraString( "Version", "Error" );
         }
         else
         {
@@ -160,7 +162,7 @@ namespace Mengine
                 , projectVersionString
             );
 
-            appleSentrySetExtraString( "Version", projectVersionString );
+            Helper::appleSentrySetExtraString( "Version", projectVersionString );
         }
 
         bool debugMode = Helper::isDebugMode();
@@ -169,7 +171,7 @@ namespace Mengine
             , debugMode
         );
 
-        appleSentrySetExtraBoolean( "Debug", debugMode );
+        Helper::appleSentrySetExtraBoolean( "Debug", debugMode );
 
         bool developmentMode = Helper::isDevelopmentMode();
 
@@ -177,7 +179,7 @@ namespace Mengine
             , developmentMode
         );
 
-        appleSentrySetExtraBoolean( "Development", developmentMode );
+        Helper::appleSentrySetExtraBoolean( "Development", developmentMode );
 
         bool masterMode = Helper::isMasterRelease();
 
@@ -185,7 +187,7 @@ namespace Mengine
             , masterMode
         );
 
-        appleSentrySetExtraBoolean( "Master", masterMode );
+        Helper::appleSentrySetExtraBoolean( "Master", masterMode );
 
         bool publishMode = Helper::isBuildPublish();
 
@@ -193,7 +195,7 @@ namespace Mengine
             , publishMode
         );
 
-        appleSentrySetExtraBoolean( "Publish", publishMode );
+        Helper::appleSentrySetExtraBoolean( "Publish", publishMode );
 
         const Char * ENGINE_GIT_SHA1 = Helper::getEngineGITSHA1();
 
@@ -201,7 +203,7 @@ namespace Mengine
             , ENGINE_GIT_SHA1
         );
 
-        appleSentrySetExtraString( "Engine Commit", ENGINE_GIT_SHA1 );
+        Helper::appleSentrySetExtraString( "Engine Commit", ENGINE_GIT_SHA1 );
 
         const Char * BUILD_TIMESTAMP = Helper::getBuildTimestamp();
 
@@ -209,7 +211,7 @@ namespace Mengine
             , BUILD_TIMESTAMP
         );
 
-        appleSentrySetExtraString( "Build Timestamp", BUILD_TIMESTAMP );
+        Helper::appleSentrySetExtraString( "Build Timestamp", BUILD_TIMESTAMP );
 
         const Char * BUILD_USERNAME = Helper::getBuildUsername();
 
@@ -217,7 +219,7 @@ namespace Mengine
             , BUILD_USERNAME
         );
 
-        appleSentrySetExtraString( "Build Username", BUILD_USERNAME );
+        Helper::appleSentrySetExtraString( "Build Username", BUILD_USERNAME );
 
         const Char * contentCommit = Helper::getContentCommit();
 
@@ -225,7 +227,7 @@ namespace Mengine
             , contentCommit
         );
 
-        appleSentrySetExtraString( "Content Commit", contentCommit );
+        Helper::appleSentrySetExtraString( "Content Commit", contentCommit );
 
         if( HAS_OPTION( "sentrycrash" ) == true )
         {
@@ -238,7 +240,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE( "uid: %s", message_uid );
             LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
 
-            appleSentryCapture( "Mengine test sentry crash", 0 );
+            Helper::appleSentryCapture( "Mengine test sentry crash", 0 );
 
             Helper::crash( "sentrycrash" );
         }
@@ -251,20 +253,20 @@ namespace Mengine
             return;
         }
 
-        appleSentrySetExtraString( "Assetion Test", _test );
-        appleSentrySetExtraString( "Assetion Function", _file );
-        appleSentrySetExtraInteger( "Assetion Line", _line );
+        Helper::appleSentrySetExtraString( "Assetion Test", _test );
+        Helper::appleSentrySetExtraString( "Assetion Function", _file );
+        Helper::appleSentrySetExtraInteger( "Assetion Line", _line );
 
-        appleSentryCapture( _message, 0 );
+        Helper::appleSentryCapture( _message, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleSentryService::notifyError_( EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
     {
-        appleSentrySetExtraInteger( "Error Level", _level );
-        appleSentrySetExtraString( "Error Function", _file );
-        appleSentrySetExtraInteger( "Error Line", _line );
+        Helper::appleSentrySetExtraInteger( "Error Level", _level );
+        Helper::appleSentrySetExtraString( "Error Function", _file );
+        Helper::appleSentrySetExtraInteger( "Error Line", _line );
 
-        appleSentryCapture( _message, 0 );
+        Helper::appleSentryCapture( _message, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

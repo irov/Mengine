@@ -1,0 +1,38 @@
+#import "AppleSentryHelper.h"
+
+#import <Sentry/Sentry.h>
+
+namespace Mengine
+{
+    namespace Helper
+    {
+        //////////////////////////////////////////////////////////////////////////
+        void appleSentryCapture( const Char * _msg, int32_t _code )
+        {
+            NSError *error = [NSError errorWithDomain:@(_msg) code:_code userInfo: nil];
+            [SentrySDK captureError:error];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void appleSentrySetExtraBoolean( const Char * _key, int32_t _value )
+        {
+            [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
+                [scope setExtraValue:(_value == 0 ? @FALSE : @TRUE) forKey:@(_key)];
+            }];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void appleSentrySetExtraInteger( const Char * _key, int32_t _value )
+        {
+            [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
+                [scope setExtraValue:@(_value) forKey:@(_key)];
+            }];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void appleSentrySetExtraString( const Char * _key, const Char * _value )
+        {
+            [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
+                [scope setExtraValue:@(_value) forKey:@(_key)];
+            }];
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+}

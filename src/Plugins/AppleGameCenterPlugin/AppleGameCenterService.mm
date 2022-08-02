@@ -13,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleGameCenterService::AppleGameCenterService()
-        : m_gameCenterNative( nil )
+        : m_gameCenterDelegate( nil )
         , m_gameCenterAuthenticate( false )
         , m_achievementsSynchronization( false )
     {
@@ -25,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::_initializeService()
     {
-        m_gameCenterNative = [[AppleGameCenterNative alloc] init];
+        m_gameCenterDelegate = [[AppleGameCenterDelegate alloc] init];
 
         return true;
     }
@@ -34,8 +34,8 @@ namespace Mengine
     {
         m_provider = nullptr;
         
-        [m_gameCenterNative release];
-        m_gameCenterNative = nil;
+        [m_gameCenterDelegate release];
+        m_gameCenterDelegate = nil;
     }
 //////////////////////////////////////////////////////////////////////////
     void AppleGameCenterService::setProvider( const AppleGameCenterProviderInterfacePtr & _provider )
@@ -50,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleGameCenterService::connect()
     {
-        [m_gameCenterNative login : ^ (NSError * _Nullable _error) {
+        [m_gameCenterDelegate login : ^ (NSError * _Nullable _error) {
             if (_error) {
                 m_gameCenterAuthenticate = false;
                 
@@ -88,7 +88,7 @@ namespace Mengine
                 m_provider->onAppleGameCenterSynchronizate( false );
             }
             
-            [m_gameCenterNative loadCompletedAchievements : ^ (NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
+            [m_gameCenterDelegate loadCompletedAchievements : ^ (NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
                 if (_error) {
                     m_achievementsSynchronization = false;
                     
@@ -152,7 +152,7 @@ namespace Mengine
         ConstString copy_achievementName = _achievementName;
         LambdaAchievemtResponse copy_response = _response;
 
-        BOOL result = [m_gameCenterNative reportAchievementIdentifier:nsDescription percentComplete:_percentComplete withBanner:YES response:^(NSError * _Nullable _error) {
+        BOOL result = [m_gameCenterDelegate reportAchievementIdentifier:nsDescription percentComplete:_percentComplete withBanner:YES response:^(NSError * _Nullable _error) {
             if (_error) {
                 LOGGER_ERROR("[AppleGameCenter] response achievement '%s' [%lf] error: %s"
                    , copy_achievementName.c_str()
@@ -205,7 +205,7 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "[AppleGameCenter] try reset achievemnts" );
         
-        BOOL result = [m_gameCenterNative resetAchievements : ^ (NSError * _Nullable _error) {
+        BOOL result = [m_gameCenterDelegate resetAchievements : ^ (NSError * _Nullable _error) {
             if (_error) {
                 LOGGER_ERROR("[AppleGameCenter] reset achievemnts error: '%s'"
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
@@ -239,7 +239,7 @@ namespace Mengine
         ConstString copy_key = _key;
         LambdaScoreResponse copy_response = _response;
 
-        BOOL result = [m_gameCenterNative reportScore:identifier score:_score response:^(NSError * _Nullable _error) {
+        BOOL result = [m_gameCenterDelegate reportScore:identifier score:_score response:^(NSError * _Nullable _error) {
             if (_error) {
                 LOGGER_ERROR("[AppleGameCenter] response score '%s' [%lld] error: %s"
                    , copy_key.c_str()

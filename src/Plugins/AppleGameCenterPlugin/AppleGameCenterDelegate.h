@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
 
-@interface AppleGameCenterNative : NSObject <GKGameCenterControllerDelegate>
+@interface AppleGameCenterDelegate : NSObject <GKGameCenterControllerDelegate>
 {
     BOOL gcAuthenticateSuccess;
 }

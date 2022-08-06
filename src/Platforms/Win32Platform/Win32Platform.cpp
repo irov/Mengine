@@ -3832,7 +3832,7 @@ namespace Mengine
                     MENGINE_STRCPY( entry.moduleName, "(module-name not available)" );
                 }
 
-                MENGINE_SPRINTF( buffer, "%p (%s): %s (%d): %s\n"
+                MENGINE_SNPRINTF( buffer, MENGINE_STACKWALK_MAX_NAMELEN, "%p (%s): %s (%d): %s\n"
                     , (LPVOID)entry.offset
                     , entry.moduleName
                     , entry.lineFileName
@@ -3842,7 +3842,7 @@ namespace Mengine
             }
             else
             {
-                MENGINE_SPRINTF( buffer, "%s (%d): %s\n"
+                MENGINE_SNPRINTF( buffer, MENGINE_STACKWALK_MAX_NAMELEN, "%s (%d): %s\n"
                     , entry.lineFileName
                     , entry.lineNumber
                     , entry.name

@@ -43,6 +43,7 @@ namespace Mengine
     DevToDebugService::DevToDebugService()
         : m_status( EDTDS_NONE )
         , m_revision( 0 )
+        , m_timerId( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -300,7 +301,7 @@ namespace Mengine
                 m_status = EDTDS_CONNECTING;
 
                 Char connect_url[256] = {'\0'};
-                MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/%s/connect/"
+                MENGINE_SNPRINTF( connect_url, 256, "http://api.devtodebug.com/%s/connect/"
                     , m_pid.c_str()
                 );
 
@@ -329,7 +330,7 @@ namespace Mengine
         case EDTDS_CONNECT:
             {
                 Char connect_url[256] = {'\0'};
-                MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/worker/%s/"
+                MENGINE_SNPRINTF( connect_url, 256, "http://api.devtodebug.com/worker/%s/"
                     , m_uuid.c_str()
                 );
 
@@ -630,7 +631,7 @@ namespace Mengine
         }
 
         Char connect_url[256] = {'\0'};
-        MENGINE_SPRINTF( connect_url, "http://devtodebug.com/api/worker/%s/delete/"
+        MENGINE_SNPRINTF( connect_url, 256, "http://api.devtodebug.com/worker/%s/delete/"
             , m_uuid.c_str()
         );
 

@@ -1,5 +1,7 @@
 #include "TaskPrint.h"
 
+#include "Interface/LoggerInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
 

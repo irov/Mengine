@@ -5,7 +5,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/VectorConstString.h"
 
-#import "AppleGameCenterNative.h"
+#import "AppleGameCenterDelegate.h"
 
 namespace Mengine
 {
@@ -42,7 +42,7 @@ namespace Mengine
 	protected:
         AppleGameCenterProviderInterfacePtr m_provider;
         
-		AppleGameCenterNative * m_gameCenterNative;
+        AppleGameCenterDelegate * m_gameCenterDelegate;
 
 		VectorConstString m_achievementsComplete;
         bool m_gameCenterAuthenticate;

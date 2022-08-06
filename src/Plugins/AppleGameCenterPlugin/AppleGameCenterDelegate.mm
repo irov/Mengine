@@ -1,6 +1,6 @@
-#import "AppleGameCenterNative.h"
+#import "AppleGameCenterDelegate.h"
 
-@implementation AppleGameCenterNative
+@implementation AppleGameCenterDelegate
 
 @synthesize gcAuthenticateSuccess;
 

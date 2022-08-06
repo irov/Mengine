@@ -11,8 +11,8 @@ src
     AppleGameCenterService.h
     AppleGameCenterService.mm
     
-    AppleGameCenterNative.h
-    AppleGameCenterNative.mm
+    AppleGameCenterDelegate.h
+    AppleGameCenterDelegate.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

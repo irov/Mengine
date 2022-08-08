@@ -773,36 +773,28 @@ namespace Mengine
         LOGGER_MESSAGE( "build publish [%s]", Helper::isBuildPublish() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "master release [%s]", Helper::isMasterRelease() == true ? "ON" : "OFF" );
 
-#if MENGINE_ASSERTION_DEBUG == 0
+#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
+        LOGGER_MESSAGE( "enable assertion debug [ON]" );
+#else
         LOGGER_MESSAGE( "enable assertion debug [OFF]" );
 #endif
 
-#if MENGINE_ASSERTION_DEBUG == 1
-        LOGGER_MESSAGE( "enable assertion debug [ON]" );
-#endif
-
-#if MENGINE_LOGGER_DEBUG == 0
+#ifdef MENGINE_LOGGER_DEBUG_ENABLE
+        LOGGER_MESSAGE( "enable logger debug [ON]" );
+#else
         LOGGER_MESSAGE( "enable logger debug [OFF]" );
 #endif
 
-#if MENGINE_LOGGER_DEBUG == 1
-        LOGGER_MESSAGE( "enable logger debug [ON]" );
-#endif
-
-#if MENGINE_ALLOCATOR_DEBUG == 0
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
+        LOGGER_MESSAGE( "enable allocator debug [ON]" );
+#else
         LOGGER_MESSAGE( "enable allocator debug [OFF]" );
 #endif
 
-#if MENGINE_ALLOCATOR_DEBUG == 1
-        LOGGER_MESSAGE( "enable allocator debug [ON]" );
-#endif
-
-#if MENGINE_DOCUMENT_ENABLE == 0
-        LOGGER_MESSAGE( "enable document debug [OFF]" );
-#endif
-
-#if MENGINE_DOCUMENT_ENABLE == 1
+#ifdef MENGINE_DOCUMENT_ENABLE
         LOGGER_MESSAGE( "enable document debug [ON]" );
+#else
+        LOGGER_MESSAGE( "enable document debug [OFF]" );
 #endif
 
 #ifdef MENGINE_PLUGIN_INI_STATIC

@@ -27,7 +27,7 @@ namespace Mengine
         AnimatablePtr m_animatable;
         EventablePtr m_eventable;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
 

@@ -72,8 +72,12 @@
 #include <cerrno>
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_SETLOCALE_ENABLE
-#define MENGINE_SETLOCALE_ENABLE 1
+#ifndef MENGINE_SETLOCALE
+#define MENGINE_SETLOCALE 1
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if MENGINE_SETLOCALE == 1
+#   define MENGINE_SETLOCALE_ENABLE
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SETLOCALE_VALUE
@@ -133,7 +137,7 @@ namespace Mengine
     {
         m_beginTime = Helper::getTimeMilliseconds();
 
-#if MENGINE_SETLOCALE_ENABLE
+#ifdef MENGINE_SETLOCALE_ENABLE
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
 
@@ -5013,7 +5017,7 @@ namespace Mengine
         desc.id = id;
         desc.lambda = _lambda;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 

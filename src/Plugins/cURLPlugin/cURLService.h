@@ -53,7 +53,7 @@ namespace Mengine
             cURLRequestListenerInterfacePtr listener;
             int32_t id;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };
@@ -79,7 +79,7 @@ namespace Mengine
             ThreadTaskPtr task;
             cURLReceiverInterfacePtr receiver;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

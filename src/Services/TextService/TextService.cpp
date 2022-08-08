@@ -93,7 +93,7 @@ namespace Mengine
             , m_fileGroup( _fileGroup )
             , m_filePath( _filePath )
             , m_successful( true )
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             , m_doc( _doc )
 #endif
         {
@@ -439,7 +439,7 @@ namespace Mengine
 
         bool m_successful;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
     };

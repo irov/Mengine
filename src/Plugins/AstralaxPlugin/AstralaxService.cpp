@@ -167,7 +167,7 @@ namespace Mengine
             new_desc.FilePath = _filePath;
 #endif
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             new_desc.doc = _doc;
 #endif
 
@@ -177,7 +177,7 @@ namespace Mengine
         {
             container->finalize();
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             const AstralaxEmitterContainerDesc & old_desc = it_found->second;
 
             LOGGER_PERFORMANCE( "useless load container '%s' original is '%s'"

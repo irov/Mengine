@@ -696,7 +696,7 @@ namespace Mengine
     {
         m_beginTime = Helper::getTimeMilliseconds();
 
-#if MENGINE_SETLOCALE_ENABLE
+#ifdef MENGINE_SETLOCALE_ENABLE
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
 
@@ -1522,7 +1522,7 @@ namespace Mengine
         desc.time = _milliseconds;
         desc.lambda = _lambda;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 
@@ -3612,7 +3612,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-#if MENGINE_LOGGER_DEBUG
+#ifdef MENGINE_LOGGER_DEBUG_ENABLE
         //////////////////////////////////////////////////////////////////////////
         static const Char * getPlatformEventMessage( Uint32 _eventId )
         {

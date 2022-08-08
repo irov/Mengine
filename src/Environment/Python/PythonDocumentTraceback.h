@@ -17,7 +17,7 @@
 }()
 
 //////////////////////////////////////////////////////////////////////////
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
 #   define MENGINE_DOCUMENT_PYBIND [](const Mengine::Char * _file, const Mengine::Char * _function, uint32_t _line) \
     { \
         Mengine::Char traceback[8192] = {'\0'}; \

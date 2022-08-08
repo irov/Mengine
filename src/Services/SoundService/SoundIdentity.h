@@ -64,7 +64,7 @@ namespace Mengine
         bool looped;
         bool turn;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr doc;
 #endif
     };

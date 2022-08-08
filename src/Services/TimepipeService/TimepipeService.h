@@ -33,7 +33,7 @@ namespace Mengine
             UniqueId id;
             TimepipeInterfacePtr timepipe;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

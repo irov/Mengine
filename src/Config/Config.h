@@ -149,6 +149,10 @@
 #   endif
 #endif
 
+#if MENGINE_RENDER_CHECK_ERROR == 1
+#   define MENGINE_RENDER_CHECK_ERROR_ENABLE
+#endif
+
 #ifndef MENGINE_ASSERTION_DEBUG
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_ASSERTION_DEBUG 1
@@ -157,15 +161,23 @@
 #   endif
 #endif
 
-#ifndef MENGINE_DOCUMENT_ENABLE
+#if MENGINE_ASSERTION_DEBUG == 1
+#   define MENGINE_ASSERTION_DEBUG_ENABLE
+#endif
+
+#ifndef MENGINE_DOCUMENT
 #   ifdef MENGINE_DEBUG
-#       define MENGINE_DOCUMENT_ENABLE 1
+#       define MENGINE_DOCUMENT 1
 #   else
-#       define MENGINE_DOCUMENT_ENABLE 0
+#       define MENGINE_DOCUMENT 0
 #   endif
 #endif
 
-#if MENGINE_DOCUMENT_ENABLE
+#if MENGINE_DOCUMENT == 1
+#   define MENGINE_DOCUMENT_ENABLE
+#endif
+
+#ifdef MENGINE_DOCUMENT_ENABLE
 #   define MENGINE_DOCUMENT_VALUE(X, Y) (X)
 #else
 #   define MENGINE_DOCUMENT_VALUE(X, Y) (Y)

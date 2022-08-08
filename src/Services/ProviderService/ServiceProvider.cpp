@@ -48,7 +48,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( service );
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         service->setDocument( _doc );
 #endif
 

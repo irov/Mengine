@@ -81,7 +81,7 @@ namespace Mengine
             UniqueId id;
             InputMousePositionProviderInterfacePtr provider;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

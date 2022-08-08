@@ -37,7 +37,7 @@ namespace Mengine
 #define IF_DXERRORCHECK( Method, HRES )\
     if( DXERRORCHECK(#Method, HRES) )
 //////////////////////////////////////////////////////////////////////////
-#if MENGINE_RENDER_CHECK_ERROR
+#ifdef MENGINE_RENDER_CHECK_ERROR_ENABLE
 //////////////////////////////////////////////////////////////////////////
 #   define DXRELEASE( Object )\
     if( Object == nullptr ){}else{ ULONG ref = Object -> Release(); MENGINE_ASSERTION_FATAL( ref == 0 ); Object = nullptr; }

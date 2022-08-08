@@ -364,12 +364,28 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::onTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
 
+#ifdef MENGINE_PLATFORM_IOS
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE, &GameService::oniOSApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::oniOSApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD, &GameService::oniOSApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::oniOSApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE, &GameService::oniOSApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
+
+#ifdef MENGINE_PLATFORM_IOS
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE );
+#endif
 
         this->removeEvents();
 
@@ -510,5 +526,38 @@ namespace Mengine
         EVENTABLE_METHOD( EVENT_GAME_ON_TIME_FACTOR )
             ->onGameTimeFactor( _timeFactor );
     }
+    //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLATFORM_IOS
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::oniOSApplicationDidBecomeActive_()
+    {
+        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE )
+            ->onGameTimeFactor();
+    }
+    void GameService::oniOSApplicationWillEnterForeground_()
+    {
+        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND )
+            ->onGameTimeFactor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::oniOSApplicationDidEnterBackground_()
+    {
+        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD )
+            ->onGameTimeFactor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::oniOSApplicationWillResignActive_()
+    {
+        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE )
+            ->onGameTimeFactor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::oniOSApplicationWillTerminate_()
+    {
+        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE )
+            ->onGameTimeFactor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

@@ -16,7 +16,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#if MENGINE_RENDER_CHECK_ERROR
+#ifdef MENGINE_RENDER_CHECK_ERROR_ENABLE
 //////////////////////////////////////////////////////////////////////////
 #   define OPENGL_RENDER_CHECK_ERROR() Mengine::Helper::OpenGLRenderErrorCheck( __FILE__, __LINE__ )
 #   define OPENGL_RENDER_CHECK_ERROR_IF() if( OPENGL_RENDER_CHECK_ERROR() == true )

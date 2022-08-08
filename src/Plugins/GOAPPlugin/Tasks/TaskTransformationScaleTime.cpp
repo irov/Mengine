@@ -99,7 +99,7 @@ namespace Mengine
         , m_to( _to )
         , m_time( _time )
         , m_flags( _flags )
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
 #endif
         , m_id( 0 )
@@ -166,7 +166,7 @@ namespace Mengine
         m_affectorable = nullptr;
         m_transformable = nullptr;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = nullptr;
 #endif
     }

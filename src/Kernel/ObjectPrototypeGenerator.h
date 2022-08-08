@@ -41,7 +41,7 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Object type '%s' create '%s'"
                 , object->getType().c_str()
                 , MENGINE_DOCUMENT_STR( _doc )

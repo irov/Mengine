@@ -32,7 +32,7 @@ namespace Mengine
         float m_time;
         ETransformationRotateMode m_mode;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
 

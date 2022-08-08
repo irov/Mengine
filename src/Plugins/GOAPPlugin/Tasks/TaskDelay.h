@@ -24,7 +24,7 @@ namespace Mengine
         SchedulerInterfacePtr m_scheduler;
         float m_time;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
 

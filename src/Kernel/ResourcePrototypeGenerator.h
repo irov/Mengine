@@ -47,7 +47,7 @@ namespace Mengine
 
             resource->setUniqueIdentity( uniqueIdentity );
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Resource '%s' type '%s' create '%s'"
                 , resource->getName().c_str()
                 , resource->getType().c_str()

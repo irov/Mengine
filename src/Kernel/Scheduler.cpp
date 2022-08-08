@@ -111,7 +111,7 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalid = true;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 
@@ -152,7 +152,7 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalid = true;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 

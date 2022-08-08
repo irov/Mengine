@@ -21,7 +21,7 @@ namespace Mengine
             _desc.process = false;
             _desc.remove = false;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             _desc.doc = nullptr;
 #endif
         }
@@ -54,7 +54,7 @@ namespace Mengine
                 desc.process = false;
                 desc.remove = false;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
                 desc.doc = _doc;
 #endif
 
@@ -283,7 +283,7 @@ namespace Mengine
 
         m_sleep = _sleep;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = _doc;
 #endif
 
@@ -330,7 +330,7 @@ namespace Mengine
             desc.worker = nullptr;
         }
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = nullptr;
 #endif
     }

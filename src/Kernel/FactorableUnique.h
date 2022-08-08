@@ -43,7 +43,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( factorable );
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             factorable->setDocument( _doc );
 #endif
 

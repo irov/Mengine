@@ -7,7 +7,6 @@
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
-//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_LOGGER_MAX_MESSAGE
 #define MENGINE_LOGGER_MAX_MESSAGE 8192
 #endif
@@ -48,4 +47,3 @@ namespace Mengine
     typedef IntrusivePtr<LoggerInterface> LoggerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }
-

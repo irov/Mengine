@@ -462,7 +462,7 @@ namespace Mengine
                     break;
                 }
 
-#if MENGINE_LOGGER_DEBUG == 1
+#ifdef MENGINE_LOGGER_DEBUG_ENABLE
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
@@ -595,7 +595,7 @@ namespace Mengine
             j.set( "change_state", jstate );
         }
 
-#if MENGINE_LOGGER_DEBUG == 1
+#ifdef MENGINE_LOGGER_DEBUG_ENABLE
         static uint32_t old_revision = 0;
 
         if( m_revision != old_revision )

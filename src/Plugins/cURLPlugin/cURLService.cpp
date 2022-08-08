@@ -276,7 +276,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 
@@ -327,7 +327,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 
@@ -378,7 +378,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 
@@ -439,7 +439,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 
@@ -488,7 +488,7 @@ namespace Mengine
         desc.id = id;
         desc.listener = _listener;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 

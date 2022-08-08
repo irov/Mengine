@@ -11,7 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct EncoderData
     {
-#if MENGINE_ASSERTION_DEBUG
+#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
         EncoderData() = default;
         virtual ~EncoderData() = default;
 #endif

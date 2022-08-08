@@ -254,7 +254,7 @@ namespace Mengine
             UniqueId id;
             LambdaWin32ProcessHandler lambda;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

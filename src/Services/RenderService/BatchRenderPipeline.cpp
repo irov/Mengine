@@ -269,7 +269,7 @@ namespace Mengine
 
         RenderPass & renderPass = this->requestRenderPass_( _context, batch, vertexBuffer, indexBuffer, vertexAttribute, _programVariable );
 
-#if defined(MENGINE_DEBUG) && MENGINE_STATISTIC == 1
+#if defined(MENGINE_STATISTIC_ENABLE)
         if( m_debugFillrateCalcMode == true && _debug == false )
         {
             EPrimitiveType primitiveType = _material->getPrimitiveType();
@@ -485,7 +485,7 @@ namespace Mengine
         dro.indices = _indices;
         dro.indexCount = _indexCount;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         dro.doc = _doc;
 #endif
 

@@ -14,7 +14,11 @@
 #   define MENGINE_FACTORABLE_DEBUG 0
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if MENGINE_DOCUMENT_ENABLE
+#if MENGINE_FACTORABLE_DEBUG == 1
+#   define MENGINE_FACTORABLE_DEBUG_ENABLE
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_DOCUMENT_ENABLE
 #   include "Kernel/Documentable.h"
 #endif
 //////////////////////////////////////////////////////////////////////////
@@ -24,7 +28,7 @@ namespace Mengine
     class Factory;
     //////////////////////////////////////////////////////////////////////////
     class Factorable
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         : public Documentable
 #else
         : public Mixin
@@ -56,7 +60,7 @@ namespace Mengine
     protected:
         virtual void _destroy();
 
-#if MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
     public:
         bool isDestroyed() const;
 #endif
@@ -71,7 +75,7 @@ namespace Mengine
 
         Factory * m_factory;
 
-#if MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
         bool m_destroy;
         bool m_immortal;
 #endif
@@ -92,7 +96,7 @@ namespace Mengine
             return false;
         }
 
-#if MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
         if( _ptr->isDestroyed() == true )
         {
             return false;

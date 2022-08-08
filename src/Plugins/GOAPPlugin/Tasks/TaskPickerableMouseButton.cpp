@@ -199,7 +199,7 @@ namespace Mengine
         , m_button( _button )
         , m_isDown( _isDown )
         , m_isPressed( _isPressed )
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
 #endif
         , m_filter( _filter )
@@ -246,7 +246,7 @@ namespace Mengine
         m_pickerable = nullptr;
         m_filter = nullptr;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = nullptr;
 #endif
     }

@@ -28,7 +28,7 @@ namespace Mengine
         float m_to;
         float m_time;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
 

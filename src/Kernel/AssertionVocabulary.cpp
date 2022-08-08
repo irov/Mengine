@@ -1,6 +1,6 @@
 #include "AssertionVocabulary.h"
 
-#if MENGINE_ASSERTION_DEBUG
+#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Assertion.h"

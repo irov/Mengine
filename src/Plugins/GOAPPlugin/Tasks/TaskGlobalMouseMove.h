@@ -28,7 +28,7 @@ namespace Mengine
     protected:
         LambdaInputMouseMoveEvent m_filter;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
 

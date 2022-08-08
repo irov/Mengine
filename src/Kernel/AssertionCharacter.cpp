@@ -1,6 +1,6 @@
 #include "AssertionCharacter.h"
 
-#if MENGINE_ASSERTION_DEBUG
+#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
 #include "Kernel/CharacterHelper.h"
 
 #include "Kernel/Assertion.h"
@@ -29,7 +29,7 @@ namespace Mengine
                 );
 
                 Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );
-            }            
+            }
         }
     }
 }

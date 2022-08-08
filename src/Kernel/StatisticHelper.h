@@ -4,7 +4,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 
-#if MENGINE_STATISTIC == 1
+#ifdef MENGINE_STATISTIC_ENABLE
 #   define STATISTIC_ADD_INTEGER(NAME, VALUE) (SERVICE_IS_AVAILABLE(StatisticServiceInterface) == true ? STATISTIC_SERVICE()->addStatisticInteger(STRINGIZE_STRING_LOCAL(NAME), VALUE) : MENGINE_NOP)
 #   define STATISTIC_HAS_INTEGER(NAME) (SERVICE_IS_AVAILABLE(StatisticServiceInterface) == true ? STATISTIC_SERVICE()->hasStatisticInteger(STRINGIZE_STRING_LOCAL(NAME)) : false)
 #   define STATISTIC_GET_INTEGER(NAME) (SERVICE_IS_AVAILABLE(StatisticServiceInterface) == true ? STATISTIC_SERVICE()->getStatisticInteger(STRINGIZE_STRING_LOCAL(NAME)) : 0LL)

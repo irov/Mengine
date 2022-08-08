@@ -80,6 +80,14 @@ namespace Mengine
     protected:
         void onTimeFactorChange_( float _timeFactor );
 
+#ifdef MENGINE_PLATFORM_IOS
+        void oniOSApplicationDidBecomeActive_();
+        void oniOSApplicationWillEnterForeground_();
+        void oniOSApplicationDidEnterBackground_();
+        void oniOSApplicationWillResignActive_();
+        void oniOSApplicationWillTerminate_();
+#endif
+
     protected:
         ConstString m_currentPackName;
         String m_currentResourcePath;

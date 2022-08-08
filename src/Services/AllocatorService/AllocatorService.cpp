@@ -14,36 +14,45 @@
 
 #include "Config/StdString.h"
 
-#if MENGINE_ALLOCATOR_DEBUG == 0
-#   define MENGINE_ALLOCATOR_RPMALLOC 0
-#else
-#   ifndef MENGINE_ALLOCATOR_RPMALLOC
-#   define MENGINE_ALLOCATOR_RPMALLOC 1
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ALLOCATOR_RPMALLOC
+#   ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
+#       define MENGINE_ALLOCATOR_RPMALLOC 0
+#   else
+#       define MENGINE_ALLOCATOR_RPMALLOC 1
 #   endif
 #endif
-
-#if MENGINE_ALLOCATOR_RPMALLOC
-#   include "rpmalloc/rpmalloc.h"
+//////////////////////////////////////////////////////////////////////////
+#if MENGINE_ALLOCATOR_RPMALLOC == 1
+#   define MENGINE_ALLOCATOR_RPMALLOC_ENABLE
 #endif
-
-#if MENGINE_ALLOCATOR_DEBUG
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
+#   define ENABLE_PRELOAD 1
+extern "C" {
+#   include "rpmalloc/rpmalloc.h"
+}
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
 #   include "Kernel/ThreadMutexScope.h"
 #endif
-
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
+#   ifndef MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
+#       define MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 128
+#   endif
+#endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AllocatorService, Mengine::AllocatorService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#if MENGINE_ALLOCATOR_DEBUG
-    //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
-#define MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 128
-#endif
-    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         //////////////////////////////////////////////////////////////////////////
         static void setMemoryOverrideCorruptionTrap( void * _p, size_t _size )
         {
@@ -69,12 +78,28 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
+#endif
+        //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
+        //////////////////////////////////////////////////////////////////////////
+        static void rpmalloc_error_callback( const char * _message )
+        {
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == false )
+            {
+                return;
+            }
+
+            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("[rpmalloc] %s"
+                , _message
+                );
+        }
+        //////////////////////////////////////////////////////////////////////////
+#endif        
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-#endif
-    //////////////////////////////////////////////////////////////////////////
     AllocatorService::AllocatorService()
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         : m_reportTotal( 0 )
 #endif
     {
@@ -86,14 +111,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AllocatorService::_initializeService()
     {
-#if MENGINE_ALLOCATOR_DEBUG == 0
-#   if MENGINE_ALLOCATOR_RPMALLOC
-        rpmalloc_initialize();
-        rpmalloc_thread_initialize();
-#   endif
+#ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
+        rpmalloc_config_t config = {0};
+        config.error_callback = &Detail::rpmalloc_error_callback;
+
+        if( rpmalloc_initialize_config( &config ) != 0 )
+        {
+            return false;
+        }
 #endif
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
             m_mutexReport = THREAD_SYSTEM()
@@ -113,14 +141,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::_finalizeService()
     {
-#if MENGINE_ALLOCATOR_DEBUG == 0
-#   if MENGINE_ALLOCATOR_RPMALLOC
-        rpmalloc_thread_finalize();
+#ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
         rpmalloc_finalize();
-#   endif
 #endif
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
 #   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
 #   endif
@@ -133,7 +158,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         void * p = ::malloc( _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
@@ -148,7 +173,7 @@ namespace Mengine
 
         this->report( _doc, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE, 0 );
 #else
-#   if MENGINE_ALLOCATOR_RPMALLOC
+#   ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
         void * p = rpmalloc( _size );
 #   else
         void * p = ::malloc( _size );
@@ -162,7 +187,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         if( _mem == nullptr )
@@ -183,7 +208,7 @@ namespace Mengine
 
         this->report( _doc, 0, old_size );
 #else
-#   if MENGINE_ALLOCATOR_RPMALLOC
+#   ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
         rpfree( _mem );
 #   else
         ::free( _mem );
@@ -195,7 +220,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         size_t total = _num * _size;
@@ -214,7 +239,7 @@ namespace Mengine
 
         this->report( _doc, total + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE, 0 );
 #else
-#   if MENGINE_ALLOCATOR_RPMALLOC
+#   ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
         void * p = rpcalloc( _num, _size );
 #   else
         void * p = ::calloc( _num, _size );
@@ -228,7 +253,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         void * p = nullptr;
@@ -272,7 +297,7 @@ namespace Mengine
             this->report( _doc, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE, old_size );
         }
 #else
-#   if MENGINE_ALLOCATOR_RPMALLOC
+#   ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
         void * p = rprealloc( _mem, _size );
 #   else
         void * p = ::realloc( _mem, _size );
@@ -284,19 +309,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::startThread()
     {
-#if MENGINE_ALLOCATOR_DEBUG == 0
-#   if MENGINE_ALLOCATOR_RPMALLOC
-        rpmalloc_thread_initialize();
-#   endif
+#ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
+          rpmalloc_thread_initialize();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::stopThread()
     {
-#if MENGINE_ALLOCATOR_DEBUG == 0
-#   if MENGINE_ALLOCATOR_RPMALLOC
-        rpmalloc_thread_finalize();
-#   endif
+#ifdef MENGINE_ALLOCATOR_RPMALLOC_ENABLE
+        rpmalloc_thread_finalize( 1 );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -304,7 +325,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _pointer );
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
 #   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
 #   endif
@@ -321,7 +342,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t AllocatorService::get_report_count() const
     {
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         return MENGINE_ALLOCATOR_REPORT_COUNT;
 #else
         return 0;
@@ -332,7 +353,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _index );
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         const ReportDesc & r = m_reports[_index];
 
         *_doc = r.doc.c_str();
@@ -347,7 +368,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AllocatorService::get_report_total() const
     {
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         return m_reportTotal;
 #else
         return 0;
@@ -358,7 +379,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         if( _doc == nullptr )
         {
             return 0;
@@ -382,7 +403,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
     void AllocatorService::report( const Char * _doc, size_t _add, size_t _minus )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexReport );

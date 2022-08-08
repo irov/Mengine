@@ -57,8 +57,8 @@ namespace Mengine
         {
             MENGINE_UNUSED( _user );
 
-            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0 )( "%s"
-                        , _msg
+            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0 )("%s"
+                , _msg
                 );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -612,7 +612,7 @@ namespace Mengine
             pathes.emplace_back( pack.path );
         }
 
-#if MENGINE_LOGGER_DEBUG == 1
+#ifdef MENGINE_LOGGER_DEBUG_ENABLE
         for( const FilePath & filePath : pathes )
         {
             MENGINE_UNUSED( filePath );

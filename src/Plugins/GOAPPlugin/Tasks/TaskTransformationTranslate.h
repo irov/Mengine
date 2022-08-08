@@ -27,7 +27,7 @@ namespace Mengine
         mt::vec3f m_to;
         float m_speed;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
 

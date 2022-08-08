@@ -365,7 +365,7 @@ namespace Mengine
         identity->looped = false;
         identity->turn = _streamable ? m_turnStream : m_turnSound;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         identity->doc = _doc;
 #endif
 

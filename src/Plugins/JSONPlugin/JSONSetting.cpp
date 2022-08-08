@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-#if MENGINE_ASSERTION_DEBUG
+#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
         //////////////////////////////////////////////////////////////////////////
         static bool exist_value( const jpp::object & _j, const Char * _key )
         {

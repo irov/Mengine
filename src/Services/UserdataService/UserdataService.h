@@ -37,7 +37,7 @@ namespace Mengine
             FileGroupInterfacePtr fileGroup;
             FilePath path;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

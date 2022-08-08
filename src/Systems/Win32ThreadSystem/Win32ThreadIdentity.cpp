@@ -94,7 +94,7 @@ namespace Mengine
 
         m_name = _name;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = _doc;
 #endif
 
@@ -180,7 +180,7 @@ namespace Mengine
 
         m_mutex = nullptr;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = nullptr;
 #endif
     }

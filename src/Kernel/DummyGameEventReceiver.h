@@ -51,5 +51,12 @@ namespace Mengine
         bool onGameClose() override;
         void onGameOverFillrate( double _fillrate, double _limit ) override;
         void onGameFrameEnd() override;
+#ifdef MENGINE_PLATFORM_IOS
+        void onGameiOSApplicationDidBecomeActive() override;
+        void onGameiOSApplicationWillEnterForeground() override;
+        void onGameiOSApplicationDidEnterBackground() override;
+        void onGameiOSApplicationWillResignActive() override;
+        void onGameiOSApplicationWillTerminate() override;
+#endif
     };
 }

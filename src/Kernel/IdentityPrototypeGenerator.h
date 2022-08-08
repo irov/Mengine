@@ -46,7 +46,7 @@ namespace Mengine
 
             object->setUniqueIdentity( uniqueIdentity );
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Identity '%s' type '%s' create '%s'"
                 , object->getName().c_str()
                 , object->getType().c_str()

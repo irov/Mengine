@@ -49,7 +49,7 @@ namespace Mengine
 
             node->setUniqueIdentity( uniqueIdentity );
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Node type '%s' uid '%u'"
                 , node->getType().c_str()
                 , uniqueIdentity

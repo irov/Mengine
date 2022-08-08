@@ -55,7 +55,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
 #   define MENGINE_DOCUMENT_STR(Doc) Doc->getMessage()
 #else
 #   define MENGINE_DOCUMENT_STR(Doc) MENGINE_STRING_EMPTY

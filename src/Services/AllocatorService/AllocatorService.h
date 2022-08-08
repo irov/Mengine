@@ -5,6 +5,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/StaticString.h"
 
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_ALLOCATOR_DEBUG
 #   ifdef MENGINE_WINDOWS_DEBUG
 #       define MENGINE_ALLOCATOR_DEBUG 1
@@ -12,19 +13,23 @@
 #       define MENGINE_ALLOCATOR_DEBUG 0
 #   endif
 #endif
-
-#if MENGINE_ALLOCATOR_DEBUG
+//////////////////////////////////////////////////////////////////////////
+#if MENGINE_ALLOCATOR_DEBUG == 1
+#   define MENGINE_ALLOCATOR_DEBUG_ENABLE
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
 #   ifndef MENGINE_ALLOCATOR_REPORT_COUNT
 #   define MENGINE_ALLOCATOR_REPORT_COUNT 2048
 #   endif
 #endif
-
-#if MENGINE_ALLOCATOR_DEBUG
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
 #   include "Interface/ThreadMutexInterface.h"
 
 #   include "Config/Atomic.h"
 #endif
-
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     class AllocatorService
@@ -63,7 +68,7 @@ namespace Mengine
         void report( const Char * _name, size_t _add, size_t _minus );
 
     protected:
-#if MENGINE_ALLOCATOR_DEBUG
+#ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
         ThreadMutexInterfacePtr m_mutexReport;
 
         struct ReportDesc

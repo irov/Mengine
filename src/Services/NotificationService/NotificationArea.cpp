@@ -46,7 +46,7 @@ namespace Mengine
     {
         m_addObservers.clear();
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         for( const ObserverDesc & observer : m_observers )
         {
             if( observer.callable == nullptr )
@@ -86,7 +86,7 @@ namespace Mengine
             desc.observer = _observer;
             desc.callable = _callable;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
             desc.doc = _doc;
 #endif
 
@@ -258,7 +258,7 @@ namespace Mengine
         desc.observer = _observer;
         desc.callable = _callable;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 

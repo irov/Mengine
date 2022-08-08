@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#if MENGINE_ASSERTION_DEBUG
+#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
 #include "Kernel/ConstString.h"
 
 #include "Config/Char.h"

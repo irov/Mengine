@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferStream::~OpenALSoundBufferStream()
     {
-#if MENGINE_ASSERTION_DEBUG
+#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
         for( ALuint index = 0; index != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++index )
         {
             ALuint id = m_alBuffersId[index];

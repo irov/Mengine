@@ -14,7 +14,7 @@ namespace Mengine
         , m_code( _code )
         , m_isDown( _isDown )
         , m_filter( _filter )
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
 #endif
         , m_id( INVALID_UNIQUE_ID )
@@ -74,7 +74,7 @@ namespace Mengine
 
         m_filter = nullptr;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = nullptr;
 #endif
     }

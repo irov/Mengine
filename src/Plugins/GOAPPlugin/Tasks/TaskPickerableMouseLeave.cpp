@@ -160,7 +160,7 @@ namespace Mengine
         : GOAP::TaskInterface( _allocator )
         , m_pickerable( _pickerable )
         , m_filter( _filter )
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
 #endif
     {
@@ -206,7 +206,7 @@ namespace Mengine
         m_pickerable = nullptr;
         m_filter = nullptr;
 
-#if MENGINE_DOCUMENT_ENABLE
+#ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = nullptr;
 #endif
     }

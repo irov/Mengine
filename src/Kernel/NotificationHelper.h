@@ -23,5 +23,5 @@
     NOTIFICATION_SERVICE()->removeObserver( ID, this )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_NOTIFY( ID, ... )\
-    (SERVICE_IS_INITIALIZE(NotificationServiceInterface) == true ? NOTIFICATION_SERVICE()->notify<ID>( __VA_ARGS__ ) : false)
+    (SERVICE_IS_INITIALIZE(Mengine::NotificationServiceInterface) == true ? NOTIFICATION_SERVICE()->notify<ID>( __VA_ARGS__ ) : false)
 //////////////////////////////////////////////////////////////////////////

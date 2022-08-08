@@ -53,7 +53,7 @@ namespace Mengine
         if( mt::equal_f_1( resize ) == false )
         {
             Char buffer[256] = {"/0"};
-            MENGINE_SPRINTF( buffer, "-vf \"scale=iw*%f:ih*%f\""
+            MENGINE_SNPRINTF( buffer, 256, "-vf \"scale=iw*%f:ih*%f\""
                 , resize
                 , resize
             );

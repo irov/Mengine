@@ -33,9 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MengineFacebookPlugin extends MenginePlugin {
-    private static final String EMAIL = "email";
-    private static final String PROFILE = "public_profile";
-    
     private CallbackManager m_facebookCallbackManager;
     private AccessToken m_facebookAccessToken;
     private String m_facebookUserId;
@@ -113,16 +110,9 @@ public class MengineFacebookPlugin extends MenginePlugin {
         return token;
     }
     
-    public void performLogin(List<String> readPermissions) {
+    public void performLogin(List<String> permissions) {
         MengineActivity activity = this.getActivity();
 
-        List<String> permissions;
-        if (readPermissions == null) {
-            permissions = Arrays.asList(PROFILE, EMAIL);
-        } else {
-            permissions = readPermissions;
-        }
-        
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
     }
     

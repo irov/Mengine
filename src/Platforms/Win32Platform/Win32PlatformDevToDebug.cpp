@@ -71,7 +71,7 @@ namespace Mengine
 
         unknown_btn_change->setClickEvent( [unknown_text1_content]()
         {
-            Char buffer[256];
+            Char buffer[64];
             MENGINE_SPRINTF( buffer, "Bye Bye! %llu"
                 , Helper::getTimeMilliseconds()
             );

@@ -198,7 +198,7 @@ namespace Mengine
             for( ;; ++enumerator )
             {
                 Char folderPathSplit[MENGINE_MAX_PATH] = {'\0'};
-                int32_t size_sprintf = MENGINE_SPRINTF( folderPathSplit, m_folderPath.c_str(), enumerator );
+                int32_t size_sprintf = MENGINE_SNPRINTF( folderPathSplit, MENGINE_MAX_PATH, m_folderPath.c_str(), enumerator );
 
                 if( size_sprintf < 0 )
                 {
@@ -402,8 +402,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileGroupZip::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
-        MENGINE_SPRINTF(_fullPath, "zip %s [%s] %s"
-            , this->getName().c_str()
+        MENGINE_SNPRINTF( _fullPath, MENGINE_MAX_PATH, "%s/%s"
             , this->getFolderPath().c_str()
             , _filePath.c_str()
         );
@@ -752,7 +751,7 @@ namespace Mengine
         MENGINE_UNUSED( _stream );
         MENGINE_UNUSED( _mutex );
         MENGINE_UNUSED( _fileGroup );
-        MENGINE_UNUSED( _doc );        
+        MENGINE_UNUSED( _doc );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 

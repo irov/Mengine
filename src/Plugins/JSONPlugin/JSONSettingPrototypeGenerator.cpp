@@ -14,9 +14,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FactoryPtr JSONSettingPrototypeGenerator::_initializeFactory()
+    FactoryInterfacePtr JSONSettingPrototypeGenerator::_initializeFactory()
     {
-        FactoryPtr factory = Helper::makeFactoryPool<JSONSetting, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        FactoryInterfacePtr factory = Helper::makeFactoryPool<JSONSetting, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return factory;
     }
@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer JSONSettingPrototypeGenerator::generate( const DocumentPtr & _doc )
     {
-        const FactoryPtr & factory = this->getPrototypeFactory();
+        const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
         TypePtr setting = factory->createObject( _doc );
 

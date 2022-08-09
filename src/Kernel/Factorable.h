@@ -25,7 +25,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class Factory;
+    class FactoryInterface;
     //////////////////////////////////////////////////////////////////////////
     class Factorable
 #ifdef MENGINE_DOCUMENT_ENABLE
@@ -39,8 +39,8 @@ namespace Mengine
         ~Factorable() override;
 
     public:
-        void setFactory( Factory * _factory );
-        MENGINE_INLINE Factory * getFactory() const noexcept;
+        void setFactory( FactoryInterface * _factory );
+        MENGINE_INLINE FactoryInterface * getFactory() const noexcept;
 
     public:
         const ConstString & getType() const;
@@ -73,7 +73,7 @@ namespace Mengine
     protected:
         ReferenceCounter m_reference;
 
-        Factory * m_factory;
+        FactoryInterface * m_factory;
 
 #ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
         bool m_destroy;
@@ -83,7 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factorable> FactorablePtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE Factory * Factorable::getFactory() const noexcept
+    MENGINE_INLINE FactoryInterface * Factorable::getFactory() const noexcept
     {
         return m_factory;
     }

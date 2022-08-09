@@ -268,7 +268,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>> m_nodeAffectorCreatorInterpolateLinearVec4;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryNodeAffectorCallback;
+            FactoryInterfacePtr m_factoryNodeAffectorCallback;
             //////////////////////////////////////////////////////////////////////////
             ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
             {
@@ -279,7 +279,7 @@ namespace Mengine
                 return callback;
             }
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPythonScheduleEvent;
+            FactoryInterfacePtr m_factoryPythonScheduleEvent;
             //////////////////////////////////////////////////////////////////////////
             uint32_t ScheduleInterface_schedule( SchedulerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
             {
@@ -292,8 +292,8 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryDelaySchedulePipe;
-            FactoryPtr m_factoryPythonScheduleTiming;
+            FactoryInterfacePtr m_factoryDelaySchedulePipe;
+            FactoryInterfacePtr m_factoryPythonScheduleTiming;
             //////////////////////////////////////////////////////////////////////////
             uint32_t ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
@@ -311,7 +311,7 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPythonSchedulePipe;
+            FactoryInterfacePtr m_factoryPythonSchedulePipe;
             //////////////////////////////////////////////////////////////////////////
             uint32_t ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
@@ -705,7 +705,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_affectorFactory;
+                FactoryInterfacePtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<FactoryAffectorVelocity2> FactoryAffectorVelocity2Ptr;
@@ -1301,7 +1301,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_affectorFactory;
+                FactoryInterfacePtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<FactoryAffectorInterpolateParabolic> FactoryAffectorInterpolateParabolicPtr;
@@ -1558,7 +1558,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_affectorFactory;
+                FactoryInterfacePtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<FactoryAffectorFollowTo> FactoryAffectorFollowToPtr;
@@ -1774,7 +1774,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_affectorFactory;
+                FactoryInterfacePtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<FactoryAffectorFollowToW> FactoryAffectorFollowToWPtr;
@@ -2460,7 +2460,7 @@ namespace Mengine
             .def( "getIntervalEnd", &AnimationInterface::getIntervalEnd )
             .def( "setIntervalStart", &AnimationInterface::setIntervalStart )
             .def( "getIntervalStart", &AnimationInterface::getIntervalStart )
-            .def( "calcTotalLoop", &AnimationInterface::calcTotalLoop )            
+            .def( "calcTotalLoop", &AnimationInterface::calcTotalLoop )
             ;
 
         pybind::interface_<Animatable, pybind::bases<Mixin>>( _kernel, "Animatable" )

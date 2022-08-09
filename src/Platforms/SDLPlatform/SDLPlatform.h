@@ -18,6 +18,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/SDLPlatformExtensionInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Interface/AndroidPlatformExtensionInterface.h"
@@ -33,7 +34,6 @@
 
 #include "SDLInput.h"
 
-#include "Kernel/Factory.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/SHA1.h"
 
@@ -316,8 +316,8 @@ namespace Mengine
         typedef Vector<UpdateDesc> VectorUpdates;
         VectorUpdates m_updates;
 
-        FactoryPtr m_factoryDynamicLibraries;
-        FactoryPtr m_factoryDateTimeProviders;
+        FactoryInterfacePtr m_factoryDynamicLibraries;
+        FactoryInterfacePtr m_factoryDateTimeProviders;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         SDL_GLContext m_glContext;

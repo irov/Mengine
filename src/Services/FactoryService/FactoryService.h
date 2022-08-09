@@ -25,15 +25,15 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void registerFactory( const Factory * _factory ) override;
-        void unregisterFactory( const Factory * _factory ) override;
+        void registerFactory( const FactoryInterface * _factory ) override;
+        void unregisterFactory( const FactoryInterface * _factory ) override;
 
     public:
         void foreachFactories( const LambdaFactory & _lambda ) override;
 
     protected:
-        void debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) override;
-        void debugFactoryDestroyObject( const Factory * _factory, const Factorable * _factorable ) override;
+        void debugFactoryCreateObject( const FactoryInterface * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) override;
+        void debugFactoryDestroyObject( const FactoryInterface * _factory, const Factorable * _factorable ) override;
 
     protected:
         void increfFactoryGeneration() override;
@@ -43,7 +43,7 @@ namespace Mengine
     protected:
         struct FactoryDesc
         {
-            const Factory * factory;
+            const FactoryInterface * factory;
 
 #ifdef MENGINE_DEBUG
             String factory_name;
@@ -63,7 +63,7 @@ namespace Mengine
         struct ObjectLeakDesc
         {
             uint32_t generation;
-            const Factory * factory;
+            const FactoryInterface * factory;
             const Factorable * factorable;
             String factory_name;
             DocumentPtr factorable_doc;

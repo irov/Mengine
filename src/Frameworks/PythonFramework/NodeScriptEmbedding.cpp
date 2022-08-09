@@ -427,7 +427,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>> m_nodeAffectorCreatorInterpolateLinearVec4;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryNodeAffectorCallback;
+            FactoryInterfacePtr m_factoryNodeAffectorCallback;
             //////////////////////////////////////////////////////////////////////////
             ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
             {

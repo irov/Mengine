@@ -78,7 +78,7 @@ namespace Mengine
         typedef Vector<DocumentPtr> VectorDocuments;
         typedef Map<String, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
-        this->foreachFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+        this->foreachFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const FactoryInterface * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
@@ -165,19 +165,21 @@ namespace Mengine
         m_factories.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::registerFactory( const Factory * _factory )
+    void FactoryService::registerFactory( const FactoryInterface * _factory )
     {
         FactoryDesc desc;
         desc.factory = _factory;
 
 #ifdef MENGINE_DEBUG
-        desc.factory_name = _factory->getType().c_str();
+        const ConstString & type = _factory->getType();
+
+        desc.factory_name = type.c_str();
 #endif
 
         m_factories.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::unregisterFactory( const Factory * _factory )
+    void FactoryService::unregisterFactory( const FactoryInterface * _factory )
     {
         VectorFactories::iterator it_found = Algorithm::find_if( m_factories.begin(), m_factories.end(), [_factory]( const FactoryDesc & _desc )
         {
@@ -196,7 +198,7 @@ namespace Mengine
     {
         for( const FactoryDesc & desc : m_factories )
         {
-            const Factory * factory = desc.factory;
+            const FactoryInterface * factory = desc.factory;
 
             _lambda( factory );
         }
@@ -243,7 +245,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const DocumentPtr & _doc )
+    void FactoryService::debugFactoryCreateObject( const FactoryInterface * _factory, const Factorable * _factorable, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _factory );
         MENGINE_UNUSED( _factorable );
@@ -277,7 +279,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::debugFactoryDestroyObject( const Factory * _factory, const Factorable * _factorable )
+    void FactoryService::debugFactoryDestroyObject( const FactoryInterface * _factory, const Factorable * _factorable )
     {
         MENGINE_UNUSED( _factory );
         MENGINE_UNUSED( _factorable );

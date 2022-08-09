@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/Factory.h"
+#include "Interface/FactoryInterface.h"
+
 #include "Kernel/AssertionFactory.h"
 
 namespace Mengine
@@ -10,7 +11,7 @@ namespace Mengine
     class FactoryStorage
     {
     public:
-        static void initialize( const FactoryPtr & _factory )
+        static void initialize( const FactoryInterfacePtr & _factory )
         {
             m_factory = _factory;
         }
@@ -23,7 +24,7 @@ namespace Mengine
         }
 
     public:
-        static const FactoryPtr & getFactory()
+        static const FactoryInterfacePtr & getFactory()
         {
             return m_factory;
         }
@@ -37,10 +38,10 @@ namespace Mengine
         }
 
     protected:
-        static FactoryPtr m_factory;
+        static FactoryInterfacePtr m_factory;
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    FactoryPtr FactoryStorage<T>::m_factory;
+    FactoryInterfacePtr FactoryStorage<T>::m_factory;
     //////////////////////////////////////////////////////////////////////////
 }

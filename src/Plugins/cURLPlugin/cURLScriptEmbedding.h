@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ScriptEmbeddingInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
@@ -8,7 +9,6 @@
 
 #include "Kernel/Params.h"
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -32,6 +32,6 @@ namespace Mengine
         void cancelRequest( HttpRequestID _id );
 
     protected:
-        FactoryPtr m_factoryPyHttpReceiver;
+        FactoryInterfacePtr m_factoryPyHttpReceiver;
     };
 }

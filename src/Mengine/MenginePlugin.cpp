@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AllocatorService );
+SERVICE_EXTERN( AllocatorSystem );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
@@ -28,7 +28,7 @@ extern "C"
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        if( SERVICE_CREATE( AllocatorService, nullptr ) == false )
+        if( SERVICE_CREATE( AllocatorSystem, nullptr ) == false )
         {
             return nullptr;
         }
@@ -73,8 +73,8 @@ extern "C"
         SERVICE_FINALIZE( StringizeService );
         SERVICE_DESTROY( StringizeService );
 
-        SERVICE_FINALIZE( AllocatorService );
-        SERVICE_DESTROY( AllocatorService );
+        SERVICE_FINALIZE( AllocatorSystem );
+        SERVICE_DESTROY( AllocatorSystem );
 
         Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
         SERVICE_PROVIDER_FINALIZE( serviceProvider );

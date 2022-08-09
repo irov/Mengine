@@ -6,6 +6,7 @@
 
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Metacode/Metacode.h"
 

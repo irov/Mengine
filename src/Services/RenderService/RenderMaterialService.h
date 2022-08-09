@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Interface/RenderMaterialServiceInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "RenderMaterial.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -124,7 +124,7 @@ namespace Mengine
 
         RenderMaterialInterfacePtr m_solidRenderMaterial[4][2];
 
-        FactoryPtr m_factoryMaterial;
+        FactoryInterfacePtr m_factoryMaterial;
 
         typedef Vector<uint32_t> VectorMaterialIndexer;
         VectorMaterialIndexer m_materialEnumerators;

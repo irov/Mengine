@@ -3,12 +3,12 @@
 #include "Interface/DataflowInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "MovieKeyFrameInterface.h"
 #include "MovieFramePack.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -41,7 +41,7 @@ namespace Mengine
     protected:
         ArchivatorInterfacePtr m_archivator;
 
-        FactoryPtr m_factoryMovieFramePack;
+        FactoryInterfacePtr m_factoryMovieFramePack;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowAEK, DataflowInterface> DataflowAEKPtr;

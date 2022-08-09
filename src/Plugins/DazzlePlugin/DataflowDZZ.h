@@ -48,7 +48,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr m_archivator;
 
-        FactoryPtr m_factoryDazzleData;
+        FactoryInterfacePtr m_factoryDazzleData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowDZZ, DataflowInterface> DataflowDZZPtr;

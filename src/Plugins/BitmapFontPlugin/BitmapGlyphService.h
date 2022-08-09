@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Interface/FactoryInterface.h"
+
 #include "BitmapFontInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Map.h"
 
 namespace Mengine
@@ -23,7 +24,7 @@ namespace Mengine
         BitmapGlyphPtr getGlyph( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     protected:
-        FactoryPtr m_factoryTextGlyph;
+        FactoryInterfacePtr m_factoryTextGlyph;
 
         typedef Map<FilePath, BitmapGlyphPtr> MapBitmapGlyph;
         MapBitmapGlyph m_glyphs;

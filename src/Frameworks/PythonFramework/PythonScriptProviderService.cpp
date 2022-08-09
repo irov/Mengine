@@ -1,6 +1,6 @@
 #include "PythonScriptProviderService.h"
 
-#include "Interface/AllocatorServiceInterface.h"
+#include "Interface/AllocatorSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionAllocator.h"
@@ -18,7 +18,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     void * _python_malloc( size_t _size )
     {
-        void * p = ALLOCATOR_SERVICE()
+        void * p = ALLOCATOR_SYSTEM()
             ->malloc( _size, "python" );
 
         return p;
@@ -26,7 +26,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     void * _python_realloc( void * _ptr, size_t _size )
     {
-        void * p = ALLOCATOR_SERVICE()
+        void * p = ALLOCATOR_SYSTEM()
             ->realloc( _ptr, _size, "python" );
 
         return p;
@@ -34,7 +34,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     void _python_free( void * _ptr )
     {
-        ALLOCATOR_SERVICE()
+        ALLOCATOR_SYSTEM()
             ->free( _ptr, "python" );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ namespace Mengine
         protected:
             void * malloc( size_t _size ) override
             {
-                void * p = ALLOCATOR_SERVICE()
+                void * p = ALLOCATOR_SYSTEM()
                     ->malloc( _size, "pybind" );
 
                 return p;
@@ -69,7 +69,7 @@ namespace Mengine
 
             void * calloc( size_t _num, size_t _size ) override
             {
-                void * p = ALLOCATOR_SERVICE()
+                void * p = ALLOCATOR_SYSTEM()
                     ->calloc( _num, _size, "pybind" );
 
                 return p;
@@ -77,7 +77,7 @@ namespace Mengine
 
             void * realloc( void * _ptr, size_t _size ) override
             {
-                void * p = ALLOCATOR_SERVICE()
+                void * p = ALLOCATOR_SYSTEM()
                     ->realloc( _ptr, _size, "pybind" );
 
                 return p;
@@ -85,7 +85,7 @@ namespace Mengine
 
             void free( void * _ptr ) override
             {
-                ALLOCATOR_SERVICE()
+                ALLOCATOR_SYSTEM()
                     ->free( _ptr, "pybind" );
             }
         };

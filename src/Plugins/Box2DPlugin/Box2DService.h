@@ -24,6 +24,6 @@ namespace Mengine
         void destroyWorld( const Box2DWorldInterfacePtr & _world ) override;
 
     protected:
-        FactoryPtr m_factoryWorlds;
+        FactoryInterfacePtr m_factoryWorlds;
     };
 }

@@ -2,9 +2,9 @@
 
 #include "Interface/DataflowInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -34,7 +34,7 @@ namespace Mengine
         bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc ) override;
 
     protected:
-        FactoryPtr m_factoryFEData;
+        FactoryInterfacePtr m_factoryFEData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FEDataflow, DataflowInterface> FEDataflowPtr;

@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Interface/SoundSystemInterface.h"
-
-#include "Kernel/ServiceBase.h"
-
-#include "Kernel/Factory.h"
+#include "Interface/FactoryInterface.h"
 
 #include "SilentSoundBuffer.h"
 #include "SilentSoundSource.h"
+
+#include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {
@@ -49,7 +48,7 @@ namespace Mengine
         uint32_t getBuffersCount() const override;
 
     protected:
-        FactoryPtr m_factorySilentSoundBuffer;
-        FactoryPtr m_factorySilentSoundSource;
+        FactoryInterfacePtr m_factorySilentSoundBuffer;
+        FactoryInterfacePtr m_factorySilentSoundSource;
     };
 }

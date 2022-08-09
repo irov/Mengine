@@ -1,11 +1,13 @@
 MENGINE_PROJECT(Interface)
 
 ADD_FILTER(
-Common     
+Common
     Interface.h
     ServiceInterface.h
     ServiceProviderInterface.h
-    AllocatorServiceInterface.h
+    AllocatorSystemInterface.h
+    UnknownAllocatorDebugReportInterface.h
+    FactoryInterface.h
     PluginInterface.h
     ModuleInterface.h
     ModuleFactoryInterface.h

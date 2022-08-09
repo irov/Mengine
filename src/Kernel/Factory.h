@@ -3,6 +3,7 @@
 #include "Config/Typedef.h"
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/FactorablePointer.h"
 #include "Kernel/FactorableUnique.h"
@@ -18,7 +19,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Factory
-        : public Factorable
+        : public FactoryInterface
+        , public Factorable
     {
     public:
         Factory();
@@ -29,15 +31,15 @@ namespace Mengine
         void finalize();
 
     public:
-        MENGINE_INLINE const ConstString & getType() const;
+        MENGINE_INLINE const ConstString & getType() const override;
 
     public:
-        virtual FactorablePointer createObject( const DocumentPtr & _doc );
-        virtual void destroyObject( Factorable * _object );
+        FactorablePointer createObject( const DocumentPtr & _doc ) override;
+        void destroyObject( Factorable * _object ) override;
 
     public:
-        bool isEmptyObjects() const;
-        uint32_t getCountObject() const;
+        bool isEmptyObjects() const override;
+        uint32_t getCountObject() const override;
 
     protected:
         virtual Factorable * _createObject() = 0;
@@ -63,7 +65,7 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, class ... Args>
-        FactoryPtr makeFactory( const DocumentPtr & _doc, Args && ... _args )
+        FactoryInterfacePtr makeFactory( const DocumentPtr & _doc, Args && ... _args )
         {
             FactoryPtr factory = Helper::makeFactorableUnique<Type>( _doc, std::forward<Args>( _args ) ... );
 

@@ -23,6 +23,6 @@ namespace Mengine
         PathfinderMapInterfacePtr createPathfinderMap( uint16_t _width, uint16_t _height ) override;
 
     protected:
-        FactoryPtr m_factoryPathfinderMap;
+        FactoryInterfacePtr m_factoryPathfinderMap;
     };
 }

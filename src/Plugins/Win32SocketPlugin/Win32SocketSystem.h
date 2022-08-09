@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Interface/SocketSystemInterface.h"
-
-#include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
+
+#include "Kernel/ServiceBase.h"
 
 #include <winsock2.h> 
 
@@ -28,6 +28,6 @@ namespace Mengine
     protected:
         WSADATA m_wsaData;
 
-        FactoryPtr m_factoryWin32Socket;
+        FactoryInterfacePtr m_factoryWin32Socket;
     };
 }

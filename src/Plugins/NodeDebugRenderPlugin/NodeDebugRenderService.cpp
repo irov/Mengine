@@ -1,5 +1,7 @@
 #include "NodeDebugRenderService.h"
 
+#include "Interface/AllocatorSystemInterface.h"
+#include "Interface/UnknownAllocatorDebugReportInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
@@ -11,7 +13,6 @@
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 
@@ -27,6 +28,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/FactorableUnique.h"
 
 #include <iomanip>
 
@@ -491,7 +493,7 @@ namespace Mengine
                     void operator = ( const MyVisitorFactoryService & ) = delete;
 
                 public:
-                    void visit( const Factory * _factory )
+                    void visit( const FactoryInterface * _factory )
                     {
                         uint32_t count = _factory->getCountObject();
 
@@ -549,7 +551,7 @@ namespace Mengine
 
                 MyVisitorFactoryServicePtr mvcts = Helper::makeFactorableUnique<MyVisitorFactoryService>( MENGINE_DOCUMENT_FACTORABLE );
                 FACTORY_SERVICE()
-                    ->foreachFactories( [mvcts]( const Factory * _factory )
+                    ->foreachFactories( [mvcts]( const FactoryInterface * _factory )
                 {
                     mvcts->visit( _factory );
                 } );
@@ -562,16 +564,25 @@ namespace Mengine
                 typedef Map<size_t, VectorString> MapPybindScope;
                 MapPybindScope scopes;
 
-                uint32_t count = ALLOCATOR_SERVICE()
-                    ->get_report_count();
+                UnknownAllocatorDebugReportInterface * debugReport = ALLOCATOR_SYSTEM()
+                    ->getUnknown();
 
-                for( uint32_t i = 0; i != count; ++i )
+                if( debugReport != nullptr )
                 {
-                    const char * report_name;
-                    size_t report_count = ALLOCATOR_SERVICE()
-                        ->get_report_info( i, &report_name );
+                    uint32_t allocator_report_count = debugReport->getAllocatorReportCount();
 
-                    scopes[report_count].emplace_back( report_name );
+                    for( uint32_t index = 0; index != allocator_report_count; ++index )
+                    {
+                        const char * report_name;
+                        size_t report_count = debugReport->getAllocatorReportInfo( index, &report_name );
+
+                        if( report_name[0] == '\0' )
+                        {
+                            continue;
+                        }
+
+                        scopes[report_count].emplace_back( report_name );
+                    }
                 }
 
                 Stringstream ss2;

@@ -1,7 +1,7 @@
 #include "MemoryUsageMonitor.h"
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
+#include "Interface/AllocatorSystemInterface.h"
 #include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -86,12 +86,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        size_t totalMemoryUsage = ALLOCATOR_SERVICE()
-            ->get_report_total();
+        uint32_t totalMemoryUsage = ALLOCATOR_SYSTEM()
+            ->getMemoryUsage();
 
         const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( "CURRENT_SCENE_NAME" );
 
-        LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%zugb %zumb %zukb] [scene %s]"
+        LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%ugb %umb %ukb] [scene %s]"
             , (totalMemoryUsage / (1024 * 1024 * 1024))
             , ((totalMemoryUsage / (1024 * 1024)) % 1024)
             , (totalMemoryUsage / (1024) % 1024)

@@ -60,9 +60,9 @@ namespace Mengine
         bool closeMappedFile( const MappedInterfacePtr & _stream ) override;
 
     protected:
-        FactoryPtr m_factoryInputStreamFile;
-        FactoryPtr m_factoryInputStreamMutexFile;
-        FactoryPtr m_factoryOutputStreamFile;
-        FactoryPtr m_factoryMappedFile;
+        FactoryInterfacePtr m_factoryInputStreamFile;
+        FactoryInterfacePtr m_factoryInputStreamMutexFile;
+        FactoryInterfacePtr m_factoryOutputStreamFile;
+        FactoryInterfacePtr m_factoryMappedFile;
     };
 }

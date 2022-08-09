@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Interface/ThreadQueueInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "cURLInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/ThreadTask.h"
 
 namespace Mengine
@@ -87,9 +87,9 @@ namespace Mengine
         typedef Vector<ReceiverDesc> VectorReceiverDesc;
         VectorReceiverDesc m_receiverDescs;
          
-        FactoryPtr m_factoryTaskGetMessage;
-        FactoryPtr m_factoryTaskPostMessage;
-        FactoryPtr m_factoryTaskHeaderData;
-        FactoryPtr m_factoryTaskDownloadAsset;
+        FactoryInterfacePtr m_factoryTaskGetMessage;
+        FactoryInterfacePtr m_factoryTaskPostMessage;
+        FactoryInterfacePtr m_factoryTaskHeaderData;
+        FactoryInterfacePtr m_factoryTaskDownloadAsset;
     };
 }

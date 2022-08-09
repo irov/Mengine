@@ -203,9 +203,23 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdID.SubSysId );
         LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdID.Revision );
 
-        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_d3dCaps) )
+        for( ;; )
         {
-            return false;
+            HRESULT hresult = m_pD3D->GetDeviceCaps( m_adapterToUse, m_deviceType, &m_d3dCaps );
+
+            if( hresult == D3DERR_NOTAVAILABLE )
+            {
+                ::Sleep( 200 );
+
+                continue;
+            }
+
+            IF_DXERRORCHECK( CheckDeviceFormat, hresult )
+            {
+                return false;
+            }
+
+            break;
         }
 
         m_supportA8 = this->supportTextureFormat( PF_A8 );

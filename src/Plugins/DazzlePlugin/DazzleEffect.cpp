@@ -3,6 +3,8 @@
 #include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/MemoryAllocator.h"
 
 #include "Config/StdString.h"
 

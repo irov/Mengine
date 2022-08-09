@@ -322,13 +322,13 @@ namespace Mengine
                     ->getInputMouseButtonEventBlock();
             }
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPythonScheduleTiming;
+            FactoryInterfacePtr m_factoryPythonScheduleTiming;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPythonSchedulePipe;
+            FactoryInterfacePtr m_factoryPythonSchedulePipe;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryDelaySchedulePipe;
+            FactoryInterfacePtr m_factoryDelaySchedulePipe;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPythonScheduleEvent;
+            FactoryInterfacePtr m_factoryPythonScheduleEvent;
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
@@ -711,7 +711,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPythonSceneChangeCallback;
+            FactoryInterfacePtr m_factoryPythonSceneChangeCallback;
             //////////////////////////////////////////////////////////////////////////
             bool createCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
             {
@@ -2217,7 +2217,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyInputMousePositionProvider> PyInputMousePositionProviderPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyInputMousePositionProvider;
+            FactoryInterfacePtr m_factoryPyInputMousePositionProvider;
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_addMousePositionProvider( const ArrowPtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
             {
@@ -2465,7 +2465,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<AffectorGridBurnTransparency> AffectorGridBurnTransparencyPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryAffectorGridBurnTransparency;
+            FactoryInterfacePtr m_factoryAffectorGridBurnTransparency;
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_gridBurnTransparency( const Grid2DPtr & _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
             {
@@ -2513,7 +2513,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<AffectorUser> AffectorUserPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryAffectorUser;
+            FactoryInterfacePtr m_factoryAffectorUser;
             //////////////////////////////////////////////////////////////////////////
             AffectorPtr s_createAffector( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -2729,7 +2729,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_affectorFactory;
+                FactoryInterfacePtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<AffectorNodeFollowerCreator<Node, float>> m_creatorAffectorNodeFollowerLocalAlpha;
@@ -3387,7 +3387,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalMouseLeaveHandler> PyGlobalMouseLeaveHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalMouseLeaveHandlers;
+            FactoryInterfacePtr m_factoryPyGlobalMouseLeaveHandlers;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addMouseLeaveHandler( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3445,7 +3445,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalMouseMoveHandler> PyGlobalMouseMoveHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalMouseMoveHandlers;
+            FactoryInterfacePtr m_factoryPyGlobalMouseMoveHandlers;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3496,7 +3496,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalMouseHandlerButton> PyGlobalMouseHandlerButtonPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalMouseHandlerButtons;
+            FactoryInterfacePtr m_factoryPyGlobalMouseHandlerButtons;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3548,7 +3548,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalMouseHandlerButtonEnd> PyGlobalMouseHandlerButtonEndPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalMouseHandlerButtonEnds;
+            FactoryInterfacePtr m_factoryPyGlobalMouseHandlerButtonEnds;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3600,7 +3600,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalMouseHandlerButtonBegin> PyGlobalMouseHandlerButtonBeginPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalMouseHandlerButtonBegins;
+            FactoryInterfacePtr m_factoryPyGlobalMouseHandlerButtonBegins;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3644,7 +3644,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalMouseHandlerWheel> PyGlobalMouseHandlerWheelPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalMouseHandlerWheels;
+            FactoryInterfacePtr m_factoryPyGlobalMouseHandlerWheels;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3687,7 +3687,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalKeyHandler> PyGlobalKeyHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalKeyHandler;
+            FactoryInterfacePtr m_factoryPyGlobalKeyHandler;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3728,7 +3728,7 @@ namespace Mengine
                 }
             };
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPyGlobalTextHandler;
+            FactoryInterfacePtr m_factoryPyGlobalTextHandler;
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
             {

@@ -17,7 +17,7 @@ namespace Mengine
         typedef IntrusivePtr<JSONSetting> TypePtr;
 
     protected:
-        FactoryPtr _initializeFactory() override;
+        FactoryInterfacePtr _initializeFactory() override;
         void _finalizeFactory() override;
 
     protected:

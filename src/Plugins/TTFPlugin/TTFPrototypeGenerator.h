@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Kernel/FactoryPrototypeGenerator.h"
-
-#include "Kernel/Factory.h"
+#include "Interface/FactoryInterface.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"
@@ -22,7 +21,7 @@ namespace Mengine
         void setFTLibrary( FT_Library _ftlibrary );
 
     public:
-        FactoryPtr _initializeFactory() override;
+        FactoryInterfacePtr _initializeFactory() override;
         void _finalizeFactory() override;
 
     public:
@@ -31,7 +30,7 @@ namespace Mengine
     protected:
         FT_Library m_ftlibrary;
 
-        FactoryPtr m_factoryFont;
+        FactoryInterfacePtr m_factoryFont;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TTFPrototypeGenerator> TTFPrototypeGeneratorPtr;

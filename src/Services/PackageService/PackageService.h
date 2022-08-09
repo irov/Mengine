@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/PackageServiceInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 
 #include "Package.h"
 
@@ -49,7 +49,7 @@ namespace Mengine
         typedef Vector<PackagePtr> VectorPackages;
         VectorPackages m_packages;
 
-        FactoryPtr m_factoryPackage;
+        FactoryInterfacePtr m_factoryPackage;
 
     protected:
         bool loadLocalePacksByName_( const ConstString & _locale, const Tags & _platformTags, VectorPackages * const _packs ) const;

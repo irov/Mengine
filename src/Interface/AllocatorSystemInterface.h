@@ -2,14 +2,17 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Kernel/Unknowable.h"
+
 #include "Config/Char.h"
 
 namespace Mengine
-{    
-    class AllocatorServiceInterface
+{
+    class AllocatorSystemInterface
         : public ServiceInterface
+        , public Unknowable
     {
-        SERVICE_DECLARE( "AllocatorService" );
+        SERVICE_DECLARE( "AllocatorSystem" );
 
     public:
         virtual void * malloc( size_t _size, const Char * _doc ) = 0;
@@ -22,18 +25,10 @@ namespace Mengine
         virtual void stopThread() = 0;
 
     public:
-        virtual bool checkOverrideCorruption( void * _pointer ) const = 0;
-
-    public:
-        virtual uint32_t get_report_count() const = 0;
-        virtual size_t get_report_info( uint32_t _index, const Char ** _name ) const = 0;
-        virtual size_t get_report_total() const = 0;
-
-    public:
-        virtual size_t find_alloc_count( const Char * _doc ) const = 0;
+        virtual uint32_t getMemoryUsage() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define ALLOCATOR_SERVICE()\
-    ((Mengine::AllocatorServiceInterface *)SERVICE_GET(Mengine::AllocatorServiceInterface))
+#define ALLOCATOR_SYSTEM()\
+    ((Mengine::AllocatorSystemInterface *)SERVICE_GET(Mengine::AllocatorSystemInterface))
 //////////////////////////////////////////////////////////////////////////

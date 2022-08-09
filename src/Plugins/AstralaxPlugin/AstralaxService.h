@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "AstralaxInterface.h"
 #include "AstralaxIncluder.h"
@@ -9,7 +10,6 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/String.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -62,8 +62,8 @@ namespace Mengine
 
         ERenderPlatform m_renderPlatform;
 
-        FactoryPtr m_factoryPoolAstralaxEmitterContainer;
-        FactoryPtr m_factoryPoolAstralaxEmitter;
+        FactoryInterfacePtr m_factoryPoolAstralaxEmitterContainer;
+        FactoryInterfacePtr m_factoryPoolAstralaxEmitter;
 
         struct AstralaxEmitterContainerDesc
         {

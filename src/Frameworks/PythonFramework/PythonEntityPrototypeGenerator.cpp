@@ -66,9 +66,9 @@ namespace Mengine
         m_generator = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactoryPtr PythonEntityPrototypeGenerator::_initializeFactory()
+    FactoryInterfacePtr PythonEntityPrototypeGenerator::_initializeFactory()
     {
-        FactoryPtr factory = Helper::makeFactoryPool<PythonEntityBehavior, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        FactoryInterfacePtr factory = Helper::makeFactoryPool<PythonEntityBehavior, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return factory;
     }
@@ -142,7 +142,7 @@ namespace Mengine
 
         entity->setBehaviorEventable( m_eventable );
 
-        const FactoryPtr & factory = this->getPrototypeFactory();
+        const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
         PythonEntityBehaviorPtr behavior = factory->createObject( _doc );
         behavior->setScriptObject( py_entity );

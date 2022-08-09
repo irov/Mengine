@@ -7,7 +7,6 @@
 #include "Interface/DataInterface.h"
 #include "Interface/DataflowInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/DataInterfacePointer.h"
 

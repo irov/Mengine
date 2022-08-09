@@ -32,7 +32,7 @@ namespace Mengine
     protected:
         FactorablePointer generate( const DocumentPtr & _doc ) override
         {
-            const FactoryPtr & factory = this->getPrototypeFactory();
+            const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
             IntrusivePtr<Type> object = factory->createObject( _doc );
 

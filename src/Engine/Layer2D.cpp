@@ -12,6 +12,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
 
 namespace Mengine
 {

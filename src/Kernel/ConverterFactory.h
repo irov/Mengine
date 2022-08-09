@@ -51,7 +51,7 @@ namespace Mengine
         }
 
     protected:
-        FactoryPtr m_converterFactory;
+        FactoryInterfacePtr m_converterFactory;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

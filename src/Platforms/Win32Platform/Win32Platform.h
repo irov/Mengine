@@ -242,8 +242,8 @@ namespace Mengine
 
         StaticString<MENGINE_SHA1_HEX_COUNT + 1> m_fingerprint; //SHA1
 
-        FactoryPtr m_factoryDynamicLibraries;
-        FactoryPtr m_factoryDateTimeProviders;
+        FactoryInterfacePtr m_factoryDynamicLibraries;
+        FactoryInterfacePtr m_factoryDateTimeProviders;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
 

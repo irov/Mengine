@@ -35,6 +35,6 @@ namespace Mengine
         typedef Vector<AreaOfInterestZonePtr> VectorAreaOfInterestZones;
         VectorAreaOfInterestZones m_zones;
 
-        FactoryPtr m_factoryAreaOfInterestZones;
+        FactoryInterfacePtr m_factoryAreaOfInterestZones;
     };
 }

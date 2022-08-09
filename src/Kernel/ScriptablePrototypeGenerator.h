@@ -25,11 +25,11 @@ namespace Mengine
     protected:
         typedef IntrusivePtr<Type> TypePtr;
 
-        FactoryPtr _initializeFactory() override
+        FactoryInterfacePtr _initializeFactory() override
         {
             this->registerScriptWrapperObserver();
 
-            FactoryPtr factory = Helper::makeFactoryPool<Type, Count>( MENGINE_DOCUMENT_FACTORABLE );
+            FactoryInterfacePtr factory = Helper::makeFactoryPool<Type, Count>( MENGINE_DOCUMENT_FACTORABLE );
 
             return factory;
         }
@@ -42,7 +42,7 @@ namespace Mengine
     protected:
         FactorablePointer generate( const DocumentPtr & _doc ) override
         {
-            const FactoryPtr & factory = this->getPrototypeFactory();
+            const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
             TypePtr scriptable = factory->createObject( _doc );
 

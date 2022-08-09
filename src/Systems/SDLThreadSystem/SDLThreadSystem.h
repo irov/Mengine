@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/ThreadSystemInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -29,7 +29,7 @@ namespace Mengine
         uint64_t getCurrentThreadId() const override;
 
     protected:
-        FactoryPtr m_factoryThreadIdentity;
-        FactoryPtr m_factoryThreadMutex;
+        FactoryInterfacePtr m_factoryThreadIdentity;
+        FactoryInterfacePtr m_factoryThreadMutex;
     };
 }

@@ -1,6 +1,6 @@
 #include "Win32ThreadIdentity.h"
 
-#include "Interface/AllocatorServiceInterface.h"
+#include "Interface/AllocatorSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -191,7 +191,7 @@ namespace Mengine
 
         m_threadId = (uint64_t)threadId;
 
-        ALLOCATOR_SERVICE()
+        ALLOCATOR_SYSTEM()
             ->startThread();
 
         MENGINE_PROFILER_THREAD( m_name.c_str() );
@@ -240,7 +240,7 @@ namespace Mengine
 #endif
         }
 
-        ALLOCATOR_SERVICE()
+        ALLOCATOR_SYSTEM()
             ->stopThread();
     }
     //////////////////////////////////////////////////////////////////////////

@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionType.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
 
 #include "Config/StdString.h"
@@ -225,11 +226,11 @@ namespace Mengine
         }
 
         MENGINE_ASSERTION_FATAL( m_theoraInfo.pixelformat == OC_PF_420, "invalid support pixel format '%s' pls use OC_PF_420"
-            , []( theora_pixelformat _format )
+            , [this]() -> const Char *
         {
             const Char * pixelformat[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
-            return pixelformat[_format];
-        }(m_theoraInfo.pixelformat) );
+            return pixelformat[m_theoraInfo.pixelformat];
+        }() );
 
         MENGINE_ASSERTION_FATAL( m_theoraInfo.fps_denominator != 0, "invalid fps denominator" );
 

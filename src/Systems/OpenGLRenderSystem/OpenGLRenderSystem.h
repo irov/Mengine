@@ -3,6 +3,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/OpenGLRenderSystemExtensionInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "OpenGLRenderImage.h"
 #include "OpenGLRenderImageTarget.h"
@@ -16,7 +17,6 @@
 
 #include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -205,16 +205,16 @@ namespace Mengine
 
         Color m_clearColor;
 
-        FactoryPtr m_factoryRenderVertexBuffer;
-        FactoryPtr m_factoryRenderIndexBuffer;
-        FactoryPtr m_factoryRenderImage;
-        FactoryPtr m_factoryRenderImageTarget;
-        FactoryPtr m_factoryRenderTargetTexture;
-        FactoryPtr m_factoryRenderVertexAttribute;
-        FactoryPtr m_factoryRenderFragmentShader;
-        FactoryPtr m_factoryRenderVertexShader;
-        FactoryPtr m_factoryRenderProgram;
-        FactoryPtr m_factoryRenderProgramVariable;
+        FactoryInterfacePtr m_factoryRenderVertexBuffer;
+        FactoryInterfacePtr m_factoryRenderIndexBuffer;
+        FactoryInterfacePtr m_factoryRenderImage;
+        FactoryInterfacePtr m_factoryRenderImageTarget;
+        FactoryInterfacePtr m_factoryRenderTargetTexture;
+        FactoryInterfacePtr m_factoryRenderVertexAttribute;
+        FactoryInterfacePtr m_factoryRenderFragmentShader;
+        FactoryInterfacePtr m_factoryRenderVertexShader;
+        FactoryInterfacePtr m_factoryRenderProgram;
+        FactoryInterfacePtr m_factoryRenderProgramVariable;
 
 #ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLuint m_vertexArrayId;

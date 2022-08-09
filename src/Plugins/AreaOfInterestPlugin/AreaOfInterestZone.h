@@ -67,8 +67,8 @@ namespace Mengine
         VectorAreaOfInterestActors m_actors;
         VectorAreaOfInterestActors m_actorsAdd;
 
-        FactoryPtr m_factoryAreaOfInterestActors;
-        FactoryPtr m_factoryAreaOfInterestTriggers;
+        FactoryInterfacePtr m_factoryAreaOfInterestActors;
+        FactoryInterfacePtr m_factoryAreaOfInterestTriggers;
 
         bool m_freeze;
     };

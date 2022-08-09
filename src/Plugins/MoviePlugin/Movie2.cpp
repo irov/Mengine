@@ -13,7 +13,6 @@
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceSound.h"
 #include "Kernel/SurfaceTrackMatte.h"
-
 #include "Kernel/Materialable.h"
 #include "Kernel/Layer.h"
 #include "Kernel/NodeHelper.h"
@@ -31,6 +30,7 @@
 #include "Kernel/SurfaceCast.h"
 #include "Kernel/ColorHelper.h"
 #include "Kernel/StaticString.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"

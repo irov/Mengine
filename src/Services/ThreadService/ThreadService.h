@@ -3,12 +3,11 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ThreadIdentityInterface.h"
 #include "Interface/ThreadConditionVariableInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "ThreadQueue.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
-
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
 
@@ -81,8 +80,8 @@ namespace Mengine
         typedef Vector<ThreadQueuePtr> VectorThreadQueues;
         VectorThreadQueues m_threadQueues;
 
-        FactoryPtr m_factoryThreadQueue;
-        FactoryPtr m_factoryThreadJob;
+        FactoryInterfacePtr m_factoryThreadQueue;
+        FactoryInterfacePtr m_factoryThreadJob;
 
         struct ThreadDesc
         {

@@ -357,8 +357,22 @@ namespace Mengine
         GAME_SERVICE()
             ->run();
 
-        PLATFORM_SERVICE()
-            ->runPlatform();
+        if( PLATFORM_SERVICE()
+            ->runPlatform() == false )
+        {
+            LOGGER_CRITICAL( "Invalid run platform" );
+
+            return false;
+        }
+
+        TimeMilliseconds runPlatformTimeMilliseconds = PLATFORM_SERVICE()
+            ->getPlatfomTime();
+
+        TimeMilliseconds runPlatformTimeSeconds = runPlatformTimeMilliseconds / 1000;
+
+        LOGGER_MESSAGE_RELEASE( "run platform time: %lu seconds"
+            , runPlatformTimeSeconds
+        );
 
         return true;
     }

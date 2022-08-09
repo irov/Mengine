@@ -2,14 +2,13 @@
 
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/TimepipeInterface.h"
-
-#include "Kernel/ServiceBase.h"
+#include "Interface/FactoryInterface.h"
 
 #include "SoundIdentity.h"
 #include "ThreadWorkerSoundBufferUpdate.h"
 
+#include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
 
@@ -142,7 +141,7 @@ namespace Mengine
         MixerValue m_musicVolume;
         MixerValue m_voiceVolume;
 
-        FactoryPtr m_factorySoundIdentity;
+        FactoryInterfacePtr m_factorySoundIdentity;
 
         typedef Vector<SoundIdentityPtr> VectorSoundIdentity;
         VectorSoundIdentity m_soundIdentities;
@@ -150,7 +149,7 @@ namespace Mengine
 
         ThreadJobPtr m_threadJobSoundBufferUpdate;
 
-        FactoryPtr m_factoryWorkerTaskSoundBufferUpdate;
+        FactoryInterfacePtr m_factoryWorkerTaskSoundBufferUpdate;
 
         typedef Vector<SoundVolumeProviderInterfacePtr> VectorSoundVolumeProviders;
         VectorSoundVolumeProviders m_soundVolumeProviders;

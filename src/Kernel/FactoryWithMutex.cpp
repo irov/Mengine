@@ -67,7 +67,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, (Factory *)this, object, _doc );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, (FactoryInterface *)this, object, _doc );
         }
 #endif
 
@@ -85,7 +85,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, (Factory *)this, _object );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, (FactoryInterface *)this, _object );
         }
 #endif
 

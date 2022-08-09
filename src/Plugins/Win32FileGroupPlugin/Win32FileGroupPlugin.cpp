@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<Win32FileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<Win32FileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() ), MENGINE_DOCUMENT_FACTORABLE );
 
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
@@ -35,7 +35,7 @@ namespace Mengine
 
         FilePath relationPath = Helper::stringizeFilePathSize( currentPath, (FilePath::size_type)currentPathLen );
 
-        VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), Helper::makeFactory<Win32FileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, relationPath ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), Helper::makeFactory<Win32FileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, relationPath ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "ConstStringHolderMemory.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Pool.h"
 #include "Kernel/IntrusiveList.h"
 

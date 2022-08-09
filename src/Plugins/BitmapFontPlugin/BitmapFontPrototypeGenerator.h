@@ -12,7 +12,7 @@ namespace Mengine
         ~BitmapFontPrototypeGenerator() override;
 
     public:
-        FactoryPtr _initializeFactory() override;
+        FactoryInterfacePtr _initializeFactory() override;
         void _finalizeFactory() override;
 
     public:

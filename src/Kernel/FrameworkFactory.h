@@ -29,13 +29,9 @@ namespace Mengine
     public:
         bool initialize() override
         {
-            FactoryPtr factory = Helper::makeFactoryDefault<Type>( MENGINE_DOCUMENT_FACTORABLE );
+            FactoryInterfacePtr factory = Helper::makeFactoryDefault<Type>( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
-
-            const ConstString & type = Type::getFactorableType();
-
-            factory->initialize( type );
 
             m_factory = factory;
 
@@ -58,7 +54,7 @@ namespace Mengine
         }
 
     protected:
-        FactoryPtr m_factory;
+        FactoryInterfacePtr m_factory;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

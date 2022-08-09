@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FactoryPrototypeGenerator::initialize()
     {
-        FactoryPtr factory = this->_initializeFactory();
+        FactoryInterfacePtr factory = this->_initializeFactory();
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory );
 

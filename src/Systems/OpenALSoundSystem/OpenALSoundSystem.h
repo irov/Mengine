@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Interface/SoundSystemInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "OpenALSoundIncluder.h"
 #include "OpenALSoundBufferBase.h"
 #include "OpenALSoundBufferStream.h"
 #include "OpenALSoundSource.h"
-
-#include "Kernel/Factory.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -59,9 +58,9 @@ namespace Mengine
         uint32_t m_sourcesCount;
         uint32_t m_buffersCount;
 
-        FactoryPtr m_factoryOpenALSoundBuffer;
-        FactoryPtr m_factoryOpenALSoundBufferStream;
-        FactoryPtr m_factoryOpenALSoundSource;
+        FactoryInterfacePtr m_factoryOpenALSoundBuffer;
+        FactoryInterfacePtr m_factoryOpenALSoundBufferStream;
+        FactoryInterfacePtr m_factoryOpenALSoundSource;
     };
     //////////////////////////////////////////////////////////////////////////
 }

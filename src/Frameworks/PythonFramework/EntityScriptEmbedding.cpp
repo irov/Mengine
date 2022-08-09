@@ -209,7 +209,7 @@ namespace Mengine
         }
 
     protected:
-        FactoryPtr m_factoryEntityPrototypeGenerator;
+        FactoryInterfacePtr m_factoryEntityPrototypeGenerator;
 
         typedef Vector<PrototypeGeneratorInterfacePtr> VectorEntityPrototypeGenerators;
         VectorEntityPrototypeGenerators m_entityPrototypeGenerators;

@@ -1,12 +1,12 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadQueueInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "ThreadTaskPrefetch.h"
 #include "PrefetchReceiver.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/VectorConstString.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Hashtable2.h"
 
 namespace Mengine
@@ -54,17 +54,17 @@ namespace Mengine
         bool popPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ThreadTaskPrefetchPtr * const _prefetch );
 
     protected:
-        FactoryPtr m_factoryPrefetchReceiver;
+        FactoryInterfacePtr m_factoryPrefetchReceiver;
 
         ThreadQueueInterfacePtr m_threadQueue;
 
         typedef VectorConstString VectorThreads;
         VectorThreads m_threads;
 
-        FactoryPtr m_factoryThreadTaskPrefetchImageDecoder;
-        FactoryPtr m_factoryThreadTaskPrefetchSoundDecoder;
-        FactoryPtr m_factoryThreadTaskPrefetchDataflow;
-        FactoryPtr m_factoryThreadTaskPrefetchStream;
+        FactoryInterfacePtr m_factoryThreadTaskPrefetchImageDecoder;
+        FactoryInterfacePtr m_factoryThreadTaskPrefetchSoundDecoder;
+        FactoryInterfacePtr m_factoryThreadTaskPrefetchDataflow;
+        FactoryInterfacePtr m_factoryThreadTaskPrefetchStream;
 
         typedef Hashtable2<ConstString, FilePath, PrefetchReceiverPtr> HashtablePrefetchReceiver;
         HashtablePrefetchReceiver m_prefetchReceivers;

@@ -1,5 +1,7 @@
 #include "NodeDebuggerModule.h"
 
+#include "Interface/AllocatorSystemInterface.h"
+#include "Interface/UnknownAllocatorDebugReportInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
@@ -21,7 +23,6 @@
 #include "Interface/PickerInterface.h"
 #include "Interface/AnimationInterface.h"
 #include "Interface/SettingsServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
@@ -1481,8 +1482,8 @@ namespace Mengine
 
         pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
 
-        size_t allocator_report_total = ALLOCATOR_SERVICE()
-            ->get_report_total();
+        uint32_t allocator_report_total = ALLOCATOR_SYSTEM()
+            ->getMemoryUsage();
 
         payloadNode.append_attribute( "Total" ).set_value( allocator_report_total );
 
@@ -1511,26 +1512,30 @@ namespace Mengine
 
         payloadNode.append_attribute( "SoundBuffersCount" ).set_value( buffersCount );
 
-        pugi::xml_node allocatorsNode = payloadNode.append_child( "Allocators" );
+        UnknownAllocatorDebugReportInterface * debugReport = ALLOCATOR_SYSTEM()
+            ->getUnknown();
 
-        uint32_t allocator_report_count = ALLOCATOR_SERVICE()
-            ->get_report_count();
-
-        for( uint32_t index = 0; index != allocator_report_count; ++index )
+        if( debugReport != nullptr )
         {
-            const char * report_name;
-            size_t report_count = ALLOCATOR_SERVICE()
-                ->get_report_info( index, &report_name );
+            pugi::xml_node allocatorsNode = payloadNode.append_child( "Allocators" );
 
-            if( report_name[0] == 0 )
+            uint32_t allocator_report_count = debugReport->getAllocatorReportCount();
+
+            for( uint32_t index = 0; index != allocator_report_count; ++index )
             {
-                continue;
+                const Char * report_name;
+                size_t report_count = debugReport->getAllocatorReportInfo( index, &report_name );
+
+                if( report_name[0] == '\0' )
+                {
+                    continue;
+                }
+
+                pugi::xml_node allocatorNode = allocatorsNode.append_child( "Allocator" );
+
+                allocatorNode.append_attribute( "Name" ).set_value( report_name );
+                allocatorNode.append_attribute( "Count" ).set_value( report_count );
             }
-
-            pugi::xml_node allocatorNode = allocatorsNode.append_child( "Allocator" );
-
-            allocatorNode.append_attribute( "Name" ).set_value( report_name );
-            allocatorNode.append_attribute( "Count" ).set_value( report_count );
         }
 
         NodeDebuggerPacket packet;
@@ -1572,7 +1577,7 @@ namespace Mengine
         typedef Map<String, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
         FACTORY_SERVICE()
-            ->foreachFactoryLeakObjects( generation - 1, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+            ->foreachFactoryLeakObjects( generation - 1, [&leakcount, &objectLeaks]( const FactoryInterface * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );

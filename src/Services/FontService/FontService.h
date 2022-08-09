@@ -3,7 +3,6 @@
 #include "Interface/FontServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"

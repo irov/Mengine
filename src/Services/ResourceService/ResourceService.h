@@ -2,11 +2,11 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "ResourceBank.h"
 
 #include "Kernel/Resource.h"
-
 #include "Kernel/ServiceBase.h"
 #include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Hashtable.h"
@@ -62,6 +62,6 @@ namespace Mengine
         typedef Map<ConstString, VectorResources> MapResourceCache;
         MapResourceCache m_resourcesCache;
 
-        FactoryPtr m_factoryResourceBank;
+        FactoryInterfacePtr m_factoryResourceBank;
     };
 }

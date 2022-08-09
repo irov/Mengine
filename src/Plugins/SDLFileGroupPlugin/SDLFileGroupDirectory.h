@@ -1,8 +1,9 @@
 #pragma once
 
+#include "Interface/FactoryInterface.h"
+
 #include "Kernel/BaseFileGroup.h"
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -62,9 +63,9 @@ namespace Mengine
         bool closeMappedFile( const MappedInterfacePtr & _stream ) override;
 
     protected:
-        FactoryPtr m_factoryInputStreamFile;
-        FactoryPtr m_factoryInputStreamMutexFile;
-        FactoryPtr m_factoryOutputStreamFile;
+        FactoryInterfacePtr m_factoryInputStreamFile;
+        FactoryInterfacePtr m_factoryInputStreamMutexFile;
+        FactoryInterfacePtr m_factoryOutputStreamFile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLFileGroupDirectory, FileGroupInterface> SDLFileGroupDirectoryPtr;

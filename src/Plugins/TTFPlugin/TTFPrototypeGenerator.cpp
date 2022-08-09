@@ -21,9 +21,9 @@ namespace Mengine
         m_ftlibrary = _ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactoryPtr TTFPrototypeGenerator::_initializeFactory()
+    FactoryInterfacePtr TTFPrototypeGenerator::_initializeFactory()
     {
-        FactoryPtr factory = Helper::makeFactoryPool<TTFFont, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        FactoryInterfacePtr factory = Helper::makeFactoryPool<TTFFont, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return factory;
     }
@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer TTFPrototypeGenerator::generate( const DocumentPtr & _doc )
     {
-        const FactoryPtr & factory = this->getPrototypeFactory();
+        const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
         TTFFontPtr font = factory->createObject( _doc );
 

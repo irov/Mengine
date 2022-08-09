@@ -8,7 +8,7 @@
 #include "Interface/DataServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
+#include "Interface/AllocatorSystemInterface.h"
 
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
@@ -54,7 +54,7 @@ namespace Mengine
         {
             AE_UNUSED( _userdata );
 
-            return ALLOCATOR_SERVICE()
+            return ALLOCATOR_SYSTEM()
                 ->malloc( _size, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ namespace Mengine
 
             size_t total = _size * _count;
 
-            return ALLOCATOR_SERVICE()
+            return ALLOCATOR_SYSTEM()
                 ->malloc( total, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ namespace Mengine
         {
             AE_UNUSED( _userdata );
 
-            ALLOCATOR_SERVICE()
+            ALLOCATOR_SYSTEM()
                 ->free( (void *)_ptr, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ namespace Mengine
         {
             AE_UNUSED( _userdata );
 
-            ALLOCATOR_SERVICE()
+            ALLOCATOR_SYSTEM()
                 ->free( (void *)_ptr, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////

@@ -36,7 +36,7 @@ namespace Mengine
 
         DWORD m_dwAllocationGranularity;
 
-        FactoryPtr m_factoryFileMappedInputStream;
+        FactoryInterfacePtr m_factoryFileMappedInputStream;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32FileMapped, FileMappedInterface> Win32FileMappedPtr;

@@ -111,22 +111,6 @@ namespace Mengine
             size += size_functionstamp;
         }
         
-        if( SERVICE_EXIST( OptionsServiceInterface ) == true )
-        {
-            bool OPTION_loggermemoryusage = HAS_OPTION( "loggermemoryusage" );
-
-            if( OPTION_loggermemoryusage == true )
-            {
-                size_t size_memoryusage = LOGGER_SERVICE()
-                    ->makeMemoryusage( str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
-
-                if( size_memoryusage > 0 )
-                {
-                    size += size_memoryusage;
-                }
-            }
-        }
-
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
 
         if( size_vsnprintf >= 0 )

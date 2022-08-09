@@ -4,9 +4,9 @@
 #include "Interface/RenderBatchInterface.h"
 #include "Interface/RenderExternalInterface.h"
 #include "Interface/RenderServiceInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/RenderPrimitive.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Pool.h"
 #include "Kernel/Vector.h"
 #include "Kernel/DynamicArray.h"

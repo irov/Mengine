@@ -11,6 +11,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "TTFPrototypeGenerator.h"
 #include "TTFFontConfigLoader.h"

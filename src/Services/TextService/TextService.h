@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "TextLocalePackage.h"
 #include "TextEntry.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"
@@ -111,8 +111,8 @@ namespace Mengine
 
         TextFontInterfacePtr m_defaultFont;
 
-        FactoryPtr m_factoryTextEntry;
-        FactoryPtr m_factoryTextLocalePackage;
+        FactoryInterfacePtr m_factoryTextEntry;
+        FactoryInterfacePtr m_factoryTextLocalePackage;
 
         VectorU32String m_lineDelims;
 

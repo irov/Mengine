@@ -1,7 +1,6 @@
 #include "TheoraPlugin.h"
 
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 
 #include "TheoraVideoDecoder.h"
 

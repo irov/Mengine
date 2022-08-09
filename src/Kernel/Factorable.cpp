@@ -1,7 +1,9 @@
 #include "Factorable.h"
-#include "Factory.h"
+
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Exception.h"
+#include "Kernel/ExceptionHelper.h"
 
 namespace Mengine
 {
@@ -25,7 +27,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void Factorable::setFactory( Factory * _factory )
+    void Factorable::setFactory( FactoryInterface * _factory )
     {
         m_factory = _factory;
     }

@@ -2,10 +2,10 @@
 
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderPipelineInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Tuple.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/LoggerLevel.h"
@@ -42,8 +42,8 @@ namespace Mengine
     MENGINE_DECLARE_BEGIN();
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_OPEN_FILE, const Char *, const Char *, bool );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_CLOSE_FILE, const Char *, const Char *, bool );
-    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, Factory *, Factorable *, const DocumentPtr & );
-    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, Factory *, Factorable * );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, FactoryInterface *, Factorable *, const DocumentPtr & );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, FactoryInterface *, Factorable * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_ASSERTION, EAssertionLevel, const Char *, const Char *, int32_t, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_ABORT, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CRASH, const Char * );

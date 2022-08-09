@@ -55,7 +55,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class Type, uint32_t Count, class C, class M>
-        FactoryPtr makeFactoryPoolWithListener( C * _self, M _method, const DocumentPtr & _doc )
+        FactoryInterfacePtr makeFactoryPoolWithListener( C * _self, M _method, const DocumentPtr & _doc )
         {
             FactoryWithListenerPtr factory = Helper::makeFactoryPool<Type, Count, FactoryWithListener>( _doc );
 

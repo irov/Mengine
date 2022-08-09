@@ -1,6 +1,6 @@
 #include "SDLThreadIdentity.h"
 
-#include "Interface/AllocatorServiceInterface.h"
+#include "Interface/AllocatorSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadEnum.h"
@@ -61,7 +61,7 @@ namespace Mengine
         , m_taskLock( nullptr )
         , m_processLock( nullptr )
         , m_conditionVariable( nullptr )
-        , m_conditionLock( nullptr )    
+        , m_conditionLock( nullptr )
         , m_task( nullptr )
         , m_exit( false )
     {
@@ -155,7 +155,7 @@ namespace Mengine
     {
         m_threadId = SDL_ThreadID();
 
-        ALLOCATOR_SERVICE()
+        ALLOCATOR_SYSTEM()
             ->startThread();
 
         while( m_exit == false )
@@ -175,7 +175,7 @@ namespace Mengine
                     , SDL_GetError()
                 );
             }
-            
+
             if( SDL_UnlockMutex( m_conditionLock ) != 0 )
             {
                 LOGGER_ERROR( "invalid unlock mutex error: %s"
@@ -212,7 +212,7 @@ namespace Mengine
                 }
 
                 m_task = nullptr;
-                
+
                 if( SDL_UnlockMutex( m_taskLock ) != 0 )
                 {
                     LOGGER_ERROR( "invalid unlock mutex error: %s"
@@ -229,7 +229,7 @@ namespace Mengine
             }
         }
 
-        ALLOCATOR_SERVICE()
+        ALLOCATOR_SYSTEM()
             ->stopThread();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -266,7 +266,7 @@ namespace Mengine
                 }
 
                 m_task = _task;
-                
+
                 if( SDL_UnlockMutex( m_taskLock ) != 0 )
                 {
                     LOGGER_ERROR( "invalid unlock mutex error: %s"
@@ -333,7 +333,7 @@ namespace Mengine
         }
 
         m_task = nullptr;
-        
+
         if( SDL_UnlockMutex( m_processLock ) != 0 )
         {
             LOGGER_ERROR( "invalid unlock mutex error: %s"

@@ -3,6 +3,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "RenderBatch.h"
 #include "RenderMaterial.h"
@@ -13,7 +14,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/VectorRenderIndex.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Pool.h"
 #include "Kernel/Vector.h"
 #include "Kernel/List.h"
@@ -125,7 +125,7 @@ namespace Mengine
         RenderTextureInterfacePtr m_nullTexture;
         RenderTextureInterfacePtr m_whiteTexture;
 
-        FactoryPtr m_factoryRenderBatch;
+        FactoryInterfacePtr m_factoryRenderBatch;
 
         typedef Vector<RenderBatchPtr> VectorRenderBatch;
         VectorRenderBatch m_renderBatches;

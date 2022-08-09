@@ -2,7 +2,7 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
+#include "Interface/AllocatorSystemInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
@@ -46,7 +46,7 @@ namespace Mengine
         protected:
             void * malloc( size_t _size ) override
             {
-                void * p = ALLOCATOR_SERVICE()
+                void * p = ALLOCATOR_SYSTEM()
                     ->malloc( _size, "python3" );
 
                 return p;
@@ -54,7 +54,7 @@ namespace Mengine
 
             void * calloc( size_t _num, size_t _size ) override
             {
-                void * p = ALLOCATOR_SERVICE()
+                void * p = ALLOCATOR_SYSTEM()
                     ->calloc( _num, _size, "python3" );
 
                 return p;
@@ -62,7 +62,7 @@ namespace Mengine
 
             void * realloc( void * _ptr, size_t _size ) override
             {
-                void * p = ALLOCATOR_SERVICE()
+                void * p = ALLOCATOR_SYSTEM()
                     ->realloc( _ptr, _size, "python3" );
 
                 return p;
@@ -70,7 +70,7 @@ namespace Mengine
 
             void free( void * _ptr ) override
             {
-                ALLOCATOR_SERVICE()
+                ALLOCATOR_SYSTEM()
                     ->free( _ptr, "python3" );
             }
         };

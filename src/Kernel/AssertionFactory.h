@@ -3,14 +3,14 @@
 #include "Config/Config.h"
 
 #ifdef MENGINE_ASSERTION_DEBUG_ENABLE
-#include "Kernel/Factory.h"
+#include "Interface/FactoryInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     namespace Detail
     {
-        void assertionFactoryEmpty( const FactoryPtr & _factory, const Char * _file, uint32_t _line );
+        void assertionFactoryEmpty( const FactoryInterfacePtr & _factory, const Char * _file, uint32_t _line );
     }
 }
 //////////////////////////////////////////////////////////////////////////

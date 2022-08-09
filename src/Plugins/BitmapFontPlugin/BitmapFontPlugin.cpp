@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "BitmapGlyphService.h"
 #include "BitmapFontConfigLoader.h"

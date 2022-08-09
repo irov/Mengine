@@ -1,7 +1,6 @@
 #include "LoggerService.h"
 
 #include "Interface/ThreadSystemInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
@@ -293,20 +292,6 @@ namespace Mengine
         }
 
         size_t size = Helper::makeLoggerTimestamp( m_dateTimeProvider, "[%02u:%02u:%02u:%04u] ", _buffer + _offset, _capacity - _offset );
-
-        return size;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t LoggerService::makeMemoryusage( Char * const _buffer, size_t _offset, size_t _capacity ) const
-    {
-        size_t total = ALLOCATOR_SERVICE()
-            ->get_report_total();
-
-        int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, "[%zugb %zumb %zukb] "
-            , (total / (1024 * 1024 * 1024))
-            , ((total / (1024 * 1024)) % 1024) 
-            , (total / (1024) % 1024)
-        );
 
         return size;
     }

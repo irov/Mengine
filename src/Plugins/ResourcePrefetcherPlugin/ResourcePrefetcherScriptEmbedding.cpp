@@ -13,6 +13,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/FactorableUnique.h"
 
 namespace Mengine
 {

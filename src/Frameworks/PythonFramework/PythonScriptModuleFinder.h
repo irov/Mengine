@@ -3,12 +3,11 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/DataflowInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
 #include "PythonScriptModuleLoader.h"
-
-#include "Kernel/Factory.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -82,7 +81,7 @@ namespace Mengine
 
         VectorModulePathes m_modulePaths;
 
-        FactoryPtr m_factoryScriptModuleLoader;
+        FactoryInterfacePtr m_factoryScriptModuleLoader;
 
         typedef Vector<ScriptModuleLoaderPtr> MapModuleLoaders;
         MapModuleLoaders m_loaders;

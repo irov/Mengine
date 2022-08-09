@@ -1,18 +1,19 @@
 #pragma once
 
-#include "Config/Lambda.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Affector.h"
 #include "Kernel/LambdaAffectorInterpolate.h"
 #include "Kernel/LambdaAffectorAccumulateLinear.h"
 #include "Kernel/AffectorCallbackInterface.h"
 #include "Kernel/AssertionFactory.h"
-#include "Kernel/Factory.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/ValueInterpolatorLinear.h"
 #include "Kernel/ValueInterpolatorQuadratic.h"
 #include "Kernel/ValueInterpolatorBezier.h"
 #include "Kernel/DocumentHelper.h"
+
+#include "Config/Lambda.h"
 
 namespace Mengine
 {
@@ -210,7 +211,7 @@ namespace Mengine
             }
 
         protected:
-            FactoryPtr m_factory;
+            FactoryInterfacePtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -269,7 +270,7 @@ namespace Mengine
             }
 
         protected:
-            FactoryPtr m_factory;
+            FactoryInterfacePtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -329,7 +330,7 @@ namespace Mengine
             }
 
         protected:
-            FactoryPtr m_factory;
+            FactoryInterfacePtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t N>
@@ -392,7 +393,7 @@ namespace Mengine
             }
 
         protected:
-            FactoryPtr m_factory;
+            FactoryInterfacePtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
     }

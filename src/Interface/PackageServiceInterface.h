@@ -4,7 +4,6 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PackageInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"

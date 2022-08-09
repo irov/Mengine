@@ -3,7 +3,6 @@
 #include "Interface/ScriptEmbeddingInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {

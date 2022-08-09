@@ -2,9 +2,9 @@
 
 #include "Interface/DataflowInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"
@@ -50,7 +50,7 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutex;
 
-        FactoryPtr m_factoryTTFData;
+        FactoryInterfacePtr m_factoryTTFData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TTFDataflow, DataflowInterface> TTFDataflowPtr;

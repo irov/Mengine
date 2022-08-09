@@ -2,7 +2,6 @@
 
 #include "Interface/TransformationInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/Vector.h"
 
 #include "math/mat4.h"

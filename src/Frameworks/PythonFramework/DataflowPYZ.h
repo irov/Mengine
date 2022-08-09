@@ -3,11 +3,11 @@
 #include "Interface/DataflowInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -48,7 +48,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr m_archivator;
 
-        FactoryPtr m_factoryScriptCodeData;
+        FactoryInterfacePtr m_factoryScriptCodeData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowPYZ, DataflowInterface> DataflowPYZPtr;

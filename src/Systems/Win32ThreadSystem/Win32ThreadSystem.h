@@ -37,7 +37,7 @@ namespace Mengine
         uint64_t getCurrentThreadId() const override;
 
     protected:
-        FactoryPtr m_factoryWin32ThreadIdentity;
-        FactoryPtr m_factoryWin32ThreadMutex;
+        FactoryInterfacePtr m_factoryWin32ThreadIdentity;
+        FactoryInterfacePtr m_factoryWin32ThreadMutex;
     };
 }

@@ -65,6 +65,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/TimeHelper.h"
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Config/Typedef.h"
 #include "Config/StdString.h"

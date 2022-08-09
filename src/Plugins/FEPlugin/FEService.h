@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Interface/FactoryInterface.h"
+
 #include "FEServiceInterface.h"
 
 #include "FETextFontEffectFile.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Hashtable2.h"
 
 namespace Mengine
@@ -28,7 +29,7 @@ namespace Mengine
         typedef Hashtable2<ConstString, FilePath, FETextFontEffectFilePtr> HashtableTextFontEffects;
         HashtableTextFontEffects m_textFontEffects;
 
-        FactoryPtr m_factoryFETextFontEffectFile;
-        FactoryPtr m_factoryFETextFontEffectCustom;
+        FactoryInterfacePtr m_factoryFETextFontEffectFile;
+        FactoryInterfacePtr m_factoryFETextFontEffectCustom;
     };
 }

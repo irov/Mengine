@@ -30,9 +30,9 @@ namespace Mengine
         }
 
     protected:
-        FactoryPtr _initializeFactory() override
+        FactoryInterfacePtr _initializeFactory() override
         {
-            FactoryPtr factory = Helper::makeFactoryPool<Type, Count>( MENGINE_DOCUMENT_FACTORABLE );
+            FactoryInterfacePtr factory = Helper::makeFactoryPool<Type, Count>( MENGINE_DOCUMENT_FACTORABLE );
 
             return factory;
         }
@@ -45,7 +45,7 @@ namespace Mengine
     protected:
         FactorablePointer generate( const DocumentPtr & _doc ) override
         {
-            const FactoryPtr & factory = this->getPrototypeFactory();
+            const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
             TypePtr object = factory->createObject( _doc );
 

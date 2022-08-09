@@ -9,7 +9,6 @@
 #include "Kernel/Unknowable.h"
 #include "Kernel/Magicable.h"
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"

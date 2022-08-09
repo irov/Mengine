@@ -49,7 +49,7 @@ namespace Mengine
         }
 
     protected:
-        FactoryPtr m_factory;
+        FactoryInterfacePtr m_factory;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

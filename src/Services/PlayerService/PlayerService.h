@@ -6,11 +6,11 @@
 #include "Interface/SchedulerInterface.h"
 #include "Interface/RenderTargetInterface.h"
 #include "Interface/RenderPipelineInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Resolution.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderViewport.h"
@@ -148,7 +148,7 @@ namespace Mengine
 
         RandomizerInterfacePtr m_randomizer;
 
-        FactoryPtr m_factoryScheduleManager;
+        FactoryInterfacePtr m_factoryScheduleManager;
 
         typedef Vector<SchedulerInterfacePtr> VectorUserScheduler;
         VectorUserScheduler m_schedulers;

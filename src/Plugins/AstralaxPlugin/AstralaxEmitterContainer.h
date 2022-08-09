@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Interface/MemoryInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "AstralaxInterface.h"
 #include "AstralaxIncluder.h"
 #include "AstralaxEmitter2.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 #include "Kernel/VectorResourceImages.h"
 #include "Kernel/Vector.h"
 

@@ -8,7 +8,6 @@
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/BaseEventation.h"
-#include "Kernel/Unknowable.h"
 #include "Kernel/Factorable.h"
 
 #include "movie/movie.hpp"

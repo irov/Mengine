@@ -2,9 +2,9 @@
 
 #include "Interface/DataflowInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 #include "movie/movie.hpp"
 
@@ -48,7 +48,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr m_archivator;
 
-        FactoryPtr m_factoryMovieData;
+        FactoryInterfacePtr m_factoryMovieData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowAEZ, DataflowInterface> DataflowAEZPtr;

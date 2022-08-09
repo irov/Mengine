@@ -204,7 +204,7 @@ namespace Mengine
         //            VectorDocuments leakObjects;
         //
         //            FACTORY_SERVICE()
-        //                ->visitFactoryLeakObjects( ~0U, [plugin_modulePath, &leakObjects]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+        //                ->visitFactoryLeakObjects( ~0U, [plugin_modulePath, &leakObjects]( const FactoryInterface * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
         //            {
         //                MENGINE_UNUSED( _factory );
         //                MENGINE_UNUSED( _factorable );

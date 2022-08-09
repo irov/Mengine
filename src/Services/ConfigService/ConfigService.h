@@ -2,14 +2,13 @@
 
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "MemoryConfig.h"
 #include "MultiConfig.h"
 
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/Tags.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -41,6 +40,6 @@ namespace Mengine
 
         MultiConfigPtr m_defaultConfig;
 
-        FactoryPtr m_factoryMemoryConfig;
+        FactoryInterfacePtr m_factoryMemoryConfig;
     };
 }

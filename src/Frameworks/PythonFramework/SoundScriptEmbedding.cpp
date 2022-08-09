@@ -174,7 +174,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factorySoundNodeListener;
+            FactoryInterfacePtr m_factorySoundNodeListener;
             //////////////////////////////////////////////////////////////////////////
             SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args, const DocumentPtr & _doc )
             {
@@ -433,7 +433,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<SoundAffectorCallback> SoundAffectorCallbackPtr;
             //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factorySoundAffectorCallback;
+            FactoryInterfacePtr m_factorySoundAffectorCallback;
             //////////////////////////////////////////////////////////////////////////
             SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
             {

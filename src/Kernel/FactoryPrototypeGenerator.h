@@ -1,8 +1,8 @@
 #pragma once
 
-#include "BasePrototypeGenerator.h"
+#include "Interface/FactoryInterface.h"
 
-#include "Kernel/Factory.h"
+#include "BasePrototypeGenerator.h"
 
 namespace Mengine
 {
@@ -15,26 +15,26 @@ namespace Mengine
         ~FactoryPrototypeGenerator() override;
 
     protected:
-        MENGINE_INLINE const FactoryPtr & getPrototypeFactory() const;
+        MENGINE_INLINE const FactoryInterfacePtr & getPrototypeFactory() const;
 
     protected:
         bool initialize() override;
         void finalize() override;
 
     protected:
-        virtual FactoryPtr _initializeFactory() = 0;
+        virtual FactoryInterfacePtr _initializeFactory() = 0;
         virtual void _finalizeFactory() = 0;
 
     protected:
         uint32_t count() const override;
 
     protected:
-        FactoryPtr m_prototypeFactory;
+        FactoryInterfacePtr m_prototypeFactory;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FactoryPrototypeGenerator> FactoryPrototypeGeneratorPtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const FactoryPtr & FactoryPrototypeGenerator::getPrototypeFactory() const
+    MENGINE_INLINE const FactoryInterfacePtr & FactoryPrototypeGenerator::getPrototypeFactory() const
     {
         return m_prototypeFactory;
     }

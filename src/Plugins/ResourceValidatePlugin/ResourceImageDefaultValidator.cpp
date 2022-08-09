@@ -12,6 +12,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {

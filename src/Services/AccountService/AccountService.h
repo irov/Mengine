@@ -3,11 +3,11 @@
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Account.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
 
 namespace Mengine
@@ -91,7 +91,7 @@ namespace Mengine
         typedef Hashtable<ConstString, AccountPtr> HashtableAccounts;
         HashtableAccounts m_accounts;
 
-        FactoryPtr m_factoryAccounts;
+        FactoryInterfacePtr m_factoryAccounts;
 
         ConstString m_currentAccountID;
         ConstString m_globalAccountID;

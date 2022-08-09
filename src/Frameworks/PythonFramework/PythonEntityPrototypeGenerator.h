@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Interface/FactoryInterface.h"
+
 #include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/FactoryPrototypeGenerator.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/BaseEventation.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Entity.h"
 
 namespace Mengine
@@ -33,7 +34,7 @@ namespace Mengine
         void finalize() override;
 
     protected:
-        FactoryPtr _initializeFactory() override;
+        FactoryInterfacePtr _initializeFactory() override;
         void _finalizeFactory() override;
 
     protected:

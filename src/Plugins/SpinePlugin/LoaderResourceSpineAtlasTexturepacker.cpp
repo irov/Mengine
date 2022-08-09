@@ -4,9 +4,10 @@
 
 #include "ResourceSpineAtlasTexturepacker.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
+
+#include "Metacode/Metacode.h"
 
 namespace Mengine
 {

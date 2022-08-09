@@ -2,6 +2,7 @@
 
 #include "Kernel/Dataflow.h"
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {

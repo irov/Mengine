@@ -2,11 +2,11 @@
 
 #include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Hashtable2.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Pair.h"
 
 namespace Mengine
@@ -54,8 +54,8 @@ namespace Mengine
         typedef Hashtable2<ConstString, FilePath, RenderTextureInterface *> MapRenderTextureEntry;
         MapRenderTextureEntry m_textures;
 
-        FactoryPtr m_factoryRenderTexture;
-        FactoryPtr m_factoryDecoderRenderImageProvider;
-        FactoryPtr m_factoryDecoderRenderImageLoader;
+        FactoryInterfacePtr m_factoryRenderTexture;
+        FactoryInterfacePtr m_factoryDecoderRenderImageProvider;
+        FactoryInterfacePtr m_factoryDecoderRenderImageLoader;
     };
 }

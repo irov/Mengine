@@ -201,17 +201,17 @@ namespace Mengine
 
         Viewport m_viewport;
 
-        FactoryPtr m_factoryRenderVertexAttribute;
-        FactoryPtr m_factoryRenderVertexShader;
-        FactoryPtr m_factoryRenderFragmentShader;
-        FactoryPtr m_factoryRenderProgram;
-        FactoryPtr m_factoryRenderProgramVariable;
-        FactoryPtr m_factoryVertexBuffer;
-        FactoryPtr m_factoryIndexBuffer;
-        FactoryPtr m_factoryRenderImage;
-        FactoryPtr m_factoryRenderImageTarget;
-        FactoryPtr m_factoryRenderTargetTexture;
-        FactoryPtr m_factoryRenderTargetOffscreen;
+        FactoryInterfacePtr m_factoryRenderVertexAttribute;
+        FactoryInterfacePtr m_factoryRenderVertexShader;
+        FactoryInterfacePtr m_factoryRenderFragmentShader;
+        FactoryInterfacePtr m_factoryRenderProgram;
+        FactoryInterfacePtr m_factoryRenderProgramVariable;
+        FactoryInterfacePtr m_factoryVertexBuffer;
+        FactoryInterfacePtr m_factoryIndexBuffer;
+        FactoryInterfacePtr m_factoryRenderImage;
+        FactoryInterfacePtr m_factoryRenderImageTarget;
+        FactoryInterfacePtr m_factoryRenderTargetTexture;
+        FactoryInterfacePtr m_factoryRenderTargetOffscreen;
 
         typedef Vector<DX9RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;

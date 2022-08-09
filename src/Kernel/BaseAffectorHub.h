@@ -4,7 +4,6 @@
 
 #include "Kernel/Affector.h"
 #include "Kernel/AffectorType.h"
-#include "Kernel/Mixin.h"
 #include "Kernel/UpdateContext.h"
 #include "Kernel/IntrusiveSlugList.h"
 #include "Kernel/IntrusiveSlugIterator.h"

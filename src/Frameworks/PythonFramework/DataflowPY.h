@@ -2,11 +2,11 @@
 
 #include "Interface/DataflowInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -42,7 +42,7 @@ namespace Mengine
     protected:
         pybind::kernel_interface * m_kernel;
 
-        FactoryPtr m_factoryScriptCodeData;
+        FactoryInterfacePtr m_factoryScriptCodeData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowPY, DataflowInterface> DataflowPYPtr;

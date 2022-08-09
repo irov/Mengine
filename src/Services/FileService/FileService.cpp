@@ -62,7 +62,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FileGroupInterfacePtr FileService::createFileGroup( const ConstString & _type, const DocumentPtr & _doc )
     {
-        FactoryPtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), _type );
+        FactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), _type );
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, "not registry factory '%s'"
             , _type.c_str()

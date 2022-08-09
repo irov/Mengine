@@ -5,6 +5,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
@@ -16,7 +17,6 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Entity.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Pool.h"
 #include "Kernel/Map.h"
@@ -140,8 +140,8 @@ namespace Mengine
         typedef IntrusiveList<ConstStringHolderPythonString> IntrusiveListConstStringHolderPythonString;
         IntrusiveListConstStringHolderPythonString m_holdersPythonString;
 
-        FactoryPtr m_factoryScriptModule;
-        FactoryPtr m_factoryEntityEventable;
+        FactoryInterfacePtr m_factoryScriptModule;
+        FactoryInterfacePtr m_factoryEntityEventable;
 
         bool m_initializeModules;
 

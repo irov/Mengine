@@ -4,6 +4,7 @@
 
 #include "Kernel/ResourceImageSequence.h"
 #include "Kernel/AssertionResourceType.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Metacode/Metacode.h"
 

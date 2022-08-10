@@ -13,7 +13,7 @@
 
 #include "Config/StdString.h"
 
-#include <stdlib.h>
+#include "Config/StdLib.h"
 
 #ifndef MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
 #define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 128
@@ -94,7 +94,7 @@ namespace Mengine
 
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
-        void * mem = ::malloc( _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+        void * mem = MENGINE_MALLOC( _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' total '%zu' [%s]"
             , _size
@@ -104,7 +104,7 @@ namespace Mengine
 
         Detail::setMemoryOverrideCorruptionTrap( mem, _size );
 
-        size_t usage_size = _msize( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
@@ -124,7 +124,7 @@ namespace Mengine
             return;
         }
 
-        size_t old_size = _msize( _mem );
+        size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
         MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
 
@@ -136,7 +136,7 @@ namespace Mengine
             );
         }
 
-        ::free( _mem );
+        MENGINE_FREE( _mem );
 
         this->report( _doc, 0, old_size );
     }
@@ -149,7 +149,7 @@ namespace Mengine
 
         size_t total = _num * _size;
 
-        void * mem = ::malloc( total + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+        void * mem = MENGINE_MALLOC( total + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid calloc memory '%zu' total '%u' [%s]"
             , _size
@@ -161,7 +161,7 @@ namespace Mengine
 
         Detail::setMemoryOverrideCorruptionTrap( mem, total );
 
-        size_t usage_size = _msize( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
@@ -178,7 +178,7 @@ namespace Mengine
 
         if( _mem == nullptr )
         {
-            void * mem = ::malloc( _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+            void * mem = MENGINE_MALLOC( _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from nullptr [%s]"
                 , _size
@@ -188,7 +188,7 @@ namespace Mengine
 
             Detail::setMemoryOverrideCorruptionTrap( mem, _size );
 
-            size_t usage_size = _msize( mem );
+            size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
             MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
@@ -197,7 +197,7 @@ namespace Mengine
             return mem;
         }
  
-        size_t old_size = _msize( _mem );
+        size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
         MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
 
@@ -208,7 +208,7 @@ namespace Mengine
             );
         }
 
-        void * mem = ::realloc( _mem, _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+        void * mem = MENGINE_REALLOC( _mem, _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from '%p' [%s]"
             , _size
@@ -219,7 +219,7 @@ namespace Mengine
 
         Detail::setMemoryOverrideCorruptionTrap( mem, _size );
 
-        size_t usage_size = _msize( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 

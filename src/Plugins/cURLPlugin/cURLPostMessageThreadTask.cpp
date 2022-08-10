@@ -84,7 +84,7 @@ namespace Mengine
 
         if( m_curl_formpost != nullptr )
         {
-            ::curl_formfree( m_curl_formpost );
+            curl_formfree( m_curl_formpost );
             m_curl_formpost = nullptr;
         }
     }

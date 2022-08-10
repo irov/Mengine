@@ -117,18 +117,18 @@ namespace Mengine
             zs.next_out = static_cast<Bytef *>(_buffer);
             zs.avail_out = (uInt)_capacity;
 
-            zs.zalloc = &zip_alloc_func;
-            zs.zfree = &zip_free_func;
+            zs.zalloc = &Detail::zip_alloc_func;
+            zs.zfree = &Detail::zip_free_func;
 
-            int32_t err_init = inflateInit2( &zs, -MAX_WBITS );
+            int32_t err_init = ::inflateInit2( &zs, -MAX_WBITS );
 
             if( err_init != Z_OK )
             {
                 return false;
             }
 
-            int32_t err_inflate = inflate( &zs, Z_FINISH );
-            int32_t err_end = inflateEnd( &zs );
+            int32_t err_inflate = ::inflate( &zs, Z_FINISH );
+            int32_t err_end = ::inflateEnd( &zs );
 
             if( err_inflate != Z_STREAM_END )
             {

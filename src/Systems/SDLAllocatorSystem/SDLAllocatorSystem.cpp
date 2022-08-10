@@ -8,7 +8,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/LoggerHelper.h"
 
-#include <stdlib.h>
+#include "Config/StdLib.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AllocatorSystem, Mengine::SDLAllocatorSystem );
@@ -41,7 +41,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        void * mem = ::malloc( _size );
+        void * mem = MENGINE_MALLOC( _size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' total '%u' [%s]"
             , _size
@@ -50,7 +50,7 @@ namespace Mengine
         );
 
 #ifdef MENGINE_DEBUG
-        size_t usage_size = _msize( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
@@ -70,12 +70,12 @@ namespace Mengine
         }
 
 #ifdef MENGINE_DEBUG
-        size_t old_size = _msize( _mem );
+        size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
         MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
 #endif
 
-        ::free( _mem );
+        MENGINE_FREE( _mem );
 
 #ifdef MENGINE_DEBUG
         this->report( 0, old_size );
@@ -86,7 +86,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        void * mem = ::calloc( _num, _size );
+        void * mem = MENGINE_CALLOC( _num, _size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid calloc memory '%zu' total '%u' [%s]"
             , _num * _size
@@ -95,7 +95,7 @@ namespace Mengine
         );
 
 #ifdef MENGINE_DEBUG
-        size_t usage_size = _msize( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
@@ -111,7 +111,7 @@ namespace Mengine
 
         if( _mem == nullptr )
         {
-            void * mem = ::malloc( _size );
+            void * mem = MENGINE_MALLOC( _size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from [nullptr] [%s]"
                 , _size
@@ -120,7 +120,7 @@ namespace Mengine
             );
 
 #ifdef MENGINE_DEBUG
-            size_t usage_size = _msize( mem );
+            size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
             MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
@@ -131,12 +131,12 @@ namespace Mengine
         }
 
 #ifdef MENGINE_DEBUG
-        size_t old_size = _msize( _mem );
+        size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
         MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
 #endif
 
-        void * mem = ::realloc( _mem, _size );
+        void * mem = MENGINE_REALLOC( _mem, _size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from [%p] [%s]"
             , _size
@@ -146,7 +146,7 @@ namespace Mengine
         );
 
 #ifdef MENGINE_DEBUG
-        size_t usage_size = _msize( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 

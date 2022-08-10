@@ -3,3 +3,33 @@
 #include "Config/Config.h"
 
 #include <cstdlib>
+
+#ifdef MENGINE_PLATFORM_APPLE
+#   include <malloc/malloc.h>
+#endif
+
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_MALLOC
+#define MENGINE_MALLOC(s) ::malloc((s))
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_FREE
+#define MENGINE_FREE(p) ::free((p))
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_CALLOC
+#define MENGINE_CALLOC(c, s) ::calloc((c), (s))
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_REALLOC
+#define MENGINE_REALLOC(p, s) ::realloc((p), (s))
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_MALLOC_SIZE
+#   ifdef MENGINE_PLATFORM_WINDOWS
+#       define MENGINE_MALLOC_SIZE(p) ::_msize((p))
+#   else MENGINE_PLATFORM_APPLE
+#       define MENGINE_MALLOC_SIZE(p) ::_msize((p))
+#   endif
+#endif
+//////////////////////////////////////////////////////////////////////////

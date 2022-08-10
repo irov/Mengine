@@ -37,29 +37,45 @@ namespace Mengine
             zs.avail_in = (uInt)_sourceLen;
             
             /* Check for source > 64K on 16-bit machine: */
-            if( (uLong)zs.avail_in != _sourceLen ) return Z_BUF_ERROR;
+            if( (uLong)zs.avail_in != _sourceLen )
+            {
+                return Z_BUF_ERROR;
+            }
 
             zs.next_out = _dest;
             zs.avail_out = (uInt)*_destLen;
-            if( (uLong)zs.avail_out != *_destLen ) return Z_BUF_ERROR;
+
+            if( (uLong)zs.avail_out != *_destLen )
+            {
+                return Z_BUF_ERROR;
+            }
 
             zs.zalloc = (alloc_func)Detail::zip_alloc_func;
             zs.zfree = (free_func)Detail::zip_free_func;
 
-            int32_t err = inflateInit( &zs );
-            if( err != Z_OK ) return err;
+            int32_t err = ::inflateInit( &zs );
 
-            err = inflate( &zs, Z_FINISH );
+            if( err != Z_OK )
+            {
+                return err;
+            }
+
+            err = ::inflate( &zs, Z_FINISH );
+
             if( err != Z_STREAM_END )
             {
-                inflateEnd( &zs );
+                ::inflateEnd( &zs );
+
                 if( err == Z_NEED_DICT || (err == Z_BUF_ERROR && zs.avail_in == 0) )
+                {
                     return Z_DATA_ERROR;
+                }
+
                 return err;
             }
             *_destLen = zs.total_out;
 
-            err = inflateEnd( &zs );
+            err = ::inflateEnd( &zs );
 
             return err;
         }

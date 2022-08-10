@@ -3,6 +3,7 @@
 #include "Interface/RenderTextureInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine

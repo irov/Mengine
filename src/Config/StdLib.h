@@ -26,10 +26,10 @@
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_MALLOC_SIZE
-#   ifdef MENGINE_PLATFORM_WINDOWS
+#   if defined(MENGINE_PLATFORM_WINDOWS)
 #       define MENGINE_MALLOC_SIZE(p) ::_msize((p))
-#   else MENGINE_PLATFORM_APPLE
-#       define MENGINE_MALLOC_SIZE(p) ::_msize((p))
+#   elif defined(MENGINE_PLATFORM_APPLE)
+#       define MENGINE_MALLOC_SIZE(p) ::malloc_size((p))
 #   endif
 #endif
 //////////////////////////////////////////////////////////////////////////

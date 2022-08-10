@@ -532,30 +532,30 @@ namespace Mengine
     void GameService::oniOSApplicationDidBecomeActive_()
     {
         EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE )
-            ->onGameTimeFactor();
+            ->onGameiOSApplicationDidBecomeActive();
     }
     void GameService::oniOSApplicationWillEnterForeground_()
     {
         EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND )
-            ->onGameTimeFactor();
+            ->onGameiOSApplicationWillEnterForeground();
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::oniOSApplicationDidEnterBackground_()
     {
         EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD )
-            ->onGameTimeFactor();
+            ->onGameiOSApplicationDidEnterBackground();
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::oniOSApplicationWillResignActive_()
     {
         EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE )
-            ->onGameTimeFactor();
+            ->onGameiOSApplicationWillResignActive();
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::oniOSApplicationWillTerminate_()
     {
         EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE )
-            ->onGameTimeFactor();
+            ->onGameiOSApplicationWillTerminate();
     }
     //////////////////////////////////////////////////////////////////////////
 #endif

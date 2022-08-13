@@ -3795,6 +3795,7 @@ namespace Mengine
             .def( "MC_LBUTTON", MC_LBUTTON )
             .def( "MC_RBUTTON", MC_RBUTTON )
             .def( "MC_MBUTTON", MC_MBUTTON )
+            .def( "MC_XBUTTON", MC_XBUTTON )
             ;
 
         pybind::enum_<ETouchCode>( _kernel, "TouchCode" )

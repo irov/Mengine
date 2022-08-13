@@ -1367,6 +1367,16 @@ namespace Mengine
 
         switch( uMsg )
         {
+        case WM_SHOWWINDOW:
+            {
+                LOGGER_INFO( "platform", "HWND [%p] WM_SHOWWINDOW wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam 
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+            }break;
         case WM_ACTIVATE:
             {
                 DWORD flagActive = LOWORD( wParam );
@@ -1418,6 +1428,16 @@ namespace Mengine
         case WM_KILLFOCUS:
             {
                 LOGGER_INFO( "platform", "HWND [%p] WM_KILLFOCUS wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+            }break;
+        case WM_ENTERIDLE:
+            {
+                LOGGER_INFO( "platform", "HWND [%p] WM_ENTERIDLE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1699,6 +1719,12 @@ namespace Mengine
             }break;
         default:
             {
+                LRESULT input_result;
+                if( this->wndProcInput( hWnd, uMsg, wParam, lParam, &input_result ) == true )
+                {
+                    return input_result;
+                }
+
                 LOGGER_INFO( "platform", "HWND [%p] UNKNOWN [%u] hex |0x%04X| wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , uMsg
@@ -1707,12 +1733,6 @@ namespace Mengine
                     , lParam
                     , ::IsWindowVisible( hWnd )
                 );
-
-                LRESULT input_result;
-                if( this->wndProcInput( hWnd, uMsg, wParam, lParam, &input_result ) == true )
-                {
-                    return input_result;
-                }
             }break;
         }
 
@@ -2052,6 +2072,20 @@ namespace Mengine
                 handle = true;
                 *_result = 0;
             }break;
+        case WM_XBUTTONDBLCLK:
+            {
+                LOGGER_INFO( "platform", "HWND [%p] WM_XBUTTONDBLCLK wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+                m_isDoubleClick[MC_XBUTTON] = true;
+
+                handle = true;
+                *_result = 0;
+            }break;
         case WM_LBUTTONDOWN:
             {
                 LOGGER_INFO( "platform", "HWND [%p] WM_LBUTTONDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
@@ -2208,6 +2242,59 @@ namespace Mengine
                 }
 
                 m_isDoubleClick[MC_MBUTTON] = false;
+
+                handle = true;
+                *_result = 0;
+            }break;
+        case WM_XBUTTONDOWN:
+            {
+                LOGGER_INFO( "platform", "HWND [%p] WM_XBUTTONDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+                POINT p;
+                p.x = GET_X_LPARAM( lParam );
+                p.y = GET_Y_LPARAM( lParam );
+
+                mt::vec2f point;
+                if( this->getCursorPosition_( p, &point ) == false )
+                {
+                    return false;
+                }
+
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_XBUTTON, 0.f, true );
+
+                handle = true;
+                *_result = 0;
+            }break;
+        case WM_XBUTTONUP:
+            {
+                LOGGER_INFO( "platform", "HWND [%p] WM_XBUTTONUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+                if( m_isDoubleClick[MC_XBUTTON] == false )
+                {
+                    POINT p;
+                    p.x = GET_X_LPARAM( lParam );
+                    p.y = GET_Y_LPARAM( lParam );
+
+                    mt::vec2f point;
+                    if( this->getCursorPosition_( p, &point ) == false )
+                    {
+                        return false;
+                    }
+
+                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_XBUTTON, 0.f, false );
+                }
+
+                m_isDoubleClick[MC_XBUTTON] = false;
 
                 handle = true;
                 *_result = 0;

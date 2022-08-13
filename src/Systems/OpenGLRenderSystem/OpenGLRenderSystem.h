@@ -111,8 +111,6 @@ namespace Mengine
 
         void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 
-        bool supportTextureFormat( EPixelFormat _format ) const override;
-        bool supportTextureNonPow2() const override;
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
         void onWindowMovedOrResized() override;

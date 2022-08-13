@@ -206,9 +206,9 @@ namespace Mengine
             return false;
         }
 
-        FARPROC procInitializeMengine = ::GetProcAddress( hInstance, "initializeMengine" );
+        FARPROC dllInitializeMengine = ::GetProcAddress( hInstance, "initializeMengine" );
 
-        if( procInitializeMengine == nullptr )
+        if( dllInitializeMengine == nullptr )
         {
             DWORD error_code = ::GetLastError();
 
@@ -228,9 +228,9 @@ namespace Mengine
             return false;
         }
 
-        FMengineInitialize dlmengineInitialize = (FMengineInitialize)procInitializeMengine;
+        FMengineInitialize dlMengineInitialize = (FMengineInitialize)dllInitializeMengine;
 
-        ServiceProviderInterface * serviceProvider = (*dlmengineInitialize)();
+        ServiceProviderInterface * serviceProvider = (*dlMengineInitialize)();
 
         if( serviceProvider == nullptr )
         {
@@ -270,16 +270,16 @@ namespace Mengine
         } );
 
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
-        FARPROC procBootstrapMengine = ::GetProcAddress( hInstance, "bootstrapMengine" );
+        FARPROC dllBootstrapMengine = ::GetProcAddress( hInstance, "bootstrapMengine" );
 
-        if( procBootstrapMengine == nullptr )
+        if( dllBootstrapMengine == nullptr )
         {
             ::FreeLibrary( hInstance );
 
             return false;
         }
 
-        FMengineBootstrap dlmengineBootstrap = (FMengineBootstrap)procBootstrapMengine;
+        FMengineBootstrap dlmengineBootstrap = (FMengineBootstrap)dllBootstrapMengine;
 
         if( (*dlmengineBootstrap)() == false )
         {
@@ -380,7 +380,7 @@ namespace Mengine
     void Win32Application::loop()
     {
         PLATFORM_SERVICE()
-            ->updatePlatform();
+            ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalize()
@@ -398,14 +398,14 @@ namespace Mengine
         }
 
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
-        FARPROC procFinalizeMengine = ::GetProcAddress( m_hInstance, "finalizeMengine" );
+        FARPROC dllFinalizeMengine = ::GetProcAddress( m_hInstance, "finalizeMengine" );
 
-        if( procFinalizeMengine == nullptr )
+        if( dllFinalizeMengine == nullptr )
         {
             return;
         }
 
-        FMengineFinalize dlmengineFinalize = (FMengineFinalize)procFinalizeMengine;
+        FMengineFinalize dlmengineFinalize = (FMengineFinalize)dllFinalizeMengine;
 
         (*dlmengineFinalize)();
 

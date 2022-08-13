@@ -50,7 +50,7 @@ namespace Mengine
         void visitGroupResources( const ConstString & _groupName, const VisitorPtr & _visitor ) const override;
 
     protected:
-        void notifyEngineFinalize();
+        void notifyEngineFinalize_();
 
     protected:
         ThreadMutexInterfacePtr m_mutex;

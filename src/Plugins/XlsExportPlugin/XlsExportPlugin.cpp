@@ -6,7 +6,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
-#define MENGINE_WINDOWS_VERSION_WIN8
+#define MENGINE_WINDOWS_MIN_VERSION_WIN8
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/ConfigHelper.h"

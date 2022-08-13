@@ -735,10 +735,6 @@ namespace Mengine
                         return false;
                     }
 
-                    LOGGER_INFO( "scene", "set current scene '%s'"
-                        , _name.c_str()
-                    );
-
                     py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
                     py_cb->initialize( _cb, _args );
                 }
@@ -796,10 +792,6 @@ namespace Mengine
                         return false;
                     }
 
-                    LOGGER_INFO( "scene", "set current scene '%s'"
-                        , _name.c_str()
-                    );
-
                     py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
                     py_cb->initialize( _cb, _args );
                 }
@@ -846,8 +838,6 @@ namespace Mengine
 
                         return false;
                     }
-
-                    LOGGER_INFO( "scene", "restart current scene" );
 
                     py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
                     py_cb->initialize( _cb, _args );

@@ -60,7 +60,7 @@ namespace Mengine
 
         m_globalBank = globalBank;
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_FINALIZE, &ResourceService::notifyEngineFinalize, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_FINALIZE, &ResourceService::notifyEngineFinalize_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -85,7 +85,7 @@ namespace Mengine
         m_globalBank->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceService::notifyEngineFinalize()
+    void ResourceService::notifyEngineFinalize_()
     {
         m_globalBank->finalizeKeepResource();
     }

@@ -51,7 +51,8 @@ namespace Mengine
 
     public:
         bool runPlatform() override;
-        void updatePlatform() override;
+        void loopPlatform() override;
+        bool updatePlatform() override;
         bool tickPlatform( float _frameTime ) override;
         void stopPlatform() override;
 
@@ -303,6 +304,7 @@ namespace Mengine
         bool m_close;
 
         bool m_sleepMode;
+        bool m_windowExposed;
 
         float m_pauseUpdatingTime;
 
@@ -328,6 +330,10 @@ namespace Mengine
         bool m_isDoubleClick[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
         bool m_touchpad;
         bool m_desktop;
+
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+        bool m_sessionNotification;
         bool m_sessionLock;
+#endif;
     };
 }

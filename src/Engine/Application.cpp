@@ -802,7 +802,6 @@ namespace Mengine
             , m_renderViewport.getHeight()
         );
 
-
         bool result = RENDER_SERVICE()
             ->createRenderWindow( m_currentResolution
                 , m_contentResolution

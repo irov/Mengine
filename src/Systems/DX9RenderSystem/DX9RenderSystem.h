@@ -116,9 +116,6 @@ namespace Mengine
 
         void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 
-        bool supportTextureFormat( EPixelFormat _format ) const override;
-        bool supportTextureNonPow2() const override;
-
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
         void onWindowChangeFullscreenPrepare( bool _fullscreen ) override;
@@ -135,6 +132,10 @@ namespace Mengine
 
     public:
         IDirect3DDevice9 * getDirect3DDevice9() const override;
+
+    protected:
+        bool supportTextureFormat( EPixelFormat _format ) const;
+        bool supportTextureNonPow2( const D3DCAPS9 & _d3dCaps ) const;
 
     protected:
         void updateVSyncDPP_();
@@ -193,7 +194,7 @@ namespace Mengine
 
     protected:
         D3DMULTISAMPLE_TYPE findMatchingMultiSampleType_( uint32_t _MultiSampleCount );
-        D3DFORMAT findMatchingZFormat_( D3DFORMAT _backBufferFormat );
+        D3DFORMAT findMatchingZFormat_( const D3DCAPS9 & _d3dCaps, D3DFORMAT _backBufferFormat );
 
     protected:
         UINT m_adapterToUse;

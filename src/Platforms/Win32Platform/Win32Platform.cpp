@@ -112,6 +112,7 @@ namespace Mengine
         , m_hIcon( NULL )
         , m_close( false )
         , m_sleepMode( true )
+        , m_windowExposed( false )
         , m_pauseUpdatingTime( -1.f )
         , m_prevTime( 0 )
         , m_cursorInArea( false )
@@ -123,7 +124,10 @@ namespace Mengine
         , m_touchpad( false )
         , m_desktop( false )
         , m_fullscreen( false )
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+        , m_sessionNotification( false )
         , m_sessionLock( false )
+#endif
     {
         Algorithm::fill_n( m_clickOutArea, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
         Algorithm::fill_n( m_isDoubleClick, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
@@ -341,7 +345,7 @@ namespace Mengine
         } );
 #endif
 
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         if( HAS_OPTION( "workdir" ) == true )
         {
             Char currentPath[MENGINE_MAX_PATH] = {'\0'};
@@ -450,6 +454,19 @@ namespace Mengine
 
         if( m_hWnd != NULL )
         {
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+            if( m_sessionNotification == true )
+            {
+                if( ::WTSUnRegisterSessionNotification( m_hWnd ) == FALSE )
+                {
+                    LOGGER_ERROR( "invalid hwnd [%p] unregister session notification %ls"
+                        , m_hWnd
+                        , Helper::Win32GetLastErrorMessage()
+                    );
+                }
+            }
+#endif    
+
             ::CloseWindow( m_hWnd );
             ::DestroyWindow( m_hWnd );
 
@@ -889,12 +906,14 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
 
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         if( m_sessionLock == true )
         {
-            ::Sleep( 100 );
+            ::Sleep( 200 );
 
             return true;
         }
+#endif
 
         for( const UpdateDesc & desc : m_updates )
         {
@@ -960,6 +979,8 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->flush();
             }
+
+            m_windowExposed = false;
         }
 
         APPLICATION_SERVICE()
@@ -995,7 +1016,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::updatePlatform()
+    void Win32Platform::loopPlatform()
     {
         if( m_close == true )
         {
@@ -1019,6 +1040,18 @@ namespace Mengine
                 break;
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::updatePlatform()
+    {
+        this->updateWndMessage_();
+
+        if( m_close == true )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::stopPlatform()
@@ -1401,8 +1434,22 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
+                RECT rect;
+                if( ::GetUpdateRect( hWnd, &rect, FALSE ) )
+                {
+                    ::ValidateRect( hWnd, NULL );
+
+                    m_windowExposed = true;
+                }
+
             }break;
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA
+        case WM_ERASEBKGND:
+            {
+                //We'll do our own drawing, prevent flicker
+
+                return 1;
+            }break;
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         case WM_WTSSESSION_CHANGE:
             {
                 LOGGER_INFO( "platform", "HWND [%p] WM_WTSSESSION_CHANGE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
@@ -1652,8 +1699,9 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_INFO( "platform", "HWND [%p] message [%u] wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                LOGGER_INFO( "platform", "HWND [%p] UNKNOWN [%u] hex |0x%04X| wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
+                    , uMsg
                     , uMsg
                     , wParam
                     , lParam
@@ -2388,6 +2436,8 @@ namespace Mengine
             return false;
         }
 
+        this->updateWndMessage_();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2411,13 +2461,19 @@ namespace Mengine
             ::ShowWindow( m_hWnd, SW_SHOW );
         }
 
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         if( ::WTSRegisterSessionNotification( m_hWnd, NOTIFY_FOR_ALL_SESSIONS ) == FALSE )
         {
             LOGGER_ERROR( "invalid hwnd [%p] register session notification %ls"
                 , m_hWnd
                 , Helper::Win32GetLastErrorMessage()
             );
+
+            m_sessionNotification = false;
+        }
+        else
+        {
+            m_sessionNotification = true;
         }
 #endif
 
@@ -3657,7 +3713,7 @@ namespace Mengine
             if( hPsapi == NULL )
             {
                 LOGGER_ERROR( "invalid open psapi.dll get error %ls"
-                    , Helper::Win32GetLastErrorMessage() 
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return FALSE;
@@ -3671,7 +3727,7 @@ namespace Mengine
             if( (pEnumProcessModules == NULL) || (pGetModuleFileNameExA == NULL) || (pGetModuleBaseNameA == NULL) || (pGetModuleInformation == NULL) )
             {
                 LOGGER_ERROR( "invalid load function psapi.dll get error %ls"
-                    , Helper::Win32GetLastErrorMessage() 
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 ::FreeLibrary( hPsapi );
@@ -3709,7 +3765,7 @@ namespace Mengine
                 if( (*pGetModuleInformation)(hProcess, hMods[i], &mi, sizeof mi) == FALSE )
                 {
                     LOGGER_ERROR( "invalid get module information psapi.dll get error %ls"
-                        , Helper::Win32GetLastErrorMessage() 
+                        , Helper::Win32GetLastErrorMessage()
                     );
 
                     ::FreeLibrary( hPsapi );
@@ -4076,7 +4132,7 @@ namespace Mengine
         if( hDbhHelp == NULL )
         {
             LOGGER_ERROR( "invalid load 'dbghelp.dll' get error %ls"
-                , Helper::Win32GetLastErrorMessage() 
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -4101,7 +4157,7 @@ namespace Mengine
             ::FreeLibrary( hDbhHelp );
 
             LOGGER_ERROR( "invalid load Kernel32.dll get error %ls"
-                , Helper::Win32GetLastErrorMessage() 
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -4110,7 +4166,7 @@ namespace Mengine
         if( (*pSymInitialize)(hProcess, NULL, FALSE) == FALSE )
         {
             LOGGER_ERROR( "invalid SymInitialize get error %ls"
-                , Helper::Win32GetLastErrorMessage() 
+                , Helper::Win32GetLastErrorMessage()
             );
 
             ::FreeLibrary( hDbhHelp );
@@ -4177,6 +4233,11 @@ namespace Mengine
         if( ::IsIconic( m_hWnd ) == TRUE )
         {
             return false;
+        }
+
+        if( m_windowExposed == true )
+        {
+            return true;
         }
 
         bool nopause = APPLICATION_SERVICE()
@@ -4617,7 +4678,7 @@ namespace Mengine
         if( result == FALSE )
         {
             LOGGER_ERROR( "SHGetPathFromIDListW invalid get error %ls"
-                , Helper::Win32GetLastErrorMessage() 
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return 0;

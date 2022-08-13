@@ -338,18 +338,6 @@ namespace Mengine
         return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderSystem::supportTextureFormat( EPixelFormat _format ) const
-    {
-        MENGINE_UNUSED( _format );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderSystem::supportTextureNonPow2() const
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderSystem::getMaxCombinedTextureImageUnits() const
     {
         return m_dxMaxCombinedTextureImageUnits;

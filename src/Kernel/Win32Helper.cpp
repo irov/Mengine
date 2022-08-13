@@ -99,7 +99,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
             static MENGINE_THREAD_LOCAL WChar errorMessageBuffer[2048] = {L'\0'};
 
-            if( ::FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS
+            if( ::FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS
                 , NULL
                 , (DWORD)_messageId
                 , MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US )

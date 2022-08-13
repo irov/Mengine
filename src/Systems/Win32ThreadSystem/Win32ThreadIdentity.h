@@ -61,7 +61,7 @@ namespace Mengine
         CRITICAL_SECTION m_processLock;
         CRITICAL_SECTION m_taskLock;
 
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         CRITICAL_SECTION m_conditionLock;
         CONDITION_VARIABLE m_conditionVariable;
 #endif

@@ -963,16 +963,6 @@ namespace Mengine
         m_viewport = Viewport( 0.f, 0.f, 0.f, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::supportTextureFormat( EPixelFormat _format ) const
-    {
-        return Helper::toGLInternalFormat( _format ) != 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::supportTextureNonPow2() const
-    {
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderSystem::getMaxCombinedTextureImageUnits() const
     {
         return m_glMaxCombinedTextureImageUnits;

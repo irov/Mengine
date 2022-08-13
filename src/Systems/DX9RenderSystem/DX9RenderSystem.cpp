@@ -203,30 +203,6 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdID.SubSysId );
         LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdID.Revision );
 
-        for( ;; )
-        {
-            HRESULT hresult = m_pD3D->GetDeviceCaps( m_adapterToUse, m_deviceType, &m_d3dCaps );
-
-            if( hresult == D3DERR_NOTAVAILABLE )
-            {
-                ::Sleep( 200 );
-
-                continue;
-            }
-
-            IF_DXERRORCHECK( CheckDeviceFormat, hresult )
-            {
-                return false;
-            }
-
-            break;
-        }
-
-        m_supportA8 = this->supportTextureFormat( PF_A8 );
-        m_supportL8 = this->supportTextureFormat( PF_L8 );
-        m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
-        m_supportNonPow2 = this->supportTextureNonPow2();
-
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
 
         m_factoryRenderVertexAttribute = Helper::makeFactoryPoolWithListener<DX9RenderVertexAttribute, 8>( this, &DX9RenderSystem::onDestroyDX9VertexAttribute_, MENGINE_DOCUMENT_FACTORABLE );
@@ -320,7 +296,7 @@ namespace Mengine
         return MultiSampleType;
     }
     //////////////////////////////////////////////////////////////////////////
-    D3DFORMAT DX9RenderSystem::findMatchingZFormat_( D3DFORMAT _backBufferFormat )
+    D3DFORMAT DX9RenderSystem::findMatchingZFormat_( const D3DCAPS9 & _d3dCaps, D3DFORMAT _backBufferFormat )
     {
         const D3DFORMAT DepthFormats[] = {D3DFMT_D32
             , D3DFMT_D24S8
@@ -335,9 +311,9 @@ namespace Mengine
 
         while( *pFormatList )
         {
-            if( SUCCEEDED( m_pD3D->CheckDeviceFormat( m_d3dCaps.AdapterOrdinal, m_d3dCaps.DeviceType, _backBufferFormat, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList ) ) )
+            if( SUCCEEDED( m_pD3D->CheckDeviceFormat( _d3dCaps.AdapterOrdinal, _d3dCaps.DeviceType, _backBufferFormat, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList ) ) )
             {
-                if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_d3dCaps.AdapterOrdinal, m_d3dCaps.DeviceType, _backBufferFormat, _backBufferFormat, *pFormatList ) ) )
+                if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( _d3dCaps.AdapterOrdinal, _d3dCaps.DeviceType, _backBufferFormat, _backBufferFormat, *pFormatList ) ) )
                 {
                     break;
                 }
@@ -360,6 +336,12 @@ namespace Mengine
         m_fullscreen = _windowDesc->fullscreen;
         m_depth = _windowDesc->depth;
         m_waitForVSync = _windowDesc->waitForVSync;
+        
+        D3DCAPS9 d3dCaps;
+        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &d3dCaps) )
+        {
+            return false;
+        }
 
         D3DMULTISAMPLE_TYPE multiSampleType = this->findMatchingMultiSampleType_( _windowDesc->MultiSampleCount );
 
@@ -385,7 +367,7 @@ namespace Mengine
 
         if( m_depth == true )
         {
-            D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( m_d3dppW.BackBufferFormat );
+            D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( d3dCaps, m_d3dppW.BackBufferFormat );
 
             m_d3dppW.EnableAutoDepthStencil = TRUE;
             m_d3dppW.AutoDepthStencilFormat = AutoDepthStencilFormat;
@@ -414,7 +396,7 @@ namespace Mengine
 
         if( m_depth == true )
         {
-            D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( m_d3dppFS.BackBufferFormat );
+            D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( d3dCaps, m_d3dppFS.BackBufferFormat );
 
             m_d3dppFS.EnableAutoDepthStencil = TRUE;
             m_d3dppFS.AutoDepthStencilFormat = AutoDepthStencilFormat;
@@ -438,19 +420,19 @@ namespace Mengine
         // Create D3D Device
 
         LOGGER_MESSAGE_RELEASE( "Vertex Shader Version [%lu] [%s]"
-            , m_d3dCaps.VertexShaderVersion
-            , m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
+            , d3dCaps.VertexShaderVersion
+            , d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
         );
 
         LOGGER_MESSAGE_RELEASE( "Pixel Shader Version [%lu] [%s] [%s]"
-            , m_d3dCaps.PixelShaderVersion
-            , m_d3dCaps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
-            , m_d3dCaps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
+            , d3dCaps.PixelShaderVersion
+            , d3dCaps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
+            , d3dCaps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
         );
 
         HRESULT hr;
 
-        if( (m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 || m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
+        if( (d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 || d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
         {
             LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE" );
 
@@ -462,7 +444,7 @@ namespace Mengine
         {
             DWORD device_flags = D3DCREATE_FPU_PRESERVE;
 
-            if( m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT )
+            if( d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT )
             {
                 device_flags |= D3DCREATE_HARDWARE_VERTEXPROCESSING;
             }
@@ -608,6 +590,11 @@ namespace Mengine
         }
 
         m_deferredCompilePrograms.clear();
+
+        m_supportA8 = this->supportTextureFormat( PF_A8 );
+        m_supportL8 = this->supportTextureFormat( PF_L8 );
+        m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
+        m_supportNonPow2 = this->supportTextureNonPow2( m_d3dCaps );
 
         LOGGER_MESSAGE( "DirectX9 create render window successfully!" );
 
@@ -1172,9 +1159,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::supportTextureNonPow2() const
+    bool DX9RenderSystem::supportTextureNonPow2( const D3DCAPS9 & _d3dCaps ) const
     {
-        if( (m_d3dCaps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
+        if( (_d3dCaps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
         {
             return false;
         }

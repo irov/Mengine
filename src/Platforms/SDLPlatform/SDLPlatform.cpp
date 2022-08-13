@@ -1377,7 +1377,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::updatePlatform()
+    void SDLPlatform::loopPlatform()
     {
         this->setActive_( true );
 
@@ -1396,6 +1396,18 @@ namespace Mengine
                 break;
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::updatePlatform()
+    {
+        bool quitRequest = this->processEvents_();
+
+        if( quitRequest == true )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::openUrlInDefaultBrowser( const Char * _url )

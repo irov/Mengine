@@ -15,7 +15,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && (MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA)
+#if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         //////////////////////////////////////////////////////////////////////////
         const DWORD MS_VC_EXCEPTION = 0x406D1388;
 #pragma pack(push,8)  
@@ -103,7 +103,7 @@ namespace Mengine
         ::InitializeCriticalSection( &m_taskLock );
         ::InitializeCriticalSection( &m_processLock );
 
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         ::InitializeCriticalSection( &m_conditionLock );
         ::InitializeConditionVariable( &m_conditionVariable );
 #endif
@@ -121,7 +121,7 @@ namespace Mengine
 
         m_thread = thread;
 
-#if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && (MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_VISTA)
+#if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( ::IsDebuggerPresent() == TRUE )
         {
             DWORD threadId = ::GetThreadId( m_thread );
@@ -174,7 +174,7 @@ namespace Mengine
         ::DeleteCriticalSection( &m_taskLock );
         ::DeleteCriticalSection( &m_processLock );
 
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         ::DeleteCriticalSection( &m_conditionLock );
 #endif
 
@@ -198,12 +198,12 @@ namespace Mengine
 
         while( m_exit == false )
         {
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
             ::EnterCriticalSection( &m_conditionLock );
             ::SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
             ::LeaveCriticalSection( &m_conditionLock );
 #endif
-
+            //cppcheck-suppress oppositeInnerCondition
             if( m_exit == true )
             {
                 break;
@@ -230,12 +230,13 @@ namespace Mengine
 
             ::LeaveCriticalSection( &m_processLock );
 
+            //cppcheck-suppress oppositeInnerCondition
             if( m_exit == true )
             {
                 break;
             }
 
-#if MENGINE_WINDOWS_VERSION < _WIN32_WINNT_LONGHORN
+#ifndef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
             ::Sleep( 10 );
 #endif
         }
@@ -278,7 +279,7 @@ namespace Mengine
                 LOGGER_ERROR( "invalid run" );
             }
 
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
             ::WakeConditionVariable( &m_conditionVariable );
 #endif
 
@@ -318,7 +319,7 @@ namespace Mengine
 
         m_exit = true;
 
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         ::WakeConditionVariable( &m_conditionVariable );
 #endif
 

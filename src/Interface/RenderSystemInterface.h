@@ -158,8 +158,6 @@ namespace Mengine
         virtual void setVSync( bool _vSync ) = 0;
 
     public:
-        virtual bool supportTextureFormat( EPixelFormat _format ) const = 0;
-        virtual bool supportTextureNonPow2() const = 0;
         virtual uint32_t getMaxCombinedTextureImageUnits() const = 0;
 
     public:

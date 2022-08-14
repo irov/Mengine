@@ -77,7 +77,7 @@ namespace Mengine
             _jwidget.set( "data", jdata );
         }
 
-        return invalidate_property | invalidate_data;
+        return invalidate_property | invalidate_data | _force;
     }
     //////////////////////////////////////////////////////////////////////////
 }

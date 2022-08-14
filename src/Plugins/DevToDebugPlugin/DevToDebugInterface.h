@@ -166,8 +166,10 @@ namespace Mengine
         virtual void addWidget( const DevToDebugWidgetInterfacePtr & _widget ) = 0;
         virtual const DevToDebugWidgetInterfacePtr & findWidget( const ConstString & _id ) const = 0;
 
+        virtual void syncWidgets() = 0;
+
         typedef Lambda<void( const DevToDebugWidgetInterfacePtr & )> LambdaForeachWidgets;
-        virtual void foreachWidgets( const LambdaForeachWidgets & _lambda ) = 0;
+        virtual void foreachWidgets( const LambdaForeachWidgets & _lambda, bool * const _invalidate ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugTabInterface> DevToDebugTabInterfacePtr;

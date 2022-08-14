@@ -9,6 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DevToDebugTab::DevToDebugTab()
+        : m_invalidateWidgets( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -36,6 +37,8 @@ namespace Mengine
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_widgets.emplace_back( _widget );
+
+        m_invalidateWidgets = true;
     }
     //////////////////////////////////////////////////////////////////////////
     const DevToDebugWidgetInterfacePtr & DevToDebugTab::findWidget( const ConstString & _id ) const
@@ -57,7 +60,17 @@ namespace Mengine
         return DevToDebugWidgetInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugTab::foreachWidgets( const LambdaForeachWidgets & _lambda )
+    void DevToDebugTab::syncWidgets()
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        for( const DevToDebugWidgetInterfacePtr & widget : m_widgets )
+        {
+            widget->syncProperties();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugTab::foreachWidgets( const LambdaForeachWidgets & _lambda, bool * const _invalidate )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -65,6 +78,10 @@ namespace Mengine
         {
             _lambda( widget );
         }
+
+        *_invalidate = m_invalidateWidgets;
+
+        m_invalidateWidgets = false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

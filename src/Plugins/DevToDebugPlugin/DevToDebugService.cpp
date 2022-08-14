@@ -44,6 +44,7 @@ namespace Mengine
         : m_status( EDTDS_NONE )
         , m_revision( 0 )
         , m_timerId( INVALID_UNIQUE_ID )
+        , m_invalidateTabs( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -240,6 +241,8 @@ namespace Mengine
     {
         m_mutexTabs->lock();
         m_tabsProcess.emplace( _name, _tab );
+
+        m_invalidateTabs = true;
         m_mutexTabs->unlock();
 
         m_tabsSync.emplace( _name, _tab );
@@ -263,8 +266,11 @@ namespace Mengine
     {
         m_mutexTabs->lock();
         DevToDebugTabInterfacePtr tab = m_tabsProcess.erase( _name );
-        tab->finalize();
+
+        m_invalidateTabs = true;
         m_mutexTabs->unlock();
+
+        tab->finalize();
 
         m_tabsSync.erase( _name );
     }
@@ -275,10 +281,7 @@ namespace Mengine
         {
             const DevToDebugTabInterfacePtr & tab = value.element;
 
-            tab->foreachWidgets( []( const DevToDebugWidgetInterfacePtr & _widget )
-            {
-                _widget->syncProperties();
-            } );
+            tab->syncWidgets();
         }
 
         m_mutexCommands->lock();
@@ -305,10 +308,6 @@ namespace Mengine
                     , m_pid.c_str()
                 );
 
-                LOGGER_INFO( "devtodebug", "Connecting: %s"
-                    , connect_url
-                );
-
                 cURLHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
@@ -322,7 +321,8 @@ namespace Mengine
 
                 MENGINE_UNUSED( id );
 
-                LOGGER_INFO( "devtodebug", "Data: %s [id %u]"
+                LOGGER_INFO( "devtodebug", "Connecting: %s data: %s [id %u]"
+                    , connect_url
                     , data.c_str()
                     , id
                 );
@@ -342,8 +342,15 @@ namespace Mengine
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
-                CURL_SERVICE()
+                HttpRequestID id = CURL_SERVICE()
                     ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+
+                MENGINE_UNUSED( id );
+
+                LOGGER_INFO( "devtodebug", "Process: data %s [id %u]"
+                    , data.c_str()
+                    , id
+                );
             }break;
         default:
             break;
@@ -402,8 +409,9 @@ namespace Mengine
                     break;
                 }
 
-                LOGGER_INFO( "devtodebug", "Connect: %s"
+                LOGGER_INFO( "devtodebug", "Request Connect: %s [id %u]"
                     , m_uuid.c_str()
+                    , _response.id
                 );
 
                 m_status = EDTDS_CONNECT;
@@ -466,8 +474,9 @@ namespace Mengine
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
-                LOGGER_INFO( "devtodebug", "Activity: %s"
+                LOGGER_INFO( "devtodebug", "Request Process: %s [id %u]"
                     , data.c_str()
+                    , _response.id
                 );
 #endif
 
@@ -510,11 +519,13 @@ namespace Mengine
         m_revision = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    jpp::object DevToDebugService::makeJsonTabs( bool _force )
+    jpp::object DevToDebugService::makeJsonTabs( bool _force, bool * const _invalidateTabs )
     {
+        m_mutexTabs->lock();
+
         jpp::object jtabs = jpp::make_object();
 
-        m_mutexTabs->lock();
+        bool invalidateTabs = false;
 
         for( const HashtableDevToDebugTabs::value_type & value : m_tabsProcess )
         {
@@ -525,21 +536,32 @@ namespace Mengine
 
             jpp::array jwidgets = jpp::make_array();
 
+            bool invalidateWidgets;
             tab->foreachWidgets( [&jwidgets, _force]( const DevToDebugWidgetInterfacePtr & _widget )
             {
-                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );                
+                DevToDebugWidgetPtr widget = DevToDebugWidgetPtr::dynamic_from( _widget );
 
                 jpp::object jwidget = jpp::make_object();
 
-                widget->fillJson( jwidget, _force );
+                if( widget->fillJson( jwidget, _force ) == true )
+                {
+                    jwidgets.push_back( jwidget );
+                }
+            }, &invalidateWidgets );
 
-                jwidgets.push_back( jwidget );                
-            } );
+            invalidateTabs |= invalidateWidgets;
 
-            jtab.set( "widgets", jwidgets );
+            if( jwidgets.empty() == false )
+            {
+                jtab.set( "widgets", jwidgets );
 
-            jtabs.set( key, jtab );
+                jtabs.set( key, jtab );
+            }
         }
+
+        *_invalidateTabs = invalidateTabs | m_invalidateTabs;
+
+        m_invalidateTabs = false;
 
         m_mutexTabs->unlock();
 
@@ -569,11 +591,14 @@ namespace Mengine
 
         jpp::object jstate = jpp::make_object();
 
-        jpp::object jtabs = this->makeJsonTabs( true );
+        bool invalidateTabs;
+        jpp::object jtabs = this->makeJsonTabs( true, &invalidateTabs );
 
         jstate.set( "tabs", jtabs );
 
         j.set( "state", jstate );
+
+        m_invalidateTabs = false;
 
         return j;
     }
@@ -586,13 +611,21 @@ namespace Mengine
 
         jpp::object jstate = jpp::make_object();
 
-        jpp::object jtabs = this->makeJsonTabs( true );
+        bool invalidateTabs;
+        jpp::object jtabs = this->makeJsonTabs( false, &invalidateTabs );
 
         if( jtabs.empty() == false )
         {
             jstate.set( "tabs", jtabs );
 
-            j.set( "change_state", jstate );
+            if( m_invalidateTabs == true || invalidateTabs == true )
+            {
+                j.set( "new_state", jstate );
+            }
+            else
+            {
+                j.set( "change_state", jstate );
+            }
         }
 
 #ifdef MENGINE_LOGGER_DEBUG_ENABLE

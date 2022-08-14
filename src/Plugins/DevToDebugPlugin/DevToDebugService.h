@@ -53,7 +53,7 @@ namespace Mengine
         void notifyBootstrapperFinalizeGame_();
 
     protected:
-        jpp::object makeJsonTabs( bool _force );
+        jpp::object makeJsonTabs( bool _force, bool * const _invalidateTabs );
         jpp::object makeJsonConnectData();
         jpp::object makeJsonProcessData();
 
@@ -66,6 +66,8 @@ namespace Mengine
         HashtableDevToDebugTabs m_tabsSync;
 
         VectorDevToDebugWidgetCommands m_tabsCommands;
+
+        AtomicBool m_invalidateTabs;
 
         EDevToDebugStatus m_status;
 

@@ -35,10 +35,15 @@ namespace Mengine
         const DevToDebugWidgetInterfacePtr & findWidget( const ConstString & _id ) const override;
 
     public:
-        void foreachWidgets( const LambdaForeachWidgets & _lambda ) override;
+        void syncWidgets() override;
+
+    public:
+        void foreachWidgets( const LambdaForeachWidgets & _lambda, bool * const _invalidate ) override;
 
     protected:
         ThreadMutexInterfacePtr m_mutex;
+
+        mutable bool m_invalidateWidgets;
 
         typedef Vector<DevToDebugWidgetInterfacePtr> VectorDevToDebugWidgets;
         VectorDevToDebugWidgets m_widgets;

@@ -3,6 +3,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/UnknownAllocatorDebugReportInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
@@ -15,6 +16,8 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/StatisticHelper.h"
+
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {
@@ -92,11 +95,60 @@ namespace Mengine
         const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( "CURRENT_SCENE_NAME" );
 
         LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%ugb %umb %ukb] [scene %s]"
-            , (totalMemoryUsage / (1024 * 1024 * 1024))
-            , ((totalMemoryUsage / (1024 * 1024)) % 1024)
-            , (totalMemoryUsage / (1024) % 1024)
+            , (totalMemoryUsage / (1000 * 1000 * 1000))
+            , ((totalMemoryUsage / (1000 * 1000)) % 1000)
+            , ((totalMemoryUsage / 1000) % 1000)
             , currentSceneName.c_str()
         );
+
+        UnknownAllocatorDebugReportInterface * debugReport = ALLOCATOR_SYSTEM()
+            ->getUnknown();
+
+        if( debugReport != nullptr )
+        {
+            uint32_t allocatorReportCount = debugReport->getAllocatorReportCount();
+
+            struct MemoryUsageDesc
+            {
+                String name;
+                size_t count;
+            };
+
+            typedef Vector<MemoryUsageDesc> VectorMemoryUsages;
+            VectorMemoryUsages usages;
+
+            for( uint32_t index = 0; index != allocatorReportCount; ++index )
+            {
+                const Char * reportName;
+                size_t reportCount = debugReport->getAllocatorReportInfo( index, &reportName );
+
+                if( reportName[0] == '\0' )
+                {
+                    continue;
+                }
+
+                if( reportCount < 1024 * 1024 )
+                {
+                    continue;
+                }
+
+                usages.emplace_back( MemoryUsageDesc{reportName, reportCount} );
+            }
+
+            Algorithm::sort( usages.begin(), usages.end(), []( const MemoryUsageDesc & _l, const MemoryUsageDesc & _r )
+            {
+                return _l.count > _r.count;
+            } );
+
+            for( const MemoryUsageDesc & desc : usages )
+            {
+                LOGGER_MESSAGE_RELEASE( "  - %s [%zumb %zukb]"
+                    , desc.name.c_str()
+                    , (desc.count / (1000 * 1000))
+                    , ((desc.count / 1000) % 1000)
+                );
+            }
+        }
 
         return true;
     }

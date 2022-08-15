@@ -63,7 +63,7 @@ namespace Mengine
 
         DevToDebugPropertyInterfacePtr btn_change_title = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FACTORABLE );
-
+         
         UnknownDevToDebugPropertyConstStringInterfacePtr unknown_btn_change_title = btn_change_title->getUnknown();
         unknown_btn_change_title->setValue( "Change" );
 

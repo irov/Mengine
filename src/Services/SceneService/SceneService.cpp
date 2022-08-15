@@ -2,6 +2,7 @@
 
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Scene.h"
 #include "Kernel/DocumentHelper.h"
@@ -11,6 +12,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/VectorResources.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SceneService, Mengine::SceneService );
@@ -232,9 +234,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::restartCurrentScene_( const SceneCommandDesc & _desc )
     {
+        VectorResources cacheResources;
+
+        RESOURCE_SERVICE()
+            ->foreachResources( [this, &cacheResources]( const ResourcePtr & _resource )
+        {
+            if( _resource->isCompile() == false )
+            {
+                return;
+            }
+
+            cacheResources.emplace_back( _resource );
+        } );
+
+        for( const ResourcePtr & resource : cacheResources )
+        {
+            resource->compile();
+        }
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_DISABLE, m_currentScene );
 
-        m_currentScene->disable();
+        if( m_currentScene != nullptr )
+        {
+            m_currentScene->disable();
+        }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_DISABLE, m_currentScene );
 
@@ -252,16 +275,19 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, m_currentScene );
 
-        if( m_currentScene->enableForce() == false )
+        if( m_currentScene != nullptr )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ERROR, m_currentScene );
-
-            if( _desc.cb != nullptr )
+            if( m_currentScene->enableForce() == false )
             {
-                _desc.cb->onSceneChange( m_currentScene, false, false, true );
-            }
+                NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ERROR, m_currentScene );
 
-            return;
+                if( _desc.cb != nullptr )
+                {
+                    _desc.cb->onSceneChange( m_currentScene, false, false, true );
+                }
+
+                return;
+            }
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ENABLE, m_currentScene );
@@ -271,6 +297,11 @@ namespace Mengine
         if( _desc.cb != nullptr )
         {
             _desc.cb->onSceneChange( m_currentScene, true, false, false );
+        }
+
+        for( const ResourcePtr & resource : cacheResources )
+        {
+            resource->release();
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_COMPLETE, m_currentScene );

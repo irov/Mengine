@@ -47,6 +47,10 @@ namespace Mengine
         virtual uint32_t getCountMessage( ELoggerLevel _level ) = 0;
 
     public:
+        virtual void lockMessage() = 0;
+        virtual void unlockMessage() = 0;
+
+    public:
         virtual void writeHistory( const LoggerInterfacePtr & _logger ) const = 0;
 
     public:

@@ -3,6 +3,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 #include "Interface/UnknownAllocatorDebugReportInterface.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -89,6 +90,9 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
+        LOGGER_SERVICE()
+            ->lockMessage();
+
         uint32_t totalMemoryUsage = ALLOCATOR_SYSTEM()
             ->getMemoryUsage();
 
@@ -149,6 +153,9 @@ namespace Mengine
                 );
             }
         }
+
+        LOGGER_SERVICE()
+            ->unlockMessage();
 
         return true;
     }

@@ -2500,7 +2500,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
+        static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
         {
             {
                 WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
@@ -2615,7 +2615,7 @@ namespace Mengine
                     MENGINE_WCSCAT( nextPath, L"\\" );
 
                     bool stop;
-                    if( Detail::listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
+                    if( Detail::s_listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
                     {
                         ::FindClose( hFind );
 
@@ -2669,7 +2669,7 @@ namespace Mengine
         }
 
         bool stop;
-        if( Detail::listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda, &stop ) == false )
+        if( Detail::s_listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda, &stop ) == false )
         {
             return false;
         }
@@ -2686,69 +2686,65 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
-    static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
+    namespace Detail
     {
-        uint32_t a0;			/* 16 bit, low    bits */
-        uint32_t a1;			/* 16 bit, medium bits */
-        uint32_t a2;			/* 32 bit, high   bits */
-
-        uint32_t carry;		/* carry bit for subtraction */
-        int negative;		/* whether a represents a negative value */
-
-                            /* Copy the time values to a2/a1/a0 */
-        a2 = filetime->dwHighDateTime;
-        a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
-        a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
-
-        /* Subtract the time difference */
-        if( a0 >= 32768 )
-            a0 -= 32768, carry = 0;
-        else
-            a0 += (1 << 16) - 32768, carry = 1;
-
-        if( a1 >= 54590 + carry )
-            a1 -= 54590 + carry, carry = 0;
-        else
-            a1 += (1 << 16) - 54590 - carry, carry = 1;
-
-        a2 -= 27111902 + carry;
-
-        /* If a is negative, replace a by (-1-a) */
-        negative = (a2 >= ((uint32_t)1) << 31);
-        if( negative )
+        //////////////////////////////////////////////////////////////////////////
+        static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
         {
-            /* Set a to -a - 1 (a is a2/a1/a0) */
-            a0 = 0xffff - a0;
-            a1 = 0xffff - a1;
-            a2 = ~a2;
+            uint32_t a0;
+            uint32_t a1;
+            uint32_t a2;
+
+            uint32_t carry;
+            int negative;
+
+            a2 = filetime->dwHighDateTime;
+            a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
+            a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
+
+            if( a0 >= 32768 )
+                a0 -= 32768, carry = 0;
+            else
+                a0 += (1 << 16) - 32768, carry = 1;
+
+            if( a1 >= 54590 + carry )
+                a1 -= 54590 + carry, carry = 0;
+            else
+                a1 += (1 << 16) - 54590 - carry, carry = 1;
+
+            a2 -= 27111902 + carry;
+
+            negative = (a2 >= ((uint32_t)1) << 31);
+            if( negative )
+            {
+                a0 = 0xffff - a0;
+                a1 = 0xffff - a1;
+                a2 = ~a2;
+            }
+
+            a1 += (a2 % 10000) << 16;
+            a2 /= 10000;
+            a0 += (a1 % 10000) << 16;
+            a1 /= 10000;
+            a0 /= 10000;
+
+            a1 += (a2 % 1000) << 16;
+            a2 /= 1000;
+            a0 += (a1 % 1000) << 16;
+            a1 /= 1000;
+            a0 /= 1000;
+
+            if( negative )
+            {
+                /* Set a to -a - 1 (a is a2/a1/a0) */
+                a0 = 0xffff - a0;
+                a1 = 0xffff - a1;
+                a2 = ~a2;
+            }
+
+            return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
         }
-
-        /* Divide a by 10000000 (a = a2/a1/a0), put the rest into r.
-        Split the divisor into 10000 * 1000 which are both less than 0xffff. */
-        a1 += (a2 % 10000) << 16;
-        a2 /= 10000;
-        a0 += (a1 % 10000) << 16;
-        a1 /= 10000;
-        a0 /= 10000;
-
-        a1 += (a2 % 1000) << 16;
-        a2 /= 1000;
-        a0 += (a1 % 1000) << 16;
-        a1 /= 1000;
-        a0 /= 1000;
-
-        /* If a was negative, replace a by (-1-a) and r by (9999999 - r) */
-        if( negative )
-        {
-            /* Set a to -a - 1 (a is a2/a1/a0) */
-            a0 = 0xffff - a0;
-            a1 = 0xffff - a1;
-            a2 = ~a2;
-        }
-
-        /* Do not replace this by << 32, it gives a compiler warning and it does
-        not work. */
-        return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
+        //////////////////////////////////////////////////////////////////////////
     }
 #endif
     //////////////////////////////////////////////////////////////////////////
@@ -2779,7 +2775,7 @@ namespace Mengine
 
         ::CloseHandle( handle );
 
-        time_t time = s_FileTimeToUnixTime( &write );
+        time_t time = Detail::s_FileTimeToUnixTime( &write );
 
         return time;
 #else
@@ -3621,7 +3617,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace Helper
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_LOGGER_DEBUG_ENABLE
@@ -3760,7 +3756,7 @@ namespace Mengine
         while( SDL_PollEvent( &sdlEvent ) != 0 )
         {
             LOGGER_INFO( "platform", "platform event: %s (%u)"
-                , Helper::getPlatformEventMessage( sdlEvent.type )
+                , Detail::getPlatformEventMessage( sdlEvent.type )
                 , sdlEvent.type
             );
 
@@ -3807,7 +3803,7 @@ namespace Mengine
                     SDL_WindowEventID windowEventId = (SDL_WindowEventID)sdlEvent.window.event;
 
                     LOGGER_INFO( "platform", "window event: %s (%u)"
-                        , Helper::getWindowEventMessage( windowEventId )
+                        , Detail::getWindowEventMessage( windowEventId )
                         , windowEventId
                     );
 
@@ -3884,6 +3880,7 @@ namespace Mengine
                 {
                     m_shouldQuit = true;
                 }break;
+#ifdef MENGINE_PLATFORM_IOS
             /*==================*/
             /* Apple iOS events */
             /*==================*/
@@ -3893,7 +3890,7 @@ namespace Mengine
                        Shut everything down before returning from this function.
                     */
 
-                    //TODO
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE );
                 }break;
             case SDL_APP_LOWMEMORY:
                 {
@@ -3909,7 +3906,7 @@ namespace Mengine
                        This gets called when the user hits the home button, or gets a call.
                     */
 
-                    //TODO
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE );
                 }break;
             case SDL_APP_DIDENTERBACKGROUND:
                 {
@@ -3919,7 +3916,7 @@ namespace Mengine
                        Your app is NOT active at this point.
                     */
 
-                    //TODO
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD );
                 }break;
             case SDL_APP_WILLENTERFOREGROUND:
                 {
@@ -3927,7 +3924,7 @@ namespace Mengine
                        Restore all your state here.
                     */
 
-                    //TODO
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND );
                 }break;
             case SDL_APP_DIDENTERFOREGROUND:
                 {
@@ -3935,8 +3932,9 @@ namespace Mengine
                        Your app is interactive and getting CPU again.
                     */
 
-                    //TODO
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE );
                 }break;
+#endif
             default:
                 break;
             }

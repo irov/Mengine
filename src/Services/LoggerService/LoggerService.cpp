@@ -443,6 +443,26 @@ namespace Mengine
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
+    void LoggerService::lockMessage()
+    {
+        if( m_mutex == nullptr )
+        {
+            return;
+        }
+
+        m_mutex->lock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::unlockMessage()
+    {
+        if( m_mutex == nullptr )
+        {
+            return;
+        }
+
+        m_mutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void LoggerService::writeHistory( const LoggerInterfacePtr & _logger ) const
     {
         MENGINE_UNUSED( _logger );

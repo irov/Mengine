@@ -58,6 +58,10 @@ namespace Mengine
         uint32_t getCountMessage( ELoggerLevel _level ) override;
 
     public:
+        void lockMessage() override;
+        void unlockMessage() override;
+
+    public:
         void writeHistory( const LoggerInterfacePtr & _logger ) const override;
 
     public:

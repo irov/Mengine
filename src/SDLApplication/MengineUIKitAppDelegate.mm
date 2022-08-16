@@ -1,12 +1,14 @@
 #import "MengineUIKitAppDelegate.h"
 
+#import "MengineAppleApplicationDelegates.h"
+
 #import "Interface/UIKitProxyApplicationDelegateInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 @implementation MengineUIKitDelegate
 //////////////////////////////////////////////////////////////////////////
 - (id) init {
-    NSArray *proxysClassed = [[NSArray alloc] initWithObjects:@MENGINE_APPLE_APPLICATION_DELEGATE_STRING@ nil];
+    NSArray *proxysClassed = getMengineAppleApplicationDelegates();
 
     self.m_applicationDelegates = [NSMutableArray array];
     

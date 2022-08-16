@@ -13,7 +13,7 @@ if(MENGINE_TARGET_IOS)
         STRING(APPEND MENGINE_APPLE_APPLICATION_DELEGATE_STRING "@\"${DELEGATE}\", ")
     endforeach()
     
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MengineUIKitAppDelegate.mm.in ${CMAKE_CURRENT_SOURCE_DIR}/MengineUIKitAppDelegate.mm @ONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MengineAppleApplicationDelegates.mm.in ${CMAKE_CURRENT_SOURCE_DIR}/MengineAppleApplicationDelegates.mm @ONLY)
 endif()
 
 ADD_FILTER(
@@ -60,6 +60,8 @@ endif()
 if(MENGINE_TARGET_IOS)
     ADD_FILTER(
     ios
+        MengineAppleApplicationDelegates.mm
+        MengineAppleApplicationDelegates.h
         MengineUIKitAppDelegate.mm
         MengineUIKitAppDelegate.h
     )

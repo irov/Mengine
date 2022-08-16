@@ -1,3 +1,3 @@
 #import <Foundation/Foundation.h>
 
-- (NSArray *) getMengineAppleApplicationDelegates
+NSArray * getMengineAppleApplicationDelegates();

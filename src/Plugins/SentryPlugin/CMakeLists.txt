@@ -34,9 +34,9 @@ if(MENGINE_TARGET_APPLE)
     )
 endif()
 
-add_definitions(-DSENTRY_BUILD_STATIC)
-
 if(MENGINE_TARGET_WINDOWS)
+    add_definitions(-DSENTRY_BUILD_STATIC)
+    
     include_directories(${THIRDPARTY_DIR}/sentry/include)
 endif()
 

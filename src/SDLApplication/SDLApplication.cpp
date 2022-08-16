@@ -339,7 +339,7 @@ namespace Mengine
     void SDLApplication::loop()
     {
         PLATFORM_SERVICE()
-            ->updatePlatform();
+            ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()

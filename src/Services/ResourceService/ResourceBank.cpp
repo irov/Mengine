@@ -146,12 +146,12 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
 
-        LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s' locale '%s' group '%s'"
+        LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s' locale '%s' keep [%s]"
             , _name.c_str()
             , _groupName.c_str()
             , _type.c_str()
             , _locale.c_str()
-            , _groupName.c_str()
+            , (_keep == true ? "true" : "false")
         );
 
         ResourcePtr resource = PROTOTYPE_SERVICE()
@@ -233,6 +233,13 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
+        );
+
+        LOGGER_INFO( "resource", "remove resource '%s' group '%s' type '%s' locale '%s'"
+            , _resource->getName().c_str()
+            , _resource->getGroupName().c_str()
+            , _resource->getType().c_str()
+            , _resource->getLocale().c_str()
         );
 
         _resource->finalize();

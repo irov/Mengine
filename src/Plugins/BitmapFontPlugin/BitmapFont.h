@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Compilable.h"
-#include "Kernel/Reference.h"
 #include "Kernel/FontBase.h"
 
 #include "BitmapGlyph.h"

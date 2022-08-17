@@ -37,38 +37,30 @@ namespace Mengine
             }
         }
 
-        SERVICE_WAIT( ThreadSystemInterface, [this]()
+        for( uint32_t index = 0; index != MENGINE_NOTIFICATOR_MAX_COUNT; ++index )
         {
-            for( uint32_t index = 0; index != MENGINE_NOTIFICATOR_MAX_COUNT; ++index )
-            {
-                NotificationArea & area = m_areas[index];
+            NotificationArea & area = m_areas[index];
 
-                ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-                    ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+            MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
-                area.setMutex( mutex );
-            }
-
-            return true;
-        } );
-
-        SERVICE_LEAVE( ThreadSystemInterface, [this]()
-        {
-            for( uint32_t index = 0; index != MENGINE_NOTIFICATOR_MAX_COUNT; ++index )
-            {
-                NotificationArea & area = m_areas[index];
-
-                area.setMutex( nullptr );
-            }
-        } );
+            area.setMutex( mutex );
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::_finalizeService()
     {
+        for( uint32_t index = 0; index != MENGINE_NOTIFICATOR_MAX_COUNT; ++index )
+        {
+            NotificationArea & area = m_areas[index];
+
+            area.setMutex( nullptr );
+        }
+
         for( uint32_t index = 0; index != MENGINE_NOTIFICATOR_MAX_COUNT; ++index )
         {
             NotificationArea & area = m_areas[index];

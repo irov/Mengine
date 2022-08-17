@@ -2,6 +2,7 @@
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/Error.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -16,6 +17,37 @@ SERVICE_FACTORY( AllocatorSystem, Mengine::SDLAllocatorSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void * SDL_malloc_func( size_t size )
+        {
+            void * p = Helper::allocateMemory( size, "SDL" );
+
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * SDL_calloc_func( size_t nmemb, size_t size )
+        {
+            void * p = Helper::callocateMemory( nmemb, size, "SDL" );
+
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * SDL_realloc_func( void * mem, size_t size )
+        {
+            void * p = Helper::reallocateMemory( mem, size, "SDL" );
+
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void SDL_free_func( void * mem )
+        {
+            Helper::deallocateMemory( mem, "SDL" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     SDLAllocatorSystem::SDLAllocatorSystem()
         : m_memoryUsage( 0 )
     {
@@ -27,14 +59,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLAllocatorSystem::_initializeService()
     {
-        //Empty
+        SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
+
+        if( SDL_SetMemoryFunctions( &Detail::SDL_malloc_func, &Detail::SDL_calloc_func, &Detail::SDL_realloc_func, &Detail::SDL_free_func ) != 0 )
+        {
+            LOGGER_ERROR( "invalid set memory functions: %s"
+                , SDL_GetError()
+            );
+
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLAllocatorSystem::_finalizeService()
     {
-        //Empty
+#ifndef MENGINE_WINDOWS_UNIVERSAL
+        SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void * SDLAllocatorSystem::malloc( size_t _size, const Char * _doc )

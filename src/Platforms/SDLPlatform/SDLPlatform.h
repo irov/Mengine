@@ -266,12 +266,6 @@ namespace Mengine
 #endif
 
     protected:
-        SDL_malloc_func m_old_SDL_malloc_func;
-        SDL_calloc_func m_old_SDL_calloc_func;
-        SDL_realloc_func m_old_SDL_realloc_func;
-        SDL_free_func m_old_SDL_free_func;
-
-    protected:
         TimeMilliseconds m_beginTime;
 
         Tags m_platformTags;

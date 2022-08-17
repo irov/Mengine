@@ -378,10 +378,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logMessage( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
     {
-        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level, _filter, _color, _message, _size );
-        }
+        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level, _filter, _color, _message, _size );
 
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
@@ -401,10 +398,7 @@ namespace Mengine
             this->logHistory_( _level, _filter, _color, _message, _size );
         }
 
-        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level, _filter, _color, _message, _size );
-        }
+        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level, _filter, _color, _message, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logHistory_( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )

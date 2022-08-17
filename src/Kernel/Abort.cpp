@@ -14,11 +14,8 @@ namespace Mengine
     {
         void abort( const Char * _doc )
         {
-            if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-            {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_ABORT, _doc );
-            }
-
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ABORT, _doc );
+            
 #ifdef MENGINE_PLATFORM_WINDOWS
             ::MessageBoxA( NULL, _doc, "Mengine abort", MB_OK );
 #endif

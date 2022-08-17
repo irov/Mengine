@@ -8,6 +8,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/DocumentableHelper.h"
+#include "Kernel/Assertion.h"
+#include "Kernel/AssertionReferenceCount.h"
 
 namespace Mengine
 {
@@ -26,6 +28,21 @@ namespace Mengine
     Resource::~Resource()
     {
         MENGINE_ASSERTION_FATAL( m_initialize == false, "destroy without finalize resource '%s' type '%s'"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
+
+        MENGINE_ASSERTION_REFERENCE_COUNT( m_compileReferenceCount, "compile reference '%s' type '%s'"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
+
+        MENGINE_ASSERTION_REFERENCE_COUNT( m_prefetchReferenceCount, "prefetch reference '%s' type '%s'"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
+
+        MENGINE_ASSERTION_REFERENCE_COUNT( m_cacheReferenceCount, "cache reference '%s' type '%s'"
             , this->getName().c_str()
             , this->getType().c_str()
         );

@@ -62,6 +62,6 @@ namespace Mengine
         VectorObservers m_observers;
         VectorObservers m_addObservers;
 
-        Atomic<uint32_t> m_visiting;
+        AtomicUInt32 m_visiting;
     };
 }

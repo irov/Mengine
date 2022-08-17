@@ -2,6 +2,8 @@
 
 #include "Interface/AllocatorSystemInterface.h"
 
+#include "Environment/SDL2/SDL2Includer.h"
+
 #include "Kernel/ServiceBase.h"
 #include "Kernel/StaticString.h"
 
@@ -37,5 +39,11 @@ namespace Mengine
 
     protected:
         AtomicUInt32 m_memoryUsage;
+
+    protected:
+        SDL_malloc_func m_old_SDL_malloc_func;
+        SDL_calloc_func m_old_SDL_calloc_func;
+        SDL_realloc_func m_old_SDL_realloc_func;
+        SDL_free_func m_old_SDL_free_func;
     };
 }

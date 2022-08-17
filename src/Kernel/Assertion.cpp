@@ -96,11 +96,8 @@ namespace Mengine
                 , str_info
             );
 
-            if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-            {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _level, _test, _file, _line, str_info );
-            }
-
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _level, _test, _file, _line, str_info );
+            
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {
                 Helper::crash( assertion_info );

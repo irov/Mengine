@@ -289,9 +289,7 @@ RenderCamera
 )
 
 ADD_FILTER(
-Reference
-    Reference.cpp
-    Reference.h
+ReferenceCounter
     ReferenceCounter.cpp
     ReferenceCounter.h
 )
@@ -465,6 +463,7 @@ Assertion
     AssertionJSONInvalid.h
     AssertionCharacter.cpp
     AssertionCharacter.h
+    AssertionReferenceCount.h
 )
 
 ADD_FILTER(

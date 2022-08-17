@@ -36,41 +36,26 @@ namespace Mengine
         m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_WAIT( ThreadSystemInterface, [this]()
-        {
-            ThreadMutexInterfacePtr memoryCacheMutex = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr memoryCacheMutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex );
 
-            m_memoryCacheMutex = memoryCacheMutex;
+        m_memoryCacheMutex = memoryCacheMutex;
 
-            ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex );
 
-            m_factoryMemoryBuffer->setMutex( memoryFactoryMutex );
-            m_factoryMemoryProxy->setMutex( memoryFactoryMutex );
-            m_factoryMemoryCacheBuffer->setMutex( memoryFactoryMutex );
-            m_factoryMemoryCacheInput->setMutex( memoryFactoryMutex );
-            m_factoryMemoryProxyInput->setMutex( memoryFactoryMutex );
-            m_factoryMemoryInput->setMutex( memoryFactoryMutex );
+        m_factoryMemoryBuffer->setMutex( memoryFactoryMutex );
+        m_factoryMemoryProxy->setMutex( memoryFactoryMutex );
+        m_factoryMemoryCacheBuffer->setMutex( memoryFactoryMutex );
+        m_factoryMemoryCacheInput->setMutex( memoryFactoryMutex );
+        m_factoryMemoryProxyInput->setMutex( memoryFactoryMutex );
+        m_factoryMemoryInput->setMutex( memoryFactoryMutex );
 
-            return true;
-        } );
-
-        SERVICE_LEAVE( ThreadSystemInterface, [this]()
-        {
-            m_factoryMemoryBuffer->setMutex( nullptr );
-            m_factoryMemoryProxy->setMutex( nullptr );
-            m_factoryMemoryCacheBuffer->setMutex( nullptr );
-            m_factoryMemoryCacheInput->setMutex( nullptr );
-            m_factoryMemoryProxyInput->setMutex( nullptr );
-            m_factoryMemoryInput->setMutex( nullptr );
-
-            m_memoryCacheMutex = nullptr;
-        } );
+        m_memoryFactoryMutex = memoryFactoryMutex;
 
         return true;
     }
@@ -83,6 +68,17 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryCacheInput );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryProxyInput );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryInput );
+
+        m_memoryCacheMutex = nullptr;
+
+        m_factoryMemoryBuffer->setMutex( nullptr );
+        m_factoryMemoryProxy->setMutex( nullptr );
+        m_factoryMemoryCacheBuffer->setMutex( nullptr );
+        m_factoryMemoryCacheInput->setMutex( nullptr );
+        m_factoryMemoryProxyInput->setMutex( nullptr );
+        m_factoryMemoryInput->setMutex( nullptr );
+        
+        m_memoryFactoryMutex = nullptr;
 
         m_factoryMemoryBuffer = nullptr;
         m_factoryMemoryProxy = nullptr;

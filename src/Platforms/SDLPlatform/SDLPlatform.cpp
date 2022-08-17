@@ -661,35 +661,6 @@ namespace Mengine
                 );
         }
         //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WINDOWS_UNIVERSAL
-        //////////////////////////////////////////////////////////////////////////
-        static void * SDL_malloc_func( size_t size )
-        {
-            void * p = Helper::allocateMemory( size, "SDL" );
-
-            return p;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void * SDL_calloc_func( size_t nmemb, size_t size )
-        {
-            void * p = Helper::callocateMemory( nmemb, size, "SDL" );
-
-            return p;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void * SDL_realloc_func( void * mem, size_t size )
-        {
-            void * p = Helper::reallocateMemory( mem, size, "SDL" );
-
-            return p;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void SDL_free_func( void * mem )
-        {
-            Helper::deallocateMemory( mem, "SDL" );
-        }
-        //////////////////////////////////////////////////////////////////////////
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
@@ -714,19 +685,6 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "SDL Tablet: %s"
             , isTablet == SDL_TRUE ? "true" : "false"
         );
-
-#ifndef MENGINE_WINDOWS_UNIVERSAL
-        SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
-
-        if( SDL_SetMemoryFunctions( &Detail::SDL_malloc_func, &Detail::SDL_calloc_func, &Detail::SDL_realloc_func, &Detail::SDL_free_func ) != 0 )
-        {
-            LOGGER_ERROR( "invalid set memory functions: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-#endif
 
 #ifdef MENGINE_DEBUG
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_DEBUG );
@@ -1237,17 +1195,6 @@ namespace Mengine
 
         m_factoryDynamicLibraries = nullptr;
         m_factoryDateTimeProviders = nullptr;
-
-#ifndef MENGINE_WINDOWS_UNIVERSAL
-        if( SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func ) != 0 )
-        {
-            LOGGER_ERROR( "invalid set memory functions: %s"
-                , SDL_GetError()
-            );
-        }
-#endif
-
-        MENGINE_ASSERTION_ALLOCATOR( "SDL" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()

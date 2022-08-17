@@ -29,6 +29,7 @@ namespace Mengine
         : m_seconds( 0 )
         , m_workerId( 0 )
         , m_refAlive( 0 )
+        , m_refChangeLocale( 0 )
         , m_refLogger( 0 )
         , m_refAbort( 0 )
         , m_oldRefAlive( 0 )
@@ -136,6 +137,11 @@ namespace Mengine
             return true;
         }
 
+        if( m_refChangeLocale != 0 )
+        {
+            return true;
+        }
+
         if( m_refLogger != 0 )
         {
             return true;
@@ -230,7 +236,7 @@ namespace Mengine
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
 
-        ++m_refLogger;
+        ++m_refChangeLocale;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyChangeLocalePost( const ConstString & _prevLocale, const ConstString & _currentlocale )
@@ -238,9 +244,9 @@ namespace Mengine
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
 
-        MENGINE_ASSERTION_FATAL( m_refLogger != 0 );
+        MENGINE_ASSERTION_FATAL( m_refChangeLocale != 0 );
 
-        --m_refLogger;
+        --m_refChangeLocale;
         
         ++m_refAlive;
     }

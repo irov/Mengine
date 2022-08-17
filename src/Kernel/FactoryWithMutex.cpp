@@ -59,13 +59,13 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_DEBUG
-        if( SERVICE_EXIST( FactoryServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
         {
             FACTORY_SERVICE()
                 ->debugFactoryCreateObject( this, object, _doc );
         }
 
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, (FactoryInterface *)this, object, _doc );
         }
@@ -77,13 +77,13 @@ namespace Mengine
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
 #ifdef MENGINE_DEBUG
-        if( SERVICE_EXIST( FactoryServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
         {
             FACTORY_SERVICE()
                 ->debugFactoryDestroyObject( this, _object );
         }
 
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, (FactoryInterface *)this, _object );
         }

@@ -33,7 +33,8 @@ namespace Mengine
     static constexpr uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
         //////////////////////////////////////////////////////////////////////////
 #define MENGINE_DECLARE_END()\
-    static constexpr uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_COUNT = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN - 1
+    static constexpr uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_COUNT = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN - 1;\
+    static_assert(MENGINE_NOTIFICATOR_ENUMERATOR_COUNT < MENGINE_NOTIFICATOR_MAX_COUNT)
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_DECLARE_NOTIFICATOR(NAME, ...)\
     static constexpr uint32_t NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\

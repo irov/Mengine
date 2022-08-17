@@ -62,7 +62,6 @@
 #include "Engine/Isometric.h"
 #include "Engine/Window.h"
 
-#include "Kernel/Reference.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"

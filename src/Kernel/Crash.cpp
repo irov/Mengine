@@ -10,11 +10,8 @@ namespace Mengine
     {
         void crash( const Char * _doc )
         {
-            if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-            {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_CRASH, _doc );
-            }
-
+            NOTIFICATION_NOTIFY( NOTIFICATOR_CRASH, _doc );
+            
             volatile uint32_t * p = nullptr;
 
             // cppcheck-suppress nullPointer

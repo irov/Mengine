@@ -753,9 +753,9 @@ namespace Mengine
         MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
@@ -1159,7 +1159,7 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
         MENGINE_ADD_PLUGIN( AppleAppLovinPlugin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC
         MENGINE_ADD_PLUGIN( AppleFirebaseAnalytics, "Plugin Apple Firebase Analytics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1740,8 +1740,8 @@ namespace Mengine
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( Platform );
         SERVICE_FINALIZE( LoggerService );
-        SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( NotificationService );
+        SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
 

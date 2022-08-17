@@ -70,7 +70,6 @@
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Reference.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -2306,12 +2305,6 @@ namespace Mengine
             .def( "compile", &Compilable::compile )
             .def( "release", &Compilable::release )
             .def( "isCompile", &Compilable::isCompile )
-            ;
-
-        pybind::interface_<Reference, pybind::bases<Mixin>>( _kernel, "Reference" )
-            .def( "incrementReference", &Reference::incrementReference )
-            .def( "decrementReference", &Reference::decrementReference )
-            .def( "countReference", &Reference::countReference )
             ;
 
         pybind::interface_<FileGroupInterface, pybind::bases<Mixin>>( _kernel, "FileGroupInterface" )

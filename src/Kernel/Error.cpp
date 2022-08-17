@@ -52,11 +52,8 @@ namespace Mengine
             LoggerOperator( ConstString::none(), LM_ERROR, 0, LCOLOR_RED, m_file, m_line )("%s", str_info);
         }
 
-        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_level, m_file, m_line, str_info );
-        }
-
+        NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_level, m_file, m_line, str_info );
+        
         switch( m_level )
         {
         case ERROR_LEVEL_MESSAGE:

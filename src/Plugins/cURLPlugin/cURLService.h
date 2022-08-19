@@ -48,6 +48,8 @@ namespace Mengine
     protected:
         ThreadQueueInterfacePtr m_threadQueue;
 
+        ThreadMutexInterfacePtr m_mutex;
+
         struct RequestListenerDesk
         {
             cURLRequestListenerInterfacePtr listener;

@@ -2,6 +2,7 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "cURLGetMessageThreadTask.h"
 #include "cURLPostMessageThreadTask.h"
@@ -28,6 +29,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -150,6 +152,13 @@ namespace Mengine
             m_threadQueue->addThread( threadName );
         }
 
+        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+
+        m_mutex = mutex;
+
         m_factoryTaskGetMessage = Helper::makeFactoryPool<cURLGetMessageThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskPostMessage = Helper::makeFactoryPool<cURLPostMessageThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskHeaderData = Helper::makeFactoryPool<cURLHeaderDataThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
@@ -193,6 +202,8 @@ namespace Mengine
         }
 #endif
 
+        m_mutex = nullptr;
+
         m_receiverDescs.clear();
         m_networkListeners.clear();
 
@@ -211,6 +222,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::notifyEnginePrepareFinalize_()
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         for( const ReceiverDesc & desc : m_receiverDescs )
         {
             const ThreadTaskPtr & task = desc.task;
@@ -270,6 +283,8 @@ namespace Mengine
             return 0;
         }
 
+        m_mutex->lock();
+
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_GET_MESSAGE;
@@ -281,6 +296,8 @@ namespace Mengine
 #endif
 
         m_receiverDescs.push_back( desc );
+
+        m_mutex->unlock();
 
         m_threadQueue->addTask( task );
 
@@ -321,6 +338,8 @@ namespace Mengine
             return 0;
         }
 
+        m_mutex->lock();
+
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_POST_MESSAGE;
@@ -332,6 +351,8 @@ namespace Mengine
 #endif
 
         m_receiverDescs.push_back( desc );
+
+        m_mutex->unlock();
 
         m_threadQueue->addTask( task );
 
@@ -372,6 +393,8 @@ namespace Mengine
             return 0;
         }
 
+        m_mutex->lock();
+
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_HEADER_DATA;
@@ -383,6 +406,8 @@ namespace Mengine
 #endif
 
         m_receiverDescs.push_back( desc );
+
+        m_mutex->unlock();
 
         m_threadQueue->addTask( task );
 
@@ -433,6 +458,8 @@ namespace Mengine
             return 0;
         }
 
+        m_mutex->lock();
+
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_DOWNLOAD_ASSET;
@@ -444,6 +471,8 @@ namespace Mengine
 #endif
 
         m_receiverDescs.push_back( desc );
+
+        m_mutex->unlock();
 
         m_threadQueue->addTask( task );
 
@@ -458,6 +487,8 @@ namespace Mengine
 
             return false;
         }
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( ReceiverDesc & desc : m_receiverDescs )
         {
@@ -518,6 +549,8 @@ namespace Mengine
             listenerDesc.listener->response( _response.id, _response.data );
         }
 
+        m_mutex->lock();
+
         for( VectorReceiverDesc::iterator
             it = m_receiverDescs.begin(),
             it_end = m_receiverDescs.end();
@@ -536,6 +569,8 @@ namespace Mengine
             *it = m_receiverDescs.back();
             m_receiverDescs.pop_back();
 
+            m_mutex->unlock();
+
             if( receiver != nullptr )
             {
                 receiver->onHttpRequestComplete( _response );
@@ -543,6 +578,8 @@ namespace Mengine
 
             return;
         }
+
+        m_mutex->unlock();
 
         LOGGER_ERROR( "invalid request '%u' complete (status [%u] error '%.2048s' response '%.2048s' code [%u] successful [%u])"
             , _response.id

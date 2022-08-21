@@ -37,7 +37,7 @@ namespace Mengine
         const char * version = Magic_GetVersion();
 
         //MING64 use 3.55 version...
-#ifndef MENGINE_TOOLCHAIN_MINGW64
+#if !defined(MENGINE_TOOLCHAIN_MINGW64) && !defined(MENGINE_PLATFORM_APPLE)
         if( MENGINE_STRSTR( version, MAGIC_API ) == nullptr )
         {
             LOGGER_ERROR( "Astralax Magic Particles Version: '%s' but need '%s'"

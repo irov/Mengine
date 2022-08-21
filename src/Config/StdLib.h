@@ -2,10 +2,10 @@
 
 #include "Config/Config.h"
 
-#include <cstdlib>
-
 #ifdef MENGINE_PLATFORM_APPLE
 #   include <malloc/malloc.h>
+#else
+#   include <cstdlib>
 #endif
 
 //////////////////////////////////////////////////////////////////////////

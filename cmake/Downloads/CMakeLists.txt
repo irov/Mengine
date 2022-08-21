@@ -10,12 +10,21 @@ SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../download_template.cmake)
 
 DOWNLOAD_URL_HASH(boost https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.7z SHA256 6c97cf4f4a0eb00ed776c88065ab3f59e183fa5e65f6464ff94f92328352d9d6)
-DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
-DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip)
-DOWNLOAD_URL(devtodev-android https://github.com/devtodev-analytics/android-sdk-2.0/archive/refs/tags/v2.1.2.zip)
-
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h stb_image_write.h)
+
+IF(WIN32)
+    DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
+ENDIF()
+
+IF(APPLE)
+    DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip)
+ENDIF()
+
+IF(ANDROID OR WIN32)
+    DOWNLOAD_URL(devtodev-android https://github.com/devtodev-analytics/android-sdk-2.0/archive/refs/tags/v2.1.2.zip)
+ENDIF()
+
 
 GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-4")
 GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "4.2.0")

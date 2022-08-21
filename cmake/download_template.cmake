@@ -34,55 +34,61 @@ macro(DOWNLOAD_FILE NAME URL FILE)
 endmacro()
 
 macro(DOWNLOAD_URL NAME URL)
-    MESSAGE("Download ${NAME}: ${URL}")
-    ExternalProject_Add(${NAME}_download PREFIX ${NAME}
-        SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
-        
-        URL ${URL}
-        DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
+	if(NOT EXISTS ${THIRDPARTY_DIR}/${NAME})
+		MESSAGE("Download ${NAME}: ${URL}")
+        ExternalProject_Add(${NAME}_download PREFIX ${NAME}
+            SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
 
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        UPDATE_COMMAND ""
-        INSTALL_COMMAND ""
-    )
+            URL ${URL}
+            DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
+
+            CONFIGURE_COMMAND ""
+            BUILD_COMMAND ""
+            UPDATE_COMMAND ""
+            INSTALL_COMMAND ""
+        )
     
-    add_library(${NAME} STATIC IMPORTED)
+        add_library(${NAME} STATIC IMPORTED)
+	endif()
 endmacro()
 
 macro(DOWNLOAD_URL_FOLDER NAME URL FOLDER)
-    MESSAGE("Download ${NAME}: ${URL}")
-    ExternalProject_Add(${NAME}_download PREFIX ${NAME}
-        SOURCE_DIR ${THIRDPARTY_DIR}/${FOLDER}
+	if(NOT EXISTS ${THIRDPARTY_DIR}/${FOLDER})
+	    MESSAGE("Download ${NAME}: ${URL}")		
+        ExternalProject_Add(${NAME}_download PREFIX ${NAME}
+            SOURCE_DIR ${THIRDPARTY_DIR}/${FOLDER}
         
-        URL ${URL}
-        DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
+            URL ${URL}
+            DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
 
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        UPDATE_COMMAND ""
-        INSTALL_COMMAND ""
-    )
+            CONFIGURE_COMMAND ""
+            BUILD_COMMAND ""
+            UPDATE_COMMAND ""
+            INSTALL_COMMAND ""
+        )
     
-    add_library(${NAME} STATIC IMPORTED)
+        add_library(${NAME} STATIC IMPORTED)
+	endif()
 endmacro()
 
 macro(DOWNLOAD_URL_HASH NAME URL HASH_ALGO HASH)
-    MESSAGE("Download ${NAME}: ${URL}")
-    ExternalProject_Add(${NAME}_download PREFIX ${NAME}
-        SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
+    if(NOT EXISTS ${THIRDPARTY_DIR}/${NAME})
+        MESSAGE("Download ${NAME}: ${URL}")
+        ExternalProject_Add(${NAME}_download PREFIX ${NAME}
+            SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
         
-        URL ${URL}
-        URL_HASH ${HASH_ALGO}=${HASH}
-        DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
+            URL ${URL}
+            URL_HASH ${HASH_ALGO}=${HASH}
+            DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
 
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        UPDATE_COMMAND ""
-        INSTALL_COMMAND ""
-    )
+            CONFIGURE_COMMAND ""
+            BUILD_COMMAND ""
+            UPDATE_COMMAND ""
+            INSTALL_COMMAND ""
+        )
     
-    add_library(${NAME} STATIC IMPORTED)
+        add_library(${NAME} STATIC IMPORTED)
+	endif()
 endmacro()
 
 macro(GIT_CLONE NAME REPOSITORY)

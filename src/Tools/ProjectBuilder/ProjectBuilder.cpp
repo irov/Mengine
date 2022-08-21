@@ -72,7 +72,7 @@ PLUGIN_EXPORT( MetabufLoader );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AllocatorService );
+SERVICE_EXTERN( AllocatorSystem );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( NotificationService );
@@ -168,7 +168,7 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_CREATE( AllocatorService, nullptr );
+        SERVICE_CREATE( AllocatorSystem, nullptr );
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );

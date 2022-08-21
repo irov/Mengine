@@ -57,7 +57,7 @@ PLUGIN_EXPORT( LZ4 );
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( EnumeratorService );
-SERVICE_EXTERN( AllocatorService );
+SERVICE_EXTERN( AllocatorSystem );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
@@ -90,7 +90,7 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_CREATE( AllocatorService, nullptr );
+        SERVICE_CREATE( AllocatorSystem, nullptr );
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 

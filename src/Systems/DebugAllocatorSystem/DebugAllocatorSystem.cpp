@@ -68,7 +68,7 @@ namespace Mengine
         SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
             m_mutexReport = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_MESSAGE( "AllocatorService" ) );
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );

@@ -1,7 +1,7 @@
 #include "AV1Plugin.h"
 
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
+#include "Interface/AllocatorSystemInterface.h"
 
 #include "TheoraVideoDecoder.h"
 

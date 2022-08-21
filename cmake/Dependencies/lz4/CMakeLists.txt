@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
-                                             
+
 project( lz4 )
 
 SET( SOURCE_DIR ${THIRDPARTY_DIR}/lz4 )

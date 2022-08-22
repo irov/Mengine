@@ -80,7 +80,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         public void skuResponse(List<ProductDetails> priceOffers) {
             List<String> stringArray = new ArrayList<>();
 
-            //TODO json всей покупки нетакой как 'строка'
             for (ProductDetails product : priceOffers) {
                 stringArray.add(product.toString());
             }
@@ -391,7 +390,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         }
 
         if (purchase.isAcknowledged() == true) {
-            //TODO Arraylist или List !!!!!!
             ArrayList<String> skus = new ArrayList(purchase.getProducts());
 
             m_callbackListener.hasAcknowledge(skus, (Object result) -> {
@@ -445,9 +443,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                         return;
                     }
 
-                    //TODO ArrayList -> List
                     ArrayList<String> skus = new ArrayList<String>(purchase.getProducts());
-
                     MengineGooglePlayBillingPlugin.this.m_callbackListener.consume(skus);
                 }
             });

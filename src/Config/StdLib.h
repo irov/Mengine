@@ -30,6 +30,8 @@
 #       define MENGINE_MALLOC_SIZE(p) ::_msize((p))
 #   elif defined(MENGINE_PLATFORM_APPLE)
 #       define MENGINE_MALLOC_SIZE(p) ::malloc_size((p))
+#   elif defined(MENGINE_PLATFORM_ANDROID)
+#       define MENGINE_MALLOC_SIZE(p) ::malloc_usable_size((p))
 #   endif
 #endif
 //////////////////////////////////////////////////////////////////////////

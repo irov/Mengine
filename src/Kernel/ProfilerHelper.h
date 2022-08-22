@@ -13,7 +13,7 @@ namespace Mengine
         class ProfilerFrameScope
         {
         public:
-            ProfilerFrameScope( ProfilerDescriptionInterface * _description )
+            ProfilerFrameScope( const ProfilerDescriptionInterface * _description )
             {
                 if( SERVICE_EXIST( ProfilerSystemInterface ) == true )
                 {
@@ -33,7 +33,7 @@ namespace Mengine
         class ProfilerCategoryScope
         {
         public:
-            ProfilerCategoryScope( ProfilerDescriptionInterface * _description )
+            ProfilerCategoryScope( const ProfilerDescriptionInterface * _description )
             {
                 if( SERVICE_EXIST( ProfilerSystemInterface ) == true )
                 {
@@ -77,7 +77,7 @@ namespace Mengine
 #ifdef MENGINE_PROFILER_ENABLE
 #ifndef MENGINE_PROFILER_FRAME
 #define MENGINE_PROFILER_FRAME(Name)\
-    static Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
+    static const Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
     if( SERVICE_EXIST( Mengine::ProfilerSystemInterface ) == true && MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) == nullptr )\
     {\
         MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = PROFILER_SYSTEM()\
@@ -92,7 +92,7 @@ namespace Mengine
 #ifdef MENGINE_PROFILER_ENABLE
 #ifndef MENGINE_PROFILER_CATEGORY
 #define MENGINE_PROFILER_CATEGORY()\
-    static Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
+    static const Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
     if( SERVICE_EXIST( Mengine::ProfilerSystemInterface ) == true && MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) == nullptr )\
     {\
         MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = PROFILER_SYSTEM()\

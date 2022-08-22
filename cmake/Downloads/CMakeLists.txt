@@ -71,6 +71,6 @@ GIT_CLONE(libspng https://github.com/randy408/libspng.git "v0.7.1")
 
 IF(WIN32)
     GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.5.0")
-    GIT_CLONE(optick https://github.com/bombomby/optick.git "1.3.3.0")
+    GIT_CLONE(optick https://github.com/bombomby/optick.git "1.4.0.0")
     GIT_CLONE(gameanalytics https://github.com/GameAnalytics/GA-SDK-CPP.git "3.2.6")
 endif()

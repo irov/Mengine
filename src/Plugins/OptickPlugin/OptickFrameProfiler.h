@@ -18,7 +18,7 @@ namespace Mengine
         ~OptickFrameProfiler() override;
 
     public:
-        bool initialize( ProfilerDescriptionInterface * _description );
+        bool initialize( const ProfilerDescriptionInterface * _description );
 
     protected:
         Optick::EventData * m_data;

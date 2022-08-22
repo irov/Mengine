@@ -1,34 +1,25 @@
 package org.libsdl.app;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.lang.reflect.Method;
 
-import android.app.*;
-import android.content.*;
-import android.content.res.Configuration;
-import android.text.InputType;
-import android.view.*;
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.os.*;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.SparseArray;
-import android.graphics.*;
-import android.graphics.drawable.Drawable;
-import android.hardware.*;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ApplicationInfo;
+import android.view.Display;
+import android.view.InputDevice;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.WindowManager;
+
 
 /**
     SDLSurface. This is what we draw on, so we need to know when it's created

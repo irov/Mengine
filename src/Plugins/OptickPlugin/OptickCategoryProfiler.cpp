@@ -15,11 +15,11 @@ namespace Mengine
         Optick::Event::Stop( *m_data );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OptickCategoryProfiler::initialize( ProfilerDescriptionInterface * _description )
+    bool OptickCategoryProfiler::initialize( const ProfilerDescriptionInterface * _description )
     {
         //OPTICK_CATEGORY("UpdateAI", Optick::Category::AI)
 
-        OptickProfilerDescription * description = static_cast<OptickProfilerDescription *>(_description);
+        const OptickProfilerDescription * description = static_cast<const OptickProfilerDescription *>(_description);
 
         Optick::EventDescription * optickDesc = description->getOptickDescription();
 

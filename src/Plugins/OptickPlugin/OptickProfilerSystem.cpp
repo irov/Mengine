@@ -123,7 +123,10 @@ namespace Mengine
 
         OutputStreamInterfacePtr outputFile = fileGroup->createOutputFile( MENGINE_DOCUMENT_FACTORABLE );
 
-        fileGroup->openOutputFile( cs_optPath, outputFile, false );
+        if( fileGroup->openOutputFile( cs_optPath, outputFile, true ) == false )
+        {
+            return;
+        }
 
         //ToDo FixMe [https://github.com/bombomby/optick/issues/137]
         g_outputFile = outputFile.get();
@@ -148,7 +151,7 @@ namespace Mengine
         return profiler;
     }
     //////////////////////////////////////////////////////////////////////////
-    ProfilerInterfacePtr OptickProfilerSystem::addFrame( ProfilerDescriptionInterface * _description )
+    ProfilerInterfacePtr OptickProfilerSystem::addFrame( const ProfilerDescriptionInterface * _description )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -167,7 +170,7 @@ namespace Mengine
         return profiler;
     }
     //////////////////////////////////////////////////////////////////////////
-    ProfilerInterfacePtr OptickProfilerSystem::addCategory( ProfilerDescriptionInterface * _description )
+    ProfilerInterfacePtr OptickProfilerSystem::addCategory( const ProfilerDescriptionInterface * _description )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -186,7 +189,7 @@ namespace Mengine
         return profiler;
     }
     //////////////////////////////////////////////////////////////////////////
-    ProfilerDescriptionInterface * OptickProfilerSystem::createDescription( const Char * _name, const Char * _file, uint32_t _line )
+    const ProfilerDescriptionInterface * OptickProfilerSystem::createDescription( const Char * _name, const Char * _file, uint32_t _line )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

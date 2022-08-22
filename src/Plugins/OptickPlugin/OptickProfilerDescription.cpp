@@ -36,7 +36,10 @@ namespace Mengine
             flags |= ::Optick::EventDescription::IS_CUSTOM_NAME;
         }
 
-        m_description = Optick::EventDescription::Create( _name, _file, _line, Optick::Category::GetColor( Optick::Category::Type::None ), Optick::Category::GetMask( Optick::Category::Type::None ), flags );
+        uint32_t color = Optick::Category::GetColor( Optick::Category::Type::None );
+        uint32_t filter = Optick::Category::GetMask( Optick::Category::Type::None );
+
+        m_description = Optick::EventDescription::Create( _name, _file, _line, color, filter, flags );
 
         return true;
     }

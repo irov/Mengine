@@ -222,7 +222,7 @@ namespace Mengine
 
         FilePath configPath_f = Helper::stringizeFilePath( configPath );
 
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( fileGroupUser, configPath_f, false, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( fileGroupUser, configPath_f, true, MENGINE_DOCUMENT_FACTORABLE );
 
         if( file == nullptr )
         {

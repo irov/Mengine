@@ -251,7 +251,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                 QueryProductDetailsParams.Product product = QueryProductDetailsParams.Product.newBuilder()
                         .setProductId(productId)
                         .setProductType(BillingClient.ProductType.INAPP)
-                        .build());
+                        .build();
                 productList.add(product);
             }
 

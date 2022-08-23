@@ -248,10 +248,10 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
             ArrayList<QueryProductDetailsParams.Product> productList = new ArrayList<>();
             for (String product : m_idsNames) {
-                QueryProductDetailsParams.Product.newBuilder()
+                productList.add(QueryProductDetailsParams.Product.newBuilder()
                         .setProductId(product)
                         .setProductType(BillingClient.ProductType.INAPP)
-                        .build();
+                        .build());
             }
 
             QueryProductDetailsParams.Builder params = QueryProductDetailsParams.newBuilder();

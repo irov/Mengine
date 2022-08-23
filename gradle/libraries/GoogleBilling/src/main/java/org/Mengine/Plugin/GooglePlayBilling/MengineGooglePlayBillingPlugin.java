@@ -247,11 +247,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             m_responseEnd = false;
 
             ArrayList<QueryProductDetailsParams.Product> productList = new ArrayList<>();
-            for (String product : m_idsNames) {
-                QueryProductDetailsParams.Product.newBuilder()
-                        .setProductId(product)
+            for (String productId : m_idsNames) {
+                QueryProductDetailsParams.Product product = QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId(productId)
                         .setProductType(BillingClient.ProductType.INAPP)
                         .build();
+                productList.add(product);
             }
 
             QueryProductDetailsParams.Builder params = QueryProductDetailsParams.newBuilder();
@@ -293,11 +294,11 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             return;
         }
 
-        m_billingClient.queryPurchasesAsync(
-                QueryPurchasesParams.newBuilder()
-                        .setProductType(BillingClient.ProductType.INAPP)
-                        .build()
-                , new PurchasesResponseListener() {
+        QueryPurchasesParams purchasesParams = QueryPurchasesParams.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build();
+
+        m_billingClient.queryPurchasesAsync(purchasesParams, new PurchasesResponseListener() {
                     @Override
                     public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchasesList) {
                         int responseCode = billingResult.getResponseCode();

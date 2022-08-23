@@ -52,7 +52,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
      **/
 
     private List<String> m_idsNames = null;
-    private final ArrayList<ProductDetails> m_productsDetails = new ArrayList<>();
+    private final List<ProductDetails> m_productsDetails = new ArrayList<>();
 
     private BillingClient m_billingClient = null;
     private Boolean m_connectionSucces = false;
@@ -68,11 +68,11 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     public interface IBillingResponse {
         void skuResponse(List<ProductDetails> priceOffers);
 
-        void consume(ArrayList<String> ids);
+        void consume(List<String> ids);
 
-        void acknowledge(ArrayList<String> ids);
+        void acknowledge(List<String> ids);
 
-        void hasAcknowledge(ArrayList<String> ids, CallbackInterface cb);
+        void hasAcknowledge(List<String> ids, CallbackInterface cb);
     }
 
     private final IBillingResponse m_callbackListener = new IBillingResponse() {
@@ -88,25 +88,26 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         }
 
         @Override
-        public void consume(ArrayList<String> skus) {
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnConsume", skus);
+        public void consume(List<String> products) {
+            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnConsume", products);
         }
 
         @Override
-        public void hasAcknowledge(ArrayList<String> skus, CallbackInterface cb) {
-            MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, skus);
+        public void hasAcknowledge(List<String> products, CallbackInterface cb) {
+            MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, products);
         }
 
         @Override
-        public void acknowledge(ArrayList<String> skus) {
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingAcknowledge", skus);
+        public void acknowledge(List<String> products) {
+            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingAcknowledge", products);
         }
     };
 
     public void setSkuList(List<String> ids) {
         this.logInfo("setSkuList: %s", ids);
 
-        m_idsNames = new ArrayList<>(ids);
+        m_idsNames = ids;
+
         this.connectAndQueryProducts();
     }
 
@@ -246,7 +247,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
             m_responseEnd = false;
 
-            ArrayList<QueryProductDetailsParams.Product> productList = new ArrayList<>();
+            List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
             for (String productId : m_idsNames) {
                 QueryProductDetailsParams.Product product = QueryProductDetailsParams.Product.newBuilder()
                         .setProductId(productId)
@@ -333,7 +334,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                 continue;
             }
 
-            ArrayList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<BillingFlowParams.ProductDetailsParams>();
+            List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<>();
 
             productDetailsParamsList.add(
                     BillingFlowParams.ProductDetailsParams.newBuilder()
@@ -391,9 +392,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         }
 
         if (purchase.isAcknowledged() == true) {
-            ArrayList<String> skus = new ArrayList(purchase.getProducts());
+            List<String> products = purchase.getProducts();
 
-            m_callbackListener.hasAcknowledge(skus, (Object result) -> {
+            m_callbackListener.hasAcknowledge(products, (Object result) -> {
                 String token = purchase.getPurchaseToken();
 
                 AcknowledgePurchaseParams.Builder acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
@@ -415,7 +416,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
                     MengineGooglePlayBillingPlugin.this.logInfo("success acknowledge");
 
-                    MengineGooglePlayBillingPlugin.this.m_callbackListener.acknowledge(skus);
+                    MengineGooglePlayBillingPlugin.this.m_callbackListener.acknowledge(products);
                 });
             });
         } else {
@@ -444,8 +445,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                         return;
                     }
 
-                    ArrayList<String> skus = new ArrayList<String>(purchase.getProducts());
-                    MengineGooglePlayBillingPlugin.this.m_callbackListener.consume(skus);
+                    List<String> products = purchase.getProducts();
+                    MengineGooglePlayBillingPlugin.this.m_callbackListener.consume(products);
                 }
             });
         }

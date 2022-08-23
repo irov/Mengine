@@ -1,15 +1,15 @@
 package org.Mengine.Base;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 import android.content.*;
@@ -377,6 +377,18 @@ public class MengineActivity extends SDLActivity {
             py_args.append("]");
         } else if(a instanceof ArrayList<?>) {
             ArrayList<?> unknowArray = (ArrayList<?>)a;
+
+            py_args.append("[");
+
+            for(Object o : unknowArray) {
+                this.pythonCallBuildArg(py_args, o);
+
+                py_args.append(",");
+            }
+
+            py_args.append("]");
+        } else if(a instanceof List<?>) {
+            List<?> unknowArray = (List<?>)a;
 
             py_args.append("[");
 

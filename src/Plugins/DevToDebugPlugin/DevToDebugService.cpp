@@ -12,11 +12,15 @@
 #include "DevToDebugPropertyGetterString.h"
 #include "DevToDebugPropertyConstColor.h"
 #include "DevToDebugPropertyGetterColor.h"
+#include "DevToDebugPropertyContent.h"
 
 #include "DevToDebugWidget.h"
 #include "DevToDebugWidgetText.h"
 #include "DevToDebugWidgetButton.h"
 #include "DevToDebugWidgetCheckbox.h"
+#include "DevToDebugWidgetCommandLine.h"
+#include "DevToDebugWidgetRadioButton.h"
+#include "DevToDebugWidgetSelector.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "DevToDebugScriptEmbedding.h"
@@ -123,6 +127,11 @@ namespace Mengine
             return false;
         }
 
+        if( Helper::addDefaultPrototype<DevToDebugPropertyContent, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
         if( Helper::addObjectPrototype<DevToDebugWidgetButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
@@ -134,6 +143,21 @@ namespace Mengine
         }
 
         if( Helper::addObjectPrototype<DevToDebugWidgetCheckbox, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addObjectPrototype<DevToDebugWidgetCommandLine, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addObjectPrototype<DevToDebugWidgetRadioButton, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+        if( Helper::addObjectPrototype<DevToDebugWidgetSelector, 64>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -203,6 +227,9 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), nullptr );
 
         PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), nullptr );
+
+        PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), nullptr );
 
         PROTOTYPE_SERVICE()
@@ -210,6 +237,15 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), nullptr );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );

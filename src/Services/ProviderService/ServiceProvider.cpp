@@ -486,10 +486,15 @@ namespace Mengine
 
             LambdaWaitService lambda = desc.lambda;
 
-            WaitDesc & last_desc = m_waits[--m_waitsCount];
+            uint32_t last = --m_waitsCount;
+            
+            if( index != last )
+            {
+                WaitDesc & last_desc = m_waits[last];
 
-            desc.name.assign( last_desc.name );
-            desc.lambda = last_desc.lambda;
+                desc.name.assign( last_desc.name );
+                desc.lambda = last_desc.lambda;
+            }
 
             if( lambda() == false )
             {

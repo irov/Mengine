@@ -6,7 +6,7 @@
 #include "Kernel/Assertion.h"
 
 #ifndef MENGINE_HASHTABLE_DUMMY_ELEMENT
-#define MENGINE_HASHTABLE_DUMMY_ELEMENT (reinterpret_cast<element_type *>(~0ULL))
+#define MENGINE_HASHTABLE_DUMMY_ELEMENT (reinterpret_cast<element_type *>(MENGINE_MAX_ALIGNED_POINTER_VALUE))
 #endif
 
 #ifndef MENGINE_HASHTABLE_PERTURB_SHIFT

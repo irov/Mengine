@@ -99,6 +99,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownDevToDebugPropertyGetterColorInterface> UnknownDevToDebugPropertyGetterColorInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugPropertyContentInterface
+        : public UnknownInterface
+    {
+    public:
+        virtual void addState( const ConstString & _id, const String & _text ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class DevToDebugWidgetInterface
         : public ServantInterface
         , public Unknowable
@@ -112,6 +119,10 @@ namespace Mengine
         virtual const DevToDebugPropertyInterfacePtr & getBaseProperty( const ConstString & _name ) const = 0;
 
     public:
+        virtual void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
+        virtual const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const = 0;
+
+    public:
         virtual void syncProperties() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -120,9 +131,6 @@ namespace Mengine
     class UnknownDevToDebugWidgetTextInterface
         : public UnknownInterface
     {
-    public:
-        virtual void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
-        virtual const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownDevToDebugWidgetTextInterface> UnknownDevToDebugWidgetTextInterfacePtr;
@@ -131,12 +139,8 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        typedef Lambda<void(bool)> LambdaClickEvent;
-        virtual void setClickEvent( const LambdaClickEvent & _clickEvent ) = 0;
-
-    public:
-        virtual void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
-        virtual const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const = 0;
+        typedef Lambda<void(bool)> LambdaChangeEvent;
+        virtual void setChangeEvent( const LambdaChangeEvent & _changeEvent ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownDevToDebugWidgetCheckboxInterface> UnknownDevToDebugWidgetCheckboxInterfacePtr;
@@ -147,13 +151,39 @@ namespace Mengine
     public:
         typedef Lambda<void()> LambdaClickEvent;
         virtual void setClickEvent( const LambdaClickEvent & _clickEvent ) = 0;
-
-    public:
-        virtual void setDataProperty( const ConstString & _name, const DevToDebugPropertyInterfacePtr & _property ) = 0;
-        virtual const DevToDebugPropertyInterfacePtr & getDataProperty( const ConstString & _name ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownDevToDebugWidgetButtonInterface> UnknownDevToDebugWidgetButtonInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugWidgetCommandLineInterface
+        : public UnknownInterface
+    {
+    public:
+        typedef Lambda<void(const Char *)> LambdaCommandEvent;
+        virtual void setCommandEvent( const LambdaCommandEvent & _commandEvent ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugWidgetCommandLineInterface> UnknownDevToDebugWidgetCommandLineInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugWidgetRadioButtonInterface
+        : public UnknownInterface
+    {
+    public:
+        typedef Lambda<void( const ConstString & )> LambdaChangeEvent;
+        virtual void setChangeEvent( const LambdaChangeEvent & _changeEvent ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugWidgetRadioButtonInterface> UnknownDevToDebugWidgetRadioButtonInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownDevToDebugWidgetSelectorInterface
+        : public UnknownInterface
+    {
+    public:
+        typedef Lambda<void( const ConstString & )> LambdaChangeEvent;
+        virtual void setChangeEvent( const LambdaChangeEvent & _changeEvent ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<UnknownDevToDebugWidgetSelectorInterface> UnknownDevToDebugWidgetSelectorInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugTabInterface
         : public ServantInterface

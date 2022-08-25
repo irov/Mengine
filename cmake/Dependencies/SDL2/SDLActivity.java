@@ -15,13 +15,9 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,11 +33,8 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.InputDevice;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.PointerIcon;
 import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -319,6 +312,10 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mCurrentNativeState = NativeState.INIT;
     }
 
+    protected SDLSurface createSDLSurface(Context context) {
+        return new SDLSurface(context);
+    }
+
     // Setup
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,7 +383,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mHIDDeviceManager = HIDDeviceManager.acquire(this);
 
         // Set up the surface
-        mSurface = this.createSDLSurface(getApplication());
+        mSurface = createSDLSurface(getApplication());
 
         mLayout = new RelativeLayout(this);
         mLayout.addView(mSurface);

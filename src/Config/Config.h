@@ -303,6 +303,16 @@
 #define MENGINE_MIN(A, B) ((A) < (B) ? (A) : (B))
 #endif
 
+#ifndef MENGINE_MAX_ALIGNED_POINTER_VALUE
+#   ifdef MENGINE_ENVIRONMENT_ARCHITECTURE_X86
+#       define MENGINE_MAX_ALIGNED_POINTER_VALUE (0xfffffffc)
+#   elif MENGINE_ENVIRONMENT_ARCHITECTURE_X64
+#       define MENGINE_MAX_ALIGNED_POINTER_VALUE (0xfffffffffffffff8)
+#   else
+#       error "invalid define MENGINE_MAX_ALIGNED_POINTER_VALUE [unsupport architecture]"
+#   endif
+#endif
+
 #ifndef MENGINE_POWER2
 #define MENGINE_POWER2(N) (1 << N)
 #endif

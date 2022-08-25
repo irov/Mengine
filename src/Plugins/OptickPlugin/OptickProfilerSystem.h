@@ -31,11 +31,11 @@ namespace Mengine
         void endApplication() override;
 
         ProfilerInterfacePtr addThread( const Char * _threadName ) override;
-        ProfilerInterfacePtr addFrame( ProfilerDescriptionInterface * _description ) override;
-        ProfilerInterfacePtr addCategory( ProfilerDescriptionInterface * _description ) override;
+        ProfilerInterfacePtr addFrame( const ProfilerDescriptionInterface * _description ) override;
+        ProfilerInterfacePtr addCategory( const ProfilerDescriptionInterface * _description ) override;
 
     public:
-        ProfilerDescriptionInterface * createDescription( const Char * _name, const Char * _file, uint32_t _line ) override;
+        const ProfilerDescriptionInterface * createDescription( const Char * _name, const Char * _file, uint32_t _line ) override;
 
     protected:
         AtomicBool m_process;

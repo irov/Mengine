@@ -14,10 +14,15 @@
 #include "DevToDebugPropertyGetterString.h"
 #include "DevToDebugPropertyConstColor.h"
 #include "DevToDebugPropertyGetterColor.h"
+#include "DevToDebugPropertyContent.h"
+
 
 #include "DevToDebugWidgetText.h"
 #include "DevToDebugWidgetButton.h"
 #include "DevToDebugWidgetCheckbox.h"
+#include "DevToDebugWidgetCommandLine.h"
+#include "DevToDebugWidgetRadioButton.h"
+#include "DevToDebugWidgetSelector.h"
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/DocumentHelper.h"
@@ -84,32 +89,72 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetTextPtr s_createDevToDebugWidgetText( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr text = PROTOTYPE_SERVICE()
+            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_PYBIND );
 
-            text->setId( _id );
+            widget->setId( _id );
 
-            return DevToDebugWidgetTextPtr::dynamic_from( text );
+            return DevToDebugWidgetTextPtr::dynamic_from( widget );
         }
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetButtonPtr s_createDevToDebugWidgetButton( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr button = PROTOTYPE_SERVICE()
+            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_PYBIND );
 
-            button->setId( _id );
+            widget->setId( _id );
 
-            return DevToDebugWidgetButtonPtr::dynamic_from( button );
+            return DevToDebugWidgetButtonPtr::dynamic_from( widget );
         }
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetCheckboxPtr s_createDevToDebugWidgetCheckbox( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr button = PROTOTYPE_SERVICE()
+            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_PYBIND );
 
-            button->setId( _id );
+            widget->setId( _id );
 
-            return DevToDebugWidgetCheckboxPtr::dynamic_from( button );
+            return DevToDebugWidgetCheckboxPtr::dynamic_from( widget );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static DevToDebugWidgetCommandLinePtr s_createDevToDebugWidgetCommandLine( const ConstString & _id )
+        {
+            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), MENGINE_DOCUMENT_PYBIND );
+
+            widget->setId( _id );
+
+            return DevToDebugWidgetCommandLinePtr::dynamic_from( widget );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static DevToDebugWidgetRadioButtonPtr s_createDevToDebugWidgetRadioButton( const ConstString & _id )
+        {
+            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), MENGINE_DOCUMENT_PYBIND );
+
+            widget->setId( _id );
+
+            DevToDebugPropertyContentPtr property_content = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), MENGINE_DOCUMENT_PYBIND );
+
+            widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property_content );
+
+            return DevToDebugWidgetCommandLinePtr::dynamic_from( widget );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static DevToDebugWidgetSelectorPtr s_createDevToDebugWidgetSelector( const ConstString & _id )
+        {
+            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), MENGINE_DOCUMENT_PYBIND );
+
+            widget->setId( _id );
+
+            DevToDebugPropertyContentPtr property_content = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), MENGINE_DOCUMENT_PYBIND );
+
+            widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property_content );
+
+            return DevToDebugWidgetCommandLinePtr::dynamic_from( widget );
         }
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugPropertyInterfacePtr s_createDevToDebugPropertyBoolean( const pybind::object & _cb, const pybind::args & _args )
@@ -233,52 +278,122 @@ namespace Mengine
             _widget->setBaseProperty( STRINGIZE_STRING_LOCAL( "hide" ), property );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugWidgetText_setColor( DevToDebugWidgetText * _text, const pybind::object & _cb, const pybind::args & _args )
+        static void s_DevToDebugWidgetText_setColor( DevToDebugWidgetText * _widget, const pybind::object & _cb, const pybind::args & _args )
         {
             DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyColor( _cb, _args );
 
-            _text->setDataProperty( STRINGIZE_STRING_LOCAL( "color" ), property );
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "color" ), property );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugWidgetText_setText( DevToDebugWidgetText * _text, const pybind::object & _cb, const pybind::args & _args )
+        static void s_DevToDebugWidgetText_setText( DevToDebugWidgetText * _widget, const pybind::object & _cb, const pybind::args & _args )
         {
             DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyString( _cb, _args );
 
-            _text->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property );
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugWidgetButton_setTitle( DevToDebugWidgetButton * _button, const pybind::object & _cb, const pybind::args & _args )
+        static void s_DevToDebugWidgetButton_setTitle( DevToDebugWidgetButton * _widget, const pybind::object & _cb, const pybind::args & _args )
         {
             DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyString( _cb, _args );
 
-            _button->setDataProperty( STRINGIZE_STRING_LOCAL( "title" ), property );
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "title" ), property );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugWidgetButton_setClickEvent( DevToDebugWidgetButton * _button, const pybind::object & _cb, const pybind::args & _args )
+        static void s_DevToDebugWidgetButton_setClickEvent( DevToDebugWidgetButton * _widget, const pybind::object & _cb, const pybind::args & _args )
         {
-            _button->setClickEvent( [_cb, _args]()
+            _widget->setClickEvent( [_cb, _args]()
             {
                 _cb.call_args( _args );
             } );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugWidgetCheckbox_setTitle( DevToDebugWidgetCheckbox * _checkbox, const pybind::object & _cb, const pybind::args & _args )
+        static void s_DevToDebugWidgetCheckbox_setTitle( DevToDebugWidgetCheckbox * _widget, const pybind::object & _cb, const pybind::args & _args )
         {
             DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyString( _cb, _args );
 
-            _checkbox->setDataProperty( STRINGIZE_STRING_LOCAL( "text" ), property );
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "text" ), property );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugWidgetCheckbox_setValue( DevToDebugWidgetCheckbox * _checkbox, const pybind::object & _cb, const pybind::args & _args )
+        static void s_DevToDebugWidgetCheckbox_setValue( DevToDebugWidgetCheckbox * _widget, const pybind::object & _cb, const pybind::args & _args )
         {
             DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyBoolean( _cb, _args );
 
-            _checkbox->setDataProperty( STRINGIZE_STRING_LOCAL( "value" ), property );
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "value" ), property );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_DevToDebugWidgetCheckbox_setClickEvent( DevToDebugWidgetCheckbox * _checkbox, const pybind::object & _cb, const pybind::args & _args )
+        static void s_DevToDebugWidgetCheckbox_setChangeEvent( DevToDebugWidgetCheckbox * _widget, const pybind::object & _cb, const pybind::args & _args )
         {
-            _checkbox->setClickEvent( [_cb, _args]( bool _value )
+            _widget->setChangeEvent( [_cb, _args]( bool _value )
+            {
+                _cb.call_args( _value, _args );
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetCommandLine_setTitle( DevToDebugWidgetCommandLine * _widget, const pybind::object & _cb, const pybind::args & _args )
+        {
+            DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyString( _cb, _args );
+
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "title" ), property );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetCommandLine_setPlaceholder( DevToDebugWidgetCommandLine * _widget, const pybind::object & _cb, const pybind::args & _args )
+        {
+            DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyString( _cb, _args );
+
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "placeholder" ), property );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetCommandLine_setCommandEvent( DevToDebugWidgetCommandLine * _widget, const pybind::object & _cb, const pybind::args & _args )
+        {
+            _widget->setCommandEvent( [_cb, _args]( const Char * _value )
+            {
+                _cb.call_args( _value, _args );
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetRadioButton_setTitle( DevToDebugWidgetRadioButton * _widget, const pybind::object & _cb, const pybind::args & _args )
+        {
+            DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyString( _cb, _args );
+
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "title" ), property );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetRadioButton_addState( DevToDebugWidgetRadioButton * _widget, const ConstString & _id, const String & _value )
+        {
+            const DevToDebugPropertyInterfacePtr & property = _widget->getDataProperty( STRINGIZE_STRING_LOCAL( "content" ) );
+
+            UnknownDevToDebugPropertyContentInterface * content = property->getUnknown();
+
+            content->addState( _id, _value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetRadioButton_setChangeEvent( DevToDebugWidgetRadioButton * _widget, const pybind::object & _cb, const pybind::args & _args )
+        {
+            _widget->setChangeEvent( [_cb, _args]( const ConstString & _value )
+            {
+                _cb.call_args( _value, _args );
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetSelector_setTitle( DevToDebugWidgetSelector * _widget, const pybind::object & _cb, const pybind::args & _args )
+        {
+            DevToDebugPropertyInterfacePtr property = Detail::s_createDevToDebugPropertyString( _cb, _args );
+
+            _widget->setDataProperty( STRINGIZE_STRING_LOCAL( "title" ), property );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetSelector_addState( DevToDebugWidgetSelector * _widget, const ConstString & _id, const String & _value )
+        {
+            const DevToDebugPropertyInterfacePtr & property = _widget->getDataProperty( STRINGIZE_STRING_LOCAL( "content" ) );
+
+            UnknownDevToDebugPropertyContentInterface * content = property->getUnknown();
+
+            content->addState( _id, _value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_DevToDebugWidgetSelector_setChangeEvent( DevToDebugWidgetSelector * _widget, const pybind::object & _cb, const pybind::args & _args )
+        {
+            _widget->setChangeEvent( [_cb, _args]( const ConstString & _value )
             {
                 _cb.call_args( _value, _args );
             } );
@@ -307,6 +422,9 @@ namespace Mengine
         pybind::def_function( _kernel, "createDevToDebugWidgetText", &Detail::s_createDevToDebugWidgetText );
         pybind::def_function( _kernel, "createDevToDebugWidgetButton", &Detail::s_createDevToDebugWidgetButton );
         pybind::def_function( _kernel, "createDevToDebugWidgetCheckbox", &Detail::s_createDevToDebugWidgetCheckbox );
+        pybind::def_function( _kernel, "createDevToDebugWidgetCommandLine", &Detail::s_createDevToDebugWidgetCommandLine );
+        pybind::def_function( _kernel, "createDevToDebugWidgetRadioButton", &Detail::s_createDevToDebugWidgetRadioButton );
+        pybind::def_function( _kernel, "createDevToDebugWidgetSelector", &Detail::s_createDevToDebugWidgetSelector );
 
         pybind::interface_<DevToDebugTab, pybind::bases<Scriptable>>( _kernel, "DevToDebugTab" )
             .def_static( "addWidget", &Detail::s_DevToDebugTab_addWidget )
@@ -331,13 +449,34 @@ namespace Mengine
         pybind::interface_<DevToDebugWidgetCheckbox, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetCheckbox" )
             .def_static_args( "setTitle", &Detail::s_DevToDebugWidgetCheckbox_setTitle )
             .def_static_args( "setValue", &Detail::s_DevToDebugWidgetCheckbox_setValue )
-            .def_static_args( "setClickEvent", &Detail::s_DevToDebugWidgetCheckbox_setClickEvent )
+            .def_static_args( "setChangeEvent", &Detail::s_DevToDebugWidgetCheckbox_setChangeEvent )
+            ;
+
+        pybind::interface_<DevToDebugWidgetCommandLine, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetCommandLine" )
+            .def_static_args( "setTitle", &Detail::s_DevToDebugWidgetCommandLine_setTitle )
+            .def_static_args( "setPlaceholder", &Detail::s_DevToDebugWidgetCommandLine_setPlaceholder )
+            .def_static_args( "setCommandEvent", &Detail::s_DevToDebugWidgetCommandLine_setCommandEvent )
+            ;
+
+        pybind::interface_<DevToDebugWidgetRadioButton, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetRadioButton" )
+            .def_static_args( "setTitle", &Detail::s_DevToDebugWidgetRadioButton_setTitle )
+            .def_static( "addState", &Detail::s_DevToDebugWidgetRadioButton_addState )
+            .def_static_args( "setChangeEvent", &Detail::s_DevToDebugWidgetRadioButton_setChangeEvent )
+            ;
+
+        pybind::interface_<DevToDebugWidgetSelector, pybind::bases<DevToDebugWidget>>( _kernel, "DevToDebugWidgetSelector" )
+            .def_static_args( "setTitle", &Detail::s_DevToDebugWidgetSelector_setTitle )
+            .def_static( "addState", &Detail::s_DevToDebugWidgetSelector_addState )
+            .def_static_args( "setChangeEvent", &Detail::s_DevToDebugWidgetSelector_setChangeEvent )
             ;
 
         Helper::registerScriptWrapping<DevToDebugTab>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<DevToDebugWidgetText>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<DevToDebugWidgetButton>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<DevToDebugWidgetCheckbox>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetCommandLine>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetRadioButton>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetSelector>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -349,17 +488,28 @@ namespace Mengine
         _kernel->remove_scope<DevToDebugWidgetText>();
         _kernel->remove_scope<DevToDebugWidgetButton>();
         _kernel->remove_scope<DevToDebugWidgetCheckbox>();
+        _kernel->remove_scope<DevToDebugWidgetCommandLine>();
+        _kernel->remove_scope<DevToDebugWidgetRadioButton>();
+        _kernel->remove_scope<DevToDebugWidgetSelector>();
 
         _kernel->remove_from_module( "addDevToDebugTab", nullptr );
+        _kernel->remove_from_module( "getDevToDebugTab", nullptr );
+        _kernel->remove_from_module( "hasDevToDebugTab", nullptr );
         _kernel->remove_from_module( "removeDevToDebugTab", nullptr );
         _kernel->remove_from_module( "createDevToDebugWidgetText", nullptr );
         _kernel->remove_from_module( "createDevToDebugWidgetButton", nullptr );
         _kernel->remove_from_module( "createDevToDebugWidgetCheckbox", nullptr );
+        _kernel->remove_from_module( "createDevToDebugWidgetCommandLine", nullptr );
+        _kernel->remove_from_module( "createDevToDebugWidgetRadioButton", nullptr );
+        _kernel->remove_from_module( "createDevToDebugWidgetSelector", nullptr );
 
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugTab" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

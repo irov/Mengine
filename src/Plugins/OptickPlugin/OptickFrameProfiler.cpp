@@ -15,11 +15,11 @@ namespace Mengine
         Optick::Event::Stop( *m_data );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OptickFrameProfiler::initialize( ProfilerDescriptionInterface * _description )
+    bool OptickFrameProfiler::initialize( const ProfilerDescriptionInterface * _description )
     {
         //OPTICK_FRAME( "MainThread" );
 
-        OptickProfilerDescription * description = static_cast<OptickProfilerDescription *>(_description);
+        const OptickProfilerDescription * description = static_cast<const OptickProfilerDescription *>(_description);
 
         Optick::EndFrame();
         Optick::Update();

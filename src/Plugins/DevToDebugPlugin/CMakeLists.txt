@@ -21,7 +21,7 @@ src
     DevToDebugPropertyConstBoolean.cpp
 
     DevToDebugPropertyGetterBoolean.h
-    DevToDebugPropertyGetterBoolean.cpp    
+    DevToDebugPropertyGetterBoolean.cpp
     
     DevToDebugPropertyConstString.h
     DevToDebugPropertyConstString.cpp
@@ -34,6 +34,9 @@ src
     
     DevToDebugPropertyGetterColor.h
     DevToDebugPropertyGetterColor.cpp
+
+    DevToDebugPropertyContent.h
+    DevToDebugPropertyContent.cpp
     
     DevToDebugWidget.h
     DevToDebugWidget.cpp
@@ -46,6 +49,15 @@ src
     
     DevToDebugWidgetCheckbox.h
     DevToDebugWidgetCheckbox.cpp
+    
+    DevToDebugWidgetCommandLine.h
+    DevToDebugWidgetCommandLine.cpp
+    
+    DevToDebugWidgetRadioButton.h
+    DevToDebugWidgetRadioButton.cpp
+    
+    DevToDebugWidgetSelector.h
+    DevToDebugWidgetSelector.cpp
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

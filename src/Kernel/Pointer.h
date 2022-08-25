@@ -121,6 +121,7 @@ namespace Mengine
             return *this;
         }
 
+    public:
         bool operator == ( const T * _ptr ) const
         {
             return this->m_pointer == _ptr;
@@ -166,7 +167,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
+            if( stdex::mpl::is_dynamic_cast<const U *>::test( m_pointer ) == false )
             {
                 throw;
             }
@@ -206,6 +207,7 @@ namespace Mengine
             return *this;
         }
 
+    public:
         bool operator == ( const T * _ptr ) const
         {
             return this->m_pointer == _ptr;
@@ -228,6 +230,12 @@ namespace Mengine
             U * t = dynamic_cast<U *>(m_pointer);
 
             return t;
+        }
+
+        template<class U, class D>
+        operator IntrusivePtr<U, D>() &&
+        {
+            return IntrusivePtr<U, D>::dynamic_from( m_pointer );
         }
 
     protected:
@@ -283,6 +291,12 @@ namespace Mengine
             const U * t = dynamic_cast<const U *>(m_pointer);
 
             return t;
+        }
+
+        template<class U, class D>
+        operator IntrusivePtr<U, D>() &&
+        {
+            return IntrusivePtr<U, D>::dynamic_from( m_pointer );
         }
 
     protected:

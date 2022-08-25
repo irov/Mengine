@@ -2,19 +2,22 @@
 
 #include "DevToDebugWidget.h"
 
+#include "Kernel/String.h"
+#include "Kernel/Unknowable.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DevToDebugWidgetCheckbox
+    class DevToDebugWidgetSelector
         : public DevToDebugWidget
-        , public UnknownDevToDebugWidgetCheckboxInterface
+        , public UnknownDevToDebugWidgetSelectorInterface
     {
-        DECLARE_FACTORABLE( DevToDebugWidgetCheckbox );
+        DECLARE_FACTORABLE( DevToDebugWidgetSelector );
         DECLARE_UNKNOWABLE();
 
     public:
-        DevToDebugWidgetCheckbox();
-        ~DevToDebugWidgetCheckbox() override;
+        DevToDebugWidgetSelector();
+        ~DevToDebugWidgetSelector() override;
 
     public:
         void setChangeEvent( const LambdaChangeEvent & _changeEvent ) override;
@@ -29,6 +32,6 @@ namespace Mengine
         LambdaChangeEvent m_changeEvent;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DevToDebugWidgetCheckbox, DevToDebugWidgetInterface> DevToDebugWidgetCheckboxPtr;
+    typedef IntrusivePtr<DevToDebugWidgetSelector, DevToDebugWidgetInterface> DevToDebugWidgetSelectorPtr;
     //////////////////////////////////////////////////////////////////////////
 }

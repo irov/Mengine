@@ -1,27 +1,29 @@
-#include "DevToDebugWidgetCheckbox.h"
+#include "DevToDebugWidgetSelector.h"
+
+#include "DevToDebugProperty.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DevToDebugWidgetCheckbox::DevToDebugWidgetCheckbox()
+    DevToDebugWidgetSelector::DevToDebugWidgetSelector()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DevToDebugWidgetCheckbox::~DevToDebugWidgetCheckbox()
+    DevToDebugWidgetSelector::~DevToDebugWidgetSelector()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetCheckbox::setChangeEvent( const LambdaChangeEvent & _changeEvent )
+    void DevToDebugWidgetSelector::setChangeEvent( const LambdaChangeEvent & _changeEvent )
     {
         m_changeEvent = _changeEvent;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * DevToDebugWidgetCheckbox::getTypeJson() const
+    const Char * DevToDebugWidgetSelector::getTypeJson() const
     {
-        return "check-box";
+        return "selector";
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugWidgetCheckbox::process( const jpp::object & _data, const ThreadMutexInterfacePtr & _mutex, VectorDevToDebugWidgetCommands * const _commands )
+    void DevToDebugWidgetSelector::process( const jpp::object & _data, const ThreadMutexInterfacePtr & _mutex, VectorDevToDebugWidgetCommands * const _commands )
     {
         MENGINE_UNUSED( _data );
 
@@ -30,7 +32,7 @@ namespace Mengine
             return;
         }
 
-        bool value = _data.get( "value" );
+        ConstString value = _data.get( "value" );
 
         _mutex->lock();
         _commands->emplace_back( [this, value]()

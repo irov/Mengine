@@ -105,7 +105,7 @@ namespace Mengine
                 , MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US )
                 , (LPTSTR)errorMessageBuffer
                 , 2048
-                , NULL ) != 0 )
+                , NULL ) == 0 )
             {
                 MENGINE_WSPRINTF( errorMessageBuffer, L"#Error FormatMessage [%u]#"
                     , _messageId

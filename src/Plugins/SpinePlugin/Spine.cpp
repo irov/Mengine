@@ -23,6 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Spine::Spine()
         : m_skeleton( nullptr )
+        , m_skeletonClipper( nullptr )
         , m_animationStateData( nullptr )
     {
     }
@@ -198,7 +199,7 @@ namespace Mengine
                 {
                     spRegionAttachment * const attachment = (spRegionAttachment * const)slot->attachment;
 
-                    spRegionAttachment_computeWorldVertices( attachment, slot->bone, (float *)attachment_vertices, 0, 2 );
+                    spRegionAttachment_computeWorldVertices( attachment, slot, (float *)attachment_vertices, 0, 2 );
 
                     verticesCount = 4;
                 }break;
@@ -262,6 +263,11 @@ namespace Mengine
 
         spSkeleton_setToSetupPose( m_skeleton );
 
+        spSkeletonClipping * skeletonClipper = spSkeletonClipping_create();
+        MENGINE_ASSERTION_MEMORY_PANIC( skeletonClipper );
+
+        m_skeletonClipper = skeletonClipper;
+
         for( const SamplerSpineAnimationPtr & sampler : m_samplers )
         {
             if( sampler->compile() == false )
@@ -306,6 +312,12 @@ namespace Mengine
         {
             spSkeleton_dispose( m_skeleton );
             m_skeleton = nullptr;
+        }
+
+        if( m_skeletonClipper != nullptr )
+        {
+            spSkeletonClipping_dispose( m_skeletonClipper );
+            m_skeletonClipper = nullptr;
         }
 
         if( m_animationStateData != nullptr )
@@ -360,10 +372,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::update( const UpdateContext * _context )
     {
-        float spTime = _context->time * 0.001f;
-
-        spSkeleton_update( m_skeleton, spTime );
-
         for( const SamplerSpineAnimationPtr & sampler : m_samplers )
         {
             if( sampler->getAnimationEnable() == false )
@@ -382,11 +390,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
+        if( m_skeleton->color.a < MENGINE_COLOR_MINIMAL_ALPHA )
+        {
+            return;
+        }
+
         int slotCount = m_skeleton->slotsCount;
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        const RenderIndex quadTriangles[6] = {0, 1, 2, 2, 3, 0};
+        RenderIndex quadTriangles[6] = {0, 1, 2, 2, 3, 0};
 
         float attachment_vertices[MENGINE_SPINE_MAX_VERTICES * 2];
 
@@ -407,8 +420,10 @@ namespace Mengine
                 continue;
             }
 
-            if( slot->color.a < MENGINE_COLOR_MINIMAL_ALPHA )
+            if( slot->color.a < MENGINE_COLOR_MINIMAL_ALPHA || slot->bone->active == 0 /*false*/ )
             {
+                spSkeletonClipping_clipEnd( m_skeletonClipper, slot );
+
                 continue;
             }
 
@@ -418,9 +433,10 @@ namespace Mengine
 
             AttachmentMeshDesc & mesh = m_attachmentMeshes[slotIndex];
 
-            const float * uvs = nullptr;
+            float * vertices = nullptr;
+            float * uvs = nullptr;
             int verticesCount;
-            const RenderIndex * triangles;
+            RenderIndex * triangles;
             int trianglesCount;
 
             float ar = 1.f;
@@ -438,8 +454,16 @@ namespace Mengine
                 {
                     spRegionAttachment * attachment = (spRegionAttachment *)slot->attachment;
 
-                    spRegionAttachment_computeWorldVertices( attachment, slot->bone, attachment_vertices, 0, 2 );
+                    if( attachment->color.a < MENGINE_COLOR_MINIMAL_ALPHA )
+                    {
+                        spSkeletonClipping_clipEnd( m_skeletonClipper, slot );
 
+                        continue;
+                    }
+
+                    spRegionAttachment_computeWorldVertices( attachment, slot, attachment_vertices, 0, 2 );
+
+                    vertices = attachment_vertices;
                     uvs = attachment->uvs;
                     verticesCount = 4;
                     triangles = quadTriangles;
@@ -458,10 +482,18 @@ namespace Mengine
                 {
                     spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
 
+                    if( attachment->color.a < MENGINE_COLOR_MINIMAL_ALPHA )
+                    {
+                        spSkeletonClipping_clipEnd( m_skeletonClipper, slot );
+
+                        continue;
+                    }
+
                     spVertexAttachment_computeWorldVertices( &attachment->super, slot, 0, attachment->super.worldVerticesLength, attachment_vertices, 0, 2 );
 
+                    vertices = attachment_vertices;
                     uvs = attachment->uvs;
-                    verticesCount = attachment->super.worldVerticesLength;
+                    verticesCount = attachment->super.worldVerticesLength >> 1;
                     triangles = attachment->triangles;
                     trianglesCount = attachment->trianglesCount;
                     ar = attachment->color.r;
@@ -473,6 +505,12 @@ namespace Mengine
 
                     mesh.vertices.resize( verticesCount );
                     mesh.indices.resize( trianglesCount );
+                }break;
+            case SP_ATTACHMENT_CLIPPING:
+                {
+                    spClippingAttachment * clip = (spClippingAttachment *)slot->attachment;
+                    spSkeletonClipping_clipStart( m_skeletonClipper, slot, clip );
+                    continue;
                 }break;
             default:
                 continue;
@@ -498,18 +536,32 @@ namespace Mengine
 
             ColorValue_ARGB argb = Helper::makeRGBAF( wr, wg, wb, wa );
 
-            RenderVertex2D * vertices = mesh.vertices.data();
-            RenderIndex * indices = mesh.indices.data();
+            if( spSkeletonClipping_isClipping( m_skeletonClipper ) == 1 /*true*/ )
+            {
+                spSkeletonClipping_clipTriangles( m_skeletonClipper, vertices, verticesCount << 1, triangles, trianglesCount, uvs, 2 );
+                vertices = m_skeletonClipper->clippedVertices->items;
+                verticesCount = m_skeletonClipper->clippedVertices->size >> 1;
+                uvs = m_skeletonClipper->clippedUVs->items;
+                triangles = m_skeletonClipper->clippedTriangles->items;
+                trianglesCount = m_skeletonClipper->clippedTriangles->size;
+            }
 
-            this->fillVertices_( vertices, attachment_vertices, uvs, argb, verticesCount, wm );
-            this->fillIndices_( indices, triangles, trianglesCount );
+            RenderVertex2D * mesh_vertices = mesh.vertices.data();
+            RenderIndex * mesh_indices = mesh.indices.data();
+
+            this->fillVertices_( mesh_vertices, vertices, uvs, argb, verticesCount, wm );
+            this->fillIndices_( mesh_indices, triangles, trianglesCount );
 
             const RenderMaterialInterfacePtr & material = mesh.material;
 
             const mt::box2f * bb = this->getBoundingBox();
 
-            _renderPipeline->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, trianglesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderObject( _context, material, nullptr, mesh_vertices, verticesCount, mesh_indices, trianglesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
+
+            spSkeletonClipping_clipEnd( m_skeletonClipper, slot );
         }
+
+        spSkeletonClipping_clipEnd2( m_skeletonClipper );
     }
     //////////////////////////////////////////////////////////////////////////
     void Spine::fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColorValue_ARGB _argb, int _count, const mt::mat4f & _wm ) const

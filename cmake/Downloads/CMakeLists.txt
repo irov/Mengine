@@ -57,7 +57,7 @@ GIT_CLONE(glad https://github.com/Dav1dde/glad.git "v0.1.36")
 GIT_CLONE(glfw3 https://github.com/glfw/glfw.git "3.3.7")
 GIT_CLONE(imgui https://github.com/ocornut/imgui.git "v1.87")
 GIT_CLONE(zed_net https://github.com/iOrange/zed_net.git)
-GIT_CLONE(spine https://github.com/EsotericSoftware/spine-runtimes.git "3.7.94")  #don't up
+GIT_CLONE(spine https://github.com/EsotericSoftware/spine-runtimes.git "4.1.00")  #don't up
 GIT_CLONE(dazzle https://github.com/irov/dazzle.git)
 GIT_CLONE(GOAP https://github.com/irov/GOAP.git)
 GIT_CLONE(SDL2 https://github.com/libsdl-org/SDL.git "release-2.24.0")

@@ -105,9 +105,7 @@ namespace Mengine
 
                 bool uvImageRotate = _frame->isUVImageRotate();
 
-                region->rotate = uvImageRotate;
-
-                region->flip = 0; //TODO
+                region->super.degrees = uvImageRotate == true ? 90 : 0;
 
                 const mt::uv4f & uv = _frame->getUVImage();
 
@@ -116,31 +114,31 @@ namespace Mengine
 
                 const mt::vec2f & size = _frame->getSize();
 
-                region->width = (int)(size.x + 0.5f);
-                region->height = (int)(size.y + 0.5f);
+                region->super.width = (int)(size.x + 0.5f);
+                region->super.height = (int)(size.y + 0.5f);
 
-                region->u = uv.p0.x;
-                region->v = uv.p0.y;
+                region->super.u = uv.p0.x;
+                region->super.v = uv.p0.y;
 
                 if( uvImageRotate == true )
                 {
-                    region->u2 = (region->x + region->height) * atlasWidthInv;
-                    region->v2 = (region->y + region->width) * atlasHeightInv;
+                    region->super.u2 = (region->x + region->super.height) * atlasWidthInv;
+                    region->super.v2 = (region->y + region->super.width) * atlasHeightInv;
                 }
                 else
                 {
-                    region->u2 = (region->x + region->width) * atlasWidthInv;
-                    region->v2 = (region->y + region->height) * atlasHeightInv;
+                    region->super.u2 = (region->x + region->super.width) * atlasWidthInv;
+                    region->super.v2 = (region->y + region->super.height) * atlasHeightInv;
                 }
 
                 const mt::vec2f & offset = _frame->getOffset();
                 const mt::vec2f & maxSize = _frame->getMaxSize();
 
-                region->offsetX = (int)(offset.x + 0.5f);
-                region->offsetY = (int)(maxSize.y - size.y - offset.y + 0.5f);
+                region->super.offsetX = offset.x + 0.5f;
+                region->super.offsetY = maxSize.y - size.y - offset.y + 0.5f;
 
-                region->originalWidth = (int)(maxSize.x + 0.5f);
-                region->originalHeight = (int)(maxSize.y + 0.5f);
+                region->super.originalWidth = (int)(maxSize.x + 0.5f);
+                region->super.originalHeight = (int)(maxSize.y + 0.5f);
 
                 region->index = -1;
 

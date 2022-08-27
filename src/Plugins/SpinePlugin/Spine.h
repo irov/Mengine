@@ -79,6 +79,7 @@ namespace Mengine
         ResourceSpineSkeletonPtr m_resourceSpineSkeleton;
 
         spSkeleton * m_skeleton;
+        spSkeletonClipping * m_skeletonClipper;
         spAnimationStateData * m_animationStateData;
 
         typedef Vector<SamplerSpineAnimationPtr> VectorSamplerAnimations;

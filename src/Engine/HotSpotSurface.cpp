@@ -86,7 +86,7 @@ namespace Mengine
         HotSpotPolygon::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotSurface::getWorldBoundingBox( mt::box2f * _bb ) const
+    void HotSpotSurface::getWorldBoundingBox( mt::box2f * const _bb ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 

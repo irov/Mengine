@@ -53,7 +53,7 @@ namespace Mengine
         const SamplerSpineAnimationInterfacePtr & getAnimationSampler( uint32_t _index ) const override;
 
     public:
-        bool getWorldBoundingBox( mt::box2f * _box ) const;
+        bool getWorldBoundingBox( mt::box2f * const _box ) const;
 
     protected:
         bool _compile() override;
@@ -94,8 +94,8 @@ namespace Mengine
             VectorRenderIndex indices;
         };
 
-        typedef Vector<AttachmentMeshDesc> VectorAttachmentMesh;
-        mutable VectorAttachmentMesh m_attachmentMeshes;
+        typedef Vector<AttachmentMeshDesc> VectorAttachmentMeshes;
+        mutable VectorAttachmentMeshes m_attachmentMeshes;
 
         struct AnimationEventDesc
         {
@@ -113,9 +113,9 @@ namespace Mengine
             int32_t loopCount;
         };
 
-        typedef Vector<AnimationEventDesc> VectorAnimationEvent;
-        VectorAnimationEvent m_events;
-        VectorAnimationEvent m_eventsAux;
+        typedef Vector<AnimationEventDesc> VectorAnimationEvents;
+        VectorAnimationEvents m_events;
+        VectorAnimationEvents m_eventsAux;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Spine> SpinePtr;

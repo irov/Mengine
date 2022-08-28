@@ -113,7 +113,7 @@ namespace Mengine
         {
             IntrusivePtrScope ankh( this );
 
-            this->unlink();
+            this->IntrusiveSlugLinkedPtr<Affector, void, IntrusivePtr, IntrusivePtrBase>::unlink();
 
             TIMELINE_SERVICE()
                 ->beginOffset( used, MENGINE_DOCUMENT_FACTORABLE );
@@ -146,7 +146,7 @@ namespace Mengine
 
         m_updataterId = INVALID_UPDATABLE_ID;
 
-        this->unlink();
+        this->IntrusiveSlugLinkedPtr<Affector, void, IntrusivePtr, IntrusivePtrBase>::unlink();
 
         this->_complete( _isEnd );
     }

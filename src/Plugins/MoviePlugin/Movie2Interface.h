@@ -67,7 +67,7 @@ namespace Mengine
         virtual void setExtraOpacityMovieLayers( const ConstString & _name, float _opacity ) = 0;
 
     public:
-        virtual bool getWorldBoundingBox( mt::box2f * _bb ) const = 0;
+        virtual bool getWorldBoundingBox( mt::box2f * const _bb ) const = 0;
 
     public:
         typedef Lambda<void( Node * _node, const RenderPipelineInterfacePtr &, const RenderContext * _context )> LambdaMovieRenderSlot;

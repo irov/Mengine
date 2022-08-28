@@ -33,6 +33,9 @@ namespace Mengine
 #else
         : public Mixin
 #endif
+#ifdef MENGINE_DEBUG
+        , public IntrusiveLinked<Factorable>
+#endif
     {
     public:
         Factorable();

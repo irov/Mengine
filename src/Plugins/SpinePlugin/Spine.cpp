@@ -59,7 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Spine::addAnimationSampler( const SamplerSpineAnimationInterfacePtr & _sampler )
     {
-        SamplerSpineAnimationPtr sampler = _sampler;
+        SamplerSpineAnimationPtr sampler = SamplerSpineAnimationPtr::from( _sampler );
 
         m_samplers.emplace_back( sampler );
 
@@ -164,7 +164,7 @@ namespace Mengine
         return sampler;
     }    
     //////////////////////////////////////////////////////////////////////////
-    bool Spine::getWorldBoundingBox( mt::box2f * _box ) const
+    bool Spine::getWorldBoundingBox( mt::box2f * const _box ) const
     {
         if( this->isCompile() == false )
         {
@@ -197,7 +197,7 @@ namespace Mengine
             {
             case SP_ATTACHMENT_REGION:
                 {
-                    spRegionAttachment * const attachment = (spRegionAttachment * const)slot->attachment;
+                    spRegionAttachment * attachment = (spRegionAttachment *)slot->attachment;
 
                     spRegionAttachment_computeWorldVertices( attachment, slot, (float *)attachment_vertices, 0, 2 );
 
@@ -205,7 +205,7 @@ namespace Mengine
                 }break;
             case SP_ATTACHMENT_MESH:
                 {
-                    spMeshAttachment * const attachment = (spMeshAttachment * const)slot->attachment;
+                    spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
 
                     MENGINE_ASSERTION_FATAL( attachment->super.worldVerticesLength <= MENGINE_SPINE_MAX_VERTICES );
 
@@ -510,6 +510,7 @@ namespace Mengine
                 {
                     spClippingAttachment * clip = (spClippingAttachment *)slot->attachment;
                     spSkeletonClipping_clipStart( m_skeletonClipper, slot, clip );
+
                     continue;
                 }break;
             default:

@@ -84,6 +84,10 @@ namespace Mengine
         }
 #endif
 
+#ifdef MENGINE_DEBUG
+        m_factorables.push_back( object );
+#endif
+
         return object;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -102,6 +106,10 @@ namespace Mengine
         }
 #endif
 
+#ifdef MENGINE_DEBUG
+        m_factorables.remove( _object );
+#endif
+
 #ifdef MENGINE_DOCUMENT_ENABLE
         DocumentPtr doc = _object->getDocument();
         MENGINE_UNUSED( doc );
@@ -118,9 +126,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Factory::isEmptyObjects() const
     {
-        bool referencing = m_count.isReferencing();
+        uint32_t counter = m_count.getReferenceCount();
 
-        return referencing == 0;
+        if( counter != 0 )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Factory::getCountObject() const
@@ -129,5 +142,20 @@ namespace Mengine
 
         return count;
     }
+    //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_DEBUG
+    //////////////////////////////////////////////////////////////////////////
+    void Factory::foreachFactorables( const LambdaFactorable & _lambda )
+    {
+        for( Factorable * factorable : m_factorables )
+        {
+            if( _lambda( factorable ) == false )
+            {
+                break;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

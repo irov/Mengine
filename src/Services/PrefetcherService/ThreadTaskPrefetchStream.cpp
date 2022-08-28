@@ -7,6 +7,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 namespace Mengine
 {
@@ -71,8 +72,8 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s'"
-            , this->getFileGroup()->getName().c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input stream '%s'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
         );
 
         return true;
@@ -82,9 +83,8 @@ namespace Mengine
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, ~0U, false, false ) == false )
         {
-            LOGGER_ERROR( "invalid open file '%s':'%s'"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
+            LOGGER_ERROR( "invalid open file '%s'"
+                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
             );
 
             return false;
@@ -92,9 +92,8 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid stream archive magic memory '%s':'%s'"
-            , this->getFileGroup()->getName().c_str()
-            , this->getFilePath().c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid stream archive magic memory '%s'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
         );
 
         m_memory = memory;

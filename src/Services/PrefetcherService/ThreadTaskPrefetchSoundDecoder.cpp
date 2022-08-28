@@ -50,8 +50,8 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s'"
-            , this->getFileGroup()->getName().c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create sound file '%s'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
         );
 
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
@@ -68,6 +68,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskProcess()
     {
+        LOGGER_INFO("prefetch", "prefetch sound file '%s'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+        );
+        
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, ~0U, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s'"

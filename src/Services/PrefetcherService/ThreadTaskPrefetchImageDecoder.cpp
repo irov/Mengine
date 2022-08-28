@@ -51,9 +51,8 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s' codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create image file '%s'"
             , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
-            , this->getCodecType().c_str()
         );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
@@ -70,6 +69,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchImageDecoder::_onThreadTaskProcess()
     {
+        LOGGER_INFO("prefetch", "prefetch image file '%s' codec '%s'"
+            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , this->getCodecType().c_str()
+        );
+        
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, ~0U, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s' codec '%s'"

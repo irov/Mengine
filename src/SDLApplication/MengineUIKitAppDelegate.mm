@@ -39,7 +39,8 @@
     for(id delegate in self.m_applicationDelegates){
         [delegate application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
     }
-    [super  application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    
+    [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo API_DEPRECATED("Use UserNotifications Framework's -[UNUserNotificationCenterDelegate willPresentNotification:withCompletionHandler:] or -[UNUserNotificationCenterDelegate didReceiveNotificationResponse:withCompletionHandler:] for user visible notifications and -[UIApplicationDelegate application:didReceiveRemoteNotification:fetchCompletionHandler:] for silent remote notifications", ios(3.0, 10.0)){
@@ -47,6 +48,7 @@
     for(id delegate in self.m_applicationDelegates){
         [delegate application:application didReceiveRemoteNotification:userInfo];
     }
+    
     [super application:application didReceiveRemoteNotification:userInfo];
 }
 
@@ -55,6 +57,7 @@
     for(id delegate in self.m_applicationDelegates){
         [delegate application:application didReceiveRemoteNotification:userInfo];
     }
+    
     [super application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
 
@@ -63,6 +66,7 @@
     for(id delegate in self.m_applicationDelegates){
         [delegate application:application didReceiveLocalNotification:notification];
     }
+    
     [super application:application didReceiveLocalNotification:notification];
 }
 
@@ -76,19 +80,19 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [super applicationWillEnterForeground:application];
-    
     for(id delegate in self.m_applicationDelegates) {
         [delegate applicationWillEnterForeground:application];
     }
+    
+    [super applicationWillEnterForeground:application];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [super applicationDidEnterBackground:application];
-    
     for(id delegate in self.m_applicationDelegates) {
         [delegate applicationDidEnterBackground:application];
     }
+    
+    [super applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

@@ -23,6 +23,8 @@ namespace Mengine
         if( m_destroy == false && m_factory != nullptr )
         {
             MENGINE_THROW_EXCEPTION( "Factorable deleter but not destroy!!" );
+            
+            return;
         }
 #endif
     }
@@ -94,6 +96,8 @@ namespace Mengine
         if( m_immortal == true )
         {
             MENGINE_THROW_EXCEPTION( "m_immortal == true" );
+            
+            return;
         }
 #endif
 
@@ -101,6 +105,8 @@ namespace Mengine
         if( m_destroy == true )
         {
             MENGINE_THROW_EXCEPTION( "m_destroy == true" );
+            
+            return;
         }
 
         m_destroy = true;
@@ -112,6 +118,8 @@ namespace Mengine
         if( m_factory == nullptr )
         {
             MENGINE_THROW_EXCEPTION( "m_factory == nullptr" );
+            
+            return;
         }
 #endif
 

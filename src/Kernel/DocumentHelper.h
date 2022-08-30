@@ -18,6 +18,11 @@ namespace Mengine
         const DocumentPtr & getDocumentableFromPtr( const T * _ptr )
         {
             const Documentable * documentable = dynamic_cast<const Documentable *>(_ptr);
+            
+            if( documentable == nullptr )
+            {
+                return DocumentPtr::none();
+            }
 
             const DocumentPtr & document = documentable->getDocument();
 
@@ -31,6 +36,11 @@ namespace Mengine
 
             const Documentable * documentable = dynamic_cast<const Documentable *>(ptr_get);
 
+            if( documentable == nullptr )
+            {
+                return DocumentPtr::none();
+            }
+            
             const DocumentPtr & document = documentable->getDocument();
 
             return document;
@@ -41,6 +51,11 @@ namespace Mengine
         {
             const Documentable * documentable = dynamic_cast<const Documentable *>(_ptr);
 
+            if( documentable == nullptr )
+            {
+                return "[None Documentable]";
+            }
+            
             const DocumentPtr & document = documentable->getDocument();
 
             if( document == nullptr )
@@ -60,6 +75,11 @@ namespace Mengine
 
             const Documentable * documentable = dynamic_cast<const Documentable *>(ptr_get);
 
+            if( documentable == nullptr )
+            {
+                return "[None Documentable]";
+            }
+            
             const DocumentPtr & document = documentable->getDocument();
 
             if( document == nullptr )

@@ -30,6 +30,8 @@ namespace Mengine
             MENGINE_THROW_EXCEPTION( "'%s' but scope not setup bindable"
                 , _kernel->object_repr_type( _embed ).c_str()
             );
+            
+            return;
         }
 #endif
 

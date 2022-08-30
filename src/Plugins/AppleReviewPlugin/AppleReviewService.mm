@@ -24,7 +24,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleReviewService::launchTheInAppReview()
     {
-        [SKStoreReviewController requestReview];
+        if (@available(iOS 14.0, *)) {
+            UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
+            [SKStoreReviewController requestReviewInScene:appWindow.windowScene];
+        } else if (@available(iOS 10.3, *)) {
+            [SKStoreReviewController requestReview];
+        }
     }
     /////////////////////////////////////////////////////////////////////////////
     bool AppleReviewService::_initializeService()

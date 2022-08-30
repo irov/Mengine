@@ -153,6 +153,8 @@ namespace Mengine
                     , _key
                     , ini_value
                 );
+                
+                return false;
             }
 #endif
 

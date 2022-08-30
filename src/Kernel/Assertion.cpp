@@ -110,6 +110,8 @@ namespace Mengine
                 MENGINE_THROW_EXCEPTION( "%s"
                     , assertion_info
                 );
+                
+                return;
             }
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )

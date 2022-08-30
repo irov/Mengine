@@ -108,6 +108,8 @@ namespace Metabuf
             MENGINE_THROW_EXCEPTION( "read FilePath '%s' has invalid slash"
                 , test_value
             );
+            
+            return;
         }
 #endif
 

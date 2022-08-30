@@ -2,7 +2,8 @@
 
 #include "Kernel/Logger.h"
 
-#import "AppleAppTrackingPlugin-Swift.h"
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
+#import <AdSupport/AdSupport.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleAppTrackingService, Mengine::AppleAppTrackingService );
@@ -21,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingService::_initializeService()
     {
-        //Empty
+        m_idfa = STRINGIZE_STRING_LOCAL("00000000-0000-0000-0000-000000000000");
 
         return true;
     }
@@ -33,50 +34,65 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::authorization( const LambdaAuthorizationResponse & _response )
     {
-        LambdaAuthorizationResponse copy_response = _response;
-        
-        [AppleAppTrackingNative requestAuthorizationWithCb:^(NSInteger _code, NSString * _Nullable _idfa) {
-            uint32_t code_u32 = (uint32_t)_code;
+        if(@available(iOS 14.0, *))
+        {
+            LambdaAuthorizationResponse copy_response = _response;
             
-            switch( code_u32 )
-            {
-            case 0:
+            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                switch( status )
                 {
-                    m_status = EAATA_AUTHORIZED;
-                    
-                    const char * idfa_str = [_idfa UTF8String];
-                    m_idfa = Helper::stringizeString( idfa_str );
-                }break;
-            case 1:
-                {
-                    m_status = EAATA_DENIED;
-                }break;
-            case 2:
-                {
-                    m_status = EAATA_RESTRICTED;
-                }break;
-            case 3:
-                {
-                    m_status = EAATA_NOT_DETERMINED;
-                }break;
-            default:
-                {
-                    m_status = EAATA_NONE;
-                    
-                    LOGGER_ERROR("invalid AppTracking result code [%u]"
-                        , code_u32
-                    );
-                }break;
-            }
-            
-            copy_response( m_status, m_idfa );
-        }];
+                    case ATTrackingManagerAuthorizationStatusAuthorized:
+                    {
+                        m_status = EAATA_AUTHORIZED;
+                        
+                        this->makeIDFA_();
+                    }break;
+                    case ATTrackingManagerAuthorizationStatusDenied:
+                    {
+                        m_status = EAATA_DENIED;
+                    }break;
+                    case ATTrackingManagerAuthorizationStatusNotDetermined:
+                    {
+                        m_status = EAATA_NOT_DETERMINED;
+                    }break;
+                    case ATTrackingManagerAuthorizationStatusRestricted:
+                    {
+                        m_status = EAATA_RESTRICTED;
+                    }break;
+                }
+                
+                copy_response( m_status, m_idfa );
+            }];
+        }
+        else
+        {
+            m_status = EAATA_AUTHORIZED;
+                
+            this->makeIDFA_();
+                
+            _response( m_status, m_idfa );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::getIDFA( EAppleAppTrackingAuthorization * const _status, ConstString * const _idfa ) const
     {
         *_status = m_status;
         *_idfa = m_idfa;
+    }
+//////////////////////////////////////////////////////////////////////////
+    void AppleAppTrackingService::makeIDFA_()
+    {
+        NSUUID * idfa = [[ASIdentifierManager sharedManager] advertisingIdentifier];
+        
+        if( idfa == nullptr )
+        {
+            return;
+        }
+        
+        NSString * idfa_nsstring = [idfa UUIDString];
+        const Char * idfa_str = [idfa_nsstring UTF8String];
+        
+        m_idfa = Helper::stringizeString( idfa_str );
     }
     //////////////////////////////////////////////////////////////////////////
 }

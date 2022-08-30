@@ -62,6 +62,8 @@ namespace Mengine
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' invalid get provider"
                         , serviceName
                         );
+                    
+                    return nullptr;
                 }
 #endif
 
@@ -75,6 +77,8 @@ namespace Mengine
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' not found"
                         , serviceName
                         );
+                    
+                    return nullptr;
                 }
 #endif
 
@@ -85,6 +89,8 @@ namespace Mengine
                         , serviceName
                         , Typename<T>::value
                         );
+                    
+                    return nullptr;
                 }
 #endif
 

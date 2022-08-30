@@ -24,6 +24,9 @@ namespace Mengine
         void getIDFA( EAppleAppTrackingAuthorization * const _status, ConstString * const _idfa ) const override;
         
     protected:
+        void makeIDFA_();
+        
+    protected:
         EAppleAppTrackingAuthorization m_status;
         ConstString m_idfa;
     };

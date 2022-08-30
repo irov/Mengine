@@ -48,7 +48,7 @@ namespace Mengine
         {
             String begin_message = m_message.substr( 0, Sentry_MaxLogSize * 60 / 100 );
             String end_message = m_message.substr( message_size - Sentry_MaxLogSize * 40 / 100 );
-
+	
             String total_message;
             total_message += begin_message;
             total_message += "\n";

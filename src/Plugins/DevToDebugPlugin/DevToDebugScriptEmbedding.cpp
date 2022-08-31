@@ -345,7 +345,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_DevToDebugWidgetCommandLine_setCommandEvent( DevToDebugWidgetCommandLine * _widget, const pybind::object & _cb, const pybind::args & _args )
         {
-            _widget->setCommandEvent( [_cb, _args]( const Char * _value )
+            _widget->setCommandEvent( [_cb, _args]( const String & _value )
             {
                 _cb.call_args( _value, _args );
             } );

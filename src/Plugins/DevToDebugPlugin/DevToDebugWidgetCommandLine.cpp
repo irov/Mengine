@@ -30,12 +30,14 @@ namespace Mengine
             return;
         }
 
-        const Char * value = _data.get( "command" );
+        const Char * value = _data.get( "value" );
+
+        m_commandAux = value;
 
         _mutex->lock();
-        _commands->emplace_back( [this, value]()
+        _commands->emplace_back( [this]()
         {
-            m_commandEvent( value );
+            m_commandEvent( m_commandAux );
         } );
         _mutex->unlock();
     }

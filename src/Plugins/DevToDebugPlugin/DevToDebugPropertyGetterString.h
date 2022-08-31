@@ -19,7 +19,6 @@ namespace Mengine
         ~DevToDebugPropertyGetterString() override;
 
     public:
-        typedef Lambda<void( String * const )> LambdaGetterValue;
         void setGetter( const LambdaGetterValue & _getter ) override;
 
     public:
@@ -36,6 +35,7 @@ namespace Mengine
         ThreadMutexInterfacePtr m_mutex;
 
         LambdaGetterValue m_getter;
+        mutable String m_cacheAux;
         mutable String m_cache;
         mutable String m_test;
     };

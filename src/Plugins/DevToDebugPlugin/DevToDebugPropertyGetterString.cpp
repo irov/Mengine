@@ -35,11 +35,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugPropertyGetterString::sync()
     {
-        String value;
-        m_getter( &value );
+        m_getter( &m_cacheAux );
 
         m_mutex->lock();
-        m_cache = value;
+        m_cache = m_cacheAux;
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////

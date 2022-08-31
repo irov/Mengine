@@ -19,7 +19,6 @@ namespace Mengine
         ~DevToDebugPropertyGetterBoolean() override;
 
     public:
-        typedef Lambda<void( bool * const )> LambdaGetterValue;
         void setGetter( const LambdaGetterValue & _getter ) override;
 
     public:

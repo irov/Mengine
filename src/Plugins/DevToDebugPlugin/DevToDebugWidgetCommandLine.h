@@ -27,6 +27,8 @@ namespace Mengine
 
     protected:
         LambdaCommandEvent m_commandEvent;
+
+        String m_commandAux;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugWidgetCommandLine, DevToDebugWidgetInterface> DevToDebugWidgetCommandLinePtr;

@@ -159,7 +159,7 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        typedef Lambda<void(const Char *)> LambdaCommandEvent;
+        typedef Lambda<void(const String &)> LambdaCommandEvent;
         virtual void setCommandEvent( const LambdaCommandEvent & _commandEvent ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

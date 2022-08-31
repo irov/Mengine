@@ -276,6 +276,10 @@ namespace Mengine
     void DevToDebugService::addTab( const ConstString & _name, const DevToDebugTabInterfacePtr & _tab )
     {
         m_mutexTabs->lock();
+        MENGINE_ASSERTION_FATAL( m_tabsProcess.exist( _name ) == false, "alredy exist devtodebug tab '%s'"
+            , _name.c_str()
+        );
+
         m_tabsProcess.emplace( _name, _tab );
 
         m_invalidateTabs = true;

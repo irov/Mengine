@@ -30,7 +30,7 @@ namespace Mengine
             return;
         }
 
-        const char * value = _data.get( "inputs" );
+        const Char * value = _data.get( "command" );
 
         _mutex->lock();
         _commands->emplace_back( [this, value]()

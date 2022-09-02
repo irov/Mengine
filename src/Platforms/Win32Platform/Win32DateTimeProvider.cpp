@@ -61,6 +61,27 @@ namespace Mengine
         return total;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32DateTimeProvider::getLocalDateTimeFromMilliseconds( uint64_t _timestamp, PlatformDateTime * const _dateTime ) const
+    {
+        uint64_t milliseconds_year64 = 1000ULL * 60ULL * 60ULL * 30ULL * 365ULL;
+        uint64_t milliseconds_month64 = 1000ULL * 60ULL * 60ULL * 30ULL;
+        uint64_t milliseconds_day64 = 1000ULL * 60ULL * 60ULL * 24ULL;
+        uint64_t milliseconds_hour64 = 1000ULL * 60ULL * 60ULL;
+        uint64_t milliseconds_minute64 = 1000ULL * 60ULL;
+        uint64_t milliseconds_second64 = 1000ULL;
+
+        PlatformDateTime date;
+        date.year = (uint32_t)(_timestamp / milliseconds_year64);
+        date.month = (uint32_t)((_timestamp % milliseconds_year64) / milliseconds_month64);
+        date.day = (uint32_t)((_timestamp % milliseconds_month64) / milliseconds_day64);
+        date.hour = (uint32_t)((_timestamp % milliseconds_day64) / milliseconds_hour64);
+        date.minute = (uint32_t)((_timestamp % milliseconds_hour64) / milliseconds_minute64);
+        date.second = (uint32_t)((_timestamp % milliseconds_minute64) / milliseconds_second64);
+        date.milliseconds = (uint32_t)(_timestamp % milliseconds_second64);
+
+        *_dateTime = date;
+    }
+    //////////////////////////////////////////////////////////////////////////
     int32_t Win32DateTimeProvider::getTimeZoneOffset() const
     {
         TIME_ZONE_INFORMATION TimeZoneInformation;

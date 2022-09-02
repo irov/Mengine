@@ -17,6 +17,9 @@ namespace Mengine
         virtual uint64_t getLocalDateMilliseconds() const = 0;
 
     public:
+        virtual void getLocalDateTimeFromMilliseconds( uint64_t _timestamp, PlatformDateTime * const _dateTime ) const = 0;
+
+    public:
         virtual int32_t getTimeZoneOffset() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

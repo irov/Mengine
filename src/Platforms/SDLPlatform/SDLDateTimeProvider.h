@@ -23,6 +23,9 @@ namespace Mengine
         uint64_t getLocalDateMilliseconds() const override;
 
     public:
+        void getLocalDateTimeFromMilliseconds( uint64_t _timestamp, PlatformDateTime * const _dateTime ) const override;
+
+    public:
         int32_t getTimeZoneOffset() const override;
     };
     //////////////////////////////////////////////////////////////////////////

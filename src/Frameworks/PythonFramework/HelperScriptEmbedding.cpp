@@ -1338,13 +1338,34 @@ namespace Mengine
                 return s;
             }
             //////////////////////////////////////////////////////////////////////////
-            PlatformDateTime s_getDateStruct()
+            uint64_t s_getLocalDateTimeMs()
+            {
+                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
+
+                uint64_t timestamp = dateTimeProvider->getLocalDateMilliseconds();
+
+                return timestamp;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PlatformDateTime s_getLocalDateStruct()
             {
                 DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
                     ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
 
                 PlatformDateTime dateTime;
                 dateTimeProvider->getLocalDateTime( &dateTime );
+
+                return dateTime;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PlatformDateTime s_getLocalDateStructFromTimeMs( uint64_t _timestamp )
+            {
+                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
+
+                PlatformDateTime dateTime;
+                dateTimeProvider->getLocalDateTimeFromMilliseconds( _timestamp, &dateTime );
 
                 return dateTime;
             }
@@ -3922,7 +3943,12 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
 
         pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
-        pybind::def_functor( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getDateStruct );
+        
+        pybind::def_functor( _kernel, "getLocalDateTimeMs", helperScriptMethod, &HelperScriptMethod::s_getLocalDateTimeMs );
+        pybind::def_functor_deprecated( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getLocalDateStruct, "use getLocalDateStruct" );
+        pybind::def_functor( _kernel, "getLocalDateStruct", helperScriptMethod, &HelperScriptMethod::s_getLocalDateStruct );
+        pybind::def_functor( _kernel, "getLocalDateStructFromTimeMs", helperScriptMethod, &HelperScriptMethod::s_getLocalDateStructFromTimeMs );
+
         pybind::def_functor( _kernel, "getDatePathTimestamp", helperScriptMethod, &HelperScriptMethod::s_getDatePathTimestamp );
         pybind::def_functor( _kernel, "getLoggerTimestamp", helperScriptMethod, &HelperScriptMethod::s_getLoggerTimestamp );
 

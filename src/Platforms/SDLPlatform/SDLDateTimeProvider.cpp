@@ -44,8 +44,8 @@ namespace Mengine
         uint64_t second64 = date.second;
         uint64_t milliseconds = date.milliseconds;
 
-        uint64_t milliseconds_year64 = year64 * 1000ULL * 60ULL * 60ULL * 30ULL * 365ULL;
-        uint64_t milliseconds_month64 = month64 * 1000ULL * 60ULL * 60ULL * 30ULL;
+        uint64_t milliseconds_year64 = year64 * 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL * 12ULL;
+        uint64_t milliseconds_month64 = month64 * 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL;
         uint64_t milliseconds_day64 = day64 * 1000ULL * 60ULL * 60ULL * 24ULL;
         uint64_t milliseconds_hour64 = hour64 * 1000ULL * 60ULL * 60ULL;
         uint64_t milliseconds_minute64 = minute64 * 1000ULL * 60ULL;
@@ -64,8 +64,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLDateTimeProvider::getLocalDateTimeFromMilliseconds( uint64_t _timestamp, PlatformDateTime * const _dateTime ) const
     {
-        uint64_t milliseconds_year64 = 1000ULL * 60ULL * 60ULL * 30ULL * 365ULL;
-        uint64_t milliseconds_month64 = 1000ULL * 60ULL * 60ULL * 30ULL;
+        uint64_t milliseconds_year64 = 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL * 12ULL;
+        uint64_t milliseconds_month64 = 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL;
         uint64_t milliseconds_day64 = 1000ULL * 60ULL * 60ULL * 24ULL;
         uint64_t milliseconds_hour64 = 1000ULL * 60ULL * 60ULL;
         uint64_t milliseconds_minute64 = 1000ULL * 60ULL;

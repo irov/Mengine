@@ -20,6 +20,7 @@ namespace Mengine
 
     public:
         void setHWND( HWND _hWnd );
+        HWND getHWND() const;
 
     public:
         void verify();

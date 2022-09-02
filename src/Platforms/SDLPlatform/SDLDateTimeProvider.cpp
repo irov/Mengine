@@ -23,12 +23,12 @@ namespace Mengine
         std::tm * sTime = std::localtime( &ctTime );
 
         _dateTime->year = 1900 + sTime->tm_year;
-        _dateTime->month = sTime->tm_mon + 1;
+        _dateTime->month = sTime->tm_mon;
         _dateTime->day = sTime->tm_mday;
         _dateTime->hour = sTime->tm_hour;
         _dateTime->minute = sTime->tm_min;
         _dateTime->second = sTime->tm_sec;
-        _dateTime->milliseconds = SDL_GetTicks();
+        _dateTime->milliseconds = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t SDLDateTimeProvider::getLocalDateMilliseconds() const
@@ -87,8 +87,11 @@ namespace Mengine
     {
         const std::time_t epoch_plus_11h = 60 * 60 * 11;
 
-        int32_t local_time = ::localtime( &epoch_plus_11h )->tm_hour;
-        int32_t gm_time = ::gmtime( &epoch_plus_11h )->tm_hour;
+        struct tm * lt = ::localtime( &epoch_plus_11h );
+        struct tm * t = ::gmtime( &epoch_plus_11h );
+
+        int32_t local_time = lt->tm_hour;
+        int32_t gm_time = t->tm_hour;
         int32_t tz_diff = gm_time - local_time;
         int32_t tz_diff60 = tz_diff * 60;
 

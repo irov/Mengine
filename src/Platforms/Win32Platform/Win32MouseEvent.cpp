@@ -21,6 +21,11 @@ namespace Mengine
         m_hWnd = _hWnd;
     }
     //////////////////////////////////////////////////////////////////////////
+    HWND Win32MouseEvent::getHWND() const
+    {
+        return m_hWnd;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32MouseEvent::verify()
     {
         if( m_hWnd == NULL )

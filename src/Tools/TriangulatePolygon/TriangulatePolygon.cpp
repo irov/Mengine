@@ -462,7 +462,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     std::wstring arg_image_trim_offset;
     std::wstring arg_polygon_input;
 
-    PWSTR pwCmdLine = GetCommandLineW();
+    PWSTR pwCmdLine = ::GetCommandLineW();
 
     bool image_bb = parse_kwds( pwCmdLine, L"--bb", false );
     float base_width = parse_kwds( pwCmdLine, L"--base_width", 0.f );
@@ -484,7 +484,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     WCHAR infoCanonicalizeQuote[MAX_PATH];
     ForcePathQuoteSpaces( infoCanonicalizeQuote, result_path.c_str() );
-    PathUnquoteSpaces( infoCanonicalizeQuote );
+    ::PathUnquoteSpaces( infoCanonicalizeQuote );
 
     FILE * f_result;
     errno_t err = _wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );

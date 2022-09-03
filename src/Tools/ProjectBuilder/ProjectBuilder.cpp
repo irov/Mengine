@@ -1173,11 +1173,11 @@ bool run()
 
     kernel->decref( py_syspath );
 
-    LPWSTR lpwCmdLine = GetCommandLineW();
+    LPWSTR lpwCmdLine = ::GetCommandLineW();
 
 
     int nArgs = 0;
-    LPWSTR * szArglist = CommandLineToArgvW( lpwCmdLine, &nArgs );
+    LPWSTR * szArglist = ::CommandLineToArgvW( lpwCmdLine, &nArgs );
 
     if( nArgs < 3 )
     {

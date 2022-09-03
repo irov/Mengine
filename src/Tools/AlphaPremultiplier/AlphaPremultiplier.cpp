@@ -17,7 +17,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     (void)lpCmdLine;
     (void)nShowCmd;
 
-    PWSTR pwCmdLine = GetCommandLineW();
+    PWSTR pwCmdLine = ::GetCommandLineW();
 
     std::wstring in_path = parse_kwds( pwCmdLine, L"--in", std::wstring() );
     std::wstring out_path = parse_kwds( pwCmdLine, L"--out", std::wstring() );

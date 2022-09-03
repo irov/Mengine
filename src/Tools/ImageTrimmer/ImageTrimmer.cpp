@@ -612,7 +612,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MENGINE_UNUSED( nShowCmd );
 
     {
-        PWSTR pwCmdLine = GetCommandLineW();
+        PWSTR pwCmdLine = ::GetCommandLineW();
 
         Mengine::WString in_path = parse_kwds( pwCmdLine, L"--in_path", Mengine::WString() );
         Mengine::WString out_path = parse_kwds( pwCmdLine, L"--out_path", Mengine::WString() );

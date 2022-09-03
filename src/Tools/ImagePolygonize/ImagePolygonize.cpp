@@ -16,7 +16,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
-    PWSTR pwCmdLine = GetCommandLineW();
+    PWSTR pwCmdLine = ::GetCommandLineW();
 
     std::wstring texturepacker_path = parse_kwds( pwCmdLine, L"--texturepacker", std::wstring() );
     std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );

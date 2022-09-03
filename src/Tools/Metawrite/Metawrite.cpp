@@ -123,7 +123,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MENGINE_UNUSED( nShowCmd );
 
     {
-        PWSTR pwCmdLine = GetCommandLineW();
+        PWSTR pwCmdLine = ::GetCommandLineW();
 
         Mengine::WString protocol = parse_kwds( pwCmdLine, L"--protocol", Mengine::WString() );
         Mengine::WString in = parse_kwds( pwCmdLine, L"--in", Mengine::WString() );

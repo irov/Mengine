@@ -94,11 +94,14 @@ namespace Mengine
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
+        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
+
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
@@ -116,9 +119,6 @@ namespace Mengine
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FUNCTION );
-
-        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
@@ -159,7 +159,7 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    PWSTR pwCmdLine = GetCommandLineW();
+    PWSTR pwCmdLine = ::GetCommandLineW();
 
     Mengine::WString in = parse_kwds( pwCmdLine, L"--in", Mengine::WString() );
     Mengine::WString out = parse_kwds( pwCmdLine, L"--out", Mengine::WString() );
@@ -191,6 +191,24 @@ int main( int argc, char * argv[] )
 
     const Mengine::FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
         ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+
+    if( fileGroup->existFile( fp_in, false ) == false )
+    {
+        message_error( "not found 'in' file: %s"
+            , fp_in.c_str() 
+        );
+
+        return EXIT_FAILURE;
+    }
+
+    if( fileGroup->existFile( fp_out, false ) == false )
+    {
+        message_error( "not found 'out' file: %s"
+            , fp_out.c_str()
+        );
+
+        return EXIT_FAILURE;
+    }
 
     Mengine::MemoryInterfacePtr memory = Mengine::Helper::createMemoryFile( fileGroup, fp_in, false, false, MENGINE_DOCUMENT_FUNCTION );
 

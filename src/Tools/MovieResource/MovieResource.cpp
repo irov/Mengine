@@ -438,12 +438,12 @@ static void __add_node_layer_data( node_provider_t * np, const ae_char_t * _type
         _callbackData->matrix[3] != 0.f ||
         _callbackData->matrix[4] != 1.f ||
         _callbackData->matrix[5] != 0.f ||
-        _callbackData->matrix[3] != 0.f ||
-        _callbackData->matrix[4] != 0.f ||
-        _callbackData->matrix[5] != 1.f ||
-        _callbackData->matrix[3] != 0.f ||
-        _callbackData->matrix[4] != 0.f ||
-        _callbackData->matrix[5] != 0.f )
+        _callbackData->matrix[6] != 0.f ||
+        _callbackData->matrix[7] != 0.f ||
+        _callbackData->matrix[8] != 1.f ||
+        _callbackData->matrix[9] != 0.f ||
+        _callbackData->matrix[10] != 0.f ||
+        _callbackData->matrix[11] != 0.f )
     {
         xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
     }
@@ -664,7 +664,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
-    PWSTR pwCmdLine = GetCommandLineW();
+    PWSTR pwCmdLine = ::GetCommandLineW();
 
     std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );
     std::wstring out_path = parse_kwds( pwCmdLine, L"--out_path", std::wstring() );

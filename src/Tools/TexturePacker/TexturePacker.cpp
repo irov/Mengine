@@ -18,7 +18,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
-    PWSTR pwCmdLine = GetCommandLineW();
+    PWSTR pwCmdLine = ::GetCommandLineW();
 
     //uint32_t image_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
     std::wstring in_path = parse_kwds( pwCmdLine, L"--in_path", std::wstring() );

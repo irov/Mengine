@@ -274,10 +274,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         };
     }
 
-    protected SDLSurface createSDLSurface(Context context) {
-        return new SDLSurface(context);
-    }
-
     // Load the .so
     public void loadLibraries() {
        for (String lib : getLibraries()) {

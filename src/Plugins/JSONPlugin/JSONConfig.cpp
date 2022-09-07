@@ -92,11 +92,10 @@ namespace Mengine
         template<class T>
         static void setJSONValueT( jpp::object & _j, const Char * _section, const Char * _key, T _value )
         {
-            jpp::object j_section;
-            if( _j.exist( _section, &j_section ) == false )
+            jpp::object j_section = _j.get_or_create( _section, []()
             {
-                j_section = _j.set( _section, jpp::make_object() );
-            }
+                return jpp::make_object();
+            } );
 
             j_section.set( _key, _value );
         }

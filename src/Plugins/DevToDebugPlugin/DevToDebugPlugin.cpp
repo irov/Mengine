@@ -31,6 +31,11 @@ namespace Mengine
         {
             return false;
         }
+        
+        if( Helper::isDebugMode() == false )
+        {
+            return false;
+        }
 
         if( HAS_OPTION( "devtodebug" ) == true )
         {

@@ -57,10 +57,10 @@ namespace Mengine
         m_CONOUT = ::freopen( "CONOUT$", "w", stdout );
         m_CONERR = ::freopen( "CONOUT$", "w", stderr );
 
-        uint32_t OPTION_consolex = GET_OPTION_VALUE_UINT32( "consolex", ~0u );
-        uint32_t OPTION_consoley = GET_OPTION_VALUE_UINT32( "consoley", ~0u );
+        uint32_t OPTION_consolex = GET_OPTION_VALUE_UINT32( "consolex", MENGINE_UNKNOWN_SIZE );
+        uint32_t OPTION_consoley = GET_OPTION_VALUE_UINT32( "consoley", MENGINE_UNKNOWN_SIZE );
 
-        if( OPTION_consolex != ~0u && OPTION_consoley != ~0u )
+        if( OPTION_consolex != MENGINE_UNKNOWN_SIZE && OPTION_consoley != MENGINE_UNKNOWN_SIZE )
         {
             HWND hWnd = ::GetConsoleWindow();
             RECT rect;

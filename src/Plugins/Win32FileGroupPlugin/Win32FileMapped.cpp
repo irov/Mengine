@@ -141,7 +141,7 @@ namespace Mengine
     {
         Win32FileMappedInputStream * stream = stdex::intrusive_get<Win32FileMappedInputStream *>( _stream );
 
-        size_t size = _size == ~0U ? (size_t)m_liSize.QuadPart : _size;
+        size_t size = _size == MENGINE_UNKNOWN_SIZE ? (size_t)m_liSize.QuadPart : _size;
 
         bool result = stream->mapViewOfFile( m_hMapping, m_dwAllocationGranularity, _offset, size );
 

@@ -85,7 +85,7 @@ namespace Mengine
             , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
         );
         
-        if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, ~0U, false, false ) == false )
+        if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s'"
                 , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )

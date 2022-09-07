@@ -66,6 +66,31 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
+        MemoryInterfacePtr createMemoryStreamString( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+        {
+            size_t stream_size = _stream->size();
+
+            MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+                ->createMemoryBuffer( _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+
+            void * memory_buffer = memory->newBuffer( stream_size + 1 );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
+
+            size_t read_byte = _stream->read( memory_buffer, stream_size );
+
+            if( read_byte != stream_size )
+            {
+                return nullptr;
+            }
+
+            static_cast<Char *>(memory_buffer)[stream_size] = '\0';
+
+            return memory;
+        }
+        //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc )
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );

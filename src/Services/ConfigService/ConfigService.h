@@ -6,6 +6,7 @@
 
 #include "MemoryConfig.h"
 #include "MultiConfig.h"
+#include "PersistentConfig.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Tags.h"
@@ -20,6 +21,7 @@ namespace Mengine
         ~ConfigService() override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 
@@ -34,11 +36,16 @@ namespace Mengine
 
     public:
         const ConfigInterfacePtr & getDefaultConfig() const override;
+        const ConfigInterfacePtr & getPersistentConfig() const override;
 
     protected:
         ThreadMutexInterfacePtr m_mutex;
 
         MultiConfigPtr m_defaultConfig;
+
+#ifndef MENGINE_BUILD_PUBLISH
+        PersistentConfigPtr m_persistentConfig;
+#endif
 
         FactoryInterfacePtr m_factoryMemoryConfig;
     };

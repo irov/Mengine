@@ -5,6 +5,8 @@ src
     ConfigService.h
     ConfigService.cpp
 
+    PersistentConfig.h
+    PersistentConfig.cpp
     MemoryConfig.h
     MemoryConfig.cpp
     MultiConfig.h

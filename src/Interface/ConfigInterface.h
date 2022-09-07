@@ -51,6 +51,23 @@ namespace Mengine
         virtual bool hasValue( const Char * _section, const Char * _key, const Color & _default, Color * const _value ) const = 0;
 
     public:
+        virtual bool setValue( const Char * _section, const Char * _key, bool _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, int8_t _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, uint8_t _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, int32_t _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, uint32_t _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, int64_t _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, uint64_t _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, float _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, double _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, const ConstString & _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, const FilePath & _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, const Tags & _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, const Resolution & _value ) = 0;
+        virtual bool setValue( const Char * _section, const Char * _key, const Color & _value ) = 0;
+
+    public:
         virtual bool hasSection( const Char * _section ) const = 0;
 
     public:

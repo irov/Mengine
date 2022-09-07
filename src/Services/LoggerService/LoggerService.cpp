@@ -405,7 +405,7 @@ namespace Mengine
     {
         if( m_historically == true )
         {
-            if( m_historyLimit != ~0U && m_history.size() >= m_historyLimit )
+            if( m_historyLimit != MENGINE_UNKNOWN_SIZE && m_history.size() >= m_historyLimit )
             {
                 return;
             }

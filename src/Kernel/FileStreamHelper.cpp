@@ -22,7 +22,7 @@ namespace Mengine
                 , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
-            if( realFileGroup->openInputFile( _filePath, stream, 0, ~0U, _streaming, _share ) == false )
+            if( realFileGroup->openInputFile( _filePath, stream, 0, MENGINE_UNKNOWN_SIZE, _streaming, _share ) == false )
             {
                 LOGGER_ERROR( "can't open input file '%s'"
                     , Helper::getFileGroupFullPath( _fileGroup, _filePath )
@@ -43,7 +43,7 @@ namespace Mengine
                 , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
-            if( realFileGroup->openInputMutexFile( _filePath, stream, 0, ~0U ) == false )
+            if( realFileGroup->openInputMutexFile( _filePath, stream, 0, MENGINE_UNKNOWN_SIZE ) == false )
             {
                 LOGGER_ERROR( "can't open input mutex file '%s'"
                     , Helper::getFileGroupFullPath( _fileGroup, _filePath )

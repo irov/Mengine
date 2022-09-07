@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Kernel/Tags.h"
+#include "Kernel/Resolution.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
@@ -12,6 +14,24 @@
 
 namespace jpp
 {
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct extract_object_extern<Mengine::Tags>
+    {
+        jpp::object operator()( const Mengine::Tags & _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct extract_object_extern<Mengine::Resolution>
+    {
+        jpp::object operator()( const Mengine::Resolution & _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct extract_object_extern<Mengine::Color>
+    {
+        jpp::object operator()( const Mengine::Color & _value ) const;
+    };
     //////////////////////////////////////////////////////////////////////////
     template<>
     struct extract_object_extern<Mengine::ConstString>

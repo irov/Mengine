@@ -70,7 +70,7 @@ namespace Mengine
 
         size_t size = (size_t)lpFileSize.QuadPart;
 
-        if( _size != ~0U )
+        if( _size != MENGINE_UNKNOWN_SIZE )
         {
             if( _offset + _size > size )
             {

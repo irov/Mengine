@@ -262,6 +262,171 @@ namespace Mengine
         return Detail::hasValueT( m_stores, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, bool _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, int8_t _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, uint8_t _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, int32_t _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, uint32_t _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, int64_t _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, uint64_t _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, float _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, double _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const ConstString & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const FilePath & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const Tags & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const Resolution & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool INIConfig::setValue( const Char * _section, const Char * _key, const Color & _value )
+    {
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void INIConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const
     {
         Detail::calcValuesT( m_stores, m_platformTags, _section, _key, _values );

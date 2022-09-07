@@ -543,7 +543,6 @@ namespace Mengine
 
         if( applicationConfig != nullptr )
         {
-
             VectorFilePath configsPaths;
             applicationConfig->getValues( "Configs", "Path", &configsPaths );
 
@@ -766,7 +765,6 @@ namespace Mengine
         MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
 
         LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
@@ -796,6 +794,15 @@ namespace Mengine
 #else
         LOGGER_MESSAGE( "enable document debug [OFF]" );
 #endif
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
+
+        if( this->mountUserFileGroup_() == false )
+        {
+            LOGGER_ERROR( "invalid mount user file group" );
+
+            return false;
+        }
 
 #ifdef MENGINE_PLUGIN_INI_STATIC
         MENGINE_ADD_PLUGIN( INI, "Plugin INI...", MENGINE_DOCUMENT_FACTORABLE );
@@ -829,20 +836,11 @@ namespace Mengine
 
         Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
-
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
         MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
-
-        if( this->mountUserFileGroup_() == false )
-        {
-            LOGGER_ERROR( "invalid mount user file group" );
-
-            return false;
-        }
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
 
         LOGGER_INFO( "bootstrapper", "bootstrapper initialize file logger" );
 
@@ -861,10 +859,9 @@ namespace Mengine
             return false;\
         }
 
+        BOOTSTRAPPER_SERVICE_CREATE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
-
         BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
-
         BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_PLUGIN_ZIP_STATIC

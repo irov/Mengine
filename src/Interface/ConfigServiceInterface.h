@@ -4,9 +4,6 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Config/Typedef.h"
-#include "Config/Metaprogramming.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -26,6 +23,7 @@ namespace Mengine
 
     public:
         virtual const ConfigInterfacePtr & getDefaultConfig() const = 0;
+        virtual const ConfigInterfacePtr & getPersistentConfig() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

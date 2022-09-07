@@ -47,7 +47,5 @@ namespace Mengine
 
         bool m_play;
         bool m_pause;
-
-        class MyMusicSoundListener;
     };
 }

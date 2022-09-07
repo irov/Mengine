@@ -53,6 +53,23 @@ namespace Mengine
         bool hasSection( const Char * _section ) const override;
 
     public:
+        bool setValue( const Char * _section, const Char * _key, bool _value );
+        bool setValue( const Char * _section, const Char * _key, int8_t _value );
+        bool setValue( const Char * _section, const Char * _key, uint8_t _value );
+        bool setValue( const Char * _section, const Char * _key, int32_t _value );
+        bool setValue( const Char * _section, const Char * _key, uint32_t _value );
+        bool setValue( const Char * _section, const Char * _key, int64_t _value );
+        bool setValue( const Char * _section, const Char * _key, uint64_t _value );
+        bool setValue( const Char * _section, const Char * _key, float _value );
+        bool setValue( const Char * _section, const Char * _key, double _value );
+        bool setValue( const Char * _section, const Char * _key, const Char * _value );
+        bool setValue( const Char * _section, const Char * _key, const ConstString & _value );
+        bool setValue( const Char * _section, const Char * _key, const FilePath & _value );
+        bool setValue( const Char * _section, const Char * _key, const Tags & _value );
+        bool setValue( const Char * _section, const Char * _key, const Resolution & _value );
+        bool setValue( const Char * _section, const Char * _key, const Color & _value );
+
+    public:
         void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const override;
         void getValues( const Char * _section, const Char * _key, VectorFilePath * const _values ) const override;
         void getValues( const Char * _section, const Char * _key, VectorConstString * const _values ) const override;

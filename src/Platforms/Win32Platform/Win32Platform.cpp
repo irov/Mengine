@@ -2860,10 +2860,10 @@ namespace Mengine
 
         if( _fullsreen == false )
         {
-            uint32_t OPTION_winx = GET_OPTION_VALUE_UINT32( "winx", ~0u );
-            uint32_t OPTION_winy = GET_OPTION_VALUE_UINT32( "winy", ~0u );
+            uint32_t OPTION_winx = GET_OPTION_VALUE_UINT32( "winx", MENGINE_UNKNOWN_SIZE );
+            uint32_t OPTION_winy = GET_OPTION_VALUE_UINT32( "winy", MENGINE_UNKNOWN_SIZE );
 
-            if( OPTION_winx != ~0u && OPTION_winy != ~0u )
+            if( OPTION_winx != MENGINE_UNKNOWN_SIZE && OPTION_winy != MENGINE_UNKNOWN_SIZE )
             {
                 uint32_t width = rc.right - rc.left;
                 uint32_t height = rc.bottom - rc.top;

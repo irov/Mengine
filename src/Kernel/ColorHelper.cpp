@@ -33,6 +33,22 @@ namespace Mengine
             240.f / 255.f, 241.f / 255.f, 242.f / 255.f, 243.f / 255.f, 244.f / 255.f, 245.f / 255.f, 246.f / 255.f, 247.f / 255.f, 248.f / 255.f, 249.f / 255.f,
             250.f / 255.f, 251.f / 255.f, 252.f / 255.f, 253.f / 255.f, 254.f / 255.f, 255.f / 255.f};
         //////////////////////////////////////////////////////////////////////////
+        uint8_t makeColorChannelF( float _channel )
+        {
+            const float channel_255 = 255.5f;
+
+            uint8_t channel8 = static_cast<uint8_t>(_channel * channel_255);
+
+            return channel8;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float makeColorChannel8( uint8_t _channel8 )
+        {
+            float channelf = one_div_255[_channel8];
+
+            return channelf;
+        }
+        //////////////////////////////////////////////////////////////////////////
         ColorValue_ARGB makeRGBA8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
         {
 #ifdef MENGINE_RENDER_COLOR_RGBA
@@ -54,12 +70,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ColorValue_ARGB makeRGBAF( float _r, float _g, float _b, float _a )
         {
-            const float rgba_255 = 255.5f;
-
-            uint8_t r8 = static_cast<uint8_t>(_r * rgba_255);
-            uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
-            uint8_t b8 = static_cast<uint8_t>(_b * rgba_255);
-            uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
+            uint8_t r8 = makeColorChannelF( _r );
+            uint8_t g8 = makeColorChannelF( _g );
+            uint8_t b8 = makeColorChannelF( _b );
+            uint8_t a8 = makeColorChannelF( _a );
 
             ColorValue_ARGB argb = Helper::makeRGBA8( r8, g8, b8, a8 );
 
@@ -119,10 +133,10 @@ namespace Mengine
             uint8_t a8 = (_argb >> 24) & 0xFF;
 #endif
 
-            float rf = one_div_255[r8];
-            float gf = one_div_255[g8];
-            float bf = one_div_255[b8];
-            float af = one_div_255[a8];
+            float rf = Helper::makeColorChannel8( r8 );
+            float gf = Helper::makeColorChannel8( g8 );
+            float bf = Helper::makeColorChannel8( b8 );
+            float af = Helper::makeColorChannel8( a8 );
 
             return Color( rf, gf, bf, af, _argb );
         }

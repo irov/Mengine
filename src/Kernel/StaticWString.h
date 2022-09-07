@@ -58,7 +58,7 @@ namespace Mengine
     public:
         void assign( const WChar * _value )
         {
-            Detail::staticWStringAssign( m_buffer, N, _value, ~0U );
+            Detail::staticWStringAssign( m_buffer, N, _value, MENGINE_UNKNOWN_SIZE );
         }
 
         void assign( const WChar * _value, size_t _size )
@@ -68,7 +68,7 @@ namespace Mengine
 
         void append( const WChar * _value )
         {
-            Detail::staticWStringAppend( m_buffer, N, _value, ~0U );
+            Detail::staticWStringAppend( m_buffer, N, _value, MENGINE_UNKNOWN_SIZE );
         }
 
         void append( const WChar * _value, size_t _size )

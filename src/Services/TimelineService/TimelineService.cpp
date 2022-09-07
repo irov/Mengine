@@ -3,7 +3,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TimelineService, Mengine::TimelineService );
@@ -15,9 +14,9 @@ namespace Mengine
         : m_revision( ~0U )
         , m_current( 0.f )
         , m_time( 0.f )
-        , m_total( 0.f )        
+        , m_total( 0.f )
         , m_timeFactorBase( 1.f )
-        , m_timeFactorCoefficient( 0.f )
+        , m_timeFactorCoefficient( 0.0625f )
         , m_timeFactorCount( 0 )
     {
     }
@@ -28,9 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TimelineService::_initializeService()
     {
-        float Debug_TimeFactorCoefficient = CONFIG_VALUE( "Debug", "TimeFactorCoefficient", 0.0625f );
-
-        m_timeFactorCoefficient = Debug_TimeFactorCoefficient;
+        //Empty
 
         return true;
     }

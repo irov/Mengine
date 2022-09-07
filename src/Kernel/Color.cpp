@@ -107,5 +107,61 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Color::setR8( uint8_t _r )
+    {
+        float r = Helper::makeColorChannel8( _r );
+
+        this->setR( r );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint8_t Color::getR8() const
+    {
+        uint8_t r8 = Helper::makeColorChannelF( m_r );
+
+        return r8;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Color::setG8( uint8_t _g )
+    {
+        float g = Helper::makeColorChannel8( _g );
+
+        this->setR( g );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint8_t Color::getG8() const
+    {
+        uint8_t g8 = Helper::makeColorChannelF( m_g );
+
+        return g8;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Color::setB8( uint8_t _b )
+    {
+        float b = Helper::makeColorChannel8( _b );
+
+        this->setR( b );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint8_t Color::getB8() const
+    {
+        uint8_t b8 = Helper::makeColorChannelF( m_b );
+
+        return b8;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Color::setA8( uint8_t _a )
+    {
+        float a = Helper::makeColorChannel8( _a );
+
+        this->setR( a );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint8_t Color::getA8() const
+    {
+        uint8_t a8 = Helper::makeColorChannelF( m_a );
+
+        return a8;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }
 

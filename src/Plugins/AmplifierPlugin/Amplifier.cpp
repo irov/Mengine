@@ -26,54 +26,59 @@ SERVICE_FACTORY( Amplifier, Mengine::Amplifier );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class Amplifier::MyMusicSoundListener
-        : public Factorable
-        , public SoundListenerInterface
+    namespace Detail
     {
-        DECLARE_FACTORABLE( Amplifier );
-
-    public:
-        explicit MyMusicSoundListener( const AmplifierMusicCallbackInterfacePtr & _callback )
-            : m_callback( _callback )
+        //////////////////////////////////////////////////////////////////////////
+        class MyMusicSoundListener
+            : public Factorable
+            , public SoundListenerInterface
         {
-        }
+            DECLARE_FACTORABLE( Amplifier );
 
-        ~MyMusicSoundListener() override
-        {
-        }
+        public:
+            explicit MyMusicSoundListener( const AmplifierMusicCallbackInterfacePtr & _callback )
+                : m_callback( _callback )
+            {
+            }
 
-    protected:
-        void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
-        {
-            MENGINE_UNUSED( _emitter );
+            ~MyMusicSoundListener() override
+            {
+            }
 
-            m_callback->onMusicPause();
-        }
+        protected:
+            void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
+            {
+                MENGINE_UNUSED( _emitter );
 
-        void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
-        {
-            MENGINE_UNUSED( _emitter );
+                m_callback->onMusicPause();
+            }
 
-            m_callback->onMusicResume();
-        }
+            void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
+            {
+                MENGINE_UNUSED( _emitter );
 
-        void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
-        {
-            MENGINE_UNUSED( _emitter );
+                m_callback->onMusicResume();
+            }
 
-            m_callback->onMusicStop();
-        }
+            void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
+            {
+                MENGINE_UNUSED( _emitter );
 
-        void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
-        {
-            MENGINE_UNUSED( _emitter );
+                m_callback->onMusicStop();
+            }
 
-            m_callback->onMusicEnd();
-        }
+            void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
+            {
+                MENGINE_UNUSED( _emitter );
 
-    protected:
-        AmplifierMusicCallbackInterfacePtr m_callback;
-    };
+                m_callback->onMusicEnd();
+            }
+
+        protected:
+            AmplifierMusicCallbackInterfacePtr m_callback;
+        };
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     Amplifier::Amplifier()
         : m_play( false )
@@ -175,7 +180,7 @@ namespace Mengine
 
         if( _callback != nullptr )
         {
-            SoundListenerInterfacePtr soundListener = Helper::makeFactorableUnique<Amplifier::MyMusicSoundListener>( MENGINE_DOCUMENT_FACTORABLE, _callback );
+            SoundListenerInterfacePtr soundListener = Helper::makeFactorableUnique<Detail::MyMusicSoundListener>( MENGINE_DOCUMENT_FACTORABLE, _callback );
 
             soundIdentity->setSoundListener( soundListener );
         }

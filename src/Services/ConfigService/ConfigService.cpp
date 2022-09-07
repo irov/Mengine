@@ -31,44 +31,66 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & ConfigService::requiredServices() const
+    {
+        static ServiceRequiredList required = {
+            ThreadSystemInterface::getStaticServiceID()
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ConfigService::_initializeService()
     {
+        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+
+        m_mutex = mutex;
+
         m_factoryMemoryConfig = Helper::makeFactoryPool<MemoryConfig, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         MultiConfigPtr defaultConfig = Helper::makeFactorableUnique<MultiConfig>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( defaultConfig );
 
+        defaultConfig->setMutex( mutex );
+
         m_defaultConfig = defaultConfig;
 
-        SERVICE_WAIT( ThreadSystemInterface, [this]()
-        {
-            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        PersistentConfigPtr persistentConfig = Helper::makeFactorableUnique<PersistentConfig>( MENGINE_DOCUMENT_FACTORABLE );
 
-            m_mutex = mutex;
+        MENGINE_ASSERTION_MEMORY_PANIC( persistentConfig );
 
-            m_defaultConfig->setMutex( mutex );
+        persistentConfig->setMutex( mutex );
 
-            return true;
-        } );
+        m_persistentConfig = persistentConfig;
 
-        SERVICE_LEAVE( ThreadSystemInterface, [this]()
-        {
-            if( m_defaultConfig != nullptr )
-            {
-                m_defaultConfig->setMutex( nullptr );
-            }
-
-            m_mutex = nullptr;
-        } );
+#ifndef MENGINE_BUILD_PUBLISH
+        m_defaultConfig->addConfig( persistentConfig );
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ConfigService::_finalizeService()
     {
-        m_defaultConfig = nullptr;
+        if( m_defaultConfig != nullptr )
+        {
+            m_defaultConfig->setMutex( nullptr );
+            m_defaultConfig = nullptr;
+        }
+
+#ifndef MENGINE_BUILD_PUBLISH
+        if( m_persistentConfig != nullptr )
+        {
+            m_persistentConfig->setMutex( nullptr );
+            m_persistentConfig = nullptr;
+        }
+#endif
+
+        m_mutex = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryConfig );
 
@@ -153,6 +175,11 @@ namespace Mengine
     const ConfigInterfacePtr & ConfigService::getDefaultConfig() const
     {
         return m_defaultConfig;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConfigInterfacePtr & ConfigService::getPersistentConfig() const
+    {
+        return m_persistentConfig;
     }
     //////////////////////////////////////////////////////////////////////////
 }

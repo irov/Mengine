@@ -57,7 +57,7 @@ namespace Mengine
 
         size_t size = m_stream->size();
 
-        if( _size != ~0U )
+        if( _size != MENGINE_UNKNOWN_SIZE )
         {
             if( _offset + _size > size )
             {

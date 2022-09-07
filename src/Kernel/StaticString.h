@@ -70,7 +70,7 @@ namespace Mengine
     public:
         void assign( const Char * _value )
         {
-            Detail::staticStringAssign( m_buffer, N, _value, ~0U );
+            Detail::staticStringAssign( m_buffer, N, _value, MENGINE_UNKNOWN_SIZE );
         }
 
         void assign( const Char * _value, size_t _size )
@@ -93,7 +93,7 @@ namespace Mengine
 
         void append( const Char * _value )
         {
-            Detail::staticStringAppend( m_buffer, N, _value, ~0U );
+            Detail::staticStringAppend( m_buffer, N, _value, MENGINE_UNKNOWN_SIZE );
         }
 
         void append( const Char * _value, size_t _size )

@@ -47,7 +47,7 @@ namespace Mengine
 
             size_t value_size = _size;
 
-            if( value_size == ~0U )
+            if( value_size == MENGINE_UNKNOWN_SIZE )
             {
                 value_size = MENGINE_STRLEN( _value );
             }
@@ -72,7 +72,7 @@ namespace Mengine
 
             size_t value_size = _size;
 
-            if( value_size == ~0U )
+            if( value_size == MENGINE_UNKNOWN_SIZE )
             {
                 value_size = MENGINE_STRLEN( _value );
             }

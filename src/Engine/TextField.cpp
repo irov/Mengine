@@ -1187,7 +1187,7 @@ namespace Mengine
         m_cacheTextLines.clear();
         Helper::split( &m_cacheTextLines, m_cacheTextChars, lineDelims );
 
-        MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != ~0U)), "text '%s' invalid enable together attributes 'wrap' and 'autoScale'"
+        MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != MENGINE_UNKNOWN_SIZE)), "text '%s' invalid enable together attributes 'wrap' and 'autoScale'"
             , this->getName().c_str()
         );
 

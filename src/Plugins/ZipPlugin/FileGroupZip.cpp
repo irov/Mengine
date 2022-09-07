@@ -623,7 +623,7 @@ namespace Mengine
         const FileInfo & fi = it_found->second;
 
         size_t file_offset = fi.seek_pos + _offset;
-        size_t file_size = _size == ~0U ? fi.file_size : _size;
+        size_t file_size = _size == MENGINE_UNKNOWN_SIZE ? fi.file_size : _size;
 
         MENGINE_ASSERTION_FATAL( _offset + file_size <= fi.file_size, "zip '%s' file '%s' invalid open range %zu:%zu (file size is low %zu:%zu)"
             , fi.zip->folderPath.c_str()

@@ -7,6 +7,50 @@
 namespace jpp
 {
     //////////////////////////////////////////////////////////////////////////    
+    jpp::object extract_object_extern<Mengine::Tags>::operator()( const Mengine::Tags & _value ) const
+    {
+        jpp::array j_tags = jpp::make_array();
+
+        for( const Mengine::ConstString & tag : _value )
+        {
+            jpp::object j_tag = jpp::make_stringn( tag.c_str(), tag.size() );
+
+            j_tags.push_back( j_tag );
+        }
+
+        return j_tags.to_object();
+    };
+    //////////////////////////////////////////////////////////////////////////    
+    jpp::object extract_object_extern<Mengine::Resolution>::operator()( const Mengine::Resolution & _value ) const
+    {
+        jpp::array j_resolution = jpp::make_array();
+
+        uint32_t width = _value.getWidth();
+        uint32_t height = _value.getHeight();
+
+        j_resolution.push_back( width );
+        j_resolution.push_back( height );
+
+        return j_resolution.to_object();
+    };
+    //////////////////////////////////////////////////////////////////////////    
+    jpp::object extract_object_extern<Mengine::Color>::operator()( const Mengine::Color & _value ) const
+    {
+        jpp::array j_color = jpp::make_array();
+
+        uint8_t r8 = _value.getR8();
+        uint8_t g8 = _value.getG8();
+        uint8_t b8 = _value.getB8();
+        uint8_t a8 = _value.getA8();
+        
+        j_color.push_back( r8 );
+        j_color.push_back( g8 );
+        j_color.push_back( b8 );
+        j_color.push_back( a8 );
+
+        return j_color.to_object();
+    };
+    //////////////////////////////////////////////////////////////////////////    
     jpp::object extract_object_extern<Mengine::ConstString>::operator()( const Mengine::ConstString & _value ) const
     {
         const Mengine::Char * value_str = _value.c_str();
@@ -58,30 +102,38 @@ namespace jpp
     //////////////////////////////////////////////////////////////////////////
     void cast_object_extern<Mengine::Resolution>::operator()( const jpp::object & _obj, Mengine::Resolution * const _value ) const
     {
-        const jpp::array a( _obj );
+        const jpp::array j_a( _obj );
 
-        *_value = Mengine::Resolution( a[0], a[1] );
+        uint32_t width = j_a[0];
+        uint32_t height = j_a[1];
+
+        *_value = Mengine::Resolution( width, height );
     };
     //////////////////////////////////////////////////////////////////////////
     void cast_object_extern<Mengine::Color>::operator()( const jpp::object & _obj, Mengine::Color * const _value ) const
     {
-        const jpp::array a( _obj );
+        const jpp::array j_a( _obj );
 
-        *_value = Mengine::Helper::makeColor8( a[0], a[1], a[2], a[3] );
+        uint8_t r = j_a[0];
+        uint8_t g = j_a[1];
+        uint8_t b = j_a[2];
+        uint8_t a = j_a[3];
+
+        *_value = Mengine::Helper::makeColor8( r, g, b, a );
     };
     //////////////////////////////////////////////////////////////////////////
     void cast_object_extern<Mengine::AspectRatioViewport>::operator()( const jpp::object & _obj, Mengine::AspectRatioViewport * const _value ) const
     {
-        const jpp::array a( _obj );
+        const jpp::array j_a( _obj );
 
         Mengine::AspectRatioViewport aspect;
 
-        aspect.width = a[0];
-        aspect.height = a[1];
-        aspect.viewport.begin.x = a[2];
-        aspect.viewport.begin.y = a[3];
-        aspect.viewport.end.x = a[4];
-        aspect.viewport.end.y = a[5];
+        aspect.width = j_a[0];
+        aspect.height = j_a[1];
+        aspect.viewport.begin.x = j_a[2];
+        aspect.viewport.begin.y = j_a[3];
+        aspect.viewport.end.x = j_a[4];
+        aspect.viewport.end.y = j_a[5];
 
         *_value = aspect;
     };

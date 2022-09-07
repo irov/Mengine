@@ -25,7 +25,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool getJSONValue( const jpp::object & _j, const Char * _section, const Char * _key, T * const _value )
+        static bool getJSONValueT( const jpp::object & _j, const Char * _section, const Char * _key, T * const _value )
         {
             jpp::object j_section;
             if( _j.exist( _section, &j_section ) == false )
@@ -52,7 +52,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static void getJSONValues( const jpp::object & _j, const Char * _section, const Char * _key, T * const _values )
+        static void getJSONValuesT( const jpp::object & _j, const Char * _section, const Char * _key, T * const _values )
         {
             typedef typename T::value_type value_type;
 
@@ -90,6 +90,18 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
+        static void setJSONValueT( jpp::object & _j, const Char * _section, const Char * _key, T _value )
+        {
+            jpp::object j_section;
+            if( _j.exist( _section, &j_section ) == false )
+            {
+                j_section = _j.set( _section, jpp::make_object() );
+            }
+
+            j_section.set( _key, _value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
         static bool hasJSONValueT2( const jpp::object & _j, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * const _value )
         {
             ArrayString<128> platform_section;
@@ -103,7 +115,7 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                if( Detail::getJSONValue( _j, platform_section.c_str(), _key, _value ) == true )
+                if( Detail::getJSONValueT( _j, platform_section.c_str(), _key, _value ) == true )
                 {
                     return true;
                 }
@@ -113,7 +125,7 @@ namespace Mengine
             section.append( _prefix );
             section.append( _section );
 
-            if( Detail::getJSONValue( _j, section.c_str(), _key, _value ) == true )
+            if( Detail::getJSONValueT( _j, section.c_str(), _key, _value ) == true )
             {
                 return true;
             }
@@ -122,26 +134,23 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool hasJSONValueT( const VectorJSON & _jsons, const Tags & _platform, const Char * _section, const Char * _key, const T & _default, T * const _value )
+        static bool hasJSONValueT( const jpp::object & _json, const Tags & _platform, const Char * _section, const Char * _key, const T & _default, T * const _value )
         {
-            for( const jpp::object & j : _jsons )
-            {
 #ifdef MENGINE_BUILD_PUBLISH
-                if( Detail::hasJSONValueT2( j, "Publish-", _platform, _section, _key, _value ) == true )
-                {
-                    return true;
-                }
+            if( Detail::hasJSONValueT2( _json, "Publish-", _platform, _section, _key, _value ) == true )
+            {
+                return true;
+            }
 #endif
 
-                if( Detail::hasJSONValueT2( j, MENGINE_MASTER_RELEASE_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value ) == true )
-                {
-                    return true;
-                }
+            if( Detail::hasJSONValueT2( _json, MENGINE_MASTER_RELEASE_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value ) == true )
+            {
+                return true;
+            }
 
-                if( Detail::hasJSONValueT2( j, "", _platform, _section, _key, _value ) == true )
-                {
-                    return true;
-                }
+            if( Detail::hasJSONValueT2( _json, "", _platform, _section, _key, _value ) == true )
+            {
+                return true;
             }
 
             *_value = _default;
@@ -163,29 +172,26 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                Detail::getJSONValues( _json, platform_section.c_str(), _key, _value );
+                Detail::getJSONValuesT( _json, platform_section.c_str(), _key, _value );
             }
 
             ArrayString<128> section;
             section.append( _prefix );
             section.append( _section );
 
-            Detail::getJSONValues( _json, section.c_str(), _key, _value );
+            Detail::getJSONValuesT( _json, section.c_str(), _key, _value );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static void calcJSONValuesT( const VectorJSON & _jsons, const Tags & _platform, const Char * _section, const Char * _key, T * const _value )
+        static void calcJSONValuesT( const jpp::object & _json, const Tags & _platform, const Char * _section, const Char * _key, T * const _value )
         {
-            for( const jpp::object & j : _jsons )
-            {
 #ifdef MENGINE_BUILD_PUBLISH
-                Detail::calcJSONValuesT2( j, "Publish-", _platform, _section, _key, _value );
+            Detail::calcJSONValuesT2( _json, "Publish-", _platform, _section, _key, _value );
 #endif
 
-                Detail::calcJSONValuesT2( j, MENGINE_MASTER_RELEASE_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value );
+            Detail::calcJSONValuesT2( _json, MENGINE_MASTER_RELEASE_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value );
 
-                Detail::calcJSONValuesT2( j, "", _platform, _section, _key, _value );
-            }
+            Detail::calcJSONValuesT2( _json, "", _platform, _section, _key, _value );
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -247,51 +253,35 @@ namespace Mengine
             , Helper::getInputStreamDebugFilePath( _stream ).c_str()
         );
 
-        m_jsons.emplace_back( j );
+        m_json = j;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONConfig::unload()
     {
-        m_jsons.clear();
+        m_json = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::existValue( const Char * _section, const Char * _key ) const
     {
-        for( const jpp::object & j : m_jsons )
+        ArrayString<128> platform_section;
+        platform_section.append( _section );
+
+        const VectorConstString & tags = m_platformTags.getValues();
+
+        for( const ConstString & tag : tags )
         {
-            ArrayString<128> platform_section;
-            platform_section.append( _section );
+            platform_section.append( '-' );
+            platform_section.append( tag );
 
-            const VectorConstString & tags = m_platformTags.getValues();
-
-            for( const ConstString & tag : tags )
-            {
-                platform_section.append( '-' );
-                platform_section.append( tag );
-
-                jpp::object j_tag_section;
-                if( j.exist( platform_section.c_str(), &j_tag_section ) == false )
-                {
-                    continue;
-                }
-
-                if( j_tag_section.exist( _key, nullptr ) == false )
-                {
-                    continue;
-                }
-
-                return true;
-            }
-
-            jpp::object j_section;
-            if( j.exist( _section, &j_section ) == false )
+            jpp::object j_tag_section;
+            if( m_json.exist( platform_section.c_str(), &j_tag_section ) == false )
             {
                 continue;
             }
 
-            if( j_section.exist( _key, nullptr ) == false )
+            if( j_tag_section.exist( _key, nullptr ) == false )
             {
                 continue;
             }
@@ -299,127 +289,233 @@ namespace Mengine
             return true;
         }
 
-        return false;
+        jpp::object j_section;
+        if( m_json.exist( _section, &j_section ) == false )
+        {
+            return false;
+        }
+
+        if( j_section.exist( _key, nullptr ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, bool _default, bool * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, int8_t _default, int8_t * const  _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, uint8_t _default, uint8_t * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, int32_t _default, int32_t * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, uint32_t _default, uint32_t * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, int64_t _default, int64_t * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, uint64_t _default, uint64_t * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, float _default, float * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, double _default, double * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, const Char * _default, const Char ** const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, const ConstString & _default, ConstString * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, const FilePath & _default, FilePath * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, const Tags & _default, Tags * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, const Resolution & _default, Resolution * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasValue( const Char * _section, const Char * _key, const Color & _default, Color * const _value ) const
     {
-        return Detail::hasJSONValueT( m_jsons, m_platformTags, _section, _key, _default, _value );
+        return Detail::hasJSONValueT( m_json, m_platformTags, _section, _key, _default, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, bool _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, int8_t _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, uint8_t _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, int32_t _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, uint32_t _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, int64_t _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, uint64_t _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, float _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, double _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const ConstString & _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const FilePath & _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const Tags & _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const Resolution & _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONConfig::setValue( const Char * _section, const Char * _key, const Color & _value )
+    {
+        Detail::setJSONValueT( m_json, _section, _key, _value );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const
     {
-        Detail::calcJSONValuesT( m_jsons, m_platformTags, _section, _key, _values );
+        Detail::calcJSONValuesT( m_json, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONConfig::getValues( const Char * _section, const Char * _key, VectorFilePath * const _values ) const
     {
-        Detail::calcJSONValuesT( m_jsons, m_platformTags, _section, _key, _values );
+        Detail::calcJSONValuesT( m_json, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONConfig::getValues( const Char * _section, const Char * _key, VectorConstString * const _values ) const
     {
-        Detail::calcJSONValuesT( m_jsons, m_platformTags, _section, _key, _values );
+        Detail::calcJSONValuesT( m_json, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONConfig::getValues( const Char * _section, const Char * _key, VectorString * const _values ) const
     {
-        Detail::calcJSONValuesT( m_jsons, m_platformTags, _section, _key, _values );
+        Detail::calcJSONValuesT( m_json, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONConfig::hasSection( const Char * _section ) const
     {
-        for( const jpp::object & j : m_jsons )
+        ArrayString<128> platform_section;
+        platform_section.append( _section );
+
+        const VectorConstString & tags = m_platformTags.getValues();
+
+        for( const ConstString & tag : tags )
         {
-            ArrayString<128> platform_section;
-            platform_section.append( _section );
+            platform_section.append( '-' );
+            platform_section.append( tag );
 
-            const VectorConstString & tags = m_platformTags.getValues();
-
-            for( const ConstString & tag : tags )
-            {
-                platform_section.append( '-' );
-                platform_section.append( tag );
-
-                if( j.exist( platform_section.c_str(), nullptr ) == false )
-                {
-                    continue;
-                }
-
-                return true;
-            }
-
-            if( j.exist( _section, nullptr ) == false )
+            if( m_json.exist( platform_section.c_str(), nullptr ) == false )
             {
                 continue;
             }
@@ -427,7 +523,12 @@ namespace Mengine
             return true;
         }
 
-        return false;
+        if( m_json.exist( _section, nullptr ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

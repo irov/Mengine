@@ -2,6 +2,8 @@
 
 #include "Interface/ConfigServiceInterface.h"
 
+#include "Config/Metaprogramming.h"
+
 namespace Mengine
 {
     namespace Detail

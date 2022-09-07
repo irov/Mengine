@@ -38,7 +38,7 @@ namespace Mengine
                             }break;
                         default:
                             {
-                                return ~0U;
+                                return MENGINE_UNKNOWN_SIZE;
                             }break;
                         }
                     }break;

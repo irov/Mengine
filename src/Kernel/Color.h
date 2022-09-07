@@ -205,6 +205,19 @@ namespace Mengine
         MENGINE_INLINE float getA() const;
 
     public:
+        void setR8( uint8_t _r );
+        uint8_t getR8() const;
+
+        void setG8( uint8_t _g );
+        uint8_t getG8() const;
+
+        void setB8( uint8_t _b );
+        uint8_t getB8() const;
+
+        void setA8( uint8_t _a );
+        uint8_t getA8() const;
+
+    public:
         MENGINE_INLINE static const Color & identity();
 
     public:

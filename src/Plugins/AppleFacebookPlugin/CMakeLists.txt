@@ -11,10 +11,10 @@ src
     AppleFacebookApplicationDelegate.mm
 
     AppleFacebookService.h
-    AppleFacebookHelper.swift
-
     AppleFacebookService.mm
-    ObjC-Bridging-Header.h
+
+    AppleFacebookShareDelegate.h
+    AppleFacebookShareDelegate.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

@@ -33,49 +33,49 @@ namespace Mengine
             void onFacebookLoginSuccess( const Char * token ) override
             {
                 pybind::object cb = m_cbs["onFacebookLoginSuccess"];
-                
+
                 cb.call_args( token, m_args );
             };
-            
+
             void onFacebookLoginCancel() override
             {
                 pybind::object cb = m_cbs["onFacebookLoginCancel"];
-                
+
                 cb.call_args( m_args );
             }
-            
+
             void onFacebookError( const Char * errorMessage ) override
             {
                 pybind::object cb = m_cbs["onFacebookError"];
-                
+
                 cb.call_args( errorMessage, m_args );
             }
-            
+
             void onFacebookShareSuccess( const Char * postId ) override
             {
                 pybind::object cb = m_cbs["onFacebookShareSuccess"];
-                
+
                 cb.call_args( postId, m_args );
             }
-            
+
             void onFacebookShareCancel() override
             {
                 pybind::object cb = m_cbs["onFacebookShareCancel"];
-                
+
                 cb.call_args( m_args );
             }
-            
+
             void onFacebookShareError( const Char * errorMessage ) override
             {
                 pybind::object cb = m_cbs["onFacebookShareError"];
-                
+
                 cb.call_args( errorMessage, m_args );
             }
-                        
+
             void onFacebookProfilePictureLinkGet( const Char * userId, bool success, const Char * pictureURL ) override
             {
                 pybind::object cb = m_cbs["onFacebookProfilePictureLinkGet"];
-                
+
                 cb.call_args( userId, success, pictureURL, m_args );
             }
 
@@ -125,7 +125,7 @@ namespace Mengine
         static void s_AppleFacebook_shareLink( const Char * link, const Char * picture )
         {
             APPLE_FACEBOOK_SERVICE()
-                ->shareLink(link, picture);
+                ->shareLink( link, picture );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleFacebook_getProfilePictureLink( const Char * link, const Char * picture )
@@ -150,14 +150,14 @@ namespace Mengine
             ->setAvailablePlugin( "AppleFacebook", true );
 
         pybind::def_function_args( _kernel, "appleFacebookSetProvider", &Detail::s_AppleFacebook_setProvider );
-        
+
         pybind::def_function( _kernel, "appleFacebookLogin", &Detail::s_AppleFacebook_login );
         pybind::def_function( _kernel, "appleFacebookLogout", &Detail::s_AppleFacebook_logout );
         pybind::def_function( _kernel, "appleFacebookIsLoggedIn", &Detail::s_AppleFacebook_isLoggedIn );
         pybind::def_function( _kernel, "appleFacebookGetAccessToken", &Detail::s_AppleFacebook_getAccessToken );
         pybind::def_function( _kernel, "appleFacebookShareLink", &Detail::s_AppleFacebook_shareLink );
         pybind::def_function( _kernel, "appleFacebookGetProfilePictureLink", &Detail::s_AppleFacebook_getProfilePictureLink );
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

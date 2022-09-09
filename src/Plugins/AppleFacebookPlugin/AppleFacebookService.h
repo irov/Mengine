@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AppleFacebookInterface.h"
+#include "AppleFacebookShareDelegate.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
@@ -8,6 +9,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
+#import <FBSDKShareKit/FBSDKShareKit-Swift.h>
 
 namespace Mengine
 {
@@ -37,6 +39,8 @@ namespace Mengine
     protected:
         AppleFacebookProviderInterfacePtr m_provider;
         FBSDKLoginManager * m_loginManager;
+        
+        AppleFacebookShareDelegate * m_shareDelegate;
         
         bool m_isProcessed;
         NSString * m_userID;

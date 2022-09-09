@@ -6,8 +6,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AppleFacebookPlugin-Swift.h"
-
 ////////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleFacebookService, Mengine::AppleFacebookService );
 //////////////////////////////////////////////////////////////////////////
@@ -19,6 +17,7 @@ namespace Mengine
         , m_loginManager( nullptr )
         , m_userID( nullptr )
         , m_imageURL( nullptr )
+        , m_shareDelegate( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -114,26 +113,88 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     void AppleFacebookService::shareLink( const Char * link, const Char * picture )
     {
-        [AppleFacebookHelper ShareImageLinkWithLink:[NSString stringWithUTF8String:link]  image:[NSString stringWithUTF8String:picture] cb:^(NSInteger _code, NSString * _Nullable data) {
+        NSString * strPicture = [NSString stringWithUTF8String:picture];
+        NSString * strlink = [NSString stringWithUTF8String:link];
+        
+        if(strlink.length<=0 && strPicture.length<=0)
+        {
             if( m_provider != nullptr )
             {
-                switch( _code )
-                {
-                    case 0:
-                    {
-                        m_provider->onFacebookShareSuccess( data == nullptr ? "" : data.UTF8String );
-                    }break;
-                    case 1:
-                    {
-                        m_provider->onFacebookShareError( data == nullptr ? "" : data.UTF8String );
-                    }break;
-                    case 2:
-                    {
-                        m_provider->onFacebookShareCancel();
-                    }break;
-                }
+                m_provider->onFacebookShareError( "empty data" );
             }
-        }];
+            return;
+        }
+        
+        if( m_shareDelegate != nullptr)
+        {
+            LOGGER_ERROR("Facebook  m_shareDelegate has nullptr -> not called share Dialog");
+            return;
+        }
+        
+        if(strPicture.length<=0)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                FBSDKShareLinkContent* content = [FBSDKShareLinkContent alloc];
+                content.contentURL = [NSURL URLWithString:strlink];
+                
+                FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:[UIApplication sharedApplication].delegate.window.rootViewController withContent:content delegate:m_shareDelegate];
+                
+                [dialog show];
+            });
+
+            return;
+        }
+        else
+        {
+            
+            NSURL* url = [NSURL URLWithString:strPicture];
+            if( url == nullptr)
+            {
+                LOGGER_ERROR("Facebook  picture not convert to NSURL");
+                if( m_provider != nullptr )
+                {
+                    m_provider->onFacebookShareError( "error picture to NSURL" );
+                }
+                return;
+            }
+            
+            NSData *data = [NSData dataWithContentsOfURL: url];
+            if( data == nullptr)
+            {
+                LOGGER_ERROR("Facebook  picture not convert to NSData");
+                if( m_provider != nullptr )
+                {
+                    m_provider->onFacebookShareError( "empty NSURL to NSData" );
+                }
+                return;
+            }
+            
+            UIImage *img = [UIImage imageWithData: data];
+            if( img == nullptr)
+            {
+                LOGGER_ERROR("Facebook  picture not convert to UIImage");
+                if( m_provider != nullptr )
+                {
+                    m_provider->onFacebookShareError( "empty NSData to UIImage" );
+                }
+                return;
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                FBSDKSharePhoto *sharePhoto = [[FBSDKSharePhoto alloc] initWithImage: img isUserGenerated:true];
+                
+                FBSDKShareMediaContent *content = [FBSDKShareMediaContent alloc];
+                content.contentURL = [NSURL URLWithString:strlink];
+                content.media =  @[sharePhoto];
+                
+                FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:[UIApplication sharedApplication].delegate.window.rootViewController withContent:content delegate:m_shareDelegate];
+                
+                [dialog show];
+                
+            });
+        }
     }
     /////////////////////////////////////////////////////////////////////////////
     void AppleFacebookService::getProfilePictureLink()
@@ -189,6 +250,7 @@ namespace Mengine
     bool AppleFacebookService::_initializeService()
     {
         m_loginManager = [FBSDKLoginManager new];
+        m_shareDelegate = [[AppleFacebookShareDelegate alloc]initWithService: this];
         
         return true;
     }

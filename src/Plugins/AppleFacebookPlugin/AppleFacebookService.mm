@@ -24,6 +24,22 @@ namespace Mengine
     AppleFacebookService::~AppleFacebookService()
     {
     }
+    /////////////////////////////////////////////////////////////////////////////
+    bool AppleFacebookService::_initializeService()
+    {
+        m_loginManager = [FBSDKLoginManager new];
+        m_shareDelegate = [[AppleFacebookShareDelegate alloc]initWithService: this];
+        
+        return true;
+    }
+    ////////////////////////////////////////////////////////////////////////
+    void AppleFacebookService::_finalizeService()
+    {
+        m_provider = nullptr;
+        
+//        [m_loginManager release];
+//        m_loginManager = nil;
+    }
     //////////////////////////////////////////////////////////////////////////
     void AppleFacebookService::setProvider( const AppleFacebookProviderInterfacePtr & _provider )
     {
@@ -116,25 +132,26 @@ namespace Mengine
         NSString * strPicture = [NSString stringWithUTF8String:picture];
         NSString * strlink = [NSString stringWithUTF8String:link];
         
-        if(strlink.length<=0 && strPicture.length<=0)
+        if( strlink.length <= 0 && strPicture.length <= 0 )
         {
             if( m_provider != nullptr )
             {
                 m_provider->onFacebookShareError( "empty data" );
             }
+
             return;
         }
         
-        if( m_shareDelegate != nullptr)
+        if( m_shareDelegate != nullptr )
         {
-            LOGGER_ERROR("Facebook  m_shareDelegate has nullptr -> not called share Dialog");
+            LOGGER_ERROR("Facebook m_shareDelegate has nullptr -> not called share Dialog");
+
             return;
         }
         
-        if(strPicture.length<=0)
+        if( strPicture.length <= 0 )
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
+            dispatch_async(dispatch_get_main_queue(), ^{                
                 FBSDKShareLinkContent* content = [FBSDKShareLinkContent alloc];
                 content.contentURL = [NSURL URLWithString:strlink];
                 
@@ -146,34 +163,41 @@ namespace Mengine
             return;
         }
         else
-        {
-            
-            NSURL* url = [NSURL URLWithString:strPicture];
+        {            
+            NSURL * url = [NSURL URLWithString:strPicture];
+
             if( url == nullptr)
             {
-                LOGGER_ERROR("Facebook  picture not convert to NSURL");
+                LOGGER_ERROR("Facebook picture not convert to NSURL");
+
                 if( m_provider != nullptr )
                 {
                     m_provider->onFacebookShareError( "error picture to NSURL" );
                 }
+
                 return;
             }
             
             NSData *data = [NSData dataWithContentsOfURL: url];
-            if( data == nullptr)
+
+            if( data == nullptr )
             {
-                LOGGER_ERROR("Facebook  picture not convert to NSData");
+                LOGGER_ERROR("Facebook picture not convert to NSData");
+
                 if( m_provider != nullptr )
                 {
                     m_provider->onFacebookShareError( "empty NSURL to NSData" );
                 }
+
                 return;
             }
             
             UIImage *img = [UIImage imageWithData: data];
-            if( img == nullptr)
+
+            if( img == nullptr )
             {
-                LOGGER_ERROR("Facebook  picture not convert to UIImage");
+                LOGGER_ERROR("Facebook picture not convert to UIImage");
+
                 if( m_provider != nullptr )
                 {
                     m_provider->onFacebookShareError( "empty NSData to UIImage" );
@@ -181,8 +205,7 @@ namespace Mengine
                 return;
             }
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
+            dispatch_async(dispatch_get_main_queue(), ^{                
                 FBSDKSharePhoto *sharePhoto = [[FBSDKSharePhoto alloc] initWithImage: img isUserGenerated:true];
                 
                 FBSDKShareMediaContent *content = [FBSDKShareMediaContent alloc];
@@ -191,8 +214,7 @@ namespace Mengine
                 
                 FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:[UIApplication sharedApplication].delegate.window.rootViewController withContent:content delegate:m_shareDelegate];
                 
-                [dialog show];
-                
+                [dialog show];                
             });
         }
     }
@@ -245,22 +267,6 @@ namespace Mengine
                 m_provider->onFacebookProfilePictureLinkGet("", false, "");
             }
         }];
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    bool AppleFacebookService::_initializeService()
-    {
-        m_loginManager = [FBSDKLoginManager new];
-        m_shareDelegate = [[AppleFacebookShareDelegate alloc]initWithService: this];
-        
-        return true;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    void AppleFacebookService::_finalizeService()
-    {
-        m_provider = nullptr;
-        
-//        [m_loginManager release];
-//        m_loginManager = nil;
     }
     //////////////////////////////////////////////////////////////////////////
 }

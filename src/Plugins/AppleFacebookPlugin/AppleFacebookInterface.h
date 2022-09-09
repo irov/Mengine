@@ -15,14 +15,14 @@ namespace Mengine
     {
     public:
         virtual void onFacebookLoginSuccess( const Char * token ) = 0;
-        virtual void onFacebookLoginCancel( ) = 0;
-        
+        virtual void onFacebookLoginCancel() = 0;
+
         virtual void onFacebookError( const Char * errorMessage ) = 0;
-        
+
         virtual void onFacebookShareSuccess( const Char * postId ) = 0;
         virtual void onFacebookShareCancel() = 0;
         virtual void onFacebookShareError( const Char * errorMessage ) = 0;
-        
+
         virtual void onFacebookProfilePictureLinkGet( const Char * userId, bool success, const Char * pictureURL ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -32,11 +32,11 @@ namespace Mengine
         : public ServiceInterface
     {
         SERVICE_DECLARE( "AppleFacebookService" )
-        
+
     public:
         virtual void setProvider( const AppleFacebookProviderInterfacePtr & _provider ) = 0;
         virtual const AppleFacebookProviderInterfacePtr & getProvider() const = 0;
-        
+
     public:
         virtual void login() = 0;
         virtual void logout() = 0;

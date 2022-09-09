@@ -94,7 +94,7 @@ if(MENGINE_TARGET_ANDROID)
     ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC_FILES})
 endif()
 
-if((MENGINE_TARGET_APPLE)
+if(MENGINE_TARGET_APPLE)
     if(MENGINE_XCODE_DEPLOY_PATH)
         if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/project_prepare.cmake")
             include("${MENGINE_XCODE_DEPLOY_PATH}/project_prepare.cmake")

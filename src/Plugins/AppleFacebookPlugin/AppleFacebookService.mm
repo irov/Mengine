@@ -178,7 +178,7 @@ namespace Mengine
                 return;
             }
             
-            NSData *data = [NSData dataWithContentsOfURL: url];
+            NSData * data = [NSData dataWithContentsOfURL: url];
 
             if( data == nullptr )
             {
@@ -202,6 +202,7 @@ namespace Mengine
                 {
                     m_provider->onFacebookShareError( "empty NSData to UIImage" );
                 }
+                
                 return;
             }
             
@@ -214,7 +215,7 @@ namespace Mengine
                 
                 FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:[UIApplication sharedApplication].delegate.window.rootViewController withContent:content delegate:m_shareDelegate];
                 
-                [dialog show];                
+                [dialog show];
             });
         }
     }

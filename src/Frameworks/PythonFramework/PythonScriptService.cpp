@@ -397,7 +397,7 @@ namespace Mengine
             this->addGlobalModuleT( "_WINDOWS", false );
             this->addGlobalModuleT( "_WIN32", false );
             this->addGlobalModuleT( "_WIN64", false );
-            this->addGlobalModuleT( "_OSX", false );
+            this->addGlobalModuleT( "_MACOS", false );
             this->addGlobalModuleT( "_DESKTOP", false );
             this->addGlobalModuleT( "_LINUX", false );
             this->addGlobalModuleT( "_ANDROID", false );
@@ -445,10 +445,10 @@ namespace Mengine
             this->addGlobalModuleT( "_WIN64", false );
 #endif
 
-#if defined(MENGINE_PLATFORM_OSX)
-            this->addGlobalModuleT( "_OSX", true );
+#if defined(MENGINE_PLATFORM_MACOS)
+            this->addGlobalModuleT( "_MACOS", true );
 #else
-            this->addGlobalModuleT( "_OSX", false );
+            this->addGlobalModuleT( "_MACOS", false );
 #endif
 
 #if defined(MENGINE_PLATFORM_DESKTOP)

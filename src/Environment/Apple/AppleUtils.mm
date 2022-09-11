@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 
-#if defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_MACOS)
 #   import <AppKit/AppKit.h>
 #else
 #   import <UIKit/UIKit.h>
@@ -17,7 +17,7 @@ namespace Mengine
         {
             NSString * url = [NSString stringWithUTF8String: _url];
     
-        #if defined(MENGINE_PLATFORM_OSX)
+        #if defined(MENGINE_PLATFORM_MACOS)
             [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
         #else
             if( [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:url]] == TRUE )

@@ -383,7 +383,7 @@ namespace Mengine
         MENGINE_STRCPY( _currentPath, deploy_mac_data );
 
         return sizeof( deploy_mac_data ) - 1;
-#elif defined(MENGINE_PLATFORM_OSX)
+#elif defined(MENGINE_PLATFORM_MACOS)
         char * basePath = SDL_GetBasePath();
 
         MENGINE_STRCPY( _currentPath, basePath );
@@ -1295,7 +1295,7 @@ namespace Mengine
         }
         else
         {
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS)
             bool maxfps = HAS_OPTION( "maxfps" );
 
             if( APPLICATION_SERVICE()
@@ -2134,7 +2134,7 @@ namespace Mengine
                 return false;
             }
 
-#elif defined(MENGINE_PLATFORM_OSX)
+#elif defined(MENGINE_PLATFORM_MACOS)
             int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
@@ -2266,7 +2266,7 @@ namespace Mengine
         {
             return true;	// let it be
         }
-#if defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_MACOS)
         else if( pathFull[len - 1] == '~' )	// root dir
         {
             return true;	// let it be
@@ -2745,7 +2745,7 @@ namespace Mengine
         MENGINE_UNUSED( _directoryPath );
         MENGINE_UNUSED( _filePath );
 
-#if defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_MACOS)
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) != 0 )
         {
@@ -2772,9 +2772,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-#if defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_MACOS)
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::OSXGetPicturesDirectory( path_pictures ) != 0 )
+        if( Helper::MacOSGetPicturesDirectory( path_pictures ) != 0 )
         {
             LOGGER_ERROR( "invalid get Pictures directory" );
             
@@ -2835,7 +2835,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-#if defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_MACOS)
         Char path_music[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::MacOSGetMusicDirectory( path_music ) != 0 )
         {

@@ -7,7 +7,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool OSXGetBuildShortVersionString( Char * const _version )
+        bool MacOSGetBuildShortVersionString( Char * const _version )
         {
             NSString * version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     
@@ -23,7 +23,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool OSXGetBuildVersionKey( Char * const _version )
+        bool MacOSGetBuildVersionKey( Char * const _version )
         {
             NSString * version = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
     
@@ -39,7 +39,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool OSXGetMusicDirectory( Char * const _directory )
+        bool MacOSGetMusicDirectory( Char * const _directory )
         {
             NSArray * paths = NSSearchPathForDirectoriesInDomains(NSMusicDirectory, NSUserDomainMask, YES);
     
@@ -63,7 +63,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool OSXGetPicturesDirectory( Char * const _directory )
+        bool MacOSGetPicturesDirectory( Char * const _directory )
         {
             NSArray * paths = NSSearchPathForDirectoriesInDomains(NSPicturesDirectory, NSUserDomainMask, YES);
     
@@ -87,7 +87,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool OSXSetDesktopWallpaper( const char * _url )
+        bool MacOSSetDesktopWallpaper( const char * _url )
         { 
 	        NSURL * url = [NSURL fileURLWithPath:@(_url)];
 
@@ -117,5 +117,6 @@ namespace Mengine
 
             return true;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

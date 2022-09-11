@@ -16,6 +16,8 @@ namespace Mengine
 {
     namespace Helper
     {
+        bool AppleOpenUrlInDefaultBrowser( const Char * _url );
+
         typedef StaticString<MENGINE_APPLE_MESSAGE_NSERROR> NSErrorMessage;
 
         NSErrorMessage AppleGetMessageFromNSError( NSError * _error );

@@ -12,34 +12,6 @@ src
     SDLInput.cpp
 )
 
-IF(MENGINE_TARGET_MACOS)
-ADD_FILTER(
-OSX
-    OSX/OSXSetDesktopWallpaper.h
-    OSX/OSXSetDesktopWallpaper.m
-)
-ENDIF()
-
-IF(MENGINE_TARGET_APPLE)
-ADD_FILTER(
-Apple
-    Apple/AppleOpenUrlInDefaultBrowser.h
-    Apple/AppleOpenUrlInDefaultBrowser.m
-)
-ENDIF()
-
-IF(MENGINE_TARGET_ANDROID)
-ADD_FILTER(
-Android
-    Android/AndroidAssetFile.h
-    Android/AndroidAssetFile.cpp
-    Android/AndroidOpenUrlInDefaultBrowser.h
-    Android/AndroidOpenUrlInDefaultBrowser.cpp
-    Android/AndroidOpenMail.h
-    Android/AndroidOpenMail.cpp
-)
-ENDIF()
-
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 

@@ -5,6 +5,28 @@ namespace Mengine
     namespace Helper
     {
         /////////////////////////////////////////////////////////////////////////
+        bool AppleOpenUrlInDefaultBrowser( const Char * _url )
+        {
+            NSString * url = [NSString stringWithUTF8String: _url];
+    
+        #if defined(MENGINE_PLATFORM_OSX)
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+        #else
+            if( [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:url]] == TRUE )
+            {
+                [[UIApplication sharedApplication] openURL: [NSURL URLWithString:url] options:@{} completionHandler:^(BOOL success)
+                {
+                    //ToDo callback
+                }];
+            }
+            else
+            {
+                return false;
+            }
+        #endif
+            return true;
+        }
+        /////////////////////////////////////////////////////////////////////////
         NSErrorMessage AppleGetMessageFromNSError( NSError * _error )
         {
             NSString * message = [NSString stringWithFormat:@"[Error %ld Description: %@ Failure reason: %@ Recovery suggestion: %@"

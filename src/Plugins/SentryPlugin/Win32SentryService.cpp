@@ -218,10 +218,13 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
 
-        LOGGER_SERVICE()
-            ->unregisterLogger( m_loggerCapture );
+        if( m_loggerCapture != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_loggerCapture );
 
-        m_loggerCapture = nullptr;
+            m_loggerCapture = nullptr;
+        }
 
         sentry_close();
     }

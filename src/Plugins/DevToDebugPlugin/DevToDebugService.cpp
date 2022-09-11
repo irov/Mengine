@@ -3,6 +3,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "DevToDebugTab.h"
 
@@ -68,19 +69,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugService::_initializeService()
     {
-        const Char * DevToDebug_PID = CONFIG_VALUE( "DevToDebugPlugin", "PID", "" );
+        const Char * DevToDebug_DSN = CONFIG_VALUE( "DevToDebugPlugin", "DSN", "" );
 
-        if( MENGINE_STRCMP( DevToDebug_PID, "" ) == 0 )
+        if( MENGINE_STRCMP( DevToDebug_DSN, "" ) == 0 )
         {
-            LOGGER_WARNING( "DevToDebug don't setup PID" );
+            LOGGER_WARNING( "DevToDebug don't setup DSN" );
 
             return true;
         }
 
-        m_pid = DevToDebug_PID;
+        m_dsn = DevToDebug_DSN;
 
-        LOGGER_MESSAGE( "DevToDebug PID: %s"
-            , m_pid.c_str()
+        LOGGER_MESSAGE( "DevToDebug DSN: %s"
+            , m_dsn.c_str()
         );
 
         m_mutexTabs = THREAD_SYSTEM()
@@ -164,22 +165,36 @@ namespace Mengine
 
         uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 500 );
 
-        Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebug" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
+        Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugProcess" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
         {
             this->process();
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        float DevToDebug_SyncTime = CONFIG_VALUE( "DevToDebugPlugin", "SyncTime", 500.f );
+        float DevToDebug_PropertySyncTime = CONFIG_VALUE( "DevToDebugPlugin", "PropertySyncTime", 500.f );
 
         UniqueId timerId = PLATFORM_SERVICE()
-            ->addTimer( DevToDebug_SyncTime, [this]( UniqueId _id )
+            ->addTimer( DevToDebug_PropertySyncTime, [this]( UniqueId _id )
         {
             MENGINE_UNUSED( _id );
 
             this->sync();
         }, MENGINE_DOCUMENT_FACTORABLE );
 
+        MENGINE_ASSERTION_FATAL( timerId != INVALID_UNIQUE_ID );
+
         m_timerId = timerId;
+
+        DevToDebugLoggerPtr logger = Helper::makeFactorableUnique<DevToDebugLogger>( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( logger );
+
+        logger->setVerboseLevel( LM_VERBOSE );
+        logger->setWriteHistory( true );
+
+        LOGGER_SERVICE()
+            ->registerLogger( logger );
+
+        m_logger = logger;
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
@@ -204,6 +219,14 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
+
+        if( m_logger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_logger );
+
+            m_logger = nullptr;
+        }
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), nullptr );
@@ -253,7 +276,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_stopService()
     {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebug" ) );
+        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugProcess" ) );
 
         if( m_timerId != INVALID_UNIQUE_ID )
         {
@@ -343,11 +366,6 @@ namespace Mengine
             {
                 m_status = EDTDS_CONNECTING;
 
-                Char connect_url[256] = {'\0'};
-                MENGINE_SNPRINTF( connect_url, 256, "http://api.devtodebug.com/%s/connect/"
-                    , m_pid.c_str()
-                );
-
                 cURLHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
@@ -357,23 +375,18 @@ namespace Mengine
                 Helper::writeJSONStringCompact( j, &data );
 
                 HttpRequestID id = CURL_SERVICE()
-                    ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->headerData( m_dsn, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
 
                 LOGGER_INFO( "devtodebug", "Connecting: %s data: %s [id %u]"
-                    , connect_url
+                    , m_dsn.c_str()
                     , data.c_str()
                     , id
                 );
             }break;
         case EDTDS_CONNECT:
             {
-                Char connect_url[256] = {'\0'};
-                MENGINE_SNPRINTF( connect_url, 256, "http://api.devtodebug.com/worker/%s/"
-                    , m_uuid.c_str()
-                );
-
                 cURLHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
@@ -383,7 +396,7 @@ namespace Mengine
                 Helper::writeJSONStringCompact( j, &data );
 
                 HttpRequestID id = CURL_SERVICE()
-                    ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
 
@@ -434,9 +447,9 @@ namespace Mengine
 
                 jpp::object j = Helper::loadJSONStreamFromString( _response.data, MENGINE_DOCUMENT_FACTORABLE );
 
-                m_uuid = j.get( "uuid", "" );
+                String uuid = j.get( "uuid", "" );
 
-                if( m_uuid.empty() == true )
+                if( uuid.empty() == true )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connecting response error: %s [code %u] [id %u]"
                         , _response.data.c_str()
@@ -449,8 +462,17 @@ namespace Mengine
                     break;
                 }
 
+                m_workerURL = "http://api.devtodebug.com/worker/";
+                m_workerURL += uuid;
+                m_workerURL += "/";
+
+                if( m_logger != nullptr )
+                {
+                    m_logger->setWorkerURL( m_workerURL );
+                }
+
                 LOGGER_INFO( "devtodebug", "Request Connect: %s [id %u]"
-                    , m_uuid.c_str()
+                    , m_workerURL.c_str()
                     , _response.id
                 );
 
@@ -698,14 +720,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::notifyBootstrapperFinalizeGame_()
     {
-        if( m_uuid.empty() == true )
+        if( m_workerURL.empty() == true )
         {
             return;
         }
 
-        Char connect_url[256] = {'\0'};
-        MENGINE_SNPRINTF( connect_url, 256, "http://api.devtodebug.com/worker/%s/delete/"
-            , m_uuid.c_str()
+        Char delete_url[1024] = {'\0'};
+        MENGINE_SNPRINTF( delete_url, 256, "%s/delete/"
+            , m_workerURL.c_str()
         );
 
         cURLHeaders headers;
@@ -717,7 +739,7 @@ namespace Mengine
         Helper::writeJSONStringCompact( j, &data );
 
         CURL_SERVICE()
-            ->headerData( connect_url, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, nullptr, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
 }

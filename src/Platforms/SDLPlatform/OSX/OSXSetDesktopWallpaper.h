@@ -3,6 +3,8 @@
 
 #include "Config/Config.h"
 
-int OSXSetDesktopWallpaper(const char *_url);
+int OSXGetMusicDirectory( char * const _directory );
+int OSXGetPicturesDirectory( char * const _directory );
+int OSXSetDesktopWallpaper( const char * _url );
 
 #endif

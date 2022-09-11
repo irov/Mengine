@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#include <cstring>
+#include <string.h>
 #include <wchar.h>
 
 //////////////////////////////////////////////////////////////////////////

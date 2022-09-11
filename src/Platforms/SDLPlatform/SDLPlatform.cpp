@@ -2135,10 +2135,10 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_createDurectoryFullpath( const Char * _fullpath )
+        static bool s_createDirectoryFullpath( const Char * _fullpath )
         {
 #if defined(MENGINE_PLATFORM_IOS)
-            int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
             {
@@ -2150,7 +2150,7 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_OSX)
-            int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
             {
@@ -2162,7 +2162,7 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_LINUX)
-            int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
             {
@@ -2174,7 +2174,7 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-            int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
             {
@@ -2242,6 +2242,22 @@ namespace Mengine
 
             return false;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_updateDirectoryFullpath( const Char * _fullpath )
+        {
+            if( Detail::s_isDirectoryFullpath( _fullpath ) == true )
+            {
+                return true;
+            }
+
+            if( Detail::s_createDirectoryFullpath( _fullpath ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::existDirectory( const Char * _path, const Char * _directory ) const
@@ -2345,7 +2361,7 @@ namespace Mengine
             Char pathCreateDirectory[MENGINE_MAX_PATH] = {'\0'};
             MENGINE_SNPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, "%s%s", _path, path_str );
 
-            if( Detail::s_createDurectoryFullpath( pathCreateDirectory ) == false )
+            if( Detail::s_createDirectoryFullpath( pathCreateDirectory ) == false )
             {
                 return false;
             }
@@ -2745,18 +2761,14 @@ namespace Mengine
         MENGINE_UNUSED( _filePath );
 
 #if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv( "HOME" );
-
-        if( homeBuffer == nullptr )
+        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        if( OSXGetPicturesDirectory( path_pictures ) != 0 )
         {
-            LOGGER_ERROR( "invalid get env 'HOME'" );
-
+            LOGGER_ERROR( "invalid get Pictures directory" );
+            
             return false;
         }
-
-        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer );
-
+        
         Char path_file[MENGINE_MAX_PATH] = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
@@ -2770,24 +2782,19 @@ namespace Mengine
 
         //MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
-
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv( "HOME" );
-
-        if( homeBuffer == nullptr )
+        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        if( OSXGetPicturesDirectory( path_pictures ) != 0 )
         {
-            LOGGER_ERROR( "invalid get env 'HOME'" );
-
+            LOGGER_ERROR( "invalid get Pictures directory" );
+            
             return false;
         }
-
-        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer );
 
         if( this->createDirectory( path_pictures, _directoryPath ) == false )
         {
@@ -2844,17 +2851,13 @@ namespace Mengine
     bool SDLPlatform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv( "HOME" );
-
-        if( homeBuffer == nullptr )
+        Char path_music[MENGINE_MAX_PATH] = {'\0'};
+        if( OSXGetMusicDirectory( path_music ) != 0 )
         {
-            LOGGER_ERROR( "invalid get env 'HOME'" );
-
+            LOGGER_ERROR( "invalid get Music directory" );
+            
             return false;
         }
-
-        Char path_music[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_music, MENGINE_MAX_PATH, "%s/Music/", homeBuffer );
 
         if( this->createDirectory( path_music, _directoryPath ) == false )
         {

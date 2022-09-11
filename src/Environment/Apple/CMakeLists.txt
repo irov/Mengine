@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     AppleUtils.h
     AppleUtils.mm
+    AppleErrorHelper.h
+    AppleErrorHelper.mm
 )
 
 ADD_MENGINE_LIBRARY(Environment)

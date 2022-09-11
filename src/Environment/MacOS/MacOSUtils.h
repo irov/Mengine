@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Config.h"
+#include "Config/Char.h"
 
 #import <Foundation/Foundation.h>
 

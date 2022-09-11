@@ -1,4 +1,7 @@
-#include "OSXUtils.h"
+#include "MacOSUtils.h"
+
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 
 #include "Config/StdString.h"
 
@@ -18,7 +21,7 @@ namespace Mengine
     
             const Char * version_str = [version UTF8String];
     
-            MENGINE_STRCPY( _version, version );
+            MENGINE_STRCPY( _version, version_str );
     
             return true;
         }
@@ -34,7 +37,7 @@ namespace Mengine
     
             const Char * version_str = [version UTF8String];
     
-            MENGINE_STRCPY( _version, version );
+            MENGINE_STRCPY( _version, version_str );
     
             return true;
         }

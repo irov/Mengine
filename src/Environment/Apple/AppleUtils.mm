@@ -1,5 +1,13 @@
 #include "AppleUtils.h"
 
+#import <Foundation/Foundation.h>
+
+#if defined(MENGINE_PLATFORM_OSX)
+#   import <AppKit/AppKit.h>
+#else
+#   import <UIKit/UIKit.h>
+#endif
+
 namespace Mengine
 {
     namespace Helper

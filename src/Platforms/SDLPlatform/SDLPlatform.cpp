@@ -11,20 +11,13 @@
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_APPLE)
-extern "C" {
-#   include "Apple/AppleOpenUrlInDefaultBrowser.h"
-
-#   if defined(MENGINE_PLATFORM_OSX)
-#       include "OSX/OSXSetDesktopWallpaper.h"
+#elif defined(MENGINE_PLATFORM_APPLE)
+#   include "Environment/Apple/AppleUtils.h"
+#   if defined(MENGINE_PLATFORM_MACOS)
+#       include "Environment/MacOS/MacOSUtils.h"
 #   endif
-}
 #elif defined(MENGINE_PLATFORM_ANDROID)
-#   include "Android/AndroidAssetFile.h"
-#   include "Android/AndroidOpenUrlInDefaultBrowser.h"
-#   include "Android/AndroidOpenMail.h"
+#   include "Environment/Android/AndroidUtils.h"
 #endif
 
 #include "SDLDynamicLibrary.h"
@@ -58,14 +51,6 @@ extern "C" {
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
 #include "Config/Utils.h"
-
-#if defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_IOS)
-#   include "TargetConditionals.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_OSX)
-#   include <sysdir.h>
-#endif
 
 #include <clocale>
 #include <ctime>
@@ -1362,7 +1347,7 @@ namespace Mengine
         MENGINE_UNUSED( _url );
 
 #if defined(MENGINE_PLATFORM_APPLE)
-        if( AppleOpenUrlInDefaultBrowser( _url ) == -1 )
+        if( Helper::AppleOpenUrlInDefaultBrowser( _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url
@@ -1377,7 +1362,7 @@ namespace Mengine
 
         return true;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( AndroidOpenUrlInDefaultBrowser( m_jenv, jclass_activity, jobject_activity, _url ) == false )
+        if( Helper::AndroidOpenUrlInDefaultBrowser( m_jenv, jclass_activity, jobject_activity, _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url
@@ -1409,7 +1394,7 @@ namespace Mengine
 
         return false;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( AndroidOpenMail( m_jenv, jclass_activity, jobject_activity, _email, _subject, _body ) == false )
+        if( Helper::AndroidOpenMail( m_jenv, jclass_activity, jobject_activity, _email, _subject, _body ) == false )
         {
             LOGGER_ERROR( "error open mail '%s'"
                 , _email
@@ -2762,7 +2747,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_OSX)
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        if( OSXGetPicturesDirectory( path_pictures ) != 0 )
+        if( Helper::MacOSGetPicturesDirectory( path_pictures ) != 0 )
         {
             LOGGER_ERROR( "invalid get Pictures directory" );
             
@@ -2772,7 +2757,7 @@ namespace Mengine
         Char path_file[MENGINE_MAX_PATH] = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
-        if( OSXSetDesktopWallpaper( path_file ) == -1 )
+        if( Helper::MacOSSetDesktopWallpaper( path_file ) == false )
         {
             LOGGER_ERROR( "error set desktop wallpaper '%s'"
                 , path_file
@@ -2789,7 +2774,7 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_OSX)
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        if( OSXGetPicturesDirectory( path_pictures ) != 0 )
+        if( Helper::OSXGetPicturesDirectory( path_pictures ) != 0 )
         {
             LOGGER_ERROR( "invalid get Pictures directory" );
             
@@ -2852,7 +2837,7 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_OSX)
         Char path_music[MENGINE_MAX_PATH] = {'\0'};
-        if( OSXGetMusicDirectory( path_music ) != 0 )
+        if( Helper::MacOSGetMusicDirectory( path_music ) != 0 )
         {
             LOGGER_ERROR( "invalid get Music directory" );
             

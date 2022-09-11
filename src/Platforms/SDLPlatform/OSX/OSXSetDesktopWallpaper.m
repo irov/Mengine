@@ -6,6 +6,38 @@
 #include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
+int OSXGetBuildShortVersionString( char * const _version )
+{
+    NSString * version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    
+    if( version == nil )
+    {
+        return -1;
+    }
+    
+    const char * version_str = [version UTF8String];
+    
+    strcpy( _version, version );
+    
+    return 0;
+}
+//////////////////////////////////////////////////////////////////////////
+int OSXGetBuildVersionKey( char * const _version )
+{
+    NSString * version = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
+    
+    if( version == nil )
+    {
+        return -1;
+    }
+    
+    const char * version_str = [version UTF8String];
+    
+    strcpy( _version, version );
+    
+    return 0;
+}
+//////////////////////////////////////////////////////////////////////////
 int OSXGetMusicDirectory( char * const _directory )
 {
     NSArray * paths = NSSearchPathForDirectoriesInDomains(NSMusicDirectory, NSUserDomainMask, YES);

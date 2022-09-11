@@ -35,5 +35,5 @@ dependencies {
     implementation project(':libraries:SDL2')
 
     implementation "com.google.android.gms:play-services-games:22.0.1"
-    implementation "com.google.android.gms:play-services-auth:20.2.0"
+    implementation "com.google.android.gms:play-services-auth:20.3.0"
 }

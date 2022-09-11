@@ -57,7 +57,6 @@ android {
 
     buildTypes {
         debug {
-
             externalNativeBuild {
                 cmake {
                     cFlags "-std=c11 -O0 -g -D_DEBUG"
@@ -107,6 +106,7 @@ android {
             path "../../../dependencies/SDL2/CMakeLists.txt"
         }
     }
+
     sourceSets {
         main {
             java {
@@ -114,6 +114,7 @@ android {
             }
         }
     }
+
     lint {
         abortOnError false
         checkReleaseBuilds false

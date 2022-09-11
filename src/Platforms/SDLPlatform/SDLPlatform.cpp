@@ -2747,7 +2747,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_MACOS)
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::MacOSGetPicturesDirectory( path_pictures ) != 0 )
+        if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
             LOGGER_ERROR( "invalid get Pictures directory" );
             
@@ -2774,7 +2774,7 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_MACOS)
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::MacOSGetPicturesDirectory( path_pictures ) != 0 )
+        if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
             LOGGER_ERROR( "invalid get Pictures directory" );
             
@@ -2837,7 +2837,7 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_MACOS)
         Char path_music[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::MacOSGetMusicDirectory( path_music ) != 0 )
+        if( Helper::MacOSGetMusicDirectory( path_music ) == false )
         {
             LOGGER_ERROR( "invalid get Music directory" );
             

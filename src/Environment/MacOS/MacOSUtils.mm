@@ -1,9 +1,13 @@
 #include "MacOSUtils.h"
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
+#include "Environment/Apple/AppleErrorHelper.h"
+
+#include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 
 namespace Mengine
 {
@@ -109,12 +113,16 @@ namespace Mengine
             }
 
             NSError *error = nil;
-    
             if( [[NSWorkspace sharedWorkspace] setDesktopImageURL:url
                                                         forScreen:currentScreen
                                                           options:screenOptions
                                                             error:&error] == FALSE )
             {
+                LOGGER_ERROR("invalid set desktop image url '%s' error '%s'"
+                    , _url
+                    , Helper::AppleGetMessageFromNSError(error).c_str()
+                );
+                
                 return false;
             }
 

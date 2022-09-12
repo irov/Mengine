@@ -799,15 +799,6 @@ namespace Mengine
         LOGGER_MESSAGE( "enable document debug [OFF]" );
 #endif
 
-        LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
-
-        if( this->mountUserFileGroup_() == false )
-        {
-            LOGGER_ERROR( "invalid mount user file group" );
-
-            return false;
-        }
-
 #ifdef MENGINE_PLUGIN_INI_STATIC
         MENGINE_ADD_PLUGIN( INI, "Plugin INI...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -839,6 +830,15 @@ namespace Mengine
         bool Assertion_NoDebugBreak = OPTION_assertion == false && Engine_AssertionDebugBreak == false;
 
         Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
+        
+        LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
+
+        if( this->mountUserFileGroup_() == false )
+        {
+            LOGGER_ERROR( "invalid mount user file group" );
+
+            return false;
+        }
 
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
         MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );

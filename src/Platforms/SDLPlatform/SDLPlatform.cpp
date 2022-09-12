@@ -11,20 +11,13 @@
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_APPLE)
-extern "C" {
-#   include "Apple/AppleOpenUrlInDefaultBrowser.h"
-
-#   if defined(MENGINE_PLATFORM_OSX)
-#       include "OSX/OSXSetDesktopWallpaper.h"
+#elif defined(MENGINE_PLATFORM_APPLE)
+#   include "Environment/Apple/AppleUtils.h"
+#   if defined(MENGINE_PLATFORM_MACOS)
+#       include "Environment/MacOS/MacOSUtils.h"
 #   endif
-}
 #elif defined(MENGINE_PLATFORM_ANDROID)
-#   include "Android/AndroidAssetFile.h"
-#   include "Android/AndroidOpenUrlInDefaultBrowser.h"
-#   include "Android/AndroidOpenMail.h"
+#   include "Environment/Android/AndroidUtils.h"
 #endif
 
 #include "SDLDynamicLibrary.h"
@@ -58,14 +51,6 @@ extern "C" {
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
 #include "Config/Utils.h"
-
-#if defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_IOS)
-#   include "TargetConditionals.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_OSX)
-#   include <sysdir.h>
-#endif
 
 #include <clocale>
 #include <ctime>
@@ -356,7 +341,6 @@ namespace Mengine
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
         , m_sleepMode( true )
-        , m_shouldQuit( false )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -398,7 +382,7 @@ namespace Mengine
         MENGINE_STRCPY( _currentPath, deploy_mac_data );
 
         return sizeof( deploy_mac_data ) - 1;
-#elif defined(MENGINE_PLATFORM_OSX)
+#elif defined(MENGINE_PLATFORM_MACOS)
         char * basePath = SDL_GetBasePath();
 
         MENGINE_STRCPY( _currentPath, basePath );
@@ -1117,7 +1101,13 @@ namespace Mengine
         Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
 #endif
-
+        
+#if defined(MENGINE_PLATFORM_MACOS)
+        m_macOSWorkspace = [SDLPlatformMacOSWorkspace alloc];
+        
+        [m_macOSWorkspace initialize];
+#endif
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1187,6 +1177,14 @@ namespace Mengine
             m_sdlInput->finalize();
             m_sdlInput = nullptr;
         }
+        
+#if defined(MENGINE_PLATFORM_MACOS)
+        if( m_macOSWorkspace != nil )
+        {
+            [m_macOSWorkspace finalize];
+            m_macOSWorkspace = nil;
+        }
+#endif
 
         m_platformTags.clear();
 
@@ -1310,7 +1308,7 @@ namespace Mengine
         }
         else
         {
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS)
             bool maxfps = HAS_OPTION( "maxfps" );
 
             if( APPLICATION_SERVICE()
@@ -1362,7 +1360,7 @@ namespace Mengine
         MENGINE_UNUSED( _url );
 
 #if defined(MENGINE_PLATFORM_APPLE)
-        if( AppleOpenUrlInDefaultBrowser( _url ) == -1 )
+        if( Helper::AppleOpenUrlInDefaultBrowser( _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url
@@ -1377,7 +1375,7 @@ namespace Mengine
 
         return true;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( AndroidOpenUrlInDefaultBrowser( m_jenv, jclass_activity, jobject_activity, _url ) == false )
+        if( Helper::AndroidOpenUrlInDefaultBrowser( m_jenv, jclass_activity, jobject_activity, _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url
@@ -1409,7 +1407,7 @@ namespace Mengine
 
         return false;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( AndroidOpenMail( m_jenv, jclass_activity, jobject_activity, _email, _subject, _body ) == false )
+        if( Helper::AndroidOpenMail( m_jenv, jclass_activity, jobject_activity, _email, _subject, _body ) == false )
         {
             LOGGER_ERROR( "error open mail '%s'"
                 , _email
@@ -1428,7 +1426,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::stopPlatform()
     {
-        m_shouldQuit = true;
+        SDL_HideWindow( m_sdlWindow );
+        
+        this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     UniqueId SDLPlatform::addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc )
@@ -1986,7 +1986,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::closeWindow()
     {
-        m_shouldQuit = true;
+        SDL_HideWindow( m_sdlWindow );
+        
+        this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
@@ -2135,10 +2137,10 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_createDurectoryFullpath( const Char * _fullpath )
+        static bool s_createDirectoryFullpath( const Char * _fullpath )
         {
 #if defined(MENGINE_PLATFORM_IOS)
-            int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
             {
@@ -2149,8 +2151,8 @@ namespace Mengine
                 return false;
             }
 
-#elif defined(MENGINE_PLATFORM_OSX)
-            int status = ::mkdir( _fullpath, 0700 );
+#elif defined(MENGINE_PLATFORM_MACOS)
+            int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
             {
@@ -2162,7 +2164,7 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_LINUX)
-            int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
             {
@@ -2174,7 +2176,7 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-            int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
             {
@@ -2242,6 +2244,22 @@ namespace Mengine
 
             return false;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_updateDirectoryFullpath( const Char * _fullpath )
+        {
+            if( Detail::s_isDirectoryFullpath( _fullpath ) == true )
+            {
+                return true;
+            }
+
+            if( Detail::s_createDirectoryFullpath( _fullpath ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::existDirectory( const Char * _path, const Char * _directory ) const
@@ -2265,7 +2283,7 @@ namespace Mengine
         {
             return true;	// let it be
         }
-#if defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_MACOS)
         else if( pathFull[len - 1] == '~' )	// root dir
         {
             return true;	// let it be
@@ -2345,7 +2363,7 @@ namespace Mengine
             Char pathCreateDirectory[MENGINE_MAX_PATH] = {'\0'};
             MENGINE_SNPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, "%s%s", _path, path_str );
 
-            if( Detail::s_createDurectoryFullpath( pathCreateDirectory ) == false )
+            if( Detail::s_createDirectoryFullpath( pathCreateDirectory ) == false )
             {
                 return false;
             }
@@ -2744,50 +2762,48 @@ namespace Mengine
         MENGINE_UNUSED( _directoryPath );
         MENGINE_UNUSED( _filePath );
 
-#if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv( "HOME" );
-
-        if( homeBuffer == nullptr )
+#if defined(MENGINE_PLATFORM_MACOS)
+        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
-            LOGGER_ERROR( "invalid get env 'HOME'" );
-
+            LOGGER_ERROR( "invalid get Pictures directory" );
+            
             return false;
         }
-
-        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer );
-
+        
         Char path_file[MENGINE_MAX_PATH] = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
-        if( OSXSetDesktopWallpaper( path_file ) == -1 )
+        if( Helper::MacOSSetDesktopWallpaper( path_file ) == false )
         {
             LOGGER_ERROR( "error set desktop wallpaper '%s'"
                 , path_file
             );
         }
+        
+        Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
+
+        if( (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN )
+        {
+            [m_macOSWorkspace changeDesktopWallpaper:path_file];
+        }
 #endif
 
         //MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-#if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv( "HOME" );
-
-        if( homeBuffer == nullptr )
+#if defined(MENGINE_PLATFORM_MACOS)
+        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
-            LOGGER_ERROR( "invalid get env 'HOME'" );
-
+            LOGGER_ERROR( "invalid get Pictures directory" );
+            
             return false;
         }
-
-        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer );
 
         if( this->createDirectory( path_pictures, _directoryPath ) == false )
         {
@@ -2843,18 +2859,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-#if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv( "HOME" );
-
-        if( homeBuffer == nullptr )
+#if defined(MENGINE_PLATFORM_MACOS)
+        Char path_music[MENGINE_MAX_PATH] = {'\0'};
+        if( Helper::MacOSGetMusicDirectory( path_music ) == false )
         {
-            LOGGER_ERROR( "invalid get env 'HOME'" );
-
+            LOGGER_ERROR( "invalid get Music directory" );
+            
             return false;
         }
-
-        Char path_music[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_music, MENGINE_MAX_PATH, "%s/Music/", homeBuffer );
 
         if( this->createDirectory( path_music, _directoryPath ) == false )
         {
@@ -3699,6 +3711,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents_()
     {
+        bool shouldQuit = false;
+        
         SDL_Event sdlEvent;
         while( SDL_PollEvent( &sdlEvent ) != 0 )
         {
@@ -3803,17 +3817,7 @@ namespace Mengine
                         }break;
                     case SDL_WINDOWEVENT_CLOSE:
                         {
-                            SDL_Event newEvent;
-                            newEvent = sdlEvent;
-                            newEvent.type = SDL_QUIT;
-
-                            if( SDL_PushEvent( &newEvent ) == -1 )
-                            {
-                                LOGGER_ERROR( "invalid push event [%u] error: %s"
-                                    , newEvent.type
-                                    , SDL_GetError()
-                                );
-                            }
+                            this->pushQuitEvent_();
                         }break;
                     case SDL_WINDOWEVENT_TAKE_FOCUS:
                         {
@@ -3825,7 +3829,7 @@ namespace Mengine
                 }break;
             case SDL_QUIT:
                 {
-                    m_shouldQuit = true;
+                    shouldQuit = true;
                 }break;
 #ifdef MENGINE_PLATFORM_IOS
             /*==================*/
@@ -3887,12 +3891,26 @@ namespace Mengine
             }
         }
 
-        if( m_shouldQuit == true )
+        if( shouldQuit == true )
         {
             return true;
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::pushQuitEvent_()
+    {
+        SDL_Event e;
+        e.type = SDL_QUIT;
+        e.quit.timestamp = SDL_GetTicks();
+
+        if( SDL_PushEvent( &e ) == -1 )
+        {
+            LOGGER_ERROR( "invalid push event [SDL_QUIT] error: %s"
+                , SDL_GetError()
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setActive_( bool _active )

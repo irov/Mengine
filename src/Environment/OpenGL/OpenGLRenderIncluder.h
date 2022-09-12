@@ -41,7 +41,7 @@
 
 #   define MENGINE_RENDER_OPENGL_NORMAL
 #   define MENGINE_RENDER_OPENGL_NORMAL_LINUX
-#elif defined(MENGINE_PLATFORM_OSX)
+#elif defined(MENGINE_PLATFORM_MACOS)
 #   include "SDL_opengl.h"
 #   include "SDL_opengl_glext.h"
 

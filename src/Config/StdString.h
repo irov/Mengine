@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#include <cstring>
+#include <string.h>
 #include <wchar.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,7 @@
 #   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
-#elif defined(MENGINE_PLATFORM_OSX)
+#elif defined(MENGINE_PLATFORM_MACOS)
 #   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
 #elif defined(MENGINE_PLATFORM_IOS)
 #   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))

@@ -14,7 +14,7 @@
 namespace Mengine
 {
     class AppleFacebookService
-         : public ServiceBase<AppleFacebookServiceInterface>
+        : public ServiceBase<AppleFacebookServiceInterface>
     {
     public:
         AppleFacebookService();
@@ -23,11 +23,11 @@ namespace Mengine
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
-        
+
     public:
         virtual void setProvider( const AppleFacebookProviderInterfacePtr & _provider ) override;
         virtual const AppleFacebookProviderInterfacePtr & getProvider() const override;
-        
+
     public:
         virtual void login() override;
         virtual void logout() override;
@@ -35,13 +35,13 @@ namespace Mengine
         virtual const Char * getAccessToken() const override;
         virtual void shareLink( const Char * link, const Char * picture ) override;
         virtual void getProfilePictureLink() override;
-        
+
     protected:
         AppleFacebookProviderInterfacePtr m_provider;
         FBSDKLoginManager * m_loginManager;
-        
+
         AppleFacebookShareDelegate * m_shareDelegate;
-        
+
         bool m_isProcessed;
         NSString * m_userID;
         NSString * m_imageURL;

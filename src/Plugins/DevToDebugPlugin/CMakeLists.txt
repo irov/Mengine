@@ -11,6 +11,9 @@ src
     DevToDebugService.h
     DevToDebugService.cpp
     
+    DevToDebugLogger.h
+    DevToDebugLogger.cpp
+    
     DevToDebugTab.h
     DevToDebugTab.cpp
     

@@ -1,6 +1,6 @@
 #include "AppleGameCenterService.h"
 
-#include "Environment/Apple/AppleUtils.h"
+#include "Environment/Apple/AppleErrorHelper.h"
 
 #include "Kernel/Logger.h"
 

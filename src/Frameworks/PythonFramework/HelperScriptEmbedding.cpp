@@ -1433,7 +1433,9 @@ namespace Mengine
                 const ConstString & accountID = ACCOUNT_SERVICE()
                     ->getCurrentAccountID();
 
-                return s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
+                bool successful = s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
+
+                return successful;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeCurrentAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
@@ -1451,7 +1453,9 @@ namespace Mengine
                 const ConstString & accountID = ACCOUNT_SERVICE()
                     ->getCurrentAccountID();
 
-                return s_changeAccountSetting( _kernel, accountID, _setting, _value );
+                bool successful = s_changeAccountSetting( _kernel, accountID, _setting, _value );
+
+                return successful;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeCurrentAccountSettingBool( const ConstString & _setting, bool _value )
@@ -1469,7 +1473,9 @@ namespace Mengine
                 const ConstString & accountID = ACCOUNT_SERVICE()
                     ->getCurrentAccountID();
 
-                return s_changeAccountSettingBool( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingBool( accountID, _setting, _value );
+
+                return successful;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeCurrentAccountSettingInt( const ConstString & _setting, int32_t _value )
@@ -1487,7 +1493,9 @@ namespace Mengine
                 const ConstString & accountID = ACCOUNT_SERVICE()
                     ->getCurrentAccountID();
 
-                return s_changeAccountSettingInt( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingInt( accountID, _setting, _value );
+
+                return successful;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeCurrentAccountSettingUInt( const ConstString & _setting, uint32_t _value )
@@ -1505,7 +1513,9 @@ namespace Mengine
                 const ConstString & accountID = ACCOUNT_SERVICE()
                     ->getCurrentAccountID();
 
-                return s_changeAccountSettingUInt( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingUInt( accountID, _setting, _value );
+
+                return successful;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeCurrentAccountSettingUInt64( const ConstString & _setting, uint64_t _value )
@@ -1523,7 +1533,9 @@ namespace Mengine
                 const ConstString & accountID = ACCOUNT_SERVICE()
                     ->getCurrentAccountID();
 
-                return s_changeAccountSettingUInt64( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingUInt64( accountID, _setting, _value );
+
+                return successful;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeCurrentAccountSettingFloat( const ConstString & _setting, float _value )
@@ -1541,7 +1553,9 @@ namespace Mengine
                 const ConstString & accountID = ACCOUNT_SERVICE()
                     ->getCurrentAccountID();
 
-                return s_changeAccountSettingFloat( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingFloat( accountID, _setting, _value );
+
+                return successful;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeCurrentAccountSettingStrings( const ConstString & _setting, const VectorWString & _values )

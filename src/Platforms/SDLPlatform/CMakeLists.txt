@@ -13,31 +13,11 @@ src
 )
 
 IF(MENGINE_TARGET_MACOS)
-ADD_FILTER(
-OSX
-    OSX/OSXSetDesktopWallpaper.h
-    OSX/OSXSetDesktopWallpaper.m
-)
-ENDIF()
-
-IF(MENGINE_TARGET_APPLE)
-ADD_FILTER(
-Apple
-    Apple/AppleOpenUrlInDefaultBrowser.h
-    Apple/AppleOpenUrlInDefaultBrowser.m
-)
-ENDIF()
-
-IF(MENGINE_TARGET_ANDROID)
-ADD_FILTER(
-Android
-    Android/AndroidAssetFile.h
-    Android/AndroidAssetFile.cpp
-    Android/AndroidOpenUrlInDefaultBrowser.h
-    Android/AndroidOpenUrlInDefaultBrowser.cpp
-    Android/AndroidOpenMail.h
-    Android/AndroidOpenMail.cpp
-)
+    ADD_FILTER(
+    macos
+        SDLPlatformMacOSWorkspace.h
+        SDLPlatformMacOSWorkspace.mm
+    )
 ENDIF()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL)
@@ -46,6 +26,18 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 ADD_MENGINE_LIBRARY(Platforms)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+
+IF(MENGINE_TARGET_MACOS)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} MacOS)
+ENDIF()
+
+IF(MENGINE_TARGET_APPLE)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Apple)
+ENDIF()
+
+IF(MENGINE_TARGET_ANDROID)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Android)
+ENDIF()
 
 IF(MENGINE_PLUGIN_SDL_FILEGROUP_STATIC)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} SDLFileGroupPlugin)

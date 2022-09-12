@@ -5,6 +5,8 @@
 #include "Plugins/cURLPlugin/cURLInterface.h"
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
+#include "DevToDebugLogger.h"
+
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
 
@@ -67,12 +69,15 @@ namespace Mengine
 
         VectorDevToDebugWidgetCommands m_tabsCommands;
 
+        DevToDebugLoggerPtr m_logger;
+
         AtomicBool m_invalidateTabs;
 
         EDevToDebugStatus m_status;
 
-        String m_pid;
+        String m_dsn;
         String m_uuid;
+        String m_workerURL;
 
         uint32_t m_revision;
 

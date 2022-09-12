@@ -43,7 +43,7 @@
 #   define MENGINE_PLATFORM_APPLE
 #   include "TargetConditionals.h"
 #   if TARGET_OS_OSX
-#       define MENGINE_PLATFORM_OSX
+#       define MENGINE_PLATFORM_MACOS
 #       define MENGINE_PLATFORM_DESKTOP
 #   elif TARGET_OS_IPHONE
 #       define MENGINE_PLATFORM_IOS
@@ -221,7 +221,7 @@
 #define MENGINE_MASTER_DEVELOPMENT
 #endif
 
-#if defined(MENGINE_PLATFORM_OSX)
+#if defined(MENGINE_PLATFORM_MACOS)
 #   define off64_t off_t
 #   define fopen64 fopen
 #endif
@@ -260,7 +260,7 @@
 #       define MENGINE_MAX_PATH 260
 #   elif defined(MENGINE_PLATFORM_LINUX)
 #       define MENGINE_MAX_PATH 1024
-#   elif defined(MENGINE_PLATFORM_OSX)
+#   elif defined(MENGINE_PLATFORM_MACOS)
 #       define MENGINE_MAX_PATH 1024
 #   elif defined(MENGINE_PLATFORM_IOS)
 #       define MENGINE_MAX_PATH 1024

@@ -341,7 +341,6 @@ namespace Mengine
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
         , m_sleepMode( true )
-        , m_shouldQuit( false )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -1102,7 +1101,13 @@ namespace Mengine
         Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
 #endif
-
+        
+#if defined(MENGINE_PLATFORM_MACOS)
+        m_macOSWorkspace = [SDLPlatformMacOSWorkspace alloc];
+        
+        [m_macOSWorkspace initialize];
+#endif
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1172,6 +1177,14 @@ namespace Mengine
             m_sdlInput->finalize();
             m_sdlInput = nullptr;
         }
+        
+#if defined(MENGINE_PLATFORM_MACOS)
+        if( m_macOSWorkspace != nil )
+        {
+            [m_macOSWorkspace finalize];
+            m_macOSWorkspace = nil;
+        }
+#endif
 
         m_platformTags.clear();
 
@@ -1413,7 +1426,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::stopPlatform()
     {
-        m_shouldQuit = true;
+        SDL_HideWindow( m_sdlWindow );
+        
+        this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     UniqueId SDLPlatform::addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc )
@@ -1971,7 +1986,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::closeWindow()
     {
-        m_shouldQuit = true;
+        SDL_HideWindow( m_sdlWindow );
+        
+        this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
@@ -2762,6 +2779,13 @@ namespace Mengine
             LOGGER_ERROR( "error set desktop wallpaper '%s'"
                 , path_file
             );
+        }
+        
+        Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
+
+        if( (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN )
+        {
+            [m_macOSWorkspace changeDesktopWallpaper:path_file];
         }
 #endif
 
@@ -3687,6 +3711,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents_()
     {
+        bool shouldQuit = false;
+        
         SDL_Event sdlEvent;
         while( SDL_PollEvent( &sdlEvent ) != 0 )
         {
@@ -3791,17 +3817,7 @@ namespace Mengine
                         }break;
                     case SDL_WINDOWEVENT_CLOSE:
                         {
-                            SDL_Event newEvent;
-                            newEvent = sdlEvent;
-                            newEvent.type = SDL_QUIT;
-
-                            if( SDL_PushEvent( &newEvent ) == -1 )
-                            {
-                                LOGGER_ERROR( "invalid push event [%u] error: %s"
-                                    , newEvent.type
-                                    , SDL_GetError()
-                                );
-                            }
+                            this->pushQuitEvent_();
                         }break;
                     case SDL_WINDOWEVENT_TAKE_FOCUS:
                         {
@@ -3813,7 +3829,7 @@ namespace Mengine
                 }break;
             case SDL_QUIT:
                 {
-                    m_shouldQuit = true;
+                    shouldQuit = true;
                 }break;
 #ifdef MENGINE_PLATFORM_IOS
             /*==================*/
@@ -3875,12 +3891,26 @@ namespace Mengine
             }
         }
 
-        if( m_shouldQuit == true )
+        if( shouldQuit == true )
         {
             return true;
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::pushQuitEvent_()
+    {
+        SDL_Event e;
+        e.type = SDL_QUIT;
+        e.quit.timestamp = SDL_GetTicks();
+
+        if( SDL_PushEvent( &e ) == -1 )
+        {
+            LOGGER_ERROR( "invalid push event [SDL_QUIT] error: %s"
+                , SDL_GetError()
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setActive_( bool _active )

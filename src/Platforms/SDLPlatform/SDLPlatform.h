@@ -24,6 +24,10 @@
 #   include "Interface/AndroidPlatformExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_MACOS)
+#   import "SDLPlatformMacOSWorkspace.h"
+#endif
+
 #include "Environment/SDL2/SDL2Includer.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
@@ -236,6 +240,9 @@ namespace Mengine
 
     protected:
         bool processEvents_();
+        
+    protected:
+        void pushQuitEvent_();
 
     protected:
         void setActive_( bool _active );
@@ -324,6 +331,10 @@ namespace Mengine
         AndroidEventationHubPtr m_androidEventationHub;
 #endif
 
+#if defined(MENGINE_PLATFORM_MACOS)
+        SDLPlatformMacOSWorkspace * m_macOSWorkspace;
+#endif
+
         SDLInputPtr m_sdlInput;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
@@ -335,7 +346,6 @@ namespace Mengine
 
         bool m_active;
         bool m_sleepMode;
-        bool m_shouldQuit;
 
         bool m_desktop;
         bool m_touchpad;

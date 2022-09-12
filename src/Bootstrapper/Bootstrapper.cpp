@@ -330,6 +330,10 @@ PLUGIN_EXPORT( AppleFirebaseCrashlytics );
 PLUGIN_EXPORT( AppleFacebookPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_HELPSHIFT_STATIC
+PLUGIN_EXPORT( AppleHelpshiftPlugin );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_REVIEW_STATIC
 PLUGIN_EXPORT( AppleReviewPlugin );
 #endif
@@ -1167,6 +1171,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
         MENGINE_ADD_PLUGIN( AppleFacebookPlugin, "Plugin Apple Facebook...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_HELPSHIFT_STATIC
+        MENGINE_ADD_PLUGIN( AppleHelpshiftPlugin, "Plugin Apple Helpshift...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_REVIEW_STATIC

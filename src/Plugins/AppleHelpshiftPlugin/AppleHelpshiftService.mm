@@ -34,13 +34,18 @@ namespace Mengine
             @"enableFullPrivacy": @NO
         };
             
-        const Char * AppleHelpshiftPlugin_PlatformId = CONFIG_VALUE( "AppleHelpshiftPlugin", "PlatformId", "" );
-        const Char * AppleHelpshiftPlugin_Domain = CONFIG_VALUE( "AppleHelpshiftPlugin", "Domain", "" );
+        const Char * AppleHelpshiftPlugin_PlatformId = CONFIG_VALUE( "HelpshiftPlugin", "PlatformId", "" );
+        const Char * AppleHelpshiftPlugin_Domain = CONFIG_VALUE( "HelpshiftPlugin", "Domain", "" );
             
         @try {
             [Helpshift installWithPlatformId:[NSString stringWithUTF8String: AppleHelpshiftPlugin_PlatformId]
                                       domain:[NSString stringWithUTF8String: AppleHelpshiftPlugin_Domain]
                                       config:config];
+            
+            
+            m_delegate = [[AppleHelpshiftDelegate alloc]initWithService:this];
+            Helpshift.sharedInstance.delegate = m_delegate;
+            
         } @catch (NSException * ex) {
             LOGGER_ERROR("Helpshift install with platformId '%s' domain '%s' throw exception: %s"
                 , AppleHelpshiftPlugin_PlatformId

@@ -9,6 +9,9 @@ src
 
     AppleHelpshiftService.h
     AppleHelpshiftService.mm
+    
+    AppleHelpshiftDelegate.h
+    AppleHelpshiftDelegate.mm
 )
 
 # if(MENGINE_USE_SCRIPT_SERVICE)

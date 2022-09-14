@@ -1,23 +1,26 @@
 package org.Mengine.Plugin.Helpshift;
 
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
+
 import com.helpshift.Helpshift;
+import com.helpshift.HelpshiftAuthenticationFailureReason;
+import com.helpshift.HelpshiftEvent;
+import com.helpshift.HelpshiftEventsListener;
 import com.helpshift.UnsupportedOSVersionException;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class MengineHelpshiftPlugin extends MenginePlugin {
+public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener {
 
     /**
      * <p>
@@ -45,7 +48,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin {
 
         if (BuildConfig.DEBUG) {
             config.put("enableLogging", true);
-        }else {
+        } else {
             config.put("enableLogging", false);
         }
 
@@ -67,16 +70,68 @@ public class MengineHelpshiftPlugin extends MenginePlugin {
         String HELPSHIFT_Domain = activity.getConfigValue("HelpshiftPlugin", "Domain", "");
 
         try {
-            Helpshift.install(activity.getApplication(),
-                    HELPSHIFT_PlatformId,
-                    HELPSHIFT_Domain,
-                    config);
+            Helpshift.install(activity.getApplication(), HELPSHIFT_PlatformId, HELPSHIFT_Domain, config);
+
+            Helpshift.setHelpshiftEventsListener(MengineHelpshiftPlugin.this);
         } catch (UnsupportedOSVersionException e) {
             this.logError("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
         }
 
 
+
+    //- HelpshiftEventsListener
+    @Override
+    public void onEventOccurred(@NonNull String eventName, Map<String, Object> data) {
+        this.logInfo("Helpshift call event %s", eventName);
+        switch (eventName) {
+            case HelpshiftEvent.CONVERSATION_STATUS:
+                this.logInfo(
+                        data.get(HelpshiftEvent.DATA_LATEST_ISSUE_ID) + " " +
+                                data.get(HelpshiftEvent.DATA_LATEST_ISSUE_PUBLISH_ID) + " " +
+                                data.get(HelpshiftEvent.DATA_IS_ISSUE_OPEN)
+                );
+                break;
+            case HelpshiftEvent.WIDGET_TOGGLE:
+                this.logInfo(data.get(HelpshiftEvent.DATA_SDK_VISIBLE) + " ");
+                break;
+            case HelpshiftEvent.CONVERSATION_START:
+                this.logInfo(data.get(HelpshiftEvent.DATA_MESSAGE) + " ");
+                break;
+
+            case HelpshiftEvent.MESSAGE_ADD:
+                this.logInfo(data.get(HelpshiftEvent.DATA_MESSAGE_BODY) + " ");
+
+                if (data.get(HelpshiftEvent.DATA_MESSAGE_TYPE).equals(HelpshiftEvent.DATA_MESSAGE_TYPE_ATTACHMENT)) {
+                    this.logInfo("user sent an attachment");
+                } else {
+                    this.logInfo("user sent an Text");
+                }
+                break;
+
+            case HelpshiftEvent.CSAT_SUBMIT:
+                this.logInfo(data.get(HelpshiftEvent.DATA_CSAT_RATING) + " ");
+                this.logInfo(data.get(HelpshiftEvent.DATA_ADDITIONAL_FEEDBACK) + " ");
+                break;
+            case HelpshiftEvent.CONVERSATION_END:
+            case HelpshiftEvent.CONVERSATION_REJECTED:
+            case HelpshiftEvent.CONVERSATION_RESOLVED:
+            case HelpshiftEvent.CONVERSATION_REOPENED:
+                break;
+        }
     }
+
+    @Override
+    public void onUserAuthenticationFailure(HelpshiftAuthenticationFailureReason reason) {
+        this.logInfo("Helpshift onUserAuthenticationFailure ->" + reason);
+        switch (reason) {
+            case REASON_AUTH_TOKEN_NOT_PROVIDED:
+            case REASON_INVALID_AUTH_TOKEN:
+            case UNKNOWN:
+                break;
+        }
+
+    }
+    //- End HelpshiftEventsListener
 
 
     public void showFAQs() {
@@ -103,4 +158,5 @@ public class MengineHelpshiftPlugin extends MenginePlugin {
     public void setLanguage(final String language) {
         Helpshift.setLanguage(language);
     }
+
 }

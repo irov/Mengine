@@ -7,6 +7,8 @@
 
 #import <HelpshiftX/Helpshift.h>
 
+#import "AppleHelpshiftDelegate.h"
+
 namespace Mengine
 {
     class AppleHelpshiftService
@@ -26,5 +28,8 @@ namespace Mengine
         void showFAQSection( const Char * _sectionId ) override;
         void showSingleFAQ( const Char * _faqId ) override;
         void setLanguage( const Char * _language ) override;
+        
+    private:
+        AppleHelpshiftDelegate * m_delegate;
     };
 }

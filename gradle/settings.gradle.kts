@@ -97,5 +97,6 @@ includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", false,":libraries:Facebook")
 includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", false, ":libraries:DevToDev")
 includePlugin("MENGINE_APP_PLUGIN_MAR", false, ":libraries:MAR")
 includePlugin("MENGINE_APP_PLUGIN_ADJUST", false, ":libraries:Adjust")
+includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", false, ":libraries:Helpshift")
 
 println("Mengine complete settings")

@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+android {
+    buildToolsVersion project.buildToolsVersion
+    compileSdkVersion project.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['../../app/res']
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation project(':libraries:Mengine')
+    implementation project(':libraries:SDL2')
+
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.helpshift:helpshift-sdkx:10.1.0'
+}

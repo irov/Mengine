@@ -21,6 +21,7 @@ def MENGINE_APP_PLUGIN_SENTRY = Utils.getBooleanProperty(project, "MENGINE_APP_P
 def MENGINE_APP_PLUGIN_MAR = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_MAR", false);
 def MENGINE_APP_PLUGIN_APPLOVIN = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_APPLOVIN", false);
 def MENGINE_APP_PLUGIN_ADJUST = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_ADJUST", false);
+def MENGINE_APP_PLUGIN_HELPSHIFT = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_HELPSHIFT", false);
 
 if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
     apply plugin: 'com.google.gms.google-services'
@@ -428,6 +429,15 @@ if (MENGINE_APP_PLUGIN_ADJUST == true) {
 
     dependencies {
         implementation project(':libraries:Adjust')
+    }
+}
+println "MENGINE_APP_PLUGIN_HELPSHIFT: $MENGINE_APP_PLUGIN_HELPSHIFT"
+
+if (MENGINE_APP_PLUGIN_HELPSHIFT == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Helpshift.MengineHelpshiftPlugin'
+
+    dependencies {
+        implementation project(':libraries:Helpshift')
     }
 }
 

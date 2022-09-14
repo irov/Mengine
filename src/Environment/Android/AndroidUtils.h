@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Environment/Android/AndroidIncluder.h"
+#include <Config/Char.h>
 
 #define MENGINE_JAVA_CONCAT2(prefix, class, function) Java_##prefix##_##class##_## function
 #define MENGINE_JAVA_FUNCTION_INTERFACE(prefix, class, function) MENGINE_JAVA_CONCAT2(prefix, class, function)

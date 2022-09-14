@@ -3,7 +3,7 @@
 #include "Environment/Apple/AppleUtils.h"
 
 #include "Kernel/Logger.h"
-
+#include "Kernel/ConfigHelper.h"
 #import <Foundation/Foundation.h>
 
 ////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,33 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     bool AppleHelpshiftService::_initializeService()
     {
+        try{
+            NSDictionary *config = @{
+#ifdef MENGINE_DEBUG
+                @"enableLogging":@YES,
+#endif
+                //        @"enableInAppNotification":@YES,
+                
+                //        @"inAppNotificationAppearance": @{
+                //            @"bannerBackgroundColor": @"000000",
+                //            @"textColor": @"FFFFFF"
+                //        }
+                
+                //        @"presentFullScreenOniPad":@YES,
+            };
+            
+            
+            NSString *platform_id = [NSString stringWithUTF8String: CONFIG_VALUE( "HelpshiftPlugin", "PlatformId", "" )];
+            NSString *domain = [NSString stringWithUTF8String: CONFIG_VALUE( "HelpshiftPlugin", "Domain", "" )];
+            
+            [Helpshift installWithPlatformId:platform_id
+                                      domain:domain
+                                      config:config];
+            
+        }catch(...){
+            return false;
+        }
+        
         return true;
     }
     ////////////////////////////////////////////////////////////////////////

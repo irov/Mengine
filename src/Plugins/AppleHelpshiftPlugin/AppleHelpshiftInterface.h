@@ -1,11 +1,6 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ServantInterface.h"
-
-#include "Kernel/ConstString.h"
-
-#include "Config/Lambda.h"
 
 namespace Mengine
 {
@@ -18,9 +13,9 @@ namespace Mengine
     public:
         virtual void showFAQs() = 0;
         virtual void showConversation() = 0;
-        virtual void showFAQSection(const char* setionId) = 0;
-        virtual void showSingleFAQ(const char* faqId) = 0;
-        virtual void setLanguage( const char * lang) = 0;
+        virtual void showFAQSection( const Char * _sectionId ) = 0;
+        virtual void showSingleFAQ( const Char * _faqId ) = 0;
+        virtual void setLanguage( const Char * _language ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -23,8 +23,8 @@ namespace Mengine
     public:
         void showFAQs() override;
         void showConversation() override;
-        void showFAQSection(const char* setionId) override;
-        void showSingleFAQ(const char* faqId) override;
-        void setLanguage( const char * lang) override;
+        void showFAQSection( const Char * _sectionId ) override;
+        void showSingleFAQ( const Char * _faqId ) override;
+        void setLanguage( const Char * _language ) override;
     };
 }

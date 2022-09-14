@@ -104,7 +104,7 @@ namespace Mengine
                     return;
                 }
                 
-                if (_completedAchievements)
+                if( _completedAchievements != nil )
                 {
                     for( NSString * ach in _completedAchievements )
                     {

@@ -24,6 +24,6 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define APPLE_FACEBOOK_SERVICE()\
+#define APPLE_HELPSHIFT_SERVICE()\
     ((Mengine::AppleHelpshiftServiceInterface *)SERVICE_GET(Mengine::AppleHelpshiftServiceInterface))
 //////////////////////////////////////////////////////////////////////////

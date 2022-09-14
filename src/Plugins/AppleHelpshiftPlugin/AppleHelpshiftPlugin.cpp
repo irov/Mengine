@@ -1,10 +1,10 @@
 #include "AppleHelpshiftPlugin.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-#   include "Interface/ScriptServiceInterface.h"
-
-#   include "AppleHelpshiftScriptEmbedding.h"
-#endif
+//#ifdef MENGINE_USE_SCRIPT_SERVICE
+//#   include "Interface/ScriptServiceInterface.h"
+//
+//#   include "AppleHelpshiftScriptEmbedding.h"
+//#endif
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -57,19 +57,18 @@ namespace Mengine
         }
 
 //#ifdef MENGINE_USE_SCRIPT_SERVICE
-#if 0
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleHelpshiftScriptEmbedding" ), Helper::makeFactorableUnique<AppleHelpshiftScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleHelpshiftScriptEmbedding" ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
+//        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+//        {
+//            SCRIPT_SERVICE()
+//                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleHelpshiftScriptEmbedding" ), Helper::makeFactorableUnique<AppleHelpshiftScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+//        }, MENGINE_DOCUMENT_FACTORABLE );
+//
+//        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+//        {
+//            SCRIPT_SERVICE()
+//                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleHelpshiftScriptEmbedding" ) );
+//        }, MENGINE_DOCUMENT_FACTORABLE );
+//#endif
 
         return true;
     }
@@ -77,10 +76,9 @@ namespace Mengine
     void AppleHelpshiftPlugin::_finalizePlugin()
     {
 //#ifdef MENGINE_USE_SCRIPT_SERVICE
-#if 0
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
+//        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+//        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+//#endif
 
         SERVICE_FINALIZE( AppleHelpshiftService );
     }

@@ -20,8 +20,13 @@
         
 //        @"presentFullScreenOniPad":@YES,
     };
-    [Helpshift installWithPlatformId:@"YOUR_PLATFORM_ID"
-                              domain:@"YOUR_DOMAIN"
+    
+    NSBundle* mainBundle = [NSBundle mainBundle];
+    NSString *platform_id = [mainBundle objectForInfoDictionaryKey:@"AppleHelpshiftPlugin_Platform_Id"];
+    NSString *domain = [mainBundle objectForInfoDictionaryKey:@"AppleHelpshiftPlugin_Domain"];
+    
+    [Helpshift installWithPlatformId:platform_id
+                              domain:domain
                               config:config];
     
 }

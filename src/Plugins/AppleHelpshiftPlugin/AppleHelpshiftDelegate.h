@@ -11,6 +11,6 @@
 
 - (instancetype _Nonnull) initWithService:(Mengine::AppleHelpshiftServiceInterface* _Nonnull) service;
 
-- (const char *) convertToChar:(NSObject * _Nullable) object;
+- (const char * _Nonnull) convertToChar:(NSObject * _Nullable) object;
 
 @end

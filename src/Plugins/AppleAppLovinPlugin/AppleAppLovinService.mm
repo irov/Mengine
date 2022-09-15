@@ -95,7 +95,9 @@ namespace Mengine
         amazonBannerSlotId = [m_amazonService getAmazonBannerSlotId];
 #endif
         
-        m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit amazonBannerSlotId:amazonBannerSlotId rect:bannerRect];
+        m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit
+                                                                    amazonSlotId:amazonBannerSlotId
+                                                                            rect:bannerRect];
     }
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initInterstitial()
@@ -116,7 +118,8 @@ namespace Mengine
         amazonInterstitialSlotId = [m_amazonService getAmazonInterstitialSlotId];
 #endif
 
-        m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit amazonInterSlotId:amazonInterstitialSlotId];
+        m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit
+                                                                                amazonSlotId:amazonInterstitialSlotId];
     }
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initRewarded()
@@ -138,7 +141,7 @@ namespace Mengine
 #endif
 
         m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier: rewardedAdUnit
-                                                                amazonRewardedSlotId: amazonRewardedSlotId
+                                                                        amazonSlotId: amazonRewardedSlotId
                                                                       rewardCallback: this];
     }
     /////////////////////////////////////////////////////////////////////////

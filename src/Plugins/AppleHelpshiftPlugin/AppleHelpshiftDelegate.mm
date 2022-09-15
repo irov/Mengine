@@ -115,7 +115,7 @@
     }
 }
 
-- (const char *) convertToChar:(nullable NSObject*)object{
+- (const char * _Nonnull) convertToChar:(nullable NSObject*)object{
     if (object == nullptr) {
         return "empty";
     }

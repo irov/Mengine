@@ -71,91 +71,172 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
         try {
             Helpshift.install(activity.getApplication(), HELPSHIFT_PlatformId, HELPSHIFT_Domain, config);
-
-            Helpshift.setHelpshiftEventsListener(MengineHelpshiftPlugin.this);
         } catch (UnsupportedOSVersionException e) {
             this.logError("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
         }
 
+        Helpshift.setHelpshiftEventsListener(MengineHelpshiftPlugin.this);
+    }
 
-
-    //- HelpshiftEventsListener
     @Override
     public void onEventOccurred(@NonNull String eventName, Map<String, Object> data) {
-        this.logInfo("Helpshift call event %s", eventName);
         switch (eventName) {
-            case HelpshiftEvent.CONVERSATION_STATUS:
-                this.logInfo(
-                        data.get(HelpshiftEvent.DATA_LATEST_ISSUE_ID) + " " +
-                                data.get(HelpshiftEvent.DATA_LATEST_ISSUE_PUBLISH_ID) + " " +
-                                data.get(HelpshiftEvent.DATA_IS_ISSUE_OPEN)
+            case HelpshiftEvent.SDK_SESSION_STARTED:
+                this.logInfo("onEventOccurred SDK_SESSION_STARTED");
+
+                this.pythonCall("onHelpshiftSessionStarted");
+                break;
+            case HelpshiftEvent.SDK_SESSION_ENDED:
+                this.logInfo("onEventOccurred SDK_SESSION_ENDED");
+
+                this.pythonCall("onHelpshiftSessionEnded");
+                break;
+            case HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT:
+                Object DATA_MESSAGE_COUNT = data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
+                Object DATA_MESSAGE_COUNT_FROM_CACHE = data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
+
+                this.logInfo("onEventOccurred RECEIVED_UNREAD_MESSAGE_COUNT DATA_MESSAGE_COUNT:%s DATA_MESSAGE_COUNT_FROM_CACHE:%s"
+                    , DATA_MESSAGE_COUNT
+                    , DATA_MESSAGE_COUNT_FROM_CACHE
                 );
+
+                this.pythonCall("onHelpshiftUnreadMessageCount", DATA_MESSAGE_COUNT, DATA_MESSAGE_COUNT_FROM_CACHE);
+                break;
+            case HelpshiftEvent.CONVERSATION_STATUS:
+                Object DATA_LATEST_ISSUE_ID = data.get(HelpshiftEvent.DATA_LATEST_ISSUE_ID);
+                Object DATA_LATEST_ISSUE_PUBLISH_ID = data.get(HelpshiftEvent.DATA_LATEST_ISSUE_PUBLISH_ID);
+                Object DATA_IS_ISSUE_OPEN = data.get(HelpshiftEvent.DATA_IS_ISSUE_OPEN);
+
+                this.logInfo("onEventOccurred CONVERSATION_STATUS DATA_LATEST_ISSUE_ID:%s DATA_LATEST_ISSUE_PUBLISH_ID:%s DATA_IS_ISSUE_OPEN:%s"
+                        , DATA_LATEST_ISSUE_ID
+                        , DATA_LATEST_ISSUE_PUBLISH_ID
+                        , DATA_IS_ISSUE_OPEN
+                );
+
+                this.pythonCall("onHelpshiftConversationStatus", DATA_LATEST_ISSUE_ID, DATA_LATEST_ISSUE_PUBLISH_ID, DATA_IS_ISSUE_OPEN);
                 break;
             case HelpshiftEvent.WIDGET_TOGGLE:
-                this.logInfo(data.get(HelpshiftEvent.DATA_SDK_VISIBLE) + " ");
+                Object DATA_SDK_VISIBLE = data.get(HelpshiftEvent.DATA_SDK_VISIBLE);
+
+                this.logInfo("onEventOccurred WIDGET_TOGGLE DATA_SDK_VISIBLE:%s"
+                        , DATA_SDK_VISIBLE
+                );
+
+                this.pythonCall("onHelpshiftWidgetToggle", DATA_SDK_VISIBLE);
                 break;
             case HelpshiftEvent.CONVERSATION_START:
-                this.logInfo(data.get(HelpshiftEvent.DATA_MESSAGE) + " ");
-                break;
+                Object DATA_MESSAGE = data.get(HelpshiftEvent.DATA_MESSAGE);
 
+                this.logInfo("onEventOccurred CONVERSATION_START DATA_MESSAGE:%s"
+                        , DATA_MESSAGE
+                );
+
+                this.pythonCall("onHelpshiftConversationStart", DATA_MESSAGE);
+                break;
             case HelpshiftEvent.MESSAGE_ADD:
-                this.logInfo(data.get(HelpshiftEvent.DATA_MESSAGE_BODY) + " ");
+                Object DATA_MESSAGE_TYPE = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE);
+                Object DATA_MESSAGE_BODY = data.get(HelpshiftEvent.DATA_MESSAGE_BODY);
+                Object DATA_MESSAGE_TYPE_ATTACHMENT = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE_ATTACHMENT);
+                Object DATA_MESSAGE_TYPE_TEXT = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE_TEXT);
 
-                if (data.get(HelpshiftEvent.DATA_MESSAGE_TYPE).equals(HelpshiftEvent.DATA_MESSAGE_TYPE_ATTACHMENT)) {
-                    this.logInfo("user sent an attachment");
-                } else {
-                    this.logInfo("user sent an Text");
-                }
+                this.logInfo("onEventOccurred MESSAGE_ADD DATA_MESSAGE_TYPE:%s DATA_MESSAGE_BODY:%s DATA_MESSAGE_TYPE_ATTACHMENT:%s DATA_MESSAGE_TYPE_TEXT:%s"
+                        , DATA_MESSAGE_TYPE
+                        , DATA_MESSAGE_BODY
+                        , DATA_MESSAGE_TYPE_ATTACHMENT
+                        , DATA_MESSAGE_TYPE_TEXT
+                );
+
+                this.pythonCall("onHelpshiftMessageAdd", DATA_MESSAGE_TYPE, DATA_MESSAGE_BODY, DATA_MESSAGE_TYPE_ATTACHMENT, DATA_MESSAGE_TYPE_TEXT);
                 break;
-
             case HelpshiftEvent.CSAT_SUBMIT:
-                this.logInfo(data.get(HelpshiftEvent.DATA_CSAT_RATING) + " ");
-                this.logInfo(data.get(HelpshiftEvent.DATA_ADDITIONAL_FEEDBACK) + " ");
+                Object DATA_CSAT_RATING = data.get(HelpshiftEvent.DATA_CSAT_RATING);
+                Object DATA_ADDITIONAL_FEEDBACK = data.get(HelpshiftEvent.DATA_ADDITIONAL_FEEDBACK);
+
+                this.logInfo("onEventOccurred CSAT_SUBMIT DATA_CSAT_RATING:%s DATA_ADDITIONAL_FEEDBACK:%s"
+                        , DATA_CSAT_RATING
+                        , DATA_ADDITIONAL_FEEDBACK
+                );
+
+                this.pythonCall("onHelpshiftCSATSubmit", DATA_CSAT_RATING, DATA_ADDITIONAL_FEEDBACK);
                 break;
             case HelpshiftEvent.CONVERSATION_END:
+                this.logInfo("onEventOccurred CONVERSATION_END");
+
+                this.pythonCall("onHelpshiftConversationEnd");
+                break;
             case HelpshiftEvent.CONVERSATION_REJECTED:
+                this.logInfo("onEventOccurred CONVERSATION_REJECTED");
+
+                this.pythonCall("onHelpshiftConversationReject");
+                break;
             case HelpshiftEvent.CONVERSATION_RESOLVED:
+                this.logInfo("onEventOccurred CONVERSATION_RESOLVED");
+
+                this.pythonCall("onHelpshiftConversationResolved");
+                break;
             case HelpshiftEvent.CONVERSATION_REOPENED:
+                this.logInfo("onEventOccurred CONVERSATION_REOPENED");
+
+                this.pythonCall("onHelpshiftConversationReopened");
+                break;
+            default:
+                this.logInfo("onEventOccurred UNKNOWN:%s", eventName);
                 break;
         }
     }
 
     @Override
     public void onUserAuthenticationFailure(HelpshiftAuthenticationFailureReason reason) {
-        this.logInfo("Helpshift onUserAuthenticationFailure ->" + reason);
+        this.logInfo("onUserAuthenticationFailure ->" + reason);
+
         switch (reason) {
             case REASON_AUTH_TOKEN_NOT_PROVIDED:
+                this.logInfo("onUserAuthenticationFailure REASON_AUTH_TOKEN_NOT_PROVIDED");
+
+                this.pythonCall("onHelpshiftFailureAuthTokenNotProvided");
             case REASON_INVALID_AUTH_TOKEN:
+                this.logInfo("onUserAuthenticationFailure REASON_INVALID_AUTH_TOKEN");
+
+                this.pythonCall("onHelpshiftFailureInvalidAuthToken");
             case UNKNOWN:
+                this.logInfo("onUserAuthenticationFailure UNKNOWN");
+
+                this.pythonCall("onHelpshiftFailureUnkonwn");
                 break;
         }
-
     }
-    //- End HelpshiftEventsListener
-
 
     public void showFAQs() {
+        this.logInfo("showFAQs");
+
         Map<String, Object> config = new HashMap<>();
         Helpshift.showFAQs(this.getActivity(), config);
     }
 
     public void showConversation() {
+        this.logInfo("showConversation");
+
         Map<String, Object> config = new HashMap<>();
         Helpshift.showConversation(this.getActivity(), config);
     }
 
     public void showFAQSection(final String sectionPublishId) {
+        this.logInfo("showFAQSection");
+
         Map<String, Object> config = new HashMap<>();
         Helpshift.showFAQSection(this.getActivity(), sectionPublishId, config);
     }
 
     public void showSingleFAQ(final String publishId) {
+        this.logInfo("showSingleFAQ");
+
         Map<String, Object> config = new HashMap<>();
         Helpshift.showSingleFAQ(this.getActivity(), publishId, config);
     }
 
-    //    lang vars - en, de, es, fr, it, ru, zh-Hans,zh-Hant, zh-HK, zh-Hant-HK, zh-SG, zh-Hant-SG, pt, ko, ja, tr, nl, cs, hu,, th, sl, vi, ar, pl, no, sv, fi, ro, el, da, ms, iw, sk, uk, ca, hr, bn, bg, gu, hi, kn, lv, ml, mr, pa, fa, ta, te
     public void setLanguage(final String language) {
+        this.logInfo("setLanguage");
+
         Helpshift.setLanguage(language);
     }
 

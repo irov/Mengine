@@ -2,12 +2,12 @@
 
 @implementation AppleAppLovinBannerDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) AdUnitIdentifier
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
                                               rect:(CGRect) rect {
     self = [super init];
     
-    self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: AdUnitIdentifier];
+    self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_adView.delegate = self;
 
     self.m_adView.frame = rect;
@@ -31,7 +31,7 @@
     return self;
 }
 
--(void)dealloc {
+- (void) dealloc {
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
@@ -64,7 +64,7 @@
 
 #pragma mark - MAAdDelegate Protocol
 
-- (void)didLoadAd:(MAAd *) ad {
+- (void) didLoadAd:(MAAd *) ad {
     CGSize adViewSize = ad.size;
     CGFloat widthDp = adViewSize.width;
     CGFloat heightDp = adViewSize.height;
@@ -72,24 +72,25 @@
     //ToDo
 }
 
-- (void)didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {}
+- (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {}
 
-- (void)didClickAd:(MAAd *) ad {}
+- (void) didClickAd:(MAAd *) ad {}
 
-- (void)didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {}
+- (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {}
 
 
 #pragma mark - MAAdViewAdDelegate Protocol
 
-- (void)didExpandAd:(MAAd *) ad {}
+- (void) didExpandAd:(MAAd *) ad {}
 
-- (void)didCollapseAd:(MAAd *) ad {}
+- (void) didCollapseAd:(MAAd *) ad {}
 
 #pragma mark - Deprecated Callbacks
 
 /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
-- (void)didDisplayAd:(MAAd *) ad {}
-- (void)didHideAd:(MAAd *) ad {}
+- (void) didDisplayAd:(MAAd *) ad {}
+
+- (void) didHideAd:(MAAd *) ad {}
 /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
     
 @end

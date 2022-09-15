@@ -9,8 +9,8 @@
 
 @interface AppleAppLovinInterstitialDelegate : NSObject<MAAdDelegate>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier
-                                      amazonSlotId:(NSString* _Nullable) amazonSlotId;
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
+                                      amazonSlotId:(NSString * _Nullable) amazonSlotId;
 
 - (BOOL) hasLoaded;
 - (BOOL) show;
@@ -19,7 +19,7 @@
 @property (nonatomic, assign) NSInteger m_retryAttempt;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-@property (nonatomic, assign) AppleAppLovinInterstitialAmazonLoader * m_amazonLoader;
+@property (nonatomic, assign) AppleAppLovinInterstitialAmazonLoader * _Nullable m_amazonLoader;
 #endif
 
 @end

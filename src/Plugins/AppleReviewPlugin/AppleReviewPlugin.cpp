@@ -6,11 +6,13 @@
 #   include "AppleReviewScriptEmbedding.h"
 #endif
 
+#include "AppleReviewInterface.h"
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/NotificationHelper.h"
-#include "AppleReviewInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AppleReviewService );
 //////////////////////////////////////////////////////////////////////////
@@ -39,7 +41,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleReviewPlugin_Available = CONFIG_VALUE( "AppleReviewPlugin", "Available", true );
+        bool AppleReviewPlugin_Available = CONFIG_VALUE( "StoreReviewPlugin", "Available", true );
         
         if( AppleReviewPlugin_Available == false )
         {

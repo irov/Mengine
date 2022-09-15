@@ -14,16 +14,16 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void onFacebookLoginSuccess( const Char * token ) = 0;
+        virtual void onFacebookLoginSuccess( const Char * _token ) = 0;
         virtual void onFacebookLoginCancel() = 0;
 
-        virtual void onFacebookError( const Char * errorMessage ) = 0;
+        virtual void onFacebookError( int32_t _code, const Char * _errorMessage ) = 0;
 
-        virtual void onFacebookShareSuccess( const Char * postId ) = 0;
+        virtual void onFacebookShareSuccess( const Char * _postId ) = 0;
         virtual void onFacebookShareCancel() = 0;
-        virtual void onFacebookShareError( const Char * errorMessage ) = 0;
+        virtual void onFacebookShareError( int32_t _code, const Char * _errorMessage ) = 0;
 
-        virtual void onFacebookProfilePictureLinkGet( const Char * userId, bool success, const Char * pictureURL ) = 0;
+        virtual void onFacebookProfilePictureLinkGet( const Char * _userId, bool _success, const Char * _pictureURL ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleFacebookProviderInterface> AppleFacebookProviderInterfacePtr;

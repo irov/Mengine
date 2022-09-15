@@ -12,6 +12,6 @@
 
 @property (assign) Mengine::AppleFacebookServiceInterface * _Nonnull m_service;
 
-- (instancetype _Nonnull)initWithService:(Mengine::AppleFacebookServiceInterface* _Nonnull)service;
+- (instancetype _Nonnull) initWithService:(Mengine::AppleFacebookServiceInterface* _Nonnull)service;
 
 @end

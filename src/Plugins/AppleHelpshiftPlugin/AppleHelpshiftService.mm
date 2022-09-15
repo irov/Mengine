@@ -41,11 +41,6 @@ namespace Mengine
             [Helpshift installWithPlatformId:[NSString stringWithUTF8String: AppleHelpshiftPlugin_PlatformId]
                                       domain:[NSString stringWithUTF8String: AppleHelpshiftPlugin_Domain]
                                       config:config];
-            
-            
-            m_delegate = [[AppleHelpshiftDelegate alloc]initWithService:this];
-            Helpshift.sharedInstance.delegate = m_delegate;
-            
         } @catch (NSException * ex) {
             LOGGER_ERROR("Helpshift install with platformId '%s' domain '%s' throw exception: %s"
                 , AppleHelpshiftPlugin_PlatformId
@@ -56,11 +51,16 @@ namespace Mengine
             return false;
         }
         
+        m_delegate = [[AppleHelpshiftDelegate alloc]initWithService:this];
+        
+        Helpshift.sharedInstance.delegate = m_delegate;
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::_finalizeService()
     {
+        m_delegate = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showConversation()
@@ -101,7 +101,6 @@ namespace Mengine
         [Helpshift showSingleFAQ:faqId with:viewController config:configDictionary];
     }
     //////////////////////////////////////////////////////////////////////////
-    // lang vars - en, de, es, fr, it, ru, zh-Hans,zh-Hant, zh-HK, zh-Hant-HK, zh-SG, zh-Hant-SG, pt, ko, ja, tr, nl, cs, hu,, th, sl, vi, ar, pl, no, sv, fi, ro, el, da, ms, iw, sk, uk, ca, hr, bn, bg, gu, hi, kn, lv, ml, mr, pa, fa, ta, te
     void AppleHelpshiftService::setLanguage( const Char * _language )
     {
         NSString * language = [NSString stringWithUTF8String:_language];

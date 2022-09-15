@@ -1,16 +1,12 @@
 #import "AppleFacebookShareDelegate.h"
 
-#include "Environment/Apple/AppleUtils.h"
-
-#include "Kernel/Logger.h"
-
 @implementation AppleFacebookShareDelegate
 
 #pragma mark -
 
 @synthesize m_service;
 
-- (instancetype _Nonnull)initWithService: (Mengine::AppleFacebookServiceInterface* _Nonnull) service {
+- (instancetype _Nonnull) initWithService: (Mengine::AppleFacebookServiceInterface* _Nonnull) service {
     self = [super init];
     
     self.m_service = service;
@@ -18,20 +14,28 @@
     return self;
 }
 
-- (void)sharer:(id <FBSDKSharing> _Nonnull) sharer didCompleteWithResults:(NSDictionary<NSString *, id> * _Nonnull) results {
-    const char* message = sharer.shareContent == nullptr ? "" : sharer.shareContent.placeID.UTF8String;
+- (void) sharer:(id <FBSDKSharing> _Nonnull) sharer didCompleteWithResults:(NSDictionary<NSString *, id> * _Nonnull) results {
+    const char * message = sharer.shareContent == nullptr ? "" : sharer.shareContent.placeID.UTF8String;
     
-    self.m_service->getProvider()->onFacebookShareSuccess( message );
+    const Mengine::AppleFacebookProviderInterfacePtr & provider = self.m_service->getProvider();
+    
+    provider->onFacebookShareSuccess( message );
 }
 
-- (void)sharer:(id <FBSDKSharing> _Nonnull) sharer didFailWithError:(NSError * _Nonnull) error {
+- (void) sharer:(id <FBSDKSharing> _Nonnull) sharer didFailWithError:(NSError * _Nonnull) error {
+    NSInteger code = error.code;
+    const char * message = error.localizedDescription.UTF8String;
     
-    self.m_service->getProvider()->onFacebookShareError( error.localizedDescription.UTF8String );
+    const Mengine::AppleFacebookProviderInterfacePtr & provider = self.m_service->getProvider();
+    
+    provider->onFacebookShareError( (int32_t)code, message );
 }
 
-- (void)sharerDidCancel:(id <FBSDKSharing> _Nonnull) sharer {
+- (void) sharerDidCancel:(id <FBSDKSharing> _Nonnull) sharer {
     
-   self.m_service->getProvider()->onFacebookShareCancel();
+    const Mengine::AppleFacebookProviderInterfacePtr & provider = self.m_service->getProvider();
+    
+    provider->onFacebookShareCancel();
 }
 
 @end

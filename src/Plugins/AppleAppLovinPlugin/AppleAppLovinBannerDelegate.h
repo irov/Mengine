@@ -9,8 +9,8 @@
 
 @interface AppleAppLovinBannerDelegate : NSObject<MAAdViewAdDelegate>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) AdUnitIdentifier
-                                      amazonSlotId:(NSString* _Nullable) amazonSlotId
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) AdUnitIdentifier
+                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
                                               rect:(CGRect) rect;
 
 - (void) show;
@@ -21,7 +21,7 @@
 @property (nonatomic, strong) MAAdView * _Nonnull m_adView;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-@property (nonatomic, strong) AppleAppLovinBannerAmazonLoader * m_amazonLoader;
+@property (nonatomic, strong) AppleAppLovinBannerAmazonLoader * _Nullable m_amazonLoader;
 #endif
 
 @end

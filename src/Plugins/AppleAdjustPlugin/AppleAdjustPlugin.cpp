@@ -39,7 +39,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleAdjustPlugin_Available = CONFIG_VALUE( "AppleAdjustPlugin", "Available", true );
+        bool AppleAdjustPlugin_Available = CONFIG_VALUE( "AdjustPlugin", "Available", true );
 
         if( AppleAdjustPlugin_Available == false )
         {

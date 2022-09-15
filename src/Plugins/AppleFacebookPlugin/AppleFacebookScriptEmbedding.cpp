@@ -30,11 +30,11 @@ namespace Mengine
             }
 
         protected:
-            void onFacebookLoginSuccess( const Char * token ) override
+            void onFacebookLoginSuccess( const Char * _token ) override
             {
                 pybind::object cb = m_cbs["onFacebookLoginSuccess"];
 
-                cb.call_args( token, m_args );
+                cb.call_args( _token, m_args );
             };
 
             void onFacebookLoginCancel() override
@@ -44,18 +44,18 @@ namespace Mengine
                 cb.call_args( m_args );
             }
 
-            void onFacebookError( const Char * errorMessage ) override
+            void onFacebookError( int32_t _code, const Char * _errorMessage ) override
             {
                 pybind::object cb = m_cbs["onFacebookError"];
 
-                cb.call_args( errorMessage, m_args );
+                cb.call_args( _code, _errorMessage, m_args );
             }
 
-            void onFacebookShareSuccess( const Char * postId ) override
+            void onFacebookShareSuccess( const Char * _postId ) override
             {
                 pybind::object cb = m_cbs["onFacebookShareSuccess"];
 
-                cb.call_args( postId, m_args );
+                cb.call_args( _postId, m_args );
             }
 
             void onFacebookShareCancel() override
@@ -65,18 +65,18 @@ namespace Mengine
                 cb.call_args( m_args );
             }
 
-            void onFacebookShareError( const Char * errorMessage ) override
+            void onFacebookShareError( int32_t _code, const Char * _errorMessage ) override
             {
                 pybind::object cb = m_cbs["onFacebookShareError"];
 
-                cb.call_args( errorMessage, m_args );
+                cb.call_args( _code, _errorMessage, m_args );
             }
 
-            void onFacebookProfilePictureLinkGet( const Char * userId, bool success, const Char * pictureURL ) override
+            void onFacebookProfilePictureLinkGet( const Char * _userId, bool _success, const Char * _pictureURL ) override
             {
                 pybind::object cb = m_cbs["onFacebookProfilePictureLinkGet"];
 
-                cb.call_args( userId, success, pictureURL, m_args );
+                cb.call_args( _userId, _success, _pictureURL, m_args );
             }
 
         protected:

@@ -34,8 +34,11 @@ namespace Mengine
     {
         m_provider = nullptr;
         
-        [m_gameCenterDelegate release];
-        m_gameCenterDelegate = nil;
+        if( m_gameCenterDelegate != nil )
+        {
+            [m_gameCenterDelegate release];
+            m_gameCenterDelegate = nil;
+        }
     }
 //////////////////////////////////////////////////////////////////////////
     void AppleGameCenterService::setProvider( const AppleGameCenterProviderInterfacePtr & _provider )
@@ -56,7 +59,7 @@ namespace Mengine
                 
                 m_achievementsComplete.clear();
                 
-                LOGGER_ERROR("[AppleGameCenter] login error: '%s'"
+                LOGGER_ERROR( "[AppleGameCenter] login error: '%s'"
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
@@ -154,7 +157,7 @@ namespace Mengine
 
         BOOL result = [m_gameCenterDelegate reportAchievementIdentifier:nsDescription percentComplete:_percentComplete withBanner:YES response:^(NSError * _Nullable _error) {
             if (_error) {
-                LOGGER_ERROR("[AppleGameCenter] response achievement '%s' [%lf] error: %s"
+                LOGGER_ERROR( "[AppleGameCenter] response achievement '%s' [%lf] error: %s"
                    , copy_achievementName.c_str()
                    , _percentComplete
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
@@ -180,7 +183,7 @@ namespace Mengine
         
         if( result == FALSE )
         {
-            LOGGER_ERROR("[AppleGameCenter] invalid report achievement '%s' [%lf]"
+            LOGGER_ERROR( "[AppleGameCenter] invalid report achievement '%s' [%lf]"
                , _achievementName.c_str()
                , _percentComplete
             );
@@ -206,8 +209,9 @@ namespace Mengine
         LOGGER_MESSAGE( "[AppleGameCenter] try reset achievemnts" );
         
         BOOL result = [m_gameCenterDelegate resetAchievements : ^ (NSError * _Nullable _error) {
-            if (_error) {
-                LOGGER_ERROR("[AppleGameCenter] reset achievemnts error: '%s'"
+            if( _error != nil )
+            {
+                LOGGER_ERROR( "[AppleGameCenter] reset achievemnts error: '%s'"
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
@@ -219,7 +223,7 @@ namespace Mengine
         
         if( result == FALSE )
         {
-            LOGGER_ERROR("[AppleGameCenter] invalid reset achievements" );
+            LOGGER_ERROR( "[AppleGameCenter] invalid reset achievements" );
             
             return false;
         }
@@ -240,8 +244,9 @@ namespace Mengine
         LambdaScoreResponse copy_response = _response;
 
         BOOL result = [m_gameCenterDelegate reportScore:identifier score:_score response:^(NSError * _Nullable _error) {
-            if (_error) {
-                LOGGER_ERROR("[AppleGameCenter] response score '%s' [%lld] error: %s"
+            if( _error != nil )
+            {
+                LOGGER_ERROR( "[AppleGameCenter] response score '%s' [%lld] error: %s"
                    , copy_key.c_str()
                    , _score
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
@@ -262,7 +267,7 @@ namespace Mengine
         
         if( result == FALSE )
         {
-            LOGGER_ERROR("[AppleGameCenter] invalid report score '%s' [%lld]"
+            LOGGER_ERROR( "[AppleGameCenter] invalid report score '%s' [%lld]"
                , _key.c_str()
                , _score
             );

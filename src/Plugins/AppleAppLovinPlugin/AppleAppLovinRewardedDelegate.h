@@ -12,7 +12,7 @@
 @interface AppleAppLovinRewardedDelegate : NSObject<MARewardedAdDelegate>
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
-                                      amazonSlotId:(NSString* _Nullable) amazonSlotId
+                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
                                     rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback;
 
 - (BOOL) hasLoaded;
@@ -23,7 +23,7 @@
 @property (nonatomic, assign) NSInteger m_retryAttempt;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-@property (nonatomic, assign) AppleAppLovinRewardedAmazonLoader * m_amazonLoader;
+@property (nonatomic, assign) AppleAppLovinRewardedAmazonLoader * _Nullable m_amazonLoader;
 #endif
 
 @end

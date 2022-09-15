@@ -33,7 +33,7 @@
 }
 
 - (void) OnPlatformInit: (NSDictionary *)params {
-    LOGGER_INFO("marsdk", "OnPlatformInit params:");
+    LOGGER_INFO( "marsdk", "OnPlatformInit params:" );
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
@@ -48,7 +48,7 @@
 }
 
 - (void) OnRealName:(NSDictionary*)params {
-    LOGGER_INFO("marsdk", "OnRealName params:");
+    LOGGER_INFO( "marsdk", "OnRealName params:" );
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
@@ -63,7 +63,7 @@
 }
 
 - (void) OnEventWithCode: (int)code msg: (NSString*)msg {
-    LOGGER_INFO("marsdk", "OnEventWithCode [%d] msg [%s]"
+    LOGGER_INFO( "marsdk", "OnEventWithCode [%d] msg [%s]"
         , code
         , [msg UTF8String]
     );
@@ -72,13 +72,13 @@
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
-    LOGGER_INFO("marsdk", "OnEventCustom event '%s' params:"
+    LOGGER_INFO( "marsdk", "OnEventCustom event '%s' params:"
         , [eventName UTF8String]
     );
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("%s = %s"
+        LOGGER_INFO( "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );
@@ -95,11 +95,11 @@
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
-    LOGGER_INFO("marsdk", "OnUserLogin params:");
+    LOGGER_INFO( "marsdk", "OnUserLogin params:");
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("marsdk", "%s = %s"
+        LOGGER_INFO( "marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );
@@ -121,11 +121,11 @@
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
-    LOGGER_INFO("marsdk", "OnUserLogout params:");
+    LOGGER_INFO( "marsdk", "OnUserLogout params:");
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("marsdk", "%s = %s"
+        LOGGER_INFO( "marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );
@@ -153,11 +153,11 @@
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
-    LOGGER_INFO("marsdk", "OnPayPaid params:");
+    LOGGER_INFO( "marsdk", "OnPayPaid params:");
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("marsdk", "%s = %s"
+        LOGGER_INFO( "marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );

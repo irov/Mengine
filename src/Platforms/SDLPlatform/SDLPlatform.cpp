@@ -2228,21 +2228,6 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_updateDirectoryFullpath( const Char * _fullpath )
-        {
-            if( Detail::s_isDirectoryFullpath( _fullpath ) == true )
-            {
-                return true;
-            }
-
-            if( Detail::s_createDirectoryFullpath( _fullpath ) == false )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::existDirectory( const Char * _path, const Char * _directory ) const

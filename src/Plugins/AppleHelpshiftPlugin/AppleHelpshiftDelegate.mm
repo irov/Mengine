@@ -23,12 +23,14 @@
         LOGGER_MESSAGE("Helpshift session started.");
         
         self.m_service->getProvider()->sessionStarted();
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameSessionEnded]) {
         LOGGER_MESSAGE("Helpshift session ended.");
         
         self.m_service->getProvider()->sessionEnded();
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount]) {
@@ -49,6 +51,7 @@
         LOGGER_MESSAGE("Issue ID: %s, Publish ID: %s, Is issue open: %d", issueId, publishId, issueOpen );
         
         self.m_service->getProvider()->conversationStatus(issueId, publishId, issueOpen);
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
@@ -66,6 +69,7 @@
         LOGGER_MESSAGE("New message added with body: %s, with type: %s", body, type );
         
         self.m_service->getProvider()->eventMessageAdd(body, type);
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameConversationStart]) {
@@ -73,6 +77,7 @@
         LOGGER_MESSAGE("Conversation started with text: %s", text);
         
         self.m_service->getProvider()->converstationStart(text);
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
@@ -88,24 +93,28 @@
         LOGGER_MESSAGE("Conversation ended.");
         
         self.m_service->getProvider()->converstationEnded();
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameConversationRejected]) {
         LOGGER_MESSAGE("Conversation rejected.");
         
         self.m_service->getProvider()->converstationRejected();
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameConversationResolved]) {
         LOGGER_MESSAGE("Conversation resolved.");
         
         self.m_service->getProvider()->converstationResolved();
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameConversationReopened]) {
         LOGGER_MESSAGE("Conversation reopened.");
         
         self.m_service->getProvider()->converstationReopen();
+        return;
     }
 }
 
@@ -124,6 +133,9 @@
             self.m_service->getProvider()->authenticationTokenNotProvided();
             break;
         default:
+            LOGGER_MESSAGE("Helpshift authentication Failed - UNKNOWN");
+            
+            self.m_service->getProvider()->authenticationUnknownError();
             break;
     }
 }

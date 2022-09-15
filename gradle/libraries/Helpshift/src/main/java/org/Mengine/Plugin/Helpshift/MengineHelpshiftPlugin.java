@@ -35,6 +35,25 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
      * ko, ja, tr, nl, cs, hu,, th, sl, vi, ar, pl, no, sv, fi, ro, el, da, ms, iw, sk, uk,
      * ca, hr, bn, bg, gu, hi, kn, lv, ml, mr, pa, fa, ta, te]
      * void setLanguage(final String language)
+     *
+     *
+     * Events
+     * -sessionStarted
+     * -sessionEnded
+     * -receivedUnreadMessage(int count, boolean fromCache)
+     * -conversationStatus(String issueId,String publishId,boolean issueOpen)
+     * -eventWidgetToggle(boolean visible);
+     * -eventMessageAdd(String body,String type);
+     * -converstationStart(String text);
+     * -eventCSATSubmit"(String rating,String feedback);
+     * -converstationEnded
+     * -converstationRejected
+     * -converstationResolved
+     * -converstationReopen
+
+     * -authenticationInvalidAuthToken
+     * -authenticationTokenNotProvided
+     * -authenticationUnknownError
      */
 
     @Override
@@ -83,39 +102,85 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     @Override
     public void onEventOccurred(@NonNull String eventName, Map<String, Object> data) {
         this.logInfo("Helpshift call event %s", eventName);
+
         switch (eventName) {
+            case HelpshiftEvent.SDK_SESSION_STARTED:
+                this.logInfo("Helpshift session started.");
+
+                this.pythonCall("sessionStarted");
+                break;
+            case HelpshiftEvent.SDK_SESSION_ENDED:
+                this.logInfo("Helpshift session ended.");
+
+                this.pythonCall("sessionEnded");
+                break;
+            case HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT:
+                int count = (int) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
+                boolean fromCache = (boolean) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
+
+                this.logInfo("Unread count: " + count + ", From Cache: " + fromCache);
+
+                this.pythonCall("receivedUnreadMessage", count, fromCache);
+                break;
             case HelpshiftEvent.CONVERSATION_STATUS:
-                this.logInfo(
-                        data.get(HelpshiftEvent.DATA_LATEST_ISSUE_ID) + " " +
-                                data.get(HelpshiftEvent.DATA_LATEST_ISSUE_PUBLISH_ID) + " " +
-                                data.get(HelpshiftEvent.DATA_IS_ISSUE_OPEN)
-                );
+                String issueId = data.get(HelpshiftEvent.DATA_LATEST_ISSUE_ID).toString();
+                String publishId = data.get(HelpshiftEvent.DATA_LATEST_ISSUE_PUBLISH_ID).toString();
+                boolean issueOpen = (boolean) data.get(HelpshiftEvent.DATA_IS_ISSUE_OPEN);
+
+                this.logInfo("Issue ID: " + issueId + ", Publish ID: " + publishId + ", Is issue open: " + issueOpen);
+
+                this.pythonCall("conversationStatus", issueId, publishId, issueOpen);
                 break;
             case HelpshiftEvent.WIDGET_TOGGLE:
-                this.logInfo(data.get(HelpshiftEvent.DATA_SDK_VISIBLE) + " ");
-                break;
-            case HelpshiftEvent.CONVERSATION_START:
-                this.logInfo(data.get(HelpshiftEvent.DATA_MESSAGE) + " ");
+                boolean visible = (boolean) data.get(HelpshiftEvent.DATA_SDK_VISIBLE);
+
+                this.logInfo("Is chat screen visible:" + visible);
+
+                this.pythonCall("eventWidgetToggle", visible);
                 break;
 
             case HelpshiftEvent.MESSAGE_ADD:
-                this.logInfo(data.get(HelpshiftEvent.DATA_MESSAGE_BODY) + " ");
+                String body = data.get(HelpshiftEvent.DATA_MESSAGE_BODY).toString();
+                String type = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE).toString();
 
-                if (data.get(HelpshiftEvent.DATA_MESSAGE_TYPE).equals(HelpshiftEvent.DATA_MESSAGE_TYPE_ATTACHMENT)) {
-                    this.logInfo("user sent an attachment");
-                } else {
-                    this.logInfo("user sent an Text");
-                }
+                this.logInfo("New message added with body: " + body + ", with type:" + type);
+
+                this.pythonCall("eventMessageAdd", body, type);
                 break;
+            case HelpshiftEvent.CONVERSATION_START:
+                String text = data.get(HelpshiftEvent.DATA_MESSAGE).toString();
 
+                this.logInfo("Conversation started with text: " + text);
+
+                this.pythonCall("converstationStart", text);
+                break;
             case HelpshiftEvent.CSAT_SUBMIT:
-                this.logInfo(data.get(HelpshiftEvent.DATA_CSAT_RATING) + " ");
-                this.logInfo(data.get(HelpshiftEvent.DATA_ADDITIONAL_FEEDBACK) + " ");
+                String rating = data.get(HelpshiftEvent.DATA_CSAT_RATING).toString();
+                String feedback = data.get(HelpshiftEvent.DATA_ADDITIONAL_FEEDBACK).toString();
+
+                this.logInfo("CSAT Submitted with rating: " + rating + ", with feedback:" + feedback);
+
+                this.pythonCall("eventCSATSubmit", rating, feedback);
                 break;
             case HelpshiftEvent.CONVERSATION_END:
+                this.logInfo("Conversation ended.");
+
+                this.pythonCall("converstationEnded");
+                break;
             case HelpshiftEvent.CONVERSATION_REJECTED:
+                this.logInfo("Conversation rejected.");
+
+                this.pythonCall("converstationRejected");
+                break;
             case HelpshiftEvent.CONVERSATION_RESOLVED:
+                this.logInfo("Conversation resolved.");
+
+                this.pythonCall("converstationResolved");
+                break;
             case HelpshiftEvent.CONVERSATION_REOPENED:
+                this.logInfo("Conversation reopened.");
+
+                this.pythonCall("converstationReopen");
                 break;
         }
     }
@@ -125,8 +190,13 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         this.logInfo("Helpshift onUserAuthenticationFailure ->" + reason);
         switch (reason) {
             case REASON_AUTH_TOKEN_NOT_PROVIDED:
+                this.logError("Helpshift authentication Failed - AuthTokenNotProvided");
+                break;
             case REASON_INVALID_AUTH_TOKEN:
+                this.logError("Helpshift authentication Failed - InvalidAuthToken");
+                break;
             case UNKNOWN:
+                this.logError("Helpshift authentication Failed - UNKNOWN");
                 break;
         }
 

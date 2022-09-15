@@ -4,16 +4,16 @@
 
 namespace Mengine
 {
-    class AppleReviewServiceInterface
+    class AppleStoreReviewServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AppleReviewService" )
+        SERVICE_DECLARE( "AppleStoreReviewService" )
             
     public:
         virtual void launchTheInAppReview() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define APPLE_REVIEW_SERVICE()\
-    ((Mengine::AppleReviewServiceInterface *)SERVICE_GET(Mengine::AppleReviewServiceInterface))
+#define APPLE_STOREREVIEW_SERVICE()\
+    ((Mengine::AppleStoreReviewServiceInterface *)SERVICE_GET(Mengine::AppleStoreReviewServiceInterface))
 //////////////////////////////////////////////////////////////////////////

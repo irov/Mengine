@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class AppleReviewScriptEmbedding
+    class AppleStoreReviewScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        AppleReviewScriptEmbedding();
-        ~AppleReviewScriptEmbedding() override;
+        AppleStoreReviewScriptEmbedding();
+        ~AppleStoreReviewScriptEmbedding() override;
 
     public:
         bool embed( pybind::kernel_interface * _kernel ) override;

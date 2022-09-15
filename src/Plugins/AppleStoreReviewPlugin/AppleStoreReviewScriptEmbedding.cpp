@@ -1,6 +1,6 @@
-#include "AppleReviewScriptEmbedding.h"
+#include "AppleStoreReviewScriptEmbedding.h"
 
-#include "AppleReviewInterface.h"
+#include "AppleStoreReviewInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -19,7 +19,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleReview_launchTheInAppReview()
+        static void s_AppleStoreReview_launchTheInAppReview()
         {
             APPLE_REVIEW_SERVICE()
                 ->launchTheInAppReview();
@@ -27,27 +27,27 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleReviewScriptEmbedding::AppleReviewScriptEmbedding()
+    AppleStoreReviewScriptEmbedding::AppleReviewScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleReviewScriptEmbedding::~AppleReviewScriptEmbedding()
+    AppleStoreReviewScriptEmbedding::~AppleReviewScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleReviewScriptEmbedding::embed( pybind::kernel_interface * _kernel )
+    bool AppleStoreReviewScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleReview", true );
 
-        pybind::def_function( _kernel, "appleReviewLaunchTheInAppReview", &Detail::s_AppleReview_launchTheInAppReview );
+        pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::s_AppleStoreReview_launchTheInAppReview );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleReviewScriptEmbedding::eject( pybind::kernel_interface * _kernel )
+    void AppleStoreReviewScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleReviewLaunchTheInAppReview", nullptr );
+        _kernel->remove_from_module( "appleStoreReviewLaunchTheInAppReview", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

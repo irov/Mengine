@@ -1,26 +1,26 @@
-MENGINE_PROJECT(AppleReviewPlugin)
+MENGINE_PROJECT(AppleStoreReviewPlugin)
 
 ADD_FILTER(
 src
-    AppleReviewInterface.h
-    AppleReviewService.h
-    AppleReviewService.mm
+    AppleStoreReviewInterface.h
+    AppleStoreReviewService.h
+    AppleStoreReviewService.mm
 
-    AppleReviewPlugin.h
-    AppleReviewPlugin.cpp
+    AppleStoreReviewPlugin.h
+    AppleStoreReviewPlugin.cpp
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
-        AppleReviewScriptEmbedding.h
-        AppleReviewScriptEmbedding.cpp
+        AppleStoreReviewScriptEmbedding.h
+        AppleStoreReviewScriptEmbedding.cpp
     )
     
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_REVIEW)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_STOREREVIEW)
 
 ADD_MENGINE_APPLE_FRAMEWORK(StoreKit)
 

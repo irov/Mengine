@@ -378,7 +378,7 @@ namespace Mengine
 
         return pathLen;
 #elif defined(MENGINE_PLATFORM_IOS)
-        const char deploy_mac_data[] = "";
+        const Char deploy_mac_data[] = "";
         MENGINE_STRCPY( _currentPath, deploy_mac_data );
 
         return sizeof( deploy_mac_data ) - 1;
@@ -1103,8 +1103,10 @@ namespace Mengine
 #endif
         
 #if defined(MENGINE_PLATFORM_MACOS)
+        //cppcheck-suppress syntaxError
         m_macOSWorkspace = [SDLPlatformMacOSWorkspace alloc];
         
+        //cppcheck-suppress syntaxError
         [m_macOSWorkspace initialize];
 #endif
         
@@ -2007,8 +2009,8 @@ namespace Mengine
         uint32_t width = resolution.getWidth();
         uint32_t height = resolution.getHeight();
 
-        int wndPosX = static_cast<int>(_pos.x * width);
-        int wndPosY = static_cast<int>(_pos.y * height);
+        int32_t wndPosX = static_cast<int32_t>(_pos.x * width);
+        int32_t wndPosY = static_cast<int32_t>(_pos.y * height);
 
         // ! This function generates a mouse motion event !
         SDL_WarpMouseInWindow( m_sdlWindow, wndPosX, wndPosY );
@@ -2230,7 +2232,7 @@ namespace Mengine
         static bool s_isDirectoryFullpath( const Char * _fullpath )
         {
             struct stat sb;
-            int err = stat( _fullpath, &sb );
+            int err = ::stat( _fullpath, &sb );
 
             if( err != 0 )
             {

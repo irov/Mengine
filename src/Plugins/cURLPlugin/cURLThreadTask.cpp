@@ -4,6 +4,7 @@
 
 #include "cURLErrorHelper.h"
 
+#include "Kernel/ProfilerHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 
@@ -152,6 +153,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLThreadTask::_onThreadTaskProcess()
     {
+        MENGINE_PROFILER_CATEGORY();
+
         CURL * curl = curl_easy_init();
 
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, m_url.c_str()) );

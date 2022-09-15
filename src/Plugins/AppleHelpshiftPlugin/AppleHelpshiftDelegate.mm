@@ -10,7 +10,7 @@
 
 @synthesize m_service;
 
-- (instancetype _Nonnull)initWithService: (Mengine::AppleHelpshiftServiceInterface* _Nonnull) service {
+- (instancetype _Nonnull)initWithService: (Mengine::AppleHelpshiftServiceInterface * _Nonnull) service {
     self = [super init];
     
     self.m_service = service;
@@ -24,13 +24,11 @@
     if([eventName isEqualToString:HelpshiftEventNameSessionStarted]) {
         LOGGER_MESSAGE("Helpshift session started.");
         
-        self.m_service->getProvider()->sessionStarted();
-        return;
+        provider->sessionStarted();
     } else if([eventName isEqualToString:HelpshiftEventNameSessionEnded]) {
         LOGGER_MESSAGE("Helpshift session ended.");
         
         provider->sessionEnded();
-        return;
     } else if([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount]) {
         int count = [data[HelpshiftEventDataUnreadMessageCount] intValue];
         int countInCache = [data[HelpshiftEventDataUnreadMessageCountIsFromCache] intValue];
@@ -45,14 +43,13 @@
                 
         LOGGER_MESSAGE("Issue ID: %s, Publish ID: %s, Is issue open: %d", issueId, publishId, issueOpen );
         
-        self.m_service->getProvider()->conversationStatus(issueId, publishId, issueOpen);
-        return;
+        provider->conversationStatus( issueId, publishId, issueOpen );
     } else if([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
         bool visible = [data[HelpshiftEventDataVisible] boolValue];
         
         LOGGER_MESSAGE("Is chat screen visible: %d", visible);
         
-        self.m_service->getProvider()->eventWidgetToggle(visible);
+        provider->eventWidgetToggle( visible );
     } else if([eventName isEqualToString:HelpshiftEventNameMessageAdd]) {
         const char * body = [self convertToChar:[data objectForKey:HelpshiftEventDataMessageBody]];
         const char * type = [self convertToChar:[data objectForKey:HelpshiftEventDataMessageType]];
@@ -60,42 +57,34 @@
         LOGGER_MESSAGE("New message added with body: %s, with type: %s", body, type );
         
         provider->eventMessageAdd( body, type );
-        return;
     } else if([eventName isEqualToString:HelpshiftEventNameConversationStart]) {
         const char * text = [self convertToChar:[data objectForKey:HelpshiftEventDataMessage]];
         LOGGER_MESSAGE("Conversation started with text: %s", text);
         
-        self.m_service->getProvider()->converstationStart(text);
-        return;
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
+        provider->converstationStart( text );
+    } else if([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
         const char * rating = [self convertToChar:[data objectForKey:HelpshiftEventDataRating]];
         const char * feedback = [self convertToChar:[data objectForKey:HelpshiftEventDataAdditionalFeedback]];
         
         LOGGER_MESSAGE("CSAT Submitted with rating: %s, with feedback: %s",rating, feedback);
         
-        provider->eventCSATSubmit(rating, feedback);
+        provider->eventCSATSubmit( rating, feedback );
     } else if([eventName isEqualToString:HelpshiftEventNameConversationEnd]) {
         LOGGER_MESSAGE("Conversation ended.");
         
         provider->converstationEnded();
-        return;
     } else if([eventName isEqualToString:HelpshiftEventNameConversationRejected]) {
         LOGGER_MESSAGE("Conversation rejected.");
         
         provider->converstationRejected();
-        return;
     } else if([eventName isEqualToString:HelpshiftEventNameConversationResolved]) {
         LOGGER_MESSAGE("Conversation resolved.");
         
-        self.m_service->getProvider()->converstationResolved();
-        return;
+        provider->converstationResolved();
     } else if([eventName isEqualToString:HelpshiftEventNameConversationReopened]) {
         LOGGER_MESSAGE("Conversation reopened.");
         
-        self.m_service->getProvider()->converstationReopen();
-        return;
+        provider->converstationReopen();
     }
 }
 
@@ -103,30 +92,37 @@
 - (void) authenticationFailedForUserWithReason:(HelpshiftAuthenticationFailureReason)reason{
     const Mengine::AppleHelpshiftProviderInterfacePtr & provider = self.m_service->getProvider();
     
-    switch (reason) {
-        case HelpshiftAuthenticationFailureReasonInvalidAuthToken:
+    switch (reason)
+    {
+    case HelpshiftAuthenticationFailureReasonInvalidAuthToken:
+        {
             LOGGER_MESSAGE("Helpshift authentication Failed - InvalidAuthToken");
             
             provider->authenticationInvalidAuthToken();
-            break;
-        case HelpshiftAuthenticationFailureReasonAuthTokenNotProvided:
+        }break;
+    case HelpshiftAuthenticationFailureReasonAuthTokenNotProvided:
+        {
             LOGGER_MESSAGE("Helpshift authentication Failed - AuthTokenNotProvided");
             
             provider->authenticationTokenNotProvided();
-            break;
-        default:
+        }break;
+    default:
+        {
             LOGGER_MESSAGE("Helpshift authentication Failed - UNKNOWN");
             
             provider->authenticationUnknownError();
-            break;
+        }break;
     }
 }
 
 - (const char *) convertToChar:(nullable NSObject*)object{
-    if (object == nullptr){
+    if (object == nullptr) {
         return "empty";
     }
-    NSString *value = [NSString stringWithString:[NSString stringWithFormat:@"%@",object]];
+    
+    NSString * value = [NSString stringWithString:[NSString stringWithFormat:@"%@",object]];
+    
     return [value UTF8String];
 }
+
 @end

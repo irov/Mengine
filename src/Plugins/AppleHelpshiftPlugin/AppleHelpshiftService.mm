@@ -13,12 +13,34 @@ SERVICE_FACTORY( AppleHelpshiftService, Mengine::AppleHelpshiftService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static UIViewController * getRootViewController()
+        {
+            UIViewController * viewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+            
+            return viewController;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     AppleHelpshiftService::AppleHelpshiftService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
     AppleHelpshiftService::~AppleHelpshiftService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleHelpshiftService::setProvider( const AppleHelpshiftProviderInterfacePtr &   _provider )
+    {
+        m_provider = _provider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AppleHelpshiftProviderInterfacePtr & AppleHelpshiftService::getProvider() const
+    {
+        return m_provider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleHelpshiftService::_initializeService()
@@ -51,7 +73,7 @@ namespace Mengine
             return false;
         }
         
-        m_delegate = [[AppleHelpshiftDelegate alloc]initWithService:this];
+        m_delegate = [[AppleHelpshiftDelegate alloc] initWithService:this];
         
         Helpshift.sharedInstance.delegate = m_delegate;
         
@@ -65,38 +87,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showConversation()
     {
-        UIViewController * viewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        UIViewController * viewController = Detail::getRootViewController();
         
-        NSDictionary* configDictionary = nullptr;
+        NSDictionary * configDictionary = nullptr;
         
         [Helpshift showConversationWith:viewController config:configDictionary];
     }
     /////////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showFAQs()
     {
-        UIViewController * viewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        UIViewController * viewController = Detail::getRootViewController();
         
-        NSDictionary* configDictionary = nullptr;
+        NSDictionary * configDictionary = nullptr;
         
         [Helpshift showFAQsWith:viewController config:configDictionary];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showFAQSection( const Char * _sectionId )
     {
-        UIViewController * viewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        UIViewController * viewController = Detail::getRootViewController();
         
-        NSDictionary* configDictionary = nullptr;
-        NSString* sectionId = [NSString stringWithUTF8String:_sectionId];
+        NSDictionary * configDictionary = nullptr;
+        NSString * sectionId = [NSString stringWithUTF8String:_sectionId];
         
         [Helpshift showFAQSection:sectionId with:viewController config:configDictionary];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showSingleFAQ( const Char * _faqId )
     {
-        UIViewController * viewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        UIViewController * viewController = Detail::getRootViewController();
         
-        NSDictionary* configDictionary = nullptr;
-        NSString* faqId =[NSString stringWithUTF8String:_faqId];
+        NSDictionary * configDictionary = nullptr;
+        NSString * faqId =[NSString stringWithUTF8String:_faqId];
         
         [Helpshift showSingleFAQ:faqId with:viewController config:configDictionary];
     }
@@ -106,16 +128,6 @@ namespace Mengine
         NSString * language = [NSString stringWithUTF8String:_language];
         
         [Helpshift setLanguage:language];
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleHelpshiftService::setProvider( const AppleHelpshiftProviderInterfacePtr &   _provider )
-    {
-        m_provider = _provider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const AppleHelpshiftProviderInterfacePtr & AppleHelpshiftService::getProvider() const
-    {
-        return m_provider;
     }
     //////////////////////////////////////////////////////////////////////////
 }

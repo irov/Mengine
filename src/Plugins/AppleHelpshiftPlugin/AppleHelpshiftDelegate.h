@@ -9,8 +9,8 @@
 
 @property (assign) Mengine::AppleHelpshiftServiceInterface * _Nonnull m_service;
 
-- (instancetype _Nonnull)initWithService:(Mengine::AppleHelpshiftServiceInterface* _Nonnull)service;
+- (instancetype _Nonnull) initWithService:(Mengine::AppleHelpshiftServiceInterface* _Nonnull) service;
 
-- (const char*)convertToChar:(nullable NSObject*)object;
+- (const char *) convertToChar:(NSObject * _Nullable) object;
 
 @end

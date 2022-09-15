@@ -71,7 +71,7 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onFacebookError([NSString stringWithFormat:@"%@", error].UTF8String);
+                    m_provider->onFacebookError(-2, [NSString stringWithFormat:@"%@", error].UTF8String);
                 }
                 
                 return;
@@ -101,7 +101,7 @@ namespace Mengine
                 }
                 else
                 {
-                    m_provider->onFacebookError( "token == null" );
+                    m_provider->onFacebookError(-1, "token == null" );
                 }
             }
         }];

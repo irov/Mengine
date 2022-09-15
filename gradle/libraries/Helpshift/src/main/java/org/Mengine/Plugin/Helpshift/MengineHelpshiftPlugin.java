@@ -1,9 +1,6 @@
 package org.Mengine.Plugin.Helpshift;
 
 import android.content.pm.ActivityInfo;
-import android.os.Handler;
-import android.os.Looper;
-
 import androidx.annotation.NonNull;
 
 import com.helpshift.Helpshift;
@@ -14,6 +11,7 @@ import com.helpshift.UnsupportedOSVersionException;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 
 import java.util.HashMap;
@@ -35,6 +33,25 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
      * ko, ja, tr, nl, cs, hu,, th, sl, vi, ar, pl, no, sv, fi, ro, el, da, ms, iw, sk, uk,
      * ca, hr, bn, bg, gu, hi, kn, lv, ml, mr, pa, fa, ta, te]
      * void setLanguage(final String language)
+     *
+     *
+     * Events
+     * -onHelpshiftSessionStarted
+     * -onHelpshiftSessionEnded
+     * -onHelpshiftReceivedUnreadMessage(int count, boolean fromCache)
+     * -onHelpshiftConversationStatus(String issueId,String publishId,boolean issueOpen)
+     * -onHelpshiftWidgetToggle(boolean visible);
+     * -onHelpshiftMessageAdd(String body,String type);
+     * -onHelpshiftConverstationStart(String text);
+     * -onHelpshiftCSATSubmit"(String rating,String feedback);
+     * -onHelpshiftConverstationEnded
+     * -onHelpshiftConverstationRejected
+     * -onHelpshiftConverstationResolved
+     * -onHelpshiftConverstationReopen
+
+     * -onHelpshiftAuthenticationFailureInvalidAuthToken
+     * -onHelpshiftAuthenticationFailureTokenNotProvided
+     * -onHelpshiftAuthenticationFailureUnknown
      */
 
     @Override
@@ -66,20 +83,23 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 //        config.put("notificationChannelId",  "mengine_channel_id");
 //        config.put("fullPrivacy", true);
 
-        String HELPSHIFT_PlatformId = activity.getConfigValue("HelpshiftPlugin", "PlatformId", "");
-        String HELPSHIFT_Domain = activity.getConfigValue("HelpshiftPlugin", "Domain", "");
+        String HelpshiftPlugin_PlatformId = activity.getConfigValue("HelpshiftPlugin", "PlatformId", "");
+        String HelpshiftPlugin_Domain = activity.getConfigValue("HelpshiftPlugin", "Domain", "");
 
         try {
-            Helpshift.install(activity.getApplication(), HELPSHIFT_PlatformId, HELPSHIFT_Domain, config);
+            MengineApplication application = this.getApplication();
+
+            Helpshift.install(application, HelpshiftPlugin_PlatformId, HelpshiftPlugin_Domain, config);
         } catch (UnsupportedOSVersionException e) {
             this.logError("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
         }
 
-        Helpshift.setHelpshiftEventsListener(MengineHelpshiftPlugin.this);
+        Helpshift.setHelpshiftEventsListener(this);
     }
 
     @Override
     public void onEventOccurred(@NonNull String eventName, Map<String, Object> data) {
+
         switch (eventName) {
             case HelpshiftEvent.SDK_SESSION_STARTED:
                 this.logInfo("onEventOccurred SDK_SESSION_STARTED");
@@ -193,15 +213,15 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             case REASON_AUTH_TOKEN_NOT_PROVIDED:
                 this.logInfo("onUserAuthenticationFailure REASON_AUTH_TOKEN_NOT_PROVIDED");
 
-                this.pythonCall("onHelpshiftFailureAuthTokenNotProvided");
+                this.pythonCall("onHelpshiftAuthenticationFailureAuthTokenNotProvided");
             case REASON_INVALID_AUTH_TOKEN:
                 this.logInfo("onUserAuthenticationFailure REASON_INVALID_AUTH_TOKEN");
 
-                this.pythonCall("onHelpshiftFailureInvalidAuthToken");
+                this.pythonCall("onHelpshiftAuthenticationFailureInvalidAuthToken");
             case UNKNOWN:
                 this.logInfo("onUserAuthenticationFailure UNKNOWN");
 
-                this.pythonCall("onHelpshiftFailureUnkonwn");
+                this.pythonCall("onHelpshiftAuthenticationFailureUnknown");
                 break;
         }
     }

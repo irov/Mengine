@@ -18,75 +18,115 @@
     return self;
 }
 
-- (void) handleHelpshiftEvent:(nonnull NSString *)eventName withData:(nullable NSDictionary *)data{
+- (void) handleHelpshiftEvent:(nonnull NSString *)eventName withData:(nullable NSDictionary *)data {
+    const Mengine::AppleHelpshiftProviderInterfacePtr & provider = self.m_service->getProvider();
+    
     if([eventName isEqualToString:HelpshiftEventNameSessionStarted]) {
-        NSLog(@"Helpshift session started.");
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameSessionEnded]) {
-        NSLog(@"Helpshift session ended.");
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount] && data != nullptr) {
+        LOGGER_MESSAGE("Helpshift session started.");
+        
+        self.m_service->getProvider()->sessionStarted();
+        return;
+    } else if([eventName isEqualToString:HelpshiftEventNameSessionEnded]) {
+        LOGGER_MESSAGE("Helpshift session ended.");
+        
+        provider->sessionEnded();
+        return;
+    } else if([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount]) {
         int count = [data[HelpshiftEventDataUnreadMessageCount] intValue];
-        NSLog(@"Unread count: %d", [data[HelpshiftEventDataUnreadMessageCount] intValue]);
-        NSLog(@"Is unreadCount served from local cache : %d", [data[HelpshiftEventDataUnreadMessageCountIsFromCache] intValue]);
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameConversationStatus] && data != nullptr) {
-        NSLog(@"Issue ID: %@", data[HelpshiftEventDataLatestIssueId]);
-        NSLog(@"Publish ID: %@", data[HelpshiftEventDataLatestIssuePublishId]);
-        NSLog(@"Is issue open: %@", data[HelpshiftEventDataIsIssueOpen]);
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
-        NSLog(@"Is chat screen visible: %@", data[HelpshiftEventDataVisible]);
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameMessageAdd]) {
-        NSLog(@"New message added with body: %@", data[HelpshiftEventDataMessageBody]);
-        NSLog(@"New message added with type: %@", data[HelpshiftEventDataMessageType]);
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameConversationStart]) {
-        NSLog(@"Conversation started with text: %@", data[HelpshiftEventDataMessage]);
+        int countInCache = [data[HelpshiftEventDataUnreadMessageCountIsFromCache] intValue];
+        
+        LOGGER_MESSAGE("Unread count: %i\nunreadCount from cache %i", count, countInCache);
+        
+        provider->receivedUnreadMessage( count, countInCache );
+    } else if([eventName isEqualToString:HelpshiftEventNameConversationStatus]) {
+        const char * issueId = [self convertToChar:[data objectForKey:HelpshiftEventDataLatestIssueId]];
+        const char * publishId = [self convertToChar:[data objectForKey:HelpshiftEventDataLatestIssuePublishId]];
+        bool issueOpen = [data[HelpshiftEventDataIsIssueOpen] boolValue];
+                
+        LOGGER_MESSAGE("Issue ID: %s, Publish ID: %s, Is issue open: %d", issueId, publishId, issueOpen );
+        
+        self.m_service->getProvider()->conversationStatus(issueId, publishId, issueOpen);
+        return;
+    } else if([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
+        bool visible = [data[HelpshiftEventDataVisible] boolValue];
+        
+        LOGGER_MESSAGE("Is chat screen visible: %d", visible);
+        
+        self.m_service->getProvider()->eventWidgetToggle(visible);
+    } else if([eventName isEqualToString:HelpshiftEventNameMessageAdd]) {
+        const char * body = [self convertToChar:[data objectForKey:HelpshiftEventDataMessageBody]];
+        const char * type = [self convertToChar:[data objectForKey:HelpshiftEventDataMessageType]];
+        
+        LOGGER_MESSAGE("New message added with body: %s, with type: %s", body, type );
+        
+        provider->eventMessageAdd( body, type );
+        return;
+    } else if([eventName isEqualToString:HelpshiftEventNameConversationStart]) {
+        const char * text = [self convertToChar:[data objectForKey:HelpshiftEventDataMessage]];
+        LOGGER_MESSAGE("Conversation started with text: %s", text);
+        
+        self.m_service->getProvider()->converstationStart(text);
+        return;
     }
     
     if([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
-        NSLog(@"CSAT Submitted with rating: %@", data[HelpshiftEventDataRating]);
-        NSLog(@"CSAT Submitted with feedback: %@", data[HelpshiftEventDataAdditionalFeedback]);
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameConversationEnd]) {
-        NSLog(@"Conversation ended.");
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameConversationRejected]) {
-        NSLog(@"Conversation rejected.");
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameConversationResolved]) {
-        NSLog(@"Conversation resolved.");
-    }
-    
-    if([eventName isEqualToString:HelpshiftEventNameConversationReopened]) {
-        NSLog(@"Conversation reopened.");
+        const char * rating = [self convertToChar:[data objectForKey:HelpshiftEventDataRating]];
+        const char * feedback = [self convertToChar:[data objectForKey:HelpshiftEventDataAdditionalFeedback]];
+        
+        LOGGER_MESSAGE("CSAT Submitted with rating: %s, with feedback: %s",rating, feedback);
+        
+        provider->eventCSATSubmit(rating, feedback);
+    } else if([eventName isEqualToString:HelpshiftEventNameConversationEnd]) {
+        LOGGER_MESSAGE("Conversation ended.");
+        
+        provider->converstationEnded();
+        return;
+    } else if([eventName isEqualToString:HelpshiftEventNameConversationRejected]) {
+        LOGGER_MESSAGE("Conversation rejected.");
+        
+        provider->converstationRejected();
+        return;
+    } else if([eventName isEqualToString:HelpshiftEventNameConversationResolved]) {
+        LOGGER_MESSAGE("Conversation resolved.");
+        
+        self.m_service->getProvider()->converstationResolved();
+        return;
+    } else if([eventName isEqualToString:HelpshiftEventNameConversationReopened]) {
+        LOGGER_MESSAGE("Conversation reopened.");
+        
+        self.m_service->getProvider()->converstationReopen();
+        return;
     }
 }
 
 
 - (void) authenticationFailedForUserWithReason:(HelpshiftAuthenticationFailureReason)reason{
+    const Mengine::AppleHelpshiftProviderInterfacePtr & provider = self.m_service->getProvider();
     
     switch (reason) {
         case HelpshiftAuthenticationFailureReasonInvalidAuthToken:
-            NSLog(@"Helpshift authentication Failed -> HelpshiftAuthenticationFailureReasonInvalidAuthToken");
+            LOGGER_MESSAGE("Helpshift authentication Failed - InvalidAuthToken");
+            
+            provider->authenticationInvalidAuthToken();
             break;
         case HelpshiftAuthenticationFailureReasonAuthTokenNotProvided:
-            NSLog(@"Helpshift authentication Failed -> HelpshiftAuthenticationFailureReasonAuthTokenNotProvided");
+            LOGGER_MESSAGE("Helpshift authentication Failed - AuthTokenNotProvided");
+            
+            provider->authenticationTokenNotProvided();
             break;
         default:
+            LOGGER_MESSAGE("Helpshift authentication Failed - UNKNOWN");
+            
+            provider->authenticationUnknownError();
             break;
     }
 }
 
+- (const char *) convertToChar:(nullable NSObject*)object{
+    if (object == nullptr){
+        return "empty";
+    }
+    NSString *value = [NSString stringWithString:[NSString stringWithFormat:@"%@",object]];
+    return [value UTF8String];
+}
 @end

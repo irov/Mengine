@@ -1,45 +1,47 @@
-#include "AppleReviewPlugin.h"
+#include "AppleStoreReviewPlugin.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "Interface/ScriptServiceInterface.h"
 
-#   include "AppleReviewScriptEmbedding.h"
+#   include "AppleStoreReviewScriptEmbedding.h"
 #endif
+
+#include "AppleStoreReviewInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/NotificationHelper.h"
-#include "AppleReviewInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleReviewService );
+SERVICE_EXTERN( AppleStoreReviewService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleReviewPlugin, Mengine::AppleReviewPlugin )
+PLUGIN_FACTORY( AppleStoreReviewPlugin, Mengine::AppleStoreReviewPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleReviewPlugin::AppleReviewPlugin()
+    AppleStoreReviewPlugin::AppleStoreReviewPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleReviewPlugin::~AppleReviewPlugin()
+    AppleStoreReviewPlugin::~AppleStoreReviewPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleReviewPlugin::_availablePlugin() const
+    bool AppleStoreReviewPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "applereview" ) == true )
+        if( HAS_OPTION( "applestorereview" ) == true )
         {
             return true;
         }
             
-        if( HAS_OPTION( "noapplereview" ) == true )
+        if( HAS_OPTION( "noapplestorereview" ) == true )
         {
             return false;
         }
         
-        bool AppleReviewPlugin_Available = CONFIG_VALUE( "AppleReviewPlugin", "Available", true );
+        bool AppleReviewPlugin_Available = CONFIG_VALUE( "StoreReviewPlugin", "Available", true );
         
         if( AppleReviewPlugin_Available == false )
         {
@@ -49,9 +51,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleReviewPlugin::_initializePlugin()
+    bool AppleStoreReviewPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleReviewService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( AppleStoreReviewService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -60,32 +62,32 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleReviewScriptEmbedding" ), Helper::makeFactorableUnique<AppleReviewScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleStoreReviewScriptEmbedding" ), Helper::makeFactorableUnique<AppleStoreReviewScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleReviewScriptEmbedding" ) );
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleStoreReviewScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
         
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleReviewPlugin::_finalizePlugin()
+    void AppleStoreReviewPlugin::_finalizePlugin()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
         
-        SERVICE_FINALIZE( AppleReviewService );
+        SERVICE_FINALIZE( AppleStoreReviewService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleReviewPlugin::_destroyPlugin()
+    void AppleStoreReviewPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( AppleReviewService );
+        SERVICE_DESTROY( AppleStoreReviewService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

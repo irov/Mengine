@@ -39,7 +39,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleAppLovinPlugin_Available = CONFIG_VALUE( "AppleAppLovinPlugin", "Available", true );
+        bool AppleAppLovinPlugin_Available = CONFIG_VALUE( "AppLovinPlugin", "Available", true );
 
         if( AppleAppLovinPlugin_Available == false )
         {

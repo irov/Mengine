@@ -67,7 +67,7 @@
     NSString * amazonInterstitialSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonInterstitialSlotId];
         
     LOGGER_INFO("applovin", "Interstitial Amazon AdUnit '%s'"
-        , AppLovin_AmazonInterstitialSlotId
+        , AppLovinPlugin_AmazonInterstitialSlotId
     );
     
     return amazonInterstitialSlotId;

@@ -6,14 +6,14 @@
 
 namespace Mengine
 {    
-    class AppleReviewPlugin
+    class AppleHelpshiftPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AppleReview" )
+        PLUGIN_DECLARE( "AppleHelpshift" )
 
     public:
-        AppleReviewPlugin();
-        ~AppleReviewPlugin() override;
+        AppleHelpshiftPlugin();
+        ~AppleHelpshiftPlugin() override;
 
     protected:
         bool _availablePlugin() const override;

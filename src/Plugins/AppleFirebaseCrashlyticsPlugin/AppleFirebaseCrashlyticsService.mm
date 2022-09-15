@@ -24,8 +24,7 @@ namespace Mengine
     {
         @try {
             [FIRApp configure];
-        }
-        @catch (NSException *exception) {
+        } @catch (NSException *exception) {
             LOGGER_ERROR( "%s"
                 , [exception.reason UTF8String]
             );

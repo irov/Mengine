@@ -1,5 +1,7 @@
 #import "AppleAppLovinBannerAmazonLoader.h"
 
+#import <DTBiOSSDK/DTBAdLoader.h>
+
 @implementation AppleAppLovinBannerAmazonLoader
 
 - (instancetype _Nonnull) initWithSlotId:(NSString * _Nullable) amazonAdSlotId adView:(MAAdView * _Nonnull) adView rect:(CGRect) rect {
@@ -20,12 +22,12 @@
 
 #pragma mark - DTBAdCallback Protocol
 
--(void)onFailure:(DTBAdError) error dtbAdErrorInfo:(DTBAdErrorInfo *) errorInfo {
+- (void) onFailure:(DTBAdError) error dtbAdErrorInfo:(DTBAdErrorInfo *) errorInfo {
     [self.m_adView setLocalExtraParameterForKey: @"amazon_ad_error" value: errorInfo];
     [self.m_adView loadAd];
 }
 
-- (void)onSuccess:(DTBAdResponse *) adResponse{
+- (void) onSuccess:(DTBAdResponse *) adResponse{
     [self.m_adView setLocalExtraParameterForKey: @"amazon_ad_response" value: adResponse];
     [self.m_adView loadAd];
 }

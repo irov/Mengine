@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AppleReviewInterface.h"
+#include "AppleStoreReviewInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
@@ -8,12 +8,12 @@
 
 namespace Mengine
 {
-    class AppleReviewService
-         : public ServiceBase<AppleReviewServiceInterface>
+    class AppleStoreReviewService
+         : public ServiceBase<AppleStoreReviewServiceInterface>
     {
     public:
-        AppleReviewService();
-        ~AppleReviewService() override;
+        AppleStoreReviewService();
+        ~AppleStoreReviewService() override;
 
     protected:
         bool _initializeService() override;

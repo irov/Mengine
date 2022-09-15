@@ -1,28 +1,27 @@
-#include "AppleReviewService.h"
+#include "AppleStoreReviewService.h"
 
 #include "Environment/Apple/AppleUtils.h"
 
 #include "Kernel/Logger.h"
 
 #import <Foundation/Foundation.h>
-
 #import <StoreKit/StoreKit.h>
 
 ////////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AppleReviewService, Mengine::AppleReviewService );
+SERVICE_FACTORY( AppleStoreReviewService, Mengine::AppleStoreReviewService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleReviewService::AppleReviewService()
+    AppleStoreReviewService::AppleStoreReviewService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleReviewService::~AppleReviewService()
+    AppleStoreReviewService::~AppleStoreReviewService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleReviewService::launchTheInAppReview()
+    void AppleStoreReviewService::launchTheInAppReview()
     {
         if (@available(iOS 14.0, *)) {
             UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
@@ -32,12 +31,12 @@ namespace Mengine
         }
     }
     /////////////////////////////////////////////////////////////////////////////
-    bool AppleReviewService::_initializeService()
+    bool AppleStoreReviewService::_initializeService()
     {
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    void AppleReviewService::_finalizeService()
+    void AppleStoreReviewService::_finalizeService()
     {
     }
     //////////////////////////////////////////////////////////////////////////

@@ -71,7 +71,7 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onFacebookError([NSString stringWithFormat:@"%@", error].UTF8String);
+                    m_provider->onFacebookError(-2, [NSString stringWithFormat:@"%@", error].UTF8String);
                 }
                 
                 return;
@@ -101,7 +101,7 @@ namespace Mengine
                 }
                 else
                 {
-                    m_provider->onFacebookError( "token == null" );
+                    m_provider->onFacebookError(-1, "token == null" );
                 }
             }
         }];
@@ -136,7 +136,7 @@ namespace Mengine
         {
             if( m_provider != nullptr )
             {
-                m_provider->onFacebookShareError( "empty data" );
+                m_provider->onFacebookShareError( -1, "empty data" );
             }
 
             return;
@@ -172,7 +172,7 @@ namespace Mengine
 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onFacebookShareError( "error picture to NSURL" );
+                    m_provider->onFacebookShareError( -2, "error picture to NSURL" );
                 }
 
                 return;
@@ -186,7 +186,7 @@ namespace Mengine
 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onFacebookShareError( "empty NSURL to NSData" );
+                    m_provider->onFacebookShareError( -3, "empty NSURL to NSData" );
                 }
 
                 return;
@@ -200,7 +200,7 @@ namespace Mengine
 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onFacebookShareError( "empty NSData to UIImage" );
+                    m_provider->onFacebookShareError( -4, "empty NSData to UIImage" );
                 }
                 
                 return;
@@ -244,7 +244,10 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onFacebookError([NSString stringWithFormat:@"%@", error].UTF8String);
+                    NSInteger error_code = error.code;
+                    const Char * error_message = error.localizedDescription.UTF8String;
+                    
+                    m_provider->onFacebookError((int32_t)error_code, error_message);
                 }
             }
             

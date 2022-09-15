@@ -1,5 +1,7 @@
 #import "AppleAppLovinRewardedAmazonLoader.h"
 
+#import <DTBiOSSDK/DTBAdLoader.h>
+
 @implementation AppleAppLovinRewardedAmazonLoader
 
 - (instancetype _Nonnull) initWithSlotId:(NSString * _Nonnull) amazonAdSlotId rewardedAd:(MARewardedAd *_Nonnull) rewardedAd {
@@ -23,12 +25,12 @@
 
 #pragma mark - DTBAdCallback Protocol
 
-- (void)onFailure:(DTBAdError) error dtbAdErrorInfo:(DTBAdErrorInfo *) errorInfo {
+- (void) onFailure:(DTBAdError) error dtbAdErrorInfo:(DTBAdErrorInfo *) errorInfo {
     [self.m_rewardedAd setLocalExtraParameterForKey: @"amazon_ad_error" value: errorInfo];
     [self.m_rewardedAd loadAd];
 }
 
-- (void)onSuccess:(DTBAdResponse *) adResponse {
+- (void) onSuccess:(DTBAdResponse *) adResponse {
     [self.m_rewardedAd setLocalExtraParameterForKey: @"amazon_ad_response" value: adResponse];
     [self.m_rewardedAd loadAd];
 }

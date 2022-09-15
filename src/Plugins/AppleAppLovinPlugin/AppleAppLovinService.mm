@@ -17,6 +17,9 @@ namespace Mengine
         : m_banner( nil )
         , m_interstitial( nil )
         , m_rewarded( nil )
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+        , m_amazonService( nil )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////

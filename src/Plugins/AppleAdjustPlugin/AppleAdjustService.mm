@@ -20,8 +20,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAdjustService::_initializeService()
     {
-        const Char * AppleAdjustPlugin_AppToken = CONFIG_VALUE( "AppleAdjustPlugin", "AppToken", "" );
-        double AppleAdjustPlugin_DelayStart = CONFIG_VALUE( "AppleAdjustPlugin", "StartDelay", 0.0 );
+        const Char * AppleAdjustPlugin_AppToken = CONFIG_VALUE( "AdjustPlugin", "AppToken", "" );
+        double AppleAdjustPlugin_DelayStart = CONFIG_VALUE( "AdjustPlugin", "StartDelay", 0.0 );
         
         LOGGER_INFO("adjust", "App Token '%s'"
             , AppleAdjustPlugin_AppToken

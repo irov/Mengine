@@ -39,7 +39,7 @@ namespace Mengine
             return false;
         }
 
-        bool AppleFacebookPlugin_Available = CONFIG_VALUE( "AppleFacebookPlugin", "Available", true );
+        bool AppleFacebookPlugin_Available = CONFIG_VALUE( "FacebookPlugin", "Available", true );
 
         if( AppleFacebookPlugin_Available == false )
         {

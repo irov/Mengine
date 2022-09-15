@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Environment/Android/AndroidIncluder.h"
+#include <Config/Char.h>
 
 #include "Config/Char.h"
 

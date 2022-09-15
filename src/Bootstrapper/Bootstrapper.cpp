@@ -330,8 +330,12 @@ PLUGIN_EXPORT( AppleFirebaseCrashlytics );
 PLUGIN_EXPORT( AppleFacebookPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_APPLE_REVIEW_STATIC
-PLUGIN_EXPORT( AppleReviewPlugin );
+#ifdef MENGINE_PLUGIN_APPLE_HELPSHIFT_STATIC
+PLUGIN_EXPORT( AppleHelpshiftPlugin );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_STOREREVIEW_STATIC
+PLUGIN_EXPORT( AppleStoreReviewPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
@@ -1169,8 +1173,12 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AppleFacebookPlugin, "Plugin Apple Facebook...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#ifdef MENGINE_PLUGIN_APPLE_REVIEW_STATIC
-        MENGINE_ADD_PLUGIN( AppleReviewPlugin, "Plugin Apple Review...", MENGINE_DOCUMENT_FACTORABLE );
+#ifdef MENGINE_PLUGIN_APPLE_HELPSHIFT_STATIC
+        MENGINE_ADD_PLUGIN( AppleHelpshiftPlugin, "Plugin Apple Helpshift...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_STOREREVIEW_STATIC
+        MENGINE_ADD_PLUGIN( AppleStoreReviewPlugin, "Plugin Apple Store Review...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC

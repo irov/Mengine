@@ -30,8 +30,11 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::_finalizeService()
     {
-        [m_delegate release];
-        m_delegate = nil;
+        if( m_delegate != nil )
+        {
+            [m_delegate release];
+            m_delegate = nil;
+        }
     }
     //////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::setProvider( const AppleMARSDKProviderInterfacePtr & _provider )

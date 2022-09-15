@@ -94,18 +94,25 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool MacOSSetDesktopWallpaper( const char * _url )
-        { 
-	        NSURL * url = [NSURL fileURLWithPath:@(_url)];
+        bool MacOSSetDesktopWallpaper( const char * _path )
+        {
+            NSString* urlString = [NSString stringWithUTF8String:_path];
+            
+            if( urlString == nil )
+            {
+                return false;
+            }
+            
+	        NSURL * url = [NSURL fileURLWithPath:urlString];
 
-            NSScreen * currentScreen = [NSScreen mainScreen];
+            NSScreen * mainScreen = [NSScreen mainScreen];
     
-            if( currentScreen == nil )
+            if( mainScreen == nil )
             {
                 return false;
             }
     	
-            NSDictionary * screenOptions = [[NSWorkspace sharedWorkspace] desktopImageOptionsForScreen:currentScreen];
+            NSDictionary * screenOptions = [[NSWorkspace sharedWorkspace] desktopImageOptionsForScreen:mainScreen];
     
             if( screenOptions == nil )
             {
@@ -114,12 +121,12 @@ namespace Mengine
 
             NSError *error = nil;
             if( [[NSWorkspace sharedWorkspace] setDesktopImageURL:url
-                                                        forScreen:currentScreen
+                                                        forScreen:mainScreen
                                                           options:screenOptions
                                                             error:&error] == FALSE )
             {
                 LOGGER_ERROR("invalid set desktop image url '%s' error '%s'"
-                    , _url
+                    , _path
                     , Helper::AppleGetMessageFromNSError(error).c_str()
                 );
                 

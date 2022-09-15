@@ -24,11 +24,13 @@
     if([eventName isEqualToString:HelpshiftEventNameSessionStarted]) {
         LOGGER_MESSAGE("Helpshift session started.");
         
-        provider->sessionStarted();
+        self.m_service->getProvider()->sessionStarted();
+        return;
     } else if([eventName isEqualToString:HelpshiftEventNameSessionEnded]) {
         LOGGER_MESSAGE("Helpshift session ended.");
         
         provider->sessionEnded();
+        return;
     } else if([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount]) {
         int count = [data[HelpshiftEventDataUnreadMessageCount] intValue];
         int countInCache = [data[HelpshiftEventDataUnreadMessageCountIsFromCache] intValue];
@@ -39,13 +41,14 @@
     } else if([eventName isEqualToString:HelpshiftEventNameConversationStatus]) {
         const char * issueId = [self convertToChar:[data objectForKey:HelpshiftEventDataLatestIssueId]];
         const char * publishId = [self convertToChar:[data objectForKey:HelpshiftEventDataLatestIssuePublishId]];
-        bool issueOpen =[data[HelpshiftEventDataIsIssueOpen] boolValue];
+        bool issueOpen = [data[HelpshiftEventDataIsIssueOpen] boolValue];
                 
         LOGGER_MESSAGE("Issue ID: %s, Publish ID: %s, Is issue open: %d", issueId, publishId, issueOpen );
         
-        provider->conversationStatus(issueId, publishId, issueOpen);
+        self.m_service->getProvider()->conversationStatus(issueId, publishId, issueOpen);
+        return;
     } else if([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
-        bool visible = [self convertToChar:[data objectForKey:HelpshiftEventDataVisible]];
+        bool visible = [data[HelpshiftEventDataVisible] boolValue];
         
         LOGGER_MESSAGE("Is chat screen visible: %d", visible);
         
@@ -56,13 +59,17 @@
         
         LOGGER_MESSAGE("New message added with body: %s, with type: %s", body, type );
         
-        provider->eventMessageAdd(body, type);
+        provider->eventMessageAdd( body, type );
+        return;
     } else if([eventName isEqualToString:HelpshiftEventNameConversationStart]) {
         const char * text = [self convertToChar:[data objectForKey:HelpshiftEventDataMessage]];
         LOGGER_MESSAGE("Conversation started with text: %s", text);
         
-        provider->converstationStart(text);
-    } else if([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
+        self.m_service->getProvider()->converstationStart(text);
+        return;
+    }
+    
+    if([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
         const char * rating = [self convertToChar:[data objectForKey:HelpshiftEventDataRating]];
         const char * feedback = [self convertToChar:[data objectForKey:HelpshiftEventDataAdditionalFeedback]];
         
@@ -73,18 +80,22 @@
         LOGGER_MESSAGE("Conversation ended.");
         
         provider->converstationEnded();
+        return;
     } else if([eventName isEqualToString:HelpshiftEventNameConversationRejected]) {
         LOGGER_MESSAGE("Conversation rejected.");
         
-        self.m_service->getProvider()->converstationRejected();
+        provider->converstationRejected();
+        return;
     } else if([eventName isEqualToString:HelpshiftEventNameConversationResolved]) {
         LOGGER_MESSAGE("Conversation resolved.");
         
-        provider->converstationResolved();
+        self.m_service->getProvider()->converstationResolved();
+        return;
     } else if([eventName isEqualToString:HelpshiftEventNameConversationReopened]) {
         LOGGER_MESSAGE("Conversation reopened.");
         
-        provider->converstationReopen();
+        self.m_service->getProvider()->converstationReopen();
+        return;
     }
 }
 
@@ -104,6 +115,9 @@
             provider->authenticationTokenNotProvided();
             break;
         default:
+            LOGGER_MESSAGE("Helpshift authentication Failed - UNKNOWN");
+            
+            provider->authenticationUnknownError();
             break;
     }
 }

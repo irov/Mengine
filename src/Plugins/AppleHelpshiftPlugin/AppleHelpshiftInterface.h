@@ -27,6 +27,7 @@ namespace Mengine
         
         virtual void authenticationInvalidAuthToken() = 0;
         virtual void authenticationTokenNotProvided() = 0;
+        virtual void authenticationUnknownError() = 0;
     
     };
     //////////////////////////////////////////////////////////////////////////

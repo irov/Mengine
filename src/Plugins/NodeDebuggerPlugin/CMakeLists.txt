@@ -11,8 +11,8 @@ ADD_FILTER(
 
     NodeDebuggerSerialization.h
     
-    cURLRequestListener.h
-    cURLRequestListener.cpp
+    NodeDebuggerNetworkLogger.h
+    NodeDebuggerNetworkLogger.cpp
     
     SceneDataProviderInterface.h
 )

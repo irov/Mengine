@@ -106,12 +106,12 @@ namespace Mengine
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
 
-        cURLRequestListenerPtr logger = Helper::makeFactorableUnique<cURLRequestListener>( MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ASSERTION_FATAL( logger != nullptr );
+        NodeDebuggerNetworkLoggerPtr networkLogger = Helper::makeFactorableUnique<NodeDebuggerNetworkLogger>( MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ASSERTION_FATAL( networkLogger != nullptr );
 
-        logger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ) );
+        networkLogger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ) );
 
-        m_networkLogger = logger;
+        m_networkLogger = networkLogger;
 
         if( SERVICE_EXIST( cURLServiceInterface ) == true )
         {
@@ -1650,17 +1650,14 @@ namespace Mengine
 
         pugi::xml_node network_xml_objects = payloadNode.append_child( "Objects" );
 
-        VectorRequestData data;
-        m_networkLogger->getPreparedData( &data );
-
-        for( const RequestData & request : data )
+        m_networkLogger->foreachData( [&network_xml_objects]( const RequestData & _data )
         {
             pugi::xml_node xml_object = network_xml_objects.append_child( "Object" );
 
-            xml_object.append_attribute( "Type" ).set_value( request.type.c_str() );
-            xml_object.append_attribute( "Id" ).set_value( request.id );
-            xml_object.append_attribute( "Url" ).set_value( request.url.c_str() );
-        }
+            xml_object.append_attribute( "Type" ).set_value( _data.type.c_str() );
+            xml_object.append_attribute( "Id" ).set_value( _data.id );
+            xml_object.append_attribute( "Url" ).set_value( _data.url.c_str() );
+        } );
 
         NodeDebuggerPacket packet;
 

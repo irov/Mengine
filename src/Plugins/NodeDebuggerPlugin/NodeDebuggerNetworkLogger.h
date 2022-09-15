@@ -4,43 +4,49 @@
 
 #include "SceneDataProviderInterface.h"
 
+#include "Kernel/List.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     struct RequestData
     {
-        String type;
+        ConstString type;
         HttpRequestID id;
         String url;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<RequestData> VectorRequestData;
-    //////////////////////////////////////////////////////////////////////////
-    class cURLRequestListener
+    class NodeDebuggerNetworkLogger
         : public Factorable
         , public cURLRequestListenerInterface
     {
-        DECLARE_FACTORABLE( cURLRequestListener );
+        DECLARE_FACTORABLE( NodeDebuggerNetworkLogger );
 
     public:
-        cURLRequestListener();
-        ~cURLRequestListener() override;
+        NodeDebuggerNetworkLogger();
+        ~NodeDebuggerNetworkLogger() override;
 
     public:
         void setSceneDataProvider( const SceneDataProviderInterfacePtr & _sceneDataProvider );
 
     public:
-        void getPreparedData( VectorRequestData * _outData );
+        typedef Lambda<void( const RequestData & data )> LambdaNetworkData;
+        void foreachData( const LambdaNetworkData & _lambda );
 
     protected:
         void request( HttpRequestID _id, const String & _url ) override;
         void response( HttpRequestID _id, const String & _url ) override;
 
     protected:
-        VectorRequestData m_data;
+        void clearDatas_();
+
+    protected:
         SceneDataProviderInterfacePtr m_sceneDataProvider;
+
+        typedef List<RequestData> ListRequestDatas;
+        ListRequestDatas m_requestDatas;        
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLRequestListener> cURLRequestListenerPtr;
+    typedef IntrusivePtr<NodeDebuggerNetworkLogger> NodeDebuggerNetworkLoggerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

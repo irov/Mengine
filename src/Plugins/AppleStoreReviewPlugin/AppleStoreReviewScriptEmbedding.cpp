@@ -21,17 +21,17 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleStoreReview_launchTheInAppReview()
         {
-            APPLE_REVIEW_SERVICE()
+            APPLE_STOREREVIEW_SERVICE()
                 ->launchTheInAppReview();
         }
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreReviewScriptEmbedding::AppleReviewScriptEmbedding()
+    AppleStoreReviewScriptEmbedding::AppleStoreReviewScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreReviewScriptEmbedding::~AppleReviewScriptEmbedding()
+    AppleStoreReviewScriptEmbedding::~AppleStoreReviewScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////

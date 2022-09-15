@@ -46,7 +46,7 @@
         
         const char * issueId = [self convertToChar:[data objectForKey:HelpshiftEventDataLatestIssueId]];
         const char * publishId = [self convertToChar:[data objectForKey:HelpshiftEventDataLatestIssuePublishId]];
-        bool issueOpen =[data[HelpshiftEventDataIsIssueOpen] boolValue];
+        bool issueOpen = [data[HelpshiftEventDataIsIssueOpen] boolValue];
                 
         LOGGER_MESSAGE("Issue ID: %s, Publish ID: %s, Is issue open: %d", issueId, publishId, issueOpen );
         
@@ -55,7 +55,7 @@
     }
     
     if([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
-        bool visible = [self convertToChar:[data objectForKey:HelpshiftEventDataVisible]];
+        bool visible = [data[HelpshiftEventDataVisible] boolValue];
         
         LOGGER_MESSAGE("Is chat screen visible: %d", visible);
         

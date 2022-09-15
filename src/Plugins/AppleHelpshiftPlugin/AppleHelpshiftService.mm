@@ -108,4 +108,14 @@ namespace Mengine
         [Helpshift setLanguage:language];
     }
     //////////////////////////////////////////////////////////////////////////
+    void AppleHelpshiftService::setProvider( const AppleHelpshiftProviderInterfacePtr &   _provider )
+    {
+        m_provider = _provider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AppleHelpshiftProviderInterfacePtr & AppleHelpshiftService::getProvider() const
+    {
+        return m_provider;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

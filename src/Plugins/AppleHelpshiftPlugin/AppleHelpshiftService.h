@@ -18,6 +18,10 @@ namespace Mengine
         AppleHelpshiftService();
         ~AppleHelpshiftService() override;
 
+    public:
+        virtual void setProvider( const AppleHelpshiftProviderInterfacePtr & _provider ) override;
+        virtual const AppleHelpshiftProviderInterfacePtr & getProvider() const override;
+        
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
@@ -29,7 +33,8 @@ namespace Mengine
         void showSingleFAQ( const Char * _faqId ) override;
         void setLanguage( const Char * _language ) override;
         
-    private:
+    protected:
+        AppleHelpshiftProviderInterfacePtr m_provider;
         AppleHelpshiftDelegate * m_delegate;
     };
 }

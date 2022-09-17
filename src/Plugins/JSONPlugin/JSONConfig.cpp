@@ -248,9 +248,10 @@ namespace Mengine
 
         jpp::object j = Helper::loadJSONStreamFromBuffer( memory_buffer, size, _doc );
 
-        MENGINE_ASSERTION_JSON_INVALID( j, "invalid load JSON from stream '%s'"
-            , Helper::getInputStreamDebugFilePath( _stream ).c_str()
-        );
+        if( j.invalid() == true )
+        {
+            return false;
+        }
 
         m_json = j;
 

@@ -40,8 +40,6 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             static void SHA1_Transform( uint32_t state[5], const uint8_t buffer[64] )
             {
-                uint32_t a, b, c, d, e;
-
                 typedef union
                 {
                     uint8_t c[64];
@@ -52,11 +50,11 @@ namespace Mengine
 
                 block = (CHAR64LONG16 *)buffer;
 
-                a = state[0];
-                b = state[1];
-                c = state[2];
-                d = state[3];
-                e = state[4];
+                uint32_t a = state[0];
+                uint32_t b = state[1];
+                uint32_t c = state[2];
+                uint32_t d = state[3];
+                uint32_t e = state[4];
 
                 SHA1_R0( a, b, c, d, e, 0 ); SHA1_R0( e, a, b, c, d, 1 ); SHA1_R0( d, e, a, b, c, 2 ); SHA1_R0( c, d, e, a, b, 3 );
                 SHA1_R0( b, c, d, e, a, 4 ); SHA1_R0( a, b, c, d, e, 5 ); SHA1_R0( e, a, b, c, d, 6 ); SHA1_R0( d, e, a, b, c, 7 );

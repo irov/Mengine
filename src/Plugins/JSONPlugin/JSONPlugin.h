@@ -8,7 +8,7 @@ namespace Mengine
         : public PluginBase
     {
     public:
-        PLUGIN_DECLARE( "JSONPlugin" )
+        PLUGIN_DECLARE( "JSON" )
 
     public:
         JSONPlugin();

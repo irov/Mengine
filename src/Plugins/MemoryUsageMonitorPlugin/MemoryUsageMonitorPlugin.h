@@ -9,7 +9,7 @@ namespace Mengine
     class MemoryUsageMonitorPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "MemoryUsageMonitorPlugin" )
+        PLUGIN_DECLARE( "MemoryUsageMonitor" )
 
     public:
         MemoryUsageMonitorPlugin();

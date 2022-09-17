@@ -167,6 +167,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         MENGINE_ASSERTION_MEMORY_PANIC( _task, "thread [%s] add null task (doc: %s)"
             , _threadName.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

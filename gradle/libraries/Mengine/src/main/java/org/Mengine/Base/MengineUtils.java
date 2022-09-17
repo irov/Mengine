@@ -14,9 +14,9 @@ public class MengineUtils {
         try {
             Class<?> clazz = cl.loadClass(name);
             Constructor<?> ctr = clazz.getConstructor();
-            T mediation = (T) ctr.newInstance(new Object[]{});
+            T ob = (T)ctr.newInstance();
 
-            return mediation;
+            return ob;
         } catch (ClassNotFoundException ex) {
             if (exist == true) {
                 Log.e(TAG, "invalid create new instance: " + name + " ClassNotFoundException: " + ex.toString());

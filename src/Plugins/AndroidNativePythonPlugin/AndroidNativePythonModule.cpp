@@ -19,36 +19,35 @@
 //////////////////////////////////////////////////////////////////////////
 static Mengine::AndroidNativePythonModule * s_androidNativePythonModule = nullptr;
 //////////////////////////////////////////////////////////////////////////
-extern "C" {
+extern "C"
+{
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jstring _args)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jobjectArray _args)
     {
         const Mengine::Char * plugin_str = env->GetStringUTFChars( _plugin, nullptr );
         const Mengine::Char * method_str = env->GetStringUTFChars( _method, nullptr );
-        const Mengine::Char * args_str = env->GetStringUTFChars( _args, nullptr );
 
         Mengine::String plugin = plugin_str;
         Mengine::String method = method_str;
-        Mengine::String args = args_str;
 
         env->ReleaseStringUTFChars( _plugin, plugin_str );
         env->ReleaseStringUTFChars( _method, method_str );
-        env->ReleaseStringUTFChars( _args, args_str );
 
         if( s_androidNativePythonModule == nullptr )
         {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android call plugin '%s' method '%s' with args '%s'"
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android call plugin '%s' method '%s'"
                 , plugin.c_str()
                 , method.c_str()
-                , args.c_str()
             );
 
             return;
         }
 
-        s_androidNativePythonModule->addCommand( [plugin, method, _id, args]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
+        jobjectArray new_args = (jobjectArray)env->NewGlobalRef( _args );
+
+        s_androidNativePythonModule->addCommand( [plugin, method, _id, new_args]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
         {
-            _handler->pythonMethod( plugin, method, _id, args );
+            _handler->pythonMethod( plugin, method, _id, new_args );
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -183,17 +182,134 @@ namespace Mengine
         m_eventation->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args )
+    PyObject * AndroidNativePythonModule::getPythonAttribute( jobject obj )
+    {
+        static jclass classBoolean = m_jenv->FindClass("java/lang/Boolean");
+        static jclass classCharacter = m_jenv->FindClass("java/lang/Character");
+        static jclass classInteger = m_jenv->FindClass("java/lang/Integer");
+        static jclass classLong = m_jenv->FindClass("java/lang/Long");
+        static jclass classFloat = m_jenv->FindClass("java/lang/Float");
+        static jclass classDouble = m_jenv->FindClass("java/lang/Double");
+        static jclass classString = m_jenv->FindClass("java/lang/String");
+        static jclass classArrayList = m_jenv->FindClass("java/util/ArrayList");
+
+        PyObject * py_value = nullptr;
+
+        if( obj == nullptr )
+        {
+            py_value = m_kernel->ret_none();
+        }
+        else if( m_jenv->IsInstanceOf( obj, classBoolean ) == JNI_TRUE )
+        {
+            static jmethodID methodValue = m_jenv->GetMethodID( classBoolean, "booleanValue", "()Z" );
+            jboolean value = m_jenv->CallBooleanMethod( obj, methodValue );
+
+            py_value = m_kernel->ret_bool( value );
+        }
+        else if( m_jenv->IsInstanceOf( obj, classCharacter ) == JNI_TRUE )
+        {
+            static jmethodID methodValue = m_jenv->GetMethodID( classCharacter, "charValue", "()C" );
+            jchar value = m_jenv->CallCharMethod( obj, methodValue );
+
+            Char value_str[2] = {(Char)value, '\0'};
+            py_value = m_kernel->string_from_char_size( value_str, 1 );
+        }
+        else if( m_jenv->IsInstanceOf( obj, classInteger ) == JNI_TRUE )
+        {
+            static jmethodID methodValue = m_jenv->GetMethodID( classInteger, "intValue", "()I" );
+            jint value = m_jenv->CallIntMethod( obj, methodValue );
+
+            py_value = m_kernel->ptr_int32( value );
+        }
+        else if( m_jenv->IsInstanceOf( obj, classLong ) == JNI_TRUE )
+        {
+            static jmethodID methodValue = m_jenv->GetMethodID( classLong, "longValue", "()J" );
+            jlong value = m_jenv->CallLongMethod( obj, methodValue );
+
+            py_value = m_kernel->ptr_int64( value );
+        }
+        else if( m_jenv->IsInstanceOf( obj, classFloat ) == JNI_TRUE )
+        {
+            static jmethodID methodValue = m_jenv->GetMethodID( classFloat, "floatValue", "()F" );
+            jfloat value = m_jenv->CallFloatMethod( obj, methodValue );
+
+            py_value = m_kernel->ptr_float( value );
+        }
+        else if( m_jenv->IsInstanceOf( obj, classDouble ) == JNI_TRUE )
+        {
+            static jmethodID methodValue = m_jenv->GetMethodID( classDouble, "doubleValue", "()D" );
+            jfloat value = m_jenv->CallDoubleMethod( obj, methodValue );
+
+            py_value = m_kernel->ptr_float( value );
+        }
+        else if( m_jenv->IsInstanceOf( obj, classString ) == JNI_TRUE )
+        {
+            const Char * obj_str = m_jenv->GetStringUTFChars( (jstring)obj, NULL);
+
+            py_value = m_kernel->string_from_char( obj_str );
+
+            m_jenv->ReleaseStringUTFChars( (jstring)obj, obj_str );
+        }
+        else if( m_jenv->IsInstanceOf( obj, classArrayList ) == JNI_TRUE )
+        {
+            static jfieldID fieldElementData = m_jenv->GetFieldID( classArrayList, "elementData", "[Ljava/lang/Object;" );
+            jobjectArray list_elementData = (jobjectArray)m_jenv->GetObjectField( obj, fieldElementData );
+
+            jsize list_size = m_jenv->GetArrayLength( list_elementData );
+
+            PyObject * py_list = m_kernel->tuple_new( list_size );
+
+            for( jsize index = 0; index != list_size; ++index )
+            {
+                jobject list_obj = m_jenv->GetObjectArrayElement( list_elementData, index );
+
+                PyObject * py_obj = this->getPythonAttribute( list_obj );
+
+                if( py_obj == nullptr )
+                {
+                    return nullptr;
+                }
+
+                m_kernel->tuple_setitem( py_list, index, py_obj );
+            }
+
+            py_value = py_list;
+        }
+        else
+        {
+            jclass cls_obj = m_jenv->GetObjectClass( obj );
+
+            jmethodID mid_getClass = m_jenv->GetMethodID( cls_obj, "getClass", "()Ljava/lang/Class;" );
+            jobject obj_class = m_jenv->CallObjectMethod( obj, mid_getClass );
+
+            jclass cls_class = m_jenv->GetObjectClass( obj_class );
+
+            jmethodID mid_getName = m_jenv->GetMethodID( cls_class, "getName", "()Ljava/lang/String;" );
+
+            jstring obj_class_name = (jstring)m_jenv->CallObjectMethod( obj_class, mid_getName );
+
+            const Char * obj_class_name_str = m_jenv->GetStringUTFChars( obj_class_name, NULL);
+
+            LOGGER_ERROR( "unsuported java argument type '%s'"
+                , obj_class_name_str
+            );
+
+            m_jenv->ReleaseStringUTFChars( obj_class_name, obj_class_name_str );
+        }
+
+        return py_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args )
     {
         m_eventation->invoke();
 
         ConstString plugin_c = Helper::stringizeString( _plugin );
         ConstString method_c = Helper::stringizeString( _method );
 
-        LOGGER_INFO( "android", "call python plugin '%s' method '%s' args '%s' [%s]"
+        LOGGER_INFO( "android", "call python plugin '%s' method '%s' [%s]"
             , _plugin.c_str()
             , _method.c_str()
-            , _args.c_str()
             , (m_callbacks.find( Helper::makePair( plugin_c, method_c ) ) != m_callbacks.end() ? "Found" : "NOT-FOUND")
         );
 
@@ -201,19 +317,38 @@ namespace Mengine
 
         if( it_found == m_callbacks.end() )
         {
+            m_jenv->DeleteGlobalRef( _args );
+
             return;
         }
 
-        const Char * args_str = _args.c_str();
+        jsize args_size = m_jenv->GetArrayLength( _args );
 
-        PyObject * py_args = m_kernel->eval_string( args_str, m_globals.ptr(), nullptr );
+        PyObject * py_args = m_kernel->tuple_new( args_size );
 
-        MENGINE_ASSERTION_FATAL( py_args != nullptr, "android plugin '%s' method '%s' id [%d] invalid eval args: %s"
-            , _plugin.c_str()
-            , _method.c_str()
-            , _id
-            , _args.c_str()
-        );
+        for( jsize index = 0; index != args_size; ++index )
+        {
+            jobject obj = m_jenv->GetObjectArrayElement( _args, index );
+
+            PyObject * py_arg = this->getPythonAttribute( obj );
+
+            if( py_arg == nullptr )
+            {
+                MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' id '%d' invalid arg"
+                    , _plugin.c_str()
+                    , _method.c_str()
+                    , _id
+                );
+
+                m_jenv->DeleteGlobalRef( _args );
+
+                return;
+            }
+
+            m_kernel->tuple_setitem( py_args, index, py_arg );
+        }
+
+        m_jenv->DeleteGlobalRef( _args );
 
         const pybind::object & cb = it_found->second;
 

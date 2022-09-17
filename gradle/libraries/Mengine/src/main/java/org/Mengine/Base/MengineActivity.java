@@ -54,7 +54,7 @@ public class MengineActivity extends SDLActivity {
     private static native boolean AndroidNativeMengine_hasOption(String option);
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, int responseId, String args);
+    private static native void AndroidNativePython_call(String plugin, String method, int responseId, Object args[]);
 
     public MengineActivity() {
         m_openFiles = new HashMap<Integer, InputStream>();
@@ -348,76 +348,12 @@ public class MengineActivity extends SDLActivity {
         py_args.append("\"");
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private void pythonCallBuildArg(StringBuilder py_args, Object a) {
-        if (a == null) {
-            py_args.append("None");
-        } else if (a instanceof Boolean) {
-            Boolean s = (Boolean) a;
-
-            if(s == true) {
-                py_args.append("True");
-            } else {
-                py_args.append("False");
-            }
-        } else if(a instanceof String) {
-            String s = (String)a;
-
-            this.appendBuildArgsString(py_args, s);
-        } else if(a instanceof String[]) {
-            String[] stringArray = (String[])a;
-
-            py_args.append("[");
-
-            for(String s : stringArray) {
-                this.appendBuildArgsString(py_args, s);
-
-                py_args.append(",");
-            }
-
-            py_args.append("]");
-        } else if(a instanceof ArrayList<?>) {
-            ArrayList<?> unknowArray = (ArrayList<?>)a;
-
-            py_args.append("[");
-
-            for(Object o : unknowArray) {
-                this.pythonCallBuildArg(py_args, o);
-
-                py_args.append(",");
-            }
-
-            py_args.append("]");
-        } else {
-            py_args.append(a);
-        }
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    private String pythonCallBuildArgs(Object ... args) {
-        StringBuilder py_args = new StringBuilder();
-
-        py_args.append("(");
-
-        for(int i = 0; i != args.length; ++i) {
-            Object a = args[i];
-
-            this.pythonCallBuildArg(py_args, a);
-
-            py_args.append(",");
-        }
-
-        py_args.append(")");
-
-        String py_args_str = py_args.toString();
-
-        return py_args_str;
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonCall(String plugin, String method, Object ... args) {
-        String py_args_str = this.pythonCallBuildArgs(args);
+        if (BuildConfig.DEBUG) {
+            MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] args [" + args + "]");
+        }
 
-        MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] args [" + py_args_str + "]");
-
-        AndroidNativePython_call(plugin, method, 0, py_args_str);
+        AndroidNativePython_call(plugin, method, 0, args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonCallCb(String plugin, String method, MenginePlugin.CallbackInterface cb, Object ... args) {
@@ -431,11 +367,9 @@ public class MengineActivity extends SDLActivity {
 
         m_callbackResponses.add(cr);
 
-        String py_args_str = this.pythonCallBuildArgs(args);
+        MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] response [" + id + "] args [" + args + "]");
 
-        MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] response [" + id + "] args [" + py_args_str + "]");
-
-        AndroidNativePython_call(plugin, method, id, py_args_str);
+        AndroidNativePython_call(plugin, method, id, args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void responseCall(int id, Object result) {

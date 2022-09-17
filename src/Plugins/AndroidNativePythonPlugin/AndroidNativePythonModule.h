@@ -16,7 +16,8 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args ) = 0;
+        virtual void pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args ) = 0;
+
         virtual void addPlugin( const String & _name, const jobject & _plugin ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -47,8 +48,11 @@ namespace Mengine
     public:
         void addCommand( const LambdaPythonEventHandler & _command );
 
+    protected:
+        PyObject * getPythonAttribute( jobject obj );
+
     public:
-        void pythonMethod( const String & _plugin, const String & _method, int32_t _id, const String & _args ) override;
+        void pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args ) override;
         void addPlugin( const String & _name, const jobject & _plugin ) override;
 
     public:

@@ -117,7 +117,6 @@ namespace Mengine
 
         SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
@@ -127,6 +126,7 @@ namespace Mengine
         SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( SecureService, MENGINE_DOCUMENT_FUNCTION );
 
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
@@ -215,9 +215,9 @@ int main( int argc, char * argv[] )
     void * memoryBuffer = memory->getBuffer();
     size_t memorySize = memory->getSize();
 
-    Mengine::Char utf8_secure[1024];
+    Mengine::Char utf8_secure[2048];
     size_t utf8_secure_len;
-    Mengine::Helper::unicodeToUtf8( secure, utf8_secure, 1024, &utf8_secure_len );
+    Mengine::Helper::unicodeToUtf8( secure, utf8_secure, 2048, &utf8_secure_len );
 
     uint64_t sequreHash;
     Mengine::Helper::makeSHA1u64( utf8_secure, utf8_secure_len, &sequreHash );

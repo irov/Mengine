@@ -8,6 +8,7 @@ import com.helpshift.HelpshiftAuthenticationFailureReason;
 import com.helpshift.HelpshiftEvent;
 import com.helpshift.HelpshiftEventsListener;
 import com.helpshift.UnsupportedOSVersionException;
+import com.helpshift.HelpshiftInstallException;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
@@ -92,6 +93,14 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             Helpshift.install(application, HelpshiftPlugin_PlatformId, HelpshiftPlugin_Domain, config);
         } catch (UnsupportedOSVersionException e) {
             this.logError("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
+
+            return;
+        } catch (HelpshiftInstallException e) {
+            this.logError("Install exception: %s"
+                , e.toString()
+            );
+
+            return;
         }
 
         Helpshift.setHelpshiftEventsListener(this);

@@ -83,6 +83,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidNativePythonModule::AndroidNativePythonModule()
         : m_jenv( nullptr )
+        , m_jclass_Object( nullptr )
+        , m_jclass_Boolean( nullptr )
+        , m_jclass_Character( nullptr )
+        , m_jclass_Integer( nullptr )
+        , m_jclass_Long( nullptr )
+        , m_jclass_Float( nullptr )
+        , m_jclass_Double( nullptr )
+        , m_jclass_String( nullptr )
+        , m_jclass_ArrayList( nullptr )
         , m_kernel( nullptr )
     {
     }
@@ -133,6 +142,12 @@ namespace Mengine
         jobject jActivity = extension->getJObjectActivity();
 
         m_jclass_Object = m_jenv->FindClass( "java/lang/Object" );
+        m_jclass_Boolean = m_jenv->FindClass( "java/lang/Boolean" );
+        m_jclass_Character = m_jenv->FindClass( "java/lang/Character" );
+        m_jclass_Integer = m_jenv->FindClass( "java/lang/Integer" );
+        m_jclass_Long = m_jenv->FindClass( "java/lang/Long" );
+        m_jclass_Float = m_jenv->FindClass( "java/lang/Float" );
+        m_jclass_Double = m_jenv->FindClass( "java/lang/Double" );
         m_jclass_String = m_jenv->FindClass( "java/lang/String" );
         m_jclass_ArrayList = m_jenv->FindClass( "java/util/ArrayList" );
 
@@ -184,65 +199,74 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * AndroidNativePythonModule::getPythonAttribute( jobject obj )
     {
-        static jclass classBoolean = m_jenv->FindClass("java/lang/Boolean");
-        static jclass classCharacter = m_jenv->FindClass("java/lang/Character");
-        static jclass classInteger = m_jenv->FindClass("java/lang/Integer");
-        static jclass classLong = m_jenv->FindClass("java/lang/Long");
-        static jclass classFloat = m_jenv->FindClass("java/lang/Float");
-        static jclass classDouble = m_jenv->FindClass("java/lang/Double");
-        static jclass classString = m_jenv->FindClass("java/lang/String");
-        static jclass classArrayList = m_jenv->FindClass("java/util/ArrayList");
-
         PyObject * py_value = nullptr;
 
         if( obj == nullptr )
         {
             py_value = m_kernel->ret_none();
         }
-        else if( m_jenv->IsInstanceOf( obj, classBoolean ) == JNI_TRUE )
+        else if( m_jenv->IsInstanceOf( obj, m_jclass_Boolean ) == JNI_TRUE )
         {
-            static jmethodID methodValue = m_jenv->GetMethodID( classBoolean, "booleanValue", "()Z" );
+            static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Boolean, "booleanValue", "()Z" );
+
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+
             jboolean value = m_jenv->CallBooleanMethod( obj, methodValue );
 
             py_value = m_kernel->ret_bool( value );
         }
-        else if( m_jenv->IsInstanceOf( obj, classCharacter ) == JNI_TRUE )
+        else if( m_jenv->IsInstanceOf( obj, m_jclass_Character ) == JNI_TRUE )
         {
-            static jmethodID methodValue = m_jenv->GetMethodID( classCharacter, "charValue", "()C" );
+            static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Character, "charValue", "()C" );
+
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+
             jchar value = m_jenv->CallCharMethod( obj, methodValue );
 
             Char value_str[2] = {(Char)value, '\0'};
             py_value = m_kernel->string_from_char_size( value_str, 1 );
         }
-        else if( m_jenv->IsInstanceOf( obj, classInteger ) == JNI_TRUE )
+        else if( m_jenv->IsInstanceOf( obj, m_jclass_Integer ) == JNI_TRUE )
         {
-            static jmethodID methodValue = m_jenv->GetMethodID( classInteger, "intValue", "()I" );
+            static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Integer, "intValue", "()I" );
+
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+
             jint value = m_jenv->CallIntMethod( obj, methodValue );
 
             py_value = m_kernel->ptr_int32( value );
         }
-        else if( m_jenv->IsInstanceOf( obj, classLong ) == JNI_TRUE )
+        else if( m_jenv->IsInstanceOf( obj, m_jclass_Long ) == JNI_TRUE )
         {
-            static jmethodID methodValue = m_jenv->GetMethodID( classLong, "longValue", "()J" );
+            static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Long, "longValue", "()J" );
+
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+
             jlong value = m_jenv->CallLongMethod( obj, methodValue );
 
             py_value = m_kernel->ptr_int64( value );
         }
-        else if( m_jenv->IsInstanceOf( obj, classFloat ) == JNI_TRUE )
+        else if( m_jenv->IsInstanceOf( obj, m_jclass_Float ) == JNI_TRUE )
         {
-            static jmethodID methodValue = m_jenv->GetMethodID( classFloat, "floatValue", "()F" );
+            static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Float, "floatValue", "()F" );
+
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+
             jfloat value = m_jenv->CallFloatMethod( obj, methodValue );
 
             py_value = m_kernel->ptr_float( value );
         }
-        else if( m_jenv->IsInstanceOf( obj, classDouble ) == JNI_TRUE )
+        else if( m_jenv->IsInstanceOf( obj, m_jclass_Double ) == JNI_TRUE )
         {
-            static jmethodID methodValue = m_jenv->GetMethodID( classDouble, "doubleValue", "()D" );
+            static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Double, "doubleValue", "()D" );
+
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+
             jfloat value = m_jenv->CallDoubleMethod( obj, methodValue );
 
             py_value = m_kernel->ptr_float( value );
         }
-        else if( m_jenv->IsInstanceOf( obj, classString ) == JNI_TRUE )
+        else if( m_jenv->IsInstanceOf( obj, m_jclass_String ) == JNI_TRUE )
         {
             const Char * obj_str = m_jenv->GetStringUTFChars( (jstring)obj, NULL);
 
@@ -250,9 +274,12 @@ namespace Mengine
 
             m_jenv->ReleaseStringUTFChars( (jstring)obj, obj_str );
         }
-        else if( m_jenv->IsInstanceOf( obj, classArrayList ) == JNI_TRUE )
+        else if( m_jenv->IsInstanceOf( obj, m_jclass_ArrayList ) == JNI_TRUE )
         {
-            static jfieldID fieldElementData = m_jenv->GetFieldID( classArrayList, "elementData", "[Ljava/lang/Object;" );
+            static jfieldID fieldElementData = m_jenv->GetFieldID( m_jclass_ArrayList, "elementData", "[Ljava/lang/Object;" );
+
+            MENGINE_ASSERTION_FATAL( fieldElementData != nullptr );
+
             jobjectArray list_elementData = (jobjectArray)m_jenv->GetObjectField( obj, fieldElementData );
 
             jsize list_size = m_jenv->GetArrayLength( list_elementData );
@@ -265,10 +292,7 @@ namespace Mengine
 
                 PyObject * py_obj = this->getPythonAttribute( list_obj );
 
-                if( py_obj == nullptr )
-                {
-                    return nullptr;
-                }
+                MENGINE_ASSERTION_FATAL( py_obj != nullptr );
 
                 m_kernel->tuple_setitem( py_list, index, py_obj );
             }
@@ -332,18 +356,11 @@ namespace Mengine
 
             PyObject * py_arg = this->getPythonAttribute( obj );
 
-            if( py_arg == nullptr )
-            {
-                MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' id '%d' invalid arg"
-                    , _plugin.c_str()
-                    , _method.c_str()
-                    , _id
-                );
-
-                m_jenv->DeleteGlobalRef( _args );
-
-                return;
-            }
+            MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' id '%d' invalid arg"
+                , _plugin.c_str()
+                , _method.c_str()
+                , _id
+            );
 
             m_kernel->tuple_setitem( py_args, index, py_arg );
         }

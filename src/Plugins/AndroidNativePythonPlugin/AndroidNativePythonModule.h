@@ -72,6 +72,12 @@ namespace Mengine
         JNIEnv * m_jenv;
 
         jclass m_jclass_Object;
+        jclass m_jclass_Boolean;
+        jclass m_jclass_Character;
+        jclass m_jclass_Integer;
+        jclass m_jclass_Long;
+        jclass m_jclass_Float;
+        jclass m_jclass_Double;
         jclass m_jclass_String;
         jclass m_jclass_ArrayList;
 

@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Interface/ThreadSystemInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Win32ThreadIdentity.h"
 #include "Win32ThreadMutex.h"
 
-#include "Kernel/Factory.h"
 #include "Kernel/FactoryWithMutex.h"
 
 #include "Kernel/ServiceBase.h"

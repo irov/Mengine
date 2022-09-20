@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Interface/FactoryInterface.h"
+
 #include "Kernel/BaseFileGroup.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {

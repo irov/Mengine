@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Interface/TimepipeInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "AreaOfInterestInterface.h"
-
 #include "AreaOfInterestZone.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine

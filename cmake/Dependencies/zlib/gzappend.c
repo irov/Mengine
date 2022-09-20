@@ -137,7 +137,7 @@ local void rotate(unsigned char *list, unsigned len, unsigned rot)
     /* do simple left shift by one */
     if (rot == 1) {
         tmp = *list;
-        memcpy(list, list + 1, len - 1);
+        memmove(list, list + 1, len - 1);
         *last = tmp;
         return;
     }
@@ -343,7 +343,7 @@ local int gzscan(char *name, z_stream *strm, int level)
     if (crc != read4(&gz))
         bye("invalid compressed data--crc mismatch in ", name);
     tot = strm->total_out;
-    if ((tot & 0xffffffffffffffffUL) != read4(&gz))
+    if ((tot & 0xffffffffUL) != read4(&gz))
         bye("invalid compressed data--length mismatch in", name);
 
     /* if not at end of file, warn */

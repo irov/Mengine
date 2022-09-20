@@ -42,6 +42,13 @@ namespace Mengine
 
             const DocumentPtr & document = _documentable->getDocument();
 
+            if( document == nullptr )
+            {
+                MENGINE_STRNCAT( _message, "[None Document]", _capacity );
+
+                return;
+            }
+
             size_t capacity = Detail::getParentDocumentableMessage( document, _message, _capacity );
 
             const Char * message = document->getMessage();

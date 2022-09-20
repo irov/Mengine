@@ -23,16 +23,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::setWorkerURL( const String & _workerURL )
+    void DevToDebugLogger::setLoggerURL( const String & _workerURL )
     {
         m_mutex->lock();
-        m_workerURL = _workerURL;
+        m_loggerURL = _workerURL;
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & DevToDebugLogger::getWorkerURL() const
+    const String & DevToDebugLogger::getLoggerURL() const
     {
-        return m_workerURL;
+        return m_loggerURL;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugLogger::_initializeLogger()
@@ -85,7 +85,7 @@ namespace Mengine
     void DevToDebugLogger::process()
     {
         m_mutex->lock();
-        bool wait = m_workerURL.empty();
+        bool wait = m_loggerURL.empty();
         m_mutex->unlock();
 
         if( wait == true )
@@ -121,7 +121,7 @@ namespace Mengine
         Helper::writeJSONStringCompact( j, &data );
 
         HttpRequestID id = CURL_SERVICE()
-            ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->headerData( m_loggerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
 

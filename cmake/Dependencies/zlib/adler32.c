@@ -151,7 +151,7 @@ local uLong adler32_combine_(adler1, adler2, len2)
 
     /* for negative len, return invalid adler32 as a clue for debugging */
     if (len2 < 0)
-        return (uLong)~0U;
+        return 0xffffffffUL;
 
     /* the derivation of this formula is left as an exercise for the reader */
     MOD63(len2);                /* assumes len2 >= 0 */

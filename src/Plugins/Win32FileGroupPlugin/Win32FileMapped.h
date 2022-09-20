@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/FileMappedInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 

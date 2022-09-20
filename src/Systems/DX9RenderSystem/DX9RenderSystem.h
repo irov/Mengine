@@ -3,6 +3,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/DX9RenderSystemExtensionInterface.h"
 #include "Interface/DynamicLibraryInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
@@ -20,7 +21,6 @@
 
 #include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine

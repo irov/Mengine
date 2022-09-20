@@ -1,17 +1,17 @@
 #pragma once
 
+#include "Interface/FactoryInterface.h"
+
 #include "AreaOfInterestInterface.h"
 
 #include "AreaOfInterestActor.h"
 #include "AreaOfInterestTrigger.h"
 
-#include "Kernel/Factory.h"
 #include "Kernel/Vector.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "Kernel/Scriptable.h"
 #endif
-
 
 namespace Mengine
 {

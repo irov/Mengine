@@ -72,6 +72,10 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_DEBUG
+        m_factorables.push_back( object );
+#endif
+
+#ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( FactoryServiceInterface ) == true )
         {
             FACTORY_SERVICE()
@@ -82,10 +86,6 @@ namespace Mengine
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, this, object, _doc );
         }
-#endif
-
-#ifdef MENGINE_DEBUG
-        m_factorables.push_back( object );
 #endif
 
         return object;

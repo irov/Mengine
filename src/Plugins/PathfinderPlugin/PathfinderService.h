@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Interface/FactoryInterface.h"
+
 #include "PathfinderInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine

@@ -2,6 +2,8 @@
 
 #include "Interface/FactoryServiceInterface.h"
 
+#include "Kernel/ThreadMutexScope.h"
+
 #ifdef MENGINE_DEBUG
 #   include "Kernel/NotificationHelper.h"
 #   include "Kernel/Logger.h"
@@ -47,6 +49,10 @@ namespace Mengine
 
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
+#ifdef MENGINE_DEBUG
+        m_factorables.push_back( object );
+#endif
+
         if( m_mutex != nullptr )
         {
             m_mutex->unlock();
@@ -88,22 +94,17 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, (FactoryInterface *)this, _object );
         }
 #endif
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        if( m_mutex != nullptr )
-        {
-            m_mutex->lock();
-        }
+#ifdef MENGINE_DEBUG
+        m_factorables.remove( _object );
+#endif
 
         this->_destroyObject( _object );
 
         m_count.decref();
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
-
-        if( m_mutex != nullptr )
-        {
-            m_mutex->unlock();
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

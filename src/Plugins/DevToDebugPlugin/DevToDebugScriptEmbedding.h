@@ -8,7 +8,6 @@
 
 #include "Kernel/Params.h"
 #include "Kernel/Factorable.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {

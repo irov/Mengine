@@ -69,7 +69,7 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Factory> FactoryPtr;
+    typedef IntrusivePtr<Factory, FactoryInterface> FactoryPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const ConstString & Factory::getType() const
     {

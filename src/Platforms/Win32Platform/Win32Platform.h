@@ -3,12 +3,12 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 #include "Interface/LoggerInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/MouseButtonCode.h"
 #include "Kernel/StaticString.h"
 #include "Kernel/StaticWString.h"

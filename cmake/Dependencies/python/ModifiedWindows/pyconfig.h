@@ -72,14 +72,13 @@ WIN32 is still required for the locale module.
 #define HAVE_STRFTIME
 #define DONT_HAVE_SIG_ALARM
 #define DONT_HAVE_SIG_PAUSE
-#define LONG_BIT 32
+#define LONG_BIT	32
 #define WORD_BIT 32
 #define PREFIX ""
 #define EXEC_PREFIX ""
 
 #define MS_WIN32 /* only support win32 and greater. */
 #define MS_WINDOWS
-
 #ifndef PYTHONPATH
 #	define PYTHONPATH ".\\DLLs;.\\lib;.\\lib\\plat-win;.\\lib\\lib-tk"
 #endif
@@ -89,6 +88,10 @@ WIN32 is still required for the locale module.
 #endif
 
 /* Compiler specific defines */
+
+/* ------------------------------------------------------------------------*/
+/* Microsoft C defines _MSC_VER */
+#ifdef _MSC_VER
 
 /* We want COMPILER to expand to a string containing _MSC_VER's *value*.
  * This is horridly tricky, because the stringization operator only works
@@ -126,15 +129,37 @@ WIN32 is still required for the locale module.
 #define MS_WIN64
 #endif
 
-/* set the version macros for the windows headers */
-/* Python 2.6+ requires Windows 2000 or greater */
-#ifdef _WIN32_WINNT_VISTA
-#	define Py_WINVER _WIN32_WINNT_VISTA
+/* set the COMPILER */
+#ifdef MS_WIN64
+#if defined(_M_IA64)
+#define COMPILER _Py_PASTE_VERSION("64 bit (Itanium)")
+#define MS_WINI64
+#elif defined(_M_X64) || defined(_M_AMD64)
+#ifdef __INTEL_COMPILER
+#define COMPILER ("[ICC v." _Py_STRINGIZE(__INTEL_COMPILER) " 64 bit (amd64) with MSC v." _Py_STRINGIZE(_MSC_VER) " CRT]")
 #else
-#	define Py_WINVER 0x0600
+#define COMPILER _Py_PASTE_VERSION("64 bit (AMD64)")
+#endif /* __INTEL_COMPILER */
+#define MS_WINX64
+#else
+#define COMPILER _Py_PASTE_VERSION("64 bit (Unknown)")
 #endif
+#endif /* MS_WIN64 */
 
-#define Py_NTDDI NTDDI_VISTA
+/* set the version macros for the windows headers */
+#ifdef MS_WINX64
+/* 64 bit only runs on XP or greater */
+#define Py_WINVER _WIN32_WINNT_WINXP
+#define Py_NTDDI NTDDI_WINXP
+#else
+/* Python 2.6+ requires Windows 2000 or greater */
+#ifdef _WIN32_WINNT_WIN2K
+#define Py_WINVER _WIN32_WINNT_WIN2K
+#else
+#define Py_WINVER 0x0500
+#endif
+#define Py_NTDDI NTDDI_WIN2KSP4
+#endif
 
 /* We only set these values when building Python - we don't want to force
    these values on extensions, as that will affect the prototypes and
@@ -143,16 +168,16 @@ WIN32 is still required for the locale module.
    structures etc so it can optionally use new Windows features if it
    determines at runtime they are available.
 */
+#if defined(Py_BUILD_CORE) || defined(Py_BUILD_CORE_MODULE)
 #ifndef NTDDI_VERSION
-#	define NTDDI_VERSION Py_NTDDI
+#define NTDDI_VERSION Py_NTDDI
 #endif
-
 #ifndef WINVER
-#	define WINVER Py_WINVER
+#define WINVER Py_WINVER
 #endif
-
 #ifndef _WIN32_WINNT
-#	define _WIN32_WINNT Py_WINVER
+#define _WIN32_WINNT Py_WINVER
+#endif
 #endif
 
 /* _W64 is not defined for VC6 or eVC4 */
@@ -166,13 +191,29 @@ typedef __int64 ssize_t;
 #else
 typedef _W64 int ssize_t;
 #endif
-
 #define HAVE_SSIZE_T 1
+
+#if defined(MS_WIN32) && !defined(MS_WIN64)
+#ifdef _M_IX86
+#ifdef __INTEL_COMPILER
+#define COMPILER ("[ICC v." _Py_STRINGIZE(__INTEL_COMPILER) " 32 bit (Intel) with MSC v." _Py_STRINGIZE(_MSC_VER) " CRT]")
+#else
+#define COMPILER _Py_PASTE_VERSION("32 bit (Intel)")
+#endif /* __INTEL_COMPILER */
+#else
+#define COMPILER _Py_PASTE_VERSION("32 bit (Unknown)")
+#endif
+#endif /* MS_WIN32 && !MS_WIN64 */
+
+typedef int pid_t;
 
 #include <float.h>
 #define Py_IS_NAN _isnan
 #define Py_IS_INFINITY(X) (!_finite(X) && !_isnan(X))
 #define Py_IS_FINITE(X) _finite(X)
+#define copysign _copysign
+
+#endif /* _MSC_VER */
 
 /* define some ANSI types that are not defined in earlier Win headers */
 #if defined(_MSC_VER) && _MSC_VER >= 1200
@@ -186,7 +227,6 @@ typedef _W64 int ssize_t;
 
 /* 64 bit ints are usually spelt __int64 unless compiler has overridden */
 #define HAVE_LONG_LONG 1
-
 #ifndef PY_LONG_LONG
 #	define PY_LONG_LONG __int64
 #	define PY_LLONG_MAX _I64_MAX
@@ -201,26 +241,12 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #	define MS_COREDLL	/* deprecated old symbol */
 #endif /* !MS_NO_COREDLL && ... */
 
-/* For an MSVC DLL, we can nominate the .lib files used by extensions */
-//#ifdef MS_COREDLL
-//#	ifndef Py_BUILD_CORE /* not building the core - must be an ext */
-//#		if defined(_MSC_VER)
-//			/* So MSVC users need not specify the .lib file in
-//			their Makefile (other compilers are generally
-//			taken care of by distutils.) */
-//#			ifdef _DEBUG
-//#				pragma comment(lib,"python26_d.lib")
-//#			else
-//#				pragma comment(lib,"python26.lib")
-//#			endif /* _DEBUG */
-//#		endif /* _MSC_VER */
-//#	endif /* Py_BUILD_CORE */
-//#endif /* MS_COREDLL */
 
 #if defined(MS_WIN64)
 /* maintain "win32" sys.platform for backward compatibility of Python code,
    the Win64 API should be close enough to the Win32 API to make this
    preferable */
+#	define PLATFORM "win32"
 #	define SIZEOF_VOID_P 8
 #	define SIZEOF_TIME_T 8
 #	define SIZEOF_OFF_T 4
@@ -234,6 +260,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
    should define this. */
 #	define HAVE_LARGEFILE_SUPPORT
 #elif defined(MS_WIN32)
+#	define PLATFORM "win32"
 #	define HAVE_LARGEFILE_SUPPORT
 #	define SIZEOF_VOID_P 4
 #	define SIZEOF_OFF_T 4
@@ -247,6 +274,11 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #	define SIZEOF_TIME_T 4
 #	endif
 #endif
+
+#ifndef NDEBUG
+#	define Py_DEBUG
+#endif
+
 
 #ifdef MS_WIN32
 

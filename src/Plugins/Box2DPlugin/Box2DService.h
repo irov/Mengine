@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Interface/FactoryInterface.h"
+
 #include "Box2DInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/ThreadTask.h"
 
 namespace Mengine

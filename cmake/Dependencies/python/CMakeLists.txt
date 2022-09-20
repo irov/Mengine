@@ -79,10 +79,6 @@ if(WIN32)
         )
 endif()
 
-
-
-
-
 set( HAVE_CHROOT 0 )
 set( HAVE_FSYNC 0 )
 set( HAVE_WAIT3 0 )
@@ -91,25 +87,27 @@ set( HAVE_DEVICE_MACROS 0 )
 
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pyport.h ${SOURCE_DIR}/Include/pyport.h COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pymem.h ${SOURCE_DIR}/Include/pymem.h COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/stringobject.h ${SOURCE_DIR}/Include/stringobject.h COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/stringobject.c ${SOURCE_DIR}/Objects/stringobject.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/unicodeobject.h ${SOURCE_DIR}/Include/unicodeobject.h COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/unicodeobject.c ${SOURCE_DIR}/Objects/unicodeobject.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pythonrun.c ${SOURCE_DIR}/Python/pythonrun.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/obmalloc.c ${SOURCE_DIR}/Objects/obmalloc.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/object.h ${SOURCE_DIR}/Include/object.h COPYONLY)
 
 
 if(APPLE)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedMac/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedMac/pyconfig.h ${THIRDPARTY_CONFIG_DIR}/python/pyconfig.h COPYONLY)
 elseif(UNIX)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedUnix/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedUnix/pyconfig.h ${THIRDPARTY_CONFIG_DIR}/python/pyconfig.h COPYONLY)
 elseif(ANDROID)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedAndroid/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedAndroid/pyconfig.h ${THIRDPARTY_CONFIG_DIR}/python/pyconfig.h COPYONLY)
 else()
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedWindows/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedWindows/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 endif()
 
 
@@ -134,8 +132,8 @@ set(PARSER_SRCS      ${SOURCE_DIR}/Parser/acceler.c
 set(OBJECT_SRCS ${SOURCE_DIR}/Objects/abstract.c
                 ${SOURCE_DIR}/Objects/boolobject.c
                 ${SOURCE_DIR}/Objects/bufferobject.c
-				${SOURCE_DIR}/Objects/bytes_methods.c
-				${SOURCE_DIR}/Objects/bytearrayobject.c
+                ${SOURCE_DIR}/Objects/bytes_methods.c
+                ${SOURCE_DIR}/Objects/bytearrayobject.c
                 ${SOURCE_DIR}/Objects/cellobject.c
                 ${SOURCE_DIR}/Objects/classobject.c
                 ${SOURCE_DIR}/Objects/cobject.c
@@ -172,10 +170,10 @@ set(OBJECT_SRCS ${SOURCE_DIR}/Objects/abstract.c
                 
    )
 
-set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)   
+set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
 
 set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
-				${SOURCE_DIR}/Python/Python-ast.c 
+                ${SOURCE_DIR}/Python/Python-ast.c 
                 ${SOURCE_DIR}/Python/asdl.c 
                 ${SOURCE_DIR}/Python/ast.c 
                 ${SOURCE_DIR}/Python/bltinmodule.c 
@@ -198,10 +196,10 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/modsupport.c 
                 ${SOURCE_DIR}/Python/mystrtoul.c 
                 ${SOURCE_DIR}/Python/mysnprintf.c 
-				${SOURCE_DIR}/Python/peephole.c
+                ${SOURCE_DIR}/Python/peephole.c
                 ${SOURCE_DIR}/Python/pyarena.c 
                 ${SOURCE_DIR}/Python/pyfpe.c 
-				${SOURCE_DIR}/Python/pymath.c
+                ${SOURCE_DIR}/Python/pymath.c
                 ${SOURCE_DIR}/Python/pystate.c 
                 ${SOURCE_DIR}/Python/pythonrun.c 
                 ${SOURCE_DIR}/Python/structmember.c 
@@ -209,10 +207,10 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/sysmodule.c 
                 ${SOURCE_DIR}/Python/traceback.c 
                 ${SOURCE_DIR}/Python/getopt.c 
-				${SOURCE_DIR}/Python/pystrcmp.c
+                ${SOURCE_DIR}/Python/pystrcmp.c
                 ${SOURCE_DIR}/Python/pystrtod.c
-				${SOURCE_DIR}/Python/formatter_unicode.c
-				${SOURCE_DIR}/Python/formatter_string.c
+                ${SOURCE_DIR}/Python/formatter_unicode.c
+                ${SOURCE_DIR}/Python/formatter_string.c
                 ${SOURCE_DIR}/Python/pyctype.c
                 ${SOURCE_DIR}/Python/dtoa.c
                 )
@@ -225,24 +223,31 @@ set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c
 
 set( MODULE_SRCS ${MODULE_SRCS} Modified/config.c )
 set( MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c )
-				
+
 if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
 else()
 	set( MODULE_SRCS ${MODULE_SRCS} 
-	${SOURCE_DIR}/Modules/wininit.c
-	${SOURCE_DIR}/PC/getpathp.c	)
+        ${SOURCE_DIR}/Modules/wininit.c
+        ${SOURCE_DIR}/PC/getpathp.c	
+    )
 endif()
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"\\\" -DEXEC_PREFIX=\\\"\\\" -DVERSION=\\\"2.7.18\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\"\\\" " )
+
+if(WIN32)
+	include_directories(${SOURCE_DIR}/PC)
+else()
+	include_directories(${THIRDPARTY_CONFIG_DIR}/python)
+endif()
+
 
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)
 include_directories(${THIRDPARTY_DIR}/zlib)
 include_directories(${THIRDPARTY_CONFIG_DIR}/zlib)
 
-include_directories(${SOURCE_DIR}/PC)
 
 if(WIN32)  
   if(MSVC)

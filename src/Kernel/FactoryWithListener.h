@@ -31,6 +31,6 @@ namespace Mengine
         FactoryDestroyListenerInterfacePtr m_destroyListener;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FactoryWithListener> FactoryWithListenerPtr;
+    typedef IntrusivePtr<FactoryWithListener, FactoryInterface> FactoryWithListenerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -462,13 +462,17 @@ namespace Mengine
                     break;
                 }
 
-                m_workerURL = "http://api.devtodebug.com/worker/";
+                m_workerURL = "http://api.devtodebug.com/workers/";
                 m_workerURL += uuid;
                 m_workerURL += "/";
 
                 if( m_logger != nullptr )
                 {
-                    m_logger->setWorkerURL( m_workerURL );
+                    String loggerURL = m_workerURL;
+                    loggerURL += "log";
+                    loggerURL += "/";
+
+                    m_logger->setLoggerURL( loggerURL );
                 }
 
                 LOGGER_INFO( "devtodebug", "Request Connect: %s [id %u]"

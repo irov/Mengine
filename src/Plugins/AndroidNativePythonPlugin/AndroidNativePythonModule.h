@@ -83,8 +83,6 @@ namespace Mengine
 
         pybind::kernel_interface * m_kernel;
 
-        pybind::dict m_globals;
-
         typedef Map<Pair<ConstString, ConstString>, pybind::object> MapAndroidCallbacks;
         MapAndroidCallbacks m_callbacks;
 

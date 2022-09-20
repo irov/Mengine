@@ -123,10 +123,6 @@ namespace Mengine
             return false;
         }
 
-        m_globals = pybind::make_dict_t( kernel );
-        m_globals.set( "True", kernel->get_true() );
-        m_globals.set( "False", kernel->get_false() );
-
         m_kernel = kernel;
 
         s_androidNativePythonModule = this;
@@ -169,8 +165,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::_finalizeModule()
     {
-        m_globals.reset();
-
         s_androidNativePythonModule = nullptr;
 
         m_callbacks.clear();

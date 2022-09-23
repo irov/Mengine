@@ -47,7 +47,8 @@ namespace Mengine
         uint32_t m_packetSize;
         uint32_t m_threadSampler;
 
-        ThreadMutexInterfacePtr m_mutex;
+        ThreadMutexInterfacePtr m_threadTasksMutex;
+        ThreadMutexInterfacePtr m_currentThreadTasksMutex;
 
         typedef Vector<ConstString> VectorThreads;
         VectorThreads m_threads;

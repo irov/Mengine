@@ -24,7 +24,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadQueue::initialize()
     {
-        m_mutex = THREAD_SYSTEM()
+        m_threadTasksMutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_currentThreadTasksMutex = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4>( MENGINE_DOCUMENT_FACTORABLE );
@@ -34,7 +37,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::finalize()
     {
-        m_mutex = nullptr;
+        m_threadTasksMutex = nullptr;
+        m_currentThreadTasksMutex = nullptr;
 
         m_threads.clear();
         m_threadTasks.clear();
@@ -54,7 +58,9 @@ namespace Mengine
     {
         m_threads.emplace_back( _threadName );
 
+        m_currentThreadTasksMutex->lock();
         m_currentThreadTasks.emplace_back( nullptr );
+        m_currentThreadTasksMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::addTask( const ThreadTaskInterfacePtr & _task )
@@ -66,18 +72,21 @@ namespace Mengine
 
         _task->preparation();
 
-        m_mutex->lock();
+        m_threadTasksMutex->lock();
         m_threadTasks.emplace_back( _task );
-        m_mutex->unlock();
+        m_threadTasksMutex->unlock();
 
+        m_currentThreadTasksMutex->lock();
         for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
         {
             this->updateCurrentTask_( currentTask );
         }
+        m_currentThreadTasksMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::cancel()
     {
+        m_currentThreadTasksMutex->lock();
         for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
         {
             if( currentTask == nullptr )
@@ -92,10 +101,11 @@ namespace Mengine
         }
 
         m_currentThreadTasks.clear();
+        m_currentThreadTasksMutex->unlock();
 
-        m_mutex->lock();
+        m_threadTasksMutex->lock();
         ListThreadTasks threadTasks = std::move( m_threadTasks );
-        m_mutex->unlock();
+        m_threadTasksMutex->unlock();
 
         while( threadTasks.empty() == false )
         {
@@ -115,33 +125,37 @@ namespace Mengine
             return true;
         }
 
+        m_currentThreadTasksMutex->lock();
         for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
         {
             this->updateCurrentTask_( currentTask );
         }
+        m_currentThreadTasksMutex->unlock();
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask )
     {
-        if( _currentTask != nullptr &&
-            _currentTask->isComplete() == false &&
-            _currentTask->isCancel() == false )
+        ThreadTaskInterfacePtr testTask = _currentTask;
+
+        if( testTask != nullptr &&
+            testTask->isComplete() == false &&
+            testTask->isCancel() == false )
         {
             return;
         }
 
         _currentTask = nullptr;
 
-        m_mutex->lock();
+        m_threadTasksMutex->lock();
         if( m_threadTasks.empty() == true )
         {
-            m_mutex->unlock();
+            m_threadTasksMutex->unlock();
 
             return;
         }
-        m_mutex->unlock();
+        m_threadTasksMutex->unlock();
 
         ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -152,7 +166,7 @@ namespace Mengine
 
         uint32_t packetIterator = m_packetSize;
 
-        m_mutex->lock();        
+        m_threadTasksMutex->lock();
         while( m_threadTasks.empty() == false && packetIterator != 0 )
         {
             ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
@@ -168,7 +182,7 @@ namespace Mengine
 
             --packetIterator;
         }
-        m_mutex->unlock();
+        m_threadTasksMutex->unlock();
 
         if( packet->countTask() == 0 )
         {
@@ -185,14 +199,14 @@ namespace Mengine
         {
             uint32_t count = packet->countTask();
 
-            m_mutex->lock();
+            m_threadTasksMutex->lock();
             for( uint32_t i = 0; i != count; ++i )
             {
                 const ThreadTaskPtr & task = packet->getTask( i );
 
                 m_threadTasks.emplace_back( task );
             }
-            m_mutex->unlock();
+            m_threadTasksMutex->unlock();
 
             return;
         }

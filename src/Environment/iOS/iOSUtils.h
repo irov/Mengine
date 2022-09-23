@@ -7,7 +7,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        bool MacOSGetBuildShortVersionString( Char * const _directory );
+        bool iOSGetDeviceID( Char * const _deviceId );
         bool MacOSGetBuildVersionKey( Char * const _directory );
         bool MacOSGetMusicDirectory( Char * const _directory );
         bool MacOSGetPicturesDirectory( Char * const _directory );

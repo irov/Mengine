@@ -15,6 +15,8 @@
 #   include "Environment/Apple/AppleUtils.h"
 #   if defined(MENGINE_PLATFORM_MACOS)
 #       include "Environment/MacOS/MacOSUtils.h"
+#   elif defined(MENGINE_PLATFORM_IOS)
+#       include "Environment/iOS/iOSUtils.h"
 #   endif
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidUtils.h"
@@ -470,6 +472,11 @@ namespace Mengine
         }
 
         return userNameLen;
+#elif defined(MENGINE_PLATFORM_IOS)
+        Char deviceName[51] = {L'\0'};
+        Helper::iOSGetDeviceName( deviceName );
+        
+        MENGINE_STRCPY( _userName, deviceName );
 #else
         _userName[0] = '\0';
 
@@ -1097,6 +1104,12 @@ namespace Mengine
         WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
         MENGINE_WCSCPY( fingerprintGarbage, UserNameBuffer );
         MENGINE_WCSCAT( fingerprintGarbage, ComputerNameBuffer );
+
+        Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
+        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
+#elif defined(MENGINE_PLATFORM_IOS)
+        Char fingerprintGarbage[40 + 1] = {'\0'};
+        Helper::iOSGetDeviceId( fingerprintGarbage );
 
         Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );

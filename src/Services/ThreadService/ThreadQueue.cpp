@@ -30,7 +30,12 @@ namespace Mengine
         m_currentThreadTasksMutex = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_factoryPoolTaskPacketMutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_factoryPoolTaskPacket->setMutex( m_factoryPoolTaskPacketMutex );
 
         return true;
     }
@@ -39,10 +44,13 @@ namespace Mengine
     {
         m_threadTasksMutex = nullptr;
         m_currentThreadTasksMutex = nullptr;
+        m_factoryPoolTaskPacketMutex = nullptr;
 
         m_threads.clear();
         m_threadTasks.clear();
         m_currentThreadTasks.clear();
+
+        m_factoryPoolTaskPacket->setMutex( nullptr );
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolTaskPacket );
 

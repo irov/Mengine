@@ -14,9 +14,12 @@ import com.adjust.sdk.LogLevel;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
+
 import org.Mengine.Plugin.GoogleGameSocial.R;
 
 public class MengineAdjustPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "Adjust";
+    public static boolean PLUGIN_EMBEDDING = true;
 
     /**
      * событие
@@ -24,12 +27,6 @@ public class MengineAdjustPlugin extends MenginePlugin {
      * событие о пукопку чего либо
      * void revenueTracking(String token, double amount, String currency)
      */
-
-
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("Adjust");
-    }
 
     @Override
     public void onAppCreate(MengineApplication application) {

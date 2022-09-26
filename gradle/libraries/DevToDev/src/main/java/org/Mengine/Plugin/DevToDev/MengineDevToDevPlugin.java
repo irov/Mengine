@@ -16,10 +16,8 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 public class MengineDevToDevPlugin extends MenginePlugin {
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("DevToDev");
-    }
+    public static String PLUGIN_NAME = "DevToDev";
+    public static boolean PLUGIN_EMBEDDING = true;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

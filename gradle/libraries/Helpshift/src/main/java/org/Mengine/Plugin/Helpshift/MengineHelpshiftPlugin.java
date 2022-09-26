@@ -20,6 +20,8 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 
 public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener {
+    public static String PLUGIN_NAME = "Helpshift";
+    public static boolean PLUGIN_EMBEDDING = true;
 
     /**
      * <p>
@@ -55,11 +57,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
      * -onHelpshiftAuthenticationFailureUnknown
      */
 
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("Helpshift");
-    }
-    
     @Override
     public void onExtension(MengineActivity activity) {
         this.addExtension("org.Mengine.Plugin.Helpshift.MengineHelpshiftDevDebugger");

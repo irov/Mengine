@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MengineGooglePlayBillingPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "GooglePlayBilling";
+    public static boolean PLUGIN_EMBEDDING = true;
 
     /**
      * Метода для библиотеки
@@ -59,11 +61,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     private final Boolean m_mutex = true;
     private Boolean m_responseEnd = true;
-
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("GooglePlayBilling");
-    }
 
     public interface IBillingResponse {
         void skuResponse(List<ProductDetails> priceOffers);

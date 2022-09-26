@@ -44,9 +44,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("MarSDK");
-    }
+    public static String PLUGIN_NAME = "MarSDK";
+    public static boolean PLUGIN_EMBEDDING = true;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

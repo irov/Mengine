@@ -38,6 +38,9 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MengineAppLovinPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "AppLovin";
+    public static boolean PLUGIN_EMBEDDING = true;
+
     /**
      * <p>
      * void initialize()
@@ -95,11 +98,6 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     private MaxAdView m_adView;
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
-
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("AppLovin");
-    }
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

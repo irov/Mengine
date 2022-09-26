@@ -1,25 +1,27 @@
-package org.Mengine.Plugin.Helpshifter;
+package org.Mengine.Plugin.Helpshift;
 
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 import org.Mengine.Base.MengineActivity;
 
+import org.Mengine.Plugin.DevDebugger.MengineDevDebuggerPlugin;
 import org.Mengine.Plugin.Helpshift.MengineHelpshiftPlugin;
 
-public class MengineHelpshiftDevDebuggerExtension implements MenginePluginExtension<MengineHelpshiftPlugin> {
+public class MengineHelpshiftDevDebuggerExtension implements MenginePluginExtension {
     @Override
-    public boolean initialize(MengineActivity activity, MengineHelpshiftPlugin plugin) {
+    public boolean onInitialize(MengineActivity activity, MenginePlugin plugin) {
 
         return true;
     }
 
     @Override
-    public void finalize(MengineActivity activity, MengineHelpshiftPlugin plugin) {
+    public void onFinalize(MengineActivity activity, MenginePlugin plugin) {
 
     }
 
     @Override
-    public void run(MengineActivity activity, MengineHelpshiftPlugin plugin) {
+    public void onRun(MengineActivity activity, MenginePlugin plugin) {
+        MengineDevDebuggerPlugin devDebugger = activity.findPlugin();
 
     }
 }

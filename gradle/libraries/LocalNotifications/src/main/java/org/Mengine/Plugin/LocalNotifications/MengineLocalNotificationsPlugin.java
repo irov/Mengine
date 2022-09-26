@@ -23,13 +23,11 @@ import android.os.SystemClock;
 import android.os.Bundle;
 
 public class MengineLocalNotificationsPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "LocalNotifications";
+    public static boolean PLUGIN_EMBEDDING = true;
+
     private static final String CHANNEL_ID = "mengine_channel_id";
     private static final CharSequence CHANNEL_NAME = "Mengine Channel";
-
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("LocalNotifications");
-    }
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

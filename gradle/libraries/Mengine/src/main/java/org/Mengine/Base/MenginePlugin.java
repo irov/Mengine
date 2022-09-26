@@ -14,8 +14,7 @@ import java.util.ArrayList;
 public class MenginePlugin {
     private MengineApplication m_application;
     private MengineActivity m_activity;
-    private ArrayList<MenginePluginExtension<?>> m_extensions;
-    private String m_tag;
+    private ArrayList<MenginePluginExtension> m_extensions;
     private String m_pluginName;
 
     @FunctionalInterface
@@ -31,10 +30,10 @@ public class MenginePlugin {
         return m_activity;
     }
 
-    public boolean onInitialize(MengineApplication application) {
+    public boolean onInitialize(MengineApplication application, String pluginName) {
         m_application = application;
 
-        m_tag = this.getClass().getSimpleName();
+        m_pluginName = pluginName;
 
         m_extensions = new ArrayList<>();
 
@@ -43,7 +42,7 @@ public class MenginePlugin {
 
     public void onFinalize(MengineApplication application) {
         for( MenginePluginExtension extension : m_extensions ) {
-            extension.finalize(m_activity, this);
+            extension.onFinalize(m_activity, this);
         }
     }
 
@@ -51,32 +50,26 @@ public class MenginePlugin {
         m_activity = activity;
     }
 
-    protected void addPythonPlugin(String name) {
-        m_pluginName = name;
-
-        m_activity.addPythonPlugin(m_pluginName, this);
-    }
-
-    public String getTag() {
-        return m_tag;
+    public String getPluginName() {
+        return m_pluginName;
     }
 
     public <T> T newInstance( String name, boolean exist ) {
-        T instance = MengineUtils.newInstance(m_tag, name, exist);
+        T instance = MengineUtils.newInstance(m_pluginName, name, exist);
 
         return instance;
     }
 
     public void logWarning(String format, Object ... args) {
-        MengineLog.logWarning(m_tag, format, args);
+        MengineLog.logWarning(m_pluginName, format, args);
     }
 
     public void logInfo(String format, Object ... args) {
-        MengineLog.logInfo(m_tag, format, args);
+        MengineLog.logInfo(m_pluginName, format, args);
     }
 
     public void logError(String format, Object ... args) {
-        MengineLog.logError(m_tag, format, args);
+        MengineLog.logError(m_pluginName, format, args);
     }
 
     public void pythonCall(String method, Object ... args) {
@@ -126,7 +119,7 @@ public class MenginePlugin {
             return;
         }
 
-        if( extension.initialize(m_activity, this) == false) {
+        if( extension.onInitialize(m_activity, this) == false) {
             return;
         }
 
@@ -139,7 +132,7 @@ public class MenginePlugin {
 
     public boolean onExtensionRun(MengineActivity activity) {
         for( MenginePluginExtension extension : m_extensions ) {
-            extension.run(activity, this);
+            extension.onRun(activity, this);
         }
 
         return true;
@@ -197,9 +190,5 @@ public class MenginePlugin {
         //Empty
 
         return false;
-    }
-
-    public void onPythonEmbedding(MengineActivity activity) {
-        //Empty
     }
 }

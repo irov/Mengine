@@ -5,6 +5,7 @@ import org.libsdl.app.SDLSurface;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -136,6 +137,33 @@ public class MengineActivity extends SDLActivity {
         ArrayList<MenginePlugin> plugins = app.getPlugins();
 
         return plugins;
+    }
+
+    public <T> T findPlugin() {
+        T type_plugin = null;
+        Class<?> cls = type_plugin.getClass();
+
+        String name;
+
+        try {
+            Field PLUGIN_NAME = cls.getField("PLUGIN_NAME");
+
+            name = (String)PLUGIN_NAME.get(null);
+        } catch (NoSuchFieldException ex) {
+            Log.e(TAG, "MengineActivity plugin not found field PLUGIN_NAME: " + cls.getName());
+
+            return null;
+        } catch (IllegalAccessException ex) {
+            Log.e(TAG, "MengineActivity plugin invalid field PLUGIN_NAME: " + cls.getName());
+
+            return null;
+        }
+
+        MengineApplication app = (MengineApplication)this.getApplication();
+
+        MenginePlugin plugin = app.findPlugin(name);
+
+        return (T)plugin;
     }
 
     @Override
@@ -346,7 +374,23 @@ public class MengineActivity extends SDLActivity {
         AndroidNativePython_addPlugin("Activity", this);
 
         for(MenginePlugin p : this.getPlugins()) {
-            p.onPythonEmbedding(this);
+            try {
+                Class<?> cls = p.getClass();
+
+                Field PLUGIN_EMBEDDING = cls.getField("PLUGIN_EMBEDDING");
+
+                if( PLUGIN_EMBEDDING.getBoolean(null) == false ) {
+                    continue;
+                }
+            } catch (NoSuchFieldException ex) {
+                continue;
+            } catch (IllegalAccessException ex) {
+                continue;
+            }
+
+            String name = p.getPluginName();
+
+            this.addPythonPlugin(name, p);
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

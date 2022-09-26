@@ -11,6 +11,8 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 
 public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "GoogleInAppReviews";
+    public static boolean PLUGIN_EMBEDDING = true;
 
     /**
      * <p>
@@ -21,11 +23,6 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
      * void launchTheInAppReview()
      * - onGoogleInAppReviewsLaunchingTheReviewCompleted
      */
-
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("GoogleInAppReviews");
-    }
 
     ReviewManager m_manager;
     ReviewInfo m_reviewInfo = null;

@@ -29,6 +29,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 public class MengineGoogleGameSocialPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "GoogleGameSocial";
+    public static boolean PLUGIN_EMBEDDING = true;
+
     //добавить каллбеки на ошибку авторизации
     //глянуть id по возврату в Activity
 
@@ -73,12 +76,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     private int RC_UNUSED;
 
     private @NonNull GoogleSignInClient m_signInClient;
-        private AchievementsClient m_achievementsClient;
-
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("GoogleGameSocial");
-    }
+    private AchievementsClient m_achievementsClient;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

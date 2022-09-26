@@ -33,14 +33,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MengineFacebookPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "Facebook";
+    public static boolean PLUGIN_EMBEDDING = true;
+
     private CallbackManager m_facebookCallbackManager;
     private AccessToken m_facebookAccessToken;
     private String m_facebookUserId;
-
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("Facebook");
-    }
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

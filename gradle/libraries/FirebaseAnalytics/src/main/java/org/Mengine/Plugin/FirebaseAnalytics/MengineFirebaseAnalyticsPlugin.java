@@ -14,14 +14,12 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 
 public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "FirebaseAnalytics";
+    public static boolean PLUGIN_EMBEDDING = true;
 
     /**
      * void logEvent (String name, Bundle params)
      */
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("FirebaseAnalytics");
-    }
 
     FirebaseAnalytics mFirebaseAnalytics;
 

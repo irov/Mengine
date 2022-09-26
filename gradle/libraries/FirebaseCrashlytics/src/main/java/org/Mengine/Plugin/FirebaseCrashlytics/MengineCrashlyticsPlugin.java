@@ -14,17 +14,14 @@ import org.Mengine.Base.MenginePlugin;
 
 
 public class MengineCrashlyticsPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "FirebaseCrashlytics";
+    public static boolean PLUGIN_EMBEDDING = true;
 
     /**
      * <p>
      * void recordException(Throwable throwable)
      * void recordLog(String msg)
      */
-
-    @Override
-    public void onPythonEmbedding(MengineActivity activity) {
-        this.addPythonPlugin("FirebaseCrashlytics");
-    }
 
     @Override
     public void onAppCreate(MengineApplication application) {

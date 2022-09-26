@@ -1,7 +1,11 @@
 package org.Mengine.Plugin.Helpshift;
 
-import android.content.pm.ActivityInfo;
-import androidx.annotation.NonNull;
+import android.os.Bundle;
+
+import org.Mengine.Base.BuildConfig;
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MenginePlugin;
 
 import com.helpshift.Helpshift;
 import com.helpshift.HelpshiftAuthenticationFailureReason;
@@ -10,14 +14,10 @@ import com.helpshift.HelpshiftEventsListener;
 import com.helpshift.UnsupportedOSVersionException;
 import com.helpshift.HelpshiftInstallException;
 
-import org.Mengine.Base.BuildConfig;
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 
 public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener {
 
@@ -59,9 +59,14 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public void onPythonEmbedding(MengineActivity activity) {
         this.addPythonPlugin("Helpshift");
     }
+    
+    @Override
+    public void onExtension(MengineActivity activity) {
+        this.addExtension("org.Mengine.Plugin.Helpshift.MengineHelpshiftDevDebugger");
+    }
 
     @Override
-    public void onMengineCreateApplication(MengineActivity activity) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         Map<String, Object> config = new HashMap<>();
 
         if (BuildConfig.DEBUG) {
@@ -70,12 +75,9 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             config.put("enableLogging", false);
         }
 
-        if (activity.getConfigValueBoolean("HelpshiftPlugin", "screenOrientationPortrait", false)) {
-            config.put("screenOrientation", ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-        } else {
-            config.put("screenOrientation", ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        }
+        int screenOrientation = activity.getRequestedOrientation();
 
+        config.put("screenOrientation", screenOrientation);
         config.put("notificationIcon", R.drawable.ic_stat_onesignal_default);
 
 //        config.put("enableInAppNotification", false);
@@ -108,7 +110,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
     @Override
     public void onEventOccurred(@NonNull String eventName, Map<String, Object> data) {
-
         switch (eventName) {
             case HelpshiftEvent.SDK_SESSION_STARTED:
                 this.logInfo("onEventOccurred SDK_SESSION_STARTED");
@@ -268,5 +269,4 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
         Helpshift.setLanguage(language);
     }
-
 }

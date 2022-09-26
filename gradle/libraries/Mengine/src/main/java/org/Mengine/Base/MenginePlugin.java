@@ -7,20 +7,19 @@ import android.content.Intent;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 
-import java.util.Formatter;
+import java.util.ArrayList;
 
 public class MenginePlugin {
     private MengineApplication m_application;
     private MengineActivity m_activity;
-    private Formatter m_formatter;
+    private ArrayList<MenginePluginExtension<?>> m_extensions;
     private String m_tag;
     private String m_pluginName;
 
     @FunctionalInterface
-    public interface CallbackInterface{
+    public interface CallbackInterface {
         void callback(Object result);
     }
 
@@ -37,7 +36,15 @@ public class MenginePlugin {
 
         m_tag = this.getClass().getSimpleName();
 
+        m_extensions = new ArrayList<>();
+
         return true;
+    }
+
+    public void onFinalize(MengineApplication application) {
+        for( MenginePluginExtension extension : m_extensions ) {
+            extension.finalize(m_activity, this);
+        }
     }
 
     public void setActivity(MengineActivity activity) {
@@ -110,6 +117,32 @@ public class MenginePlugin {
 
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         //Empty
+    }
+
+    public void addExtension(String type) {
+        MenginePluginExtension extension = this.newInstance(type, false);
+
+        if (extension == null) {
+            return;
+        }
+
+        if( extension.initialize(m_activity, this) == false) {
+            return;
+        }
+
+        m_extensions.add(extension);
+    }
+
+    public void onExtension(MengineActivity activity) {
+        //Empty
+    }
+
+    public boolean onExtensionRun(MengineActivity activity) {
+        for( MenginePluginExtension extension : m_extensions ) {
+            extension.run(activity, this);
+        }
+
+        return true;
     }
 
     public void onMengineInitializeBaseServices(MengineActivity activity) {

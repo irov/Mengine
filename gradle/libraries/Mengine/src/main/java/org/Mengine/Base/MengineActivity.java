@@ -159,6 +159,10 @@ public class MengineActivity extends SDLActivity {
 
             p.onCreate(this, savedInstanceState);
         }
+
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onExtension(this);
+        }
     }
 
     public void quitMengineApplication() {
@@ -180,6 +184,10 @@ public class MengineActivity extends SDLActivity {
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onMengineCreateApplication(this);
+        }
+
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onExtensionRun(this);
         }
     }
 

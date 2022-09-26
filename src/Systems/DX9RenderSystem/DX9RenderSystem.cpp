@@ -1512,18 +1512,18 @@ namespace Mengine
         MENGINE_UNUSED( _stageCache );
 
 #ifdef MENGINE_DEBUG
-            DWORD pNumPasses;
-            DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
+        DWORD pNumPasses;
+        DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
 #endif
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         D3DPRIMITIVETYPE primitiveType = Helper::toD3DPrimitiveType( _desc.primitiveType );
 
-        UINT primCount = Helper::getPrimitiveCount( _desc.primitiveType, _desc.indexCount );
+        UINT primitiveCount = Helper::getPrimitiveCount( _desc.primitiveType, _desc.indexCount );
 
         DXCALL( m_pD3DDevice, DrawIndexedPrimitive
-            , (primitiveType, _desc.baseVertexIndex, _desc.minIndex, _desc.vertexCount, _desc.startIndex, primCount)
+            , (primitiveType, _desc.baseVertexIndex, _desc.minIndex, _desc.vertexCount, _desc.startIndex, primitiveCount)
         );
     }
     //////////////////////////////////////////////////////////////////////////

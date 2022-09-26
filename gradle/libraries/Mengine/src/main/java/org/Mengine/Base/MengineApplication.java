@@ -26,6 +26,8 @@ public class MengineApplication extends Application {
         }
     }
 
+
+
     public String[] getGradleAndroidPlugins() {
         String[] empty = {};
 
@@ -74,6 +76,10 @@ public class MengineApplication extends Application {
         super.onTerminate();
 
         Log.i(TAG, "onTerminate");
+
+        for (MenginePlugin p : this.m_plugins) {
+            p.onFinalize(this);
+        }
 
         for (MenginePlugin p : this.m_plugins) {
             p.onAppTerminate(this);

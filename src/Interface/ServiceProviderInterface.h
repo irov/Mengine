@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Config/Typedef.h"
-#include "Config/Lambda.h"
-#include "Config/Char.h"
-
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/Holder.h"
 #include "Kernel/Exception.h"
 #include "Kernel/Document.h"
 #include "Kernel/Typename.h"
+
+#include "Config/Typedef.h"
+#include "Config/Lambda.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {

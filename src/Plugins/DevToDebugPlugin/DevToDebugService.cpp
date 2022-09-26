@@ -5,6 +5,10 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Environment/Android/AndroidUtils.h"
+#endif
+
 #include "DevToDebugTab.h"
 
 #include "DevToDebugPropertyConstBoolean.h"
@@ -23,8 +27,8 @@
 #include "DevToDebugWidgetRadioButton.h"
 #include "DevToDebugWidgetSelector.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "DevToDebugScriptEmbedding.h"
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#   include "DevToDebugScriptEmbedding.h"
 #endif
 
 #include "Kernel/Logger.h"
@@ -35,10 +39,91 @@
 #include "Kernel/JSONHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ThreadHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+//////////////////////////////////////////////////////////////////////////
+extern "C" {
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1createDevTab )(JNIEnv * env, jclass cls, jstring _tab)
+    {
+        const Mengine::Char * tab_str = env->GetStringUTFChars( _tab, nullptr );
+
+        Mengine::ConstString tab = Mengine::Helper::stringizeString( tab_str );
+
+        env->ReleaseStringUTFChars( _tab, tab_str );
+
+        if( DEVTODEBUG_SERVICE()
+            ->hasTab( tab ) == false )
+        {
+            LOGGER_ERROR("invalid create dev tab has already exist '%s'"
+                , tab.c_str()
+            );
+
+            return JNI_FALSE;
+        }
+
+        Mengine::DevToDebugTabInterfacePtr t = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FUNCTION );
+
+        DEVTODEBUG_SERVICE()
+                ->addTab( STRINGIZE_STRING_LOCAL( "Platform" ), t );
+
+        return JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1addDevButton )(JNIEnv * env, jclass cls, jstring _tab, jstring _id, jstring _title, jobject _cb)
+    {
+        const Mengine::Char * tab_str = env->GetStringUTFChars( _tab, nullptr );
+        const Mengine::Char * id_str = env->GetStringUTFChars( _id, nullptr );
+        const Mengine::Char * title_str = env->GetStringUTFChars( _title, nullptr );
+
+        Mengine::ConstString tab = Mengine::Helper::stringizeString( tab_str );
+        Mengine::ConstString id = Mengine::Helper::stringizeString( id_str );
+        Mengine::String title = title_str;
+
+        env->ReleaseStringUTFChars( _tab, tab_str );
+        env->ReleaseStringUTFChars( _id, id_str );
+        env->ReleaseStringUTFChars( _title, title_str );
+
+        const Mengine::DevToDebugTabInterfacePtr & t = DEVTODEBUG_SERVICE()
+                ->getTab( tab );
+
+        Mengine::DevToDebugWidgetInterfacePtr button = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FUNCTION );
+
+        button->setId( id );
+
+        Mengine::DevToDebugPropertyInterfacePtr button_title = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FUNCTION );
+
+        Mengine::UnknownDevToDebugPropertyConstStringInterfacePtr unknown_button_title = button_title->getUnknown();
+        unknown_button_title->setValue( "Change" );
+
+        button->setDataProperty( STRINGIZE_STRING_LOCAL( "title" ), button_title );
+
+        Mengine::UnknownDevToDebugWidgetButtonInterfacePtr unknown_button = button->getDynamicUnknown();
+
+        jclass cls_cb = env->GetObjectClass( _cb );
+
+        jmethodID jmethodId_callback = env->GetMethodID( cls_cb, "callback", "()V" );
+
+        jobject jcb = env->NewGlobalRef(_cb);
+
+        unknown_button->setClickEvent( [env, jcb, jmethodId_callback]()
+                                           {
+                                               env->CallVoidMethod(jcb, jmethodId_callback);
+                                           } );
+
+        t->addWidget( button );
+    }
+    ///////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
+#endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( DevToDebugService, Mengine::DevToDebugService );
 //////////////////////////////////////////////////////////////////////////

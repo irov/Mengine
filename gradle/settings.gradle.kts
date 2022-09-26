@@ -82,6 +82,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_MAR 
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
+/ * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
 **/
 
 includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":libraries:LocalNotifications")
@@ -98,5 +99,6 @@ includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", false, ":libraries:DevToDev")
 includePlugin("MENGINE_APP_PLUGIN_MAR", false, ":libraries:MAR")
 includePlugin("MENGINE_APP_PLUGIN_ADJUST", false, ":libraries:Adjust")
 includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", false, ":libraries:Helpshift")
+includePlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER", false, ":libraries:DevDebugger")
 
 println("Mengine complete settings")

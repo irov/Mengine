@@ -548,7 +548,12 @@ namespace Mengine
 
         image->unlock( locked, 0, true );
 
-        return bytes != 0;
+        if( bytes == 0 )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t SurfaceVideo::getDecodeFlags_() const

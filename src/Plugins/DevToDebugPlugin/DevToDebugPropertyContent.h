@@ -10,7 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugPropertyContent
         : public DevToDebugProperty
-        , UnknownDevToDebugPropertyContentInterface
+        , public UnknownDevToDebugPropertyContentInterface
     {
         DECLARE_FACTORABLE( DevToDebugPropertyContent );
         DECLARE_UNKNOWABLE();

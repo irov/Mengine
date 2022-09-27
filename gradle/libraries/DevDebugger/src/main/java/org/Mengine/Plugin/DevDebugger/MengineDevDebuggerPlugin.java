@@ -6,6 +6,8 @@ import org.Mengine.Base.MengineActivity;
 import android.os.Bundle;
 
 public class MengineDevDebuggerPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "DevDebugger";
+
     @FunctionalInterface
     public interface DevButtonCallbackInterface {
         void callback();

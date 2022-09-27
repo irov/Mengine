@@ -21,7 +21,7 @@ public class MengineHelpshiftDevDebuggerExtension implements MenginePluginExtens
 
     @Override
     public void onRun(MengineActivity activity, MenginePlugin plugin) {
-        MengineDevDebuggerPlugin devDebugger = activity.findPlugin();
+        MengineDevDebuggerPlugin devDebugger = activity.findPlugin(MengineDevDebuggerPlugin.class);
 
     }
 }

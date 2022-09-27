@@ -59,11 +59,11 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
     @Override
     public void onExtension(MengineActivity activity) {
-        this.addExtension("org.Mengine.Plugin.Helpshift.MengineHelpshiftDevDebugger");
+        this.addExtension("org.Mengine.Plugin.Helpshift.MengineHelpshiftDevDebuggerExtension");
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onMengineCreateApplication(MengineActivity activity) {
         Map<String, Object> config = new HashMap<>();
 
         if (BuildConfig.DEBUG) {

@@ -139,10 +139,7 @@ public class MengineActivity extends SDLActivity {
         return plugins;
     }
 
-    public <T> T findPlugin() {
-        T type_plugin = null;
-        Class<?> cls = type_plugin.getClass();
-
+    public <T> T findPlugin(Class<T> cls) {
         String name;
 
         try {

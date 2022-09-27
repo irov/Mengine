@@ -44,6 +44,8 @@ public class MenginePlugin {
         for( MenginePluginExtension extension : m_extensions ) {
             extension.onFinalize(m_activity, this);
         }
+
+        m_extensions = null;
     }
 
     public void setActivity(MengineActivity activity) {
@@ -130,12 +132,10 @@ public class MenginePlugin {
         //Empty
     }
 
-    public boolean onExtensionRun(MengineActivity activity) {
+    public void onExtensionRun(MengineActivity activity) {
         for( MenginePluginExtension extension : m_extensions ) {
             extension.onRun(activity, this);
         }
-
-        return true;
     }
 
     public void onMengineInitializeBaseServices(MengineActivity activity) {

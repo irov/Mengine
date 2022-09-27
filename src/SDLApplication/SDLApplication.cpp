@@ -292,7 +292,7 @@ namespace Mengine
         {
             return false;
         }
-#elif defined(MENGINE_PLATFORM_IOS)
+#elif defined(MENGINE_PLATFORM_ANDROID)
         if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {

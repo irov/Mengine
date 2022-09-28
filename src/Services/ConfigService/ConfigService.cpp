@@ -179,7 +179,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConfigInterfacePtr & ConfigService::getPersistentConfig() const
     {
+#ifndef MENGINE_BUILD_PUBLISH
         return m_persistentConfig;
+#else
+        return ConfigInterfacePtr::none();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

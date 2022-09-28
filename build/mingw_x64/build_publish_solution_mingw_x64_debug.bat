@@ -1,0 +1,1 @@
+@call %~dp0build_solution_mingw_x64.bat Debug %1 %2

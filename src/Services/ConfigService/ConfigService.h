@@ -6,7 +6,10 @@
 
 #include "MemoryConfig.h"
 #include "MultiConfig.h"
-#include "PersistentConfig.h"
+
+#ifndef MENGINE_BUILD_PUBLISH
+#   include "PersistentConfig.h"
+#endif
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Tags.h"
@@ -36,7 +39,11 @@ namespace Mengine
 
     public:
         const ConfigInterfacePtr & getDefaultConfig() const override;
+
+#ifndef MENGINE_BUILD_PUBLISH
+    public:
         const ConfigInterfacePtr & getPersistentConfig() const override;
+#endif
 
     protected:
         ThreadMutexInterfacePtr m_mutex;

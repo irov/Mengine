@@ -334,6 +334,6 @@ namespace Mengine
 #ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         bool m_sessionNotification;
         bool m_sessionLock;
-#endif;
+#endif
     };
 }

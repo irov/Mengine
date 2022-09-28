@@ -23,7 +23,11 @@ namespace Mengine
 
     public:
         virtual const ConfigInterfacePtr & getDefaultConfig() const = 0;
+
+#ifndef MENGINE_BUILD_PUBLISH
+    public:
         virtual const ConfigInterfacePtr & getPersistentConfig() const = 0;
+#endif
     };
 }
 //////////////////////////////////////////////////////////////////////////

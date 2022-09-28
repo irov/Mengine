@@ -59,16 +59,16 @@ namespace Mengine
 
         m_defaultConfig = defaultConfig;
 
+#ifndef MENGINE_BUILD_PUBLISH
         PersistentConfigPtr persistentConfig = Helper::makeFactorableUnique<PersistentConfig>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( persistentConfig );
 
         persistentConfig->setMutex( mutex );
 
-        m_persistentConfig = persistentConfig;
-
-#ifndef MENGINE_BUILD_PUBLISH
         m_defaultConfig->addConfig( persistentConfig );
+
+        m_persistentConfig = persistentConfig;
 #endif
 
         return true;
@@ -177,13 +177,13 @@ namespace Mengine
         return m_defaultConfig;
     }
     //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_BUILD_PUBLISH
+    //////////////////////////////////////////////////////////////////////////
     const ConfigInterfacePtr & ConfigService::getPersistentConfig() const
     {
-#ifndef MENGINE_BUILD_PUBLISH
         return m_persistentConfig;
-#else
-        return ConfigInterfacePtr::none();
-#endif
     }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

@@ -239,6 +239,8 @@ namespace Mengine
 
             LOGGER_MESSAGE_RELEASE( "uid: %s", message_uid );
             LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
+            
+            Helper::appleSentrySetExtraString( "Crash UID", message_uid );
 
             Helper::appleSentryCapture( "Mengine test sentry crash", 0 );
 

@@ -3,8 +3,6 @@
 #include "AppleStoreReviewInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/ConstString.h"
-
 
 namespace Mengine
 {
@@ -20,7 +18,7 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        virtual void launchTheInAppReview() override;
+        void launchTheInAppReview() override;
 
     };
 }

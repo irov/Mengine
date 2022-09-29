@@ -20,9 +20,23 @@ namespace Mengine
     AppleStoreReviewService::~AppleStoreReviewService()
     {
     }
+    /////////////////////////////////////////////////////////////////////////////
+    bool AppleStoreReviewService::_initializeService()
+    {
+        //Empty
+        
+        return true;
+    }
+    ////////////////////////////////////////////////////////////////////////
+    void AppleStoreReviewService::_finalizeService()
+    {
+        //Empty
+    }
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreReviewService::launchTheInAppReview()
     {
+        LOGGER_INFO("storereview", "launch the InAppReview");
+        
         if (@available(iOS 14.0, *)) {
             UIWindowScene * foregroundScene = nil;
             for( UIWindowScene * scene in UIApplication.sharedApplication.connectedScenes ) {
@@ -37,15 +51,6 @@ namespace Mengine
         } else if (@available(iOS 10.3, *)) {
             [SKStoreReviewController requestReview];
         }
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    bool AppleStoreReviewService::_initializeService()
-    {
-        return true;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    void AppleStoreReviewService::_finalizeService()
-    {
     }
     //////////////////////////////////////////////////////////////////////////
 }

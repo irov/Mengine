@@ -228,7 +228,7 @@ if(MENGINE_DEPENDENCE_PNG)
     set(PNG_HARDWARE_OPTIMIZATIONS ON CACHE BOOL "PNG_HARDWARE_OPTIMIZATIONS" FORCE)
     set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)
 
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/CMakeLists.txt ${THIRDPARTY_DIR}/libpng/scripts/CMakeLists.txt COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/CMakeLists.txt ${THIRDPARTY_DIR}/libpng/CMakeLists.txt COPYONLY)
     
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/genchk.cmake.in ${THIRDPARTY_DIR}/libpng/scripts/genchk.cmake.in COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/genout.cmake.in ${THIRDPARTY_DIR}/libpng/scripts/genout.cmake.in COPYONLY)

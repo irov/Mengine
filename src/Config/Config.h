@@ -284,11 +284,11 @@
 #endif
 
 #ifndef MENGINE_PVOID_OFFSET
-#define MENGINE_PVOID_OFFSET(P, O) ((unsigned char *)(P) + (O))
+#define MENGINE_PVOID_OFFSET(P, O) (reinterpret_cast<unsigned char *>(P) + (O))
 #endif
 
 #ifndef MENGINE_CPVOID_OFFSET
-#define MENGINE_CPVOID_OFFSET(P, O) ((const unsigned char *)(P) + (O))
+#define MENGINE_CPVOID_OFFSET(P, O) (reinterpret_cast<const unsigned char *>(P) + (O))
 #endif
 
 #ifndef MENGINE_FOURCC

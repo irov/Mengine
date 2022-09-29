@@ -1,3 +1,0 @@
-LIBRARY "PNGPlugin"
-EXPORTS
-   dllCreatePlugin @1

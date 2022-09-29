@@ -24,8 +24,16 @@ namespace Mengine
     void AppleStoreReviewService::launchTheInAppReview()
     {
         if (@available(iOS 14.0, *)) {
-            UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
-            [SKStoreReviewController requestReviewInScene:appWindow.windowScene];
+            UIWindowScene * foregroundScene = nil;
+            for( UIWindowScene * scene in UIApplication.sharedApplication.connectedScenes ) {
+                if( scene.activationState == UISceneActivationStateForegroundActive ) {
+                    foregroundScene = scene;
+                }
+            }
+            
+            if( foregroundScene != nil ) {
+                [SKStoreReviewController requestReviewInScene:foregroundScene];
+            }
         } else if (@available(iOS 10.3, *)) {
             [SKStoreReviewController requestReview];
         }

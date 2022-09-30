@@ -312,9 +312,6 @@ set(libpng_private_hdrs
     pnginfo.h
     pngstruct.h
 )
-if(AWK AND NOT ANDROID AND NOT IOS)
-  list(APPEND libpng_private_hdrs "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h")
-endif()
 set(libpng_sources
     ${libpng_public_hdrs}
     ${libpng_private_hdrs}

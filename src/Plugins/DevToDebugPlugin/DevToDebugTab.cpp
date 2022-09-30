@@ -4,6 +4,7 @@
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -34,6 +35,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugTab::addWidget( const DevToDebugWidgetInterfacePtr & _widget )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _widget );
+        
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_widgets.emplace_back( _widget );

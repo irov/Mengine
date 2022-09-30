@@ -77,6 +77,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_DevToDebugTab_addWidget( DevToDebugTab * _tab, const DevToDebugWidgetPtr & _widget )
         {
+            if( _widget == nullptr )
+            {
+                LOGGER_ERROR("DevToDebugTab invalid add widget [nullptr]");
+                
+                return;
+            }
+            
             _tab->addWidget( _widget );
         }
         //////////////////////////////////////////////////////////////////////////

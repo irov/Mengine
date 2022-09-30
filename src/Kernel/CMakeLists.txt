@@ -5,6 +5,7 @@ Containers
     StlAllocator.h
     Array.h
     ArrayString.h
+    ArrayWString.h
     Bitset.h
     DynamicArray.h
     Blobject.h
@@ -526,6 +527,7 @@ Core
     HashType.h
    
     PathString.h
+    PathWString.h
    
     FilePath.h
     FilePath.cpp

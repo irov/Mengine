@@ -9,19 +9,19 @@
 namespace Mengine
 {
     template<uint32_t Size>
-    class ArrayString
+    class ArrayWString
     {
     public:
-        typedef Char value_type;
+        typedef WChar value_type;
         typedef uint32_t size_type;
 
     public:
-        ArrayString()
+        ArrayWString()
             : m_pos( 0 )
         {
         }
 
-        ~ArrayString()
+        ~ArrayWString()
         {
         }
 
@@ -63,14 +63,14 @@ namespace Mengine
 
         void append( value_type * _value )
         {
-            size_type size = (size_type)MENGINE_STRLEN( _value );
+            size_type size = (size_type)MENGINE_WCSLEN( _value );
 
             this->append( _value, size );
         }
 
         void append( const value_type * _value )
         {
-            size_type size = (size_type)MENGINE_STRLEN( _value );
+            size_type size = (size_type)MENGINE_WCSLEN( _value );
 
             this->append( _value, size );
         }
@@ -84,7 +84,7 @@ namespace Mengine
 
             m_buffer[m_pos] = _ch;
             m_pos += 1;
-            m_buffer[m_pos] = '\0';
+            m_buffer[m_pos] = L'\0';
         }
 
         template<class T>
@@ -112,14 +112,14 @@ namespace Mengine
 
         void assign( value_type * _value )
         {
-            size_type size = (size_type)MENGINE_STRLEN( _value );
+            size_type size = (size_type)MENGINE_WCSLEN( _value );
 
             this->assign( _value, size );
         }
 
         void assign( const value_type * _value )
         {
-            size_type size = (size_type)MENGINE_STRLEN( _value );
+            size_type size = (size_type)MENGINE_WCSLEN( _value );
 
             this->assign( _value, size );
         }
@@ -133,7 +133,7 @@ namespace Mengine
 
             m_buffer[0] = _ch;
             m_pos = 1;
-            m_buffer[m_pos] = '\0';
+            m_buffer[m_pos] = L'\0';
         }
 
         template<class T>
@@ -148,7 +148,7 @@ namespace Mengine
     public:
         void replace_last( const value_type * _value )
         {
-            size_type size = (size_type)MENGINE_STRLEN( _value );
+            size_type size = (size_type)MENGINE_WCSLEN( _value );
 
             if( size > m_pos )
             {
@@ -160,7 +160,7 @@ namespace Mengine
 
         void cut_before_last_of( value_type _ch )
         {
-            value_type * ch_pos = MENGINE_STRRCHR( m_buffer, _ch );
+            value_type * ch_pos = MENGINE_WCSRCHR( m_buffer, _ch );
 
             if( ch_pos == nullptr )
             {

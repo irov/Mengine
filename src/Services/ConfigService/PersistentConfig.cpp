@@ -8,7 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Stringalized.h"
-#include "Kernel/ArrayString.h"
+#include "Kernel/PathString.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -25,8 +25,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static FilePath makePersistentPropertyFilePath( const Char * _section, const Char * _key )
         {
-            ArrayString<MENGINE_MAX_PATH> propertyPath;
-            propertyPath += ".persistentconfig";
+            PathString propertyPath;
+            propertyPath += "persistentconfig";
             propertyPath += MENGINE_PATH_DELIM;
             propertyPath += _section;
             propertyPath += '.';

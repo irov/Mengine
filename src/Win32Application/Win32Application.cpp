@@ -63,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32Application::~Win32Application()
     {
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeOptionsService_()
     {
@@ -249,7 +249,7 @@ namespace Mengine
             if( this->initializeOptionsService_() == false )
             {
                 return false;
-            }
+            }            
 
             return true;
         } );

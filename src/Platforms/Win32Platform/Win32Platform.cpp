@@ -38,7 +38,6 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
-#include "Kernel/StringArguments.h"
 #include "Kernel/Win32Helper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/SHA1.h"

@@ -74,6 +74,10 @@
 #define MENGINE_WCSCMP(a, b) ::wcscmp((a), (b))
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_WCSRCHR
+#define MENGINE_WCSRCHR(a, b) ::wcsrchr((a), (b))
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WCSNCMP
 #define MENGINE_WCSNCMP(a, b, n) ::wcsncmp((a), (b), (n))
 #endif

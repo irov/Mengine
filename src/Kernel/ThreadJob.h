@@ -57,9 +57,9 @@ namespace Mengine
 
     public:
         UniqueId addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc );
-        bool removeWorker( uint32_t _id );
-        bool pauseWorker( uint32_t _id );
-        bool resumeWorker( uint32_t _id );
+        bool removeWorker( UniqueId _id );
+        bool pauseWorker( UniqueId _id );
+        bool resumeWorker( UniqueId _id );
 
     protected:
         bool _onThreadTaskProcess() override;

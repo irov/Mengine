@@ -15,7 +15,7 @@ namespace Mengine
         static void threadWorkerFree( ThreadJobWorkerDesc & _desc )
         {
             _desc.worker = nullptr;
-            _desc.id = 0;
+            _desc.id = INVALID_UNIQUE_ID;
             _desc.status = ETS_FREE;
             _desc.pause = false;
             _desc.process = false;
@@ -66,7 +66,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool threadWorkerRemove( ThreadJobWorkerDesc & _desc, uint32_t _id )
+        static bool threadWorkerRemove( ThreadJobWorkerDesc & _desc, UniqueId _id )
         {
             if( _desc.status == ETS_FREE )
             {
@@ -306,7 +306,7 @@ namespace Mengine
             desc.mutex_progress = mutex_progress;
 
             desc.worker = nullptr;
-            desc.id = 0;
+            desc.id = INVALID_UNIQUE_ID;
             desc.status = ETS_FREE;
             desc.pause = false;
             desc.process = false;
@@ -367,7 +367,7 @@ namespace Mengine
         return INVALID_UNIQUE_ID;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadJob::removeWorker( uint32_t _id )
+    bool ThreadJob::removeWorker( UniqueId _id )
     {
         if( _id == 0 )
         {
@@ -389,7 +389,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadJob::pauseWorker( uint32_t _id )
+    bool ThreadJob::pauseWorker( UniqueId _id )
     {
         if( _id == 0 )
         {
@@ -415,7 +415,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadJob::resumeWorker( uint32_t _id )
+    bool ThreadJob::resumeWorker( UniqueId _id )
     {
         if( _id == 0 )
         {

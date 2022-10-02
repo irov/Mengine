@@ -1,5 +1,7 @@
 #include "StringArguments.h"
 
+#include "Kernel/StringSplit.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -14,6 +16,14 @@ namespace Mengine
     void StringArguments::addArgument( const Char * _argument )
     {
         m_arguments.emplace_back( _argument );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void StringArguments::addArguments( const Char * _arguments )
+    {
+        Helper::stringSplit( _arguments, [this]( const Char * _str, const Char * _end )
+        {
+            m_arguments.emplace_back( _str, _end );
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * StringArguments::getArgument( uint32_t _index ) const

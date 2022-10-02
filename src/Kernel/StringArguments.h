@@ -17,6 +17,7 @@ namespace Mengine
 
     protected:
         void addArgument( const Char * _argument ) override;
+        void addArguments( const Char * _arguments ) override;
         const Char * getArgument( uint32_t _index ) const override;
         uint32_t getArgumentCount() const override;
 

@@ -588,6 +588,9 @@ Core
     StringCopy.h
     StringCopy.cpp
     
+    StringSplit.h
+    StringSplit.cpp
+    
     StaticString.h
     StaticString.cpp
     

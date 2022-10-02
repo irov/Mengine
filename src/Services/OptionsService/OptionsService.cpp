@@ -28,7 +28,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::_initializeService()
     {
-        //Empty
         SERVICE_WAIT_METHOD( LoggerServiceInterface, this, OptionsService::logOptions_ );
 
         return true;

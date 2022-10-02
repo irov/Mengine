@@ -1,5 +1,7 @@
 #include "AppleUtils.h"
 
+#include "Kernel/StringCopy.h"
+
 #include "Config/StdString.h"
 
 #if defined(MENGINE_PLATFORM_MACOS)
@@ -40,6 +42,11 @@ namespace Mengine
         {
             NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
             
+            if( defaults == nil )
+            {
+                return false;
+            }
+            
             NSString * value = [defaults objectForKey:[[NSString alloc] initWithUTF8String:_key]];
             
             if( value == nil )
@@ -49,14 +56,19 @@ namespace Mengine
             
             const Char * value_str = [value UTF8String];
             
-            MENGINE_STRNCPY( _value, value_str, _capacity );
+            Helper::stringCopy( _value, value_str, _capacity );
             
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
         bool AppleSetUserDefaultsString( const Char * _key, const Char * _value )
         {
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+            
+            if( defaults == nil )
+            {
+                return false;
+            }
             
             [defaults setObject:[[NSString alloc] initWithUTF8String:_value] forKey:[[NSString alloc] initWithUTF8String:_key]];
             

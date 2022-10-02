@@ -9,6 +9,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/PersistentSystemInterface.h"
 
 #include "SDLMessageBoxLogger.h"
 
@@ -123,12 +124,14 @@ namespace Mengine
         }
 #endif
 
-/*TODO
 #if defined(MENGINE_PLATFORM_APPLE)
         Char MengineApplePersistentArguments[1024] = {'\0'};
-        Helper::AppleGetUserDefaultsString( "MengineApplePersistentArguments", MengineApplePersistentArguments, 1024 );
+        if( PERSISTENT_SYSTEM()
+            ->getPersistentArguments( MengineApplePersistentArguments, 1024 ) == true )
+        {
+            arguments->addArguments( MengineApplePersistentArguments );
+        }
 #endif
- */
 
         for( int32_t i = 1; i < _argc; ++i )
         {

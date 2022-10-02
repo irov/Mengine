@@ -28,14 +28,14 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyPersistentSystem::getPersistentArguments( Char * _value, size_t _capacity ) const
+    bool ApplePersistentSystem::getPersistentArguments( Char * _value, size_t _capacity ) const
     {
         bool successful = Helper::AppleGetUserDefaultsString( "MengineApplePersistentArguments", _value, _capacity );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyPersistentSystem::setPersistentArguments( const Char * _value )
+    void ApplePersistentSystem::setPersistentArguments( const Char * _value )
     {
         Helper::AppleSetUserDefaultsString( "MengineApplePersistentArguments", _value );
     }

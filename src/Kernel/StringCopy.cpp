@@ -14,7 +14,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_FATAL( in_size < _capacity );
 
-            if( in_size < _capacity )
+            if( in_size >= _capacity )
             {
                 in_size = _capacity - 1;
             }

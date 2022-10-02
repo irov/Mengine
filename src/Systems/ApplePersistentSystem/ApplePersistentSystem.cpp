@@ -1,0 +1,43 @@
+#include "ApplePersistentSystem.h"
+
+#include "Environment/Apple/AppleUtils.h"
+
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( PersistentSystem, Mengine::ApplePersistentSystem );
+//////////////////////////////////////////////////////////////////////////
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    ApplePersistentSystem::ApplePersistentSystem()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ApplePersistentSystem::~ApplePersistentSystem()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ApplePersistentSystem::_initializeService()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ApplePersistentSystem::_finalizeService()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DummyPersistentSystem::getPersistentArguments( Char * _value, size_t _capacity ) const
+    {
+        bool successful = Helper::AppleGetUserDefaultsString( "MengineApplePersistentArguments", _value, _capacity );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DummyPersistentSystem::setPersistentArguments( const Char * _value )
+    {
+        Helper::AppleSetUserDefaultsString( "MengineApplePersistentArguments", _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

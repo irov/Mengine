@@ -136,6 +136,7 @@ Common
     UIKitProxyApplicationDelegateInterface.h
     ExecutorInterface.h
     StatisticServiceInterface.h
+    PersistentSystemInterface.h
 )
 
 ADD_FILTER(
@@ -165,7 +166,7 @@ File
 )   
 
 ADD_FILTER(
-Thread     
+Thread
     ThreadIdentityInterface.h
     ThreadQueueInterface.h
     ThreadWorkerInterface.h
@@ -176,7 +177,7 @@ Thread
 )
 
 ADD_FILTER(
-Render     
+Render
     MaterialEnumInterface.h
     RenderEnumInterface.h
     RenderServiceInterface.h

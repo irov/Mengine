@@ -45,6 +45,7 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
+SERVICE_EXTERN( PersistentSystem );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( Platform );
@@ -753,6 +754,7 @@ namespace Mengine
     {
         MENGINE_ADD_SERVICE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PersistentSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );

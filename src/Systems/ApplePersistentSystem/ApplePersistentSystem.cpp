@@ -40,4 +40,9 @@ namespace Mengine
         Helper::AppleSetUserDefaultsString( "MengineApplePersistentArguments", _value );
     }
     //////////////////////////////////////////////////////////////////////////
+    void ApplePersistentSystem::removePersistentArguments()
+    {
+        Helper::AppleRemoveUserDefaultsString( "MengineApplePersistentArguments" );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

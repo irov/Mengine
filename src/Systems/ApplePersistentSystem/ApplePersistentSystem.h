@@ -20,5 +20,6 @@ namespace Mengine
     public:
         bool getPersistentArguments( Char * _value, size_t _capacity ) const override;
         void setPersistentArguments( const Char * _value ) override;
+        void removePersistentArguments() override;
     };
 };

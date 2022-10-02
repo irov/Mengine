@@ -10,8 +10,9 @@ namespace Mengine
         SERVICE_DECLARE( "PersistentSystem" )
 
     public:
-        virtual bool getPersistentArguments( Char * _value, size_t _capacity ) const = 0;
-        virtual void setPersistentArguments( const Char * _value ) = 0;
+        virtual bool getPersistentArguments( Char * _arguments, size_t _capacity ) const = 0;
+        virtual void setPersistentArguments( const Char * _arguments ) = 0;
+        virtual void removePersistentArguments() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -75,5 +75,19 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool AppleRemoveUserDefaultsString( const Char * _key )
+        {
+            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+            
+            if( defaults == nil )
+            {
+                return false;
+            }
+
+            [defaults removeObjectForKey:[[NSString alloc] initWithUTF8String:_key]];
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

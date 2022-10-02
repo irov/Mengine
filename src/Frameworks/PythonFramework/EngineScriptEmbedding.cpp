@@ -28,6 +28,7 @@
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AnalyticsSystemInterface.h"
+#include "Interface/PersistentSystemInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -3002,6 +3003,32 @@ namespace Mengine
                 return logger;
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_setPersistentArguments( const Char * _arguments )
+            {
+                PERSISTENT_SYSTEM()
+                    ->setPersistentArguments( _arguments );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_getPersistentArguments( pybind::kernel_interface * _kernel )
+            {
+                Char persistentArguments[1024] = {'\0'};
+                if( PERSISTENT_SYSTEM()
+                    ->getPersistentArguments( persistentArguments, 1024 ) == false )
+                {
+                    return _kernel->ret_none();
+                }
+
+                PyObject * py_persistentArguments = _kernel->string_from_char( persistentArguments );
+
+                return py_persistentArguments;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removePersistentArguments()
+            {
+                PERSISTENT_SYSTEM()
+                    ->removePersistentArguments();
+            }
+            //////////////////////////////////////////////////////////////////////////
             Scene * s_findNodeScene( Node * _node )
             {
                 Node * node_iterator = _node;
@@ -4550,6 +4577,10 @@ namespace Mengine
             ;
 
         pybind::def_functor( _kernel, "makeFileLogger", nodeScriptMethod, &EngineScriptMethod::s_makeFileLogger );
+
+        pybind::def_functor( _kernel, "setPersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_setPersistentArguments );
+        pybind::def_functor_kernel( _kernel, "getPersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_getPersistentArguments );
+        pybind::def_functor( _kernel, "removePersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_removePersistentArguments );
 
         return true;
     }

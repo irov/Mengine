@@ -14,7 +14,11 @@
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidUtils.h"
+#elif defined(MENGINE_PLATFORM_APPLE)
+#   include "Environment/Apple/AppleUtils.h"
+#endif
 
+#if defined(MENGINE_PLATFORM_ANDROID)
 #   include "AndroidLogger.h"
 #else
 #   include "SDLStdioLogger.h"
@@ -118,6 +122,13 @@ namespace Mengine
             }
         }
 #endif
+
+/*TODO
+#if defined(MENGINE_PLATFORM_APPLE)
+        Char MengineApplePersistentArguments[1024] = {'\0'};
+        Helper::AppleGetUserDefaultsString( "MengineApplePersistentArguments", MengineApplePersistentArguments, 1024 );
+#endif
+ */
 
         for( int32_t i = 1; i < _argc; ++i )
         {

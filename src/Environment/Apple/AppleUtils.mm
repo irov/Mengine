@@ -1,5 +1,7 @@
 #include "AppleUtils.h"
 
+#include "Config/StdString.h"
+
 #if defined(MENGINE_PLATFORM_MACOS)
 #   import <AppKit/AppKit.h>
 #else
@@ -18,9 +20,9 @@ namespace Mengine
         #if defined(MENGINE_PLATFORM_MACOS)
             [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
         #else
-            if( [[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:url]] == TRUE )
+            if( [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:url]] == TRUE )
             {
-                [[UIApplication sharedApplication] openURL: [NSURL URLWithString:url] options:@{} completionHandler:^(BOOL success)
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:^(BOOL success)
                 {
                     //ToDo callback
                 }];
@@ -30,6 +32,34 @@ namespace Mengine
                 return false;
             }
         #endif
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool AppleGetUserDefaultsString( const Char * _key, Char * const _value, size_t _capacity )
+        {
+            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+            
+            NSString * value = [defaults objectForKey:[[NSString alloc] initWithUTF8String:_key]];
+            
+            if( value == nil )
+            {
+                return false;
+            }
+            
+            const Char * value_str = [value UTF8String];
+            
+            MENGINE_STRNCPY( _value, value_str, _capacity );
+            
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool AppleSetUserDefaultsString( const Char * _key, const Char * _value )
+        {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            
+            [defaults setObject:[[NSString alloc] initWithUTF8String:_value] forKey:[[NSString alloc] initWithUTF8String:_key]];
+            
             return true;
         }
         //////////////////////////////////////////////////////////////////////////

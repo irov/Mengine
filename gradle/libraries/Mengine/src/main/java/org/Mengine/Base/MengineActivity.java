@@ -351,6 +351,12 @@ public class MengineActivity extends SDLActivity {
         return android_id;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    public String getDeviceName() {
+        String deviceName = android.os.Build.MODEL;
+
+        return deviceName;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public int genRequestCode(String name) {
         if (m_requestCodes.containsKey(name) == false) {
             int new_code = m_requestCodes.size();

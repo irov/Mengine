@@ -671,6 +671,11 @@ namespace Mengine
         return bytes;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TheoraVideoDecoder::isAlphaSplitVideo() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TheoraVideoDecoder::getSurfaceDimension( uint32_t _flags, VideoSurfaceDimension * const _surfaceDimension ) const
     {
         bool separateHorizontAlpha = (_flags & DF_VIDEO_SEPARATE_HORIZONTAL_ALPHA) == DF_VIDEO_SEPARATE_HORIZONTAL_ALPHA;

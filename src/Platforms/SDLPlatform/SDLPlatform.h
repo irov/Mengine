@@ -219,6 +219,7 @@ namespace Mengine
         jobject getJObjectActivity() const override;
 
         String getAndroidId() const override;
+        String getDeviceName() const override;
         String getAndroidPackageName() const override;
 #endif
 
@@ -329,6 +330,8 @@ namespace Mengine
         JNIEnv * m_jenv;
 
         AndroidEventationHubPtr m_androidEventationHub;
+
+        String m_deviceName;
 #endif
 
 #if defined(MENGINE_PLATFORM_MACOS)

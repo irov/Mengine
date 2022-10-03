@@ -34,6 +34,9 @@ namespace Mengine
         float _tell() const override;
 
     public:
+        bool isAlphaSplitVideo() const override;
+
+    public:
         void getSurfaceDimension( uint32_t _flags, VideoSurfaceDimension * const _surfaceDimension ) const override;
 
     public:

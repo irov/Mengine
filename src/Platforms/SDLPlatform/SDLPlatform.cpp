@@ -477,6 +477,10 @@ namespace Mengine
         Helper::iOSGetDeviceName( deviceName );
         
         MENGINE_STRCPY( _userName, deviceName );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        MENGINE_STRCPY( _userName, m_deviceName.c_str() );
+
+        return m_deviceName.size();
 #else
         _userName[0] = '\0';
 
@@ -1113,6 +1117,17 @@ namespace Mengine
 
         Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        String androidId = this->getAndroidId();
+
+        Helper::makeSHA1HEX( androidId.c_str(), androidId.size() * sizeof(String::value_type), m_fingerprint.data() );
+        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
+#endif
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        String deviceName = this->getDeviceName();
+
+        m_deviceName = deviceName;
 #endif
         
 #if defined(MENGINE_PLATFORM_MACOS)
@@ -3086,6 +3101,30 @@ namespace Mengine
         }
 
         jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getAndroidId );
+
+        const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
+
+        String stringValue = jStringValue;
+
+        m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+
+        m_androidEventationHub->invoke();
+
+        return stringValue;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    String SDLPlatform::getDeviceName() const
+    {
+        static jmethodID jmethodID_getDeviceName = m_jenv->GetMethodID( jclass_activity, "getDeviceName", "()Ljava/lang/String;" );
+
+        if( jmethodID_getDeviceName == nullptr )
+        {
+            LOGGER_ERROR( "invalid get android method 'getDeviceName'" );
+
+            return String();
+        }
+
+        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getDeviceName );
 
         const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
 

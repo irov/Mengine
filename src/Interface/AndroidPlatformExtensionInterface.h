@@ -19,6 +19,7 @@ namespace Mengine
         virtual jobject getJObjectActivity() const = 0;
 
         virtual String getAndroidId() const = 0;
+        virtual String getDeviceName() const = 0;
         virtual String getAndroidPackageName() const = 0;
 
     public:

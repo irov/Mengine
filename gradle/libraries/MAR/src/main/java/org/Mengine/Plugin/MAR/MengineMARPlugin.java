@@ -3,7 +3,7 @@ package org.Mengine.Plugin.MAR;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.ThreadUtil;
+import org.Mengine.Base.MengineUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;

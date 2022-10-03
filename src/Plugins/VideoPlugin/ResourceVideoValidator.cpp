@@ -88,6 +88,14 @@ namespace Mengine
 
         float videoFillrate = (float)(dataInfo->width * dataInfo->height);
 
+        bool resourceAlpha = _resource->isAlpha();
+        bool alphaSplitVideo = _decoder->isAlphaSplitVideo();
+
+        if( resourceAlpha == true && alphaSplitVideo == true )
+        {
+            videoFillrate *= 0.5f;
+        }
+
         float resolutionWidth = resolution.getWidthF();
         float resolutionHeight = resolution.getHeightF();
 

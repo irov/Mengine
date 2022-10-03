@@ -80,7 +80,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_GOOGLE_BILLING [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS [https://developers.google.com]
-/ * - MENGINE_APP_PLUGIN_MAR 
+/ * - MENGINE_APP_PLUGIN_MAR [http://doc.martianyun.com/en/]
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
 **/

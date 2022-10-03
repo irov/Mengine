@@ -64,6 +64,9 @@ namespace Mengine
         virtual const VideoCodecDataInfo * getCodecDataInfo() const override = 0;
 
     public:
+        virtual bool isAlphaSplitVideo() const = 0;
+
+    public:
         virtual void getSurfaceDimension( uint32_t _flags, VideoSurfaceDimension * const _surfaceDimension ) const = 0;
 
     public:

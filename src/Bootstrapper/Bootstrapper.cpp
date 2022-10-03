@@ -1751,6 +1751,7 @@ namespace Mengine
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
+        SERVICE_FINALIZE( PersistentSystem );
 
         SERVICE_DESTROY( SceneService );
         SERVICE_DESTROY( GameService );
@@ -1804,6 +1805,7 @@ namespace Mengine
         SERVICE_DESTROY( LoggerService );
         SERVICE_DESTROY( FactoryService );
         SERVICE_DESTROY( OptionsService );
+        SERVICE_DESTROY( PersistentSystem );
     }
     //////////////////////////////////////////////////////////////////////////
 }

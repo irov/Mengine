@@ -8,6 +8,7 @@
 #include "Kernel/AssertionType.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #ifndef MENGINE_DECODER_PNG_BYTES_TO_CHECK
 #define MENGINE_DECODER_PNG_BYTES_TO_CHECK 8
@@ -21,44 +22,52 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void PNGAPI png_handler_error_ptr( png_structp png_ptr, const char * _error )
         {
-            MENGINE_UNUSED( png_ptr );
             MENGINE_UNUSED( _error );
 
-            LOGGER_ERROR( "png error: '%s'"
+            png_voidp error_ptr = png_get_error_ptr( png_ptr );
+
+            ImageDecoderPNG * decoder = reinterpret_cast<ImageDecoderPNG *>(error_ptr);
+
+            LOGGER_ERROR( "png [%s] error: '%s'"
+                , Helper::getInputStreamDebugFilePath( decoder->getStream() ).c_str()
                 , _error
             );
         }
         //////////////////////////////////////////////////////////////////////////
         static void PNGAPI png_handler_warning_ptr( png_structp png_ptr, const char * _error )
         {
-            MENGINE_UNUSED( png_ptr );
             MENGINE_UNUSED( _error );
 
-            LOGGER_WARNING( "png warning: '%s'"
+            png_voidp error_ptr = png_get_error_ptr( png_ptr );
+
+            ImageDecoderPNG * decoder = reinterpret_cast<ImageDecoderPNG *>(error_ptr);
+
+            LOGGER_WARNING( "png [%s] warning: '%s'"
+                , Helper::getInputStreamDebugFilePath( decoder->getStream() ).c_str()
                 , _error
             );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void PNGAPI png_read_proc_ptr( png_structp _png_ptr, uint8_t * _data, png_size_t _size )
+        static void PNGAPI png_read_proc_ptr( png_structp png_ptr, uint8_t * _data, png_size_t _size )
         {
-            png_voidp io_ptr = png_get_io_ptr( _png_ptr );
+            png_voidp io_ptr = png_get_io_ptr( png_ptr );
             InputStreamInterface * stream = reinterpret_cast<InputStreamInterface *>(io_ptr);
 
             stream->read( _data, _size );
         }
         //////////////////////////////////////////////////////////////////////////
-        static png_voidp PNGAPI png_malloc_ptr( png_structp _png, png_size_t _size )
+        static png_voidp PNGAPI png_malloc_ptr( png_structp png_ptr, png_size_t _size )
         {
-            MENGINE_UNUSED( _png );
+            MENGINE_UNUSED( png_ptr );
 
             void * p = Helper::allocateMemory( _size, "dpng" );
 
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void PNGAPI png_free_ptr( png_structp _png, png_voidp _ptr )
+        static void PNGAPI png_free_ptr( png_structp png_ptr, png_voidp _ptr )
         {
-            MENGINE_UNUSED( _png );
+            MENGINE_UNUSED( png_ptr );
 
             Helper::deallocateMemory( _ptr, "dpng" );
         }
@@ -91,7 +100,7 @@ namespace Mengine
 
         if( info_ptr == nullptr )
         {
-            LOGGER_ERROR( "Can't create info structure" );
+            LOGGER_ERROR( "can't create info structure" );
 
             png_destroy_write_struct( &m_png_ptr, nullptr );
 
@@ -115,14 +124,18 @@ namespace Mengine
         uint8_t png_check[MENGINE_DECODER_PNG_BYTES_TO_CHECK];
         if( stream->read( &png_check, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != MENGINE_DECODER_PNG_BYTES_TO_CHECK )
         {
-            LOGGER_ERROR( "Bad or not PNG file (size)" );
+            LOGGER_ERROR( "bad or not PNG file '%s' (size)"
+                , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str() 
+            );
 
             return false;
         }
 
         if( png_sig_cmp( png_check, (png_size_t)0, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != 0 )
         {
-            LOGGER_ERROR( "Bad or not PNG file (sig)" );
+            LOGGER_ERROR( "bad or not PNG file '%s' (sig)"
+                , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
+            );
 
             return false;
         }
@@ -171,7 +184,9 @@ namespace Mengine
 #else
         if( bit_depth == 16 )
         {
-            LOGGER_ERROR( "not support scale 16 to 8 bit" );
+            LOGGER_ERROR( "not support png file '%s' scale 16 to 8 bit"
+                , Helper::getInputStreamDebugFilePath( decoder->getStream() ).c_str() 
+            );
 
             return false;
         }
@@ -228,7 +243,8 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_ERROR( "unsupport channels %u"
+                LOGGER_ERROR( "png file '%s' unsupport channels %u"
+                    , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
                     , channels
                 );
 
@@ -338,7 +354,8 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "DEFAULT not support chanells %u - %u"
+                    LOGGER_ERROR( "png file '%s' DEFAULT not support chanells %u - %u"
+                        , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
                         , dataChannels
                         , optionChannels
                     );
@@ -384,7 +401,8 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "DF_READ_ALPHA_ONLY not support chanells %u - %u"
+                    LOGGER_ERROR( "png file '%s' DF_READ_ALPHA_ONLY not support chanells %u - %u"
+                        , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
                         , dataChannels
                         , optionChannels
                     );
@@ -440,7 +458,8 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "DF_WRITE_ALPHA_ONLY not support chanells %u - %u"
+                    LOGGER_ERROR( "png file '%s' DF_WRITE_ALPHA_ONLY not support chanells %u - %u"
+                        , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
                         , dataChannels
                         , optionChannels
                     );
@@ -450,7 +469,8 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_ERROR( "unsupport options flag %u"
+                LOGGER_ERROR( "png file '%s' unsupport options flag %u"
+                    , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
                     , flags
                 );
 
@@ -479,8 +499,6 @@ namespace Mengine
 
         if( info_ptr == nullptr )
         {
-            LOGGER_ERROR( "Can't create info structure" );
-
             png_destroy_write_struct( &m_png_ptr, nullptr );
 
             return false;

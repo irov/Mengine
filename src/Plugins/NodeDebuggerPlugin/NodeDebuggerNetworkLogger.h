@@ -44,7 +44,7 @@ namespace Mengine
         SceneDataProviderInterfacePtr m_sceneDataProvider;
 
         typedef List<RequestData> ListRequestDatas;
-        ListRequestDatas m_requestDatas;        
+        ListRequestDatas m_requestDatas;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<NodeDebuggerNetworkLogger> NodeDebuggerNetworkLoggerPtr;

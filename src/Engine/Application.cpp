@@ -64,7 +64,6 @@
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/ViewportHelper.h"
-#include "Kernel/List.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/ProfilerHelper.h"

@@ -119,7 +119,9 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( _sdlWindow, x, y, &point );
 
-                EKeyCode code = this->getKeyCode_( _event.key.keysym.scancode );
+                SDL_Scancode scancode = _event.key.keysym.scancode;
+
+                EKeyCode code = this->getKeyCode_( scancode );
 
                 if( code == KC_UNASSIGNED )
                 {
@@ -150,10 +152,12 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( _sdlWindow, x, y, &point );
 
+                const Char * text = _event.text.text;
+
                 WChar text_code[8] = {L'\0'};
                 size_t text_code_size;
                 UNICODE_SYSTEM()
-                    ->utf8ToUnicode( _event.text.text, MENGINE_UNKNOWN_SIZE, text_code, 7, &text_code_size );
+                    ->utf8ToUnicode( text, MENGINE_UNKNOWN_SIZE, text_code, 7, &text_code_size );
 
                 Helper::pushTextEvent( point.x, point.y, text_code[0] );
             }break;

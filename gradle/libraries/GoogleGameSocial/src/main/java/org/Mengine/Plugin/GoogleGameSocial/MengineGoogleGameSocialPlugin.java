@@ -157,6 +157,8 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
                 this.signInCallback(account);
             } else {
+                this.logInfo("login");
+
                 Status status = result.getStatus();
 
                 int statusCode = status.getStatusCode();

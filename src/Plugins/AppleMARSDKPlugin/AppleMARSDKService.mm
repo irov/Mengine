@@ -1,5 +1,7 @@
 #include "AppleMARSDKService.h"
 
+#include "Environment/iOS/iOSDetail.h"
+
 #include "Kernel/Logger.h"
 
 #include "Config/Algorithm.h"
@@ -24,6 +26,10 @@ namespace Mengine
     bool AppleMARSDKService::_initializeService()
     {
         m_delegate = [[AppleMARSDKDelegate alloc] initWithService:this];
+        
+        [[MARSDK sharedInstance] setDelegate:m_delegate];
+        
+        m_adRewardedDelegate = [[AppleMARSDKAdRewardedDelegate alloc] initWithService:this];
         
         return true;
     }
@@ -51,7 +57,7 @@ namespace Mengine
     {
         LOGGER_INFO( "marsdk", "login" );
         
-        [m_delegate login];
+        [[MARSDK sharedInstance] login];
         
         return true;
     }
@@ -60,7 +66,7 @@ namespace Mengine
     {
         LOGGER_INFO( "marsdk", "logout" );
         
-        [m_delegate logout];
+        [[MARSDK sharedInstance] logout];
         
         return true;
     }
@@ -69,7 +75,7 @@ namespace Mengine
     {
         LOGGER_INFO( "marsdk", "switchAccount" );
         
-        [m_delegate switchAccount];
+        [[MARSDK sharedInstance] switchAccount];
         
         return true;
     }
@@ -102,7 +108,7 @@ namespace Mengine
         extraData.partyMasterID = [NSString stringWithUTF8String: _data.partyMasterID.c_str()];
         extraData.partyMasterName = [NSString stringWithUTF8String: _data.partyMasterName.c_str()];
         
-        [m_delegate submitExtendedData:extraData];
+        [[MARSDK sharedInstance] submitExtraData:extraData];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitPaymentData( const MARSDKProductInfo & _info )
@@ -127,7 +133,14 @@ namespace Mengine
         productInfo.serverName = [NSString stringWithUTF8String: _info.serverName.c_str()];
         productInfo.notifyUrl = [NSString stringWithUTF8String: _info.notifyUrl.c_str()];
         
-        [m_delegate submitPaymentData:productInfo];
+        [[MARSDK sharedInstance] pay:productInfo];        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleMARSDKService::showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
+    {
+        UIViewController * rootViewController = Helper::iOSGetRootViewController();
+        
+        [[MARAd sharedInstance] showRewardVideoAd:rootViewController itemName:[[NSString alloc] initWithUTF8String:_itemName.c_str()] itemNum:_itemNum delegate:m_adRewardedDelegate];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogin( const MARSDKResultParams & _params )

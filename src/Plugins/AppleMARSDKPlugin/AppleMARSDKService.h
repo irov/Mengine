@@ -3,6 +3,7 @@
 #include "AppleMARSDKInterface.h"
 
 #include "AppleMARSDKDelegate.h"
+#include "AppleMARSDKAdRewardedDelegate.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/VectorConstString.h"
@@ -33,6 +34,9 @@ namespace Mengine
         void submitPaymentData( const MARSDKProductInfo & product ) override;
         
     public:
+        void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) override;
+        
+    public:
         void onUserLogin( const MARSDKResultParams & _params );
         void onUserLogout( const MARSDKResultParams & _params );
         void onPayPaid( const MARSDKResultParams & _params );
@@ -41,5 +45,6 @@ namespace Mengine
         AppleMARSDKProviderInterfacePtr m_provider;
         
         AppleMARSDKDelegate * m_delegate;
+        AppleMARSDKAdRewardedDelegate * m_adRewardedDelegate;
     };
 }

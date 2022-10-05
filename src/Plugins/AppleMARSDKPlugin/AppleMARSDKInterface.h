@@ -93,6 +93,8 @@ namespace Mengine
         
         virtual void submitExtendedData( const MARSDKExtraData & _data ) = 0;
         virtual void submitPaymentData( const MARSDKProductInfo & _info ) = 0;
+        
+        virtual void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

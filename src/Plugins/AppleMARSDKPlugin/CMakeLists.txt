@@ -12,7 +12,10 @@ src
 
     AppleMARSDKDelegate.h
     AppleMARSDKDelegate.mm
-    
+
+    AppleMARSDKAdRewardedDelegate.h
+    AppleMARSDKAdRewardedDelegate.mm
+
     AppleMARSDKService.h
     AppleMARSDKService.mm
 )

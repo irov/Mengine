@@ -72,6 +72,8 @@ namespace Mengine
             
             [defaults setObject:[[NSString alloc] initWithUTF8String:_value] forKey:[[NSString alloc] initWithUTF8String:_key]];
             
+            [defaults synchronize];
+            
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -85,6 +87,8 @@ namespace Mengine
             }
 
             [defaults removeObjectForKey:[[NSString alloc] initWithUTF8String:_key]];
+            
+            [defaults synchronize];
 
             return true;
         }

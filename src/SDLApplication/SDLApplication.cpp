@@ -124,7 +124,7 @@ namespace Mengine
         }
 #endif
 
-#if defined(MENGINE_PLATFORM_APPLE)
+#if defined(MENGINE_PLATFORM_APPLE) && !defined(MENGINE_BUILD_PUBLISH)
         Char MengineApplePersistentArguments[1024] = {'\0'};
         if( PERSISTENT_SYSTEM()
             ->getPersistentArguments( MengineApplePersistentArguments, 1024 ) == true )

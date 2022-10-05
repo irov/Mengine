@@ -1,5 +1,7 @@
 #import "AppleAppLovinBannerDelegate.h"
 
+#include "Environment/iOS/iOSDetail.h"
+
 @implementation AppleAppLovinBannerDelegate
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
@@ -55,9 +57,7 @@
 }
 
 - (UIViewController* _Nullable) rootViewController {
-    UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
-    
-    UIViewController* controller = appWindow.rootViewController;
+    UIViewController * rootViewController = Helper::iOSGetRootViewController();
     
     return controller;
 }

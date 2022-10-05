@@ -1,6 +1,7 @@
 #import "AppleMARSDKDelegate.h"
 
 #include "Environment/Apple/AppleErrorHelper.h"
+#include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
 
@@ -27,9 +28,9 @@
 }
 
 - (UIViewController *)GetViewController {
-    UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
+    UIViewController * rootViewController = Helper::iOSGetRootViewController();
     
-    return appWindow.rootViewController;
+    return rootViewController;
 }
 
 - (void) OnPlatformInit: (NSDictionary *)params {

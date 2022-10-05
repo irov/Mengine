@@ -60,7 +60,9 @@ namespace Mengine
         
         m_isProcessed = true;
         
-        [m_loginManager logInWithPermissions:@[@"public_profile"] fromViewController:[UIApplication sharedApplication].delegate.window.rootViewController handler:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
+        UIViewController * rootViewController = Helper::iOSGetRootViewController();
+        
+        [m_loginManager logInWithPermissions:@[@"public_profile"] fromViewController:rootViewController handler:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
             if( error != nullptr )
             {
                 LOGGER_ERROR("[AppleFacebook] login error: '%s'"
@@ -151,11 +153,13 @@ namespace Mengine
         
         if( strPicture.length <= 0 )
         {
-            dispatch_async(dispatch_get_main_queue(), ^{                
+            dispatch_async(dispatch_get_main_queue(), ^{
                 FBSDKShareLinkContent* content = [FBSDKShareLinkContent alloc];
                 content.contentURL = [NSURL URLWithString:strlink];
                 
-                FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:[UIApplication sharedApplication].delegate.window.rootViewController withContent:content delegate:m_shareDelegate];
+                UIViewController * rootViewController = Helper::iOSGetRootViewController();
+                
+                FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:rootViewController withContent:content delegate:m_shareDelegate];
                 
                 [dialog show];
             });
@@ -206,14 +210,16 @@ namespace Mengine
                 return;
             }
             
-            dispatch_async(dispatch_get_main_queue(), ^{                
+            dispatch_async(dispatch_get_main_queue(), ^{
                 FBSDKSharePhoto *sharePhoto = [[FBSDKSharePhoto alloc] initWithImage: img isUserGenerated:true];
                 
                 FBSDKShareMediaContent *content = [FBSDKShareMediaContent alloc];
                 content.contentURL = [NSURL URLWithString:strlink];
                 content.media =  @[sharePhoto];
                 
-                FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:[UIApplication sharedApplication].delegate.window.rootViewController withContent:content delegate:m_shareDelegate];
+                UIViewController * rootViewController = Helper::iOSGetRootViewController();
+                
+                FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:rootViewController withContent:content delegate:m_shareDelegate];
                 
                 [dialog show];
             });

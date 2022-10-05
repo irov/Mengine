@@ -1,6 +1,7 @@
 #include "AppleHelpshiftService.h"
 
 #include "Environment/Apple/AppleUtils.h"
+#include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
@@ -13,18 +14,6 @@ SERVICE_FACTORY( AppleHelpshiftService, Mengine::AppleHelpshiftService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static UIViewController * getRootViewController()
-        {
-            UIViewController * viewController = [UIApplication sharedApplication].delegate.window.rootViewController;
-            
-            return viewController;
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
     AppleHelpshiftService::AppleHelpshiftService()
     {
     }
@@ -33,7 +22,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleHelpshiftService::setProvider( const AppleHelpshiftProviderInterfacePtr &   _provider )
+    void AppleHelpshiftService::setProvider( const AppleHelpshiftProviderInterfacePtr & _provider )
     {
         m_provider = _provider;
     }
@@ -87,7 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showConversation()
     {
-        UIViewController * viewController = Detail::getRootViewController();
+        UIViewController * viewController = Helper::iOSGetRootViewController();
         
         NSDictionary * configDictionary = nullptr;
         
@@ -96,7 +85,7 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showFAQs()
     {
-        UIViewController * viewController = Detail::getRootViewController();
+        UIViewController * viewController = Helper::iOSGetRootViewController();
         
         NSDictionary * configDictionary = nullptr;
         
@@ -105,7 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showFAQSection( const Char * _sectionId )
     {
-        UIViewController * viewController = Detail::getRootViewController();
+        UIViewController * viewController = Helper::iOSGetRootViewController();
         
         NSDictionary * configDictionary = nullptr;
         NSString * sectionId = [NSString stringWithUTF8String:_sectionId];
@@ -115,7 +104,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleHelpshiftService::showSingleFAQ( const Char * _faqId )
     {
-        UIViewController * viewController = Detail::getRootViewController();
+        UIViewController * viewController = Helper::iOSGetRootViewController();
         
         NSDictionary * configDictionary = nullptr;
         NSString * faqId =[NSString stringWithUTF8String:_faqId];

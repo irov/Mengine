@@ -72,7 +72,92 @@ namespace Mengine
                 
                 cb.call_args( d, m_args );
             }
-
+            
+        protected:
+            void onAdRewardedDidFailed() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidFailed");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidLoaded() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidLoaded");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidShow() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidShow");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidClicked() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidClicked");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidClosed() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidClosed");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidSkipped() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidSkipped");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidFinished( const Char * _itemName, uint32_t _itemNum ) override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidFinished");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _itemName, _itemNum, m_args );
+            }
+            
         protected:
             pybind::kernel_interface * m_kernel;
             pybind::dict m_cbs;

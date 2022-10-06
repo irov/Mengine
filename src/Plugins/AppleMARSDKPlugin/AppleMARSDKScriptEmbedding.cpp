@@ -254,6 +254,12 @@ namespace Mengine
                 ->submitPaymentData( info );
         }
         //////////////////////////////////////////////////////////////////////////
+        static void s_AppleMARSDK_showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
+        {
+            APPLE_MARSDK_SERVICE()
+                ->showRewardVideoAd( _itemName, _itemNum );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     AppleMARSDKScriptEmbedding::AppleMARSDKScriptEmbedding()
@@ -283,7 +289,8 @@ namespace Mengine
         pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );
         pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_AppleMARSDK_submitExtendedData );
         pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::s_AppleMARSDK_submitPaymentData );
-
+        pybind::def_function( _kernel, "appleMARSDKShowRewardVideoAd", &Detail::s_AppleMARSDK_showRewardVideoAd );
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -295,6 +302,7 @@ namespace Mengine
         _kernel->remove_from_module( "appleMARSDKSwitchAccount", nullptr );
         _kernel->remove_from_module( "appleMARSDKSubmitExtendedData", nullptr );
         _kernel->remove_from_module( "appleMARSDKSubmitPaymentData", nullptr );
+        _kernel->remove_from_module( "appleMARSDKShowRewardVideoAd", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

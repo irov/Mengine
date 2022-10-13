@@ -72,7 +72,92 @@ namespace Mengine
                 
                 cb.call_args( d, m_args );
             }
-
+            
+        protected:
+            void onAdRewardedDidFailed() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidFailed");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidLoaded() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidLoaded");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidShow() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidShow");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidClicked() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidClicked");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidClosed() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidClosed");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidSkipped() override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidSkipped");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAdRewardedDidFinished( const Char * _itemName, uint32_t _itemNum ) override
+            {
+                pybind::object cb = m_cbs.get("onAdRewardedDidFinished");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _itemName, _itemNum, m_args );
+            }
+            
         protected:
             pybind::kernel_interface * m_kernel;
             pybind::dict m_cbs;
@@ -169,6 +254,12 @@ namespace Mengine
                 ->submitPaymentData( info );
         }
         //////////////////////////////////////////////////////////////////////////
+        static void s_AppleMARSDK_showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
+        {
+            APPLE_MARSDK_SERVICE()
+                ->showRewardVideoAd( _itemName, _itemNum );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     AppleMARSDKScriptEmbedding::AppleMARSDKScriptEmbedding()
@@ -198,7 +289,8 @@ namespace Mengine
         pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );
         pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_AppleMARSDK_submitExtendedData );
         pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::s_AppleMARSDK_submitPaymentData );
-
+        pybind::def_function( _kernel, "appleMARSDKShowRewardVideoAd", &Detail::s_AppleMARSDK_showRewardVideoAd );
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -210,6 +302,7 @@ namespace Mengine
         _kernel->remove_from_module( "appleMARSDKSwitchAccount", nullptr );
         _kernel->remove_from_module( "appleMARSDKSubmitExtendedData", nullptr );
         _kernel->remove_from_module( "appleMARSDKSubmitPaymentData", nullptr );
+        _kernel->remove_from_module( "appleMARSDKShowRewardVideoAd", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

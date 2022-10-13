@@ -73,6 +73,15 @@ namespace Mengine
         virtual void onUserLogin( const MARSDKResultParams & _params ) = 0;
         virtual void onUserLogout( const MARSDKResultParams & _params ) = 0;
         virtual void onPayPaid( const MARSDKResultParams & _params ) = 0;
+        
+    public:
+        virtual void onAdRewardedDidFailed() = 0;
+        virtual void onAdRewardedDidLoaded() = 0;
+        virtual void onAdRewardedDidShow() = 0;
+        virtual void onAdRewardedDidClicked() = 0;
+        virtual void onAdRewardedDidClosed() = 0;
+        virtual void onAdRewardedDidSkipped() = 0;
+        virtual void onAdRewardedDidFinished( const Char * _itemName, uint32_t _itemNum ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleMARSDKProviderInterface> AppleMARSDKProviderInterfacePtr;
@@ -93,6 +102,8 @@ namespace Mengine
         
         virtual void submitExtendedData( const MARSDKExtraData & _data ) = 0;
         virtual void submitPaymentData( const MARSDKProductInfo & _info ) = 0;
+        
+        virtual void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

@@ -41,7 +41,7 @@ namespace Mengine
             m_message.append( category_str, category_size );
             m_message.append( " ", 1 );
         }
-         
+
         m_message.append( _data, _size );
 
         uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "SentryPlugin", "MaxLogSize", 9240 );

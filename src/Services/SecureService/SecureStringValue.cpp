@@ -193,7 +193,8 @@ namespace Mengine
             return false;
         }
 
-        reader.readPOD( m_hash );
+        uint32_t load_hash;
+        reader.readPOD( load_hash );
 
         uint32_t value_size;
         reader.readPOD( value_size );
@@ -216,6 +217,8 @@ namespace Mengine
         size_t buffer_capacity = m_buffer.size();
 
         reader.readBuffer( buffer_data, buffer_capacity );
+
+        m_hash = load_hash;
 
         return true;
     }

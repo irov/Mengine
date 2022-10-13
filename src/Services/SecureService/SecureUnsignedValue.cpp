@@ -249,8 +249,11 @@ namespace Mengine
             return false;
         }
 
-        reader.readPOD( m_hash );
-        reader.readPOD( m_value );
+        uint32_t load_hash;
+        reader.readPOD( load_hash );
+
+        uint32_t load_value;
+        reader.readPOD( load_value );
 
         if( blob.size() <= 8 + 20 )
         {
@@ -261,6 +264,9 @@ namespace Mengine
         size_t buffer_capacity = m_buffer.capacity();
 
         reader.readBuffer( buffer_data, buffer_capacity );
+
+        m_hash = load_hash;
+        m_value = load_value;
 
         return true;
     }

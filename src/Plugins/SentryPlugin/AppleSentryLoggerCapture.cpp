@@ -26,11 +26,21 @@ namespace Mengine
         m_message.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleSentryLoggerCapture::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
+    void AppleSentryLoggerCapture::log( const LoggerMessage & _message )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-        MENGINE_UNUSED( _color );
+        Char timestamp[256] = {'\0'};
+        size_t timestampSize = Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
+        m_message.append( timestamp, timestampSize );
+        m_message.append( " ", 1 );
+
+        if( _message.category.empty() == false )
+        {
+            const Char * category_str = _message.category.c_str();
+            size_t category_size = _message.category.size();
+
+            m_message.append( category_str, category_size );
+            m_message.append( " ", 1 );
+        }
          
         m_message.append( _data, _size );
 

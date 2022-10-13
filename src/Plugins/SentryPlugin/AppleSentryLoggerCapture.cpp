@@ -2,6 +2,7 @@
 #include "AppleSentryHelper.h"
 
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/LoggerHelper.h"
 
 namespace Mengine
 {
@@ -41,8 +42,12 @@ namespace Mengine
             m_message.append( category_str, category_size );
             m_message.append( " ", 1 );
         }
+        
+        const Char * data_str = _message.data;
+        size_t data_size = _message.size;
          
-        m_message.append( _data, _size );
+        m_message.append( data_str, data_size );
+        m_message.append( "\n", 1 );
 
         uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "SentryPlugin", "MaxLogSize", 9240 );
 

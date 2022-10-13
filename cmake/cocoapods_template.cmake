@@ -179,4 +179,6 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     else()
         FILE(REMOVE ${CMAKE_BINARY_DIR}/Podfile)
     endif()
+    
+    FILE(REMOVE ${CMAKE_BINARY_DIR}/Podfile.lock)
 ENDMACRO()

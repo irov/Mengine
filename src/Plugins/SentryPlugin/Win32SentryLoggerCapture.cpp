@@ -48,10 +48,10 @@ namespace Mengine
             m_message.append( " ", 1 );
         }
 
-        const Char * data = _message.data;
-        size_t size = _message.size;
+        const Char * data_str = _message.data;
+        size_t data_size = _message.size;
 
-        m_message.append( data, size );
+        m_message.append( data_str, data_size );
         m_message.append( "\n", 1 );
 
         uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "SentryPlugin", "MaxLogSize", MENGINE_SENTRY_MAX_LOG_SIZE );

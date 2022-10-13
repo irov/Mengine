@@ -3,7 +3,6 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/ThreadMutexInterface.h"
-#include "Interface/DateTimeProviderInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
@@ -44,17 +43,17 @@ namespace Mengine
         void setHistorically( bool _historically ) override;
         bool getHistorically() const override;
 
+    public:
         void clearHistory() override;
 
     public:
         size_t makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const override;
-        size_t makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const override;
 
     public:
         bool validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const override;
 
     public:
-        void logMessage( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size ) override;
+        void logMessage( const LoggerMessage & _message ) override;
         uint32_t getCountMessage( ELoggerLevel _level ) override;
 
     public:
@@ -69,14 +68,12 @@ namespace Mengine
         bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
     protected:
-        void logHistory_( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size );
+        void logHistory_( const LoggerMessage & _message );
 
     protected:
         void notifyConfigsLoad_();
 
     protected:
-        DateTimeProviderInterfacePtr m_dateTimeProvider;
-
         ELoggerLevel m_verboseLevel;
         uint32_t m_verboseFilter;
         bool m_silent;
@@ -94,10 +91,12 @@ namespace Mengine
 
         struct Record
         {
+            ConstString category;
+            PlatformDateTime dateTime;
             ELoggerLevel level;
             uint32_t filter;
             uint32_t color;
-            String message;
+            String data;
         };
 
         bool m_historically;

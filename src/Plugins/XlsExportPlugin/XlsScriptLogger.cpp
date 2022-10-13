@@ -1,10 +1,13 @@
 #include "XlsScriptLogger.h"
 
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/Logger.h"
+
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -38,20 +41,32 @@ namespace Mengine
 
         PyObject * arg = _kernel->tuple_getitem( _args, 0 );
 
+        size_t arg_str_size;
+        const char * arg_str;
+
         if( _kernel->string_check( arg ) == true )
         {
-            size_t size;
-            const Char * str = _kernel->string_to_char_and_size( arg, &size );
-
-            this->write( str, size );
+            arg_str = _kernel->string_to_char_and_size( arg, &arg_str_size );
         }
         else if( _kernel->unicode_check( arg ) == true )
         {
-            size_t size;
-            const Char * utf8 = _kernel->unicode_to_utf8_and_size( arg, &size );
-
-            this->write( utf8, size );
+            arg_str = _kernel->unicode_to_utf8_and_size( arg, &arg_str_size );
         }
+        else
+        {
+            return _kernel->ret_none();
+        }
+
+        if( MENGINE_STRCMP( arg_str, "\n" ) != 0 )
+        {
+            m_messageCache.append( arg_str, arg_str_size );
+
+            return _kernel->ret_none();
+        }
+
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), m_level, LFILTER_NONE, m_color, nullptr, 0 ).operator()( "%s", m_messageCache.c_str() );
+        
+        m_messageCache.clear();
 
         return _kernel->ret_none();
     }
@@ -62,12 +77,6 @@ namespace Mengine
         MENGINE_UNUSED( _kwds );
 
         return _kernel->ret_none();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void XlsScriptLogger::write( const Char * _msg, size_t _size )
-    {
-        LOGGER_SERVICE()
-            ->logMessage( m_level, 0, m_color, _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsScriptLogger::setSoftspace( int32_t _softspace )

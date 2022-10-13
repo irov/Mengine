@@ -38,7 +38,7 @@ namespace Mengine
         uint32_t getVerboseFilter() const override;
 
     public:
-        bool validMessage( ELoggerLevel _level, uint32_t _filter ) const override;
+        bool validMessage( const LoggerMessage & _message ) const override;
 
     public:
         void flush() override;

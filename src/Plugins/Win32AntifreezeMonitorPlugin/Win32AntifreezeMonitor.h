@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ThreadWorkerInterface.h"
-#include "Interface/DateTimeProviderInterface.h"
 
 #include "Kernel/ThreadJob.h"
 #include "Kernel/Observable.h"
@@ -10,6 +9,7 @@
 #include "Kernel/String.h"
 #include "Kernel/LoggerLevel.h"
 #include "Kernel/Scene.h"
+#include "Kernel/LoggerMessage.h"
 
 #include "Config/Atomic.h"
 #include "Config/Typedef.h"
@@ -41,14 +41,12 @@ namespace Mengine
     protected:
         void notifyChangeLocalePrepare( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyChangeLocalePost( const ConstString & _prevLocale, const ConstString & _currentlocale );
-        void notifyLoggerBegin( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size );
-        void notifyLoggerEnd( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size );
+        void notifyLoggerBegin( const LoggerMessage & _loggerMessage );
+        void notifyLoggerEnd( const LoggerMessage & _loggerMessage );
         void notifyAbort( const Char * _doc );
 
     protected:
         ThreadJobPtr m_threadJob;
-
-        DateTimeProviderInterfacePtr m_dateTimeProvider;
 
         uint32_t m_seconds;
         UniqueId m_workerId;

@@ -2913,9 +2913,11 @@ namespace Mengine
                 return hexadecimal;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_SecureValueInterface_loadHexadecimal( SecureValueInterface * _secure, const String & _hexadecimal )
+            bool s_SecureValueInterface_loadHexadecimal( SecureValueInterface * _secure, const String & _hexadecimal )
             {
-                _secure->loadHexadecimal( _hexadecimal );
+                bool result = _secure->loadHexadecimal( _hexadecimal );
+
+                return result;
             }
             //////////////////////////////////////////////////////////////////////////
             pybind::tuple s_SecureUnsignedValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureUnsignedValue * _secure )

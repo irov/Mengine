@@ -4,6 +4,8 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
+#include "Kernel/String.h"
+
 #include "Config/Typedef.h"
 
 namespace Mengine
@@ -12,10 +14,7 @@ namespace Mengine
     {
     public:
         XlsScriptLogger( ELoggerLevel _level, uint32_t _color );
-        virtual ~XlsScriptLogger();
-
-    public:
-        virtual void write( const Char * _msg, size_t _size );
+        ~XlsScriptLogger();
 
     public:
         PyObject * py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds );
@@ -26,6 +25,8 @@ namespace Mengine
         int32_t getSoftspace() const;
 
     protected:
+        String m_messageCache;
+
         ELoggerLevel m_level;
         uint32_t m_color;
 

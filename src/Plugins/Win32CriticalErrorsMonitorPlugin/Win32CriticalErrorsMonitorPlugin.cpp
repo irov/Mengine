@@ -1,6 +1,7 @@
 #include "Win32CriticalErrorsMonitorPlugin.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #include "Interface/Win32PlatformExtensionInterface.h"
 
@@ -109,11 +110,9 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
-        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-            ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
         PlatformDateTime dateTime;
-        dateTimeProvider->getLocalDateTime( &dateTime );
+        DATETIME_SYSTEM()
+            ->getLocalDateTime(&dateTime);
 
         m_dumpPath.format( "%sDump_%u_%u_%u_%u_%u_%u.dmp"
             , userPath

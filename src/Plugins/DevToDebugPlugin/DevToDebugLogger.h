@@ -33,7 +33,7 @@ namespace Mengine
         void _finalizeLogger() override;
 
     protected:
-        void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) override;
+        void log( const LoggerMessage & _message ) override;
 
     protected:
         void flush() override;
@@ -56,10 +56,11 @@ namespace Mengine
             String timestamp;
             ConstString tag;
             String data;
+            Char level;
         };
 
         typedef Vector<MessageDesc> VectorMessages;
-        VectorMessages m_messages;        
+        VectorMessages m_messages;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DevToDebugLogger, LoggerInterface> DevToDebugLoggerPtr;

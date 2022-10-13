@@ -1,7 +1,7 @@
 #include "LoggerService.h"
 
 #include "Interface/ThreadSystemInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -166,41 +166,27 @@ namespace Mengine
             , MENGINE_BUILD_PUBLISH_VALUE( "True", "False" )
         );
 
-        this->logHistory_( LM_MESSAGE, 0, LCOLOR_GREEN, loggerLevelMessage, loggerLevelMessageLen );
+        PlatformDateTime dateTime;
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
 
-        SERVICE_WAIT( Mengine::ThreadSystemInterface, [this]()
-        {
-            ThreadMutexInterfacePtr threadMutex = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        LoggerMessage msg;
+        msg.category = ConstString::none();
+        msg.dateTime = dateTime;
+        msg.level = LM_MESSAGE;
+        msg.filter = 0;
+        msg.color = LCOLOR_GREEN;
+        msg.data = loggerLevelMessage;
+        msg.size = loggerLevelMessageLen;
 
-            MENGINE_ASSERTION_MEMORY_PANIC( threadMutex );
+        this->logHistory_( msg );
 
-            m_mutex = threadMutex;
+        ThreadMutexInterfacePtr threadMutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            return true;
-        } );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadMutex );
 
-        SERVICE_LEAVE( Mengine::ThreadSystemInterface, [this]()
-        {
-            m_mutex = nullptr;
-        } );
-
-        SERVICE_WAIT( Mengine::PlatformInterface, [this]()
-        {
-            DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider );
-
-            m_dateTimeProvider = dateTimeProvider;
-
-            return true;
-        } );
-
-        SERVICE_LEAVE( Mengine::PlatformInterface, [this]()
-        {
-            m_dateTimeProvider = nullptr;
-        } );
+        m_mutex = threadMutex;
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CONFIGS_LOAD, &LoggerService::notifyConfigsLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -211,7 +197,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CONFIGS_LOAD );
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        m_mutex = nullptr;
 
         for( const LoggerInterfacePtr & logger : m_loggers )
         {
@@ -286,53 +272,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t LoggerService::makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const
     {
-        if( m_dateTimeProvider == nullptr )
-        {
-            return 0;
-        }
+        PlatformDateTime dateTime;
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
 
-        size_t size = Helper::makeLoggerTimestamp( m_dateTimeProvider, "[%02u:%02u:%02u:%04u] ", _buffer + _offset, _capacity - _offset );
+        size_t size = Helper::makeLoggerTimestamp( dateTime, "[%02u:%02u:%02u:%04u] ", _buffer + _offset, _capacity - _offset );
 
         return size;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t LoggerService::makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const
-    {
-        if( _file == nullptr )
-        {
-            return 0;
-        }
-
-        String str_function = _file;
-
-        StringRegex regex_lambda_remove( "::<lambda_.*>::operator \\(\\)" );
-
-        StringMatchResults match_lambda_remove;
-        while( std::regex_search( str_function, match_lambda_remove, regex_lambda_remove ) == true )
-        {
-            const std::sub_match<String::const_iterator> & lambda_remove_prefix = match_lambda_remove.prefix();
-            const std::sub_match<String::const_iterator> & lambda_remove_suffix = match_lambda_remove.suffix();
-
-            str_function = String( lambda_remove_prefix.first, lambda_remove_prefix.second ) + String( lambda_remove_suffix.first, lambda_remove_suffix.second );
-        }
-
-        StringRegex regex_engine_remove( "Mengine::" );
-
-        StringMatchResults match_engine_remove;
-        if( std::regex_search( str_function, match_engine_remove, regex_engine_remove ) == true )
-        {
-            const std::sub_match<String::const_iterator> & engine_remove_prefix = match_engine_remove.prefix();
-            const std::sub_match<String::const_iterator> & engine_remove_suffix = match_engine_remove.suffix();
-
-            str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
-        }
-
-        int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, "%s[%u] "
-            , str_function.c_str()
-            , _line
-        );
-
-        return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const
@@ -376,32 +322,32 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::logMessage( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
+    void LoggerService::logMessage( const LoggerMessage & _message )
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level, _filter, _color, _message, _size );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _message );
 
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-            ++m_countMessage[_level];
+            ++m_countMessage[_message.level];
 
             for( const LoggerInterfacePtr & logger : m_loggers )
             {
-                if( logger->validMessage( _level, _filter ) == false )
+                if( logger->validMessage( _message ) == false )
                 {
                     continue;
                 }
 
-                logger->log( _level, _filter, _color, _message, _size );
+                logger->log( _message );
             }
 
-            this->logHistory_( _level, _filter, _color, _message, _size );
+            this->logHistory_( _message );
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level, _filter, _color, _message, _size );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _message );
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::logHistory_( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
+    void LoggerService::logHistory_( const LoggerMessage & _message )
     {
         if( m_historically == true )
         {
@@ -411,10 +357,12 @@ namespace Mengine
             }
 
             Record history;
-            history.level = _level;
-            history.filter = _filter;
-            history.color = _color;
-            history.message.assign( _message, _size );
+            history.category = _message.category;
+            history.dateTime = _message.dateTime;
+            history.level = _message.level;
+            history.filter = _message.filter;
+            history.color = _message.color;
+            history.data.assign( _message.data, _message.size );
 
             m_history.emplace_back( history );
         }
@@ -470,19 +418,21 @@ namespace Mengine
 
         for( const Record & record : m_history )
         {
-            ELoggerLevel record_level = record.level;
-            uint32_t record_filter = record.filter;
+            LoggerMessage msg;
+            msg.category = record.category;
+            msg.dateTime = record.dateTime;
+            msg.level = record.level;
+            msg.filter = record.filter;
+            msg.color = record.color;
+            msg.data = record.data.c_str();
+            msg.size = record.data.size();
 
-            if( _logger->validMessage( record_level, record_filter ) == false )
+            if( _logger->validMessage( msg ) == false )
             {
                 continue;
             }
 
-            uint32_t record_color = record.color;
-            const Char * record_message_str = record.message.c_str();
-            String::size_type record_message_size = record.message.size();
-
-            _logger->log( record_level, record_filter, record_color, record_message_str, record_message_size );
+            _logger->log( msg );
         }
     }
     //////////////////////////////////////////////////////////////////////////

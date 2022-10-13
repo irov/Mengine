@@ -6,6 +6,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/ProfilerSystemInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/ServiceInterface.h"
 
@@ -13,7 +14,6 @@
 
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
-#include "Win32DateTimeProvider.h"
 
 #ifdef MENGINE_PLUGIN_DEVTODEBUG
 #   include "Plugins/DevToDebugPlugin/DevToDebugInterface.h"
@@ -311,7 +311,6 @@ namespace Mengine
         }
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryDateTimeProviders = Helper::makeFactoryPool<Win32DateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         const Char * Window_ClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
@@ -490,19 +489,15 @@ namespace Mengine
         }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDateTimeProviders );
 
         m_factoryDynamicLibraries = nullptr;
-        m_factoryDateTimeProviders = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_runService()
     {
-        DateTimeProviderInterfacePtr dateTimeProvider =
-            this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
         PlatformDateTime dateTime;
-        dateTimeProvider->getLocalDateTime( &dateTime );
+        DATETIME_SYSTEM()
+            ->getLocalDateTime(&dateTime);
 
         LOGGER_MESSAGE_RELEASE( "Start Date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
@@ -3529,15 +3524,6 @@ namespace Mengine
         time_t time = this->getFileUnixTime( &write );
 
         return time;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    DateTimeProviderInterfacePtr Win32Platform::createDateTimeProvider( const DocumentPtr & _doc )
-    {
-        Win32DateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider );
-
-        return dateTimeProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _file, const void * _data, size_t _size )

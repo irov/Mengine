@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
+#include "Interface/ServiceInterface.h"
 
 #include "Kernel/DateTime.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class DateTimeProviderInterface
-        : public ServantInterface
+    class DateTimeSystemInterface
+        : public ServiceInterface
     {
+        SERVICE_DECLARE( "DateTimeSystem" )
+
     public:
         virtual void getLocalDateTime( PlatformDateTime * const _dateTime ) const = 0;
 
@@ -22,7 +23,8 @@ namespace Mengine
     public:
         virtual int32_t getTimeZoneOffset() const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DateTimeProviderInterface> DateTimeProviderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
 }
+//////////////////////////////////////////////////////////////////////////
+#define DATETIME_SYSTEM()\
+    ((Mengine::DateTimeSystemInterface*)SERVICE_GET(Mengine::DateTimeSystemInterface))
+//////////////////////////////////////////////////////////////////////////

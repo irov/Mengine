@@ -3,6 +3,7 @@
 #include "Kernel/LoggerLevel.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/DateTime.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
@@ -36,21 +37,13 @@ namespace Mengine
         ~LoggerOperator();
 
     public:
-        LoggerOperator & setTimestamp( bool _timestamp );
-        bool getTimestamp() const;
-
-    public:
-        LoggerOperator & setNewline( bool _newline );
-        bool getNewline() const;
-
-    public:
         const LoggerOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
 
     public:
         void logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const;
 
     protected:
-        void logMessage( uint32_t _color, const Char * _msg, size_t _size ) const;
+        void logMessage( const PlatformDateTime & _dateTime, uint32_t _color, const Char * _data, size_t _size ) const;
 
     protected:
         ConstString m_category;
@@ -61,9 +54,6 @@ namespace Mengine
 
         const Char * m_file;
         uint32_t m_line;
-
-        bool m_timestamp;
-        bool m_newline;
     };
 }
 //////////////////////////////////////////////////////////////////////////

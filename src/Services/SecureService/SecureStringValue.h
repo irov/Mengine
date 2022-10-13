@@ -30,7 +30,7 @@ namespace Mengine
 
     public:
         void saveHexadecimal( String * const _hexadecimal ) const override;
-        void loadHexadecimal( const String & _hexadecimal ) override;
+        bool loadHexadecimal( const String & _hexadecimal ) override;
 
     public:
         String m_value;

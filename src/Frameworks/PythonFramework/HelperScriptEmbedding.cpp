@@ -20,6 +20,7 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StatisticServiceInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Interface/AndroidPlatformExtensionInterface.h"
@@ -797,10 +798,19 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logger( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message )
             {
-                size_t messagelen = MENGINE_STRLEN( _message );
+                LoggerMessage msg;
+
+                msg.category = ConstString::none();
+                DATETIME_SYSTEM()
+                    ->getLocalDateTime( &msg.dateTime );
+                msg.level = _level;
+                msg.filter = _filter;
+                msg.color = _color;
+                msg.data = _message;
+                msg.size = MENGINE_STRLEN( _message );
 
                 LOGGER_SERVICE()
-                    ->logMessage( _level, _filter, _color, _message, messagelen );
+                    ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
             float filterpowf( const pybind::list & l, float _pow )
@@ -1340,65 +1350,54 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint64_t s_getLocalDateTimeMs()
             {
-                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
-
-                uint64_t timestamp = dateTimeProvider->getLocalDateMilliseconds();
+                uint64_t timestamp = DATETIME_SYSTEM()
+                    ->getLocalDateMilliseconds();
 
                 return timestamp;
             }
             //////////////////////////////////////////////////////////////////////////
             PlatformDateTime s_getLocalDateStruct()
             {
-                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
-
                 PlatformDateTime dateTime;
-                dateTimeProvider->getLocalDateTime( &dateTime );
+                DATETIME_SYSTEM()
+                    ->getLocalDateTime( &dateTime );
 
                 return dateTime;
             }
             //////////////////////////////////////////////////////////////////////////
             PlatformDateTime s_getLocalDateStructFromTimeMs( uint64_t _timestamp )
             {
-                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
-
                 PlatformDateTime dateTime;
-                dateTimeProvider->getLocalDateTimeFromMilliseconds( _timestamp, &dateTime );
+                DATETIME_SYSTEM()
+                    ->getLocalDateTimeFromMilliseconds( _timestamp, &dateTime );
 
                 return dateTime;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getDatePathTimestamp()
             {
-                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
-
                 Char pathTimestamp[1024] = {'\0'};
-                Helper::makeFilePathDateTimestamp( dateTimeProvider, pathTimestamp, 1024 );
+                Helper::makeFilePathDateTimestamp( pathTimestamp, 1024 );
 
                 return pathTimestamp;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getLoggerTimestamp( const Char * _format )
             {
-                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
+                PlatformDateTime dateTime;
+                DATETIME_SYSTEM()
+                    ->getLocalDateTime( &dateTime );
 
                 Char loggerTimestamp[1024] = {'\0'};
-                Helper::makeLoggerTimestamp( dateTimeProvider, _format, loggerTimestamp, 1024 );
+                Helper::makeLoggerTimestamp( dateTime, _format, loggerTimestamp, 1024 );
 
                 return loggerTimestamp;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getTimeString()
             {
-                DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                    ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
-
                 Char timestamp[256] = {'\0'};
-                Helper::makeLoggerDateTimestamp( dateTimeProvider, timestamp, 256 );
+                Helper::makeLoggerDateTimestamp( timestamp, 256 );
 
                 return timestamp;
             }

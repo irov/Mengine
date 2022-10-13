@@ -23,7 +23,7 @@ namespace Mengine
         void _finalizeLogger() override;
 
     protected:
-        void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) override;
+        void log( const LoggerMessage & _message ) override;
 
     protected:
         void flush() override;

@@ -150,9 +150,6 @@ namespace Mengine
         bool existFile_( const WChar * _filePath );
         bool createDirectory_( const WChar * _path, const WChar * _directory );
 
-    public:
-        DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) override;
-
     protected:
         bool getSpecialFolderPath_( DWORD _flag, WChar * const _path ) const;
 
@@ -244,7 +241,6 @@ namespace Mengine
         StaticString<MENGINE_SHA1_HEX_COUNT + 1> m_fingerprint; //SHA1
 
         FactoryInterfacePtr m_factoryDynamicLibraries;
-        FactoryInterfacePtr m_factoryDateTimeProviders;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
 

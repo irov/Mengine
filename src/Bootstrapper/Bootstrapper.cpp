@@ -46,6 +46,7 @@
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( PersistentSystem );
+SERVICE_EXTERN( DateTimeSystem );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( Platform );
@@ -660,11 +661,8 @@ namespace Mengine
             return true;
         }
 
-        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-            ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
         Char filePathDate[1024] = {'\0'};
-        Helper::makeFilePathDateTimestamp( dateTimeProvider, filePathDate, MENGINE_MAX_PATH );
+        Helper::makeFilePathDateTimestamp( filePathDate, MENGINE_MAX_PATH );
 
         WString unicode_date;
         Helper::utf8ToUnicode( filePathDate, &unicode_date );
@@ -754,16 +752,17 @@ namespace Mengine
     {
         MENGINE_ADD_SERVICE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PersistentSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( Platform, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1706,17 +1705,14 @@ namespace Mengine
         SERVICE_FINALIZE( InputService );
         SERVICE_FINALIZE( CodecService );
         SERVICE_FINALIZE( SoundService );
-        SERVICE_FINALIZE( SoundSystem );
         SERVICE_FINALIZE( ConverterService );
         SERVICE_FINALIZE( RenderService );
         SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
-        SERVICE_FINALIZE( RenderSystem );
         SERVICE_FINALIZE( ArchiveService );
         SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( ThreadService );
-        SERVICE_FINALIZE( TimeSystem );
         SERVICE_FINALIZE( EasingService );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ) );
@@ -1743,14 +1739,18 @@ namespace Mengine
                 ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
         }
 
-        SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( FileService );
+        SERVICE_FINALIZE( RenderSystem );
+        SERVICE_FINALIZE( SoundSystem );
         SERVICE_FINALIZE( Platform );
         SERVICE_FINALIZE( LoggerService );
-        SERVICE_FINALIZE( NotificationService );
-        SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
+        SERVICE_FINALIZE( NotificationService );
+        SERVICE_FINALIZE( TimeSystem );
+        SERVICE_FINALIZE( DateTimeSystem );
+        SERVICE_FINALIZE( UnicodeSystem );
+        SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( PersistentSystem );
 
         SERVICE_DESTROY( SceneService );
@@ -1792,6 +1792,7 @@ namespace Mengine
         SERVICE_DESTROY( MemoryService );
         SERVICE_DESTROY( ThreadService );
         SERVICE_DESTROY( TimeSystem );
+        SERVICE_DESTROY( DateTimeSystem );
         SERVICE_DESTROY( EasingService );
         SERVICE_DESTROY( VocabularyService );
         SERVICE_DESTROY( EnumeratorService );

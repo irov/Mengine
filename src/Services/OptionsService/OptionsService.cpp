@@ -5,6 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/Stringstream.h"
 
 #include "Config/StdString.h"
 
@@ -318,47 +319,42 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::logOptions_()
     {
-        LOGGER_MESSAGE_RELEASE_WN( false, true, "options:" );
+        Stringstream ss;
+
+        ss << "options:";
 
         if( m_options.empty() == true )
         {
-            LOGGER_MESSAGE_RELEASE_WN( false, true, " [none]" );
+            ss << " [none]";
         }
 
         for( const Option & option : m_options )
         {
             if( option.value_count == 0 )
             {
-                LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s"
-                    , option.key.c_str()
-                );
+                ss << " -" << option.key.c_str();
             }
             else
             {
                 if( option.value_count == 1 )
                 {
-                    LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s=%s"
-                        , option.key.c_str()
-                        , option.value[0].c_str()
-                    );
+                    ss << " -" << option.key.c_str() << "=" << option.value[0].c_str();
                 }
                 else
                 {
-                    LOGGER_MESSAGE_RELEASE_WN( false, true, " -%s="
-                        , option.key.c_str()
-                    );
+                    ss << " -" << option.key.c_str() << "=";
 
                     for( uint32_t index = 0; index != option.value_count; ++index )
                     {
-                        LOGGER_MESSAGE_RELEASE_WN( false, true, "%s|"
-                            , option.value[index].c_str()
-                        );
+                        ss << option.value[index].c_str() << "|";
                     }
                 }
             }
         }
 
-        LOGGER_MESSAGE_RELEASE_WN( false, true, "\n" );
+        LOGGER_MESSAGE_RELEASE( "%s"
+            , ss.str().c_str()
+        );
 
         return true;
     }

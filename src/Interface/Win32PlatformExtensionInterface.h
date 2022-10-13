@@ -2,10 +2,12 @@
 
 #include "Interface/UnknownInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
+#include "Kernel/Document.h"
+
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
-
-#include "Environment/Windows/WindowsIncluder.h"
 
 namespace Mengine
 {

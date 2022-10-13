@@ -221,8 +221,13 @@ namespace Mengine
         Helper::encodeHexadecimal( blob_raving.data(), blob_raving.size(), _hexadecimal->data(), _hexadecimal->size(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureUnsignedValue::loadHexadecimal( const String & _hexadecimal )
+    bool SecureUnsignedValue::loadHexadecimal( const String & _hexadecimal )
     {
+        if( _hexadecimal.empty() == true )
+        {
+            return false;
+        }
+
         Blobject blob_raving;
         blob_raving.resize( _hexadecimal.size() / 2 );
 
@@ -239,9 +244,25 @@ namespace Mengine
 
         ContainerReader<Blobject> reader( blob );
 
+        if( blob.size() <= 8 )
+        {
+            return false;
+        }
+
         reader.readPOD( m_hash );
         reader.readPOD( m_value );
-        reader.readBuffer( m_buffer.data(), m_buffer.capacity() );
+
+        if( blob.size() <= 8 + 20 )
+        {
+            return false;
+        }
+
+        void * buffer_data = m_buffer.data();
+        size_t buffer_capacity = m_buffer.capacity();
+
+        reader.readBuffer( buffer_data, buffer_capacity );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

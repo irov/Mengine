@@ -72,13 +72,6 @@ namespace Mengine
 
         m_workerId = workerId;
 
-        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-            ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider );
-
-        m_dateTimeProvider = dateTimeProvider;
-
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &Win32AntifreezeMonitor::notifyChangeLocalePrepare, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &Win32AntifreezeMonitor::notifyChangeLocalePost, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_BEGIN, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
@@ -196,7 +189,7 @@ namespace Mengine
         processDumpPath += "_";
 
         Char filePathDate[1024] = {'\0'};
-        Helper::makeFilePathDateTimestamp( m_dateTimeProvider, filePathDate, 1024 );
+        Helper::makeFilePathDateTimestamp( filePathDate, 1024 );
 
         processDumpPath += filePathDate;
         processDumpPath += ".dmp";
@@ -251,24 +244,16 @@ namespace Mengine
         ++m_refAlive;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
+    void Win32AntifreezeMonitor::notifyLoggerBegin( const LoggerMessage & _loggerMessage )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-        MENGINE_UNUSED( _color );
-        MENGINE_UNUSED( _message );
-        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _loggerMessage );
 
         ++m_refLogger;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyLoggerEnd( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message, size_t _size )
+    void Win32AntifreezeMonitor::notifyLoggerEnd( const LoggerMessage & _loggerMessage )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-        MENGINE_UNUSED( _color );
-        MENGINE_UNUSED( _message );
-        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _loggerMessage );
 
         MENGINE_ASSERTION_FATAL( m_refLogger != 0 );
 

@@ -11,6 +11,7 @@
 #include "Kernel/LoggerLevel.h"
 #include "Kernel/AssertionLevel.h"
 #include "Kernel/ErrorLevel.h"
+#include "Kernel/LoggerMessage.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
@@ -114,8 +115,8 @@ namespace Mengine
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PLUGIN_INITIALIZE, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PLUGIN_FINALIZE, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_INCREF_FACTORY_GENERATION, uint32_t  );
-    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_LOGGER_BEGIN, ELoggerLevel, uint32_t, uint32_t, const Char *, size_t );
-    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_LOGGER_END, ELoggerLevel, uint32_t, uint32_t, const Char *, size_t );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_LOGGER_BEGIN, const LoggerMessage & );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_LOGGER_END, const LoggerMessage & );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_TIME_FACTOR_CHANGE, float );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PACKAGES_LOAD );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_CONFIGS_LOAD );

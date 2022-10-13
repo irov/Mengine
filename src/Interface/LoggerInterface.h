@@ -2,7 +2,10 @@
 
 #include "Interface/Interface.h"
 
+#include "Kernel/LoggerMessage.h"
 #include "Kernel/LoggerLevel.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/DateTime.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
@@ -37,10 +40,10 @@ namespace Mengine
         virtual uint32_t getVerboseFilter() const = 0;
 
     public:
-        virtual bool validMessage( ELoggerLevel _level, uint32_t _filter ) const = 0;
+        virtual bool validMessage( const LoggerMessage & _message ) const = 0;
 
     public:
-        virtual void log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size ) = 0;
+        virtual void log( const LoggerMessage & _message ) = 0;
         virtual void flush() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

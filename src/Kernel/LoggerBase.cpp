@@ -90,19 +90,19 @@ namespace Mengine
         return m_verboseFilter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerBase::validMessage( ELoggerLevel _level, uint32_t _filter ) const
+    bool LoggerBase::validMessage( const LoggerMessage & _message ) const
     {
-        if( m_verboseLevel < _level )
+        if( m_verboseLevel < _message.level )
         {
             return false;
         }
 
-        if( _filter == 0 )
+        if( _message.filter == 0 )
         {
             return true;
         }
 
-        if( (m_verboseFilter & _filter) == 0 )
+        if( (m_verboseFilter & _message.filter) == 0 )
         {
             return false;
         }

@@ -174,9 +174,6 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     public:
-        DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) override;
-
-    public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
 
     public:
@@ -320,7 +317,6 @@ namespace Mengine
         VectorUpdates m_updates;
 
         FactoryInterfacePtr m_factoryDynamicLibraries;
-        FactoryInterfacePtr m_factoryDateTimeProviders;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         SDL_GLContext m_glContext;

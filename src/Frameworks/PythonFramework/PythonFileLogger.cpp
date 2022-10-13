@@ -1,6 +1,7 @@
 #include "PythonFileLogger.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -39,13 +40,6 @@ namespace Mengine
 
         m_stream = stream;
 
-        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-            ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider );
-
-        m_dateTimeProvider = dateTimeProvider;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -67,8 +61,12 @@ namespace Mengine
 
         if( m_timestamp == true )
         {
+            PlatformDateTime dateTime;
+            DATETIME_SYSTEM()
+                ->getLocalDateTime( &dateTime );
+
             Char timestamp[128];
-            size_t timestamp_len = Helper::makeLoggerTimestamp( m_dateTimeProvider, "[%02u:%02u:%02u:%04u] ", timestamp, 128 );
+            size_t timestamp_len = Helper::makeLoggerTimestamp( dateTime, "[%02u:%02u:%02u:%04u] ", timestamp, 128 );
 
             m_stream->write( timestamp, timestamp_len );
         }

@@ -4,6 +4,7 @@
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/LoggerHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConfigHelper.h"
@@ -61,16 +62,50 @@ namespace Mengine
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
+    void DevToDebugLogger::log( const LoggerMessage & _message )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-        MENGINE_UNUSED( _color );
+        const Char * data = _message.data;
+        size_t size = _message.size;
 
         MessageDesc desc;
-        desc.timestamp = "";
-        desc.tag = ConstString::none();
-        desc.data.assign( _data, _data + _size );
+
+        Char loggerTimestamp[1024] = {'\0'};
+        Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 1024 );
+
+        desc.timestamp = loggerTimestamp;
+        desc.tag = _message.category;
+        desc.data.assign( data, data + size );
+
+        switch( _message.level )
+        {
+        case LM_SILENT:
+            return;
+        case LM_FATAL:
+        case LM_CRITICAL:
+            desc.level = 'F';
+            break;
+        case LM_MESSAGE_RELEASE:
+            desc.level = 'R';
+            break;
+        case LM_ERROR:
+            desc.level = 'E';
+            break;
+        case LM_PERFOMANCE:
+        case LM_STATISTIC:
+        case LM_WARNING:
+            desc.level = 'W';
+            break;
+        case LM_MESSAGE:
+            desc.level = 'M';
+            break;
+        case LM_INFO:
+        case LM_DEBUG:
+            desc.level = 'D';
+            break;
+        case LM_VERBOSE:
+            desc.level = 'V';
+            break;
+        }
 
         m_mutex->lock();
         m_messages.emplace_back( desc );
@@ -79,7 +114,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::flush()
     {
-
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::process()
@@ -106,6 +141,7 @@ namespace Mengine
             j_desc.set( "ts", desc.timestamp );
             j_desc.set( "tag", desc.tag );
             j_desc.set( "data", desc.data );
+            j_desc.set( "level", desc.level );
 
             j_log.push_back( j_desc );
         }

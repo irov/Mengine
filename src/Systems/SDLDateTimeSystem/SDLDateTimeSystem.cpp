@@ -1,36 +1,36 @@
-#include "Win32DateTimeProvider.h"
+#include "SDLDateTimeSystem.h"
 
-#include "Environment/Windows/WindowsIncluder.h"
+#include <ctime>
 
-#include "Kernel/Logger.h"
-#include "Kernel/Win32Helper.h"
-
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( DateTimeSystem, Mengine::SDLDateTimeSystem );
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Win32DateTimeProvider::Win32DateTimeProvider()
+    SDLDateTimeSystem::SDLDateTimeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Win32DateTimeProvider::~Win32DateTimeProvider()
+    SDLDateTimeSystem::~SDLDateTimeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32DateTimeProvider::getLocalDateTime( PlatformDateTime * const _dateTime ) const
+    void SDLDateTimeSystem::getLocalDateTime( PlatformDateTime * const _dateTime ) const
     {
-        SYSTEMTIME time;
-        ::GetLocalTime( &time );
+        std::time_t ctTime = std::time( nullptr );
+        std::tm * sTime = std::localtime( &ctTime );
 
-        _dateTime->year = time.wYear;
-        _dateTime->month = time.wMonth;
-        _dateTime->day = time.wDay;
-        _dateTime->hour = time.wHour;
-        _dateTime->minute = time.wMinute;
-        _dateTime->second = time.wSecond;
-        _dateTime->milliseconds = time.wMilliseconds;
+        _dateTime->year = 1900 + sTime->tm_year;
+        _dateTime->month = sTime->tm_mon;
+        _dateTime->day = sTime->tm_mday;
+        _dateTime->hour = sTime->tm_hour;
+        _dateTime->minute = sTime->tm_min;
+        _dateTime->second = sTime->tm_sec;
+        _dateTime->milliseconds = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t Win32DateTimeProvider::getLocalDateMilliseconds() const
+    uint64_t SDLDateTimeSystem::getLocalDateMilliseconds() const
     {
         PlatformDateTime date;
         this->getLocalDateTime( &date );
@@ -61,7 +61,7 @@ namespace Mengine
         return total;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32DateTimeProvider::getLocalDateTimeFromMilliseconds( uint64_t _timestamp, PlatformDateTime * const _dateTime ) const
+    void SDLDateTimeSystem::getLocalDateTimeFromMilliseconds( uint64_t _timestamp, PlatformDateTime * const _dateTime ) const
     {
         uint64_t milliseconds_year64 = 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL * 12ULL;
         uint64_t milliseconds_month64 = 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL;
@@ -82,42 +82,19 @@ namespace Mengine
         *_dateTime = date;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t Win32DateTimeProvider::getTimeZoneOffset() const
+    int32_t SDLDateTimeSystem::getTimeZoneOffset() const
     {
-        TIME_ZONE_INFORMATION TimeZoneInformation;
+        const std::time_t epoch_plus_11h = 60 * 60 * 11;
 
-        DWORD zoneId = ::GetTimeZoneInformation( &TimeZoneInformation );
+        struct tm * lt = ::localtime( &epoch_plus_11h );
+        struct tm * t = ::gmtime( &epoch_plus_11h );
 
-        switch( zoneId )
-        {
-        case TIME_ZONE_ID_UNKNOWN:
-        case TIME_ZONE_ID_STANDARD:
-            {
-                LONG zoneBias = TimeZoneInformation.Bias + TimeZoneInformation.StandardBias;
+        int32_t local_time = lt->tm_hour;
+        int32_t gm_time = t->tm_hour;
+        int32_t tz_diff = gm_time - local_time;
+        int32_t tz_diff60 = tz_diff * 60;
 
-                return zoneBias;
-            }break;
-        case TIME_ZONE_ID_DAYLIGHT:
-            {
-                LONG zoneBias = TimeZoneInformation.Bias + TimeZoneInformation.DaylightBias;
-
-                return zoneBias;
-            }break;
-        case TIME_ZONE_ID_INVALID:
-            {
-                LOGGER_ERROR( "GetTimeZoneInformation get error %ls"
-                    , Helper::Win32GetLastErrorMessage()
-                );
-
-                return 0;
-            }break;
-        }
-
-        LOGGER_ERROR( "GetTimeZoneInformation unknown zone ID [%lu]"
-            , zoneId
-        );
-
-        return 0;
+        return tz_diff60;
     }
     //////////////////////////////////////////////////////////////////////////
 }

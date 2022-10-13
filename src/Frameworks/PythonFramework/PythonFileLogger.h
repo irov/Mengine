@@ -2,7 +2,6 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/OutputStreamInterface.h"
-#include "Interface/DateTimeProviderInterface.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/Factorable.h"
@@ -34,7 +33,6 @@ namespace Mengine
         bool m_timestamp;
 
         OutputStreamInterfacePtr m_stream;
-        DateTimeProviderInterfacePtr m_dateTimeProvider;        
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonFileLogger> PythonFileLoggerPtr;

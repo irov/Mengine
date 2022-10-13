@@ -23,7 +23,7 @@ namespace Mengine
 
                 Char msg[1024] = {'\0'};
                 MENGINE_SNPRINTF( msg, 1024, "[Assert] ConstString '%.*s' has non standard char ['%u']"
-                    , _len
+                    , (int32_t)_len
                     , _value
                     , *ch
                 );

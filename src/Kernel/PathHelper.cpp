@@ -87,7 +87,11 @@ namespace Mengine
 
             FilePath::size_type size_fullpath = (FilePath::size_type)(folder_delimiter - str_fullpath + 1);
 
-            FilePath c_folder = Helper::stringizeFilePathFormat( "%.*s%s", size_fullpath, str_fullpath, _fileSpec );
+            FilePath c_folder = Helper::stringizeFilePathFormat( "%.*s%s"
+                , (int32_t)size_fullpath
+                , str_fullpath
+                , _fileSpec 
+            );
 
             return c_folder;
         }

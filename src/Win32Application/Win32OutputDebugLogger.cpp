@@ -2,6 +2,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/LoggerHelper.h"
+
 #include "Config/StdIO.h"
 
 namespace Mengine
@@ -15,17 +17,27 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32OutputDebugLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _count )
+    void Win32OutputDebugLogger::log( const LoggerMessage & _message )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-        MENGINE_UNUSED( _color );
-        MENGINE_UNUSED( _count );
+        Char timestamp[256] = {'\0'};
+        Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
+        ::OutputDebugStringA( timestamp );
+
+        if( _message.category.empty() == false )
+        {
+            const Char * category_str = _message.category.c_str();
+
+            ::OutputDebugStringA( category_str );
+        }
+
+        const Char * data = _message.data;
+        size_t size = _message.size;
 
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_SNPRINTF( message, 4096, "%.*s", _count, _data );
+        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s", size, data );
 
         ::OutputDebugStringA( message );
+        ::OutputDebugStringA( "\n" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -7,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/LoggerHelper.h"
 
 #include <clocale>
 #include <iostream>
@@ -103,11 +104,8 @@ namespace Mengine
         m_createConsole = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
+    void Win32ConsoleLogger::log( const LoggerMessage & _message )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-
         HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
 
         CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
@@ -118,30 +116,51 @@ namespace Mengine
 
         WORD textColor = 0;
 
-        if( _color & LCOLOR_NONE )
+        uint32_t color = _message.color;
+
+        if( color & LCOLOR_NONE )
         {
             textColor = consoleInfo.wAttributes;
         }
 
-        if( _color & LCOLOR_RED )
+        if( color & LCOLOR_RED )
         {
             textColor |= FOREGROUND_RED;
         }
 
-        if( _color & LCOLOR_GREEN )
+        if( color & LCOLOR_GREEN )
         {
             textColor |= FOREGROUND_GREEN;
         }
 
-        if( _color & LCOLOR_BLUE )
+        if( color & LCOLOR_BLUE )
         {
             textColor |= FOREGROUND_BLUE;
         }
 
         ::SetConsoleTextAttribute( output_handle, textColor );
 
+        const Char * data = _message.data;
+        size_t size = _message.size;
+
         DWORD dWritten;
-        ::WriteConsoleA( output_handle, _data, (DWORD)_size, &dWritten, NULL );
+        
+        Char timestamp[256] = {'\0'};
+        size_t timestampSize = Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
+        ::WriteConsoleA( output_handle, timestamp, (DWORD)timestampSize, &dWritten, NULL );
+        ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL);
+
+        if( _message.category.empty() == false )
+        {
+            const Char * category_str = _message.category.c_str();
+            size_t category_size = _message.category.size();
+
+            ::WriteConsoleA( output_handle, category_str, (DWORD)category_size, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
+
+        ::WriteConsoleA( output_handle, data, (DWORD)size, &dWritten, NULL );
+        ::WriteConsoleA( output_handle, "\n", 1, &dWritten, NULL );
 
         ::SetConsoleTextAttribute( output_handle, consoleInfo.wAttributes );
     }

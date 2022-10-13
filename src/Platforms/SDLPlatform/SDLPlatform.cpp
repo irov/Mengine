@@ -8,6 +8,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
@@ -23,7 +24,6 @@
 #endif
 
 #include "SDLDynamicLibrary.h"
-#include "SDLDateTimeProvider.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -906,7 +906,6 @@ namespace Mengine
         m_sdlInput = sdlInput;
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryDateTimeProviders = Helper::makeFactoryPool<SDLDateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         int AndroidSDKVersion = SDL_GetAndroidSDKVersion();
@@ -958,11 +957,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_runService()
     {
-        DateTimeProviderInterfacePtr dateTimeProvider =
-            this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
         PlatformDateTime dateTime;
-        dateTimeProvider->getLocalDateTime( &dateTime );
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
 
         LOGGER_MESSAGE_RELEASE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
@@ -1219,10 +1216,8 @@ namespace Mengine
         m_platformTags.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDateTimeProviders );
 
         m_factoryDynamicLibraries = nullptr;
-        m_factoryDateTimeProviders = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()
@@ -2761,15 +2756,6 @@ namespace Mengine
 #else
         return 0U;
 #endif		
-    }
-    //////////////////////////////////////////////////////////////////////////
-    DateTimeProviderInterfacePtr SDLPlatform::createDateTimeProvider( const DocumentPtr & _doc )
-    {
-        SDLDateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider );
-
-        return dateTimeProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )

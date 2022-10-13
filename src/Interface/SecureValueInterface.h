@@ -12,7 +12,7 @@ namespace Mengine
     {
     public:
         virtual void saveHexadecimal( String * const _hexadecimal ) const = 0;
-        virtual void loadHexadecimal( const String & _hexadecimal ) = 0;
+        virtual bool loadHexadecimal( const String & _hexadecimal ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SecureValueInterface> SecureValueInterfacePtr;

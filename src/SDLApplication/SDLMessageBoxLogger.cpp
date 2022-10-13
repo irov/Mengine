@@ -1,5 +1,9 @@
 #include "SDLMessageBoxLogger.h"
 
+#include "Kernel/LoggerHelper.h"
+
+#include "Config/StdIO.h"
+
 #include "SDL_messagebox.h"
 
 namespace Mengine
@@ -13,28 +17,46 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
+    void SDLMessageBoxLogger::log( const LoggerMessage & _message )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-        MENGINE_UNUSED( _color );
-        MENGINE_UNUSED( _size );
+        Char timestamp[256] = {'\0'};
+        Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u] ", timestamp, 256 );
+        ::printf( "%s "
+            , timestamp
+        );
 
-        printf( "%.*s", (int32_t)_size, _data );
+        if( _message.category.empty() == false )
+        {
+            ::printf( "%s "
+                , _message.category.c_str()
+            );
+        }
 
-        if( _level == LM_CRITICAL )
+        const Char * data = _message.data;
+        size_t size = _message.size;
+
+        ::printf( "%s %.*s\n", timestamp, (int32_t)size, data );
+
+        if( _message.level == LM_CRITICAL )
         {
-            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine critical error", _data, NULL );
+            Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'0'};
+            MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
+                , (int32_t)size
+                , data
+            );
+
+            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine critical error", message, NULL );
         }
-        else if( _level == LM_FATAL )
+        else if( _message.level == LM_FATAL )
         {
-            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine fatal error", _data, NULL );
+            Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'0'};
+            MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
+                , (int32_t)size
+                , data
+            );
+
+            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine fatal error", message, NULL );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::flush()
-    {
-        //fflush(stdout);
     }
     //////////////////////////////////////////////////////////////////////////
 }

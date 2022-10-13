@@ -2,8 +2,10 @@
 
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/OptionHelper.h"
+#include "Kernel/LoggerHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -29,37 +31,11 @@ namespace Mengine
         , m_color( _color )
         , m_file( _file )
         , m_line( _line )
-        , m_timestamp( true )
-        , m_newline( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     LoggerOperator::~LoggerOperator()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    LoggerOperator & LoggerOperator::setTimestamp( bool _timestamp )
-    {
-        m_timestamp = _timestamp;
-
-        return *this;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool LoggerOperator::getTimestamp() const
-    {
-        return m_timestamp;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    LoggerOperator & LoggerOperator::setNewline( bool _newline )
-    {
-        m_newline = _newline;
-
-        return *this;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool LoggerOperator::getNewline() const
-    {
-        return m_newline;
     }
     //////////////////////////////////////////////////////////////////////////
     const LoggerOperator & LoggerOperator::operator () ( const Char * _format, ... ) const
@@ -76,41 +52,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const
     {
+        PlatformDateTime dateTime;
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
+
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
         size_t size = 0;
 
-        if( m_timestamp == true )
-        {
-            size_t size_timestamp = LOGGER_SERVICE()
-                ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
-
-            if( size_timestamp > 0 )
-            {
-                size += size_timestamp;
-            }
-        }
-
-        if( m_category.empty() == false )
-        {
-            size_t size_category = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "[%s] "
-                , m_category.c_str()
-            );
-
-            if( size_category > 0 )
-            {
-                size += size_category;
-            }
-        }
-
-        size_t size_functionstamp = LOGGER_SERVICE()
-            ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+        size_t size_functionstamp = Helper::makeLoggerFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
 
         if( size_functionstamp > 0 )
         {
             size += size_functionstamp;
         }
-        
+
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
 
         if( size_vsnprintf >= 0 )
@@ -130,43 +86,27 @@ namespace Mengine
 
             size += size_snprintf;
 
-            str[size + 0] = '\n';
-            str[size + 1] = '\0';
-
-            this->logMessage( LCOLOR_RED, str, size + 1 );
+            this->logMessage( dateTime, LCOLOR_RED, str, size );
 
             return;
         }
 
-        if( m_newline == true )
-        {
-            if( size > MENGINE_LOGGER_MAX_MESSAGE - 2 )
-            {
-                size = MENGINE_LOGGER_MAX_MESSAGE - 2;
-            }
-
-            str[size + 0] = '\n';
-            str[size + 1] = '\0';
-
-            this->logMessage( m_color, str, size + 1 );
-        }
-        else
-        {
-            if( size > MENGINE_LOGGER_MAX_MESSAGE - 1 )
-            {
-                size = MENGINE_LOGGER_MAX_MESSAGE - 1;
-            }
-
-            str[size + 0] = '\0';
-
-            this->logMessage( m_color, str, size );
-        }
+        this->logMessage( dateTime, m_color, str, size );        
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessage( uint32_t _color, const Char * _msg, size_t _size ) const
+    void LoggerOperator::logMessage( const PlatformDateTime & _dateTime, uint32_t _color, const Char * _data, size_t _size ) const
     {
+        LoggerMessage msg;
+        msg.category = m_category;
+        msg.dateTime = _dateTime;
+        msg.level = m_level;
+        msg.filter = m_filter;
+        msg.color = _color;
+        msg.data = _data;
+        msg.size = _size;
+
         LOGGER_SERVICE()
-            ->logMessage( m_level, m_filter, _color, _msg, _size );
+            ->logMessage( msg );
     }
     //////////////////////////////////////////////////////////////////////////
 }

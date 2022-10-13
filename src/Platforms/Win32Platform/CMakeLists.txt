@@ -8,8 +8,6 @@ src
     Win32DynamicLibrary.cpp
     Win32MouseEvent.h
     Win32MouseEvent.cpp
-    Win32DateTimeProvider.h
-    Win32DateTimeProvider.cpp
     Win32AlreadyRunningMonitor.h
     Win32AlreadyRunningMonitor.cpp
     Win32CPUInfo.h

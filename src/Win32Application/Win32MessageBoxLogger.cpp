@@ -15,15 +15,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32MessageBoxLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _count )
+    void Win32MessageBoxLogger::log( const LoggerMessage & _message )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-        MENGINE_UNUSED( _color );
-        MENGINE_UNUSED( _count );
+        const Char * data = _message.data;
+        size_t size = _message.size;
 
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_SNPRINTF( message, 4096, "%.*s", _count, _data );
+        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s", size, data );
 
         ::MessageBoxA( NULL, message, "Mengine critical error", MB_OK );
     }

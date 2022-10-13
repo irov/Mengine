@@ -3,7 +3,6 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/DynamicLibraryInterface.h"
-#include "Interface/DateTimeProviderInterface.h"
 #include "Interface/ContentInterface.h"
 #include "Interface/UnknownInterface.h"
 
@@ -148,9 +147,6 @@ namespace Mengine
 
     public:
         virtual uint64_t getFileTime( const Char * _filePath ) const = 0;
-
-    public:
-        virtual DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) = 0;
 
     public:
         virtual bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) = 0;

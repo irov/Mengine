@@ -58,7 +58,6 @@ Common
     EasingServiceInterface.h
     BootstrapperInterface.h
     SecureServiceInterface.h
-    DateTimeProviderInterface.h
     
     ConverterInterface.h
     ConverterFactoryInterface.h
@@ -137,6 +136,7 @@ Common
     ExecutorInterface.h
     StatisticServiceInterface.h
     PersistentSystemInterface.h
+    DateTimeSystemInterface.h
 )
 
 ADD_FILTER(

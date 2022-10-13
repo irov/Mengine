@@ -5,6 +5,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/OptionHelper.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -30,28 +32,31 @@ namespace Mengine
 
         if( tuple_size == 0 )
         {
-            _kernel->ret_none();
+            return _kernel->ret_none();
         }
 
         PyObject * arg = _kernel->tuple_getitem( _args, 0 );
 
+        size_t arg_str_size;
+        const char * arg_str;
+
         if( _kernel->string_check( arg ) == true )
         {
-            size_t size;
-            const char * str = _kernel->string_to_char_and_size( arg, &size );
-
-            m_messageCache.append( str, size );
+            arg_str = _kernel->string_to_char_and_size( arg, &arg_str_size );            
         }
         else if( _kernel->unicode_check( arg ) == true )
         {
-            size_t size;
-            const char * utf8 = _kernel->unicode_to_utf8_and_size( arg, &size );
-
-            m_messageCache.append( utf8, size );
+            arg_str = _kernel->unicode_to_utf8_and_size( arg, &arg_str_size );
+        }
+        else
+        {
+            return _kernel->ret_none();
         }
 
-        if( m_messageCache.find( '\n' ) == String::npos )
+        if( MENGINE_STRCMP( arg_str, "\n" ) != 0 )
         {
+            m_messageCache.append( arg_str, arg_str_size );
+
             return _kernel->ret_none();
         }
 
@@ -64,11 +69,11 @@ namespace Mengine
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, 256, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, color, function, lineno ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, color, function, lineno ).operator()( "%s", m_messageCache.c_str() );
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, color, nullptr, 0 ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, color, nullptr, 0 ).operator()( "%s", m_messageCache.c_str() );
         }
 
         m_messageCache.clear();
@@ -86,13 +91,9 @@ namespace Mengine
         return m_softspace;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::log( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _data, size_t _size )
+    void PythonScriptLogger::log( const LoggerMessage & _loggerMessage )
     {
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _filter );
-        MENGINE_UNUSED( _color );
-        MENGINE_UNUSED( _data );
-        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _loggerMessage );
 
         //Empty;
     }

@@ -242,23 +242,18 @@ namespace Mengine
 
         Helper::ravingcode( secureHash, blob_raving.data(), blob_raving_size, blob.data() );
 
+        uint32_t load_hash;
+        uint32_t load_value;
+
+        if( blob.size() != sizeof( load_hash ) + sizeof( load_value ) + m_buffer.capacity() )
+        {
+            return false;
+        }
+
         ContainerReader<Blobject> reader( blob );
 
-        if( blob.size() <= 8 )
-        {
-            return false;
-        }
-
-        uint32_t load_hash;
         reader.readPOD( load_hash );
-
-        uint32_t load_value;
         reader.readPOD( load_value );
-
-        if( blob.size() <= 8 + 20 )
-        {
-            return false;
-        }
 
         void * buffer_data = m_buffer.data();
         size_t buffer_capacity = m_buffer.capacity();

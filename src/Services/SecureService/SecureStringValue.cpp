@@ -56,6 +56,18 @@ namespace Mengine
     {
         String::size_type value_size = m_value.size();
 
+        if( value_size == 0 )
+        {
+            if( m_hash != 0 )
+            {
+                return false;
+            }
+
+            _value->clear();
+
+            return true;
+        }
+
         for( String::size_type index = 0; index != value_size; ++index )
         {
             if( m_buffer[index] == m_value[value_size - index - 1] )
@@ -154,7 +166,7 @@ namespace Mengine
 
         uint64_t secureHash = SECURE_SERVICE()
             ->getSecureHash();
-        
+
         Blobject blob_raving;
         blob_raving.resize( blob.size() );
 
@@ -186,37 +198,45 @@ namespace Mengine
 
         Helper::ravingcode( secureHash, blob_raving.data(), blob_raving_size, blob.data() );
 
+        uint32_t load_hash;
+        uint32_t value_size;
+
+        if( blob.size() < 8 )
+        {
+            return false;
+        }
+
         ContainerReader<Blobject> reader( blob );
 
-        if( blob.size() <= 8 )
-        {
-            return false;
-        }
-
-        uint32_t load_hash;
         reader.readPOD( load_hash );
-
-        uint32_t value_size;
         reader.readPOD( value_size );
 
-        if( blob.size() <= 8 + value_size * 2 )
+        if( blob.size() != sizeof( load_hash ) + sizeof( value_size ) + value_size * 2 )
         {
             return false;
         }
 
-        m_value.resize( value_size );
+        if( value_size != 0 )
+        {
+            m_value.resize( value_size );
 
-        void * value_data = m_value.data();
-        size_t value_capacity = m_value.size();
+            void * value_data = m_value.data();
+            size_t value_capacity = m_value.size();
 
-        reader.readBuffer( value_data, value_capacity );
+            reader.readBuffer( value_data, value_capacity );
 
-        m_buffer.resize( value_size );
+            m_buffer.resize( value_size );
 
-        void * buffer_data = m_buffer.data();
-        size_t buffer_capacity = m_buffer.size();
+            void * buffer_data = m_buffer.data();
+            size_t buffer_capacity = m_buffer.size();
 
-        reader.readBuffer( buffer_data, buffer_capacity );
+            reader.readBuffer( buffer_data, buffer_capacity );
+        }
+        else
+        {
+            m_value.clear();
+            m_buffer.clear();
+        }
 
         m_hash = load_hash;
 

@@ -45,7 +45,7 @@ namespace Mengine
         , m_historically( true )
         , m_historyLimit( MENGINE_LOGGER_HISTORY_MAX )
     {
-        Algorithm::fill_n( m_countMessage, __LM_MAX__, 0u );
+        Algorithm::fill_n( m_countMessage, LOGGER_LEVEL_COUNT, 0u );
     }
     //////////////////////////////////////////////////////////////////////////
     LoggerService::~LoggerService()

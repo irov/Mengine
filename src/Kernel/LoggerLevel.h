@@ -2,6 +2,8 @@
 
 #include "Config/Config.h"
 
+#define LOGGER_LEVEL_COUNT (Mengine::LM_VERBOSE + 1)
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -18,9 +20,7 @@ namespace Mengine
         LM_MESSAGE,
         LM_INFO,
         LM_DEBUG,
-        LM_VERBOSE,
-
-        __LM_MAX__
+        LM_VERBOSE
     };
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerColor

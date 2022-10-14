@@ -15,9 +15,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static int cURL_trace( CURL * handle, curl_infotype type,
-            char * data, size_t size,
-            void * userp )
+        static int cURL_trace( CURL * handle, curl_infotype type, char * data, size_t size, void * userp )
         {
             MENGINE_UNUSED( handle );
             MENGINE_UNUSED( data );
@@ -63,6 +61,7 @@ namespace Mengine
 
             return 0;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     cURLThreadTask::cURLThreadTask()
@@ -151,6 +150,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLThreadTask::_onThreadTaskRun()
     {
+        //Empty
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

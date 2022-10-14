@@ -3913,7 +3913,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_openUrlInDefaultBrowser( const WString & _url )
             {
-                Char utf8_url[4096];
+                Char utf8_url[4096] = {'\0'};
                 Helper::unicodeToUtf8( _url, utf8_url, 4095 );
 
                 bool val = PLATFORM_SERVICE()
@@ -3924,13 +3924,13 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_openMail( const WString & _email, const WString & _subject, const WString & _body )
             {
-                Char utf8_email[4096];
+                Char utf8_email[4096] = {'\0'};
                 Helper::unicodeToUtf8( _email, utf8_email, 4095 );
 
-                Char utf8_subject[4096];
+                Char utf8_subject[4096] = {'\0'};
                 Helper::unicodeToUtf8( _subject, utf8_subject, 4095 );
 
-                Char utf8_body[4096];
+                Char utf8_body[4096] = {'\0'};
                 Helper::unicodeToUtf8( _body, utf8_body, 4095 );
 
                 bool val = PLATFORM_SERVICE()

@@ -1816,7 +1816,7 @@ namespace Mengine
 
         SDL_Window * sharePixelFormatWindow = SDL_CreateWindow( "MengineSharePixelFormatWindow", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
 
-        Char sBuf[64];
+        Char sBuf[64] = {'\0'};
         MENGINE_SPRINTF( sBuf, "%p", sharePixelFormatWindow );
 
         SDL_SetHint( SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT, sBuf );

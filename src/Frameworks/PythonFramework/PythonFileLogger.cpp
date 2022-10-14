@@ -65,7 +65,7 @@ namespace Mengine
             DATETIME_SYSTEM()
                 ->getLocalDateTime( &dateTime );
 
-            Char timestamp[128];
+            Char timestamp[128] = {'\0'};
             size_t timestamp_len = Helper::makeLoggerTimestamp( dateTime, "[%02u:%02u:%02u:%04u] ", timestamp, 128 );
 
             m_stream->write( timestamp, timestamp_len );

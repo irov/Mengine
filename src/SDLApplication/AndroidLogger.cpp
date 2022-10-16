@@ -13,14 +13,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )
+    void AndroidLogger::log( const LoggerMessage & _message )
     {
-        MENGINE_UNUSED( _flag );
-        MENGINE_UNUSED( _color );
-
         android_LogPriority prio = ANDROID_LOG_UNKNOWN;
 
-        switch( _level )
+        ELoggerLevel level = _message.level;
+
+        switch( level )
         {
         case LM_SILENT:
             return;
@@ -47,11 +46,12 @@ namespace Mengine
         case LM_VERBOSE:
             prio = ANDROID_LOG_VERBOSE;
             break;
-        default:
-            break;
         }
 
-        __android_log_print( prio, "Mengine", "%.*s", (int32_t)_size, _data );
+        const Char * data = _message.data;
+        size_t size = _message.size;
+
+        __android_log_print( prio, "Mengine", "%.*s", (int32_t)size, data );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidLogger::flush()

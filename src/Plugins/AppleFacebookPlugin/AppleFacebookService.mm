@@ -1,6 +1,7 @@
 #include "AppleFacebookService.h"
 
 #include "Environment/Apple/AppleErrorHelper.h"
+#include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
 
@@ -37,8 +38,8 @@ namespace Mengine
     {
         m_provider = nullptr;
         
-//        [m_loginManager release];
-//        m_loginManager = nil;
+        m_loginManager = nil;
+        m_shareDelegate = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFacebookService::setProvider( const AppleFacebookProviderInterfacePtr & _provider )

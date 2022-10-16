@@ -450,6 +450,10 @@ MACRO(ADD_MENGINE_LIBRARY)
     if(MSVC)
         target_sources(${PROJECT_NAME} INTERFACE ${MENGINE_REPOSITORY}/contributing/codestyle/mengine.natvis)
     endif()
+	
+	if(XCODE)
+		SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_SKIP_INSTALL YES)
+	endif()
     
     IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
         ADD_DEPENDENCIES(${PROJECT_NAME} PrecompiledHeader)
@@ -496,6 +500,10 @@ MACRO(ADD_MENGINE_SHARED)
     if(MSVC)
         target_sources(${PROJECT_NAME} INTERFACE ${MENGINE_REPOSITORY}/contributing/codestyle/mengine.natvis)
     endif()
+	
+	if(XCODE)
+		SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_SKIP_INSTALL YES)
+	endif()
     
     if(MENGINE_EXTERNAL_PDB)
         if(MSVC)

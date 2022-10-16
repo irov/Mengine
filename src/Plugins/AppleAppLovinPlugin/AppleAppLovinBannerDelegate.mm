@@ -57,9 +57,9 @@
 }
 
 - (UIViewController* _Nullable) rootViewController {
-    UIViewController * rootViewController = Helper::iOSGetRootViewController();
+    UIViewController * rootViewController = Mengine::Helper::iOSGetRootViewController();
     
-    return controller;
+    return rootViewController;
 }
 
 #pragma mark - MAAdDelegate Protocol

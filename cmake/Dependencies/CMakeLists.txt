@@ -595,6 +595,7 @@ if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/exception_snapshot_win.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/snapshot/win/exception_snapshot_win.cc COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/process_reader_win.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/snapshot/win/process_reader_win.cc COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/process_snapshot_minidump.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/snapshot/minidump/process_snapshot_minidump.cc COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/crashpad_client_win.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/client/crashpad_client_win.cc COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/sentry_backend_crashpad.cpp ${THIRDPARTY_DIR}/sentry/src/backends/sentry_backend_crashpad.cpp COPYONLY)
 
         set(SENTRY_BUILD_SHARED_LIBS OFF CACHE BOOL "SENTRY_BUILD_SHARED_LIBS" FORCE)

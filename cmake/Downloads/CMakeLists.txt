@@ -69,7 +69,7 @@ GIT_CLONE(openssl https://github.com/janbar/openssl-cmake.git "1.1.1n-20220327")
 GIT_CLONE(rpmalloc https://github.com/mjansson/rpmalloc.git "1.4.4")
 
 IF(WIN32)
-    GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.5.0")
+    GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.5.1")
     GIT_CLONE(optick https://github.com/bombomby/optick.git "1.4.0.0")
     GIT_CLONE(gameanalytics https://github.com/GameAnalytics/GA-SDK-CPP.git "3.2.6")
 endif()

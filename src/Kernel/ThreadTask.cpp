@@ -169,19 +169,21 @@ namespace Mengine
 
         this->_onThreadTaskUpdate();
 
-        if( m_finish == true )
+        return m_finish;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTask::finish()
+    {
+        m_mutex = nullptr;
+
+        if( m_complete == true )
         {
-            m_mutex = nullptr;
-
-            if( m_complete == false )
-            {
-                m_complete = true;
-
-                this->_onThreadTaskComplete( m_successful );
-            }
+            return;
         }
 
-        return m_finish;
+        m_complete = true;
+
+        this->_onThreadTaskComplete( m_successful );
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::finally()

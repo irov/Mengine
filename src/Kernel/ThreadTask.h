@@ -33,6 +33,7 @@ namespace Mengine
         bool run( const ThreadMutexInterfacePtr & _mutex ) override;
         bool cancel() override;
         bool update() override;
+        void finish() override;
         void finally() override;
 
     public:

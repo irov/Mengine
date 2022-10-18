@@ -160,7 +160,7 @@ namespace Mengine
         {
             LOGGER_WARNING( "DevToDebug don't setup DSN" );
 
-            return true;
+            return false;
         }
 
         m_dsn = DevToDebug_DSN;

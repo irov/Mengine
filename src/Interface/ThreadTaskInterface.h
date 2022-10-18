@@ -18,6 +18,7 @@ namespace Mengine
     public:
         virtual void preparation() = 0;
         virtual void main() = 0;
+        virtual void finish() = 0;
         virtual void finally() = 0;
 
     public:

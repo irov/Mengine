@@ -77,6 +77,9 @@ namespace Mengine
         typedef Vector<ThreadTaskDesc> VectorThreadTaskDesc;
         VectorThreadTaskDesc m_tasks;
 
+        typedef Vector<ThreadTaskInterfacePtr> VectorThreadTasks;
+        VectorThreadTasks m_tasksAux;
+
         typedef Vector<ThreadQueuePtr> VectorThreadQueues;
         VectorThreadQueues m_threadQueues;
 

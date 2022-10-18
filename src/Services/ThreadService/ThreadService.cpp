@@ -368,6 +368,8 @@ namespace Mengine
 
         m_mutex->unlock();
 
+        m_tasksAux.clear();
+
         m_mutex->lock();
 
         for( VectorThreadTaskDesc::size_type
@@ -386,7 +388,7 @@ namespace Mengine
             }
             else
             {
-                task->finally();
+                m_tasksAux.push_back( task );
 
                 m_tasks[it_task] = m_tasks.back();
                 m_tasks.pop_back();
@@ -395,6 +397,14 @@ namespace Mengine
         }
 
         m_mutex->unlock();
+
+        for( const ThreadTaskInterfacePtr & task : m_tasksAux )
+        {
+            task->finish();
+            task->finally();
+        }
+
+        m_tasksAux.clear();
 
         for( VectorThreadQueues::size_type
             it_task = 0,

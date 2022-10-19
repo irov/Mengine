@@ -102,6 +102,14 @@ namespace Mengine
         m_childMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPacket::_onThreadTaskFinish()
+    {
+        for( const ThreadTaskPtr & task : m_tasks )
+        {
+            task->finish();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPacket::_onThreadTaskComplete( bool _successful )
     {
         MENGINE_UNUSED( _successful );

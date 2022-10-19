@@ -34,6 +34,7 @@ namespace Mengine
         void _onThreadTaskJoin() override;
 
     protected:
+        void _onThreadTaskFinish() override;
         void _onThreadTaskComplete( bool _successful ) override;
 
     protected:

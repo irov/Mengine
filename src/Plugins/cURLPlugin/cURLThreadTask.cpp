@@ -7,6 +7,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/TimeoutGuardScope.h"
 
 #include "Config/StdIntTypes.h"
 
@@ -157,6 +158,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLThreadTask::_onThreadTaskProcess()
     {
+        TIMEOUT_GUARD_SCOPE( 10000, "cURL: %s [%u]"
+            , m_url.c_str()
+            , m_id
+        );
+
         MENGINE_PROFILER_CATEGORY();
 
         CURL * curl = curl_easy_init();

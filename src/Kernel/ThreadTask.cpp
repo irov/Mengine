@@ -174,6 +174,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::finish()
     {
+        this->_onThreadTaskFinish();
+
         m_mutex = nullptr;
 
         if( m_complete == true )
@@ -224,6 +226,11 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::_onThreadTaskJoin()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTask::_onThreadTaskFinish()
     {
         //Empty
     }

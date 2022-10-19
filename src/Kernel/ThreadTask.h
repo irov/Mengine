@@ -51,6 +51,7 @@ namespace Mengine
         virtual void _onThreadTaskJoin();
 
     protected:
+        virtual void _onThreadTaskFinish();
         virtual void _onThreadTaskComplete( bool _successful );
 
     protected:

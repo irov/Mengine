@@ -850,6 +850,9 @@ Core
     CharacterHelper.h
     
     StatisticHelper.h
+    
+    TimeoutGuardScope.cpp
+    TimeoutGuardScope.h
 )
 
 ADD_FILTER(

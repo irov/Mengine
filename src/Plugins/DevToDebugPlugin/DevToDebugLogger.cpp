@@ -160,11 +160,6 @@ namespace Mengine
             ->headerData( m_loggerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
-
-        LOGGER_INFO( "devtodebug", "Process: data %s [id %u]"
-            , data.c_str()
-            , id
-        );
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::onHttpRequestComplete( const cURLResponseData & _response )

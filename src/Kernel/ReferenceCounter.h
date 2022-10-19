@@ -20,7 +20,7 @@ namespace Mengine
     public:
         MENGINE_INLINE uint32_t getReferenceCount() const;
         MENGINE_INLINE bool isReferencing() const;
-            
+
     public:
         bool incref();
         bool decref();

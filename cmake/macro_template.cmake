@@ -328,12 +328,9 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
 ENDMACRO()
 
 MACRO(ADD_PLUGIN_IF Plugin Toggle DLL MSG DIRECTORY)
-    OPTION(${Plugin}_FORCE_ENABLE ${MSG} OFF)
-    OPTION(${Plugin}_FORCE_DISABLE ${MSG} OFF)
-    
-    IF(${Plugin}_FORCE_ENABLE)
+    IF(${Plugin}_FORCE_ENABLE AND ${Plugin}_FORCE_ENABLE STREQUAL ${MENGINE_VARIABLES_CACHE_TIMESTEMP})
         SET(${Plugin} ON CACHE BOOL ${MSG} FORCE)
-    ELSEIF(${Plugin}_FORCE_DISABLE)
+    ELSEIF(${Plugin}_FORCE_DISABLE AND ${Plugin}_FORCE_DISABLE STREQUAL ${MENGINE_VARIABLES_CACHE_TIMESTEMP})
         SET(${Plugin} OFF CACHE BOOL ${MSG} FORCE)
     ELSE()
         IF(EXISTS ${DIRECTORY})
@@ -352,7 +349,7 @@ MACRO(ADD_PLUGIN_IF Plugin Toggle DLL MSG DIRECTORY)
             SET(${Plugin}_STATIC ON CACHE BOOL ${MSG} FORCE)
         ENDIF()
         
-        add_definitions(-D${Plugin})
+        MENGINE_ADD_DEFINITION(${Plugin})
     ENDIF()
     
     IF(${Plugin})

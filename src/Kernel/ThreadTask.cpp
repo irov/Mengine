@@ -1,5 +1,7 @@
 #include "ThreadTask.h"
 
+#include "Kernel/ReferenceCounterGuardScope.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,10 @@ namespace Mengine
 
             return;
         }
+
+        REFERENCECOUNTER_GUARD_SCOPE( this, "ThreadTask: %s"
+            , this->getType().c_str()
+        );
 
         bool successful = this->_onThreadTaskProcess();
 

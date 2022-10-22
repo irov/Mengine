@@ -6,6 +6,7 @@
 #include "Kernel/String.h"
 #include "Kernel/Logger.h"
 
+#include "Config/StdArg.h"
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
 

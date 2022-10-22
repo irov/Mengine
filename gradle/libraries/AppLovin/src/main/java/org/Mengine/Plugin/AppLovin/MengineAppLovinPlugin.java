@@ -11,7 +11,9 @@ import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdViewAdListener;
+import com.applovin.mediation.MaxAdWaterfallInfo;
 import com.applovin.mediation.MaxError;
+import com.applovin.mediation.MaxNetworkResponseInfo;
 import com.applovin.mediation.MaxReward;
 import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxAdView;
@@ -29,6 +31,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
@@ -81,6 +84,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
      * - onApplovinBannerOnAdDisplayFailed
      * - onApplovinBannerOnAdExpanded
      * - onApplovinBannerOnAdCollapsed
+     * <p>
+     * void showMediationDebugger()
      */
 
     enum ELoadAdStatus {
@@ -101,8 +106,6 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        final Context context = activity.getBaseContext();
-        AppLovinSdk.getInstance(context).setMediationProvider("max");
     }
 
     @Override
@@ -141,11 +144,15 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         }
 
+        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
+
+        appLovinSdk.setMediationProvider("max");
+
         boolean OPTION_applovinverbose = activity.hasOption("applovinverbose");
         boolean AppLovin_VerboseLogging = activity.getConfigValueBoolean("AppLovinPlugin", "VerboseLogging", false);
 
         if( OPTION_applovinverbose == true || AppLovin_VerboseLogging == true ) {
-            AppLovinSdk.getInstance(context).getSettings().setVerboseLogging(true);
+            appLovinSdk.getSettings().setVerboseLogging(true);
         }
 
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
@@ -181,41 +188,57 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         MaxAdViewAdListener maxAdViewAdListener = new MaxAdViewAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd( "Banner","onAdLoaded", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdLoaded");
             }
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Banner", "onAdDisplayed", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdDisplayed");
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Banner", "onAdHidden", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdHidden");
             }
 
             @Override
             public void onAdClicked(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Banner", "onAdClicked", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdClicked");
             }
 
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
+                MengineAppLovinPlugin.this.logMaxError("Banner", "onAdLoadFailed", error);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdLoadFailed");
             }
 
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                MengineAppLovinPlugin.this.logMaxError("Banner", "onAdDisplayFailed", error);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdDisplayFailed");
             }
 
             @Override
             public void onAdExpanded(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Banner", "onAdExpanded", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdExpanded");
             }
 
             @Override
             public void onAdCollapsed(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Banner", "onAdCollapsed", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdCollapsed");
             }
         };
@@ -223,14 +246,22 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         m_adView.setListener(maxAdViewAdListener);
 
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
-        int heightPx = AppLovinSdkUtils.dpToPx(activity, (AppLovinSdkUtils.isTablet(activity) ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER).getHeight());
+        boolean tablet = AppLovinSdkUtils.isTablet(activity);
+        AppLovinAdSize size = tablet ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER;
+        int tablet_size_height = size.getHeight();
 
-        m_adView.setLayoutParams(new FrameLayout.LayoutParams(width, heightPx));
+        int heightPx = AppLovinSdkUtils.dpToPx(activity, tablet_size_height);
 
-        int height = activity.getWindow().getDecorView().getHeight();
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, heightPx);
+        m_adView.setLayoutParams(params);
 
-        m_adView.setTranslationY(height - heightPx);
-        ViewGroup rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        Window window = activity.getWindow();
+        View view = window.getDecorView();
+        int window_view_height = view.getHeight();
+
+        m_adView.setTranslationY(window_view_height - heightPx);
+
+        ViewGroup rootView = view.findViewById(android.R.id.content);
         rootView.addView(m_adView);
 
         if (m_mediationAmazon != null) {
@@ -267,6 +298,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         MaxAdListener maxAdListener = new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Interstitial", "onAdLoaded", ad);
+
                 m_retryAttemptInterstitial = 0;
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdLoaded");
@@ -274,11 +307,15 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Interstitial", "onAdDisplayed", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdDisplayed");
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Interstitial", "onAdHidden", ad);
+
                 m_interstitialAd.loadAd();
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdHidden");
@@ -286,11 +323,15 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Interstitial", "onAdClicked", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdClicked");
             }
 
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
+                MengineAppLovinPlugin.this.logMaxError("Interstitial", "onAdLoadFailed", error);
+
                 m_retryAttemptInterstitial++;
 
                 long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptInterstitial)));
@@ -304,6 +345,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                MengineAppLovinPlugin.this.logMaxError("Interstitial", "onAdDisplayFailed", error);
+
                 m_interstitialAd.loadAd();
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdDisplayFailed");
@@ -346,6 +389,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         MaxRewardedAdListener maxRewardedAdListener = new MaxRewardedAdListener() {
             @Override
             public void onRewardedVideoStarted(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onRewardedVideoStarted", ad);
+
                 m_retryAttemptRewarded = 0;
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnRewardedVideoStarted");
@@ -353,11 +398,15 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
             @Override
             public void onRewardedVideoCompleted(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onRewardedVideoCompleted", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnRewardedVideoCompleted");
             }
 
             @Override
             public void onUserRewarded(MaxAd ad, MaxReward reward) {
+                MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onUserRewarded", ad);
+
                 String label = reward.getLabel();
                 int amount = reward.getAmount();
 
@@ -371,16 +420,22 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
             @Override
             public void onAdLoaded(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onAdLoaded", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdLoaded");
             }
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onAdDisplayed", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdDisplayed");
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onAdHidden", ad);
+
                 m_rewardedAd.loadAd();
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdHidden");
@@ -388,11 +443,15 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onAdClicked", ad);
+
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdClicked");
             }
 
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
+                MengineAppLovinPlugin.this.logMaxError("Rewarded", "onAdLoadFailed", error);
+
                 m_retryAttemptRewarded++;
 
                 long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptRewarded)));
@@ -406,6 +465,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
             @Override
             public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                MengineAppLovinPlugin.this.logMaxError("Rewarded", "onAdDisplayFailed", error);
+
                 m_rewardedAd.loadAd();
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdDisplayFailed");
@@ -429,15 +490,65 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     }
 
     public void showRewarded() {
-        if (m_rewardedAd.isReady()) {
+        if (m_rewardedAd.isReady() == true) {
             m_rewardedAd.showAd();
         }
+    }
+
+    public void logMaxAd(String type, String callback, MaxAd ad) {
+        this.logInfo( "AppLovin: type: " + type + " callback: " + callback );
+        this.logInfo( "Waterfall Name: " + ad.getWaterfall().getName() + " and Test Name: " + ad.getWaterfall().getTestName() );
+        this.logInfo( "Waterfall latency was: " + ad.getWaterfall().getLatencyMillis() + " milliseconds" );
+
+        for (MaxNetworkResponseInfo networkResponse : ad.getWaterfall().getNetworkResponses()) {
+            String waterfallInfoStr = "Network -> " + networkResponse.getMediatedNetwork() +
+                    "\n...adLoadState: " + networkResponse.getAdLoadState() +
+                    "\n...latency: " + networkResponse.getLatencyMillis() + " milliseconds" +
+                    "\n...credentials: " + networkResponse.getCredentials();
+
+            if (networkResponse.getError() != null) {
+                waterfallInfoStr += "\n...error: " + networkResponse.getError();
+            }
+
+            this.logInfo(waterfallInfoStr);
+        }
+    }
+
+    public void logMaxError(String type, String callback, MaxError error) {
+        this.logInfo( "AppLovin: type: " + type + " callback: " + callback );
+
+        MaxAdWaterfallInfo waterfall = error.getWaterfall();
+
+        this.logMaxAdWaterfallInfo(waterfall);
+    }
+
+    public void logMaxAdWaterfallInfo(MaxAdWaterfallInfo waterfall) {
+        this.logInfo( "Waterfall Name: " + waterfall.getName() + " and Test Name: " + waterfall.getTestName() );
+        this.logInfo( "Waterfall latency was: " + waterfall.getLatencyMillis() + " milliseconds" );
+
+        for (MaxNetworkResponseInfo networkResponse : waterfall.getNetworkResponses()) {
+            this.logMaxNetworkResponseInfo(networkResponse);
+        }
+    }
+
+    public void logMaxNetworkResponseInfo(MaxNetworkResponseInfo networkResponse) {
+        String waterfallInfoStr = "Network -> " + networkResponse.getMediatedNetwork() +
+                "\n...adLoadState: " + networkResponse.getAdLoadState() +
+                "\n...latency: " + networkResponse.getLatencyMillis() + " milliseconds" +
+                "\n...credentials: " + networkResponse.getCredentials();
+
+        if (networkResponse.getError() != null) {
+            waterfallInfoStr += "\n...error: " + networkResponse.getError();
+        }
+
+        this.logInfo(waterfallInfoStr);
     }
 
     public void showMediationDebugger() {
         MengineActivity activity = this.getActivity();
         final Context context = activity.getBaseContext();
 
-        AppLovinSdk.getInstance(context).showMediationDebugger();
+        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
+        appLovinSdk.showMediationDebugger();
     }
 }

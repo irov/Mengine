@@ -39,6 +39,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -120,12 +121,19 @@ namespace Mengine
                 MENGINE_UNUSED( _functionName );
                 MENGINE_UNUSED( _className );
 
-                LOGGER_INFO( "script", "pybind call begin '%s::%s' args '%s' kwds '%s'"
-                    , _className
-                    , _functionName
-                    , _kernel->object_repr( _args ).c_str()
-                    , _kernel->object_repr( _kwds ).c_str()
-                );
+#ifdef MENGINE_LOGGER_DEBUG_ENABLE
+                bool OPTION_pythoncalltrace = HAS_OPTION( "pythoncalltrace" );
+
+                if( OPTION_pythoncalltrace == true )
+                {
+                    LOGGER_INFO( "script", "pybind call begin '%s::%s' args '%s' kwds '%s'"
+                        , _className
+                        , _functionName
+                        , _kernel->object_repr( _args ).c_str()
+                        , _kernel->object_repr( _kwds ).c_str()
+                    );
+                }
+#endif
 
                 uint32_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );
@@ -154,10 +162,17 @@ namespace Mengine
                 }
 #endif
 
-                LOGGER_INFO( "script", "pybind call end '%s::%s'"
-                    , _className
-                    , _functionName
-                );
+#ifdef MENGINE_LOGGER_DEBUG_ENABLE
+                bool OPTION_pythoncalltrace = HAS_OPTION( "pythoncalltrace" );
+
+                if( OPTION_pythoncalltrace == true )
+                {
+                    LOGGER_INFO( "script", "pybind call end '%s::%s'"
+                        , _className
+                        , _functionName
+                    );
+                }
+#endif
 
                 uint32_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );

@@ -90,18 +90,18 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static bool getPybindDebugMode()
+        static bool getPythonDebugMode()
         {
-            bool OPTION_pybinddebug = HAS_OPTION( "pybinddebug" );
+            bool OPTION_pythondebug = HAS_OPTION( "pythondebug" );
 
-            if( OPTION_pybinddebug == true )
+            if( OPTION_pythondebug == true )
             {
                 return true;
             }
 
-            bool Debug_Pybind = CONFIG_VALUE( "Pybind", "Debug", true );
+            bool PythonScript_Debug = CONFIG_VALUE( "PythonScript", "Debug", true );
 
-            return Debug_Pybind;
+            return PythonScript_Debug;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -125,7 +125,7 @@ namespace Mengine
 
         pybind::allocator_interface * allocator = Helper::newT<Detail::PybindAllocator>();
 
-        bool debugMode = Detail::getPybindDebugMode();
+        bool debugMode = Detail::getPythonDebugMode();
 
         pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, debugMode, false, true );
 

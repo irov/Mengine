@@ -853,6 +853,9 @@ Core
     
     TimeoutGuardScope.cpp
     TimeoutGuardScope.h
+    
+    ReferenceCounterGuardScope.cpp
+    ReferenceCounterGuardScope.h
 )
 
 ADD_FILTER(

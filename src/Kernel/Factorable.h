@@ -55,6 +55,8 @@ namespace Mengine
     protected:
         uint32_t incref() override;
         void decref() override;
+
+    public:
         uint32_t getrefcount() const override;
 
     private:

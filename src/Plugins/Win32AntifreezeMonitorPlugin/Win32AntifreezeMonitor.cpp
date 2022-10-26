@@ -57,7 +57,7 @@ namespace Mengine
         m_threadJob = threadJob;
 
         if( THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -98,7 +98,7 @@ namespace Mengine
         m_threadJob = nullptr;
 
         THREAD_SERVICE()
-            ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
+            ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()

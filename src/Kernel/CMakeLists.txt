@@ -110,7 +110,7 @@ Mixin\\\\Pickerable
 )
 
 ADD_FILTER(
-BaseUpdation    
+BaseUpdation
     BaseUpdation.cpp
     BaseUpdation.h
 )
@@ -907,6 +907,7 @@ ADD_FILTER(
 Factory
     Factorable.h
     Factorable.cpp
+    FactorableGeneric.h
     FactorablePointer.h
     FactorableUnique.h
     FactorablePlugin.h

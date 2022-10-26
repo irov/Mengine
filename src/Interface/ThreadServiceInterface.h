@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/ThreadIdentityInterface.h"
 #include "Interface/ThreadQueueInterface.h"
 
 #include "Kernel/ThreadEnum.h"
@@ -22,11 +23,15 @@ namespace Mengine
         virtual ThreadJobPtr createJob( uint32_t _sleep, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual bool createThread( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) = 0;
-        virtual bool destroyThread( const ConstString & _threadName ) = 0;
+        virtual bool createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) = 0;
+        virtual bool destroyThreadProcessor( const ConstString & _threadName ) = 0;
 
     public:
-        virtual bool hasThread( const ConstString & _threadName ) const = 0;
+        virtual ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) = 0;
+        virtual bool destroyThreadIdentity( const ThreadIdentityInterfacePtr & _threadIdentity ) = 0;
+
+    public:
+        virtual bool hasThreadProcessor( const ConstString & _threadName ) const = 0;
 
     public:
         virtual bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentPtr & _doc ) = 0;

@@ -1,6 +1,7 @@
 #include "SDLThreadSystem.h"
 
 #include "SDLThreadIdentity.h"
+#include "SDLThreadProcessor.h"
 #include "SDLThreadMutex.h"
 
 #include "Kernel/FactoryPool.h"
@@ -26,6 +27,7 @@ namespace Mengine
     bool SDLThreadSystem::_initializeService()
     {
         m_factoryThreadIdentity = Helper::makeFactoryPool<SDLThreadIdentity, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadProcessor = Helper::makeFactoryPool<SDLThreadProcessor, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadMutex = Helper::makeFactoryPool<SDLThreadMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -34,15 +36,39 @@ namespace Mengine
     void SDLThreadSystem::_finalizeService()
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadIdentity );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadProcessor );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutex );
 
         m_factoryThreadIdentity = nullptr;
+        m_factoryThreadProcessor = nullptr;
         m_factoryThreadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc )
+    ThreadIdentityInterfacePtr SDLThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc )
     {
         SDLThreadIdentityPtr identity = m_factoryThreadIdentity->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread '%s' (doc: %s)"
+            , _name.c_str()
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
+
+        if( identity->initialize( _priority, _name, _doc ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize thread '%s' (doc: %s)"
+                , _name.c_str()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
+
+        return identity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadProcessorInterfacePtr SDLThreadSystem::createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc )
+    {
+        SDLThreadProcessorPtr identity = m_factoryThreadProcessor->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread '%s' (doc: %s)"
             , _name.c_str()

@@ -1,6 +1,8 @@
 #include "TimeoutGuardScope.h"
 
 #include "Interface/TimeSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerInterface.h"
 
 #include "Kernel/String.h"
@@ -15,7 +17,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TimeoutGuardScope::TimeoutGuardScope( TimeMilliseconds _timeout, const Char * _format, ... )
+    TimeoutGuardScope::TimeoutGuardScope( TimeMilliseconds _timeout, const DocumentablePtr & _doc, const Char * _format, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
@@ -27,12 +29,13 @@ namespace Mengine
 
         String message_str( message );
 
-        AtomicBool * progress = new AtomicBool( true );
-
         TimeMilliseconds start = TIME_SYSTEM()
             ->getTimeMilliseconds();
 
-        m_thread = std::thread( [progress, start, _timeout]( const String & _message )
+        ThreadIdentityInterfacePtr threadIdentity = THREAD_SERVICE()
+            ->createThreadIdentity( STRINGIZE_STRING_LOCAL( "TimeoutGuardScope" ), ETP_NORMAL, _doc );
+
+        threadIdentity->run( [start, _timeout, message_str]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
             for( ;; )
             {
@@ -46,27 +49,32 @@ namespace Mengine
                     break;
                 }
 
-                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                THREAD_SYSTEM()
+                    ->sleep( 100 );
             }
 
-            if( *progress == false )
+            if( _runner->isCancel() == true )
             {
                 return;
             }
 
             LOGGER_ERROR( "TimeoutGuardScope [%" PRIu64 "] %s"
                 , _timeout
-                , _message.c_str()
+                , message_str.c_str()
             );
-        }, message_str );
+        } );
 
-        m_progress = progress;
+        m_threadIdentity = threadIdentity;
     }
     //////////////////////////////////////////////////////////////////////////
     TimeoutGuardScope::~TimeoutGuardScope()
     {
-        *m_progress = false;
-        m_thread.detach();
+        if( m_threadIdentity != nullptr )
+        {
+            THREAD_SERVICE()
+                ->destroyThreadIdentity( m_threadIdentity );
+            m_threadIdentity = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

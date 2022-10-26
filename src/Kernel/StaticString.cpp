@@ -52,9 +52,10 @@ namespace Mengine
                 value_size = MENGINE_STRLEN( _value );
             }
 
-            MENGINE_ASSERTION_FATAL( value_size < _capacity, "static string buffer assign '%s' [size %zu]"
+            MENGINE_ASSERTION_FATAL( value_size < _capacity, "static string buffer assign '%s' [size %zu] > [capacity %zu]"
                 , _value
                 , value_size
+                , _capacity
             );
 
             if( value_size >= _capacity )
@@ -79,11 +80,12 @@ namespace Mengine
 
             size_t buffer_size = MENGINE_STRLEN( _buffer );
 
-            MENGINE_ASSERTION_FATAL( buffer_size + value_size < _capacity, "static string buffer '%s' [size %zu] append '%s' [size %zu]"
+            MENGINE_ASSERTION_FATAL( buffer_size + value_size < _capacity, "static string buffer '%s' [size %zu] append '%s' [size %zu] > [capacity %zu]"
                 , _buffer
                 , buffer_size
                 , _value
                 , value_size
+                , _capacity
             );
 
             if( value_size >= _capacity )

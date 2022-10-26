@@ -168,6 +168,8 @@ File
 ADD_FILTER(
 Thread
     ThreadIdentityInterface.h
+    ThreadIdentityRunnerInterface.h
+    ThreadProcessorInterface.h
     ThreadQueueInterface.h
     ThreadWorkerInterface.h
     ThreadTaskInterface.h

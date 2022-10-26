@@ -8,6 +8,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/TimeoutGuardScope.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdIntTypes.h"
 
@@ -158,7 +159,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLThreadTask::_onThreadTaskProcess()
     {
-        TIMEOUT_GUARD_SCOPE( 10000, "cURL: %s [%u]"
+        TIMEOUT_GUARD_SCOPE( 10000, MENGINE_DOCUMENT_FACTORABLE, "cURL: %s [%u]"
             , m_url.c_str()
             , m_id
         );

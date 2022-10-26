@@ -46,6 +46,7 @@ namespace Mengine
 {
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
         class PybindAllocator
             : public pybind::allocator_interface
         {

@@ -40,6 +40,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLThreadMutex::finalize()
+    {
+        if( m_cs != nullptr )
+        {
+            SDL_DestroyMutex( m_cs );
+            m_cs = nullptr;
+        }
+
+#ifdef MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLThreadMutex::lock()
     {
         if( SDL_LockMutex( m_cs ) != 0 )
@@ -86,11 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadMutex::_destroy()
     {
-        if( m_cs != nullptr )
-        {
-            SDL_DestroyMutex( m_cs );
-            m_cs = nullptr;
-        }
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
 }

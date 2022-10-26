@@ -5,9 +5,6 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#include "Win32ThreadIdentity.h"
-#include "Win32ThreadMutex.h"
-
 #include "Kernel/FactoryWithMutex.h"
 
 #include "Kernel/ServiceBase.h"
@@ -27,7 +24,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ThreadIdentityInterfacePtr createThread( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc ) override;
+        ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc ) override;
+        ThreadProcessorInterfacePtr createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc ) override;
         ThreadMutexInterfacePtr createMutex( const DocumentPtr & _doc ) override;
 
     public:
@@ -38,6 +36,7 @@ namespace Mengine
 
     protected:
         FactoryInterfacePtr m_factoryWin32ThreadIdentity;
+        FactoryInterfacePtr m_factoryWin32ThreadProcessor;
         FactoryInterfacePtr m_factoryWin32ThreadMutex;
     };
 }

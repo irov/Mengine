@@ -2,8 +2,13 @@
 
 #include "Interface/AllocatorSystemInterface.h"
 
+#include "SDLThreadIdentityRunner.h"
+
 #include "Kernel/Logger.h"
+#include "Kernel/ProfilerHelper.h"
 #include "Kernel/ThreadEnum.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -58,12 +63,6 @@ namespace Mengine
         : m_priority( ETP_NORMAL )
         , m_threadId( 0 )
         , m_thread( nullptr )
-        , m_taskLock( nullptr )
-        , m_processLock( nullptr )
-        , m_conditionVariable( nullptr )
-        , m_conditionLock( nullptr )
-        , m_task( nullptr )
-        , m_exit( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -71,69 +70,33 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
+    bool SDLThreadIdentity::initialize( EThreadPriority _priority, const ConstString & _name, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
         m_priority = _priority;
         m_name = _name;
 
-        m_mutex = _mutex;
-
 #ifdef MENGINE_DEBUG
         m_doc = _doc;
 #endif
 
-        SDL_mutex * taskLock = SDL_CreateMutex();
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLThreadIdentity::finalize()
+    {
+        m_thread = nullptr;
+        m_runner = nullptr;
 
-        if( taskLock == nullptr )
-        {
-            LOGGER_ERROR( "invalid create mutex error: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        m_taskLock = taskLock;
-
-        SDL_mutex * processLock = SDL_CreateMutex();
-
-        if( processLock == nullptr )
-        {
-            LOGGER_ERROR( "invalid create mutex error: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        m_processLock = processLock;
-
-        SDL_mutex * conditionLock = SDL_CreateMutex();
-
-        if( conditionLock == nullptr )
-        {
-            LOGGER_ERROR( "invalid create mutex error: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        SDL_cond * conditionVariable = SDL_CreateCond();
-
-        if( conditionVariable == nullptr )
-        {
-            LOGGER_ERROR( "invalid create condition error: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        m_conditionLock = conditionLock;
-        m_conditionVariable = conditionVariable;
+#ifdef MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadIdentityRunnerInterfacePtr SDLThreadIdentity::run( const LambdaThreadRunner & _lambda )
+    {
+        m_runner = Helper::makeFactorableUnique<SDLThreadIdentityRunner>( MENGINE_DOCUMENT_FACTORABLE, _lambda );
 
         SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_name.c_str(), reinterpret_cast<void *>(this) );
 
@@ -143,12 +106,12 @@ namespace Mengine
                 , SDL_GetError()
             );
 
-            return false;
+            return nullptr;
         }
 
-        m_thread = thread;
+        m_thread = thread;        
 
-        return true;
+        return m_runner;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::main()
@@ -158,76 +121,10 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->startThread();
 
-        while( m_exit == false )
-        {
-            if( SDL_LockMutex( m_conditionLock ) != 0 )
-            {
-                LOGGER_ERROR( "invalid lock mutex error: %s"
-                    , SDL_GetError()
-                );
-            }
-
-            int err = SDL_CondWaitTimeout( m_conditionVariable, m_conditionLock, 1000 );
-
-            if( err == -1 )
-            {
-                LOGGER_ERROR( "invalid cond wait timeout error: %s"
-                    , SDL_GetError()
-                );
-            }
-
-            if( SDL_UnlockMutex( m_conditionLock ) != 0 )
-            {
-                LOGGER_ERROR( "invalid unlock mutex error: %s"
-                    , SDL_GetError()
-                );
-            }
-
-            if( m_exit == true )
-            {
-                break;
-            }
-
-            if( SDL_LockMutex( m_processLock ) != 0 )
-            {
-                LOGGER_ERROR( "invalid lock mutex error: %s"
-                    , SDL_GetError()
-                );
-            }
-
-            if( m_task != nullptr )
-            {
-                if( m_exit == false )
-                {
-                    m_mutex->lock();
-                    m_task->main();
-                    m_mutex->unlock();
-                }
-
-                if( SDL_LockMutex( m_taskLock ) != 0 )
-                {
-                    LOGGER_ERROR( "invalid lock mutex error: %s"
-                        , SDL_GetError()
-                    );
-                }
-
-                m_task = nullptr;
-
-                if( SDL_UnlockMutex( m_taskLock ) != 0 )
-                {
-                    LOGGER_ERROR( "invalid unlock mutex error: %s"
-                        , SDL_GetError()
-                    );
-                }
-            }
-
-            if( SDL_UnlockMutex( m_processLock ) != 0 )
-            {
-                LOGGER_ERROR( "invalid unlock mutex error: %s"
-                    , SDL_GetError()
-                );
-            }
-        }
+        MENGINE_PROFILER_THREAD( m_name.c_str() );
+        
+        ThreadIdentityRunnerInterfacePtr runner = m_runner;
+        runner->run();
 
         ALLOCATOR_SYSTEM()
             ->stopThread();
@@ -238,125 +135,14 @@ namespace Mengine
         return (uint64_t)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::processTask( ThreadTaskInterface * _task )
-    {
-        if( m_exit == true )
-        {
-            return false;
-        }
-
-        int processLockResult = SDL_TryLockMutex( m_processLock );
-
-        if( processLockResult != 0 )
-        {
-            return false;
-        }
-
-        bool successful = false;
-
-        if( m_task == nullptr )
-        {
-            if( _task->run( m_mutex ) == true )
-            {
-                if( SDL_LockMutex( m_taskLock ) != 0 )
-                {
-                    LOGGER_ERROR( "invalid lock mutex error: %s"
-                        , SDL_GetError()
-                    );
-                }
-
-                m_task = _task;
-
-                if( SDL_UnlockMutex( m_taskLock ) != 0 )
-                {
-                    LOGGER_ERROR( "invalid unlock mutex error: %s"
-                        , SDL_GetError()
-                    );
-                }
-            }
-            else
-            {
-                LOGGER_ERROR( "invalid run" );
-            }
-
-            if( SDL_CondSignal( m_conditionVariable ) != 0 )
-            {
-                LOGGER_ERROR( "invalid cond signal error: %s"
-                    , SDL_GetError()
-                );
-            }
-
-            successful = true;
-        }
-
-        if( SDL_UnlockMutex( m_processLock ) != 0 )
-        {
-            LOGGER_ERROR( "invalid unlock mutex error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLThreadIdentity::removeTask()
-    {
-        if( m_exit == true )
-        {
-            return;
-        }
-
-        if( SDL_LockMutex( m_taskLock ) != 0 )
-        {
-            LOGGER_ERROR( "invalid lock mutex error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( m_task != nullptr )
-        {
-            m_task->cancel();
-        }
-
-        if( SDL_UnlockMutex( m_taskLock ) != 0 )
-        {
-            LOGGER_ERROR( "invalid unlock mutex error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_LockMutex( m_processLock ) != 0 )
-        {
-            LOGGER_ERROR( "invalid lock mutex error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        m_task = nullptr;
-
-        if( SDL_UnlockMutex( m_processLock ) != 0 )
-        {
-            LOGGER_ERROR( "invalid unlock mutex error: %s"
-                , SDL_GetError()
-            );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::join()
     {
-        if( m_exit == true )
+        if( m_runner->isCancel() == true )
         {
             return;
         }
 
-        m_exit = true;
-
-        if( SDL_CondSignal( m_conditionVariable ) != 0 )
-        {
-            LOGGER_ERROR( "invalid cond signal error: %s"
-                , SDL_GetError()
-            );
-        }
+        m_runner->cancel();
 
         int status = 0;
         SDL_WaitThread( m_thread, &status );
@@ -368,20 +154,21 @@ namespace Mengine
             );
         }
 
-        SDL_DestroyMutex( m_taskLock );
-        m_taskLock = nullptr;
+        this->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLThreadIdentity::detach()
+    {
+        if( m_runner->isCancel() == true )
+        {
+            return;
+        }
 
-        SDL_DestroyMutex( m_processLock );
-        m_processLock = nullptr;
+        m_runner->cancel();
 
-        SDL_DestroyCond( m_conditionVariable );
-        m_conditionVariable = nullptr;
+        SDL_DetachThread( m_thread );
 
-        SDL_DestroyMutex( m_conditionLock );
-        m_conditionLock = nullptr;
-
-        m_thread = nullptr;
-        m_mutex = nullptr;
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadIdentity::isCurrentThread() const

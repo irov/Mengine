@@ -182,7 +182,7 @@ namespace Mengine
         }
 
         THREAD_SERVICE()
-            ->destroyThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ) );
+            ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ) );
 
         m_arrow = nullptr;
         m_scene = nullptr;
@@ -643,7 +643,7 @@ namespace Mengine
             ->createJob( 50u, MENGINE_DOCUMENT_FACTORABLE );
 
         THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
         THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE );

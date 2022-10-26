@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/ThreadIdentityInterface.h"
+#include "Interface/ThreadProcessorInterface.h"
 #include "Interface/ThreadConditionVariableInterface.h"
 #include "Interface/FactoryInterface.h"
 
@@ -28,11 +28,15 @@ namespace Mengine
         ThreadJobPtr createJob( uint32_t _sleep, const DocumentPtr & _doc ) override;
 
     public:
-        bool createThread( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) override;
-        bool destroyThread( const ConstString & _threadName ) override;
+        bool createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) override;
+        bool destroyThreadProcessor( const ConstString & _threadName ) override;
 
     public:
-        bool hasThread( const ConstString & _threadName ) const override;
+        ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) override;
+        bool destroyThreadIdentity( const ThreadIdentityInterfacePtr & _threadIdentity ) override;
+
+    public:
+        bool hasThreadProcessor( const ConstString & _threadName ) const override;
 
     public:
         bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentPtr & _doc ) override;
@@ -64,7 +68,7 @@ namespace Mengine
         struct ThreadTaskDesc
         {
             ThreadTaskInterfacePtr task;
-            ThreadIdentityInterfacePtr identity;
+            ThreadProcessorInterfacePtr processor;
             ConstString threadName;
             bool progress;
             bool complete;
@@ -86,14 +90,17 @@ namespace Mengine
         FactoryInterfacePtr m_factoryThreadQueue;
         FactoryInterfacePtr m_factoryThreadJob;
 
-        struct ThreadDesc
+        struct ThreadProcessorDesc
         {
             ConstString name;
-            ThreadIdentityInterfacePtr identity;
+            ThreadProcessorInterfacePtr processor;
         };
 
-        typedef Vector<ThreadDesc> VectorThreadDescs;
-        VectorThreadDescs m_threads;
+        typedef Vector<ThreadProcessorDesc> VectorThreadProcessorDescs;
+        VectorThreadProcessorDescs m_threadProcessors;
+
+        typedef Vector<ThreadIdentityInterfacePtr> VectorThreadIdentityDescs;
+        VectorThreadIdentityDescs m_threadIdentities;
 
         uint64_t m_mainThreadId;
 

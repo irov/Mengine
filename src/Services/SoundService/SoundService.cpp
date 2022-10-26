@@ -67,7 +67,7 @@ namespace Mengine
             m_threadJobSoundBufferUpdate = threadJobSoundBufferUpdate;
 
             if( THREAD_SERVICE()
-                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->createThreadProcessor( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 return false;
             }
@@ -137,7 +137,7 @@ namespace Mengine
         if( m_supportStream == true )
         {
             THREAD_SERVICE()
-                ->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ) );
+                ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ) );
         }
 
         m_soundVolumeProviders.clear();

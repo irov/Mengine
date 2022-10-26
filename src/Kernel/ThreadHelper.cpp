@@ -73,7 +73,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( threadJob, "invalid create thread job" );
 
             if( THREAD_SERVICE()
-                ->createThread( _threadName, _priority, _doc ) == false )
+                ->createThreadProcessor( _threadName, _priority, _doc ) == false )
             {
                 return false;
             }
@@ -99,7 +99,7 @@ namespace Mengine
         void destroySimpleThreadWorker( const ConstString & _threadName )
         {
             THREAD_SERVICE()
-                ->destroyThread( _threadName );
+                ->destroyThreadProcessor( _threadName );
         }
         //////////////////////////////////////////////////////////////////////////
     }

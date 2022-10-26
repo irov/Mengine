@@ -22,6 +22,7 @@ namespace Mengine
 
     public:
         bool initialize( const DocumentPtr & _doc );
+        void finalize();
 
     protected:
         void lock() override;

@@ -1,28 +1,28 @@
 #pragma once
 
+#include "Interface/ThreadIdentityInterface.h"
+
+#include "Kernel/Documentable.h"
+
 #include "Config/Time.h"
 #include "Config/Char.h"
 #include "Config/Atomic.h"
-
-#include <thread>
 
 namespace Mengine
 {
     class TimeoutGuardScope
     {
     public:
-        TimeoutGuardScope( TimeMilliseconds _timeout, const Char * _format, ... );
+        TimeoutGuardScope( TimeMilliseconds _timeout, const DocumentablePtr & _doc, const Char * _format, ... );
         ~TimeoutGuardScope();
 
     public:
-        std::thread m_thread;
-
-        AtomicBool * m_progress;
+        ThreadIdentityInterfacePtr m_threadIdentity;
     };
 }
 
 #ifdef MENGINE_DEBUG
-#   define TIMEOUT_GUARD_SCOPE( Timeout, ... ) Mengine::TimeoutGuardScope tgs__##__LINE__( Timeout, __VA_ARGS__ )
+#   define TIMEOUT_GUARD_SCOPE( Timeout, Doc, ... ) Mengine::TimeoutGuardScope tgs__##__LINE__( Timeout, Doc, __VA_ARGS__ )
 #else
-#   define TIMEOUT_GUARD_SCOPE( Timeout, ... )
+#   define TIMEOUT_GUARD_SCOPE( Timeout, Doc, ... )
 #endif

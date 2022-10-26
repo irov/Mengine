@@ -76,7 +76,7 @@ namespace Mengine
 
         struct Setting
         {
-            StaticString<MENGINE_ACCOUNT_SETTING_MAXVALUE> value;
+            String value;
             AccountSettingProviderInterfacePtr provider;
         };
 

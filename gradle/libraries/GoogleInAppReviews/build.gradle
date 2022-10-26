@@ -34,5 +34,5 @@ dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
 
-    implementation 'com.google.android.play:review:2.0.0'
+    implementation 'com.google.android.play:review:2.0.1'
 }

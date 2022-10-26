@@ -144,7 +144,7 @@ namespace Mengine
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             THREAD_SERVICE()
-                ->createThread( threadName, ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+                ->createThreadProcessor( threadName, ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
             m_threads.emplace_back( threadName );
 
@@ -239,7 +239,7 @@ namespace Mengine
         for( const ConstString & threadName : m_threads )
         {
             THREAD_SERVICE()
-                ->destroyThread( threadName );
+                ->destroyThreadProcessor( threadName );
         }
 
         m_threads.clear();

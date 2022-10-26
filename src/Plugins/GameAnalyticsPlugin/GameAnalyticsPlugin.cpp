@@ -15,7 +15,6 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/IniHelper.h"
-#include "Kernel/StaticString.h"
 #include "Kernel/UID.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/JSONHelper.h"

@@ -78,11 +78,12 @@ namespace Mengine
 
             size_t buffer_size = MENGINE_WCSLEN( _buffer );
 
-            MENGINE_ASSERTION_FATAL( buffer_size + value_size < _capacity, "static string buffer '%ls' [size %zu] append '%ls' [size %zu]"
+            MENGINE_ASSERTION_FATAL( buffer_size + value_size < _capacity, "static string buffer '%ls' [size %zu] append '%ls' [size %zu] > [capacity %zu]"
                 , _buffer
                 , buffer_size
                 , _value
                 , value_size
+                , _capacity
             );
 
             if( value_size >= _capacity )

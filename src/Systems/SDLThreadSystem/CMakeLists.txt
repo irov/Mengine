@@ -6,6 +6,10 @@ src
 	SDLThreadSystem.h
 	SDLThreadIdentity.cpp
     SDLThreadIdentity.h
+   	SDLThreadIdentityRunner.cpp
+    SDLThreadIdentityRunner.h
+    SDLThreadProcessor.cpp
+    SDLThreadProcessor.h
     SDLThreadMutex.h
     SDLThreadMutex.cpp
 )

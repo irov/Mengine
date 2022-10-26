@@ -59,8 +59,8 @@ namespace Mengine
 
             if( desc.progress == true )
             {
-                const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
-                threadIdentity->removeTask();
+                const ThreadProcessorInterfacePtr & threadProcessor = desc.processor;
+                threadProcessor->removeTask();
             }
 
             task->finally();
@@ -75,13 +75,20 @@ namespace Mengine
 
         m_threadQueues.clear();
 
-        for( ThreadDesc & desc : m_threads )
+        for( ThreadProcessorDesc & desc : m_threadProcessors )
         {
-            desc.identity->join();
-            desc.identity = nullptr;
+            desc.processor->join();
+            desc.processor = nullptr;
         }
 
-        m_threads.clear();
+        m_threadProcessors.clear();
+
+        for( const ThreadIdentityInterfacePtr & threadIdentity : m_threadIdentities )
+        {
+            threadIdentity->join();
+        }
+
+        m_threadIdentities.clear();
 
         m_mutex = nullptr;
 
@@ -106,45 +113,45 @@ namespace Mengine
         return threadJob;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::createThread( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc )
+    bool ThreadService::createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( this->hasThread( _threadName ) == false, "thread '%s' already exist"
+        MENGINE_ASSERTION_FATAL( this->hasThreadProcessor( _threadName ) == false, "thread '%s' already exist"
             , _threadName.c_str()
         );
 
-        ThreadIdentityInterfacePtr identity = THREAD_SYSTEM()
-            ->createThread( _threadName, _priority, _doc );
+        ThreadProcessorInterfacePtr threadProcessor = THREAD_SYSTEM()
+            ->createThreadProcessor( _threadName, _priority, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor );
 
-        ThreadDesc td;
+        ThreadProcessorDesc td;
         td.name = _threadName;
-        td.identity = identity;
+        td.processor = threadProcessor;
 
-        m_threads.emplace_back( td );
+        m_threadProcessors.emplace_back( td );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::destroyThread( const ConstString & _threadName )
+    bool ThreadService::destroyThreadProcessor( const ConstString & _threadName )
     {
-        for( VectorThreadDescs::iterator
-            it = m_threads.begin(),
-            it_end = m_threads.end();
+        for( VectorThreadProcessorDescs::iterator
+            it = m_threadProcessors.begin(),
+            it_end = m_threadProcessors.end();
             it != it_end;
             ++it )
         {
-            ThreadDesc & td = *it;
+            ThreadProcessorDesc & td = *it;
 
             if( td.name != _threadName )
             {
                 continue;
             }
 
-            td.identity->removeTask();
-            td.identity->join();
+            td.processor->removeTask();
+            td.processor->join();
 
-            m_threads.erase( it );
+            m_threadProcessors.erase( it );
 
             return true;
         }
@@ -152,9 +159,38 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::hasThread( const ConstString & _threadName ) const
+    ThreadIdentityInterfacePtr ThreadService::createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc )
     {
-        for( const ThreadDesc & td : m_threads )
+        ThreadIdentityInterfacePtr threadIdentity = THREAD_SYSTEM()
+            ->createThreadIdentity( _threadName, _priority, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( threadIdentity );
+
+        m_threadIdentities.emplace_back( threadIdentity );
+
+        return threadIdentity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadService::destroyThreadIdentity( const ThreadIdentityInterfacePtr & _threadIdentity )
+    {
+        VectorThreadIdentityDescs::iterator it_found = Algorithm::find( m_threadIdentities.begin(), m_threadIdentities.end(), _threadIdentity );
+
+        if( it_found == m_threadIdentities.end() )
+        {
+            return false;
+        }
+
+        m_threadIdentities.erase( it_found );
+
+        ThreadIdentityInterfacePtr threadIdentity = *it_found;
+        threadIdentity->cancel();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadService::hasThreadProcessor( const ConstString & _threadName ) const
+    {
+        for( const ThreadProcessorDesc & td : m_threadProcessors )
         {
             if( td.name == _threadName )
             {
@@ -174,7 +210,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( this->hasThread( _threadName ) == false )
+        if( this->hasThreadProcessor( _threadName ) == false )
         {
             return false;
         }
@@ -183,7 +219,7 @@ namespace Mengine
 
         desc.task = _task;
         desc.threadName = _threadName;
-        desc.identity = nullptr;
+        desc.processor = nullptr;
         desc.progress = false;
         desc.complete = false;
 
@@ -226,16 +262,14 @@ namespace Mengine
 
             if( desc.progress == true )
             {
-                const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
-                threadIdentity->removeTask();
+                const ThreadProcessorInterfacePtr & threadProcessor = desc.processor;
+                threadProcessor->removeTask();
             }
 
             task->finally();
 
             *it = m_tasks.back();
             m_tasks.pop_back();
-
-            m_mutex->unlock();
 
             return true;
         }
@@ -255,7 +289,7 @@ namespace Mengine
 
             if( desc.progress == true )
             {
-                const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+                const ThreadProcessorInterfacePtr & threadIdentity = desc.processor;
                 threadIdentity->removeTask();
             }
 
@@ -273,13 +307,13 @@ namespace Mengine
 
         m_threadQueues.clear();
 
-        for( ThreadDesc & desc : m_threads )
+        for( ThreadProcessorDesc & desc : m_threadProcessors )
         {
-            desc.identity->join();
-            desc.identity = nullptr;
+            desc.processor->join();
+            desc.processor = nullptr;
         }
 
-        m_threads.clear();
+        m_threadProcessors.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const DocumentPtr & _doc )
@@ -347,19 +381,19 @@ namespace Mengine
             {
                 ThreadTaskInterface * task = desc_task.task.get();
 
-                for( ThreadDesc & desc_thread : m_threads )
+                for( ThreadProcessorDesc & desc_thread : m_threadProcessors )
                 {
                     if( desc_thread.name != desc_task.threadName )
                     {
                         continue;
                     }
 
-                    if( desc_thread.identity->processTask( task ) == false )
+                    if( desc_thread.processor->processTask( task ) == false )
                     {
                         continue;
                     }
 
-                    desc_task.identity = desc_thread.identity;
+                    desc_task.processor = desc_thread.processor;
                     desc_task.progress = true;
                     break;
                 }
@@ -454,9 +488,9 @@ namespace Mengine
             return STRINGIZE_STRING_LOCAL( "MengineMainThread" );
         }
 
-        for( const ThreadDesc & desc : m_threads )
+        for( const ThreadProcessorDesc & desc : m_threadProcessors )
         {
-            if( desc.identity->isCurrentThread() == false )
+            if( desc.processor->isCurrentThread() == false )
             {
                 continue;
             }
@@ -474,9 +508,9 @@ namespace Mengine
             return STRINGIZE_STRING_LOCAL( "MengineMainThread" );
         }
 
-        for( const ThreadDesc & desc : m_threads )
+        for( const ThreadProcessorDesc & desc : m_threadProcessors )
         {
-            if( desc.identity->isCurrentThread() == false )
+            if( desc.processor->isCurrentThread() == false )
             {
                 continue;
             }
@@ -489,7 +523,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::tryFastProcessTask_( ThreadTaskDesc & _desc )
     {
-        for( ThreadDesc & desc_thread : m_threads )
+        for( ThreadProcessorDesc & desc_thread : m_threadProcessors )
         {
             if( desc_thread.name != _desc.threadName )
             {
@@ -498,9 +532,9 @@ namespace Mengine
 
             ThreadTaskInterface * task_ptr = _desc.task.get();
 
-            if( desc_thread.identity->processTask( task_ptr ) == true )
+            if( desc_thread.processor->processTask( task_ptr ) == true )
             {
-                _desc.identity = desc_thread.identity;
+                _desc.processor = desc_thread.processor;
                 _desc.progress = true;
             }
 

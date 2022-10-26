@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ThreadIdentityInterface.h"
+#include "Interface/ThreadProcessorInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -14,22 +14,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class SDLThreadIdentity
-        : public ThreadIdentityInterface
+    class SDLThreadProcessor
+        : public ThreadProcessorInterface
         , public Factorable
     {
         DECLARE_FACTORABLE( SDLFileOutputStream );
 
     public:
-        SDLThreadIdentity();
-        ~SDLThreadIdentity() override;
+        SDLThreadProcessor();
+        ~SDLThreadProcessor() override;
 
     public:
-        bool initialize( EThreadPriority _priority, const ConstString & _name, const DocumentPtr & _doc );
+        bool initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
         void finalize();
-
-    public:
-        ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda ) override;
 
     public:
         void main();
@@ -38,8 +35,11 @@ namespace Mengine
         uint64_t getThreadId() const override;
 
     public:
+        bool processTask( ThreadTaskInterface * _task ) override;
+        void removeTask() override;
+
+    public:
         void join() override;
-        void detach() override;
 
     public:
         bool isCurrentThread() const override;
@@ -51,17 +51,27 @@ namespace Mengine
         EThreadPriority m_priority;
         ConstString m_name;
 
-        ThreadIdentityRunnerInterfacePtr m_runner;
-
         SDL_threadID m_threadId;
 
+        ThreadMutexInterfacePtr m_mutex;
+
         SDL_Thread * m_thread;
+
+        SDL_mutex * m_taskLock;
+        SDL_mutex * m_processLock;
+
+        SDL_cond * m_conditionVariable;
+        SDL_mutex * m_conditionLock;
+
+        ThreadTaskInterface * m_task;
+
+        AtomicBool m_exit;
 
 #ifdef MENGINE_DEBUG
         DocumentPtr m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SDLThreadIdentity, ThreadIdentityInterface> SDLThreadIdentityPtr;
+    typedef IntrusivePtr<SDLThreadProcessor, ThreadProcessorInterface> SDLThreadProcessorPtr;
     //////////////////////////////////////////////////////////////////////////
 }

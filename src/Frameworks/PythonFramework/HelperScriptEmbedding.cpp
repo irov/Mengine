@@ -2598,8 +2598,8 @@ namespace Mengine
                     return l.ret();
                 }
 
-                WChar setting_valueW[MENGINE_ACCOUNT_SETTING_MAXVALUE] = {L'\0'};
-                Helper::utf8ToUnicode( setting_value, setting_valueW, MENGINE_ACCOUNT_SETTING_MAXVALUE );
+                WString setting_valueW;
+                Helper::utf8ToUnicode( setting_value, &setting_valueW );
 
                 VectorWString strings;
                 Helper::wsplit( &strings, setting_valueW, true, L" ,,, " );

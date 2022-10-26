@@ -1,7 +1,8 @@
 #include "RandomDevice.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include <chrono>
-#include <thread>
 
 namespace Mengine
 {
@@ -30,7 +31,8 @@ namespace Mengine
                 {
                     uint32_t locale_seed = Helper::generateRandomLocaleSeed();
 
-                    std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+                    THREAD_SYSTEM()
+                        ->sleep( 1 );
 
                     seed += locale_seed;
                 }
@@ -40,5 +42,6 @@ namespace Mengine
 
             return seed;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

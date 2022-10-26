@@ -2,10 +2,14 @@
 
 #include "Interface/AllocatorSystemInterface.h"
 
+#include "Win32ThreadHelper.h"
+#include "Win32ThreadIdentityRunner.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/Win32Helper.h"
+#include "Kernel/FactorableUnique.h"
 
 #include <process.h>
 
@@ -14,39 +18,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
-        //////////////////////////////////////////////////////////////////////////
-        const DWORD MS_VC_EXCEPTION = 0x406D1388;
-#pragma pack(push,8)  
-        typedef struct tagTHREADNAME_INFO
-        {
-            DWORD dwType; // Must be 0x1000.  
-            LPCSTR szName; // Pointer to name (in user addr space).  
-            DWORD dwThreadID; // Thread ID (-1=caller thread).  
-            DWORD dwFlags; // Reserved for future use, must be zero.  
-        } THREADNAME_INFO;
-#pragma pack(pop)  
-        void SetThreadName( DWORD dwThreadID, const char * threadName )
-        {
-            THREADNAME_INFO info;
-            info.dwType = 0x1000;
-            info.szName = threadName;
-            info.dwThreadID = dwThreadID;
-            info.dwFlags = 0;
-#pragma warning(push)
-#pragma warning(disable: 6320 6322)  
-            __try
-            {
-                ::RaiseException( MS_VC_EXCEPTION, 0, sizeof( info ) / sizeof( ULONG_PTR ), (ULONG_PTR *)&info );
-            }
-            __except( EXCEPTION_EXECUTE_HANDLER )
-            {
-            }
-#pragma warning(pop)  
-        }
-        //////////////////////////////////////////////////////////////////////////
-#endif
         //////////////////////////////////////////////////////////////////////////
         static DWORD WINAPI s_treadJob( LPVOID lpThreadParameter )
         {
@@ -77,10 +48,9 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadIdentity::Win32ThreadIdentity()
-        : m_thread( INVALID_HANDLE_VALUE )
+        : m_priority( ETP_NORMAL )
+        , m_thread( INVALID_HANDLE_VALUE )
         , m_threadId( 0 )
-        , m_task( nullptr )
-        , m_exit( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -88,25 +58,38 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
+    bool Win32ThreadIdentity::initialize( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
         m_name = _name;
+        m_priority = _priority;
 
 #ifdef MENGINE_DOCUMENT_ENABLE
         m_doc = _doc;
 #endif
 
-        m_mutex = _mutex;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32ThreadIdentity::finalize()
+    {
+        if( m_thread != INVALID_HANDLE_VALUE )
+        {
+            ::CloseHandle( m_thread );
+            m_thread = INVALID_HANDLE_VALUE;
+        }
 
-        ::InitializeCriticalSection( &m_taskLock );
-        ::InitializeCriticalSection( &m_processLock );
+        m_runner = nullptr;
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
-        ::InitializeCriticalSection( &m_conditionLock );
-        ::InitializeConditionVariable( &m_conditionVariable );
+#ifdef MENGINE_DOCUMENT_ENABLE
+        m_doc = nullptr;
 #endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadIdentityRunnerInterfacePtr Win32ThreadIdentity::run( const LambdaThreadRunner & _lambda )
+    {
+        m_runner = Helper::makeFactorableUnique<Win32ThreadIdentityRunner>( MENGINE_DOCUMENT_FACTORABLE, _lambda );
 
         HANDLE thread = ::CreateThread( NULL, 0, &Detail::s_treadJob, (LPVOID)this, 0, NULL );
 
@@ -116,20 +99,20 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessage()
             );
 
-            return false;
-        }
-
-        m_thread = thread;
+            return nullptr;
+        }        
 
 #if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( ::IsDebuggerPresent() == TRUE )
         {
-            DWORD threadId = ::GetThreadId( m_thread );
-            Detail::SetThreadName( threadId, _name.c_str() );
+            DWORD threadId = ::GetThreadId( thread );
+            Helper::Win32SetThreadName( threadId, m_name.c_str() );
         }
 #endif
 
-        switch( _priority )
+        m_thread = thread;
+
+        switch( m_priority )
         {
         case ETP_LOWEST:
             {
@@ -158,88 +141,25 @@ namespace Mengine
         default:
             {
                 LOGGER_ERROR( "invalid thread priority [%u]"
-                    , _priority
+                    , m_priority
                 );
             }break;
         }
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadIdentity::finalize()
-    {
-        ::CloseHandle( m_thread );
-        m_thread = INVALID_HANDLE_VALUE;
-
-        ::DeleteCriticalSection( &m_taskLock );
-        ::DeleteCriticalSection( &m_processLock );
-
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
-        ::DeleteCriticalSection( &m_conditionLock );
-#endif
-
-        m_mutex = nullptr;
-
-#ifdef MENGINE_DOCUMENT_ENABLE
-        m_doc = nullptr;
-#endif
+        return m_runner;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
-    {
-        DWORD threadId = ::GetCurrentThreadId();
-
-        m_threadId = (uint64_t)threadId;
+    {        
+        m_threadId = ::GetCurrentThreadId();
 
         ALLOCATOR_SYSTEM()
             ->startThread();
 
         MENGINE_PROFILER_THREAD( m_name.c_str() );
 
-        while( m_exit == false )
-        {
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
-            ::EnterCriticalSection( &m_conditionLock );
-            ::SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
-            ::LeaveCriticalSection( &m_conditionLock );
-#endif
-            //cppcheck-suppress oppositeInnerCondition
-            if( m_exit == true )
-            {
-                break;
-            }
-
-            ::EnterCriticalSection( &m_processLock );
-
-            if( m_task != nullptr )
-            {
-                if( m_exit == false )
-                {
-                    m_mutex->lock();
-
-                    MENGINE_PROFILER_FRAME( "thread" );
-
-                    m_task->main();
-                    m_mutex->unlock();
-                }
-
-                ::EnterCriticalSection( &m_taskLock );
-                m_task = nullptr;
-                ::LeaveCriticalSection( &m_taskLock );
-            }
-
-            ::LeaveCriticalSection( &m_processLock );
-
-            //cppcheck-suppress oppositeInnerCondition
-            if( m_exit == true )
-            {
-                break;
-            }
-
-#ifndef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
-            ::Sleep( 10 );
-#endif
-        }
+        ThreadIdentityRunnerInterfacePtr runner = m_runner;
+        runner->run();
 
         ALLOCATOR_SYSTEM()
             ->stopThread();
@@ -247,81 +167,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t Win32ThreadIdentity::getThreadId() const
     {
-        return m_threadId;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( _task );
-
-        if( m_exit == true )
-        {
-            return false;
-        }
-
-        if( ::TryEnterCriticalSection( &m_processLock ) == FALSE )
-        {
-            return false;
-        }
-
-        bool successful = false;
-
-        if( m_task == nullptr )
-        {
-            if( _task->run( m_mutex ) == true )
-            {
-                ::EnterCriticalSection( &m_taskLock );
-                m_task = _task;
-                ::LeaveCriticalSection( &m_taskLock );
-            }
-            else
-            {
-                LOGGER_ERROR( "invalid run" );
-            }
-
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
-            ::WakeConditionVariable( &m_conditionVariable );
-#endif
-
-            successful = true;
-        }
-
-        ::LeaveCriticalSection( &m_processLock );
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadIdentity::removeTask()
-    {
-        if( m_exit == true )
-        {
-            return;
-        }
-
-        ::EnterCriticalSection( &m_taskLock );
-        if( m_task != nullptr )
-        {
-            m_task->cancel();
-        }
-        ::LeaveCriticalSection( &m_taskLock );
-
-        ::EnterCriticalSection( &m_processLock );
-        m_task = nullptr;
-        ::LeaveCriticalSection( &m_processLock );
+        return (uint64_t)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::join()
     {
-        if( m_exit == true )
+        if( m_runner->isCancel() == true )
         {
             return;
         }
 
-        m_exit = true;
+        ::WaitForSingleObject( m_thread, INFINITE );
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
-        ::WakeConditionVariable( &m_conditionVariable );
-#endif
+        this->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32ThreadIdentity::cancel()
+    {
+        if( m_runner->isCancel() == true )
+        {
+            return;
+        }
+
+        m_runner->cancel();
 
         ::WaitForSingleObject( m_thread, INFINITE );
 

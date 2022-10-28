@@ -63,7 +63,8 @@ namespace Mengine
     protected:
         uint32_t m_threadCount;
 
-        ThreadMutexInterfacePtr m_mutex;
+        ThreadMutexInterfacePtr m_mutexTasks;
+        ThreadMutexInterfacePtr m_mutexThreads;
 
         struct ThreadTaskDesc
         {

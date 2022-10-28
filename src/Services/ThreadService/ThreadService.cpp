@@ -40,7 +40,10 @@ namespace Mengine
 
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 
-        m_mutex = THREAD_SYSTEM()
+        m_mutexTasks = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_mutexThreads = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_mainThreadId = THREAD_SYSTEM()
@@ -90,7 +93,8 @@ namespace Mengine
 
         m_threadIdentities.clear();
 
-        m_mutex = nullptr;
+        m_mutexTasks = nullptr;
+        m_mutexThreads = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadJob );
@@ -119,6 +123,8 @@ namespace Mengine
             , _threadName.c_str()
         );
 
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
+
         ThreadProcessorInterfacePtr threadProcessor = THREAD_SYSTEM()
             ->createThreadProcessor( _threadName, _priority, _doc );
 
@@ -135,6 +141,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::destroyThreadProcessor( const ConstString & _threadName )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
+
         for( VectorThreadProcessorDescs::iterator
             it = m_threadProcessors.begin(),
             it_end = m_threadProcessors.end();
@@ -161,6 +169,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr ThreadService::createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
+
         ThreadIdentityInterfacePtr threadIdentity = THREAD_SYSTEM()
             ->createThreadIdentity( _threadName, _priority, _doc );
 
@@ -173,6 +183,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::destroyThreadIdentity( const ThreadIdentityInterfacePtr & _threadIdentity )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
+
         VectorThreadIdentityDescs::iterator it_found = Algorithm::find( m_threadIdentities.begin(), m_threadIdentities.end(), _threadIdentity );
 
         if( it_found == m_threadIdentities.end() )
@@ -180,10 +192,10 @@ namespace Mengine
             return false;
         }
 
-        m_threadIdentities.erase( it_found );
-
         ThreadIdentityInterfacePtr threadIdentity = *it_found;
         threadIdentity->cancel();
+
+        m_threadIdentities.erase( it_found );
 
         return true;
     }
@@ -227,14 +239,14 @@ namespace Mengine
         desc.doc = _doc;
 #endif
 
-        m_mutex->lock();
+        m_mutexTasks->lock();
         m_tasks.emplace_back( desc );
-        m_mutex->unlock();
+        m_mutexTasks->unlock();
 
-        m_mutex->lock();
+        m_mutexTasks->lock();
         ThreadTaskDesc & try_desc = m_tasks.back();
         this->tryFastProcessTask_( try_desc );
-        m_mutex->unlock();
+        m_mutexTasks->unlock();
 
         return true;
     }
@@ -243,7 +255,7 @@ namespace Mengine
     {
         _task->cancel();
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexTasks );
 
         for( VectorThreadTaskDesc::iterator
             it = m_tasks.begin(),
@@ -279,7 +291,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::stopTasks()
     {
-        m_mutex->lock();
+        m_mutexTasks->lock();
 
         for( const ThreadTaskDesc & desc : m_tasks )
         {
@@ -298,7 +310,7 @@ namespace Mengine
 
         m_tasks.clear();
 
-        m_mutex->unlock();
+        m_mutexTasks->unlock();
 
         for( const ThreadQueuePtr & queue : m_threadQueues )
         {
@@ -360,7 +372,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////
     void ThreadService::update()
     {
-        m_mutex->lock();
+        m_mutexTasks->lock();
 
         for( ThreadTaskDesc & desc_task : m_tasks )
         {
@@ -400,11 +412,11 @@ namespace Mengine
             }
         }
 
-        m_mutex->unlock();
+        m_mutexTasks->unlock();
 
         m_tasksAux.clear();
 
-        m_mutex->lock();
+        m_mutexTasks->lock();
 
         for( VectorThreadTaskDesc::size_type
             it_task = 0,
@@ -430,7 +442,7 @@ namespace Mengine
             }
         }
 
-        m_mutex->unlock();
+        m_mutexTasks->unlock();
 
         for( const ThreadTaskInterfacePtr & task : m_tasksAux )
         {

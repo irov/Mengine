@@ -2,7 +2,7 @@
 
 #include "Interface/ThreadIdentityInterface.h"
 
-#include "Kernel/Documentable.h"
+#include "Kernel/Document.h"
 
 #include "Config/Time.h"
 #include "Config/Char.h"
@@ -13,7 +13,7 @@ namespace Mengine
     class TimeoutGuardScope
     {
     public:
-        TimeoutGuardScope( TimeMilliseconds _timeout, const DocumentablePtr & _doc, const Char * _format, ... );
+        TimeoutGuardScope( TimeMilliseconds _timeout, const DocumentPtr & _doc, const Char * _format, ... );
         ~TimeoutGuardScope();
 
     public:

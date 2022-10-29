@@ -17,7 +17,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TimeoutGuardScope::TimeoutGuardScope( TimeMilliseconds _timeout, const DocumentablePtr & _doc, const Char * _format, ... )
+    TimeoutGuardScope::TimeoutGuardScope( TimeMilliseconds _timeout, const DocumentPtr & _doc, const Char * _format, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );

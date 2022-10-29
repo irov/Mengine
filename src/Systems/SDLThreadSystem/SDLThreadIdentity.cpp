@@ -142,8 +142,6 @@ namespace Mengine
             return;
         }
 
-        m_runner->cancel();
-
         int status = 0;
         SDL_WaitThread( m_thread, &status );
 
@@ -157,7 +155,7 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLThreadIdentity::detach()
+    void SDLThreadIdentity::cancel()
     {
         if( m_runner->isCancel() == true )
         {
@@ -166,7 +164,15 @@ namespace Mengine
 
         m_runner->cancel();
 
-        SDL_DetachThread( m_thread );
+        int status = 0;
+        SDL_WaitThread( m_thread, &status );
+        
+        if( status != 0 )
+        {
+            LOGGER_ERROR( "invalid join thread error status [%d] (cancel)"
+                , status
+            );
+        }
 
         this->finalize();
     }

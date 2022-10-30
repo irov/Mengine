@@ -5,6 +5,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
+#include "Kernel/Document.h"
 
 #include "Config/Atomic.h"
 

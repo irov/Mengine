@@ -6,6 +6,8 @@ src
     AppleUtils.mm
     AppleErrorHelper.h
     AppleErrorHelper.mm
+    AppleString.h
+    AppleString.mm
 )
 
 ADD_MENGINE_LIBRARY(Environment)

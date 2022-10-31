@@ -25,7 +25,7 @@ namespace Mengine
                 MENGINE_SNPRINTF( msg, 1024, "[Assert] ConstString '%.*s' has non standard char ['%u']"
                     , (int32_t)_len
                     , _value
-                    , *ch
+                    , (uint32_t)*ch
                 );
 
                 Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );

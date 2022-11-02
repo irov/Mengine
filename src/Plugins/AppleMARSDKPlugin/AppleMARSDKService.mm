@@ -1,6 +1,7 @@
 #include "AppleMARSDKService.h"
 
 #include "Environment/iOS/iOSDetail.h"
+#include "Environment/Apple/AppleString.h"
 
 #include "Kernel/Logger.h"
 

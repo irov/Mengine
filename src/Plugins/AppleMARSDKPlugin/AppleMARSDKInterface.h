@@ -5,6 +5,7 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Map.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {
@@ -48,8 +49,8 @@ namespace Mengine
     {
         ConstString orderID;
         ConstString productId;
-        ConstString productName;
-        ConstString productDesc;
+        String productName;
+        String productDesc;
 
         double price;
         int32_t buyNum;

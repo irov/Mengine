@@ -235,8 +235,8 @@ namespace Mengine
 
             info.orderID = _d["orderID"];
             info.productId = _d["productId"];
-            info.productName = _d["productName"];
-            info.productDesc = _d["productDesc"];
+            info.productName = (String)_d["productName"];
+            info.productDesc = (String)_d["productDesc"];
 
             info.price = _d["price"];
             info.buyNum = _d["buyNum"];

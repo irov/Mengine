@@ -3,10 +3,12 @@ package org.Mengine.Base;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import java.util.ArrayList;
@@ -190,5 +192,33 @@ public class MenginePlugin {
         //Empty
 
         return false;
+    }
+
+    public void onActivityResumed(Activity activity) {
+        //Empty
+    }
+
+    public void onActivityPaused(Activity activity) {
+        //Empty
+    }
+
+    public void onActivityStarted(Activity activity) {
+        //Empty
+    }
+
+    public void onActivityStopped(Activity activity) {
+        //Empty
+    }
+
+    public void onActivityDestroyed(Activity activity) {
+        //Empty
+    }
+
+    public void onActivityCreated(Activity activity, Bundle bundle) {
+        //Empty
+    }
+
+    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+        //Empty
     }
 }

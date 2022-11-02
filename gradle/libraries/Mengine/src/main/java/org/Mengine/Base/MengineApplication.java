@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import org.Mengine.Base.MengineActivityLifecycle;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineUtils;
 
@@ -18,6 +19,8 @@ public class MengineApplication extends Application {
 
     public ArrayList<MenginePlugin> m_plugins;
     public Map<String, MenginePlugin> m_dictionaryPlugins;
+
+    public MengineActivityLifecycle m_lifecycle;
 
     public MengineApplication() {
         m_plugins = new ArrayList<MenginePlugin>();
@@ -85,6 +88,16 @@ public class MengineApplication extends Application {
         return true;
     }
 
+    public void onMengineInitializeBaseServices(MengineActivity activity) {
+        m_lifecycle = new MengineActivityLifecycle(this, activity);
+
+        this.registerActivityLifecycleCallbacks(m_lifecycle);
+    }
+
+    public void onMengineCreateApplication(MengineActivity activity) {
+        //Empty
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -108,6 +121,13 @@ public class MengineApplication extends Application {
 
         for (MenginePlugin p : this.m_plugins) {
             p.onAppTerminate(this);
+        }
+
+        this.m_plugins = null;
+
+        if (m_lifecycle != null) {
+            this.unregisterActivityLifecycleCallbacks(m_lifecycle);
+            m_lifecycle = null;
         }
     }
 

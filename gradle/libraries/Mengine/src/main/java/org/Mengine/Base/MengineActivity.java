@@ -24,6 +24,8 @@ import android.view.KeyEvent;
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
 
+    private boolean m_initializeBaseServices;
+
     private Map<Integer, InputStream> m_openFiles;
     private int m_fileEnumerator;
 
@@ -58,6 +60,8 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidNativePython_call(String plugin, String method, int responseId, Object args[]);
 
     public MengineActivity() {
+        m_initializeBaseServices = false;
+
         m_openFiles = new HashMap<Integer, InputStream>();
         m_fileEnumerator = 0;
 
@@ -195,6 +199,8 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void onMengineInitializeBaseServices() {
+        m_initializeBaseServices = true;
+
         MengineLog.onMengineInitializeBaseServices();
 
         MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
@@ -202,6 +208,9 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.getPlugins()) {
             p.onMengineInitializeBaseServices(this);
         }
+
+        MengineApplication app = (MengineApplication)this.getApplication();
+        app.onMengineInitializeBaseServices(this);
     }
 
     public void onMengineCreateApplication() {
@@ -214,6 +223,9 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.getPlugins()) {
             p.onExtensionRun(this);
         }
+
+        MengineApplication app = (MengineApplication)this.getApplication();
+        app.onMengineCreateApplication(this);
     }
 
     @Override
@@ -236,6 +248,10 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.getPlugins()) {
             p.onStart(this);
         }
+
+        if (m_initializeBaseServices == true) {
+            this.pythonCall("MengineActivity", "onStart");
+        }
     }
 
     @Override
@@ -246,6 +262,10 @@ public class MengineActivity extends SDLActivity {
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onStop(this);
+        }
+
+        if (m_initializeBaseServices == true) {
+            this.pythonCall("MengineActivity", "onStop");
         }
     }
 
@@ -258,6 +278,10 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.getPlugins()) {
             p.onPause(this);
         }
+
+        if (m_initializeBaseServices == true) {
+            this.pythonCall("MengineActivity", "onPause");
+        }
     }
 
     @Override
@@ -268,6 +292,10 @@ public class MengineActivity extends SDLActivity {
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onResume(this);
+        }
+
+        if (m_initializeBaseServices == true) {
+            this.pythonCall("MengineActivity", "onResume");
         }
     }
 
@@ -301,6 +329,10 @@ public class MengineActivity extends SDLActivity {
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onRestart(this);
+        }
+
+        if (m_initializeBaseServices == true) {
+            this.pythonCall("MengineActivity", "onRestart");
         }
     }
 

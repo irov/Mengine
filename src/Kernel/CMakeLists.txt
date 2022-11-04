@@ -629,7 +629,7 @@ Core
     VectorBool.h
     VectorResources.h
     
-    ShuffleVector.h
+    VectorHelper.h
 
     ConstString.h
     ConstString.cpp

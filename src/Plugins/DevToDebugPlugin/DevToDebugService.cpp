@@ -532,9 +532,9 @@ namespace Mengine
 
                 jpp::object j = Helper::loadJSONStreamFromString( _response.data, MENGINE_DOCUMENT_FACTORABLE );
 
-                String uuid = j.get( "uuid", "" );
+                m_workerURL = j.get( "worker_url", "" );
 
-                if( uuid.empty() == true )
+                if( m_workerURL.empty() == true )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connecting response error: %s [code %u] [id %u]"
                         , _response.data.c_str()
@@ -546,10 +546,6 @@ namespace Mengine
 
                     break;
                 }
-
-                m_workerURL = "http://api.devtodebug.com/workers/";
-                m_workerURL += uuid;
-                m_workerURL += "/";
 
                 if( m_logger != nullptr )
                 {

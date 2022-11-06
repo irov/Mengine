@@ -235,6 +235,21 @@ namespace Mengine
         return m_verboseFilter;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool LoggerService::validateVerbose( const ConstString & _category ) const
+    {
+        if( _category == ConstString::none() )
+        {
+            return false;
+        }
+
+        if( Algorithm::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void LoggerService::setSilent( bool _silent )
     {
         m_silent = _silent;
@@ -283,22 +298,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const
     {
+        MENGINE_UNUSED( _category );
+
         if( m_silent == true )
         {
             return false;
-        }
-
-        if( m_verboseLevel < _level )
-        {
-            if( _category == ConstString::none() )
-            {
-                return false;
-            }
-
-            if( Algorithm::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
-            {
-                return false;
-            }
         }
 
         if( m_silentMessageRelease == true )
@@ -309,14 +313,12 @@ namespace Mengine
             }
         }
 
-        if( _filter == 0 )
+        if( _filter != 0 )
         {
-            return true;
-        }
-
-        if( (m_verboseFilter & _filter) == 0 )
-        {
-            return false;
+            if( (m_verboseFilter & _filter) == 0 )
+            {
+                return false;
+            }
         }
 
         return true;
@@ -448,7 +450,7 @@ namespace Mengine
             return false;
         }
 
-        if( _logger->initializeLogger() == false )
+        if( _logger->initializeLogger( m_verboseLevel ) == false )
         {
             return false;
         }

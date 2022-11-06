@@ -11,6 +11,7 @@
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/VectorHelper.h"
 
 namespace Mengine
 {
@@ -112,6 +113,15 @@ namespace Mengine
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugLogger::validMessage( const LoggerMessage & _message ) const
+    {
+        MENGINE_UNUSED( _message );
+
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::flush()
     {
         //Empty
@@ -128,8 +138,10 @@ namespace Mengine
             return;
         }
 
+        uint32_t DevToDebug_LoggerBatchCount = CONFIG_VALUE( "DevToDebugPlugin", "LoggerBatchCount", 1024 );
+
         m_mutex->lock();
-        VectorMessages messages = std::move( m_messages );
+        VectorMessages messages = Helper::exciseVector( m_messages, DevToDebug_LoggerBatchCount );
         m_mutex->unlock();
 
         jpp::array j_log = jpp::make_array();

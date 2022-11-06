@@ -21,12 +21,16 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual bool initializeLogger() = 0;
+        virtual bool initializeLogger( ELoggerLevel _verboseLevel ) = 0;
         virtual void finalizeLogger() = 0;
 
     public:
         virtual void setWriteHistory( bool _writeHistory ) = 0;
         virtual bool getWriteHistory() const = 0;
+
+    public:
+        virtual void setSupportVerboses( bool _supportVerboses ) = 0;
+        virtual bool setSupportVerboses() const = 0;
 
     public:
         virtual void setColor( uint32_t _color ) = 0;

@@ -36,6 +36,9 @@ namespace Mengine
         void log( const LoggerMessage & _message ) override;
 
     protected:
+        bool validMessage( const LoggerMessage & _message ) const override;
+
+    protected:
         void flush() override;
 
     protected:

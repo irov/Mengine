@@ -29,18 +29,73 @@ namespace Mengine
                 , m_args( _args )
             {
             }
+            
+        protected:
+            void onPlatformInit( const MARSDKResultParams & _params ) override
+            {
+                pybind::object cb = m_cbs["onPlatformInit"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                pybind::dict d = this->makePyParams( _params );
+                
+                cb.call_args( d, m_args );
+            }
+            
+            void onRealName( const MARSDKResultParams & _params ) override
+            {
+                pybind::object cb = m_cbs["onRealName"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                pybind::dict d = this->makePyParams( _params );
+                
+                cb.call_args( d, m_args );
+            }
+            
+            void onEventWithCode( int32_t _code, const Char * _msg ) override
+            {
+                pybind::object cb = m_cbs["onEventWithCode"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _code, _msg, m_args );
+            }
+            
+            void onEventCustom( const Char * _eventName, const MARSDKResultParams & _params ) override
+            {
+                pybind::object cb = m_cbs["onEventCustom"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                pybind::dict d = this->makePyParams( _params );
+                
+                cb.call_args( _eventName, d, m_args );
+            }
 
         protected:
             void onUserLogin( const MARSDKResultParams & _params ) override
             {
                 pybind::object cb = m_cbs["onUserLogin"];
                 
-                pybind::dict d( m_kernel );
-                
-                for( auto && [key, value] : _params )
+                if( cb.is_none() == true )
                 {
-                    d[key] = value;
+                    return;
                 }
+                
+                pybind::dict d = this->makePyParams( _params );
                 
                 cb.call_args( d, m_args );
             }
@@ -49,12 +104,7 @@ namespace Mengine
             {
                 pybind::object cb = m_cbs["onUserLogout"];
                 
-                pybind::dict d( m_kernel );
-                
-                for( auto && [key, value] : _params )
-                {
-                    d[key] = value;
-                }
+                pybind::dict d = this->makePyParams( _params );
                 
                 cb.call_args( d, m_args );
             }
@@ -63,12 +113,7 @@ namespace Mengine
             {
                 pybind::object cb = m_cbs["onPayPaid"];
                 
-                pybind::dict d( m_kernel );
-                
-                for( auto && [key, value] : _params )
-                {
-                    d[key] = value;
-                }
+                pybind::dict d = this->makePyParams( _params );
                 
                 cb.call_args( d, m_args );
             }
@@ -156,6 +201,19 @@ namespace Mengine
                 }
                 
                 cb.call_args( _itemName, _itemNum, m_args );
+            }
+            
+        protected:
+            pybind::dict makePyParams( const MARSDKResultParams & _params ) const
+            {
+                pybind::dict d( m_kernel );
+                
+                for( auto && [key, value] : _params )
+                {
+                    d[key] = value;
+                }
+                
+                return d;
             }
             
         protected:

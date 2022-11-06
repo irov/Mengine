@@ -45,7 +45,12 @@
     }];
 #endif
     
-    //ToDo
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+
+    Mengine::MARSDKResultParams result_params;
+    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+    
+    provider->onPlatformInit( result_params );
 }
 
 - (void) OnRealName:(NSDictionary*)params {
@@ -60,7 +65,12 @@
     }];
 #endif
     
-    //ToDo
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+
+    Mengine::MARSDKResultParams result_params;
+    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+    
+    provider->onRealName( result_params );
 }
 
 - (void) OnEventWithCode: (int)code msg: (NSString*)msg {
@@ -69,7 +79,11 @@
         , [msg UTF8String]
     );
     
-    //ToDo
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+
+    const Mengine::Char * msg_str = [msg UTF8String];
+    
+    provider->onEventWithCode( code, msg_str );
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
@@ -86,7 +100,14 @@
     }];
 #endif
     
-    //ToDo
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+
+    const Mengine::Char * eventName_str = [eventName UTF8String];
+    
+    Mengine::MARSDKResultParams result_params;
+    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+    
+    provider->onEventCustom( eventName_str, result_params );
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {

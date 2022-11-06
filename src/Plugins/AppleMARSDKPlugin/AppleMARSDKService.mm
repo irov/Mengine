@@ -17,6 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleMARSDKService::AppleMARSDKService()
         : m_delegate( nil )
+        , m_adRewardedDelegate( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -41,6 +42,12 @@ namespace Mengine
         {
             [m_delegate release];
             m_delegate = nil;
+        }
+        
+        if( m_adRewardedDelegate != nil )
+        {
+            [m_adRewardedDelegate release];
+            m_adRewardedDelegate = nil;
         }
     }
     //////////////////////////////////////////////////////////////////////
@@ -83,8 +90,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitExtendedData( const MARSDKExtraData & _data )
     {
-        LOGGER_INFO( "marsdk", "submit extended data" );
-        
         MARUserExtraData* extraData = [[MARUserExtraData alloc] init];
         
         extraData.dataType = _data.dataType;
@@ -109,13 +114,15 @@ namespace Mengine
         extraData.partyMasterID = [NSString stringWithUTF8String: _data.partyMasterID.c_str()];
         extraData.partyMasterName = [NSString stringWithUTF8String: _data.partyMasterName.c_str()];
         
+        LOGGER_INFO( "marsdk", "submit extended data: %s"
+            , [[NSString stringWithFormat:@"%@", extraData] UTF8String]
+        );
+        
         [[MARSDK sharedInstance] submitExtraData:extraData];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitPaymentData( const MARSDKProductInfo & _info )
     {
-        LOGGER_INFO( "marsdk", "submit payment data" );
-        
         MARProductInfo* productInfo = [[MARProductInfo alloc] init];
         
         productInfo.orderID = [NSString stringWithUTF8String:_info.orderID.c_str()];
@@ -133,6 +140,10 @@ namespace Mengine
         productInfo.serverId = [NSString stringWithUTF8String: _info.serverId.c_str()];
         productInfo.serverName = [NSString stringWithUTF8String: _info.serverName.c_str()];
         productInfo.notifyUrl = [NSString stringWithUTF8String: _info.notifyUrl.c_str()];
+
+        LOGGER_INFO( "marsdk", "submit payment data: %s"
+            , [[NSString stringWithFormat:@"%@", productInfo] UTF8String]
+        );
         
         [[MARSDK sharedInstance] pay:productInfo];        
     }
@@ -141,7 +152,9 @@ namespace Mengine
     {
         UIViewController * rootViewController = Helper::iOSGetRootViewController();
         
-        [[MARAd sharedInstance] showRewardVideoAd:rootViewController itemName:[[NSString alloc] initWithUTF8String:_itemName.c_str()] itemNum:_itemNum delegate:m_adRewardedDelegate];
+        [[MARAd sharedInstance] showRewardVideoAd:rootViewController
+                                         itemName:[[NSString alloc] initWithUTF8String:_itemName.c_str()]
+                                          itemNum:_itemNum delegate:m_adRewardedDelegate];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogin( const MARSDKResultParams & _params )

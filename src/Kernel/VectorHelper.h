@@ -17,8 +17,8 @@ namespace Mengine
                 return std::move( _vector );
             }
 
-            C::iterator it_last = _vector.begin() + _count;
-            C::iterator it_end = _vector.end();
+            typename C::const_iterator it_last = _vector.begin() + _count;
+            typename C::const_iterator it_end = _vector.end();
 
             C tail( it_last, it_end );
 

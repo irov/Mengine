@@ -20,8 +20,7 @@ namespace Mengine
         LM_MESSAGE,
         LM_INFO,
         LM_DEBUG,
-        LM_VERBOSE,
-        LM_UNKNOWN
+        LM_VERBOSE
     };
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerColor

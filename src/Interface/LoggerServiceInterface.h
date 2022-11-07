@@ -22,9 +22,6 @@ namespace Mengine
         virtual uint32_t getVerboseFilter() const = 0;
 
     public:
-        virtual bool validateVerbose( const ConstString & _category ) const = 0;
-
-    public:
         virtual void setSilent( bool _silent ) = 0;
         virtual bool isSilent() const = 0;
 

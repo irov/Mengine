@@ -32,9 +32,6 @@ namespace Mengine
         uint32_t getVerboseFilter() const override;
 
     public:
-        bool validateVerbose( const ConstString & _category ) const override;
-
-    public:
         void setSilent( bool _silent ) override;
         bool isSilent() const override;
 

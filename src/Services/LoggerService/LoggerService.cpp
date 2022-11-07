@@ -235,21 +235,6 @@ namespace Mengine
         return m_verboseFilter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerService::validateVerbose( const ConstString & _category ) const
-    {
-        if( _category == ConstString::none() )
-        {
-            return false;
-        }
-
-        if( Algorithm::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void LoggerService::setSilent( bool _silent )
     {
         m_silent = _silent;
@@ -303,6 +288,19 @@ namespace Mengine
         if( m_silent == true )
         {
             return false;
+        }
+
+        if( m_verboseLevel < _level )
+        {
+            if( _category == ConstString::none() )
+            {
+                return false;
+            }
+
+            if( Algorithm::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
+            {
+                return false;
+            }
         }
 
         if( m_silentMessageRelease == true )
@@ -450,7 +448,7 @@ namespace Mengine
             return false;
         }
 
-        if( _logger->initializeLogger( m_verboseLevel ) == false )
+        if( _logger->initializeLogger() == false )
         {
             return false;
         }

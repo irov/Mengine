@@ -7,10 +7,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoggerBase::LoggerBase()
         : m_color( LCOLOR_NONE )
-        , m_verboseLevel( LM_UNKNOWN )
+        , m_verboseLevel( LM_VERBOSE )
         , m_verboseFilter( 0xFFFFFFFF )
         , m_writeHistory( false )
-        , m_supportVerboses( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -18,16 +17,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerBase::initializeLogger( ELoggerLevel _verboseLevel )
+    bool LoggerBase::initializeLogger()
     {
         if( this->_initializeLogger() == false )
         {
             return false;
-        }
-
-        if( m_verboseLevel == LM_UNKNOWN )
-        {
-            m_verboseLevel = _verboseLevel;
         }
 
         if( m_writeHistory == true )
@@ -66,16 +60,6 @@ namespace Mengine
         return m_writeHistory;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerBase::setSupportVerboses( bool _supportVerboses )
-    {
-        m_supportVerboses = _supportVerboses;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool LoggerBase::setSupportVerboses() const
-    {
-        return m_supportVerboses;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void LoggerBase::setColor( uint32_t _color )
     {
         m_color = _color;
@@ -110,24 +94,17 @@ namespace Mengine
     {
         if( m_verboseLevel < _message.level )
         {
-            if( m_supportVerboses == false )
-            {
-                return false;
-            }
-
-            if( LOGGER_SERVICE()
-                ->validateVerbose( _message.category ) == false )
-            {
-                return false;
-            }
+            return false;
         }
 
-        if( _message.filter != 0 )
+        if( _message.filter == 0 )
         {
-            if( (m_verboseFilter & _message.filter) == 0 )
-            {
-                return false;
-            }
+            return true;
+        }
+
+        if( (m_verboseFilter & _message.filter) == 0 )
+        {
+            return false;
         }
 
         return true;

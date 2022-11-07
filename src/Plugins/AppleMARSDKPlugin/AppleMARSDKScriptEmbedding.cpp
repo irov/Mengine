@@ -104,6 +104,11 @@ namespace Mengine
             {
                 pybind::object cb = m_cbs["onUserLogout"];
                 
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
                 pybind::dict d = this->makePyParams( _params );
                 
                 cb.call_args( d, m_args );
@@ -112,6 +117,11 @@ namespace Mengine
             void onPayPaid( const MARSDKResultParams & _params ) override
             {
                 pybind::object cb = m_cbs["onPayPaid"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
                 
                 pybind::dict d = this->makePyParams( _params );
                 

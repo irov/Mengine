@@ -34,7 +34,9 @@
 }
 
 - (void) OnPlatformInit: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnPlatformInit params:" );
+    LOGGER_INFO( "marsdk", "OnPlatformInit params[%lu]:"
+        , [params count]
+    );
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
@@ -54,7 +56,9 @@
 }
 
 - (void) OnRealName:(NSDictionary*)params {
-    LOGGER_INFO( "marsdk", "OnRealName params:" );
+    LOGGER_INFO( "marsdk", "OnRealName params[%lu]:"
+        , [params count]
+    );
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
@@ -87,8 +91,9 @@
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
-    LOGGER_INFO( "marsdk", "OnEventCustom event '%s' params:"
+    LOGGER_INFO( "marsdk", "OnEventCustom event '%s' params[%lu]:"
         , [eventName UTF8String]
+        , [params count]
     );
     
 #if MENGINE_LOGGER_DEBUG == 1
@@ -111,7 +116,9 @@
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnUserLogin params:");
+    LOGGER_INFO( "marsdk", "OnUserLogin params[%lu]:"
+        , [params count]
+    );
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
@@ -131,7 +138,9 @@
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnUserLogout params:");
+    LOGGER_INFO( "marsdk", "OnUserLogout params[%lu]:"
+        , [params count]
+    );
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
@@ -151,7 +160,9 @@
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnPayPaid params:");
+    LOGGER_INFO( "marsdk", "OnPayPaid params[%lu]:"
+        , [params count]
+    );
     
 #if MENGINE_LOGGER_DEBUG == 1
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {

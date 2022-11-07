@@ -38,6 +38,8 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::_finalizeService()
     {
+        [[MARSDK sharedInstance] setDelegate:nil];
+        
         if( m_delegate != nil )
         {
             [m_delegate release];

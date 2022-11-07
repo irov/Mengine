@@ -6,7 +6,7 @@
 #include "sentry.h"
 
 #ifndef MENGINE_SENTRY_MAX_LOG_SIZE
-#define MENGINE_SENTRY_MAX_LOG_SIZE 9240
+#define MENGINE_SENTRY_MAX_LOG_SIZE 4096
 #endif
 
 namespace Mengine

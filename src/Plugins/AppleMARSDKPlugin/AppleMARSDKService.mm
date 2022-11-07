@@ -115,7 +115,7 @@ namespace Mengine
         extraData.partyMasterName = [NSString stringWithUTF8String: _data.partyMasterName.c_str()];
         
         LOGGER_INFO( "marsdk", "submit extended data: %s"
-            , [[NSString stringWithFormat:@"%@", extraData] UTF8String]
+            , [[extraData toJsonString] UTF8String]
         );
         
         [[MARSDK sharedInstance] submitExtraData:extraData];
@@ -142,7 +142,7 @@ namespace Mengine
         productInfo.notifyUrl = [NSString stringWithUTF8String: _info.notifyUrl.c_str()];
 
         LOGGER_INFO( "marsdk", "submit payment data: %s"
-            , [[NSString stringWithFormat:@"%@", productInfo] UTF8String]
+            , [[productInfo toJsonString] UTF8String]
         );
         
         [[MARSDK sharedInstance] pay:productInfo];        
@@ -150,6 +150,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
     {
+        LOGGER_INFO( "marsdk", "show reward video ad: item '%s' num [%u]"
+            , _itemName.c_str()
+            , _itemNum
+        );
+        
         UIViewController * rootViewController = Helper::iOSGetRootViewController();
         
         [[MARAd sharedInstance] showRewardVideoAd:rootViewController

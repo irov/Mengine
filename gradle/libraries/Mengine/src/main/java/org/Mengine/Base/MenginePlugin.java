@@ -1,8 +1,5 @@
 package org.Mengine.Base;
 
-import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
@@ -10,6 +7,9 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 
 import java.util.ArrayList;
 
@@ -194,31 +194,67 @@ public class MenginePlugin {
         return false;
     }
 
-    public void onActivityResumed(Activity activity) {
+    public void onActivityLifecycleResumed(Activity activity) {
         //Empty
     }
 
-    public void onActivityPaused(Activity activity) {
+    public void onActivityLifecyclePaused(Activity activity) {
         //Empty
     }
 
-    public void onActivityStarted(Activity activity) {
+    public void onActivityLifecycleStarted(Activity activity) {
         //Empty
     }
 
-    public void onActivityStopped(Activity activity) {
+    public void onActivityLifecycleStopped(Activity activity) {
         //Empty
     }
 
-    public void onActivityDestroyed(Activity activity) {
+    public void onActivityLifecycleDestroyed(Activity activity) {
         //Empty
     }
 
-    public void onActivityCreated(Activity activity, Bundle bundle) {
+    public void onActivityLifecycleCreated(Activity activity, Bundle bundle) {
         //Empty
     }
 
-    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+    public void onActivityLifecycleSaveInstanceState(Activity activity, Bundle bundle) {
+        //Empty
+    }
+
+    public void onLifecycleCreate(@NonNull LifecycleOwner owner) {
+        //Empty
+    }
+
+    public void onLifecycleStart(@NonNull LifecycleOwner owner) {
+        //Empty
+    }
+
+    public void onLifecycleResume(@NonNull LifecycleOwner owner) {
+        //Empty
+    }
+
+    public void onLifecyclePause(@NonNull LifecycleOwner owner) {
+        //Empty
+    }
+
+    public void onLifecycleStop(@NonNull LifecycleOwner owner) {
+        //Empty
+    }
+
+    public void onLifecycleDestroy(@NonNull LifecycleOwner owner) {
+        //Empty
+    }
+
+    public void onTrimMemory(int level) {
+        //Empty
+    }
+
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        //Empty
+    }
+
+    public void onLowMemory() {
         //Empty
     }
 }

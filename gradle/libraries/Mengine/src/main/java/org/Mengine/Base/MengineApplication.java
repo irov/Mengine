@@ -1,13 +1,11 @@
 package org.Mengine.Base;
 
-import org.Mengine.Base.MengineActivityLifecycle;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MengineUtils;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.Log;
+
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -20,7 +18,10 @@ public class MengineApplication extends Application {
     public ArrayList<MenginePlugin> m_plugins;
     public Map<String, MenginePlugin> m_dictionaryPlugins;
 
-    public MengineActivityLifecycle m_lifecycle;
+    public MengineActivityLifecycle m_activityLifecycle;
+    public MengineLifecycle m_lifecycle;
+
+    public MengineComponentCallbacks m_componentCallbacks;
 
     public MengineApplication() {
         m_plugins = new ArrayList<MenginePlugin>();
@@ -89,9 +90,14 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineInitializeBaseServices(MengineActivity activity) {
-        m_lifecycle = new MengineActivityLifecycle(this, activity);
+        m_activityLifecycle = new MengineActivityLifecycle(this, activity);
+        this.registerActivityLifecycleCallbacks(m_activityLifecycle);
 
-        this.registerActivityLifecycleCallbacks(m_lifecycle);
+        m_lifecycle = new MengineLifecycle(this, activity);
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(m_lifecycle);
+
+        m_componentCallbacks = new MengineComponentCallbacks(this, activity);
+        this.registerComponentCallbacks(m_componentCallbacks);
     }
 
     public void onMengineCreateApplication(MengineActivity activity) {
@@ -125,9 +131,19 @@ public class MengineApplication extends Application {
 
         this.m_plugins = null;
 
+        if (m_activityLifecycle != null) {
+            this.unregisterActivityLifecycleCallbacks(m_activityLifecycle);
+            m_activityLifecycle = null;
+        }
+
         if (m_lifecycle != null) {
-            this.unregisterActivityLifecycleCallbacks(m_lifecycle);
+            ProcessLifecycleOwner.get().getLifecycle().removeObserver(m_lifecycle);
             m_lifecycle = null;
+        }
+
+        if (m_componentCallbacks != null) {
+            this.unregisterComponentCallbacks(m_componentCallbacks);
+            m_componentCallbacks = null;
         }
     }
 

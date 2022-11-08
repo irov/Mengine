@@ -158,9 +158,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineAppLovinPlugin.this.logInfo("AppLovinSdk initialized: consent dialog [%s] country [%s]"
-                        , configuration.getConsentDialogState().toString()
-                        , configuration.getCountryCode()
+                MengineAppLovinPlugin.this.logInfo("AppLovinSdk initialized: country [%s]"
+                    , configuration.getCountryCode()
                 );
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinPluginOnSdkInitialized");

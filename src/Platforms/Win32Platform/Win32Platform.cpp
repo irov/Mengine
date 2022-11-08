@@ -531,7 +531,7 @@ namespace Mengine
         {
             uint32_t color = (is_supported == true ? LCOLOR_GREEN | LCOLOR_BLUE : LCOLOR_RED);
 
-            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), LM_MESSAGE_RELEASE, LFILTER_NONE, color, nullptr, 0 )("%s: %s"
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL_I( MENGINE_LIBRARY_NAME ), LM_MESSAGE_RELEASE, LFILTER_NONE, color, nullptr, 0 )("%s: %s"
                 , isa_feature
                 , is_supported == true ? "+" : "-"
                 );
@@ -4522,13 +4522,13 @@ namespace Mengine
 
                 if( successful == TRUE )
                 {
-                    LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("%s"
+                    LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL_I( MENGINE_LIBRARY_NAME ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("%s"
                         , tempFileBuffer
                         );
                 }
                 else
                 {
-                    LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("invalid read file '%ls'"
+                    LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL_I( MENGINE_LIBRARY_NAME ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("invalid read file '%ls'"
                         , tempFileNameBuffer
                         );
                 }

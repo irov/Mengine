@@ -85,6 +85,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.preference:preference:1.2.0"
 
+    implementation "androidx.lifecycle:lifecycle-process:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-common:2.5.1"
+
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
 }

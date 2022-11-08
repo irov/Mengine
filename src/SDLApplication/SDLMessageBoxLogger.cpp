@@ -27,7 +27,7 @@ namespace Mengine
 
         if( _message.category.empty() == false )
         {
-            ::printf( "%s "
+            ::printf( "[%s] "
                 , _message.category.c_str()
             );
         }

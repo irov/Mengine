@@ -49,7 +49,7 @@ namespace Mengine
             str_info[size_vsnprintf + 0] = '\n';
             str_info[size_vsnprintf + 1] = '\0';
 
-            LoggerOperator( ConstString::none(), LM_ERROR, 0, LCOLOR_RED, m_file, m_line )("%s", str_info);
+            LoggerOperator( ConstString::none(), LM_ERROR, 0, LCOLOR_RED, m_file, m_line, ELF_FLAG_NONE )("%s", str_info);
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_level, m_file, m_line, str_info );

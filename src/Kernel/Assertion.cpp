@@ -116,7 +116,7 @@ namespace Mengine
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
-                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("%s"
                     , assertion_info
                     );
             }

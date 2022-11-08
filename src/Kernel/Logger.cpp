@@ -24,13 +24,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line )
+    LoggerOperator::LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, ELoggerFlag _flag )
         : m_category( _category )
         , m_level( _level )
         , m_filter( _filter )
         , m_color( _color )
         , m_file( _file )
         , m_line( _line )
+        , m_flag( _flag )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -60,11 +61,14 @@ namespace Mengine
 
         size_t size = 0;
 
-        size_t size_functionstamp = Helper::makeLoggerFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
-
-        if( size_functionstamp > 0 )
+        if( m_flag & ELF_FLAG_FUNCTION_STAMP )
         {
-            size += size_functionstamp;
+            size_t size_functionstamp = Helper::makeLoggerFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+
+            if( size_functionstamp > 0 )
+            {
+                size += size_functionstamp;
+            }
         }
 
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );

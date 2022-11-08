@@ -27,7 +27,9 @@ namespace Mengine
             const Char * category_str = _message.category.c_str();
             size_t category_size = _message.category.size();
 
+            std::cout.write( "[", 1 );
             std::cout.write( category_str, category_size );
+            std::cout.write( "]", 1 );
             std::cout.write( " ", 1 );
         }
 

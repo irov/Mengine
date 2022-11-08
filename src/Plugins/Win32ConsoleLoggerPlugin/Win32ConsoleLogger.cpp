@@ -155,7 +155,9 @@ namespace Mengine
             const Char * category_str = _message.category.c_str();
             size_t category_size = _message.category.size();
 
+            ::WriteConsoleA( output_handle, "[", 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, category_str, (DWORD)category_size, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, "]", 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 

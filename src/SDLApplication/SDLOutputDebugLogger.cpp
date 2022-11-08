@@ -28,7 +28,9 @@ namespace Mengine
         {
             const Char * category_str = _message.category.c_str();
 
+            ::OutputDebugStringA( "[" );
             ::OutputDebugStringA( category_str );
+            ::OutputDebugStringA( "]" );
             ::OutputDebugStringA( " " );
         }
 

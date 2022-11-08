@@ -588,7 +588,7 @@ namespace Mengine
             return 1;
         }
         //////////////////////////////////////////////////////////////////////////
-        static const Char * SDL_GetCategoryName( int category )
+        static const Char * SDL_GetLoggerCategoryString( int category )
         {
             switch( category )
             {
@@ -649,9 +649,10 @@ namespace Mengine
             MENGINE_UNUSED( priority );
 
             ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
+            const Char * category_str = Detail::SDL_GetLoggerCategoryString( category );
 
-            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("SDL [%s]: %s"
-                , Detail::SDL_GetCategoryName( category )
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "SDL" ), level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("SDL [%s]: %s"
+                , category_str
                 , message
                 );
         }
@@ -2011,7 +2012,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::closeWindow()
     {
-        SDL_HideWindow( m_sdlWindow );
+        if( m_sdlWindow != nullptr )
+        {
+            SDL_HideWindow( m_sdlWindow );
+        }
         
         this->pushQuitEvent_();
     }

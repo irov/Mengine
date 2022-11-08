@@ -56,7 +56,9 @@ namespace Mengine
             const Char * category_str = _message.category.c_str();
             size_t category_size = _message.category.size();
 
+            m_stream->write( "[", 1 );
             m_stream->write( category_str, category_size );
+            m_stream->write( "]", 1 );
             m_stream->write( " ", 1 );
         }
 

@@ -44,7 +44,9 @@ namespace Mengine
             const Char * category_str = _message.category.c_str();
             size_t category_size = _message.category.size();
 
+            m_message.append( "[", 1 );
             m_message.append( category_str, category_size );
+            m_message.append( "]", 1 );
             m_message.append( " ", 1 );
         }
 

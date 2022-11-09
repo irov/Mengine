@@ -463,12 +463,6 @@ namespace Mengine
                     ->headerData( m_dsn, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
-
-                LOGGER_INFO( "devtodebug", "Connecting: %s data: %s [id %u]"
-                    , m_dsn.c_str()
-                    , data.c_str()
-                    , id
-                );
             }break;
         case EDTDS_CONNECT:
             {
@@ -484,11 +478,6 @@ namespace Mengine
                     ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
-
-                LOGGER_INFO( "devtodebug", "Process: data %s [id %u]"
-                    , data.c_str()
-                    , id
-                );
             }break;
         default:
             break;

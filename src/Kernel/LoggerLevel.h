@@ -37,4 +37,11 @@ namespace Mengine
         LFILTER_PROTECTED = 1 << 0,
     };
     //////////////////////////////////////////////////////////////////////////
+    enum ELoggerFlag
+    {
+        ELF_FLAG_NONE = 0x00000000,
+        ELF_FLAG_FUNCTION_STAMP = 0x00000001,
+        ELF_FLAG_FULL = 0xFFFFFFFF
+    };
+    //////////////////////////////////////////////////////////////////////////
 }

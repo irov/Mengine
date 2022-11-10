@@ -273,7 +273,7 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0 )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
             , msg_str
             );
 
@@ -284,7 +284,7 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0 )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
             , msg_str
             );
 
@@ -295,7 +295,7 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
             , msg_str
             );
 
@@ -306,7 +306,7 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
             , msg_str
             );
 
@@ -317,7 +317,7 @@ extern "C" {
     {
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0 )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
             , msg_str
             );
 

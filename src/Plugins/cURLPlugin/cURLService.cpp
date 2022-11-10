@@ -44,26 +44,26 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void * stdex_curl_malloc_callback( size_t _size )
+        static void * curl_malloc( size_t _size )
         {
             void * p = Helper::allocateMemory( _size, "curl" );
 
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void stdex_curl_free_callback( void * _ptr )
+        static void curl_free( void * _ptr )
         {
             Helper::deallocateMemory( _ptr, "curl" );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void * stdex_curl_realloc_callback( void * _ptr, size_t _size )
+        static void * curl_realloc( void * _ptr, size_t _size )
         {
             void * p = Helper::reallocateMemory( _ptr, _size, "curl" );
 
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static char * stdex_curl_strdup_callback( const char * str )
+        static char * curl_strdup( const char * str )
         {
             size_t len = MENGINE_STRLEN( str ) + 1;
 
@@ -77,7 +77,7 @@ namespace Mengine
             return (char *)MENGINE_MEMCPY( p, str, len );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void * stdex_curl_calloc_callback( size_t _nmemb, size_t _size )
+        static void * curl_calloc( size_t _nmemb, size_t _size )
         {
             void * p = Helper::callocateMemory( _nmemb, _size, "curl" );
 
@@ -102,11 +102,11 @@ namespace Mengine
     bool cURLService::_initializeService()
     {
         CURLcode code = curl_global_init_mem( CURL_GLOBAL_ALL
-            , &Detail::stdex_curl_malloc_callback
-            , &Detail::stdex_curl_free_callback
-            , &Detail::stdex_curl_realloc_callback
-            , &Detail::stdex_curl_strdup_callback
-            , &Detail::stdex_curl_calloc_callback );
+            , &Detail::curl_malloc
+            , &Detail::curl_free
+            , &Detail::curl_realloc
+            , &Detail::curl_strdup
+            , &Detail::curl_calloc );
 
         if( code != CURLE_OK )
         {

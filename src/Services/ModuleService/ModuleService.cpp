@@ -229,11 +229,19 @@ namespace Mengine
         m_leaves.push_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::update( bool _focus )
+    void ModuleService::beginUpdate( bool _focus )
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->update( _focus );
+            module->beginUpdate( _focus );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleService::endUpdate()
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            module->endUpdate();
         }
     }
     //////////////////////////////////////////////////////////////////////////

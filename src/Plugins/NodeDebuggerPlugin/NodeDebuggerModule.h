@@ -82,7 +82,7 @@ namespace Mengine
         void updateScene();
 
     public:
-        void _update( bool _focus ) override;
+        void _beginUpdate( bool _focus ) override;
         void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     protected:

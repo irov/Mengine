@@ -27,7 +27,8 @@ namespace Mengine
         virtual bool isInitializeModule() const = 0;
 
     public:
-        virtual void update( bool _focus ) = 0;
+        virtual void beginUpdate( bool _focus ) = 0;
+        virtual void endUpdate() = 0;
 
     public:
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) = 0;

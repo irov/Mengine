@@ -184,10 +184,15 @@ namespace Mengine
         m_eventation->addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::_update( bool _focus )
+    void AndroidNativePythonModule::_beginUpdate( bool _focus )
     {
         MENGINE_UNUSED( _focus );
 
+        m_eventation->invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonModule::_endUpdate()
+    {
         m_eventation->invoke();
     }
     //////////////////////////////////////////////////////////////////////////

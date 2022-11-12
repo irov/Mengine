@@ -1681,7 +1681,7 @@ namespace Mengine
         if( SERVICE_EXIST( ModuleServiceInterface ) == true )
         {
             MODULE_SERVICE()
-                ->update( m_focus );
+                ->beginUpdate( m_focus );
         }
 
         if( m_nopause == false )
@@ -1763,6 +1763,9 @@ namespace Mengine
     {
         SCENE_SERVICE()
             ->update();
+
+        MODULE_SERVICE()
+            ->endUpdate();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()

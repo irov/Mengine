@@ -43,7 +43,8 @@ namespace Mengine
         void _finalizeModule() override;
 
     protected:
-        void _update( bool _focus ) override;
+        void _beginUpdate( bool _focus ) override;
+        void _endUpdate() override;
 
     public:
         void addCommand( const LambdaPythonEventHandler & _command );

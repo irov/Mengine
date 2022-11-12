@@ -19,7 +19,6 @@ public class MengineApplication extends Application {
     public Map<String, MenginePlugin> m_dictionaryPlugins;
 
     public MengineActivityLifecycle m_activityLifecycle;
-    public MengineLifecycle m_lifecycle;
 
     public MengineComponentCallbacks m_componentCallbacks;
 
@@ -93,9 +92,6 @@ public class MengineApplication extends Application {
         m_activityLifecycle = new MengineActivityLifecycle(this, activity);
         this.registerActivityLifecycleCallbacks(m_activityLifecycle);
 
-        m_lifecycle = new MengineLifecycle(this, activity);
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(m_lifecycle);
-
         m_componentCallbacks = new MengineComponentCallbacks(this, activity);
         this.registerComponentCallbacks(m_componentCallbacks);
     }
@@ -134,11 +130,6 @@ public class MengineApplication extends Application {
         if (m_activityLifecycle != null) {
             this.unregisterActivityLifecycleCallbacks(m_activityLifecycle);
             m_activityLifecycle = null;
-        }
-
-        if (m_lifecycle != null) {
-            ProcessLifecycleOwner.get().getLifecycle().removeObserver(m_lifecycle);
-            m_lifecycle = null;
         }
 
         if (m_componentCallbacks != null) {

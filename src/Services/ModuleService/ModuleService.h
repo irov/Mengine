@@ -34,7 +34,8 @@ namespace Mengine
         void leaveModule( const ConstString & _name, const LambdaLeaveModule & _lambda ) override;
 
     public:
-        void update( bool _focus ) override;
+        void beginUpdate( bool _focus ) override;
+        void endUpdate() override;
 
     public:
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;

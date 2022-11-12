@@ -250,7 +250,7 @@ public class MengineActivity extends SDLActivity {
         }
 
         if (m_initializeBaseServices == true) {
-            this.pythonCall("MengineActivity", "onStart");
+            this.pythonCall(TAG, "onStart");
         }
     }
 
@@ -265,7 +265,7 @@ public class MengineActivity extends SDLActivity {
         }
 
         if (m_initializeBaseServices == true) {
-            this.pythonCall("MengineActivity", "onStop");
+            this.pythonCall(TAG, "onStop");
         }
     }
 
@@ -280,7 +280,7 @@ public class MengineActivity extends SDLActivity {
         }
 
         if (m_initializeBaseServices == true) {
-            this.pythonCall("MengineActivity", "onPause");
+            this.pythonCall(TAG, "onPause");
         }
     }
 
@@ -295,7 +295,7 @@ public class MengineActivity extends SDLActivity {
         }
 
         if (m_initializeBaseServices == true) {
-            this.pythonCall("MengineActivity", "onResume");
+            this.pythonCall(TAG, "onResume");
         }
     }
 
@@ -332,7 +332,7 @@ public class MengineActivity extends SDLActivity {
         }
 
         if (m_initializeBaseServices == true) {
-            this.pythonCall("MengineActivity", "onRestart");
+            this.pythonCall(TAG, "onRestart");
         }
     }
 

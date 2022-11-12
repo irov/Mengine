@@ -428,7 +428,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::_update( bool _focus )
+    void NodeDebuggerModule::_beginUpdate( bool _focus )
     {
         MENGINE_UNUSED( _focus );
 

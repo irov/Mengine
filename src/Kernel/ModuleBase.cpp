@@ -110,15 +110,25 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::update( bool _focus )
+    void ModuleBase::beginUpdate( bool _focus )
     {
-        this->_update( _focus );
+        this->_beginUpdate( _focus );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::_update( bool _focus )
+    void ModuleBase::endUpdate()
+    {
+        this->_endUpdate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleBase::_beginUpdate( bool _focus )
     {
         MENGINE_UNUSED( _focus );
 
+        //Empty;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleBase::_endUpdate()
+    {
         //Empty;
     }
     //////////////////////////////////////////////////////////////////////////

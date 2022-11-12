@@ -35,10 +35,12 @@ namespace Mengine
         virtual void _finalizeModule();
 
     public:
-        void update( bool _focus ) override;
+        void beginUpdate( bool _focus ) override;
+        void endUpdate() override;
 
     protected:
-        virtual void _update( bool _focus );
+        virtual void _beginUpdate( bool _focus );
+        virtual void _endUpdate();
 
     public:
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;

@@ -85,15 +85,15 @@ SERVICE_FACTORY( Platform, Mengine::SDLPlatform );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
 //////////////////////////////////////////////////////////////////////////
-static jclass jclass_activity;
-static jobject jobject_activity;
+static jclass g_jclass_activity;
+static jobject g_jobject_activity;
 //////////////////////////////////////////////////////////////////////////
 extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
     {
-        jclass_activity = (jclass)(env->NewGlobalRef( cls ));
-        jobject_activity = (jclass)(env->NewGlobalRef( obj ));
+        g_jclass_activity = (jclass)(env->NewGlobalRef(cls ));
+        g_jobject_activity = (jclass)(env->NewGlobalRef(obj ));
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeMengine_1quitMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
@@ -1401,7 +1401,7 @@ namespace Mengine
 
         return true;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( Helper::AndroidOpenUrlInDefaultBrowser( m_jenv, jclass_activity, jobject_activity, _url ) == false )
+        if(Helper::AndroidOpenUrlInDefaultBrowser(m_jenv, g_jclass_activity, g_jobject_activity, _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url
@@ -1433,7 +1433,7 @@ namespace Mengine
 
         return false;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( Helper::AndroidOpenMail( m_jenv, jclass_activity, jobject_activity, _email, _subject, _body ) == false )
+        if(Helper::AndroidOpenMail(m_jenv, g_jclass_activity, g_jobject_activity, _email, _subject, _body ) == false )
         {
             LOGGER_ERROR( "error open mail '%s'"
                 , _email
@@ -3071,17 +3071,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jclass SDLPlatform::getJClassActivity() const
     {
-        return jclass_activity;
+        return g_jclass_activity;
     }
     //////////////////////////////////////////////////////////////////////////
     jobject SDLPlatform::getJObjectActivity() const
     {
-        return jobject_activity;
+        return g_jobject_activity;
     }
     //////////////////////////////////////////////////////////////////////////
     String SDLPlatform::getAndroidId() const
     {
-        static jmethodID jmethodID_getAndroidId = m_jenv->GetMethodID( jclass_activity, "getAndroidId", "()Ljava/lang/String;" );
+        static jmethodID jmethodID_getAndroidId = m_jenv->GetMethodID(g_jclass_activity, "getAndroidId", "()Ljava/lang/String;" );
 
         if( jmethodID_getAndroidId == nullptr )
         {
@@ -3090,7 +3090,7 @@ namespace Mengine
             return String();
         }
 
-        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getAndroidId );
+        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod(g_jobject_activity, jmethodID_getAndroidId );
 
         const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
 
@@ -3105,7 +3105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     String SDLPlatform::getDeviceName() const
     {
-        static jmethodID jmethodID_getDeviceName = m_jenv->GetMethodID( jclass_activity, "getDeviceName", "()Ljava/lang/String;" );
+        static jmethodID jmethodID_getDeviceName = m_jenv->GetMethodID(g_jclass_activity, "getDeviceName", "()Ljava/lang/String;" );
 
         if( jmethodID_getDeviceName == nullptr )
         {
@@ -3114,7 +3114,7 @@ namespace Mengine
             return String();
         }
 
-        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getDeviceName );
+        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod(g_jobject_activity, jmethodID_getDeviceName );
 
         const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
 
@@ -3129,7 +3129,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     String SDLPlatform::getAndroidPackageName() const
     {
-        static jmethodID jmethodID_getPackageName = m_jenv->GetMethodID( jclass_activity, "getPackageName", "()Ljava/lang/String;" );
+        static jmethodID jmethodID_getPackageName = m_jenv->GetMethodID(g_jclass_activity, "getPackageName", "()Ljava/lang/String;" );
 
         if( jmethodID_getPackageName == nullptr )
         {
@@ -3138,7 +3138,7 @@ namespace Mengine
             return String();
         }
 
-        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod( jobject_activity, jmethodID_getPackageName );
+        jstring jReturnValue = (jstring)m_jenv->CallObjectMethod(g_jobject_activity, jmethodID_getPackageName );
 
         const Char * jStringValue = m_jenv->GetStringUTFChars( jReturnValue, nullptr );
 
@@ -4064,7 +4064,7 @@ namespace Mengine
     void SDLPlatform::notifyInitializeBaseServices_()
     {
 #if defined(MENGINE_PLATFORM_ANDROID)
-        static jmethodID jmethodID_onMengineInitializeBaseServices = m_jenv->GetMethodID( jclass_activity, "onMengineInitializeBaseServices", "()V" );
+        static jmethodID jmethodID_onMengineInitializeBaseServices = m_jenv->GetMethodID(g_jclass_activity, "onMengineInitializeBaseServices", "()V" );
 
         if( jmethodID_onMengineInitializeBaseServices == nullptr )
         {
@@ -4073,7 +4073,7 @@ namespace Mengine
             return;
         }
 
-        m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineInitializeBaseServices );
+        m_jenv->CallVoidMethod(g_jobject_activity, jmethodID_onMengineInitializeBaseServices );
 
         m_androidEventationHub->invoke();
 #endif
@@ -4082,7 +4082,7 @@ namespace Mengine
     void SDLPlatform::notifyCreateApplication_()
     {
 #if defined(MENGINE_PLATFORM_ANDROID)
-        static jmethodID jmethodID_onMengineCreateApplication = m_jenv->GetMethodID( jclass_activity, "onMengineCreateApplication", "()V" );
+        static jmethodID jmethodID_onMengineCreateApplication = m_jenv->GetMethodID(g_jclass_activity, "onMengineCreateApplication", "()V" );
 
         if( jmethodID_onMengineCreateApplication == nullptr )
         {
@@ -4091,7 +4091,7 @@ namespace Mengine
             return;
         }
 
-        m_jenv->CallVoidMethod( jobject_activity, jmethodID_onMengineCreateApplication );
+        m_jenv->CallVoidMethod(g_jobject_activity, jmethodID_onMengineCreateApplication );
 
         m_androidEventationHub->invoke();
 #endif
@@ -4101,40 +4101,40 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t SDLPlatform::androidOpenAssetFile( const Char * _path )
     {
-        int32_t fileId = Helper::AndroidOpenAssetFile( m_jenv, jclass_activity, jobject_activity, _path );
+        int32_t fileId = Helper::AndroidOpenAssetFile(m_jenv, g_jclass_activity, g_jobject_activity, _path );
 
         return fileId;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t SDLPlatform::androidAvailableAssetFile( int32_t _fileId )
     {
-        int32_t available = Helper::AndroidAvailableAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+        int32_t available = Helper::AndroidAvailableAssetFile(m_jenv, g_jclass_activity, g_jobject_activity, _fileId );
 
         return available;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t SDLPlatform::androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer )
     {
-        int32_t read = Helper::AndroidReadAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId, _offset, _size, _buffer );
+        int32_t read = Helper::AndroidReadAssetFile(m_jenv, g_jclass_activity, g_jobject_activity, _fileId, _offset, _size, _buffer );
 
         return read;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t SDLPlatform::androidSkipAssetFile( int32_t _fileId, int32_t _offset )
     {
-        int32_t skip = Helper::AndroidSkipAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId, _offset );
+        int32_t skip = Helper::AndroidSkipAssetFile(m_jenv, g_jclass_activity, g_jobject_activity, _fileId, _offset );
 
         return skip;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::androidResetAssetFile( int32_t _fileId )
     {
-        Helper::AndroidResetAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+        Helper::AndroidResetAssetFile(m_jenv, g_jclass_activity, g_jobject_activity, _fileId );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::androidCloseAssetFile( int32_t _fileId )
     {
-        Helper::AndroidCloseAssetFile( m_jenv, jclass_activity, jobject_activity, _fileId );
+        Helper::AndroidCloseAssetFile(m_jenv, g_jclass_activity, g_jobject_activity, _fileId );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::addAndroidEventation( const AndroidEventationInterfacePtr & _eventation )

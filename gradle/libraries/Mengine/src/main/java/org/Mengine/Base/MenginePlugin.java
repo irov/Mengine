@@ -64,12 +64,12 @@ public class MenginePlugin {
         return instance;
     }
 
-    public void logWarning(String format, Object ... args) {
-        MengineLog.logWarning(m_pluginName, format, args);
-    }
-
     public void logInfo(String format, Object ... args) {
         MengineLog.logInfo(m_pluginName, format, args);
+    }
+
+    public void logWarning(String format, Object ... args) {
+        MengineLog.logWarning(m_pluginName, format, args);
     }
 
     public void logError(String format, Object ... args) {
@@ -109,6 +109,10 @@ public class MenginePlugin {
     }
 
     public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
+        //Empty
+    }
+
+    public void onEvent(MengineActivity activity, String id, Object ... args) {
         //Empty
     }
 

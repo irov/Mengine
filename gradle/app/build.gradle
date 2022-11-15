@@ -13,6 +13,7 @@ def MENGINE_APP_PLUGIN_GOOGLE_SERVICE = Utils.getBooleanProperty(project, "MENGI
 def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false);
 def MENGINE_APP_PLUGIN_GOOGLE_BILLING = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_GOOGLE_BILLING", false);
 def MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", false);
+def MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_GOOGLE_CONSENT", false);
 def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false);
 def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", false);
 def MENGINE_APP_PLUGIN_DEVTODEV = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_DEVTODEV", false);
@@ -360,6 +361,16 @@ if (MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS == true) {
 
     dependencies {
         implementation project(':libraries:GoogleInAppReviews')
+    }
+}
+
+println "MENGINE_APP_PLUGIN_GOOGLE_CONSENT: $MENGINE_APP_PLUGIN_GOOGLE_CONSENT"
+
+if (MENGINE_APP_PLUGIN_GOOGLE_CONSENT == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.GoogleConsent.MengineGoogleConsentPlugin'
+
+    dependencies {
+        implementation project(':libraries:GoogleConsent')
     }
 }
 

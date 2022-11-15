@@ -10,6 +10,8 @@ import org.Mengine.Base.MengineUtils;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdListener;
+import com.applovin.mediation.MaxAdRequestListener;
+import com.applovin.mediation.MaxAdRevenueListener;
 import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxAdWaterfallInfo;
 import com.applovin.mediation.MaxError;
@@ -21,6 +23,7 @@ import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
 
 import com.applovin.sdk.AppLovinAdSize;
+import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.applovin.sdk.AppLovinSdkUtils;
@@ -109,6 +112,30 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     }
 
     @Override
+    public void onEvent(MengineActivity activity, String id, Object ... args) {
+        if(id == "ConsentStatus") {
+            final Context context = activity.getBaseContext();
+
+            Integer consent = (Integer)args[0];
+
+            switch (consent) {
+                case -1:
+                case 0:
+                case 1:
+                    this.logInfo("setHasUserConsent: false");
+
+                    AppLovinPrivacySettings.setHasUserConsent(false, context);
+                    break;
+                case 2:
+                    this.logInfo("setHasUserConsent: true");
+
+                    AppLovinPrivacySettings.setHasUserConsent(true, context);
+                    break;
+            }
+        }
+    }
+
+    @Override
     public void onDestroy(MengineActivity activity) {
         if (m_mediationAmazon != null) {
             m_mediationAmazon = null;
@@ -152,8 +179,26 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         boolean AppLovin_VerboseLogging = activity.getConfigValueBoolean("AppLovinPlugin", "VerboseLogging", false);
 
         if( OPTION_applovinverbose == true || AppLovin_VerboseLogging == true ) {
+            this.logInfo("setVerboseLogging: true");
+
             appLovinSdk.getSettings().setVerboseLogging(true);
         }
+
+        boolean AppLovin_IsAgeRestrictedUser = activity.getConfigValueBoolean("AppLovinPlugin", "IsAgeRestrictedUser", true);
+
+        this.logInfo("setIsAgeRestrictedUser: %d"
+            , AppLovin_IsAgeRestrictedUser
+        );
+
+        AppLovinPrivacySettings.setIsAgeRestrictedUser( AppLovin_IsAgeRestrictedUser, context );
+
+        boolean AppLovin_CCPA = activity.getConfigValueBoolean("AppLovinPlugin", "CCPA", true);
+
+        this.logInfo("setDoNotSell: %d"
+                , AppLovin_IsAgeRestrictedUser
+        );
+
+        AppLovinPrivacySettings.setDoNotSell( AppLovin_CCPA, context );
 
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
@@ -184,7 +229,18 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         m_adView = new MaxAdView(AppLovin_BannerAdUnitId, activity);
 
-        MaxAdViewAdListener maxAdViewAdListener = new MaxAdViewAdListener() {
+        m_adView.setRequestListener(new MaxAdRequestListener() {
+            @Override
+            public void onAdRequestStarted(String adUnitId) {
+                MengineAppLovinPlugin.this.logInfo("[Banner] onAdRequestStarted %s"
+                        , adUnitId
+                );
+
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdRequestStarted");
+            }
+        });
+
+        m_adView.setListener(new MaxAdViewAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd( "Banner","onAdLoaded", ad);
@@ -240,9 +296,16 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdCollapsed");
             }
-        };
+        });
 
-        m_adView.setListener(maxAdViewAdListener);
+        m_adView.setRevenueListener(new MaxAdRevenueListener() {
+            @Override
+            public void onAdRevenuePaid(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Banner", "onAdRevenuePaid", ad);
+
+                MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdRevenuePaid");
+            }
+        });
 
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         boolean tablet = AppLovinSdkUtils.isTablet(activity);
@@ -294,7 +357,18 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         m_interstitialAd = new MaxInterstitialAd(AppLovin_InterstitialAdUnitId, activity);
 
-        MaxAdListener maxAdListener = new MaxAdListener() {
+        m_interstitialAd.setRequestListener(new MaxAdRequestListener() {
+            @Override
+            public void onAdRequestStarted(String adUnitId) {
+                MengineAppLovinPlugin.this.logInfo("[Interstitial] onAdRequestStarted %s"
+                        , adUnitId
+                );
+
+                MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdRequestStarted");
+            }
+        });
+
+        m_interstitialAd.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd("Interstitial", "onAdLoaded", ad);
@@ -350,9 +424,16 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdDisplayFailed");
             }
-        };
+        });
 
-        m_interstitialAd.setListener(maxAdListener);
+        m_interstitialAd.setRevenueListener(new MaxAdRevenueListener() {
+            @Override
+            public void onAdRevenuePaid(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Interstitial", "onAdRevenuePaid", ad);
+
+                MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdRevenuePaid");
+            }
+        });
     }
 
     public void loadInterstitial() {
@@ -385,7 +466,18 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         m_rewardedAd = MaxRewardedAd.getInstance(AppLovin_RewardedAdUnitId, activity);
 
-        MaxRewardedAdListener maxRewardedAdListener = new MaxRewardedAdListener() {
+        m_rewardedAd.setRequestListener(new MaxAdRequestListener() {
+            @Override
+            public void onAdRequestStarted(String adUnitId) {
+                MengineAppLovinPlugin.this.logInfo("[Rewarded] onAdRequestStarted %s"
+                        , adUnitId
+                );
+
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdRequestStarted");
+            }
+        });
+
+        m_rewardedAd.setListener(new MaxRewardedAdListener() {
             @Override
             public void onRewardedVideoStarted(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onRewardedVideoStarted", ad);
@@ -470,9 +562,16 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdDisplayFailed");
             }
-        };
+        });
 
-        m_rewardedAd.setListener(maxRewardedAdListener);
+        m_rewardedAd.setRevenueListener(new MaxAdRevenueListener() {
+            @Override
+            public void onAdRevenuePaid(MaxAd ad) {
+                MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onAdRevenuePaid", ad);
+
+                MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdRevenuePaid");
+            }
+        });
     }
 
     public void loadRewarded() {
@@ -515,6 +614,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     public void logMaxError(String type, String callback, MaxError error) {
         this.logInfo( "AppLovin: type: " + type + " callback: " + callback );
+        this.logInfo( "MaxError: code: " + error.getCode() + " message: " + error.getMessage() );
+        this.logInfo( "MediatedNetwork: code" + error.getMediatedNetworkErrorCode() + " message: " + error.getMediatedNetworkErrorMessage() );
 
         MaxAdWaterfallInfo waterfall = error.getWaterfall();
 

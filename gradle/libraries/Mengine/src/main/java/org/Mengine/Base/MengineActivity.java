@@ -167,6 +167,12 @@ public class MengineActivity extends SDLActivity {
         return (T)plugin;
     }
 
+    public void sendEvent(String id, Object ... args) {
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onEvent(this, id, args);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

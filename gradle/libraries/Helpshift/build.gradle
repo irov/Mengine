@@ -1,6 +1,6 @@
 import com.Mengine.Utils
 
-def MENGINE_APP_PLUGIN_DEVDEBUGGER = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_DEVDEBUGGER", false)
+def MENGINE_APP_PLUGIN_DEVDEBUGGER = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVDEBUGGER")
 
 apply plugin: 'com.android.library'
 

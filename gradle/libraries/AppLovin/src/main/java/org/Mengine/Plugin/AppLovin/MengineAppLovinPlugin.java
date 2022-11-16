@@ -41,6 +41,7 @@ import androidx.annotation.NonNull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MengineAppLovinPlugin extends MenginePlugin {
@@ -107,9 +108,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
 
-    @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-    }
+    private List<MengineAppLovinAnalyticsInterface> m_analytics;
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
@@ -133,6 +132,10 @@ public class MengineAppLovinPlugin extends MenginePlugin {
                     break;
             }
         }
+    }
+
+    @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
     }
 
     @Override
@@ -161,13 +164,24 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         MengineActivity activity = this.getActivity();
         final Context context = activity.getBaseContext();
 
-        m_mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
+        MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
-        if (m_mediationAmazon != null) {
+        if (mediationAmazon != null) {
             try {
-                m_mediationAmazon.initializeMediator(activity);
-            } catch (Exception e) {
+                mediationAmazon.initializeMediator(activity);
 
+                m_mediationAmazon = mediationAmazon;
+            } catch (Exception e) {
+            }
+        }
+
+        m_analytics = new ArrayList<MengineAppLovinAnalyticsInterface>();
+
+        MengineAppLovinAnalyticsInterface firebaseAnalytics = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinFirebaseAnalytics", false);
+
+        if (firebaseAnalytics != null) {
+            if (firebaseAnalytics.initializeAnalytics(activity) == true) {
+                m_analytics.add(firebaseAnalytics);
             }
         }
 
@@ -178,7 +192,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         boolean OPTION_applovinverbose = activity.hasOption("applovinverbose");
         boolean AppLovin_VerboseLogging = activity.getConfigValueBoolean("AppLovinPlugin", "VerboseLogging", false);
 
-        if( OPTION_applovinverbose == true || AppLovin_VerboseLogging == true ) {
+        if (OPTION_applovinverbose == true || AppLovin_VerboseLogging == true) {
             this.logInfo("setVerboseLogging: true");
 
             appLovinSdk.getSettings().setVerboseLogging(true);
@@ -186,7 +200,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         boolean AppLovin_IsAgeRestrictedUser = activity.getConfigValueBoolean("AppLovinPlugin", "IsAgeRestrictedUser", true);
 
-        this.logInfo("setIsAgeRestrictedUser: %d"
+        this.logInfo("setIsAgeRestrictedUser: %b"
             , AppLovin_IsAgeRestrictedUser
         );
 
@@ -194,7 +208,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         boolean AppLovin_CCPA = activity.getConfigValueBoolean("AppLovinPlugin", "CCPA", true);
 
-        this.logInfo("setDoNotSell: %d"
+        this.logInfo("setDoNotSell: %b"
                 , AppLovin_IsAgeRestrictedUser
         );
 
@@ -227,9 +241,9 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             throw new Exception("Need to add config value for [AppLovin] BannerAdUnitId");
         }
 
-        m_adView = new MaxAdView(AppLovin_BannerAdUnitId, activity);
+        MaxAdView adView = new MaxAdView(AppLovin_BannerAdUnitId, activity);
 
-        m_adView.setRequestListener(new MaxAdRequestListener() {
+        adView.setRequestListener(new MaxAdRequestListener() {
             @Override
             public void onAdRequestStarted(String adUnitId) {
                 MengineAppLovinPlugin.this.logInfo("[Banner] onAdRequestStarted %s"
@@ -240,7 +254,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         });
 
-        m_adView.setListener(new MaxAdViewAdListener() {
+        adView.setListener(new MaxAdViewAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd( "Banner","onAdLoaded", ad);
@@ -298,12 +312,16 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         });
 
-        m_adView.setRevenueListener(new MaxAdRevenueListener() {
+        adView.setRevenueListener(new MaxAdRevenueListener() {
             @Override
             public void onAdRevenuePaid(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd("Banner", "onAdRevenuePaid", ad);
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinBannerOnAdRevenuePaid");
+
+                for (MengineAppLovinAnalyticsInterface analytic : MengineAppLovinPlugin.this.m_analytics) {
+                    analytic.eventRevenuePaid(ad);
+                }
             }
         });
 
@@ -315,25 +333,27 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         int heightPx = AppLovinSdkUtils.dpToPx(activity, tablet_size_height);
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, heightPx);
-        m_adView.setLayoutParams(params);
+        adView.setLayoutParams(params);
 
         Window window = activity.getWindow();
         View view = window.getDecorView();
         int window_view_height = view.getHeight();
 
-        m_adView.setTranslationY(window_view_height - heightPx);
+        adView.setTranslationY(window_view_height - heightPx);
 
         ViewGroup rootView = view.findViewById(android.R.id.content);
-        rootView.addView(m_adView);
+        rootView.addView(adView);
 
         if (m_mediationAmazon != null) {
-            m_mediationAmazon.initializeMediatorBanner(activity, m_adView);
+            m_mediationAmazon.initializeMediatorBanner(activity, adView);
         } else {
             // Load the ad
-            m_adView.loadAd();
+            adView.loadAd();
         }
 
-        this.bannerVisible(false);
+        adView.setVisibility(View.GONE);
+
+        m_adView = adView;
     }
 
     public void bannerVisible(boolean show) {
@@ -355,9 +375,9 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             throw new Exception("Need to add config value for [AppLovin] InterstitialAdUnitId");
         }
 
-        m_interstitialAd = new MaxInterstitialAd(AppLovin_InterstitialAdUnitId, activity);
+        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(AppLovin_InterstitialAdUnitId, activity);
 
-        m_interstitialAd.setRequestListener(new MaxAdRequestListener() {
+        interstitialAd.setRequestListener(new MaxAdRequestListener() {
             @Override
             public void onAdRequestStarted(String adUnitId) {
                 MengineAppLovinPlugin.this.logInfo("[Interstitial] onAdRequestStarted %s"
@@ -368,7 +388,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         });
 
-        m_interstitialAd.setListener(new MaxAdListener() {
+        interstitialAd.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd("Interstitial", "onAdLoaded", ad);
@@ -426,14 +446,20 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         });
 
-        m_interstitialAd.setRevenueListener(new MaxAdRevenueListener() {
+        interstitialAd.setRevenueListener(new MaxAdRevenueListener() {
             @Override
             public void onAdRevenuePaid(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd("Interstitial", "onAdRevenuePaid", ad);
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinInterstitialOnAdRevenuePaid");
+
+                for (MengineAppLovinAnalyticsInterface analytic : MengineAppLovinPlugin.this.m_analytics) {
+                    analytic.eventRevenuePaid(ad);
+                }
             }
         });
+
+        m_interstitialAd = interstitialAd;
     }
 
     public void loadInterstitial() {
@@ -464,9 +490,9 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             throw new Exception("Need to add config value for [AppLovin] RewardedAdUnitId");
         }
 
-        m_rewardedAd = MaxRewardedAd.getInstance(AppLovin_RewardedAdUnitId, activity);
+        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(AppLovin_RewardedAdUnitId, activity);
 
-        m_rewardedAd.setRequestListener(new MaxAdRequestListener() {
+        rewardedAd.setRequestListener(new MaxAdRequestListener() {
             @Override
             public void onAdRequestStarted(String adUnitId) {
                 MengineAppLovinPlugin.this.logInfo("[Rewarded] onAdRequestStarted %s"
@@ -477,7 +503,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         });
 
-        m_rewardedAd.setListener(new MaxRewardedAdListener() {
+        rewardedAd.setListener(new MaxRewardedAdListener() {
             @Override
             public void onRewardedVideoStarted(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onRewardedVideoStarted", ad);
@@ -564,14 +590,20 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         });
 
-        m_rewardedAd.setRevenueListener(new MaxAdRevenueListener() {
+        rewardedAd.setRevenueListener(new MaxAdRevenueListener() {
             @Override
             public void onAdRevenuePaid(MaxAd ad) {
                 MengineAppLovinPlugin.this.logMaxAd("Rewarded", "onAdRevenuePaid", ad);
 
                 MengineAppLovinPlugin.this.pythonCall("onApplovinRewardedOnAdRevenuePaid");
+
+                for (MengineAppLovinAnalyticsInterface analytic : MengineAppLovinPlugin.this.m_analytics) {
+                    analytic.eventRevenuePaid(ad);
+                }
             }
         });
+
+        m_rewardedAd = rewardedAd;
     }
 
     public void loadRewarded() {

@@ -77,22 +77,32 @@ namespace Mengine
     void AppleAppTrackingService::getIDFA( EAppleAppTrackingAuthorization * const _status, ConstString * const _idfa ) const
     {
         *_status = m_status;
-        *_idfa = m_idfa;
+        MENGINE_STRCPY( _idfa, m_idfa );
     }
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::makeIDFA_()
     {
-        NSUUID * idfa = [[ASIdentifierManager sharedManager] advertisingIdentifier];
-        
-        if( idfa == nullptr )
+        Helper::iOSGetIDFA( m_idfa );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleAppTrackingService::isTrackingAllowed() const
+    {
+        if(@available(iOS 14.5, *))
         {
-            return;
+            if( ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusDenied )
+            {
+                return false;
+            }
         }
-        
-        NSString * idfa_nsstring = [idfa UUIDString];
-        const Char * idfa_str = [idfa_nsstring UTF8String];
-        
-        m_idfa = Helper::stringizeString( idfa_str );
+        else
+        {
+            if( Helper::iOSIsValidIDFA() == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -9,5 +9,7 @@ namespace Mengine
     {
         bool iOSGetDeviceId( Char * const _deviceId );
         bool iOSGetDeviceName( Char * const _deviceName );
+        bool iOSGetIDFA( Char * const _idfa );
+        bool iOSIsValidIDFA();
     }
 }

@@ -25,6 +25,9 @@ namespace Mengine
         
     public:
         virtual void getIDFA( EAppleAppTrackingAuthorization * const _status, ConstString * const _idfa ) const = 0;
+
+    public:
+        virtual bool isTrackingAllowed() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

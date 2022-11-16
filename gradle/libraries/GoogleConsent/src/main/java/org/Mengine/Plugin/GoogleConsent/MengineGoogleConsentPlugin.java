@@ -25,7 +25,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
             @Override
             public void onConsentInfoUpdated(ConsentStatus consentStatus) {
                 MengineGoogleConsentPlugin.this.logInfo("get consent status: %s"
-                        , consentStatus.toString()
+                    , consentStatus.toString()
                 );
 
                 if (consentStatus == ConsentStatus.UNKNOWN) {
@@ -43,7 +43,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
 
                  // User's consent status failed to update.
                 MengineGoogleConsentPlugin.this.logError("failed to update consent: %s"
-                        , errorDescription
+                    , errorDescription
                 );
             }
         });

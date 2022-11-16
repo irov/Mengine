@@ -4,6 +4,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#include "Const/Char.h"
+
 namespace Mengine
 {
 	class AppleAppTrackingService
@@ -21,13 +23,17 @@ namespace Mengine
 		void authorization( const LambdaAuthorizationResponse & _response ) override;
         
     protected:
-        void getIDFA( EAppleAppTrackingAuthorization * const _status, ConstString * const _idfa ) const override;
+        void getIDFA( EAppleAppTrackingAuthorization * const _status, Char * const _idfa ) const override;
+
+    protected:
+        bool isTrackingAllowed() const override;
         
     protected:
         void makeIDFA_();
         
     protected:
         EAppleAppTrackingAuthorization m_status;
-        ConstString m_idfa;
+
+        Char m_idfa[64] = {'\0'};
     };
 }

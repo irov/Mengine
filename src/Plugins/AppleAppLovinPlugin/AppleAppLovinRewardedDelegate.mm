@@ -1,5 +1,7 @@
 #import "AppleAppLovinRewardedDelegate.h"
 
+#include "Kernel/Logger.h"
+
 @implementation AppleAppLovinRewardedDelegate
 
 @synthesize m_callback;
@@ -13,6 +15,7 @@
     
     self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitIdentifier];
     self.m_rewardedAd.delegate = self;
+    self.m_rewardedAd.revenueDelegate = self;
     
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( [amazonSlotId length] != 0 ) {
@@ -36,6 +39,8 @@
     }
 #endif
     
+    self.m_rewardedAd = nil;
+    
     [super dealloc];
 }
 
@@ -55,17 +60,15 @@
 
 #pragma mark - MAAdDelegate Protocol
 
-- (void) didLoadAd:(MAAd *) ad
-{
-    // Rewarded ad is ready to be shown. '[self.rewardedAd isReady]' will now return 'YES'
+- (void) didLoadAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Rewarded didLoadAd");
     
     // Reset retry attempt
     self.m_retryAttempt = 0;
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
-    // Rewarded ad failed to load
-    // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+    LOGGER_INFO("applovin", "Rewarded didFailToLoadAdForAdUnitIdentifier");
     
     self.m_retryAttempt++;
 
@@ -76,28 +79,47 @@
     });
 }
 
-- (void) didDisplayAd:(MAAd *) ad {}
+- (void) didDisplayAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Rewarded didDisplayAd");
+}
 
-- (void) didClickAd:(MAAd *) ad {}
+- (void) didClickAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Rewarded didClickAd");
+}
 
 - (void) didHideAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Rewarded didHideAd");
+    
     // Rewarded ad is hidden. Pre-load the next ad
     [self.m_rewardedAd loadAd];
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    // Rewarded ad failed to display. We recommend loading the next ad
+    LOGGER_INFO("applovin", "Rewarded didFailToDisplayAd");
+        
     [self.m_rewardedAd loadAd];
 }
 
 #pragma mark - MARewardedAdDelegate Protocol
 
-- (void) didStartRewardedVideoForAd:(MAAd *)ad {}
+- (void) didStartRewardedVideoForAd:(MAAd *)ad {
+    LOGGER_INFO("applovin", "Rewarded didStartRewardedVideoForAd");
+}
 
-- (void) didCompleteRewardedVideoForAd:(MAAd *)ad {}
+- (void) didCompleteRewardedVideoForAd:(MAAd *)ad {
+    LOGGER_INFO("applovin", "Rewarded didCompleteRewardedVideoForAd");
+}
 
 - (void) didRewardUserForAd:(MAAd *) ad withReward:(MAReward *) reward {
+    LOGGER_INFO("applovin", "Rewarded didRewardUserForAd");
+    
     m_callback->onAppLovinRewardReceivedReward( reward.amount );
+}
+
+#pragma mark - Revenue Callbacks
+
+- (void)didPayRevenueForAd:(MAAd *)ad {
+    LOGGER_INFO("applovin", "Banner didPayRevenueForAd" );
 }
     
 @end

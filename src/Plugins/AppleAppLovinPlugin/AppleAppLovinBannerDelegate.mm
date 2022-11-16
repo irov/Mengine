@@ -2,6 +2,8 @@
 
 #include "Environment/iOS/iOSDetail.h"
 
+#include "Kernel/Logger.h"
+
 @implementation AppleAppLovinBannerDelegate
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
@@ -11,6 +13,7 @@
     
     self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_adView.delegate = self;
+    self.m_adView.revenueDelegate = self;
 
     self.m_adView.frame = rect;
 
@@ -41,6 +44,8 @@
     }
 #endif
     
+    self.m_adView = nil;
+    
     [super dealloc];
 }
 
@@ -69,28 +74,48 @@
     CGFloat widthDp = adViewSize.width;
     CGFloat heightDp = adViewSize.height;
 
-    //ToDo
+    LOGGER_INFO("applovin", "Banner didLoadAd");
 }
 
-- (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {}
+- (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
+    LOGGER_INFO("applovin", "Banner didFailToLoadAdForAdUnitIdentifier" );
+}
 
-- (void) didClickAd:(MAAd *) ad {}
+- (void) didClickAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Banner didClickAd" );
+}
 
-- (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {}
+- (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
+    LOGGER_INFO("applovin", "Banner didFailToDisplayAd" );
+}
 
 
 #pragma mark - MAAdViewAdDelegate Protocol
 
-- (void) didExpandAd:(MAAd *) ad {}
+- (void) didExpandAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Banner didExpandAd" );
+}
 
-- (void) didCollapseAd:(MAAd *) ad {}
+- (void) didCollapseAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Banner didCollapseAd" );
+}
 
 #pragma mark - Deprecated Callbacks
 
 /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
-- (void) didDisplayAd:(MAAd *) ad {}
+- (void) didDisplayAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Banner didDisplayAd" );
+}
 
-- (void) didHideAd:(MAAd *) ad {}
+- (void) didHideAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Banner didHideAd" );
+}
 /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
     
+#pragma mark - Revenue Callbacks
+
+- (void)didPayRevenueForAd:(MAAd *)ad {
+    LOGGER_INFO("applovin", "Banner didPayRevenueForAd" );
+}
+
 @end

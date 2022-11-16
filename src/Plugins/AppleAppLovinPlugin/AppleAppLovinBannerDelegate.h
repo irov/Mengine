@@ -7,7 +7,7 @@
 #import "AppleAppLovinBannerAmazonLoader.h"
 #endif
 
-@interface AppleAppLovinBannerDelegate : NSObject<MAAdViewAdDelegate>
+@interface AppleAppLovinBannerDelegate : NSObject<MAAdViewAdDelegate, MAAdRevenueDelegate>
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) AdUnitIdentifier
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
@@ -18,7 +18,7 @@
 
 - (UIViewController* _Nullable) rootViewController;
 
-@property (nonatomic, strong) MAAdView * _Nonnull m_adView;
+@property (nonatomic, strong) MAAdView * _Nullable m_adView;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
 @property (nonatomic, strong) AppleAppLovinBannerAmazonLoader * _Nullable m_amazonLoader;

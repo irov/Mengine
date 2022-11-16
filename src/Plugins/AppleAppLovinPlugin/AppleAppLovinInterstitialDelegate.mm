@@ -1,5 +1,7 @@
 #import "AppleAppLovinInterstitialDelegate.h"
 
+#include "Kernel/Logger.h"
+
 @implementation AppleAppLovinInterstitialDelegate
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
@@ -8,6 +10,7 @@
     
     self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_interstitialAd.delegate = self;
+    self.m_interstitialAd.revenueDelegate = self;
     
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     if( [amazonSlotId length] != 0 ) {
@@ -29,6 +32,8 @@
         self.m_amazonLoader = nil;
     }
 #endif
+    
+    self.m_interstitialAd = nil;
     
     [super dealloc];
 }
@@ -54,11 +59,14 @@
 
     // Reset retry attempt
     self.m_retryAttempt = 0;
+    
+    LOGGER_INFO("applovin", "Interstitial didLoadAd");
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
     // Interstitial ad failed to load
     // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+    LOGGER_INFO("applovin", "Interstitial didFailToLoadAdForAdUnitIdentifier");
     
     self.m_retryAttempt++;
     NSInteger delaySec = pow(2, MIN(6, self.m_retryAttempt));
@@ -68,18 +76,32 @@
     });
 }
 
-- (void) didDisplayAd:(MAAd *) ad {}
+- (void) didDisplayAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Interstitial didDisplayAd");
+}
 
-- (void) didClickAd:(MAAd *) ad {}
+- (void) didClickAd:(MAAd *) ad {
+    LOGGER_INFO("applovin", "Interstitial didClickAd");
+}
 
 - (void) didHideAd:(MAAd *) ad {
     // Interstitial ad is hidden. Pre-load the next ad
+    LOGGER_INFO("applovin", "Interstitial didHideAd");
+    
     [self.m_interstitialAd loadAd];
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
+    LOGGER_INFO("applovin", "Interstitial didFailToDisplayAd");
+    
     // Interstitial ad failed to display. We recommend loading the next ad
     [self.m_interstitialAd loadAd];
+}
+
+#pragma mark - Revenue Callbacks
+
+- (void)didPayRevenueForAd:(MAAd *)ad {
+    LOGGER_INFO("applovin", "Banner didPayRevenueForAd" );
 }
 
 @end

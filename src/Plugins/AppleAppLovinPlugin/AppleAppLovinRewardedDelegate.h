@@ -9,7 +9,7 @@
 #import "AppleAppLovinRewardedAmazonLoader.h"
 #endif
 
-@interface AppleAppLovinRewardedDelegate : NSObject<MARewardedAdDelegate>
+@interface AppleAppLovinRewardedDelegate : NSObject<MARewardedAdDelegate, MAAdRevenueDelegate>
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
@@ -19,7 +19,7 @@
 - (BOOL) show;
 
 @property (assign) Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull m_callback;
-@property (nonatomic, strong) MARewardedAd *_Nonnull m_rewardedAd;
+@property (nonatomic, strong) MARewardedAd * _Nullable m_rewardedAd;
 @property (nonatomic, assign) NSInteger m_retryAttempt;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON

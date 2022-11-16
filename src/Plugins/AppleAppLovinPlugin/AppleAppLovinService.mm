@@ -1,5 +1,9 @@
 #include "AppleAppLovinService.h"
 
+#ifdef MENGINE_PLUGIN_APPLE_APPTRACKING
+#   include "Plugins/AppleAppTrackingPlugin/AppleAppTrackingInterface.h"
+#endif
+
 #include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -34,10 +38,46 @@ namespace Mengine
         
         if( OPTION_applovinverbose == true || AppLovinPlugin_VerboseLogging == true )
         {
-            [ALSdk shared].settings.isVerboseLogging = YES;
+            [ALSdk shared].settings.verboseLoggingEnabled = YES;
         }
 
         [ALSdk shared].mediationProvider = @"max";
+        
+        bool AppLovinPlugin_IsAgeRestrictedUser = CONFIG_VALUE( "AppLovinPlugin", "IsAgeRestrictedUser", false );
+        
+        if( AppLovinPlugin_IsAgeRestrictedUser == true )
+        {
+            [ALPrivacySettings setIsAgeRestrictedUser: YES];
+        }
+        else
+        {
+            [ALPrivacySettings setIsAgeRestrictedUser: NO];
+        }
+        
+        bool AppLovinPlugin_CCPA = CONFIG_VALUE( "AppLovinPlugin", "CCPA", true );
+        
+        if( AppLovinPlugin_CCPA == true )
+        {
+            [ALPrivacySettings setDoNotSell: YES];
+        }
+        else
+        {
+            [ALPrivacySettings setDoNotSell: NO];
+        }
+        
+#ifdef MENGINE_PLUGIN_APPLE_APPTRACKING
+        if( APPLE_APPTRACKING_SERVICE()
+           ->isTrackingAllowed() == true )
+        {
+            [ALPrivacySettings setHasUserConsent: YES];
+        }
+        else
+        {
+            [ALPrivacySettings setHasUserConsent: NO];
+        }
+#else
+        [ALPrivacySettings setHasUserConsent: YES];
+#endif
     
         [[ALSdk shared] initializeSdkWithCompletionHandler:^(ALSdkConfiguration *configuration) {
             LOGGER_MESSAGE("AppLovin initialize");
@@ -46,6 +86,8 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         m_amazonService = [[AppleAppLovinAmazonService alloc] init];
 #endif
+        
+        m_analyticsService = [[AppleAppLovinAnalyticsService alloc] init];
         
         return true;
     }
@@ -97,7 +139,8 @@ namespace Mengine
         
         m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit
                                                                     amazonSlotId:amazonBannerSlotId
-                                                                            rect:bannerRect];
+                                                                            rect:bannerRect
+                                                                analyticsService:m_analyticsService];
     }
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initInterstitial()
@@ -119,7 +162,8 @@ namespace Mengine
 #endif
 
         m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit
-                                                                                amazonSlotId:amazonInterstitialSlotId];
+                                                                                amazonSlotId:amazonInterstitialSlotId
+                                                                            analyticsService:m_analyticsService];
     }
     /////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::initRewarded()
@@ -142,7 +186,7 @@ namespace Mengine
 
         m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier: rewardedAdUnit
                                                                         amazonSlotId: amazonRewardedSlotId
-                                                                      rewardCallback: this];
+                                                                    analyticsService: m_analyticsService];
     }
     /////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::hasLoadedInterstitial() const
@@ -186,11 +230,6 @@ namespace Mengine
     void AppleAppLovinService::showMediationDebugger()
     {
         [[ALSdk shared] showMediationDebugger];
-    }
-    ////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::onAppLovinRewardReceivedReward( uint64_t _amount )
-    {
-        MENGINE_UNUSED( _amount );
     }
     //////////////////////////////////////////////////////////////////////////
 }

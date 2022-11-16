@@ -4,8 +4,6 @@
 
 #include "Kernel/ServiceBase.h"
 
-#include "Const/Char.h"
-
 namespace Mengine
 {
 	class AppleAppTrackingService

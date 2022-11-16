@@ -36,31 +36,59 @@ namespace Mengine
     void AppleFirebaseAnalyticsService::_finalizeService()
     {
     }
-    //////////////////////////////////////////////////////////////////////
-    void AppleFirebaseAnalyticsService::sendEvent( const ConstString & _name, const FirebaseAnalyticsParams & _params )
+    ////////////////////////////////////////////////////////////////////////
+    NSString * AppleFirebaseAnalyticsService::getkFIREventAdImpression() const
     {
-        LOGGER_INFO( "firebaseanalytics", "sendEvent" );
+        return kFIREventAdImpression;
+    }
+    //////////////////////////////////////////////////////////////////////
+    NSString * AppleFirebaseAnalyticsService::getkFIRParameterAdPlatform() const
+    {
+        return kFIRParameterAdPlatform;
+    }
+    //////////////////////////////////////////////////////////////////////
+    NSString * AppleFirebaseAnalyticsService::getkFIRParameterAdSource() const
+    {
+        return kFIRParameterAdSource;
+    }
+    //////////////////////////////////////////////////////////////////////
+    NSString * AppleFirebaseAnalyticsService::getkFIRParameterAdFormat() const
+    {
+        return kFIRParameterAdFormat;
+    }
+    //////////////////////////////////////////////////////////////////////
+    NSString * AppleFirebaseAnalyticsService::getkFIRParameterAdUnitName() const
+    {
+        return kFIRParameterAdUnitName;
+    }
+    //////////////////////////////////////////////////////////////////////
+    NSString * AppleFirebaseAnalyticsService::getkFIRParameterCurrency() const
+    {
+        return kFIRParameterCurrency;
+    }
+    //////////////////////////////////////////////////////////////////////
+    NSString * AppleFirebaseAnalyticsService::getkFIRParameterValue() const
+    {
+        return kFIRParameterValue;
+    }
+    //////////////////////////////////////////////////////////////////////
+    void AppleFirebaseAnalyticsService::sendEvent( NSString * _name, NSDictionary<NSString *, id> * _parameters )
+    {
+        LOGGER_INFO( "firebaseanalytics", "sendEvent %s"
+            , [ _name UTF8String]
+        );
         
-        NSMutableDictionary * event_params = [[NSMutableDictionary alloc] init];
-
-        for( auto && [key, value] : _params )
+        for (NSString * key in _parameters)
         {
+            id value = _parameters[key];
+            
             LOGGER_INFO( "firebaseanalytics", "['%s' : '%s']"
-                , key.c_str()
-                , value.c_str()
+                , [key UTF8String]
+                , [[value description] UTF8String]
             );
-
-            const Char * key_str = key.c_str();
-            const Char * value_str = value.c_str();
-
-            [event_params setObject:[NSString stringWithUTF8String:value_str]  forKey:[NSString stringWithUTF8String:key_str]];
         }
 
-        const Char * name_str = _name.c_str();
-        
-        [FIRAnalytics logEventWithName:[NSString stringWithUTF8String:name_str]
-            parameters:event_params
-        ];
+        [FIRAnalytics logEventWithName:_name parameters:_parameters];
     }
     //////////////////////////////////////////////////////////////////////////
 }

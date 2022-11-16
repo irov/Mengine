@@ -4,14 +4,12 @@
 
 @implementation AppleAppLovinRewardedDelegate
 
-@synthesize m_callback;
-
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier
                                       amazonSlotId:(NSString* _Nullable) amazonSlotId
-                                    rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback {
+                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
     self = [super init];
     
-    self.m_callback = callback;
+    self.m_analytics = analytics;
     
     self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitIdentifier];
     self.m_rewardedAd.delegate = self;
@@ -112,14 +110,14 @@
 
 - (void) didRewardUserForAd:(MAAd *) ad withReward:(MAReward *) reward {
     LOGGER_INFO("applovin", "Rewarded didRewardUserForAd");
-    
-    m_callback->onAppLovinRewardReceivedReward( reward.amount );
 }
 
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
     LOGGER_INFO("applovin", "Banner didPayRevenueForAd" );
+        
+    [self.m_analytics eventRevenuePaid:ad];
 }
     
 @end

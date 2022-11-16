@@ -16,11 +16,10 @@ namespace Mengine
 {
     class AppleAppLovinService
         : public ServiceBase<AppleAppLovinServiceInterface>
-        , public AppleAppLovinRewardCallbackInterface
     {
     public:
         AppleAppLovinService();
-        ~AppleAppLovinService();
+        ~AppleAppLovinService() override;
 
     protected:
         bool _initializeService() override;
@@ -46,9 +45,8 @@ namespace Mengine
         void showMediationDebugger() override;
 
     protected:
-        void onAppLovinRewardReceivedReward( uint64_t _amount ) override;
-
-    protected:
+        AppleAppLovinAnalyticsService * m_analyticsService;
+        
         AppleAppLovinBannerDelegate * m_banner;
         AppleAppLovinInterstitialDelegate * m_interstitial;
         AppleAppLovinRewardedDelegate * m_rewarded;

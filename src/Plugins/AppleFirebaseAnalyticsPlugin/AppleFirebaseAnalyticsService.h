@@ -18,8 +18,17 @@ namespace Mengine
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
+        
+    public:
+        NSString * getkFIREventAdImpression() const override;
+        NSString * getkFIRParameterAdPlatform() const override;
+        NSString * getkFIRParameterAdSource() const override;
+        NSString * getkFIRParameterAdFormat() const override;
+        NSString * getkFIRParameterAdUnitName() const override;
+        NSString * getkFIRParameterCurrency() const override;
+        NSString * getkFIRParameterValue() const override;
 
     public:
-        void sendEvent( const ConstString & _name, const FirebaseAnalyticsParams & _params ) override;
+        void sendEvent( NSString * _name, NSDictionary<NSString *, id> * parameters ) override;
     };
 }

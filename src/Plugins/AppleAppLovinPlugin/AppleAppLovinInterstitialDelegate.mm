@@ -5,8 +5,11 @@
 @implementation AppleAppLovinInterstitialDelegate
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
-                                      amazonSlotId:(NSString * _Nullable) amazonSlotId {
+                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
+                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
     self = [super init];
+    
+    self.m_analytics = analytics;
     
     self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_interstitialAd.delegate = self;

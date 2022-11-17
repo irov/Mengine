@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Config/Char.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -20,11 +22,11 @@ namespace Mengine
         SERVICE_DECLARE( "AppleAppTracking" )
 
     public:
-        typedef Lambda<void(EAppleAppTrackingAuthorization _status, const ConstString & _idfa)> LambdaAuthorizationResponse;
+        typedef Lambda<void(EAppleAppTrackingAuthorization _status, const Char * _idfa)> LambdaAuthorizationResponse;
         virtual void authorization( const LambdaAuthorizationResponse & _response ) = 0;
         
     public:
-        virtual void getIDFA( EAppleAppTrackingAuthorization * const _status, ConstString * const _idfa ) const = 0;
+        virtual void getIDFA( EAppleAppTrackingAuthorization * const _status, Char * const _idfa ) const = 0;
 
     public:
         virtual bool isTrackingAllowed() const = 0;

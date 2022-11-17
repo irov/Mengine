@@ -22,7 +22,7 @@ namespace Mengine
         static void s_AppleAppTracking_authorization( const pybind::object & _cb, const pybind::args & _args )
         {
             APPLE_APPTRACKING_SERVICE()
-                ->authorization( [_cb, _args]( EAppleAppTrackingAuthorization _status, const ConstString & _idfa )
+                ->authorization( [_cb, _args]( EAppleAppTrackingAuthorization _status, const Char * _idfa )
             {
                 _cb.call_args( _status, _idfa, _args );
             } );

@@ -8,8 +8,11 @@
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                              rect:(CGRect) rect {
+                                              rect:(CGRect) rect
+                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
     self = [super init];
+    
+    self.m_analytics = analytics;
     
     self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_adView.delegate = self;

@@ -2,6 +2,8 @@
 
 #include "AppleAppLovinInterface.h"
 
+#import "AppleAppLovinAnalyticsService.h"
+
 #import <AppLovinSDK/AppLovinSDK.h>
 #import <Foundation/Foundation.h>
 
@@ -13,12 +15,12 @@
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                    rewardCallback:(Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull) callback;
+                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
 - (BOOL) hasLoaded;
 - (BOOL) show;
 
-@property (assign) Mengine::AppleAppLovinRewardCallbackInterface * _Nonnull m_callback;
+@property (nonatomic, assign) AppleAppLovinAnalyticsService * _Nonnull m_analytics;
 @property (nonatomic, strong) MARewardedAd * _Nullable m_rewardedAd;
 @property (nonatomic, assign) NSInteger m_retryAttempt;
 

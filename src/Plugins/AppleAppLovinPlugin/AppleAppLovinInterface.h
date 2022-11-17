@@ -1,20 +1,9 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ServantInterface.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class AppleAppLovinRewardCallbackInterface
-        : public Mixin
-    {
-    public:
-        virtual void onAppLovinRewardReceivedReward( uint64_t _amount ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleAppLovinRewardCallbackInterface> AppleAppLovinRewardCallbackInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinServiceInterface
         : public ServiceInterface
     {
@@ -39,7 +28,6 @@ namespace Mengine
     public:
         virtual void showMediationDebugger() = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define APPLE_APPLOVIN_SERVICE()\

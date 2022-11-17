@@ -1,6 +1,10 @@
 #include "AppleAppTrackingService.h"
 
+#include "Environment/iOS/iOSUtils.h"
+
 #include "Kernel/Logger.h"
+
+#include "Config/StdString.h"
 
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <AdSupport/AdSupport.h>
@@ -22,14 +26,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingService::_initializeService()
     {
-        m_idfa = STRINGIZE_STRING_LOCAL("00000000-0000-0000-0000-000000000000");
+        MENGINE_STRCPY( m_idfa, "00000000-0000-0000-0000-000000000000" );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::_finalizeService()
     {
-        m_idfa.clear();
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::authorization( const LambdaAuthorizationResponse & _response )
@@ -74,7 +78,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleAppTrackingService::getIDFA( EAppleAppTrackingAuthorization * const _status, ConstString * const _idfa ) const
+    void AppleAppTrackingService::getIDFA( EAppleAppTrackingAuthorization * const _status, Char * const _idfa ) const
     {
         *_status = m_status;
         MENGINE_STRCPY( _idfa, m_idfa );

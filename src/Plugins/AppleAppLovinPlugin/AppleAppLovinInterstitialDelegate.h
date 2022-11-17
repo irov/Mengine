@@ -1,5 +1,7 @@
 #pragma once
 
+#import "AppleAppLovinAnalyticsService.h"
+
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
@@ -10,11 +12,13 @@
 @interface AppleAppLovinInterstitialDelegate : NSObject<MAAdDelegate, MAAdRevenueDelegate>
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
-                                      amazonSlotId:(NSString * _Nullable) amazonSlotId;
+                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
+                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
 - (BOOL) hasLoaded;
 - (BOOL) show;
 
+@property (nonatomic, assign) AppleAppLovinAnalyticsService * _Nonnull m_analytics;
 @property (nonatomic, strong) MAInterstitialAd * _Nullable m_interstitialAd;
 @property (nonatomic, assign) NSInteger m_retryAttempt;
 

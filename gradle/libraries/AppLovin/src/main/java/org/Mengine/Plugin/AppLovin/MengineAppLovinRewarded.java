@@ -14,8 +14,6 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 import java.util.concurrent.TimeUnit;
 
 public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxAdRequestListener, MaxRewardedAdListener, MaxAdRevenueListener {
-    private MengineAppLovinPlugin m_plugin;
-
     private MaxRewardedAd m_rewardedAd;
 
     private int m_retryAttemptRewarded;

@@ -39,12 +39,12 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
 
             @Override
             public void onFailedToUpdateConsentInfo(String errorDescription) {
-                activity.sendEvent("ConsentStatus", -1);
-
-                 // User's consent status failed to update.
+                // User's consent status failed to update.
                 MengineGoogleConsentPlugin.this.logError("failed to update consent: %s"
-                    , errorDescription
+                        , errorDescription
                 );
+
+                activity.sendEvent("ConsentStatus", -1);
             }
         });
     }

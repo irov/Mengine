@@ -6,7 +6,7 @@ import com.applovin.mediation.MaxError;
 import com.applovin.mediation.MaxNetworkResponseInfo;
 
 public class MengineAppLovinBase {
-    private MengineAppLovinPlugin m_plugin;
+    protected MengineAppLovinPlugin m_plugin;
 
     public MengineAppLovinBase(MengineAppLovinPlugin plugin) throws Exception {
         m_plugin = plugin;

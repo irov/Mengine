@@ -13,8 +13,6 @@ import com.applovin.mediation.ads.MaxInterstitialAd;
 import java.util.concurrent.TimeUnit;
 
 public class MengineAppLovinInterstitial extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdListener, MaxAdRevenueListener {
-    private MengineAppLovinPlugin m_plugin;
-
     private MaxInterstitialAd m_interstitialAd;
 
     private int m_retryAttemptInterstitial;

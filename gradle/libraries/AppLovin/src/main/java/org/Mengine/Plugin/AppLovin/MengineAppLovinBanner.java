@@ -18,8 +18,6 @@ import android.view.Window;
 import android.widget.FrameLayout;
 
 public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener {
-    private MengineAppLovinPlugin m_plugin;
-
     private MaxAdView m_adView;
 
     public MengineAppLovinBanner(MengineAppLovinPlugin plugin) throws Exception {

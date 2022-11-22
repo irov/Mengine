@@ -6,10 +6,8 @@ import org.libsdl.app.SDLSurface;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -25,6 +23,8 @@ public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
 
     private boolean m_initializeBaseServices;
+
+    private String m_androidId;
 
     private Map<Integer, InputStream> m_openFiles;
     private int m_fileEnumerator;
@@ -188,6 +188,10 @@ public class MengineActivity extends SDLActivity {
         }
 
         AndroidNativeMengine_setMengineAndroidActivityJNI(this);
+
+        Context context = this.getContext();
+        ContentResolver resolver = context.getContentResolver();
+        m_androidId = Secure.getString(resolver, Secure.ANDROID_ID);
 
         for(MenginePlugin p : this.getPlugins()) {
             p.setActivity(this);
@@ -382,11 +386,9 @@ public class MengineActivity extends SDLActivity {
     //Kernel Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getAndroidId() {
-        ContentResolver resolver = this.getContext().getContentResolver();
 
-        String android_id = Secure.getString(resolver, Secure.ANDROID_ID);
 
-        return android_id;
+        return m_androidId;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getDeviceName() {

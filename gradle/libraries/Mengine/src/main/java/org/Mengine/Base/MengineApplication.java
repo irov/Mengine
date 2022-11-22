@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.Log;
 
-import androidx.lifecycle.ProcessLifecycleOwner;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;

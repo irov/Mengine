@@ -86,6 +86,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 **/
 
 includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":libraries:LocalNotifications")
+includePlugin("MENGINE_APP_PLUGIN_ADVERTISING", false, ":libraries:Advertising")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false, ":libraries:GoogleService")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_BILLING", false, ":libraries:GoogleBilling")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false, ":libraries:GoogleGameSocial")

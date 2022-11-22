@@ -7,6 +7,8 @@ import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 
 public class MengineSentryPlugin extends MenginePlugin {
+    public static String PLUGIN_NAME = "Sentry";
+
     @Override
     public void onMengineInitializeBaseServices(MengineActivity activity) {
         SentryAndroid.init(activity, options -> {

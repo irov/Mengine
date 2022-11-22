@@ -9,6 +9,7 @@ def ANDROID_APP_ARCH_86_64_ENABLE = Utils.getBooleanProperty(project, "ANDROID_A
 def ANDROID_APP_ENABLE_DELIVERY_PACKAGE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false);
 
 def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS");
+def MENGINE_APP_PLUGIN_ADVERTISING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ADVERTISING");
 def MENGINE_APP_PLUGIN_GOOGLE_SERVICE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
 def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL");
 def MENGINE_APP_PLUGIN_GOOGLE_BILLING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_BILLING");
@@ -311,6 +312,16 @@ if (MENGINE_APP_PLUGIN_FACEBOOK == true) {
 
     dependencies {
         implementation project(':libraries:Facebook')
+    }
+}
+
+println "MENGINE_APP_PLUGIN_ADVERTISING: $MENGINE_APP_PLUGIN_ADVERTISING"
+
+if (MENGINE_APP_PLUGIN_ADVERTISING == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Advertising.MengineAdvertisingPlugin'
+
+    dependencies {
+        implementation project(':libraries:Advertising')
     }
 }
 

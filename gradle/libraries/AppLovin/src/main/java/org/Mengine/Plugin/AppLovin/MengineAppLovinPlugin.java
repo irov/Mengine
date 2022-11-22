@@ -76,7 +76,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
-        if(id == "ConsentStatus") {
+        if (id == "ConsentStatus") {
             final Context context = activity.getBaseContext();
 
             Integer consent = (Integer)args[0];

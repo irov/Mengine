@@ -21,6 +21,11 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
         
         ConsentInformation consentInformation = ConsentInformation.getInstance(context);
         String[] publisherIds = {google_publisher_id};
+
+        MengineGoogleConsentPlugin.this.logInfo("request consent info: %s"
+            , google_publisher_id
+        );
+
         consentInformation.requestConsentInfoUpdate(publisherIds, new ConsentInfoUpdateListener() {
             @Override
             public void onConsentInfoUpdated(ConsentStatus consentStatus) {
@@ -41,7 +46,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
             public void onFailedToUpdateConsentInfo(String errorDescription) {
                 // User's consent status failed to update.
                 MengineGoogleConsentPlugin.this.logError("failed to update consent: %s"
-                        , errorDescription
+                    , errorDescription
                 );
 
                 activity.sendEvent("ConsentStatus", -1);

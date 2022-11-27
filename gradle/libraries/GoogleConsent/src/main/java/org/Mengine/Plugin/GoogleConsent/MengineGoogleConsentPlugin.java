@@ -11,6 +11,7 @@ import com.google.ads.consent.ConsentFormListener;
 import com.google.ads.consent.ConsentInfoUpdateListener;
 import com.google.ads.consent.ConsentInformation;
 import com.google.ads.consent.ConsentStatus;
+import com.google.ads.consent.DebugGeography;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,9 +25,15 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         final Context context = activity.getBaseContext();
 
-        String google_publisher_id = activity.getString(R.string.google_publisher_id);
+        String google_publisher_id = activity.getString(R.string.google_admob_publisher_id);
 
         ConsentInformation consentInformation = ConsentInformation.getInstance(context);
+
+        if (BuildConfig.DEBUG == true) {
+            consentInformation.setDebugGeography(DebugGeography.DEBUG_GEOGRAPHY_EEA);
+            ConsentInformation.getInstance(context).addTestDevice("5F4058CA8BD59AB743821B316CB2F63C");
+        }
+
         String[] publisherIds = {google_publisher_id};
 
         MengineGoogleConsentPlugin.this.logInfo("request consent info: %s"
@@ -36,15 +43,15 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
         consentInformation.requestConsentInfoUpdate(publisherIds, new ConsentInfoUpdateListener() {
             @Override
             public void onConsentInfoUpdated(ConsentStatus consentStatus) {
-                MengineGoogleConsentPlugin.this.logInfo("get consent status: %s"
+                MengineGoogleConsentPlugin.this.logInfo("updated consent status: %s"
                     , consentStatus.toString()
                 );
 
                 if (consentStatus == ConsentStatus.UNKNOWN) {
                     boolean EEA = consentInformation.isRequestLocationInEeaOrUnknown();
 
-                    MengineGoogleConsentPlugin.this.logInfo("get consent EEA: %s"
-                            , EEA == true ? "true" : "false"
+                    MengineGoogleConsentPlugin.this.logInfo("is consent EEA: %s"
+                        , EEA == true ? "true" : "false"
                     );
 
                     if (EEA == true) {
@@ -78,6 +85,8 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
     void requestConsentFromUser() {
         MengineActivity activity = this.getActivity();
 
+        MengineGoogleConsentPlugin.this.logInfo("request consent info from USER");
+
         String privacy_policy_url = activity.getString(R.string.privacy_policy_url);
 
         URL privacyUrl = null;
@@ -108,7 +117,16 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
 
                 @Override
                 public void onConsentFormClosed(ConsentStatus consentStatus, Boolean userPrefersAdFree) {
-                    MengineGoogleConsentPlugin.this.logInfo("Consent form was closed");
+                    MengineGoogleConsentPlugin.this.logInfo("Consent form was closed with status: %s [AdFree %b]"
+                        , consentStatus.toString()
+                        , userPrefersAdFree
+                    );
+
+                    if ( consentStatus == ConsentStatus.NON_PERSONALIZED ) {
+                        activity.sendEvent("ConsentStatus", 1);
+                    } else if ( consentStatus == ConsentStatus.PERSONALIZED ) {
+                        activity.sendEvent("ConsentStatus", 2);
+                    }
                 }
 
                 @Override

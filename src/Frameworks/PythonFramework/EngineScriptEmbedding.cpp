@@ -2823,7 +2823,7 @@ namespace Mengine
                 return wp_screen;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_analitycsStartProgressionEvent( const Char * _name )
+            void s_analyticsStartProgressionEvent( const Char * _name )
             {
                 if( SERVICE_EXIST( AnalyticsSystemInterface ) == true )
                 {
@@ -4419,10 +4419,9 @@ namespace Mengine
         pybind::def_functor( _kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
         pybind::def_functor( _kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 
-
-        pybind::def_functor( _kernel, "analitycsStartProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analitycsStartProgressionEvent );
-        pybind::def_functor( _kernel, "analitycsCompleteProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCompleteProgressionEvent );
-        pybind::def_functor( _kernel, "analitycsFailProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsFailProgressionEvent );
+        pybind::def_functor( _kernel, "analyticsStartProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsStartProgressionEvent );
+        pybind::def_functor( _kernel, "analyticsCompleteProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCompleteProgressionEvent );
+        pybind::def_functor( _kernel, "analyticsFailProgressionEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsFailProgressionEvent );
         pybind::def_functor( _kernel, "analyticsDesignEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsDesignEvent );
 
         pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable>>( _kernel, "PythonValueFollower" )

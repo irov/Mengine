@@ -8,7 +8,7 @@
     return self;
 }
 
-- (void) addAnalitycsDelegate:(id<AppleAppLovinAnalyticsDelegate> _Nonnull) provider {
+- (void) addAnalyticsDelegate:(id<AppleAppLovinAnalyticsDelegate> _Nonnull) provider {
     [self.m_providers addObject: provider];
 }
 

@@ -51,6 +51,8 @@ namespace Mengine
         ConstString productId;
         String productName;
         String productDesc;
+        
+        int32_t payType;
 
         double price;
         int32_t buyNum;

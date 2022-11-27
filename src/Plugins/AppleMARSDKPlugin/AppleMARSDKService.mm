@@ -131,6 +131,9 @@ namespace Mengine
         productInfo.productId = [NSString stringWithUTF8String:_info.productId.c_str()];
         productInfo.productName = [NSString stringWithUTF8String:_info.productName.c_str()];
         productInfo.productDesc = [NSString stringWithUTF8String:_info.productDesc.c_str()];
+        
+        productInfo.payType = _info.payType;
+        
         productInfo.price = [NSNumber numberWithInt:_info.price];
         productInfo.buyNum = _info.buyNum;
         productInfo.coinNum = _info.coinNum;
@@ -147,7 +150,7 @@ namespace Mengine
             , [[productInfo toJsonString] UTF8String]
         );
         
-        [[MARSDK sharedInstance] pay:productInfo];        
+        [[MARSDK sharedInstance] pay:productInfo];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )

@@ -4,6 +4,10 @@
 #   include "Plugins/AppleAppTrackingPlugin/AppleAppTrackingInterface.h"
 #endif
 
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS
+#   include "AppleAppLovinFirebaseAnalytics.h"
+#endif
+
 #include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -89,11 +93,17 @@ namespace Mengine
         
         m_analyticsService = [[AppleAppLovinAnalyticsService alloc] init];
         
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS
+        [m_analyticsService addAnalyticsDelegate:[[AppleAppLovinFirebaseAnalytics alloc] init]];
+#endif
+        
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::_finalizeService()
     {
+        m_analyticsService = nil;
+        
         if( m_rewarded != nil )
         {
             [m_rewarded release];

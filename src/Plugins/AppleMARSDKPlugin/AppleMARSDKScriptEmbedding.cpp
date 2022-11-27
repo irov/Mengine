@@ -305,6 +305,8 @@ namespace Mengine
             info.productId = _d["productId"];
             info.productName = (String)_d["productName"];
             info.productDesc = (String)_d["productDesc"];
+            
+            info.payType = _d.get_default("payType", 0);
 
             info.price = _d["price"];
             info.buyNum = _d["buyNum"];

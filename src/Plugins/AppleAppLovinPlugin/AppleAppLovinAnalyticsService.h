@@ -8,7 +8,7 @@
 
 - (instancetype _Nonnull) init;
 
-- (void) addAnalitycsDelegate:(id<AppleAppLovinAnalyticsDelegate> _Nonnull) provider;
+- (void) addAnalyticsDelegate:(id<AppleAppLovinAnalyticsDelegate> _Nonnull) provider;
 
 - (void) eventRevenuePaid:(MAAd * _Nonnull) ad;
 

@@ -76,24 +76,20 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
-        if (id == "ConsentStatus") {
+        if (id == "AdvertisingId") {
             final Context context = activity.getBaseContext();
 
-            Integer consent = (Integer)args[0];
+            String advertisingId = (String)args[0];
+            boolean advertisingLimitTrackingEnabled = (boolean)args[1];
 
-            switch (consent) {
-                case -1:
-                case 0:
-                case 1:
-                    this.logInfo("setHasUserConsent: false");
+            if (advertisingLimitTrackingEnabled == true) {
+                this.logInfo("setHasUserConsent: false");
 
-                    AppLovinPrivacySettings.setHasUserConsent(false, context);
-                    break;
-                case 2:
-                    this.logInfo("setHasUserConsent: true");
+                AppLovinPrivacySettings.setHasUserConsent(false, context);
+            } else {
+                this.logInfo("setHasUserConsent: true");
 
-                    AppLovinPrivacySettings.setHasUserConsent(true, context);
-                    break;
+                AppLovinPrivacySettings.setHasUserConsent(true, context);
             }
         }
     }

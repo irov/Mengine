@@ -104,6 +104,12 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             m_mediationAmazon = null;
         }
 
+        for (MengineAppLovinAnalyticsInterface analytic : m_analytics) {
+            analytic.finalizeAnalytics();
+        }
+
+        m_analytics = null;
+
         if (m_interstitial != null) {
             m_interstitial.destroy();
             m_interstitial = null;
@@ -164,7 +170,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             , AppLovinPlugin_IsAgeRestrictedUser
         );
 
-        AppLovinPrivacySettings.setIsAgeRestrictedUser( AppLovinPlugin_IsAgeRestrictedUser, context );
+        AppLovinPrivacySettings.setIsAgeRestrictedUser(AppLovinPlugin_IsAgeRestrictedUser, context);
 
         boolean AppLovinPlugin_CCPA = activity.getConfigValueBoolean("AppLovinPlugin", "CCPA", true);
 
@@ -172,7 +178,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             , AppLovinPlugin_CCPA
         );
 
-        AppLovinPrivacySettings.setDoNotSell( AppLovinPlugin_CCPA, context );
+        AppLovinPrivacySettings.setDoNotSell(AppLovinPlugin_CCPA, context);
 
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override

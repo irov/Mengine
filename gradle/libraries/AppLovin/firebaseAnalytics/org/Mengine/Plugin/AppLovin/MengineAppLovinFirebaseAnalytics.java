@@ -25,6 +25,10 @@ public class MengineAppLovinFirebaseAnalytics implements MengineAppLovinAnalytic
         return  true;
     }
 
+    public void finalizeAnalytics() {
+        m_firebaseAnalyticsPlugin = null;
+    }
+
     public void eventRevenuePaid(MaxAd ad) {
         Bundle params = new Bundle();
         params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "appLovin");

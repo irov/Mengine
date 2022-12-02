@@ -606,7 +606,7 @@ namespace Mengine
                     break;
                 }
 
-#ifdef MENGINE_LOGGER_DEBUG_ENABLE
+#ifdef MENGINE_DEBUG
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
@@ -764,7 +764,7 @@ namespace Mengine
             }
         }
 
-#ifdef MENGINE_LOGGER_DEBUG_ENABLE
+#ifdef MENGINE_DEBUG
         static uint32_t old_revision = 0;
 
         if( m_revision != old_revision )

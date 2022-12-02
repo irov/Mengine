@@ -121,7 +121,7 @@ namespace Mengine
                 MENGINE_UNUSED( _functionName );
                 MENGINE_UNUSED( _className );
 
-#ifdef MENGINE_LOGGER_DEBUG_ENABLE
+#ifdef MENGINE_LOGGER_ANALYZE_ENABLE
                 bool OPTION_pythoncalltrace = HAS_OPTION( "pythoncalltrace" );
 
                 if( OPTION_pythoncalltrace == true )
@@ -162,7 +162,7 @@ namespace Mengine
                 }
 #endif
 
-#ifdef MENGINE_LOGGER_DEBUG_ENABLE
+#ifdef MENGINE_LOGGER_ANALYZE_ENABLE
                 bool OPTION_pythoncalltrace = HAS_OPTION( "pythoncalltrace" );
 
                 if( OPTION_pythoncalltrace == true )
@@ -633,16 +633,12 @@ namespace Mengine
             pathes.emplace_back( pack.path );
         }
 
-#ifdef MENGINE_LOGGER_DEBUG_ENABLE
         for( const FilePath & filePath : pathes )
         {
-            MENGINE_UNUSED( filePath );
-
             LOGGER_INFO( "script", "add module path '%s'"
                 , Helper::getFileGroupFullPath( _fileGroup, filePath )
             );
         }
-#endif
 
         m_moduleFinder->addModulePath( _fileGroup, pathes );
 

@@ -5,10 +5,19 @@
 
 #include "curl/curl.h"
 
-#ifdef MENGINE_DEBUG
-#   define MENGINE_CURL_CHECK_ERROR
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_CURL_CHECK_ERROR
+#   ifdef MENGINE_DEBUG
+#       define MENGINE_CURL_CHECK_ERROR 1
+#   else
+#       define MENGINE_CURL_CHECK_ERROR 0
+#   endif
 #endif
-
+//////////////////////////////////////////////////////////////////////////
+#if MENGINE_CURL_CHECK_ERROR == 1
+#   define MENGINE_CURL_CHECK_ERROR_ENABLE
+#endif
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {    
     class cURLErrorHelper
@@ -32,7 +41,7 @@ namespace Mengine
 #define IF_CURLERRORCHECK( Method, HRES )\
     if( CURLERRORCHECK(#Method, HRES) )
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_CURL_CHECK_ERROR
+#ifdef MENGINE_CURL_CHECK_ERROR_ENABLE
 #define CURLCALL( Method, Args )\
     (CURLERRORCHECK(#Method, Method Args))
 //////////////////////////////////////////////////////////////////////////

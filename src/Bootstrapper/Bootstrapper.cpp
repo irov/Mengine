@@ -782,10 +782,10 @@ namespace Mengine
         LOGGER_MESSAGE( "enable assertion debug [OFF]" );
 #endif
 
-#ifdef MENGINE_LOGGER_DEBUG_ENABLE
-        LOGGER_MESSAGE( "enable logger debug [ON]" );
+#ifdef MENGINE_LOGGER_ANALYZE_ENABLE
+        LOGGER_MESSAGE( "enable logger analyze [ON]" );
 #else
-        LOGGER_MESSAGE( "enable logger debug [OFF]" );
+        LOGGER_MESSAGE( "enable logger analyze [OFF]" );
 #endif
 
 #ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE

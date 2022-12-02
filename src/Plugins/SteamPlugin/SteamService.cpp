@@ -32,14 +32,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void SteamAPIWarningMessageHook( int _severity, const char * _msg )
         {
-            if( _severity >= 1 )
-            {
-                LOGGER_ERROR( "[steam] %s", _msg );
-            }
-            else
-            {
-                LOGGER_WARNING( "[steam] %s", _msg );
-            }
+            ELoggerLevel level = _severity >= 1 ? LM_ERROR : LM_WARNING;
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL("steam"), level, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::ELF_FLAG_FULL )( "[steam] %s", _msg );
         }
         //////////////////////////////////////////////////////////////////////////
     }

@@ -39,7 +39,7 @@
     );
     
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("%s = %s"
+        LOGGER_INFO( "marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );
@@ -59,7 +59,7 @@
     );
     
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO("%s = %s"
+        LOGGER_INFO( "marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );
@@ -93,7 +93,7 @@
     );
     
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO( "%s = %s"
+        LOGGER_INFO( "marsdk", "%s = %s"
             , [[NSString stringWithFormat:@"%@", key] UTF8String]
             , [[NSString stringWithFormat:@"%@", value] UTF8String]
         );

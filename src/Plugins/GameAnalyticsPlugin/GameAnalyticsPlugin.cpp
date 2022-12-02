@@ -147,11 +147,6 @@ namespace Mengine
 
         gameanalytics::GameAnalytics::initialize( m_gameKey.c_str(), m_gameSecret.c_str() );
 
-        LOGGER_INFO( "plugin", "plugin '%s' create system: %s"
-            , this->getPluginName()
-            , "AnalyticsSystem"
-        );
-
         if( SERVICE_CREATE( AnalyticsSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;

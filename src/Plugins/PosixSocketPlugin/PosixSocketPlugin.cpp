@@ -2,8 +2,6 @@
 
 #include "Interface/SocketSystemInterface.h"
 
-#include "Kernel/Logger.h"
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SocketSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -22,8 +20,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PosixSocketPlugin::_initializePlugin()
     {
-        LOGGER_INFO( "Initializing Posix Socket Plugin" );
-
         SERVICE_CREATE( SocketSystem );
 
         return true;
@@ -38,4 +34,5 @@ namespace Mengine
     {
         SERVICE_DESTROY( SocketSystem );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -22,14 +22,14 @@ namespace Mengine
         ~TaskcURLReceiver() override;
 
     public:
-        typedef Lambda<void( HttpRequestID _requestId )> LambdaRequestId;
+        typedef Lambda<void( const cURLResponseInterfacePtr & _response )> LambdaRequestId;
 
     public:
         void initialize( GOAP::NodeInterface * _node, const cURLTaskReceiverInterfacePtr & _receiver, const LambdaRequestId & _lambda );
         void finalize();
 
     protected:
-        void onHttpRequestComplete( const cURLResponseData & _response ) override;
+        void onHttpRequestComplete( const cURLResponseInterfacePtr & _response ) override;
 
     protected:
         GOAP::NodeInterfacePtr m_node;

@@ -2,7 +2,7 @@
 
 #include "cURLErrorHelper.h"
 
-#include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -11,6 +11,24 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static size_t cURL_WriteMemoryCallback( void * _contents, size_t _size, size_t _nmemb, void * _userp )
+        {
+            OutputStreamInterface * stream_ptr = (OutputStreamInterface *)_userp;
+
+            size_t realsize = _size * _nmemb;
+
+            size_t writez = stream_ptr->write( _contents, realsize );
+
+            MENGINE_UNUSED( writez );
+
+            return realsize;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     cURLGetAssetThreadTask::cURLGetAssetThreadTask()
     {
@@ -50,46 +68,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static size_t WriteMemoryCallback( void * _contents, size_t _size, size_t _nmemb, void * _userp )
-    {
-        OutputStreamInterface * stream_ptr = (OutputStreamInterface *)_userp;
-
-        size_t realsize = _size * _nmemb;
-
-        size_t writez = stream_ptr->write( _contents, realsize );
-
-        MENGINE_UNUSED( writez );
-
-        return realsize;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static int32_t XFERInfoCallback( void * _userp, curl_off_t _dltotal, curl_off_t _dlnow, curl_off_t _ultotal, curl_off_t _ulnow )
-    {
-        MENGINE_UNUSED( _dltotal );
-        MENGINE_UNUSED( _dlnow );
-        MENGINE_UNUSED( _ultotal );
-        MENGINE_UNUSED( _ulnow );
-
-        cURLGetAssetThreadTask * task = (cURLGetAssetThreadTask *)_userp;
-
-        if( task->isCancel() == true )
-        {
-            return 1;
-        }
-
-        return 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void cURLGetAssetThreadTask::_onCURL( CURL * _curl )
     {
         if( m_login.empty() == false || m_password.empty() == false )
         {
-            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERNAME, m_login.c_str()) );
-            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_PASSWORD, m_password.c_str()) );
+            const Char * login_str = m_login.c_str();
+            const Char * password_str = m_password.c_str();
+
+            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERNAME, login_str) );
+            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_PASSWORD, password_str) );
         }
 
         /* send all data to this function  */
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &WriteMemoryCallback) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &Detail::cURL_WriteMemoryCallback) );
 
         /* we pass our 'chunk' struct to the callback function */
         OutputStreamInterface * stream_ptr = m_stream.get();
@@ -97,12 +88,9 @@ namespace Mengine
 
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0") );
 
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_XFERINFOFUNCTION, &XFERInfoCallback) );
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_XFERINFODATA, (void *)this) );
+        bool OPTION_curltrace = HAS_OPTION( "curltrace" );
 
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_NOPROGRESS, 0L) );
-
-        if( CONFIG_VALUE( "cURLPlugin", "HTTPLog", false ) == true )
+        if( OPTION_curltrace == true )
         {
             LOGGER_STATISTIC( "HTTP: get asset url '%s' login '%s' password '%s'\nfile: '%s'"
                 , m_url.c_str()
@@ -123,9 +111,9 @@ namespace Mengine
             m_stream = nullptr;
         }
 
-        if( _successful == false ||
-            m_responseCode != 200 ||
-            successful_stream_flush == false )
+        uint32_t code = m_response->getCode();
+
+        if( _successful == false || code != 200 || successful_stream_flush == false )
         {
             m_fileGroup = nullptr;
 

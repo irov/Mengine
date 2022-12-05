@@ -4,6 +4,7 @@
 
 #include "cURLErrorHelper.h"
 
+#include "Kernel/OptionHelper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
@@ -63,6 +64,46 @@ namespace Mengine
             return 0;
         }
         //////////////////////////////////////////////////////////////////////////
+        static size_t cURL_writeRequestPerformerResponse( char * ptr, size_t size, size_t nmemb, void * userdata )
+        {
+            cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
+
+            size_t total = size * nmemb;
+
+            perfomer->writeResponse( ptr, total );
+
+            return total;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static size_t cURL_writeRequestHeaderResponse( char * ptr, size_t size, size_t nmemb, void * userdata )
+        {
+            cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
+            MENGINE_UNUSED( perfomer );
+
+            size_t total = size * nmemb;
+
+            perfomer->writeHeader( ptr, total );
+
+            return total;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static int32_t cURL_XFERInfoCallback( void * _userp, curl_off_t _dltotal, curl_off_t _dlnow, curl_off_t _ultotal, curl_off_t _ulnow )
+        {
+            MENGINE_UNUSED( _dltotal );
+            MENGINE_UNUSED( _dlnow );
+            MENGINE_UNUSED( _ultotal );
+            MENGINE_UNUSED( _ulnow );
+
+            cURLThreadTask * task = (cURLThreadTask *)_userp;
+
+            if( task->isCancel() == true )
+            {
+                return 1;
+            }
+
+            return 0;
+        }
+        ////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     cURLThreadTask::cURLThreadTask()
@@ -70,8 +111,6 @@ namespace Mengine
         , m_timeout( MENGINE_CURL_TIMEOUT_INFINITY )
         , m_receiveHeaders( false )
         , m_curl_header_list( nullptr )
-        , m_responseCode( 0 )
-        , m_responseStatus( CURLE_OK )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -139,6 +178,15 @@ namespace Mengine
         return m_receiveHeaders;
     }
     //////////////////////////////////////////////////////////////////////////
+    void cURLThreadTask::setReponse( const cURLResponsePtr & _response )
+    {
+        m_response = _response;
+    }
+    const cURLResponseInterfacePtr & cURLThreadTask::getReponse() const
+    {
+        return m_response;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setReceiver( const cURLReceiverInterfacePtr & _receiver )
     {
         m_receiver = _receiver;
@@ -162,7 +210,9 @@ namespace Mengine
 
         CURL * curl = curl_easy_init();
 
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, m_url.c_str()) );
+        const Char * url_str = m_url.c_str();
+
+        CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, url_str) );
         //CURLCALL( curl_easy_setopt, (curl, CURLOPT_FOLLOWLOCATION, 1) );
 
         struct curl_slist * curl_header_list = nullptr;
@@ -190,7 +240,9 @@ namespace Mengine
 
         if( m_cookies.empty() == false )
         {
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_COOKIE, m_cookies.c_str()) );
+            const Char * cookies_str = m_cookies.c_str();
+
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_COOKIE, cookies_str) );
         }
 
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );
@@ -199,26 +251,35 @@ namespace Mengine
         Char errorbuf[CURL_ERROR_SIZE] = {'\0'};
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
 
-        if( CONFIG_VALUE( "cURLPlugin", "HTTPVerbose", false ) == true )
+        bool OPTION_curlverbose = HAS_OPTION( "curlverbose" );
+
+        if( OPTION_curlverbose == true )
         {
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_VERBOSE, 1) );
         }
 
-        if( CONFIG_VALUE( "cURLPlugin", "HTTPTrace", false ) == true )
+        bool OPTION_curltrace = HAS_OPTION( "curltrace" );
+
+        if( OPTION_curltrace == true )
         {
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );
         }
 
+        CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFOFUNCTION, &Detail::cURL_XFERInfoCallback) );
+        CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFODATA, (void *)this) );
+
+        CURLCALL( curl_easy_setopt, (curl, CURLOPT_NOPROGRESS, 0L) );
+
         CURLcode status = curl_easy_perform( curl );
 
-        m_responseStatus = status;
-        m_responseError = errorbuf;
+        m_response->setStatus( status );
+        m_response->setError( errorbuf );
 
         long http_code = 0;
         CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );
 
-        m_responseCode = (uint32_t)http_code;
+        m_response->setCode( (uint32_t)http_code );
 
         if( m_curl_header_list != nullptr )
         {
@@ -239,65 +300,36 @@ namespace Mengine
 
         //Empty
     }
-    ////////////////////////////////////////////////////////////////////////
-    static size_t s_writeRequestPerformerResponse( char * ptr, size_t size, size_t nmemb, void * userdata )
-    {
-        cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
-
-        size_t total = size * nmemb;
-
-        perfomer->writeResponse( ptr, total );
-
-        return total;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static size_t s_writeRequestHeaderResponse( char * ptr, size_t size, size_t nmemb, void * userdata )
-    {
-        cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
-        MENGINE_UNUSED( perfomer );
-
-        size_t total = size * nmemb;
-
-        perfomer->writeHeader( ptr, total );
-
-        return total;
-    }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setupWriteResponse( CURL * _curl )
     {
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)this) );
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &Detail::cURL_writeRequestPerformerResponse) );
 
         if( m_receiveHeaders == true )
         {
             CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERDATA, (void *)this) );
-            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERFUNCTION, &s_writeRequestHeaderResponse) );
+            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERFUNCTION, &Detail::cURL_writeRequestHeaderResponse) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLThreadTask::writeResponse( Char * const _ptr, size_t _size )
+    void cURLThreadTask::writeResponse( const Char * _ptr, size_t _size )
     {
-        m_responseData.append( _ptr, _size );
+        m_response->appendData( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLThreadTask::writeHeader( Char * const _ptr, size_t _size )
+    void cURLThreadTask::writeHeader( const Char * _ptr, size_t _size )
     {
-        m_responseHeaders.emplace_back( _ptr, _size );
+        m_response->appendHeaders( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::_onThreadTaskComplete( bool _successful )
     {
-        cURLResponseData response;
-        response.id = m_id;
-        response.status = (uint32_t)m_responseStatus;
-        response.headers = m_responseHeaders;
-        response.data = m_responseData;
-        response.code = m_responseCode;
-        response.error = m_responseError;
-        response.successful = _successful;
+        m_response->setSuccessful( _successful );
 
-        m_receiver->onHttpRequestComplete( response );
-        m_receiver = nullptr;
+        cURLResponsePtr response = std::move( m_response );
+        cURLReceiverInterfacePtr receiver = std::move( m_receiver );
+        receiver->onHttpRequestComplete( response );
     }
     //////////////////////////////////////////////////////////////////////////
 }

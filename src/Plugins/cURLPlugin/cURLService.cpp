@@ -29,6 +29,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/TimeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -158,10 +159,11 @@ namespace Mengine
 
         m_mutex = mutex;
 
-        m_factoryTaskGetMessage = Helper::makeFactoryPool<cURLGetMessageThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskPostMessage = Helper::makeFactoryPool<cURLPostMessageThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskHeaderData = Helper::makeFactoryPool<cURLHeaderDataThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskDownloadAsset = Helper::makeFactoryPool<cURLGetAssetThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryResponse = Helper::makeFactoryPool<cURLResponse, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskGetMessage = Helper::makeFactoryPool<cURLGetMessageThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskPostMessage = Helper::makeFactoryPool<cURLPostMessageThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskHeaderData = Helper::makeFactoryPool<cURLHeaderDataThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskDownloadAsset = Helper::makeFactoryPool<cURLGetAssetThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &cURLService::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -206,11 +208,13 @@ namespace Mengine
         m_receiverDescs.clear();
         m_networkListeners.clear();
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryResponse );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
 
+        m_factoryResponse = nullptr;
         m_factoryTaskDownloadAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;
         m_factoryTaskHeaderData = nullptr;
@@ -225,7 +229,7 @@ namespace Mengine
 
         for( const ReceiverDesc & desc : m_receiverDescs )
         {
-            const ThreadTaskPtr & task = desc.task;
+            const ThreadTaskInterfacePtr & task = desc.task;
 
             THREAD_SERVICE()
                 ->joinTask( task );
@@ -259,7 +263,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "service is stop" );
 
-            return 0;
+            return MENGINE_HTTP_REQUEST_INVALID;
         }
 
         UniqueId task_id = Helper::generateUniqueIdentity();
@@ -273,11 +277,24 @@ namespace Mengine
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
+
+        cURLResponsePtr response = m_factoryResponse->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( response );
+
+        response->setRequestId( task_id );
+        
+        task->setReponse( response );
+
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
 
         if( task->initialize() == false )
         {
-            return 0;
+            LOGGER_ERROR( "url '%s' invalid initialize task"
+                , _url.c_str()
+            );
+
+            return MENGINE_HTTP_REQUEST_INVALID;
         }
 
         m_mutex->lock();
@@ -285,6 +302,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_GET_MESSAGE;
+        desc.timestamp = Helper::getTimeMilliseconds();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -300,7 +318,7 @@ namespace Mengine
 
         for( const RequestListenerDesk & listenerDesc : m_networkListeners )
         {
-            listenerDesc.listener->request( task_id, _url );
+            listenerDesc.listener->onHttpRequest( task_id, _url );
         }
 
         return task_id;
@@ -312,7 +330,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "service is stop" );
 
-            return 0;
+            return MENGINE_HTTP_REQUEST_INVALID;
         }
 
         UniqueId task_id = Helper::generateUniqueIdentity();
@@ -326,11 +344,24 @@ namespace Mengine
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
+
+        cURLResponsePtr response = m_factoryResponse->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( response );
+
+        response->setRequestId( task_id );
+
+        task->setReponse( response );
+
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
 
         if( task->initialize( _params ) == false )
         {
-            return 0;
+            LOGGER_ERROR( "url '%s' invalid initialize task"
+                , _url.c_str()
+            );
+
+            return MENGINE_HTTP_REQUEST_INVALID;
         }
 
         m_mutex->lock();
@@ -338,6 +369,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_POST_MESSAGE;
+        desc.timestamp = Helper::getTimeMilliseconds();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -353,7 +385,7 @@ namespace Mengine
 
         for( const RequestListenerDesk & listenerDesc : m_networkListeners )
         {
-            listenerDesc.listener->request( task_id, _url );
+            listenerDesc.listener->onHttpRequest( task_id, _url );
         }
 
         return task_id;
@@ -365,7 +397,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "service is stop" );
 
-            return 0;
+            return MENGINE_HTTP_REQUEST_INVALID;
         }
 
         UniqueId task_id = Helper::generateUniqueIdentity();
@@ -379,11 +411,24 @@ namespace Mengine
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
+
+        cURLResponsePtr response = m_factoryResponse->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( response );
+
+        response->setRequestId( task_id );
+
+        task->setReponse( response );
+
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
 
         if( task->initialize( _data ) == false )
         {
-            return 0;
+            LOGGER_ERROR( "url '%s' invalid initialize task"
+                , _url.c_str()
+            );
+
+            return MENGINE_HTTP_REQUEST_INVALID;
         }
 
         m_mutex->lock();
@@ -391,6 +436,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_HEADER_DATA;
+        desc.timestamp = Helper::getTimeMilliseconds();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -423,7 +469,7 @@ namespace Mengine
                 , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
-            return 0;
+            return MENGINE_HTTP_REQUEST_INVALID;
         }
 
         FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", _filePath.c_str() );
@@ -437,6 +483,15 @@ namespace Mengine
         task->setURL( _url );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
+
+        cURLResponsePtr response = m_factoryResponse->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( response );
+
+        response->setRequestId( task_id );
+
+        task->setReponse( response );
+
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
 
         if( task->initialize( _login, _password, _fileGroup, _filePath, filePathTmp ) == false )
@@ -446,7 +501,7 @@ namespace Mengine
                 , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
-            return 0;
+            return MENGINE_HTTP_REQUEST_INVALID;
         }
 
         m_mutex->lock();
@@ -454,6 +509,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_DOWNLOAD_ASSET;
+        desc.timestamp = Helper::getTimeMilliseconds();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -528,7 +584,7 @@ namespace Mengine
         } ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLService::onHttpRequestComplete( const cURLResponseData & _response )
+    void cURLService::onHttpRequestComplete( const cURLResponseInterfacePtr & _response )
     {
         if( this->isStopService() == true )
         {
@@ -537,7 +593,7 @@ namespace Mengine
 
         for( const RequestListenerDesk & listenerDesc : m_networkListeners )
         {
-            listenerDesc.listener->response( _response.id, _response.data );
+            listenerDesc.listener->onHttpResponse( _response );
         }
 
         m_mutex->lock();
@@ -550,7 +606,9 @@ namespace Mengine
         {
             ReceiverDesc & desc = *it;
 
-            if( desc.id != _response.id )
+            HttpRequestID requestId = _response->getRequestId();
+
+            if( desc.id != requestId )
             {
                 continue;
             }
@@ -572,13 +630,13 @@ namespace Mengine
 
         m_mutex->unlock();
 
-        LOGGER_ERROR( "invalid request '%u' complete (status [%u] error '%.2048s' response '%.2048s' code [%u] successful [%u])"
-            , _response.id
-            , _response.status
-            , _response.error.c_str()
-            , _response.data.c_str()
-            , _response.code
-            , _response.successful
+        LOGGER_ERROR( "invalid request '%u' %s (status [%u] error '%.2048s' response '%.2048s' code [%u])"
+            , _response->getRequestId()
+            , _response->isSuccessful() ? "complete" : "failure"
+            , _response->getStatus()
+            , _response->getError().c_str()
+            , _response->getData().c_str()
+            , _response->getCode()            
         );
     }
     //////////////////////////////////////////////////////////////////////////

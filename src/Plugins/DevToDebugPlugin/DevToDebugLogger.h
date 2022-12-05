@@ -45,7 +45,7 @@ namespace Mengine
         void process();
 
     protected:
-        void onHttpRequestComplete( const cURLResponseData & _response ) override;
+        void onHttpRequestComplete( const cURLResponseInterfacePtr & _response ) override;
 
     protected:
         String m_loggerURL;

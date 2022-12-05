@@ -5234,9 +5234,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::initializeFileService_()
     {
-        LOGGER_INFO( "platform", "Initialize Win32 file group..." );
+        LOGGER_MESSAGE( "Plugin Win32FileGroup..." );
+        if( PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            LOGGER_ERROR( "Plugin Win32FileGroup... [invalid initialize]" );
 
-        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FACTORABLE );
+            return false;
+        }
 
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()

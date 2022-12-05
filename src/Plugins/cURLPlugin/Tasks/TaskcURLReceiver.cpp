@@ -29,7 +29,7 @@ namespace Mengine
         m_lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskcURLReceiver::onHttpRequestComplete( const cURLResponseData & _response )
+    void TaskcURLReceiver::onHttpRequestComplete( const cURLResponseInterfacePtr & _response )
     {
         GOAP::SourceInterfacePtr source = GOAP_SERVICE()
             ->makeSource();
@@ -47,7 +47,7 @@ namespace Mengine
             LOGGER_ERROR( "TaskHttpBase invalid inject source" );
         }
 
-        m_lambda( _response.id );
+        m_lambda( _response );
 
         m_node->complete();
     }

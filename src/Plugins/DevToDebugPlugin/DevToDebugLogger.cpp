@@ -174,7 +174,7 @@ namespace Mengine
         MENGINE_UNUSED( id );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::onHttpRequestComplete( const cURLResponseData & _response )
+    void DevToDebugLogger::onHttpRequestComplete( const cURLResponseInterfacePtr & _response )
     {
         MENGINE_UNUSED( _response );
 

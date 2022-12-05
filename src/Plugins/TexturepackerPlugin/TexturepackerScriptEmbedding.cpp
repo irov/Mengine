@@ -8,6 +8,7 @@
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "ResourceTexturepacker.h"
+#include "ResourceMultiTexturepacker.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -54,7 +55,14 @@ namespace Mengine
             .def_static( "getFrame", &Detail::ResourceTexturepacker_getFrame )
             ;
 
+        pybind::interface_<ResourceMultiTexturepacker, pybind::bases<Resource>>( _kernel, "ResourceMultiTexturepacker", false )
+            .def( "addResourceTexturepacker", &ResourceMultiTexturepacker::addResourceTexturepacker )
+            .def( "setStripFrameNameExtension", &ResourceMultiTexturepacker::setStripFrameNameExtension )
+            .def( "getStripFrameNameExtension", &ResourceMultiTexturepacker::getStripFrameNameExtension )
+            ;
+
         Helper::registerScriptWrapping<ResourceTexturepacker>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceMultiTexturepacker>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -62,8 +70,10 @@ namespace Mengine
     void TexturepackerScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<ResourceTexturepacker>();
+        _kernel->remove_scope<ResourceMultiTexturepacker>();
 
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

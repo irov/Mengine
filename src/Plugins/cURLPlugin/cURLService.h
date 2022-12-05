@@ -2,11 +2,13 @@
 
 #include "Interface/ThreadQueueInterface.h"
 #include "Interface/FactoryInterface.h"
+#include "Interface/ThreadTaskInterface.h"
 
 #include "cURLInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/ThreadTask.h"
+
+#include "Config/Time.h"
 
 namespace Mengine
 {
@@ -40,7 +42,7 @@ namespace Mengine
         void removeRequestListener( int32_t id ) override;
 
     protected:
-        void onHttpRequestComplete( const cURLResponseData & _response ) override;
+        void onHttpRequestComplete( const cURLResponseInterfacePtr & _response ) override;
 
     protected:
         void notifyEnginePrepareFinalize_();
@@ -78,7 +80,8 @@ namespace Mengine
         {
             uint32_t id;
             EReceiverType type;
-            ThreadTaskPtr task;
+            TimeMilliseconds timestamp;
+            ThreadTaskInterfacePtr task;
             cURLReceiverInterfacePtr receiver;
 
 #ifdef MENGINE_DOCUMENT_ENABLE
@@ -88,7 +91,8 @@ namespace Mengine
 
         typedef Vector<ReceiverDesc> VectorReceiverDesc;
         VectorReceiverDesc m_receiverDescs;
-         
+        
+        FactoryInterfacePtr m_factoryResponse;
         FactoryInterfacePtr m_factoryTaskGetMessage;
         FactoryInterfacePtr m_factoryTaskPostMessage;
         FactoryInterfacePtr m_factoryTaskHeaderData;

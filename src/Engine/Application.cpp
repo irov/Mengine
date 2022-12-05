@@ -344,14 +344,15 @@ namespace Mengine
         const Char * buildVersion = Helper::getBuildVersion();
         const Char * buildUserName = Helper::getBuildUsername();
         const Char * buildTimestamp = Helper::getBuildTimestamp();
+        const Char * buildProjectName = Helper::getBuildProjectName();
 
         if( HAS_OPTION( "buildinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build info: %s %s %s", buildVersion, buildUserName, buildTimestamp );
+                ->messageBox( "Mengine", "build info: %s %s %s %s", buildVersion, buildUserName, buildTimestamp, buildProjectName );
         }
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Info: %s %s %s", buildVersion, buildUserName, buildTimestamp );
+        LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Info: %s %s %s [%s]", buildVersion, buildUserName, buildTimestamp, buildProjectName );
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {

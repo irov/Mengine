@@ -25,6 +25,6 @@ namespace Mengine
         String m_data;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLHeaderDataThreadTask> cURLHeaderDataThreadTaskPtr;
+    typedef IntrusivePtr<cURLHeaderDataThreadTask, ThreadTaskInterface> cURLHeaderDataThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

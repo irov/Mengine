@@ -11,7 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerNetworkLogger::request( HttpRequestID _id, const String & _url )
+    void NodeDebuggerNetworkLogger::onHttpRequest( HttpRequestID _id, const String & _url )
     {
         RequestData requestData;
 
@@ -26,12 +26,12 @@ namespace Mengine
         this->clearDatas_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerNetworkLogger::response( HttpRequestID _id, const String & _url )
+    void NodeDebuggerNetworkLogger::onHttpResponse( const cURLResponseInterfacePtr & _response )
     {
         RequestData responseData;
 
-        responseData.id = _id;
-        responseData.url = _url;
+        responseData.id = _response->getRequestId();
+        responseData.url = _response->getData();
         responseData.type = STRINGIZE_STRING_LOCAL( "Response" );
 
         m_requestDatas.push_back( responseData );

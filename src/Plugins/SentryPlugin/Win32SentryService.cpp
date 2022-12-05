@@ -367,6 +367,14 @@ namespace Mengine
 
         sentry_set_extra( "Build Timestamp", sentry_value_new_string( BUILD_TIMESTAMP ) );
 
+        const Char * BUILD_PROJECT_NAME = Helper::getBuildProjectName();
+
+        LOGGER_MESSAGE( "Sentry set extra [Build Project Name: %s]"
+            , BUILD_PROJECT_NAME
+        );
+
+        sentry_set_extra( "Build Project Name", sentry_value_new_string( BUILD_PROJECT_NAME ) );        
+
         const Char * BUILD_USERNAME = Helper::getBuildUsername();
 
         LOGGER_MESSAGE( "Sentry set extra [Build Username: %s]"

@@ -10,8 +10,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PyCURLReceiver
-        : public Factorable
-        , public cURLReceiverInterface
+        : public cURLReceiverInterface
+        , public Factorable
     {
         DECLARE_FACTORABLE( PyCURLReceiver );
 
@@ -23,13 +23,13 @@ namespace Mengine
         bool initialize( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        void onHttpRequestComplete( const cURLResponseData & _response ) override;
+        void onHttpRequestComplete( const cURLResponseInterfacePtr & _response ) override;
 
     protected:
         pybind::object m_cb;
         pybind::args m_args;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PyCURLReceiver> PyCURLReceiverPtr;
+    typedef IntrusivePtr<PyCURLReceiver, cURLReceiverInterface> PyCURLReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

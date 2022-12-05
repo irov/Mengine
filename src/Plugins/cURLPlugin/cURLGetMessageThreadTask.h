@@ -21,6 +21,6 @@ namespace Mengine
         void _onCURL( CURL * _curl ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLGetMessageThreadTask> cURLGetMessageThreadTaskPtr;
+    typedef IntrusivePtr<cURLGetMessageThreadTask, ThreadTaskInterface> cURLGetMessageThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

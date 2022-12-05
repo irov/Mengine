@@ -1,4 +1,6 @@
 MESSAGE("*********************************************")
+MESSAGE("PROJECT: ${MENGINE_PROJECT_NAME}")
+MESSAGE("*********************************************")
 MESSAGE("USER: $ENV{USERNAME}")
 MESSAGE("*********************************************")
 MESSAGE("CMAKE_COMMAND: ${CMAKE_COMMAND}")

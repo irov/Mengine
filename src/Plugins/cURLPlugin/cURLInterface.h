@@ -12,6 +12,7 @@
 #include "Kernel/VectorString.h"
 
 #define MENGINE_CURL_TIMEOUT_INFINITY (-1)
+#define MENGINE_HTTP_REQUEST_INVALID (0)
 
 namespace Mengine
 {
@@ -28,22 +29,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<cURLPostParam> cURLPostParams;
     //////////////////////////////////////////////////////////////////////////
-    struct cURLResponseData
+    class cURLResponseInterface
+        : public Interface
     {
-        HttpRequestID id;
-        uint32_t status;
-        cURLHeaders headers;
-        String data;
-        uint32_t code;
-        String error;
-        bool successful;
+    public:
+        virtual HttpRequestID getRequestId() const = 0;
+        virtual uint32_t getStatus() const = 0;
+        virtual const cURLHeaders & getHeaders() const = 0;
+        virtual const String & getData() const = 0;
+        virtual uint32_t getCode() const = 0;
+        virtual const String & getError() const = 0;
+        virtual bool isSuccessful() const = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<cURLResponseInterface> cURLResponseInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class cURLReceiverInterface
         : public Interface
     {
     public:
-        virtual void onHttpRequestComplete( const cURLResponseData & _response ) = 0;
+        virtual void onHttpRequestComplete( const cURLResponseInterfacePtr & _response ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLReceiverInterface> cURLReceiverInterfacePtr;
@@ -52,8 +57,8 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void request( HttpRequestID  _id, const String & _url ) = 0;
-        virtual void response( HttpRequestID  _id, const String & _url ) = 0;
+        virtual void onHttpRequest( HttpRequestID  _id, const String & _url ) = 0;
+        virtual void onHttpResponse( const cURLResponseInterfacePtr & _response ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLRequestListenerInterface> cURLRequestListenerInterfacePtr;

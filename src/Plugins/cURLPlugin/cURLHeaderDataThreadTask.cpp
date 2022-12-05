@@ -2,9 +2,8 @@
 
 #include "cURLErrorHelper.h"
 
-#include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
-
 #include "Kernel/Stringstream.h"
 
 namespace Mengine
@@ -37,7 +36,9 @@ namespace Mengine
 
         this->setupWriteResponse( _curl );
 
-        if( CONFIG_VALUE( "cURLPlugin", "HTTPLog", false ) == true )
+        bool OPTION_curltrace = HAS_OPTION( "curltrace" );
+
+        if( OPTION_curltrace == true )
         {
             Stringstream ss;
 

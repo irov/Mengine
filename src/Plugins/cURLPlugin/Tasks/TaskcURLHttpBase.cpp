@@ -43,9 +43,11 @@ namespace Mengine
     {
         TaskcURLReceiverPtr receiver = Helper::makeFactorableUnique<TaskcURLReceiver>( MENGINE_DOCUMENT_FUNCTION );
         
-        receiver->initialize( _node, m_receiver, [this]( HttpRequestID _requestId )
+        receiver->initialize( _node, m_receiver, [this]( const cURLResponseInterfacePtr & _response )
         {
-            if( m_requestId != _requestId )
+            HttpRequestID requestId = _response->getRequestId();
+
+            if( m_requestId != requestId )
             {
                 return;
             }

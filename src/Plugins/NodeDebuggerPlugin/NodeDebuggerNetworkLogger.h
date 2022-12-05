@@ -34,8 +34,8 @@ namespace Mengine
         void foreachData( const LambdaNetworkData & _lambda );
 
     protected:
-        void request( HttpRequestID _id, const String & _url ) override;
-        void response( HttpRequestID _id, const String & _url ) override;
+        void onHttpRequest( HttpRequestID _id, const String & _url ) override;
+        void onHttpResponse( const cURLResponseInterfacePtr & _response ) override;
 
     protected:
         void clearDatas_();

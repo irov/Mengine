@@ -1,6 +1,8 @@
-#pragma once
+    #pragma once
 
 #include "cURLInterface.h"
+
+#include "cURLResponse.h"
 
 #include "Kernel/ThreadTask.h"
 
@@ -35,6 +37,9 @@ namespace Mengine
         void setReceiveHeaders( bool _receiveHeaders );
         bool getReceiveHeaders() const;
 
+        void setReponse( const cURLResponsePtr & _response );
+        const cURLResponseInterfacePtr & getReponse() const;
+
         void setReceiver( const cURLReceiverInterfacePtr & _receiver );
         const cURLReceiverInterfacePtr & getReceiver() const;
 
@@ -53,27 +58,25 @@ namespace Mengine
         void _onThreadTaskComplete( bool _successful ) override;
 
     public:
-        void writeResponse( Char * const _ptr, size_t _size );
-        void writeHeader( Char * const _ptr, size_t _size );
+        void writeResponse( const Char * _ptr, size_t _size );
+        void writeHeader( const Char * _ptr, size_t _size );
 
     protected:
+        HttpRequestID m_id;
+
         String m_url;
         String m_cookies;
-        cURLHeaders m_headers;
-        HttpRequestID m_id;
+        cURLHeaders m_headers;        
         int32_t m_timeout;
         bool m_receiveHeaders;
+
+        cURLResponsePtr m_response;
         cURLReceiverInterfacePtr m_receiver;
 
-        struct curl_slist * m_curl_header_list;
-
-        uint32_t m_responseCode;
-        CURLcode m_responseStatus;
-        String m_responseError;
-        String m_responseData;
-        cURLHeaders m_responseHeaders;
+    protected:
+        struct curl_slist * m_curl_header_list;        
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLThreadTask> cURLThreadTaskPtr;
+    typedef IntrusivePtr<cURLThreadTask, ThreadTaskInterface> cURLThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

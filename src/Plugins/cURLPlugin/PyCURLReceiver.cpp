@@ -19,9 +19,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PyCURLReceiver::onHttpRequestComplete( const cURLResponseData & _response )
+    void PyCURLReceiver::onHttpRequestComplete( const cURLResponseInterfacePtr & _response )
     {
-        m_cb.call_args( _response.id, _response.status, _response.error, _response.data, _response.code, _response.successful, m_args );
+        HttpRequestID requestId = _response->getRequestId();
+        uint32_t status = _response->getStatus();
+        const String & error = _response->getError();
+        const String & data = _response->getData();
+        uint32_t code = _response->getCode();
+        bool successful = _response->isSuccessful();
+
+        m_cb.call_args( requestId, status, error, data, code, successful, m_args );
     }
     //////////////////////////////////////////////////////////////////////////
 }

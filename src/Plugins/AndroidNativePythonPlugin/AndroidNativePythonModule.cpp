@@ -7,7 +7,6 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/AndroidPlatformExtensionInterface.h"
 
-#include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"

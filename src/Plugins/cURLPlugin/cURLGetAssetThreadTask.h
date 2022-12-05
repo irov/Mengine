@@ -39,6 +39,6 @@ namespace Mengine
         OutputStreamInterfacePtr m_stream;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLGetAssetThreadTask> cURLGetAssetThreadTaskPtr;
+    typedef IntrusivePtr<cURLGetAssetThreadTask, ThreadTaskInterface> cURLGetAssetThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

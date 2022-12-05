@@ -14,7 +14,7 @@ namespace Mengine
     namespace Cook
     {
         //////////////////////////////////////////////////////////////////////////
-        typedef Lambda<void( const GOAP::SourceInterfacePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )> LambdaTaskReceiver;
+        typedef Lambda<void( const GOAP::SourceInterfacePtr & _source, const cURLResponseInterfacePtr & _response )> LambdaTaskReceiver;
         //////////////////////////////////////////////////////////////////////////
         MENGINE_DLL_EXPORT void addHttpGet( const GOAP::SourceInterfacePtr & _source, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc );
         MENGINE_DLL_EXPORT void addHttpHeaderData( const GOAP::SourceInterfacePtr & _source, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc );

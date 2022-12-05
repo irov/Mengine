@@ -22,12 +22,16 @@ namespace Mengine
         Char timestamp[256] = {'\0'};
         Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
         ::OutputDebugStringA( timestamp );
+        ::OutputDebugStringA( " " );
 
         if( _message.category.empty() == false )
         {
             const Char * category_str = _message.category.c_str();
 
+            ::OutputDebugStringA( "[" );
             ::OutputDebugStringA( category_str );
+            ::OutputDebugStringA( "]" );
+            ::OutputDebugStringA( " " );
         }
 
         const Char * data = _message.data;

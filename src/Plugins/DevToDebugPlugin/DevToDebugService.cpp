@@ -484,51 +484,57 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugService::onHttpRequestComplete( const cURLResponseData & _response )
+    void DevToDebugService::onHttpRequestComplete( const cURLResponseInterfacePtr & _response )
     {
+        bool responseSuccessful = _response->isSuccessful();
+        HttpRequestID requestId = _response->getRequestId();
+        uint32_t responseCode = _response->getCode();
+        const String & responseError = _response->getError();
+        const String & responseData = _response->getData();
+
         switch( m_status )
         {
         case Mengine::EDTDS_NONE:
             break;
         case Mengine::EDTDS_CONNECTING:
             {
-                if( _response.successful == false )
+                if( responseSuccessful == false )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connecting error: %s [code %u] [id %u]"
-                        , _response.error.c_str()
-                        , _response.code
-                        , _response.id
+                        , responseError.c_str()
+                        , responseCode
+                        , requestId
                     );
 
                     this->stop();
 
                     break;
-                }
+                }                
 
-                if( _response.code / 100 != 2 )
+                if( responseCode / 100 != 2 )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connecting error: %s data: %s [code %u] [id %u]"
-                        , _response.error.c_str()
-                        , _response.data.c_str()
-                        , _response.code
-                        , _response.id
+                        , responseError.c_str()
+                        , responseData.c_str()
+                        , responseCode
+                        , requestId
                     );
 
                     this->stop();
 
                     break;
-                }
+                }                
 
-                jpp::object j = Helper::loadJSONStreamFromString( _response.data, MENGINE_DOCUMENT_FACTORABLE );
+                jpp::object j = Helper::loadJSONStreamFromString( responseData, MENGINE_DOCUMENT_FACTORABLE );
 
                 m_workerURL = j.get( "worker_url", "" );
 
                 if( m_workerURL.empty() == true )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connecting response error: %s [code %u] [id %u]"
-                        , _response.data.c_str()
-                        , _response.code
-                        , _response.id
+                        , responseData.c_str()
+                        , responseCode
+                        , requestId
                     );
 
                     this->stop();
@@ -547,19 +553,19 @@ namespace Mengine
 
                 LOGGER_INFO( "devtodebug", "Request Connect: %s [id %u]"
                     , m_workerURL.c_str()
-                    , _response.id
+                    , requestId
                 );
 
                 m_status = EDTDS_CONNECT;
             }break;
         case Mengine::EDTDS_CONNECT:
             {
-                if( _response.successful == false )
+                if( responseSuccessful == false )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connect response error: %s [code %u] [id %u]"
-                        , _response.error.c_str()
-                        , _response.code
-                        , _response.id
+                        , responseError.c_str()
+                        , responseCode
+                        , requestId
                     );
 
                     this->stop();
@@ -567,13 +573,13 @@ namespace Mengine
                     break;
                 }
 
-                if( _response.code / 100 != 2 )
+                if( responseCode / 100 != 2 )
                 {
                     LOGGER_ERROR( "[DevToDebug] Connect response error: %s data: %s [code %u] [id %u]"
-                        , _response.error.c_str()
-                        , _response.data.c_str()
-                        , _response.code
-                        , _response.id
+                        , responseError.c_str()
+                        , responseData.c_str()
+                        , responseCode
+                        , requestId
                     );
 
                     this->stop();
@@ -581,7 +587,7 @@ namespace Mengine
                     break;
                 }
 
-                jpp::object j = Helper::loadJSONStreamFromString( _response.data, MENGINE_DOCUMENT_FACTORABLE );
+                jpp::object j = Helper::loadJSONStreamFromString( responseData, MENGINE_DOCUMENT_FACTORABLE );
 
                 uint32_t revision_from = j.get( "revision_from", 0U );
                 uint32_t revision_to = j.get( "revision_to", 0U );
@@ -591,9 +597,9 @@ namespace Mengine
                     LOGGER_ERROR( "[DevToDebug] Connect out of sync revision %u != from %u: %s [code %u] [id %u]"
                         , m_revision
                         , revision_from
-                        , _response.data.c_str()
-                        , _response.code
-                        , _response.id
+                        , responseData.c_str()
+                        , responseCode
+                        , requestId
                     );
 
                     this->stop();
@@ -607,12 +613,12 @@ namespace Mengine
                 }
 
 #ifdef MENGINE_DEBUG
-                String data;
-                Helper::writeJSONStringCompact( j, &data );
+                String json_data;
+                Helper::writeJSONStringCompact( j, &json_data );
 
                 LOGGER_INFO( "devtodebug", "Request Process: %s [id %u]"
-                    , data.c_str()
-                    , _response.id
+                    , json_data.c_str()
+                    , requestId
                 );
 #endif
 

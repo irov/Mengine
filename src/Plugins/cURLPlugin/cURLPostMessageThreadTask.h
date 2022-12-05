@@ -27,6 +27,6 @@ namespace Mengine
         struct curl_httppost * m_curl_formpost;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLPostMessageThreadTask> cURLPostMessageThreadTaskPtr;
+    typedef IntrusivePtr<cURLPostMessageThreadTask, ThreadTaskInterface> cURLPostMessageThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

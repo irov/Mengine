@@ -335,7 +335,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( erase_texture );
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, _texture );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_TEXTURE_DESTROY, _texture );
         }
 
         _texture->release();

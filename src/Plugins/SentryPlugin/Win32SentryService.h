@@ -23,9 +23,12 @@ namespace Mengine
     protected:
         void notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message );
         void notifyError_( EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message );
-        void notifyCreateApplication_();
+        void notifyBootstrapperCreateApplication_();
+        void notifyEngineStop_();
 
     protected:
         Win32SentryLoggerCapturePtr m_loggerCapture;
+
+        bool m_engineStop;
     };
 }

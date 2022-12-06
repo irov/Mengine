@@ -1658,11 +1658,21 @@ namespace Mengine
 
         SERVICE_PROVIDER_STOP();
 
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_SERVICES );
+        }
+
         if( SERVICE_EXIST( FrameworkServiceInterface ) == true )
         {
             this->stopFrameworks_();
 
             this->finalizeFrameworks_();
+        }
+
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_THREADS );
         }
 
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )

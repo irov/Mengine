@@ -182,6 +182,7 @@ namespace Mengine
     {
         m_response = _response;
     }
+    //////////////////////////////////////////////////////////////////////////
     const cURLResponseInterfacePtr & cURLThreadTask::getReponse() const
     {
         return m_response;
@@ -262,12 +263,12 @@ namespace Mengine
 
         if( OPTION_curltrace == true )
         {
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );            
         }
 
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFOFUNCTION, &Detail::cURL_XFERInfoCallback) );
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFODATA, (void *)this) );
+        CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFOFUNCTION, &Detail::cURL_XFERInfoCallback) );        
 
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_NOPROGRESS, 0L) );
 

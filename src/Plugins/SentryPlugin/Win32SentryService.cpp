@@ -3,6 +3,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Crash.h"
@@ -10,6 +11,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/Logger.h"
+#include "Kernel/LoggerHelper.h"
 #include "Kernel/UID.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/OptionHelper.h"
@@ -70,6 +72,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     Win32SentryService::Win32SentryService()
+        : m_engineStop( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -180,9 +183,10 @@ namespace Mengine
             return false;
         }
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &Win32SentryService::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &Win32SentryService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &Win32SentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &Win32SentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_STOP, &Win32SentryService::notifyEngineStop_, MENGINE_DOCUMENT_FACTORABLE );
 
         Win32SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<Win32SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -217,6 +221,7 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_STOP );
 
         if( m_loggerCapture != nullptr )
         {
@@ -256,7 +261,12 @@ namespace Mengine
         sentry_capture_event( event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32SentryService::notifyCreateApplication_()
+    void Win32SentryService::notifyEngineStop_()
+    {
+        sentry_set_extra( "Engine Stop", sentry_value_new_bool( m_engineStop ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32SentryService::notifyBootstrapperCreateApplication_()
     {
         const Char * SentryPlugin_Application = CONFIG_VALUE( "SentryPlugin", "Application", "Mengine" );
 
@@ -390,6 +400,17 @@ namespace Mengine
         );
 
         sentry_set_extra( "Content Commit", sentry_value_new_string( contentCommit ) );
+
+        PlatformDateTime dateTime;
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
+
+        Char LOG_TIMESTAMP[256] = {'\0'};
+        Helper::makeLoggerTimestamp( dateTime, "[%02u:%02u:%02u:%04u]", LOG_TIMESTAMP, 256 );
+
+        sentry_set_extra( "Log Timestamp", sentry_value_new_string( LOG_TIMESTAMP ) );
+
+        sentry_set_extra( "Engine Stop", sentry_value_new_bool( false ) );
 
         if( HAS_OPTION( "sentrycrash" ) == true )
         {

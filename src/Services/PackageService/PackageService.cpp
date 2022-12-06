@@ -450,7 +450,7 @@ namespace Mengine
             }
         }
 
-        if( NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_ENABLE_PACKAGES ) == false )
+        if( NOTIFICATION_NOTIFY( NOTIFICATOR_ENABLE_PACKAGES, _locale, _platformTags ) == false )
         {
             LOGGER_ERROR( "[resources validation is invalid]" );
 

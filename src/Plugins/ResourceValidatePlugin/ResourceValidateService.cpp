@@ -27,14 +27,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, &ResourceValidateService::notifyEnablePackages_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENABLE_PACKAGES, &ResourceValidateService::notifyEnablePackages_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceValidateService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_ENABLE_PACKAGES );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENABLE_PACKAGES );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Validator" ) );
     }
@@ -69,8 +69,11 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceValidateService::notifyEnablePackages_() const
+    void ResourceValidateService::notifyEnablePackages_( const ConstString & _locale, const Tags & _platformTags ) const
     {
+        MENGINE_UNUSED( _locale );
+        MENGINE_UNUSED( _platformTags );
+
         bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
         if( OPTION_noresourceCheck == true )

@@ -79,10 +79,6 @@ namespace Mengine
 
                 return true;
             }break;
-        default:
-            {
-                return false;
-            }break;
         }
 
         return true;

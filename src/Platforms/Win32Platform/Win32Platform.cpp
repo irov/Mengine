@@ -3602,9 +3602,9 @@ namespace Mengine
             return false;
         }
 
-        Helper::pathCorrectBackslashW( _path );
-
         ::PathAddBackslash( _path );
+
+        Helper::pathCorrectBackslashW( _path );        
 
         return true;
     }

@@ -123,9 +123,16 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
             DWORD error = ::GetLastError();
 
-            const WChar * errorMessage = Win32GetErrorMessage( error );
+            const WChar * errorMessage = Helper::Win32GetErrorMessage( error );
 
-            return errorMessage;
+            static MENGINE_THREAD_LOCAL WChar errorMessageBufferWithErrorCode[2048] = {L'\0'};
+
+            MENGINE_WSPRINTF( errorMessageBufferWithErrorCode, L"%s [%lu]"
+                , errorMessage
+                , error
+            );
+
+            return errorMessageBufferWithErrorCode;
 #else
             return L"";
 #endif

@@ -45,7 +45,16 @@ namespace Mengine
             {
             case SENTRY_LEVEL_DEBUG:
                 {
-                    return;
+                    bool OPTION_sentrytrace = HAS_OPTION( "sentrytrace" );
+
+                    if( OPTION_sentrytrace == true )
+                    {
+                        level = LM_DEBUG;
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }break;
             case SENTRY_LEVEL_INFO:
                 {
@@ -82,9 +91,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32SentryService::_initializeService()
     {
+        bool OPTION_sentrydebug = HAS_OPTION( "sentrydebug" );
+
 #ifdef MENGINE_DEBUG
         if( PLATFORM_SERVICE()
-            ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
+            ->isDebuggerPresent() == true && OPTION_sentrydebug == false )
         {
             return true;
         }
@@ -108,6 +119,19 @@ namespace Mengine
         );
 
         sentry_options_t * options = sentry_options_new();
+
+#ifdef MENGINE_DEBUG
+        sentry_options_set_debug( options, 1 );
+#else
+        if( OPTION_sentrydebug == true )
+        {
+            sentry_options_set_debug( options, 1 );
+        }
+        else
+        {
+            sentry_options_set_debug( options, 0 );
+        }
+#endif
 
         sentry_options_set_logger( options, &Detail::sentry_logger_func, nullptr );
 
@@ -170,7 +194,6 @@ namespace Mengine
 
         sentry_options_set_dsn( options, SentryPlugin_DSN );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
-        sentry_options_set_debug( options, MENGINE_DEBUG_VALUE( 1, 0 ) );
 
         const Char * BUILD_VERSION = Helper::getBuildVersion();
 

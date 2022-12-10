@@ -28,7 +28,5 @@ namespace Mengine
 
     protected:
         Win32SentryLoggerCapturePtr m_loggerCapture;
-
-        bool m_engineStop;
     };
 }

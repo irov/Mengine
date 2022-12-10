@@ -78,10 +78,10 @@ namespace Mengine
 
             LoggerOperator( STRINGIZE_STRING_LOCAL( "sentry" ), level, 0, LCOLOR_GREEN, nullptr, 0, ELF_FLAG_NONE ).logMessageArgs( _format, _args );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     Win32SentryService::Win32SentryService()
-        : m_engineStop( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -286,7 +286,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32SentryService::notifyEngineStop_()
     {
-        sentry_set_extra( "Engine Stop", sentry_value_new_bool( m_engineStop ) );
+        sentry_set_extra( "Engine Stop", sentry_value_new_bool( true ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32SentryService::notifyBootstrapperCreateApplication_()

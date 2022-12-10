@@ -23,6 +23,11 @@ namespace Mengine
         pybind::kernel_interface * getKernel() const override;
 
     protected:
+        uint64_t getScriptThreadId() const override;
+
+    protected:
         pybind::kernel_interface * m_kernel;
+
+        uint64_t m_threadId;
     };
 }

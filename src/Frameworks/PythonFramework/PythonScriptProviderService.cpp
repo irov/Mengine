@@ -1,6 +1,7 @@
 #include "PythonScriptProviderService.h"
 
 #include "Interface/AllocatorSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionAllocator.h"
@@ -109,6 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PythonScriptProviderService::PythonScriptProviderService()
         : m_kernel( nullptr )
+        , m_threadId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -140,6 +142,9 @@ namespace Mengine
 
         m_kernel = kernel;
 
+        m_threadId = THREAD_SYSTEM()
+            ->getCurrentThreadId();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -159,6 +164,11 @@ namespace Mengine
     pybind::kernel_interface * PythonScriptProviderService::getKernel() const
     {
         return m_kernel;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t PythonScriptProviderService::getScriptThreadId() const
+    {
+        return m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
 }

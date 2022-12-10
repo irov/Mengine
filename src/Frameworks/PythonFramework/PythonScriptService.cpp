@@ -13,6 +13,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -1091,6 +1092,17 @@ namespace Mengine
         MENGINE_UNUSED( _file );
         MENGINE_UNUSED( _line );
         MENGINE_UNUSED( _message );
+
+        uint64_t scriptThreadId = SCRIPTPROVIDER_SERVICE()
+            ->getScriptThreadId();
+
+        uint64_t currentThreadId = THREAD_SYSTEM()
+            ->getCurrentThreadId();
+
+        if( scriptThreadId != currentThreadId )
+        {
+            return;
+        }
 
         Char traceback[4096] = {'\0'};
         if( m_kernel->get_traceback( traceback, 4095 ) == false )

@@ -5,6 +5,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Crash.h"
@@ -12,6 +13,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/Logger.h"
+#include "Kernel/LoggerHelper.h"
 #include "Kernel/UID.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/OptionHelper.h"
@@ -67,6 +69,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AppleSentryService::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &AppleSentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &AppleSentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_STOP, &AppleSentryService::notifyEngineStop_, MENGINE_DOCUMENT_FACTORABLE );
 
         AppleSentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<AppleSentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -93,6 +96,7 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_STOP );
         
         LOGGER_SERVICE()
             ->unregisterLogger( m_loggerCapture );
@@ -228,6 +232,16 @@ namespace Mengine
         );
 
         Helper::appleSentrySetExtraString( "Content Commit", contentCommit );
+        
+        PlatformDateTime dateTime;
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
+
+        Char LOG_TIMESTAMP[256] = {'\0'};
+        Helper::makeLoggerTimestamp( dateTime, "[%02u:%02u:%02u:%04u]", LOG_TIMESTAMP, 256 );
+
+        Helper::appleSentrySetExtraString( "Log Timestamp", LOG_TIMESTAMP );
+        Helper::appleSentrySetExtraBoolean( "Engine Stop", false );
 
         if( HAS_OPTION( "sentrycrash" ) == true )
         {
@@ -269,6 +283,11 @@ namespace Mengine
         Helper::appleSentrySetExtraInteger( "Error Line", _line );
 
         Helper::appleSentryCapture( _message, 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleSentryService::notifyEngineStop_()
+    {
+        Helper::appleSentrySetExtraBoolean( "Engine Stop", true );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -60,7 +60,7 @@ GIT_CLONE(zed_net https://github.com/iOrange/zed_net.git)
 GIT_CLONE(spine https://github.com/EsotericSoftware/spine-runtimes.git "4.1.00")  #don't up
 GIT_CLONE(dazzle https://github.com/irov/dazzle.git)
 GIT_CLONE(GOAP https://github.com/irov/GOAP.git)
-GIT_CLONE(SDL2 https://github.com/libsdl-org/SDL.git "release-2.24.1")
+GIT_CLONE(SDL2 https://github.com/libsdl-org/SDL.git "release-2.26.1")
 GIT_CLONE(xmlsax https://github.com/irov/xmlsax.git)
 GIT_CLONE(box2d https://github.com/erincatto/Box2D.git "v2.4.0")
 GIT_CLONE(graphics https://github.com/irov/graphics.git)

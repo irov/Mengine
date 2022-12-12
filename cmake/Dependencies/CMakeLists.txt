@@ -705,11 +705,6 @@ if(MENGINE_DEPENDENCE_SDL2)
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/SDL2 ${CMAKE_TEMP_DIR}/SDL2)
     endif()
-
-    if(MENGINE_PLATFORM_SDL AND MENGINE_TARGET_ANDROID)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLActivity.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java COPYONLY)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLSurface.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLSurface.java COPYONLY)
-    endif()
 endif()
 
 if(MENGINE_DEPENDENCE_OPENAL_SOFT)

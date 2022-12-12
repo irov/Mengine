@@ -500,7 +500,7 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "Connecting error: %s [code %u] [id %u]"
                         , responseError.c_str()
                         , responseCode
                         , requestId
@@ -513,7 +513,7 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connecting error: %s data: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "Connecting error: %s data: %s [code %u] [id %u]"
                         , responseError.c_str()
                         , responseData.c_str()
                         , responseCode
@@ -531,7 +531,7 @@ namespace Mengine
 
                 if( m_workerURL.empty() == true )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connecting response error: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "Connecting response error: %s [code %u] [id %u]"
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -562,7 +562,7 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "Connect response error: %s [code %u] [id %u]"
                         , responseError.c_str()
                         , responseCode
                         , requestId
@@ -575,7 +575,7 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connect response error: %s data: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "Connect response error: %s data: %s [code %u] [id %u]"
                         , responseError.c_str()
                         , responseData.c_str()
                         , responseCode
@@ -594,7 +594,7 @@ namespace Mengine
 
                 if( m_revision != revision_from )
                 {
-                    LOGGER_ERROR( "[DevToDebug] Connect out of sync revision %u != from %u: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "Connect out of sync revision %u != from %u: %s [code %u] [id %u]"
                         , m_revision
                         , revision_from
                         , responseData.c_str()

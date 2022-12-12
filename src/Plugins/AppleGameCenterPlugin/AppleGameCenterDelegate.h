@@ -3,10 +3,10 @@
 
 @interface AppleGameCenterDelegate : NSObject <GKGameCenterControllerDelegate>
 {
-    BOOL gcAuthenticateSuccess;
+    BOOL m_authenticateSuccess;
 }
 
-@property (assign) BOOL gcAuthenticateSuccess;
+@property (assign) BOOL m_authenticateSuccess;
 
 - (BOOL) login:(void(^ _Nonnull)(NSError* _Nullable))handler;
 - (BOOL) loadCompletedAchievements:(void(^ _Nonnull)(NSError * _Nullable, NSArray* _Nullable))handler;

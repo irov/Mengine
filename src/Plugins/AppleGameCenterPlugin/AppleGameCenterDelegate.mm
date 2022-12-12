@@ -2,7 +2,7 @@
 
 @implementation AppleGameCenterDelegate
 
-@synthesize gcAuthenticateSuccess;
+@synthesize m_authenticateSuccess;
 
 #pragma mark -
 
@@ -12,80 +12,88 @@
 
 #pragma mark -
 
-- (BOOL) login:(void(^)(NSError* _Nullable))handler;
-{
-    GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
+- (BOOL) login:(void(^)(NSError* _Nullable))handler {
+    GKLocalPlayer * localPlayer = [GKLocalPlayer localPlayer];
     
-    [localPlayer setAuthenticateHandler:^(UIViewController* v, NSError* error) {
-        if (error) {
-            gcAuthenticateSuccess = false;
+    [localPlayer setAuthenticateHandler:^(UIViewController* v, NSError * error) {
+        if( error != nil )
+        {
+            m_authenticateSuccess = false;
             
-            handler(error);
+            handler( error );
             
             return;
         }
         
-        gcAuthenticateSuccess = true;
+        m_authenticateSuccess = true;
         
-        handler(nil);
+        handler( nil );
     }];
     
     return true;
 }
 
-
 - (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler {
-    if (!gcAuthenticateSuccess) {
+    if( m_authenticateSuccess == false )
+    {
         return false;
     }
     
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) {
-        if (error) {
-            handler(error, nil);
+        if( error != nil )
+        {
+            handler( error, nil );
+            
             return;
         }
         
-        if (!achievements){
-            handler(nil, nil);
+        if( achievements != nil )
+        {
+            handler( nil, nil );
+            
             return;
         }
-            
-        NSMutableArray *cmpAch = [[NSMutableArray alloc] init];
-            
-        for (GKAchievement* ach in achievements){
-            if ([ach isCompleted]){
+        
+        NSMutableArray * cmpAch = [[NSMutableArray alloc] init];
+        
+        for( GKAchievement * ach in achievements )
+        {
+            if( [ach isCompleted] == TRUE )
+            {
                 [cmpAch addObject:[ach identifier]];
             }
         }
-            
-        handler(nil, cmpAch);
+        
+        handler( nil, cmpAch );
     }];
     
     return true;
 }
 
 - (BOOL) resetAchievements:(void(^ _Nonnull)(NSError * __nullable error))handler {
-    if (!gcAuthenticateSuccess) {
+    if( m_authenticateSuccess == false )
+    {
         return false;
     }
     
     [GKAchievement resetAchievementsWithCompletionHandler:^(NSError * _Nullable error) {
-        handler(error);
+        handler( error );
     }];
     
     return true;
 }
 
 - (BOOL) reportScore:(NSString*)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler {
-	if (!gcAuthenticateSuccess) {
+	if( m_authenticateSuccess == false )
+    {
         return false;
     }
-    	
-	GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
+    
+	GKScore * scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
 	scoreReporter.value = score;
     scoreReporter.context = 0;
     
-    NSArray *scores = @[scoreReporter];
+    NSArray * scores = @[scoreReporter];
     [GKScore reportScores:scores withCompletionHandler:^(NSError *error) {
         handler(error);
 	}];
@@ -94,11 +102,12 @@
 }
 
 - (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler {
-    if (!gcAuthenticateSuccess) {
+    if( m_authenticateSuccess == false )
+    {
         return false;
     }
-        
-    GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier:identifier];
+    
+    GKAchievement * achievement = [[GKAchievement alloc] initWithIdentifier:identifier];
     [achievement setShowsCompletionBanner:banner];
     [achievement setPercentComplete: percent];
     

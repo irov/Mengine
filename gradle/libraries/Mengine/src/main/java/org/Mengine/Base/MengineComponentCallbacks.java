@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 
 public class MengineComponentCallbacks implements ComponentCallbacks2 {
-    public static final String TAG = "MengineComponentCallbacks";
+    public static final String TAG = "ComponentCallbacks";
 
     public MengineApplication m_application;
     public MengineActivity m_activity;

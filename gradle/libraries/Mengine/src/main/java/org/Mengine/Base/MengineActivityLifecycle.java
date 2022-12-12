@@ -8,7 +8,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class MengineActivityLifecycle implements Application.ActivityLifecycleCallbacks {
-    public static final String TAG = "MengineActivityLifecycle";
+    public static final String TAG = "Lifecycle";
 
     public MengineApplication m_application;
     public MengineActivity m_activity;

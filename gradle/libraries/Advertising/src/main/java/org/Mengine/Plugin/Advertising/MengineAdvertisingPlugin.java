@@ -21,7 +21,9 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        new GetAdvertisingIdTask(activity).execute();
+        GetAdvertisingIdTask task = new GetAdvertisingIdTask(activity);
+
+        task.execute();
     }
 
     private class GetAdvertisingIdTask extends AsyncTask<String, Integer, AdvertisingIdClient.Info> {

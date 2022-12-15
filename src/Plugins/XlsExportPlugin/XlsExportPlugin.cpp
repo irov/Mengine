@@ -14,6 +14,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 

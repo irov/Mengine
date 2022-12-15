@@ -320,49 +320,39 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/timemodule.c
                 ${SOURCE_DIR}/Modules/selectmodule.c
                 ${MOD_SRCS} )
-if( NOT WIN32 )
-	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
+if(NOT WIN32)
+    set(MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c)
 else()
-	set( MODULE_SRCS ${MODULE_SRCS} 
-	${SOURCE_DIR}/PC/getpathp.c	)	
+    set(MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/PC/getpathp.c)
 endif()
 
 include_directories(${OPENSSL_INCLUDE_DIR})
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
-set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"3.4.2\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
+set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"3.4.2\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" ")
 
 include_directories(${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include)
 include_directories(${SOURCE_DIR}/Include/internal)
 
-include_directories(${THIRDPARTY_DIR}/zlib)
 include_directories(${THIRDPARTY_CONFIG_DIR}/zlib)
+include_directories(${THIRDPARTY_DIR}/zlib)
+
 include_directories(${THIRDPARTY_CONFIG_DIR}/openssl)
 
+include_directories(${SOURCE_DIR}/PC)
+include_directories(${SOURCE_DIR}/Python)
+include_directories(${SOURCE_DIR}/Modules/expat)
+
 if(WIN32)
-  include_directories(
-    ${SOURCE_DIR}/PC
-    ${SOURCE_DIR}/Python
-    ${SOURCE_DIR}/Modules/expat
-    )
+  add_definitions(-D_WINDOWS)
     
   if(MSVC)
-    add_definitions(-DWIN32 -D_WINDOWS)
-  else()
-    add_definitions(-D_WINDOWS)
+    add_definitions(-DWIN32)
   endif()
 endif()
 
 if(MINGW)
-  MESSAGE("MINGW: ${MINGW}")
-  
-  include_directories(
-    ${SOURCE_DIR}/PC
-    ${SOURCE_DIR}/Python
-    ${SOURCE_DIR}/Modules/expat
-    )
-    
   add_definitions(-D_WINDOWS)
   add_definitions(-DWIN64)
 endif()
@@ -381,11 +371,11 @@ add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPy_BUILD_CORE_BUILTIN)
 
 add_library(${PROJECT_NAME} STATIC
-              ${SOURCE_DIR}/Modules/getbuildinfo.c 
-              ${PARSER_SRCS}
-              ${OBJECT_SRCS}
-              ${PYTHON_SRCS}
-              ${MODULE_SRCS}
-              )
+            ${SOURCE_DIR}/Modules/getbuildinfo.c 
+            ${PARSER_SRCS}
+            ${OBJECT_SRCS}
+            ${PYTHON_SRCS}
+            ${MODULE_SRCS}
+            )
 
 target_link_libraries(${PROJECT_NAME} ${extraLibs})

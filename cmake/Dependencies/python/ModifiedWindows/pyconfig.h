@@ -89,6 +89,10 @@ WIN32 is still required for the locale module.
 
 /* Compiler specific defines */
 
+#ifdef __MINGW64__
+#define MS_WIN64
+#endif
+
 /* ------------------------------------------------------------------------*/
 /* Microsoft C defines _MSC_VER */
 #ifdef _MSC_VER

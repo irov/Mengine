@@ -22,6 +22,7 @@
 
 #include "Config/Algorithm.h"
 #include "Config/StdIO.h"
+#include "Config/StdIntTypes.h"
 
 #include <clocale>
 #include <memory>
@@ -370,7 +371,7 @@ namespace Mengine
 
         TimeMilliseconds runPlatformTimeSeconds = runPlatformTimeMilliseconds / 1000;
 
-        LOGGER_MESSAGE_RELEASE( "run platform time: %lu seconds"
+        LOGGER_MESSAGE_RELEASE( "run platform time: %" PRIu64 " seconds"
             , runPlatformTimeSeconds
         );
 

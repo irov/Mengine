@@ -1,5 +1,7 @@
 #include "GOAPPlugin.h"
 
+#include "Interface/ServiceInterface.h"
+
 #include "Kernel/AssertionAllocator.h"
 
 #include "GOAP/Allocator.h"

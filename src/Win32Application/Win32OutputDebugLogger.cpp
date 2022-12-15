@@ -24,6 +24,13 @@ namespace Mengine
         ::OutputDebugStringA( timestamp );
         ::OutputDebugStringA( " " );
 
+        ELoggerLevel level = _message.level;
+
+        Char symbol = Helper::getLoggerLevelSymbol( level );
+        Char symbol_str[] = {symbol, '\0'};
+        ::OutputDebugStringA( symbol_str );
+        ::OutputDebugStringA( " " );
+
         if( _message.category.empty() == false )
         {
             const Char * category_str = _message.category.c_str();

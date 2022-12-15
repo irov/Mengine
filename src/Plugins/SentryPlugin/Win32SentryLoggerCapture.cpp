@@ -39,6 +39,12 @@ namespace Mengine
         m_message.append( timestamp, timestampSize );
         m_message.append( " ", 1 );
 
+        ELoggerLevel level = _message.level;
+
+        Char symbol = Helper::getLoggerLevelSymbol( level );
+        m_message.append( &symbol, 1 );
+        m_message.append( " " );
+
         if( _message.category.empty() == false )
         {
             const Char * category_str = _message.category.c_str();

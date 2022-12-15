@@ -5,7 +5,7 @@
 
 #include "ResourceOzzAnimation.h"
 
-#include "Kernel/RenderUtils.h"
+#include "Kernel/RenderHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"

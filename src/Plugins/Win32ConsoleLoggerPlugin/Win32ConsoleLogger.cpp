@@ -150,6 +150,12 @@ namespace Mengine
         ::WriteConsoleA( output_handle, timestamp, (DWORD)timestampSize, &dWritten, NULL );
         ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL);
 
+        ELoggerLevel level = _message.level;
+
+        Char symbol = Helper::getLoggerLevelSymbol( level );
+        ::WriteConsoleA( output_handle, &symbol, 1, &dWritten, NULL );
+        ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+
         if( _message.category.empty() == false )
         {
             const Char * category_str = _message.category.c_str();

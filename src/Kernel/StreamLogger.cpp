@@ -51,6 +51,12 @@ namespace Mengine
         m_stream->write( timestamp, timestampSize );
         m_stream->write( " ", 1 );
 
+        ELoggerLevel level = _message.level;
+
+        Char symbol = Helper::getLoggerLevelSymbol( level );
+        m_stream->write( &symbol, 1 );
+        m_stream->write( " ", 1 );
+
         if( _message.category.empty() == false )
         {
             const Char * category_str = _message.category.c_str();

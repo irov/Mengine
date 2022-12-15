@@ -22,6 +22,12 @@ namespace Mengine
         std::cout.write( timestamp, timestampSize );
         std::cout.write( " ", 1 );
 
+        ELoggerLevel level = _message.level;
+
+        Char symbol = Helper::getLoggerLevelSymbol( level );
+        std::cout.write( &symbol, 1 );
+        std::cout.write( " ", 1 );
+
         if( _message.category.empty() == false )
         {
             const Char * category_str = _message.category.c_str();

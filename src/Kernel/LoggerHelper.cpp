@@ -9,6 +9,39 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        Char getLoggerLevelSymbol( ELoggerLevel _level )
+        {
+            switch( _level )
+            {
+            case LM_SILENT:
+                return '#';
+            case LM_FATAL:
+                return 'F';
+            case LM_CRITICAL:
+                return 'C';
+            case LM_MESSAGE_RELEASE:
+                return 'M';
+            case LM_ERROR:
+                return 'E';
+            case LM_PERFOMANCE:
+                return 'P';
+            case LM_STATISTIC:
+                return 'S';
+            case LM_WARNING:
+                return 'W';
+            case LM_MESSAGE:
+                return 'M';
+            case LM_INFO:
+                return 'I';
+            case LM_DEBUG:
+                return 'D';
+            case LM_VERBOSE:
+                return 'V';
+            }
+
+            return '?';
+        }
+        //////////////////////////////////////////////////////////////////////////
         size_t makeLoggerTimestamp( const PlatformDateTime & _dateTime, const Char * _format, Char * const _timestamp, size_t _capacity )
         {
             int32_t size = MENGINE_SNPRINTF( _timestamp, _capacity, _format //"[%02u:%02u:%02u:%04u]"

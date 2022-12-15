@@ -96,7 +96,7 @@ namespace Mengine
 
         void * mem = MENGINE_MALLOC( _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' total '%zu' [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' total '%u' [%s]"
             , _size
             , this->getMemoryUsage()
             , _doc

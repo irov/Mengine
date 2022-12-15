@@ -199,8 +199,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_memoryUsage + _add >= _minus );
 
-        m_memoryUsage += _add;
-        m_memoryUsage -= _minus;
+        m_memoryUsage += (uint32_t)_add;
+        m_memoryUsage -= (uint32_t)_minus;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -131,10 +131,7 @@ namespace Mengine
                 return true;
             }
 
-            if( this->initializeService_( desc, _doc ) == false )
-            {
-                return false;
-            }
+            this->initializeService_( desc, _doc );
 
             return true;
         }
@@ -148,7 +145,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::initializeService_( ServiceDesc & _desc, const DocumentPtr & _doc )
+    void ServiceProvider::initializeService_( ServiceDesc & _desc, const DocumentPtr & _doc )
     {
         const ServiceInterfacePtr & service = _desc.service;
 
@@ -189,8 +186,6 @@ namespace Mengine
                 , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
-
-            return false;
         }
 
         _desc.initialize = true;
@@ -201,8 +196,6 @@ namespace Mengine
                 , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
-
-            return false;
         }
 
         if( service->runService() == false )
@@ -211,21 +204,9 @@ namespace Mengine
                 , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
-
-            return false;
         }
 
-        if( this->checkRequired_( _doc ) == false )
-        {
-            MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (required) (doc: %s)"
-                , service->getServiceID()
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
-
-            return false;
-        }
-
-        return true;
+        this->deferredRequiredInitialize_( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::finalizeService( const Char * _name )
@@ -539,7 +520,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::checkRequired_( const DocumentPtr & _doc )
+    void ServiceProvider::deferredRequiredInitialize_( const DocumentPtr & _doc )
     {
         for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
         {
@@ -557,13 +538,8 @@ namespace Mengine
 
             desc.requiring = false;
 
-            if( this->initializeService_( desc, _doc ) == false )
-            {
-                return false;
-            }
+            this->initializeService_( desc, _doc );
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const bool * ServiceProvider::isExistServiceProvider( const Char * _name )

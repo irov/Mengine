@@ -9,8 +9,8 @@ set "CONFIGURATION=%1"
 
 @echo Starting build dependencies msvc %CONFIGURATION% configuration...
 
-set "VERSION=16"
-set "YEAR=2019"
+set "VERSION=17"
+set "YEAR=2022"
 
 @pushd %~dp0..
 @call vcvarsall_msvc%VERSION%_x64.bat

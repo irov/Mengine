@@ -11,8 +11,8 @@ set "BUILD_VERSION=%3"
 
 @echo Starting make solution %CONFIGURATION% configuration...
 
-set "VERSION=16"
-set "YEAR=2019"
+set "VERSION=17"
+set "YEAR=2022"
 
 @pushd %~dp0..
 @call vcvarsall_msvc%VERSION%_x64.bat

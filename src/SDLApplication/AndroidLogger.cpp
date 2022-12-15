@@ -1,5 +1,7 @@
 #include "AndroidLogger.h"
 
+#include "Kernel/LoggerHelper.h"
+
 #include <android/log.h>
 
 namespace Mengine
@@ -48,10 +50,17 @@ namespace Mengine
             break;
         }
 
+        Char timestamp[256] = {'\0'};
+        size_t timestampSize = Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
+
+        Char symbol = Helper::getLoggerLevelSymbol( level );
+
+        const Char * category_str = _message.category.c_str();
+
         const Char * data = _message.data;
         size_t size = _message.size;
 
-        __android_log_print( prio, "Mengine", "%.*s", (int32_t)size, data );
+        __android_log_print( prio, "Mengine", "%.*s %c [%s] %.*s", (int32_t)timestampSize, timestamp, symbol, category_str,(int32_t)size, data );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidLogger::flush()

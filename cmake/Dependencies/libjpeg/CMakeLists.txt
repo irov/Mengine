@@ -71,7 +71,7 @@ ${SOURCE_DIR}/jmemmgr.c
 ${SOURCE_DIR}/jmemansi.c
 )
 
-include_directories(${SOURCE_DIR})
 include_directories(${THIRDPARTY_CONFIG_DIR}/libjpeg)
+include_directories(${SOURCE_DIR})
 
 add_library(${PROJECT_NAME} STATIC ${jpeg_sources})

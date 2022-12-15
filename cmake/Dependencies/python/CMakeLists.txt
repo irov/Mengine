@@ -107,13 +107,13 @@ elseif(UNIX)
 elseif(ANDROID)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedAndroid/pyconfig.h ${THIRDPARTY_CONFIG_DIR}/python/pyconfig.h COPYONLY)
 else()
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedWindows/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedWindows/pyconfig.h ${THIRDPARTY_CONFIG_DIR}/python/pyconfig.h COPYONLY)
 endif()
 
 
 ############################## 
 
-set(PARSER_SRCS      ${SOURCE_DIR}/Parser/acceler.c
+set(PARSER_SRCS ${SOURCE_DIR}/Parser/acceler.c
                 ${SOURCE_DIR}/Parser/grammar1.c
                 ${SOURCE_DIR}/Parser/listnode.c
                 ${SOURCE_DIR}/Parser/node.c
@@ -127,7 +127,6 @@ set(PARSER_SRCS      ${SOURCE_DIR}/Parser/acceler.c
                 ${SOURCE_DIR}/Parser/myreadline.c
                 ${SOURCE_DIR}/Parser/tokenizer.c 
                 )
-
 
 set(OBJECT_SRCS ${SOURCE_DIR}/Objects/abstract.c
                 ${SOURCE_DIR}/Objects/boolobject.c
@@ -166,11 +165,9 @@ set(OBJECT_SRCS ${SOURCE_DIR}/Objects/abstract.c
                 ${SOURCE_DIR}/Objects/weakrefobject.c
                 ${SOURCE_DIR}/Objects/capsule.c
                 ${SOURCE_DIR}/Objects/memoryobject.c
-                
-                
-   )
-
-set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
+                ${SOURCE_DIR}/Objects/unicodeobject.c
+                ${SOURCE_DIR}/Objects/unicodectype.c
+                )
 
 set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/Python-ast.c 
@@ -219,42 +216,43 @@ set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/mathmodule.c
                 ${SOURCE_DIR}/Modules/_math.c
-                ${MOD_SRCS} )
+                ${MOD_SRCS}
+                )
 
-set( MODULE_SRCS ${MODULE_SRCS} Modified/config.c )
-set( MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c )
+set(MODULE_SRCS ${MODULE_SRCS} Modified/config.c)
+set(MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c)
 
-if( NOT WIN32 )
-	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
+if(NOT WIN32)
+    set(MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c)
 else()
-	set( MODULE_SRCS ${MODULE_SRCS} 
-        ${SOURCE_DIR}/Modules/wininit.c
-        ${SOURCE_DIR}/PC/getpathp.c	
-    )
+    set(MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/wininit.c ${SOURCE_DIR}/PC/getpathp.c)
 endif()
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"\\\" -DEXEC_PREFIX=\\\"\\\" -DVERSION=\\\"2.7.18\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\"\\\" " )
 
-if(WIN32)
-	include_directories(${SOURCE_DIR}/PC)
-else()
-	include_directories(${THIRDPARTY_CONFIG_DIR}/python)
-endif()
+include_directories(${THIRDPARTY_CONFIG_DIR}/python)
 
+if(WIN32)
+    include_directories(${SOURCE_DIR}/PC)
+endif()
 
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)
-include_directories(${THIRDPARTY_DIR}/zlib)
 include_directories(${THIRDPARTY_CONFIG_DIR}/zlib)
+include_directories(${THIRDPARTY_DIR}/zlib)
 
-
-if(WIN32)  
+if(WIN32)
+  add_definitions(-D_WINDOWS)
+  
   if(MSVC)
-	  add_definitions(-DWIN32 -D_WINDOWS)
-  else()
-	  add_definitions(-D_WINDOWS)
+    add_definitions(-DWIN32)
   endif()
+endif()
+
+if(MINGW)
+  add_definitions(-D_WINDOWS)
+  add_definitions(-DWIN64)
 endif()
 
 add_definitions(-DMS_NO_COREDLL)
@@ -262,13 +260,13 @@ add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPy_BUILD_CORE)
 
 add_library(${PROJECT_NAME} STATIC
-			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
-              ${PARSER_SRCS}
-              ${OBJECT_SRCS}
-              ${PYTHON_SRCS}
-              ${PLATFORM_SRCS}
-              ${MODULE_SRCS} 
-              ${DEBUG_SRCS}
-              )
+            ${SOURCE_DIR}/Modules/getbuildinfo.c 
+            ${PARSER_SRCS}
+            ${OBJECT_SRCS}
+            ${PYTHON_SRCS}
+            ${PLATFORM_SRCS}
+            ${MODULE_SRCS} 
+            ${DEBUG_SRCS}
+            )
 
 target_link_libraries(${PROJECT_NAME} ${extraLibs})

@@ -56,6 +56,10 @@ PyAPI_FUNC(void) PyMem_Free(void *);
 /* Starting from Python 1.6, the wrappers Py_{Malloc,Realloc,Free} are
    no longer supported. They used to call PyErr_NoMemory() on failure. */
 
+void * _python_malloc( size_t _size );
+void * _python_realloc( void * _ptr, size_t _size );
+void _python_free( void * _ptr );
+
 /* Macros. */
 #ifdef PYMALLOC_DEBUG
 /* Redirect all memory operations to Python's debugging allocator. */
@@ -64,10 +68,6 @@ PyAPI_FUNC(void) PyMem_Free(void *);
 #define PyMem_FREE		_PyMem_DebugFree
 
 #else	/* ! PYMALLOC_DEBUG */
-
-void * _python_malloc(size_t _size);
-void * _python_realloc(void * _ptr, size_t _size);
-void _python_free(void * _ptr);
 
 /* PyMem_MALLOC(0) means malloc(1). Some systems would return NULL
    for malloc(0), which would be treated as an error. Some platforms

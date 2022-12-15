@@ -11,6 +11,13 @@ SERVICE_FACTORY( DateTimeSystem, Mengine::Win32DateTimeSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static const uint64_t MILLISECONDS_SECOND64 = 1000ULL;
+    static const uint64_t MILLISECONDS_MINUTE64 = MILLISECONDS_SECOND64 * 60ULL;
+    static const uint64_t MILLISECONDS_HOUR64 = MILLISECONDS_MINUTE64 * 60ULL;
+    static const uint64_t MILLISECONDS_DAY64 = MILLISECONDS_HOUR64 * 24ULL;
+    static const uint64_t MILLISECONDS_MONTH64 = MILLISECONDS_DAY64 * 31ULL;
+    static const uint64_t MILLISECONDS_YEAR64 = MILLISECONDS_MONTH64 * 12ULL;
+    //////////////////////////////////////////////////////////////////////////
     Win32DateTimeSystem::Win32DateTimeSystem()
     {
     }
@@ -33,27 +40,27 @@ namespace Mengine
         _dateTime->milliseconds = time.wMilliseconds;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t Win32DateTimeSystem::getLocalDateMilliseconds() const
+    TimeMilliseconds Win32DateTimeSystem::getLocalDateTimeMilliseconds() const
     {
         PlatformDateTime date;
         this->getLocalDateTime( &date );
 
         uint64_t year64 = date.year;
-        uint64_t month64 = date.month;
-        uint64_t day64 = date.day;
+        uint64_t month64 = date.month - 1;
+        uint64_t day64 = date.day - 1;
         uint64_t hour64 = date.hour;
         uint64_t minute64 = date.minute;
         uint64_t second64 = date.second;
         uint64_t milliseconds = date.milliseconds;
 
-        uint64_t milliseconds_year64 = year64 * 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL * 12ULL;
-        uint64_t milliseconds_month64 = month64 * 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL;
-        uint64_t milliseconds_day64 = day64 * 1000ULL * 60ULL * 60ULL * 24ULL;
-        uint64_t milliseconds_hour64 = hour64 * 1000ULL * 60ULL * 60ULL;
-        uint64_t milliseconds_minute64 = minute64 * 1000ULL * 60ULL;
-        uint64_t milliseconds_second64 = second64 * 1000ULL;
+        uint64_t milliseconds_year64 = year64 * MILLISECONDS_YEAR64;
+        uint64_t milliseconds_month64 = month64 * MILLISECONDS_MONTH64;
+        uint64_t milliseconds_day64 = day64 * MILLISECONDS_DAY64;
+        uint64_t milliseconds_hour64 = hour64 * MILLISECONDS_HOUR64;
+        uint64_t milliseconds_minute64 = minute64 * MILLISECONDS_MINUTE64;
+        uint64_t milliseconds_second64 = second64 * MILLISECONDS_SECOND64;
 
-        uint64_t total = milliseconds
+        TimeMilliseconds time = milliseconds
             + milliseconds_second64
             + milliseconds_minute64
             + milliseconds_hour64
@@ -61,26 +68,19 @@ namespace Mengine
             + milliseconds_month64
             + milliseconds_year64;
 
-        return total;
+        return time;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32DateTimeSystem::getLocalDateTimeFromMilliseconds( uint64_t _timestamp, PlatformDateTime * const _dateTime ) const
+    void Win32DateTimeSystem::getLocalDateTimeFromMilliseconds( TimeMilliseconds _time, PlatformDateTime * const _dateTime ) const
     {
-        uint64_t milliseconds_year64 = 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL * 12ULL;
-        uint64_t milliseconds_month64 = 1000ULL * 60ULL * 60ULL * 24ULL * 31ULL;
-        uint64_t milliseconds_day64 = 1000ULL * 60ULL * 60ULL * 24ULL;
-        uint64_t milliseconds_hour64 = 1000ULL * 60ULL * 60ULL;
-        uint64_t milliseconds_minute64 = 1000ULL * 60ULL;
-        uint64_t milliseconds_second64 = 1000ULL;
-
         PlatformDateTime date;
-        date.year = (uint32_t)(_timestamp / milliseconds_year64);
-        date.month = (uint32_t)((_timestamp % milliseconds_year64) / milliseconds_month64);
-        date.day = (uint32_t)((_timestamp % milliseconds_month64) / milliseconds_day64);
-        date.hour = (uint32_t)((_timestamp % milliseconds_day64) / milliseconds_hour64);
-        date.minute = (uint32_t)((_timestamp % milliseconds_hour64) / milliseconds_minute64);
-        date.second = (uint32_t)((_timestamp % milliseconds_minute64) / milliseconds_second64);
-        date.milliseconds = (uint32_t)(_timestamp % milliseconds_second64);
+        date.year = (uint32_t)(_time / MILLISECONDS_YEAR64);
+        date.month = (uint32_t)((_time % MILLISECONDS_YEAR64) / MILLISECONDS_MONTH64) + 1;
+        date.day = (uint32_t)((_time % MILLISECONDS_MONTH64) / MILLISECONDS_DAY64) + 1;
+        date.hour = (uint32_t)((_time % MILLISECONDS_DAY64) / MILLISECONDS_HOUR64);
+        date.minute = (uint32_t)((_time % MILLISECONDS_HOUR64) / MILLISECONDS_MINUTE64);
+        date.second = (uint32_t)((_time % MILLISECONDS_MINUTE64) / MILLISECONDS_SECOND64);
+        date.milliseconds = (uint32_t)(_time % MILLISECONDS_SECOND64);
 
         *_dateTime = date;
     }

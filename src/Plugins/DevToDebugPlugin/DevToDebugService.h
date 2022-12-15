@@ -79,6 +79,9 @@ namespace Mengine
         String m_uuid;
         String m_workerURL;
 
+        uint32_t m_throttleDebug;
+        uint32_t m_throttleLog;
+
         uint32_t m_revision;
 
         UniqueId m_timerId;

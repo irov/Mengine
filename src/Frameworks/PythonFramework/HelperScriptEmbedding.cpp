@@ -1348,10 +1348,10 @@ namespace Mengine
                 return s;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint64_t s_getLocalDateTimeMs()
+            TimeMilliseconds s_getLocalDateTimeMs()
             {
-                uint64_t timestamp = DATETIME_SYSTEM()
-                    ->getLocalDateMilliseconds();
+                TimeMilliseconds timestamp = DATETIME_SYSTEM()
+                    ->getLocalDateTimeMilliseconds();
 
                 return timestamp;
             }
@@ -1365,11 +1365,11 @@ namespace Mengine
                 return dateTime;
             }
             //////////////////////////////////////////////////////////////////////////
-            PlatformDateTime s_getLocalDateStructFromTimeMs( uint64_t _timestamp )
+            PlatformDateTime s_getLocalDateStructFromTimeMs( uint64_t _time )
             {
                 PlatformDateTime dateTime;
                 DATETIME_SYSTEM()
-                    ->getLocalDateTimeFromMilliseconds( _timestamp, &dateTime );
+                    ->getLocalDateTimeFromMilliseconds( _time, &dateTime );
 
                 return dateTime;
             }

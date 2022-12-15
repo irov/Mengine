@@ -135,6 +135,8 @@ namespace Mengine
         , m_revision( 0 )
         , m_timerId( INVALID_UNIQUE_ID )
         , m_invalidateTabs( false )
+        , m_throttleDebug( 0 )
+        , m_throttleLog( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -248,14 +250,14 @@ namespace Mengine
             return false;
         }
 
-        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 500 );
+        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 1000 );
 
         Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugProcess" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
         {
             this->process();
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        float DevToDebug_PropertySyncTime = CONFIG_VALUE( "DevToDebugPlugin", "PropertySyncTime", 500.f );
+        float DevToDebug_PropertySyncTime = CONFIG_VALUE( "DevToDebugPlugin", "PropertySyncTime", 1000.f );
 
         UniqueId timerId = PLATFORM_SERVICE()
             ->addTimer( DevToDebug_PropertySyncTime, [this]( UniqueId _id )
@@ -541,6 +543,11 @@ namespace Mengine
 
                     break;
                 }
+
+                jpp::object j_throttle = j.get( "throttle" );
+
+                m_throttleDebug = j_throttle.get( "debug" );
+                m_throttleLog = j_throttle.get( "log" );
 
                 if( m_logger != nullptr )
                 {

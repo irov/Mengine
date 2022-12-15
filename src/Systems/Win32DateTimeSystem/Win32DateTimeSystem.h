@@ -17,10 +17,10 @@ namespace Mengine
         void getLocalDateTime( PlatformDateTime * const _dateTime ) const override;
 
     protected:
-        uint64_t getLocalDateMilliseconds() const override;
+        TimeMilliseconds getLocalDateTimeMilliseconds() const override;
 
     protected:
-        void getLocalDateTimeFromMilliseconds( uint64_t _timestamp, PlatformDateTime * const _dateTime ) const override;
+        void getLocalDateTimeFromMilliseconds( TimeMilliseconds _time, PlatformDateTime * const _dateTime ) const override;
 
     protected:
         int32_t getTimeZoneOffset() const override;

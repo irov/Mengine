@@ -46,7 +46,7 @@ namespace Mengine
 
         m_mutex = mutex;
 
-        uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 500 );
+        uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 1000 );
 
         Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugLogger" ), ETP_BELOW_NORMAL, DevToDebug_LoggerTime, nullptr, [this]()
         {

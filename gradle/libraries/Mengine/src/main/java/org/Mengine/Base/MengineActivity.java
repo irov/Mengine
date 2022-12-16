@@ -246,6 +246,14 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
+    public void onMengineApplicationReady() {
+        MengineLog.logInfo(TAG, "onMengineApplicationReady");
+
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onMengineApplicationReady(this);
+        }
+    }
+
     public void onMengineApplicationStop() {
         MengineLog.logInfo(TAG, "onMengineApplicationStop");
 

@@ -1370,6 +1370,8 @@ namespace Mengine
 
         m_prevTime = Helper::getTimeMilliseconds();
 
+        bool firstTickEnd = false;
+
         for( ;; )
         {
             TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
@@ -1381,6 +1383,28 @@ namespace Mengine
             if( this->tickPlatform( frameTime ) == false )
             {
                 break;
+            }
+
+            if( firstTickEnd == false )
+            {
+                firstTickEnd = true;
+
+                NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_READY );
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+                static jmethodID jmethodID_onMengineApplicationReady = m_jenv->GetMethodID( g_jclass_activity, "onMengineApplicationReady", "()V" );
+
+                if( jmethodID_onMengineApplicationReady == nullptr )
+                {
+                    LOGGER_ERROR( "invalid get android method 'onMengineApplicationReady'" );
+                }
+                else
+                {
+                    m_jenv->CallVoidMethod( g_jobject_activity, jmethodID_onMengineApplicationReady );
+
+                    m_androidEventationHub->invoke();
+                }
+#endif
             }
         }
     }

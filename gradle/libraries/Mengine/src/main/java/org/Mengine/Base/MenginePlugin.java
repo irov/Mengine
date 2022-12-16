@@ -156,6 +156,10 @@ public class MenginePlugin {
         //Empty
     }
 
+    public void onMengineApplicationReady(MengineActivity activity) {
+        //Empty
+    }
+
     public void onMengineApplicationStop(MengineActivity activity) {
         //Empty
     }

@@ -48,6 +48,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimeHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -1223,7 +1224,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()
     {
-        //Empty
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_RUN );
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        static jmethodID jmethodID_onMengineApplicationRun = m_jenv->GetMethodID( g_jclass_activity, "onMengineApplicationRun", "()V" );
+
+        if( jmethodID_onMengineApplicationRun == nullptr )
+        {
+            LOGGER_ERROR( "invalid get android method 'onMengineApplicationRun'" );
+        }
+        else
+        {
+            m_jenv->CallVoidMethod( g_jobject_activity, jmethodID_onMengineApplicationRun );
+
+            m_androidEventationHub->invoke();
+        }
+#endif
 
         return true;
     }
@@ -1452,6 +1468,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::stopPlatform()
     {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_STOP );
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        static jmethodID jmethodID_onMengineApplicationStop = m_jenv->GetMethodID( g_jclass_activity, "onMengineApplicationStop", "()V" );
+
+        if( jmethodID_onMengineApplicationStop == nullptr )
+        {
+            LOGGER_ERROR( "invalid get android method 'onMengineApplicationStop'" );
+        }
+        else
+        {
+            m_jenv->CallVoidMethod( g_jobject_activity, jmethodID_onMengineApplicationStop );
+
+            m_androidEventationHub->invoke();
+        }
+#endif
+
         SDL_HideWindow( m_sdlWindow );
         
         this->pushQuitEvent_();

@@ -40,7 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_DECLARE_NOTIFICATOR(NAME, ...)\
     static constexpr uint32_t NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
-    template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; }
+    template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; static const Char * getName() { return #NAME; } }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_DECLARE_BEGIN();
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_OPEN_FILE, const Char *, const Char *, bool );
@@ -113,6 +113,8 @@ namespace Mengine
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_APPLICATION_RUN );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_APPLICATION_STOP );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_MODULE_INITIALIZE, ConstString );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_MODULE_FINALIZE, ConstString );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PLUGIN_INITIALIZE, const Char * );

@@ -152,6 +152,14 @@ public class MenginePlugin {
         //Empty
     }
 
+    public void onMengineApplicationRun(MengineActivity activity) {
+        //Empty
+    }
+
+    public void onMengineApplicationStop(MengineActivity activity) {
+        //Empty
+    }
+
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }

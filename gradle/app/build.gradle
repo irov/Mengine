@@ -8,6 +8,7 @@ def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SP
 def ANDROID_APP_ARCH_86_64_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true);
 def ANDROID_APP_ENABLE_DELIVERY_PACKAGE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false);
 
+def MENGINE_APP_PLUGIN_SPLASHSCREEN = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SPLASHSCREEN");
 def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS");
 def MENGINE_APP_PLUGIN_ADVERTISING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ADVERTISING");
 def MENGINE_APP_PLUGIN_GOOGLE_SERVICE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
@@ -402,6 +403,16 @@ if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
 
     dependencies {
         implementation project(':libraries:FirebaseAnalytics')
+    }
+}
+
+println "MENGINE_APP_PLUGIN_SPLASHSCREEN: $MENGINE_APP_PLUGIN_SPLASHSCREEN"
+
+if (MENGINE_APP_PLUGIN_SPLASHSCREEN == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.SplashScreen.MengineSplashScreenPlugin'
+
+    dependencies {
+        implementation project(':libraries:SplashScreen')
     }
 }
 

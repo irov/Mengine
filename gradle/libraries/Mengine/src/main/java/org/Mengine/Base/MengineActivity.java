@@ -238,6 +238,22 @@ public class MengineActivity extends SDLActivity {
         app.onMengineCreateApplication(this);
     }
 
+    public void onMengineApplicationRun() {
+        MengineLog.logInfo(TAG, "onMengineApplicationRun");
+
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onMengineApplicationRun(this);
+        }
+    }
+
+    public void onMengineApplicationStop() {
+        MengineLog.logInfo(TAG, "onMengineApplicationStop");
+
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onMengineApplicationStop(this);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

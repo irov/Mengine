@@ -85,6 +85,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
 **/
 
+includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", false, ":libraries:SplashScreen")
 includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":libraries:LocalNotifications")
 includePlugin("MENGINE_APP_PLUGIN_ADVERTISING", false, ":libraries:Advertising")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false, ":libraries:GoogleService")

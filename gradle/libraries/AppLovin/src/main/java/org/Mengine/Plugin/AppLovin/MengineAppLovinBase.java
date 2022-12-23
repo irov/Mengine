@@ -18,21 +18,10 @@ public class MengineAppLovinBase {
 
     public void logMaxAd(String type, String callback, MaxAd ad) {
         m_plugin.logInfo( "AppLovin: type: " + type + " callback: " + callback );
-        m_plugin.logInfo( "Waterfall Name: " + ad.getWaterfall().getName() + " and Test Name: " + ad.getWaterfall().getTestName() );
-        m_plugin.logInfo( "Waterfall latency was: " + ad.getWaterfall().getLatencyMillis() + " milliseconds" );
 
-        for (MaxNetworkResponseInfo networkResponse : ad.getWaterfall().getNetworkResponses()) {
-            String waterfallInfoStr = "Network -> " + networkResponse.getMediatedNetwork() +
-                    "\n...adLoadState: " + networkResponse.getAdLoadState() +
-                    "\n...latency: " + networkResponse.getLatencyMillis() + " milliseconds" +
-                    "\n...credentials: " + networkResponse.getCredentials();
+        MaxAdWaterfallInfo waterfall = ad.getWaterfall();
 
-            if (networkResponse.getError() != null) {
-                waterfallInfoStr += "\n...error: " + networkResponse.getError();
-            }
-
-            m_plugin.logInfo(waterfallInfoStr);
-        }
+        this.logMaxAdWaterfallInfo(waterfall);
     }
 
     public void logMaxError(String type, String callback, MaxError error) {
@@ -46,6 +35,10 @@ public class MengineAppLovinBase {
     }
 
     public void logMaxAdWaterfallInfo(MaxAdWaterfallInfo waterfall) {
+        if (waterfall == null) {
+            return;
+        }
+
         m_plugin.logInfo( "Waterfall Name: " + waterfall.getName() + " and Test Name: " + waterfall.getTestName() );
         m_plugin.logInfo( "Waterfall latency was: " + waterfall.getLatencyMillis() + " milliseconds" );
 

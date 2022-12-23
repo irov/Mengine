@@ -158,17 +158,17 @@ namespace Mengine
 
                 RtlGetVersion( &osInfo );
 
-                LOGGER_MESSAGE_RELEASE( "Windows version: %lu.%lu (build %lu)"
+                LOGGER_MESSAGE( "Windows version: %lu.%lu (build %lu)"
                     , osInfo.dwMajorVersion
                     , osInfo.dwMinorVersion
                     , osInfo.dwBuildNumber
                 );
 
-                LOGGER_MESSAGE_RELEASE( "Windows platform: %lu"
+                LOGGER_MESSAGE( "Windows platform: %lu"
                     , osInfo.dwPlatformId
                 );
 
-                LOGGER_MESSAGE_RELEASE( "Windows service pack: %lu.%lu"
+                LOGGER_MESSAGE( "Windows service pack: %lu.%lu"
                     , (DWORD)osInfo.wServicePackMajor
                     , (DWORD)osInfo.wServicePackMinor
                 );
@@ -374,7 +374,7 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Device Seed: %u"
+        LOGGER_MESSAGE( "Device Seed: %u"
             , deviceSeed
         );
 
@@ -499,7 +499,7 @@ namespace Mengine
         DATETIME_SYSTEM()
             ->getLocalDateTime(&dateTime);
 
-        LOGGER_MESSAGE_RELEASE( "Start Date: %02u.%02u.%u, %02u:%02u:%02u"
+        LOGGER_MESSAGE( "Start Date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
             , dateTime.month
             , dateTime.year
@@ -511,33 +511,33 @@ namespace Mengine
         SYSTEM_INFO sysInfo;
         ::GetSystemInfo( &sysInfo );
 
-        LOGGER_MESSAGE_RELEASE( "Hardware information:" );
-        LOGGER_MESSAGE_RELEASE( "  OEM ID: %lu", sysInfo.dwOemId );
-        LOGGER_MESSAGE_RELEASE( "  Number of processors: %lu", sysInfo.dwNumberOfProcessors );
-        LOGGER_MESSAGE_RELEASE( "  Page size: %lu", sysInfo.dwPageSize );
-        LOGGER_MESSAGE_RELEASE( "  Processor type: %lu", sysInfo.dwProcessorType );
-        LOGGER_MESSAGE_RELEASE( "  Minimum application address: %p", sysInfo.lpMinimumApplicationAddress );
-        LOGGER_MESSAGE_RELEASE( "  Maximum application address: %p", sysInfo.lpMaximumApplicationAddress );
-        LOGGER_MESSAGE_RELEASE( "  Active processor mask: %" MENGINE_PRDWORD_PTR, sysInfo.dwActiveProcessorMask );
+        LOGGER_MESSAGE( "Hardware information:" );
+        LOGGER_MESSAGE( "  OEM ID: %lu", sysInfo.dwOemId );
+        LOGGER_MESSAGE( "  Number of processors: %lu", sysInfo.dwNumberOfProcessors );
+        LOGGER_MESSAGE( "  Page size: %lu", sysInfo.dwPageSize );
+        LOGGER_MESSAGE( "  Processor type: %lu", sysInfo.dwProcessorType );
+        LOGGER_MESSAGE( "  Minimum application address: %p", sysInfo.lpMinimumApplicationAddress );
+        LOGGER_MESSAGE( "  Maximum application address: %p", sysInfo.lpMaximumApplicationAddress );
+        LOGGER_MESSAGE( "  Active processor mask: %" MENGINE_PRDWORD_PTR, sysInfo.dwActiveProcessorMask );
 
-        LOGGER_MESSAGE_RELEASE( "CPU information:" );
+        LOGGER_MESSAGE( "CPU information:" );
 
         Win32CPUInfo cpuinfo;
 
-        LOGGER_MESSAGE_RELEASE( "  Vendor: %s", cpuinfo.Vendor().c_str() );
-        LOGGER_MESSAGE_RELEASE( "  Brand: %s", cpuinfo.Brand().c_str() );
+        LOGGER_MESSAGE( "  Vendor: %s", cpuinfo.Vendor().c_str() );
+        LOGGER_MESSAGE( "  Brand: %s", cpuinfo.Brand().c_str() );
 
         auto support_message = []( const Char * isa_feature, bool is_supported )
         {
             uint32_t color = (is_supported == true ? LCOLOR_GREEN | LCOLOR_BLUE : LCOLOR_RED);
 
-            LOGGER_CATEGORY_VERBOSE_LEVEL( LM_MESSAGE_RELEASE, LFILTER_NONE, color, nullptr, 0, ELF_FLAG_NONE )("%s: %s"
+            LOGGER_CATEGORY_VERBOSE_LEVEL( LM_MESSAGE, LFILTER_NONE, color, nullptr, 0, ELF_FLAG_NONE )("%s: %s"
                 , isa_feature
                 , is_supported == true ? "+" : "-"
                 );
         };
 
-        LOGGER_MESSAGE_RELEASE( "CPU instruction:" );
+        LOGGER_MESSAGE( "CPU instruction:" );
         support_message( "  3DNOW", cpuinfo._3DNOW() );
         support_message( "  3DNOWEXT", cpuinfo._3DNOWEXT() );
         support_message( "  ABM", cpuinfo.ABM() );
@@ -595,7 +595,7 @@ namespace Mengine
 
         if( ::GlobalMemoryStatusEx( &mem_st ) == TRUE )
         {
-            LOGGER_MESSAGE_RELEASE( "Start Memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
+            LOGGER_MESSAGE( "Start Memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
                 , (uint32_t)(mem_st.ullTotalPhys / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullTotalPhys / (1000UL * 1000UL) % 1000UL)
                 , (uint32_t)(mem_st.ullAvailPhys / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullAvailPhys / (1000UL * 1000UL) % 1000UL)
                 , (uint32_t)(mem_st.ullTotalPageFile / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullTotalPageFile / (1000UL * 1000UL) % 1000UL)
@@ -605,7 +605,7 @@ namespace Mengine
 
         if( this->setProcessDPIAware() == false )
         {
-            LOGGER_MESSAGE_RELEASE( "Application not setup Process DPI Aware" );
+            LOGGER_MESSAGE( "Application not setup Process DPI Aware" );
         }
 
         WChar UserNameBuffer[UNLEN + 1] = {L'\0'};
@@ -626,7 +626,7 @@ namespace Mengine
             );
         }
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "ComputerName: %ls"
+        LOGGER_MESSAGE( "ComputerName: %ls"
             , ComputerNameBuffer
         );
 

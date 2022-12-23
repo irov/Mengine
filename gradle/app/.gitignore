@@ -2,6 +2,7 @@
 /data*
 /data_delivery*
 /res*
+/key*
 /build
 /release
 /captures

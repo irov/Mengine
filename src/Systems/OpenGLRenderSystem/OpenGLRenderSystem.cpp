@@ -170,29 +170,34 @@ namespace Mengine
         Mengine::initialize_GLEXT();
 #endif
 
-        LOGGER_MESSAGE_RELEASE( "OpenGL driver properties:" );
+        LOGGER_MESSAGE( "OpenGL driver properties:" );
 
         const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
-        LOGGER_MESSAGE_RELEASE( "  Vendor: %s", vendorStr );
         OPENGL_RENDER_CHECK_ERROR();
+
+        LOGGER_MESSAGE( "  Vendor: %s", vendorStr );        
 
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
-        LOGGER_MESSAGE_RELEASE( "  Renderer: %s", rendererStr );
         OPENGL_RENDER_CHECK_ERROR();
 
+        LOGGER_MESSAGE( "  Renderer: %s", rendererStr );        
+
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
-        LOGGER_MESSAGE_RELEASE( "  Version: %s", versionStr );
         OPENGL_RENDER_CHECK_ERROR();
+
+        LOGGER_MESSAGE( "  Version: %s", versionStr );        
 
 #ifdef MENGINE_RENDER_OPENGL_ES
         const Char * extensionsStr = reinterpret_cast<const Char *>(glGetString( GL_EXTENSIONS ));
-        LOGGER_MESSAGE_RELEASE( "  Extensions: %s", extensionsStr );
         OPENGL_RENDER_CHECK_ERROR();
+
+        LOGGER_MESSAGE( "  Extensions: %s", extensionsStr );        
 #endif
 
         const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
-        LOGGER_MESSAGE_RELEASE( "  Shading Language Version: %s", shadingLanguageVersion );
         OPENGL_RENDER_CHECK_ERROR();
+
+        LOGGER_MESSAGE( "  Shading Language Version: %s", shadingLanguageVersion );
 
         GLint maxCombinedTextureImageUnits;
         GLCALL( glGetIntegerv, (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits) );

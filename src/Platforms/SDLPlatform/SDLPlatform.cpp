@@ -671,7 +671,7 @@ namespace Mengine
         SDL_version ver;
         SDL_GetVersion( &ver );
 
-        LOGGER_MESSAGE_RELEASE( "SDL version %u.%u.%u"
+        LOGGER_MESSAGE( "SDL version %u.%u.%u"
             , ver.major
             , ver.minor
             , ver.patch
@@ -679,7 +679,7 @@ namespace Mengine
 
         SDL_bool isTablet = SDL_IsTablet();
 
-        LOGGER_MESSAGE_RELEASE( "SDL Tablet: %s"
+        LOGGER_MESSAGE( "SDL Tablet: %s"
             , isTablet == SDL_TRUE ? "true" : "false"
         );
 
@@ -885,7 +885,7 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        LOGGER_MESSAGE_RELEASE( "Touchpad: %u"
+        LOGGER_MESSAGE( "Touchpad: %u"
             , m_touchpad
         );
 
@@ -894,7 +894,7 @@ namespace Mengine
             m_desktop = true;
         }
 
-        LOGGER_MESSAGE_RELEASE( "Desktop: %u"
+        LOGGER_MESSAGE( "Desktop: %u"
             , m_desktop
         );
 
@@ -913,8 +913,8 @@ namespace Mengine
         int AndroidSDKVersion = SDL_GetAndroidSDKVersion();
         SDL_bool AndroidTV = SDL_IsAndroidTV();
 
-        LOGGER_MESSAGE_RELEASE( "Android SDK version: %d", AndroidSDKVersion );
-        LOGGER_MESSAGE_RELEASE( "Android TV: %d", AndroidTV );
+        LOGGER_MESSAGE( "Android SDK version: %d", AndroidSDKVersion );
+        LOGGER_MESSAGE( "Android TV: %d", AndroidTV );
 #endif
 
         SERVICE_WAIT( FileServiceInterface, [this]()
@@ -950,7 +950,7 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_MESSAGE_RELEASE( "Device Seed: %u"
+        LOGGER_MESSAGE( "Device Seed: %u"
             , deviceSeed
         );
 
@@ -963,7 +963,7 @@ namespace Mengine
         DATETIME_SYSTEM()
             ->getLocalDateTime( &dateTime );
 
-        LOGGER_MESSAGE_RELEASE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
+        LOGGER_MESSAGE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
             , dateTime.month
             , dateTime.year
@@ -972,70 +972,70 @@ namespace Mengine
             , dateTime.second
         );
 
-        LOGGER_MESSAGE_RELEASE( "[Device Info]" );
+        LOGGER_MESSAGE( "[Device Info]" );
 
-        LOGGER_MESSAGE_RELEASE( "Platform: %s"
+        LOGGER_MESSAGE( "Platform: %s"
             , SDL_GetPlatform()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU: %d Count %d CacheLineSize"
+        LOGGER_MESSAGE( "CPU: %d Count %d CacheLineSize"
             , SDL_GetCPUCount()
             , SDL_GetCPUCacheLineSize()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU RDTSC: %d"
+        LOGGER_MESSAGE( "CPU RDTSC: %d"
             , SDL_HasRDTSC()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU AltiVec: %d"
+        LOGGER_MESSAGE( "CPU AltiVec: %d"
             , SDL_HasAltiVec()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU MMX: %d"
+        LOGGER_MESSAGE( "CPU MMX: %d"
             , SDL_HasMMX()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU 3DNow: %d"
+        LOGGER_MESSAGE( "CPU 3DNow: %d"
             , SDL_Has3DNow()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU SSE: %d"
+        LOGGER_MESSAGE( "CPU SSE: %d"
             , SDL_HasSSE()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU SSE2: %d"
+        LOGGER_MESSAGE( "CPU SSE2: %d"
             , SDL_HasSSE2()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU SSE3: %d"
+        LOGGER_MESSAGE( "CPU SSE3: %d"
             , SDL_HasSSE3()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU SSE41: %d"
+        LOGGER_MESSAGE( "CPU SSE41: %d"
             , SDL_HasSSE41()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU SSE42: %d"
+        LOGGER_MESSAGE( "CPU SSE42: %d"
             , SDL_HasSSE42()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU AVX: %d"
+        LOGGER_MESSAGE( "CPU AVX: %d"
             , SDL_HasAVX()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU AVX2: %d"
+        LOGGER_MESSAGE( "CPU AVX2: %d"
             , SDL_HasAVX2()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU AVX512F: %d"
+        LOGGER_MESSAGE( "CPU AVX512F: %d"
             , SDL_HasAVX512F()
         );
 
-        LOGGER_MESSAGE_RELEASE( "CPU NEON: %d"
+        LOGGER_MESSAGE( "CPU NEON: %d"
             , SDL_HasNEON()
         );
 
-        LOGGER_MESSAGE_RELEASE( "RAM: %d MB"
+        LOGGER_MESSAGE( "RAM: %d MB"
             , SDL_GetSystemRAM()
         );
 
@@ -1066,7 +1066,7 @@ namespace Mengine
 
             if( isAccelerometer == true )
             {
-                LOGGER_MESSAGE_RELEASE( "Accelerometer found: %s"
+                LOGGER_MESSAGE( "Accelerometer found: %s"
                     , joystickName
                 );
 
@@ -1078,7 +1078,7 @@ namespace Mengine
 
         if( m_sdlAccelerometer == nullptr )
         {
-            LOGGER_MESSAGE_RELEASE( "Accelerometer not found" );
+            LOGGER_MESSAGE( "Accelerometer not found" );
         }
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -1747,39 +1747,39 @@ namespace Mengine
             );
         }
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_PROFILE_MASK: %d"
+        LOGGER_MESSAGE( "SDL_GL_CONTEXT_PROFILE_MASK: %d"
             , attribute_GL_CONTEXT_PROFILE_MASK
         );
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
+        LOGGER_MESSAGE( "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
             , attribute_GL_CONTEXT_MAJOR_VERSION
         );
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
+        LOGGER_MESSAGE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
             , attribute_GL_CONTEXT_MINOR_VERSION
         );
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_RED_SIZE: %d"
+        LOGGER_MESSAGE( "SDL_GL_RED_SIZE: %d"
             , attribute_SDL_GL_RED_SIZE
         );
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_GREEN_SIZE: %d"
+        LOGGER_MESSAGE( "SDL_GL_GREEN_SIZE: %d"
             , attribute_SDL_GL_GREEN_SIZE
         );
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_BLUE_SIZE: %d"
+        LOGGER_MESSAGE( "SDL_GL_BLUE_SIZE: %d"
             , attribute_SDL_GL_BLUE_SIZE
         );
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_ALPHA_SIZE: %d"
+        LOGGER_MESSAGE( "SDL_GL_ALPHA_SIZE: %d"
             , attribute_SDL_GL_ALPHA_SIZE
         );
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_DEPTH_SIZE: %d"
+        LOGGER_MESSAGE( "SDL_GL_DEPTH_SIZE: %d"
             , attribute_SDL_GL_DEPTH_SIZE
         );
 
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_DOUBLEBUFFER: %d"
+        LOGGER_MESSAGE( "SDL_GL_DOUBLEBUFFER: %d"
             , attribute_SDL_GL_DOUBLEBUFFER
         );
 
@@ -1789,7 +1789,7 @@ namespace Mengine
         int drawable_height;
         SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
 
-        LOGGER_MESSAGE_RELEASE( "SDL drawable size [%d, %d]"
+        LOGGER_MESSAGE( "SDL drawable size [%d, %d]"
             , drawable_width
             , drawable_height
         );
@@ -1799,7 +1799,7 @@ namespace Mengine
         int win_height;
         SDL_GetWindowSize( m_sdlWindow, &win_width, &win_height );
 
-        LOGGER_MESSAGE_RELEASE( "SDL window size [%d, %d]"
+        LOGGER_MESSAGE( "SDL window size [%d, %d]"
             , win_width
             , win_height
         );
@@ -1811,7 +1811,7 @@ namespace Mengine
         int win_right;
         if( SDL_GetWindowBordersSize( m_sdlWindow, &win_top, &win_left, &win_bottom, &win_right ) == 0 )
         {
-            LOGGER_MESSAGE_RELEASE( "SDL window borders [%d, %d] - [%d, %d]"
+            LOGGER_MESSAGE( "SDL window borders [%d, %d] - [%d, %d]"
                 , win_left
                 , win_top
                 , win_right
@@ -1824,7 +1824,7 @@ namespace Mengine
         int win_min_height;
         SDL_GetWindowMinimumSize( m_sdlWindow, &win_min_width, &win_min_height );
 
-        LOGGER_MESSAGE_RELEASE( "SDL window min size [%d, %d]"
+        LOGGER_MESSAGE( "SDL window min size [%d, %d]"
             , win_min_width
             , win_min_height
         );
@@ -1833,7 +1833,7 @@ namespace Mengine
         int win_max_height;
         SDL_GetWindowMaximumSize( m_sdlWindow, &win_max_width, &win_max_height );
 
-        LOGGER_MESSAGE_RELEASE( "SDL window max size [%d, %d]"
+        LOGGER_MESSAGE( "SDL window max size [%d, %d]"
             , win_max_width
             , win_max_height
         );
@@ -1845,7 +1845,7 @@ namespace Mengine
             SDL_Rect displayBounds;
             if( SDL_GetDisplayBounds( displayIndex, &displayBounds ) == 0 )
             {
-                LOGGER_MESSAGE_RELEASE( "SDL display bounds [%d, %d] size [%d, %d]"
+                LOGGER_MESSAGE( "SDL display bounds [%d, %d] size [%d, %d]"
                     , displayBounds.x
                     , displayBounds.y
                     , displayBounds.w
@@ -1856,7 +1856,7 @@ namespace Mengine
             SDL_Rect usableBounds;
             if( SDL_GetDisplayUsableBounds( displayIndex, &usableBounds ) == 0 )
             {
-                LOGGER_MESSAGE_RELEASE( "SDL display usable bounds [%d, %d] size [%d, %d]"
+                LOGGER_MESSAGE( "SDL display usable bounds [%d, %d] size [%d, %d]"
                     , usableBounds.x
                     , usableBounds.y
                     , usableBounds.w
@@ -3566,7 +3566,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE_RELEASE( "num video displays: %d"
+        LOGGER_MESSAGE( "num video displays: %d"
             , SDL_GetNumVideoDisplays()
         );
 
@@ -3638,9 +3638,9 @@ namespace Mengine
 
         m_sdlWindow = window;
 
-        LOGGER_MESSAGE_RELEASE( "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
-        LOGGER_MESSAGE_RELEASE( "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
-        LOGGER_MESSAGE_RELEASE( "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
+        LOGGER_MESSAGE( "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
+        LOGGER_MESSAGE( "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
+        LOGGER_MESSAGE( "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
 
         return true;
     }

@@ -371,7 +371,7 @@ namespace Mengine
 
         TimeMilliseconds runPlatformTimeSeconds = runPlatformTimeMilliseconds / 1000;
 
-        LOGGER_MESSAGE_RELEASE( "run platform time: %" PRIu64 " seconds"
+        LOGGER_MESSAGE( "run platform time: %" PRIu64 " seconds"
             , runPlatformTimeSeconds
         );
 

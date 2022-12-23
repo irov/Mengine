@@ -410,8 +410,6 @@ public class MengineActivity extends SDLActivity {
     //Kernel Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getAndroidId() {
-
-
         return m_androidId;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -438,6 +436,8 @@ public class MengineActivity extends SDLActivity {
     //Python Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonInitializePlugins() {
+        MengineLog.logInfo(TAG, "Python initialize");
+
         AndroidNativePython_addPlugin("Activity", this);
 
         for(MenginePlugin p : this.getPlugins()) {
@@ -486,13 +486,17 @@ public class MengineActivity extends SDLActivity {
 
         m_callbackResponses.add(cr);
 
-        MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] response [" + id + "] args [" + args + "]");
+        if (BuildConfig.DEBUG) {
+            MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] response [" + id + "] args [" + args + "]");
+        }
 
         AndroidNativePython_call(plugin, method, id, args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void responseCall(int id, Object result) {
-        MengineLog.logInfo(TAG, "responseCall [" + id + "] result [" + result.toString() + "]");
+        if (BuildConfig.DEBUG) {
+            MengineLog.logInfo(TAG, "responseCall [" + id + "] result [" + result.toString() + "]");
+        }
 
         Iterator itr = m_callbackResponses.iterator();
 

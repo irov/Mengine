@@ -187,21 +187,21 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Driver: %s", AdID.Driver );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Description: %s", AdID.Description );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceName: %s", AdID.DeviceName );
+        LOGGER_MESSAGE( "D3D Adapter Driver: %s", AdID.Driver );
+        LOGGER_MESSAGE( "D3D Adapter Description: %s", AdID.Description );
+        LOGGER_MESSAGE( "D3D Adapter DeviceName: %s", AdID.DeviceName );
 
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Version: %hu.%hu.%hu.%hu"
+        LOGGER_MESSAGE( "D3D Adapter Version: %hu.%hu.%hu.%hu"
             , HIWORD( AdID.DriverVersion.HighPart )
             , LOWORD( AdID.DriverVersion.HighPart )
             , HIWORD( AdID.DriverVersion.LowPart )
             , LOWORD( AdID.DriverVersion.LowPart )
         );
 
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter VendorId: %lu", AdID.VendorId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceId: %lu", AdID.DeviceId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdID.SubSysId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdID.Revision );
+        LOGGER_MESSAGE( "D3D Adapter VendorId: %lu", AdID.VendorId );
+        LOGGER_MESSAGE( "D3D Adapter DeviceId: %lu", AdID.DeviceId );
+        LOGGER_MESSAGE( "D3D Adapter SubSysId: %lu", AdID.SubSysId );
+        LOGGER_MESSAGE( "D3D Adapter Revision: %lu", AdID.Revision );
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
 
@@ -409,7 +409,7 @@ namespace Mengine
 
         m_d3dppFS.FullScreen_RefreshRateInHz = m_displayMode.RefreshRate;
 
-        LOGGER_MESSAGE_RELEASE( "Fullscreen RefreshRate [%u]"
+        LOGGER_MESSAGE( "Fullscreen RefreshRate [%u]"
             , m_d3dppFS.FullScreen_RefreshRateInHz
         );
 
@@ -419,12 +419,12 @@ namespace Mengine
 
         // Create D3D Device
 
-        LOGGER_MESSAGE_RELEASE( "Vertex Shader Version [%lu] [%s]"
+        LOGGER_MESSAGE( "Vertex Shader Version [%lu] [%s]"
             , d3dCaps.VertexShaderVersion
             , d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
         );
 
-        LOGGER_MESSAGE_RELEASE( "Pixel Shader Version [%lu] [%s] [%s]"
+        LOGGER_MESSAGE( "Pixel Shader Version [%lu] [%s] [%s]"
             , d3dCaps.PixelShaderVersion
             , d3dCaps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
             , d3dCaps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"

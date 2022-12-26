@@ -41,7 +41,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
         Movie2ScriptEmbedding.cpp
         )
         
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

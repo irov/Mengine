@@ -130,7 +130,7 @@ Common
     DocumentServiceInterface.h
     AffectorHubInterface.h
     DebuggerBoundingBoxInterface.h
-    AnalyticsSystemInterface.h
+    AnalyticsServiceInterface.h
     SecureValueInterface.h
     UIKitProxyApplicationDelegateInterface.h
     ExecutorInterface.h

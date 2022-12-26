@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Interface/AnalyticsSystemInterface.h"
+#include "GameAnalyticsInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {
-    class GameAnalyticsSystem
-        : public ServiceBase<AnalyticsSystemInterface>
+    class GameAnalyticsService
+        : public ServiceBase<GameAnalyticsServiceInterface>
     {
     public:
-        GameAnalyticsSystem();
-        ~GameAnalyticsSystem() override;
+        GameAnalyticsService();
+        ~GameAnalyticsService() override;
 
     public:
         bool _initializeService() override;

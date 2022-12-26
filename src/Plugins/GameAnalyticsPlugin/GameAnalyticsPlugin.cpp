@@ -1,10 +1,15 @@
 #include "GameAnalyticsPlugin.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #include "GameAnalytics.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#include "GameAnalyticsScriptEmbedding.h"
+#endif
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionAllocator.h"
@@ -17,6 +22,7 @@
 #include "Kernel/IniHelper.h"
 #include "Kernel/UID.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/NotificationHelper.h"
 #include "Kernel/JSONHelper.h"
 
 #include "Config/StdString.h"
@@ -26,7 +32,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AnalyticsSystem );
+SERVICE_EXTERN( GameAnalyticsService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( GameAnalytics, Mengine::GameAnalyticsPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -147,24 +153,43 @@ namespace Mengine
 
         gameanalytics::GameAnalytics::initialize( m_gameKey.c_str(), m_gameSecret.c_str() );
 
-        if( SERVICE_CREATE( AnalyticsSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( GameAnalyticsService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [MENGINE_DEBUG_ARGUMENTS( this )]()
+        {
+            SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameAnalyticsScriptEmbedding" ), Helper::makeFactorableUnique<GameAnalyticsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
+        {
+            SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameAnalyticsScriptEmbedding" ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void GameAnalyticsPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( AnalyticsSystem );
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+#endif
+
+        SERVICE_FINALIZE( GameAnalyticsService );
 
         gameanalytics::GameAnalytics::onQuit();
     }
     //////////////////////////////////////////////////////////////////////////
     void GameAnalyticsPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( AnalyticsSystem );
+        SERVICE_DESTROY( GameAnalyticsService );
     }
     //////////////////////////////////////////////////////////////////////////
     bool GameAnalyticsPlugin::loadUserId_()
@@ -214,15 +239,6 @@ namespace Mengine
 
         MENGINE_STRCAT( configPath, GameAnalytics_Config );
 
-        FilePath configPath_f = Helper::stringizeFilePath( configPath );
-
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( fileGroupUser, configPath_f, true, MENGINE_DOCUMENT_FACTORABLE );
-
-        if( file == nullptr )
-        {
-            return false;
-        }
-
         jpp::object j_root = jpp::make_object();
 
         jpp::object j_config = jpp::make_object();
@@ -230,12 +246,9 @@ namespace Mengine
 
         j_root.set( "Config", j_root );
 
-        if( Helper::writeJSONStream( j_root, file ) == false )
-        {
-            return false;
-        }
+        FilePath configPath_f = Helper::stringizeFilePath( configPath );
 
-        if( fileGroupUser->closeOutputFile( file ) == false )
+        if( Helper::writeJSONFile( j_root, fileGroupUser, configPath_f, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

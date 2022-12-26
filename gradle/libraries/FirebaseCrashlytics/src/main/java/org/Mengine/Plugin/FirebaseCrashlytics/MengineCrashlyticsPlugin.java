@@ -54,4 +54,10 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
     public void recordLog(String msg) {
         FirebaseCrashlytics.getInstance().log(msg);
     }
+
+    public void testCrash() {
+        FirebaseCrashlytics.getInstance().setCustomKey("TestCrash", true);
+
+        throw new RuntimeException("Firebase Crashlytics Test Crash");
+    }
 }

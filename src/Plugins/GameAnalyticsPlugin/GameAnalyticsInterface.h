@@ -2,17 +2,12 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Kernel/Unknowable.h"
-
-#include "Config/Char.h"
-
 namespace Mengine
 {
-    class AnalyticsSystemInterface
+    class GameAnalyticsServiceInterface
         : public ServiceInterface
-        , public Unknowable
     {
-        SERVICE_DECLARE( "AnalyticsSystem" )
+        SERVICE_DECLARE( "GameAnalyticsService" )
 
     public:
         virtual void startProgressionEvent( const Char * _name ) = 0;
@@ -24,6 +19,6 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define ANALYTICS_SYSTEM()\
-    ((Mengine::AnalyticsSystemInterface *)SERVICE_GET(Mengine::AnalyticsSystemInterface))
+#define GAME_ANALYTICS_SERVICE()\
+    ((Mengine::GameAnalyticsServiceInterface *)SERVICE_GET(Mengine::GameAnalyticsServiceInterface))
 //////////////////////////////////////////////////////////////////////////

@@ -56,6 +56,7 @@ SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( SettingsService );
 SERVICE_EXTERN( ArchiveService );
+SERVICE_EXTERN( AnalyticsService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( MockupRenderSystem );
@@ -864,6 +865,7 @@ namespace Mengine
             return false;\
         }
 
+        BOOTSTRAPPER_SERVICE_CREATE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1731,6 +1733,7 @@ namespace Mengine
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( TimepipeService );
+        SERVICE_FINALIZE( AnalyticsService );
         SERVICE_FINALIZE( StatisticService );
 
         if( m_loggerFile != nullptr )
@@ -1810,6 +1813,7 @@ namespace Mengine
         SERVICE_DESTROY( FileService );
         SERVICE_DESTROY( ThreadSystem );
         SERVICE_DESTROY( TimepipeService );
+        SERVICE_DESTROY( AnalyticsService );
         SERVICE_DESTROY( StatisticService );
         SERVICE_DESTROY( Platform );
         SERVICE_DESTROY( NotificationService );

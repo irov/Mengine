@@ -1,6 +1,7 @@
 #include "AndroidUtils.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 
 #include <pthread.h>
 
@@ -91,12 +92,7 @@ namespace Mengine
         {
             static jmethodID jmethodID_openAssetFile = jenv->GetMethodID( jclass_activity, "openAssetFile", "(Ljava/lang/String;)I" );
 
-            if( jmethodID_openAssetFile == nullptr )
-            {
-                LOGGER_ERROR( "invalid get android method 'openAssetFile'" );
-
-                return 0;
-            }
+            MENGINE_ASSERTION( jmethodID_openAssetFile != nullptr, "invalid get android method 'openAssetFile'" );
 
             jstring jpath = jenv->NewStringUTF( _path );
 
@@ -111,12 +107,7 @@ namespace Mengine
         {
             static jmethodID jmethodID_availableAssetFile = jenv->GetMethodID( jclass_activity, "availableAssetFile", "(I)I" );
 
-            if( jmethodID_availableAssetFile == nullptr )
-            {
-                LOGGER_ERROR( "invalid get android method 'availableAssetFile'" );
-
-                return 0;
-            }
+            MENGINE_ASSERTION( jmethodID_availableAssetFile != nullptr, "invalid get android method 'availableAssetFile'" );
 
             jint javailable = jenv->CallIntMethod( jobject_activity, jmethodID_availableAssetFile, _fileId );
 
@@ -127,12 +118,7 @@ namespace Mengine
         {
             static jmethodID jmethodID_readAssetFile = jenv->GetMethodID( jclass_activity, "readAssetFile", "(III)[B" );
 
-            if( jmethodID_readAssetFile == nullptr )
-            {
-                LOGGER_ERROR( "invalid get android method 'readAssetFile'" );
-
-                return 0;
-            }
+            MENGINE_ASSERTION( jmethodID_readAssetFile != nullptr, "invalid get android method 'readAssetFile'" );
 
             jbyteArray jbuffer = (jbyteArray)jenv->CallObjectMethod( jobject_activity, jmethodID_readAssetFile, _fileId, _offset, _size );
 
@@ -147,12 +133,7 @@ namespace Mengine
         {
             static jmethodID jmethodID_skipAssetFile = jenv->GetMethodID( jclass_activity, "skipAssetFile", "(IJ)J" );
 
-            if( jmethodID_skipAssetFile == nullptr )
-            {
-                LOGGER_ERROR( "invalid get android method 'skipAssetFile'" );
-
-                return 0;
-            }
+            MENGINE_ASSERTION( jmethodID_skipAssetFile != nullptr, "invalid get android method 'skipAssetFile'" );
 
             jlong javailable = jenv->CallIntMethod( jobject_activity, jmethodID_skipAssetFile, _fileId, _offset );
 
@@ -163,12 +144,7 @@ namespace Mengine
         {
             static jmethodID jmethodID_resetAssetFile = jenv->GetMethodID( jclass_activity, "resetAssetFile", "(I)V" );
 
-            if( jmethodID_resetAssetFile == nullptr )
-            {
-                LOGGER_ERROR( "invalid get android method 'resetAssetFile'" );
-
-                return;
-            }
+            MENGINE_ASSERTION( jmethodID_resetAssetFile != nullptr, "invalid get android method 'resetAssetFile'" );
 
             jenv->CallVoidMethod( jobject_activity, jmethodID_resetAssetFile, _fileId );
         }
@@ -177,28 +153,16 @@ namespace Mengine
         {
             static jmethodID jmethodID_closeAssetFile = jenv->GetMethodID( jclass_activity, "closeAssetFile", "(I)V" );
 
-            if( jmethodID_closeAssetFile == nullptr )
-            {
-                LOGGER_ERROR( "invalid get android method 'closeAssetFile'" );
-
-                return;
-            }
+            MENGINE_ASSERTION( jmethodID_closeAssetFile != nullptr, "invalid get android method 'closeAssetFile'" );
 
             jenv->CallVoidMethod( jobject_activity, jmethodID_closeAssetFile, _fileId );
         }
         //////////////////////////////////////////////////////////////////////////
         bool AndroidOpenMail( JNIEnv * jenv, jclass jclass_activity, jobject jobject_activity, const Char * _email, const Char * _subject, const Char * _body )
         {
-            MENGINE_UNUSED( jobject_activity );
-
             static jmethodID jmethodID_linkingOpenMail = jenv->GetMethodID( jclass_activity, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
 
-            if( jmethodID_linkingOpenMail == nullptr )
-            {
-                LOGGER_ERROR( "invalid get android method 'linkingOpenMail'" );
-
-                return false;
-            }
+            MENGINE_ASSERTION( jmethodID_linkingOpenMail != nullptr, "invalid get android method 'linkingOpenMail'" );
 
             jstring jemail = jenv->NewStringUTF( _email );
             jstring jsubject = jenv->NewStringUTF( _subject );
@@ -217,12 +181,7 @@ namespace Mengine
         {
             static jmethodID jmethodID_linkingOpenURL = jenv->GetMethodID( jclass_activity, "linkingOpenURL", "(Ljava/lang/String;)Z" );
 
-            if( jmethodID_linkingOpenURL == nullptr )
-            {
-                LOGGER_ERROR( "invalid get android method 'linkingOpenURL'" );
-
-                return false;
-            }
+            MENGINE_ASSERTION( jmethodID_linkingOpenURL != nullptr, "invalid get android method 'linkingOpenURL'" );
 
             jstring jurl = jenv->NewStringUTF( _url );
 

@@ -38,7 +38,8 @@
 - (void)workspaceActiveSpaceDidChangeNotification:(NSNotification*) notification {
     LOGGER_INFO("platform", "workspaceActiveSpaceDidChangeNotification");
     
-    if(m_urlWallpaper != nil) {
+    if( m_urlWallpaper != nil ) 
+    {
         NSURL * url = m_urlWallpaper;
         m_urlWallpaper = nil;
         

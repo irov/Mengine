@@ -119,6 +119,10 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     @Override
     public void onDestroy(MengineActivity activity) {
+        if (m_billingClient == null) {
+            return;
+        }
+
         m_billingClient.endConnection();
     }
 

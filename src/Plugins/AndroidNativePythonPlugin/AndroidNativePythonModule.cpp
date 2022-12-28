@@ -207,7 +207,7 @@ namespace Mengine
         {
             static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Boolean, "booleanValue", "()Z" );
 
-            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Boolean [booleanValue] ()C'" );
 
             jboolean value = m_jenv->CallBooleanMethod( obj, methodValue );
 
@@ -217,7 +217,7 @@ namespace Mengine
         {
             static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Character, "charValue", "()C" );
 
-            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Character [charValue] ()C'" );
 
             jchar value = m_jenv->CallCharMethod( obj, methodValue );
 
@@ -228,7 +228,7 @@ namespace Mengine
         {
             static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Integer, "intValue", "()I" );
 
-            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Integer [intValue] ()I'" );
 
             jint value = m_jenv->CallIntMethod( obj, methodValue );
 
@@ -238,7 +238,7 @@ namespace Mengine
         {
             static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Long, "longValue", "()J" );
 
-            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Long [longValue] ()J'" );
 
             jlong value = m_jenv->CallLongMethod( obj, methodValue );
 
@@ -248,7 +248,7 @@ namespace Mengine
         {
             static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Float, "floatValue", "()F" );
 
-            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Float [floatValue] ()F'" );
 
             jfloat value = m_jenv->CallFloatMethod( obj, methodValue );
 
@@ -258,7 +258,7 @@ namespace Mengine
         {
             static jmethodID methodValue = m_jenv->GetMethodID( m_jclass_Double, "doubleValue", "()D" );
 
-            MENGINE_ASSERTION_FATAL( methodValue != nullptr );
+            MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Double [doubleValue] ()D'" );
 
             jfloat value = m_jenv->CallDoubleMethod( obj, methodValue );
 
@@ -427,7 +427,7 @@ namespace Mengine
         {
             static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "()V" );
 
-            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object()V'" );
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] ()V'" );
 
             jresult = m_jenv->NewObject( m_jclass_Object, constructor );
         }
@@ -435,7 +435,7 @@ namespace Mengine
         {
             static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(Z)V" );
 
-            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(Z)V'" );
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (Z)V'" );
 
             jresult = m_jenv->NewObject( m_jclass_Object, constructor, (bool)_result.extract() );
         }
@@ -443,7 +443,7 @@ namespace Mengine
         {
             static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(I)V" );
 
-            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(I)V'" );
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (I)V'" );
 
             jresult = m_jenv->NewObject( m_jclass_Object, constructor, (int32_t)_result.extract() );
         }
@@ -451,7 +451,7 @@ namespace Mengine
         {
             static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(L)V" );
 
-            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(L)V'" );
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (L)V'" );
 
             jresult = m_jenv->NewObject( m_jclass_Object, constructor, (int64_t)_result.extract() );
         }
@@ -459,7 +459,7 @@ namespace Mengine
         {
             static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(F)V" );
 
-            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(F)V'" );
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (F)V'" );
 
             jresult = m_jenv->NewObject( m_jclass_Object, constructor, (float)_result.extract() );
         }
@@ -471,7 +471,7 @@ namespace Mengine
 
             static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(Ljava/lang/String;)V" );
 
-            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object(Ljava/lang/String;)V'" );
+            MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (Ljava/lang/String;)V'" );
 
             jresult = m_jenv->NewObject( m_jclass_Object, constructor, jvalue );
 
@@ -494,7 +494,7 @@ namespace Mengine
 
         static jmethodID jmethodID_responseCall = m_jenv->GetMethodID( jclass_activity, "responseCall", "(ILjava/lang/Object;)V" );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_responseCall != 0, "android activity not found method 'responseCall'" );
+        MENGINE_ASSERTION_FATAL( jmethodID_responseCall != 0, "android activity not found method 'Activity [responseCall] (ILjava/lang/Object;)V'" );
 
         jobject jobject_activity = extension->getJObjectActivity();
 
@@ -820,7 +820,7 @@ namespace Mengine
 
                 static jmethodID jmethodID_List_constructor = m_jenv->GetMethodID( m_jclass_ArrayList, "<init>", "(I)V" );
 
-                MENGINE_ASSERTION_FATAL( jmethodID_List_constructor != nullptr );
+                MENGINE_ASSERTION_FATAL( jmethodID_List_constructor != nullptr, "invalid get android method 'java/lang/ArrayList [<init>] (I)V'" );
 
                 jobject jlist = m_jenv->NewObject( m_jclass_ArrayList, jmethodID_List_constructor, s);
 
@@ -833,7 +833,7 @@ namespace Mengine
 
                     static jmethodID jmethodID_List_add = m_jenv->GetMethodID( m_jclass_ArrayList, "add", "(Ljava/lang/Object;)Z" );
 
-                    MENGINE_ASSERTION_FATAL( jmethodID_List_add != nullptr );
+                    MENGINE_ASSERTION_FATAL( jmethodID_List_add != nullptr, "invalid get android method 'java/lang/ArrayList [add] (I)V'" );
 
                     jboolean result = m_jenv->CallBooleanMethod( jlist, jmethodID_List_add, jelement );
 

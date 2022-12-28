@@ -36,6 +36,10 @@
 #   include "Environment/Android/AndroidEventationHub.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "SDLPlatformAndroidExtension.h"
+#endif
+
 #include "SDLInput.h"
 
 #include "Kernel/ServiceBase.h"
@@ -49,7 +53,7 @@ namespace Mengine
         : public ServiceBase<PlatformInterface>
         , public SDLPlatformExtensionInterface
 #if defined(MENGINE_PLATFORM_ANDROID)
-        , public AndroidPlatformExtensionInterface
+        , public SDLPlatformAndroidExtension
 #endif
     {
         DECLARE_UNKNOWABLE();
@@ -123,7 +127,6 @@ namespace Mengine
         size_t getCurrentPath( Char * const _currentPath ) const override;
         size_t getUserPath( Char * const _userPath ) const override;
         size_t getUserName( Char * const _userName ) const override;
-
         size_t getFingerprint( Char * const _fingerprint ) const override;
 
         void closeWindow() override;
@@ -209,18 +212,7 @@ namespace Mengine
         Display * getWindowDisplay() const override;
 #endif
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-        JNIEnv * getJENV() const override;
-
-        jclass getJClassActivity() const override;
-        jobject getJObjectActivity() const override;
-
-        String getAndroidId() const override;
-        String getDeviceName() const override;
-        String getAndroidPackageName() const override;
-#endif
-
-#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
         SDL_GLContext getGLContext() const override;
 #endif
@@ -251,24 +243,6 @@ namespace Mengine
     protected:
         bool initializeFileService_();
         void finalizeFileService_();
-
-    protected:
-        void notifyInitializeBaseServices_();
-        void notifyCreateApplication_();
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-    protected:
-        int32_t androidOpenAssetFile( const Char * _path ) override;
-        int32_t androidAvailableAssetFile( int32_t _fileId ) override;
-        int32_t androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer ) override;
-        int32_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) override;
-        void androidResetAssetFile( int32_t _fileId ) override;
-        void androidCloseAssetFile( int32_t _fileId ) override;
-
-    protected:
-        void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
-        void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
-#endif
 
     protected:
         TimeMilliseconds m_beginTime;
@@ -322,16 +296,12 @@ namespace Mengine
         SDL_GLContext m_glContext;
 #endif
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-        JNIEnv * m_jenv;
-
-        AndroidEventationHubPtr m_androidEventationHub;
-
-        String m_deviceName;
-#endif
-
 #if defined(MENGINE_PLATFORM_MACOS)
         SDLPlatformMacOSWorkspace * m_macOSWorkspace;
+#endif
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        Char m_deviceName[128];
 #endif
 
         SDLInputPtr m_sdlInput;

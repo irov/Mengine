@@ -757,9 +757,10 @@ namespace Mengine
                 AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
                     ->getDynamicUnknown();
 
-                String id = extension->getAndroidId();
+                Char androidId[128];
+                extension->getAndroidId( androidId, 128 );
 
-                return id;
+                return String(androidId);
             }
             //////////////////////////////////////////////////////////////////////////
 #endif

@@ -18,9 +18,9 @@ namespace Mengine
         virtual jclass getJClassActivity() const = 0;
         virtual jobject getJObjectActivity() const = 0;
 
-        virtual String getAndroidId() const = 0;
-        virtual String getDeviceName() const = 0;
-        virtual String getAndroidPackageName() const = 0;
+        virtual size_t getAndroidId( Char * _androidId, size_t _capacity ) const = 0;
+        virtual size_t getDeviceName( Char * _androidId, size_t _capacity ) const = 0;
+        virtual size_t getAndroidPackageName( Char * _androidId, size_t _capacity ) const = 0;
 
     public:
         virtual int32_t androidOpenAssetFile( const Char * _path ) = 0;

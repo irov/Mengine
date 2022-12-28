@@ -18,7 +18,6 @@
 #define SHA1_R3(v,w,x,y,z,i) z+=(((w|x)&y)|(w&x))+SHA1_BLK(i)+0x8F1BBCDC+SHA1_ROLL(v,5);w=SHA1_ROLL(w,30);
 #define SHA1_R4(v,w,x,y,z,i) z+=(w^x^y)+SHA1_BLK(i)+0xCA62C1D6+SHA1_ROLL(v,5);w=SHA1_ROLL(w,30);
 
-
 namespace Mengine
 {
     namespace Helper
@@ -182,6 +181,16 @@ namespace Mengine
         {
             uint8_t sha1[SHA1_DIGEST_SIZE];
             Helper::makeSHA1( _buffer, _size, sha1 );
+
+            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, nullptr );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void makeSHA1String( const Char * _string, Char * const _hex )
+        {
+            size_t len = MENGINE_STRLEN( _string );
+
+            uint8_t sha1[SHA1_DIGEST_SIZE];
+            Helper::makeSHA1( _string, len, sha1 );
 
             Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, nullptr );
         }

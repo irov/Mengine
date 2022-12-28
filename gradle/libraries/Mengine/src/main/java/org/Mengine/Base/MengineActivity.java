@@ -244,6 +244,9 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.getPlugins()) {
             p.onMengineApplicationRun(this);
         }
+
+        MengineApplication app = (MengineApplication)this.getApplication();
+        app.onMengineApplicationRun(this);
     }
 
     public void onMengineApplicationReady() {
@@ -252,6 +255,9 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.getPlugins()) {
             p.onMengineApplicationReady(this);
         }
+
+        MengineApplication app = (MengineApplication)this.getApplication();
+        app.onMengineApplicationReady(this);
     }
 
     public void onMengineApplicationStop() {
@@ -260,6 +266,11 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.getPlugins()) {
             p.onMengineApplicationStop(this);
         }
+
+        MengineApplication app = (MengineApplication)this.getApplication();
+        app.onMengineApplicationStop(this);
+
+        m_initializeBaseServices = false;
     }
 
     @Override
@@ -353,6 +364,10 @@ public class MengineActivity extends SDLActivity {
         for(MenginePlugin p : this.getPlugins()) {
             p.onDestroy(this);
         }
+
+        m_openFiles = null;
+        m_requestCodes = null;
+        m_callbackResponses = null;
     }
 
     @Override

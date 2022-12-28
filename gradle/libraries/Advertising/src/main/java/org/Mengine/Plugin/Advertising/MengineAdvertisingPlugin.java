@@ -44,6 +44,8 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
             } catch (GooglePlayServicesNotAvailableException e) {
                 e.printStackTrace();
             } catch (GooglePlayServicesRepairableException e) {

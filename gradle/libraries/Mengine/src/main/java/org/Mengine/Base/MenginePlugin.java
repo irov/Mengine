@@ -48,6 +48,7 @@ public class MenginePlugin {
         }
 
         m_extensions = null;
+        m_application = null;
     }
 
     public void setActivity(MengineActivity activity) {

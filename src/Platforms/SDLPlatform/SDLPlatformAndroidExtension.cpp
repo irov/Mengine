@@ -4,6 +4,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Environment/Android/AndroidUtils.h"
 
@@ -203,6 +204,11 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logInfo )(JNIEnv * env, jclass cls, jstring _msg)
     {
+        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
+        {
+            return;
+        }
+
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
@@ -214,6 +220,11 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logWarning )(JNIEnv * env, jclass cls, jstring _msg)
     {
+        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
+        {
+            return;
+        }
+
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
@@ -225,6 +236,11 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logMessage )(JNIEnv * env, jclass cls, jstring _msg)
     {
+        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
+        {
+            return;
+        }
+
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
@@ -236,6 +252,11 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logMessageRelease )(JNIEnv * env, jclass cls, jstring _msg)
     {
+        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
+        {
+            return;
+        }
+
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
@@ -247,6 +268,11 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidNativeMengine_1logError )(JNIEnv * env, jclass cls, jstring _msg)
     {
+        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
+        {
+            return;
+        }
+
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"

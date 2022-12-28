@@ -95,7 +95,39 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineCreateApplication(MengineActivity activity) {
+        Log.i(TAG, "onMengineCreateApplication");
+
         //Empty
+    }
+
+    public void onMengineApplicationRun(MengineActivity activity) {
+        Log.i(TAG, "onMengineApplicationRun");
+
+        //Empty
+    }
+
+    public void onMengineApplicationReady(MengineActivity activity) {
+        Log.i(TAG, "onMengineApplicationReady");
+
+        //Empty
+    }
+
+    public void onMengineApplicationStop(MengineActivity activity) {
+        Log.i(TAG, "onMengineApplicationStop");
+
+        for (MenginePlugin p : this.m_plugins) {
+            p.onFinalize(this);
+        }
+
+        if (m_activityLifecycle != null) {
+            this.unregisterActivityLifecycleCallbacks(m_activityLifecycle);
+            m_activityLifecycle = null;
+        }
+
+        if (m_componentCallbacks != null) {
+            this.unregisterComponentCallbacks(m_componentCallbacks);
+            m_componentCallbacks = null;
+        }
     }
 
     @Override
@@ -116,24 +148,10 @@ public class MengineApplication extends Application {
         Log.i(TAG, "onTerminate");
 
         for (MenginePlugin p : this.m_plugins) {
-            p.onFinalize(this);
-        }
-
-        for (MenginePlugin p : this.m_plugins) {
             p.onAppTerminate(this);
         }
 
         this.m_plugins = null;
-
-        if (m_activityLifecycle != null) {
-            this.unregisterActivityLifecycleCallbacks(m_activityLifecycle);
-            m_activityLifecycle = null;
-        }
-
-        if (m_componentCallbacks != null) {
-            this.unregisterComponentCallbacks(m_componentCallbacks);
-            m_componentCallbacks = null;
-        }
     }
 
     @Override

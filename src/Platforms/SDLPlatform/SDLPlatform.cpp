@@ -226,12 +226,15 @@ namespace Mengine
             return 0;
         }
 
-        if( Helper::unicodeToUtf8Size( unicode_userName, unicode_userNameLen, _userName, MENGINE_PLATFORM_USER_MAXNAME, nullptr ) == false )
+        size_t userNameLen;
+        if( Helper::unicodeToUtf8Size( unicode_userName, unicode_userNameLen, _userName, MENGINE_PLATFORM_USER_MAXNAME, &userNameLen ) == false )
         {
             MENGINE_STRCPY( _userName, "" );
 
             return 0;
         }
+
+        return userNameLen;
 #elif defined(MENGINE_PLATFORM_IOS)
         Char deviceName[51] = {L'\0'};
         Helper::iOSGetDeviceName( deviceName );

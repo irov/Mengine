@@ -104,11 +104,13 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             m_mediationAmazon = null;
         }
 
-        for (MengineAppLovinAnalyticsInterface analytic : m_analytics) {
-            analytic.finalizeAnalytics();
-        }
+        if( m_analytics != null ) {
+            for (MengineAppLovinAnalyticsInterface analytic : m_analytics) {
+                analytic.finalizeAnalytics();
+            }
 
-        m_analytics = null;
+            m_analytics = null;
+        }
 
         if (m_interstitial != null) {
             m_interstitial.destroy();

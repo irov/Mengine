@@ -746,7 +746,7 @@ namespace Mengine
         return value_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::makeJObjectHashMap(uint32_t _count )
+    jobject AndroidEnvironmentService::makeJObjectHashMap( int32_t _count )
     {
         static jmethodID HashMap_constructor = m_jenv->GetMethodID( m_jclass_HashMap, "<init>", "(I)V" );
 

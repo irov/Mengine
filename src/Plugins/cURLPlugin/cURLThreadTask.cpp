@@ -66,23 +66,32 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static size_t cURL_writeRequestPerformerResponse( char * ptr, size_t size, size_t nmemb, void * userdata )
         {
-            cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
+            cURLThreadTask * task = static_cast<cURLThreadTask *>(userdata);
+
+            if( task->isCancel() == true )
+            {
+                return 0;
+            }
 
             size_t total = size * nmemb;
 
-            perfomer->writeResponse( ptr, total );
+            task->writeResponse( ptr, total );
 
             return total;
         }
         //////////////////////////////////////////////////////////////////////////
         static size_t cURL_writeRequestHeaderResponse( char * ptr, size_t size, size_t nmemb, void * userdata )
         {
-            cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
-            MENGINE_UNUSED( perfomer );
+            cURLThreadTask * task = static_cast<cURLThreadTask *>(userdata);
+
+            if( task->isCancel() == true )
+            {
+                return 0;
+            }
 
             size_t total = size * nmemb;
 
-            perfomer->writeHeader( ptr, total );
+            task->writeHeader( ptr, total );
 
             return total;
         }
@@ -208,6 +217,9 @@ namespace Mengine
     bool cURLThreadTask::_onThreadTaskProcess()
     {
         MENGINE_PROFILER_CATEGORY();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( m_response, "not setup 'respose'" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_receiver, "not setup 'receiver'" );
 
         CURL * curl = curl_easy_init();
 

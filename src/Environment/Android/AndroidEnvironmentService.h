@@ -76,7 +76,7 @@ namespace Mengine
         jobject makeJObjectFloat( float _value );
         jobject makeJObjectDouble( double _value );
         jobject makeJObjectString( const Char * _value );
-        jobject makeJObjectHashMap( uint32_t _count );
+        jobject makeJObjectHashMap( int32_t _count );
 
     protected:
         JNIEnv * m_jenv;

@@ -1662,6 +1662,59 @@ namespace Mengine
                 return camera;
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_analyticsEvent( const ConstString & _eventName, const pybind::dict & _parameters )
+            {
+                AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
+                    ->buildEvent( _eventName );
+
+                for( pybind::dict::iterator
+                    it = _parameters.begin(),
+                    it_end = _parameters.end();
+                    it != it_end;
+                    ++it )
+                {
+                    ConstString k = it.key();
+                    pybind::object v = it.value();
+
+                    if( v.is_bool() == true )
+                    {
+                        bool value = v.extract();
+
+                        builder->addParameterBoolean( k, value );
+                    }
+                    else if( v.is_integer() == true || v.is_long() == true )
+                    {
+                        int64_t value = v.extract();
+
+                        builder->addParameterInteger( k, value );
+                    }
+                    else if( v.is_float() == true )
+                    {
+                        double value = v.extract();
+
+                        builder->addParameterDouble( k, value );
+                    }
+                    else if( v.is_string() == true )
+                    {
+                        String value = v.extract();
+
+                        builder->addParameterString( k, value );
+                    }
+                    else
+                    {
+                        LOGGER_ERROR( "unsupport pybind analytics parameter '%s' type '%s' value '%s'"
+                            , k.c_str()
+                            , v.repr_type().c_str()
+                            , v.repr().c_str()
+                        );
+
+                        return;
+                    }
+                }
+
+                builder->log();
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_mountResourcePackage( const ConstString & _fileGroupName
                 , const ConstString & _name
                 , const ConstString & _type
@@ -4329,8 +4382,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getDefaultRenderViewport2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultRenderViewport2D );
         pybind::def_functor( _kernel, "getDefaultArrowRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultArrowRenderCamera2D );
 
-
-
+        pybind::def_functor( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent );
 
         pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
         pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );

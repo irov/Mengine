@@ -939,19 +939,19 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void printChildren2( const NodePtr & _node, uint32_t _tab )
         {
-            _node->foreachChildren( [_tab]( const NodePtr & child )
+            _node->foreachChildren( [_tab]( const NodePtr & _child )
             {
-                bool enable = child->isEnable();
+                bool enable = _child->isEnable();
 
-                TransformationInterface * transformation = child->getTransformation();
+                TransformationInterface * transformation = _child->getTransformation();
 
                 LOGGER_MESSAGE_RELEASE( "%.*s-%s %s[%s] |%p| lp (%.2f, %.2f, %.2f) lo (%.2f, %.2f, %.2f) wp (%.2f, %.2f, %.2f) %s"
                     , _tab
                     , "                                         "
                     , (enable == false) ? "[DISABLE] " : ""
-                    , child->getName().c_str()
-                    , child->getType().c_str()
-                    , child.get()
+                    , _child->getName().c_str()
+                    , _child->getType().c_str()
+                    , _child.get()
                     , transformation->getLocalPosition().x
                     , transformation->getLocalPosition().y
                     , transformation->getLocalPosition().z
@@ -961,7 +961,7 @@ namespace Mengine
                     , transformation->getWorldPosition().x
                     , transformation->getWorldPosition().y
                     , transformation->getWorldPosition().z
-                    , child->getAnimation() == nullptr ? "" : (child->getAnimation()->isPlay() == true ? "[Play]" : "[Stop]")
+                    , _child->getAnimation() == nullptr ? "" : (_child->getAnimation()->isPlay() == true ? "[Play]" : "[Stop]")
                 );
 
                 if( enable == false )
@@ -969,7 +969,7 @@ namespace Mengine
                     return;
                 }
 
-                Detail::printChildren2( child, _tab + 1 );
+                Detail::printChildren2( _child, _tab + 1 );
             } );
         }
         //////////////////////////////////////////////////////////////////////////

@@ -39,22 +39,22 @@ public class MengineActivity extends SDLActivity {
     private ArrayList<CallbackResponse> m_callbackResponses;
     private int m_callbackResponseEnumerator;
 
-    private static native void AndroidNativeMengine_setMengineAndroidActivityJNI(Object Activity);
-    private static native void AndroidNativeMengine_quitMengineAndroidActivityJNI();
-    private static native String AndroidNativeMengine_getCompanyName();
-    private static native String AndroidNativeMengine_getProjectName();
-    private static native int AndroidNativeMengine_getProjectVersion();
-    private static native boolean AndroidNativeMengine_isDebugMode();
-    private static native boolean AndroidNativeMengine_isDevelopmentMode();
-    private static native boolean AndroidNativeMengine_isMasterRelease();
-    private static native boolean AndroidNativeMengine_isBuildPublish();
-    private static native String AndroidNativeMengine_getEngineGITSHA1();
-    private static native String AndroidNativeMengine_getBuildTimestamp();
-    private static native String AndroidNativeMengine_getBuildUsername();
-    private static native String AndroidNativeMengine_getBuildVersion();
-    private static native String AndroidNativeMengine_getConfigValue(String section, String key, String default_value);
-    private static native boolean AndroidNativeMengine_getConfigValueBoolean(String section, String key, boolean default_value);
-    private static native boolean AndroidNativeMengine_hasOption(String option);
+    private static native void AndroidEnvironmentService_setMengineAndroidActivityJNI(Object Activity);
+    private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
+    private static native String AndroidEnvironmentService_getCompanyName();
+    private static native String AndroidEnvironmentService_getProjectName();
+    private static native int AndroidEnvironmentService_getProjectVersion();
+    private static native boolean AndroidEnvironmentService_isDebugMode();
+    private static native boolean AndroidEnvironmentService_isDevelopmentMode();
+    private static native boolean AndroidEnvironmentService_isMasterRelease();
+    private static native boolean AndroidEnvironmentService_isBuildPublish();
+    private static native String AndroidEnvironmentService_getEngineGITSHA1();
+    private static native String AndroidEnvironmentService_getBuildTimestamp();
+    private static native String AndroidEnvironmentService_getBuildUsername();
+    private static native String AndroidEnvironmentService_getBuildVersion();
+    private static native String AndroidEnvironmentService_getConfigValue(String section, String key, String default_value);
+    private static native boolean AndroidEnvironmentService_getConfigValueBoolean(String section, String key, boolean default_value);
+    private static native boolean AndroidEnvironmentService_hasOption(String option);
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, int responseId, Object args[]);
@@ -80,59 +80,59 @@ public class MengineActivity extends SDLActivity {
     }
 
     public String getCompanyName() {
-       return AndroidNativeMengine_getCompanyName();
+       return AndroidEnvironmentService_getCompanyName();
     }
 
     public String getProjectName() {
-        return AndroidNativeMengine_getProjectName();
+        return AndroidEnvironmentService_getProjectName();
     }
 
     public int getProjectVersion() {
-        return AndroidNativeMengine_getProjectVersion();
+        return AndroidEnvironmentService_getProjectVersion();
     }
 
     public boolean isDebugMode() {
-        return AndroidNativeMengine_isDebugMode();
+        return AndroidEnvironmentService_isDebugMode();
     }
 
     public boolean isDevelopmentMode() {
-        return AndroidNativeMengine_isDevelopmentMode();
+        return AndroidEnvironmentService_isDevelopmentMode();
     }
 
     public boolean isMasterRelease() {
-        return AndroidNativeMengine_isMasterRelease();
+        return AndroidEnvironmentService_isMasterRelease();
     }
 
     public boolean isBuildPublish() {
-        return AndroidNativeMengine_isBuildPublish();
+        return AndroidEnvironmentService_isBuildPublish();
     }
 
     public String getEngineGITSHA1() {
-        return AndroidNativeMengine_getEngineGITSHA1();
+        return AndroidEnvironmentService_getEngineGITSHA1();
     }
 
     public String getBuildTimestamp() {
-        return AndroidNativeMengine_getBuildTimestamp();
+        return AndroidEnvironmentService_getBuildTimestamp();
     }
 
     public String getBuildUsername() {
-        return AndroidNativeMengine_getBuildUsername();
+        return AndroidEnvironmentService_getBuildUsername();
     }
 
     public String getBuildVersion() {
-        return AndroidNativeMengine_getBuildVersion();
+        return AndroidEnvironmentService_getBuildVersion();
     }
 
     public String getConfigValue(String section, String key, String default_value) {
-        return AndroidNativeMengine_getConfigValue(section, key, default_value);
+        return AndroidEnvironmentService_getConfigValue(section, key, default_value);
     }
 
     public boolean getConfigValueBoolean(String section, String key, boolean default_value) {
-        return AndroidNativeMengine_getConfigValueBoolean(section, key, default_value);
+        return AndroidEnvironmentService_getConfigValueBoolean(section, key, default_value);
     }
 
     public boolean hasOption(String option) {
-        return AndroidNativeMengine_hasOption(option);
+        return AndroidEnvironmentService_hasOption(option);
     }
 
     protected ArrayList<MenginePlugin> getPlugins() {
@@ -182,12 +182,12 @@ public class MengineActivity extends SDLActivity {
         if(mBrokenLibraries == true) {
             Log.e(TAG, "onCreate: broken libraries");
 
-            AndroidNativeMengine_quitMengineAndroidActivityJNI();
+            AndroidEnvironmentService_quitMengineAndroidActivityJNI();
 
             return;
         }
 
-        AndroidNativeMengine_setMengineAndroidActivityJNI(this);
+        AndroidEnvironmentService_setMengineAndroidActivityJNI(this);
 
         Context context = this.getContext();
         ContentResolver resolver = context.getContentResolver();
@@ -205,7 +205,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void quitMengineApplication() {
-        AndroidNativeMengine_quitMengineAndroidActivityJNI();
+        AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     }
 
     public void onMengineInitializeBaseServices() {
@@ -271,6 +271,14 @@ public class MengineActivity extends SDLActivity {
         app.onMengineApplicationStop(this);
 
         m_initializeBaseServices = false;
+    }
+
+    public void onMengineAnalyticsEvent(String eventName, long timestamp, HashMap<String, Object> parameters) {
+        MengineLog.logWarning(TAG, "onMengineAnalyticsEvent %s %d [%s]", eventName, timestamp, parameters.toString());
+
+        for(MenginePlugin p : this.getPlugins()) {
+            p.onMengineAnalyticsEvent(this, eventName, timestamp, parameters);
+        }
     }
 
     @Override
@@ -405,7 +413,7 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event){
-        MengineLog.logInfo(TAG, "dispatchKeyEvent() action: " + event.getAction() + " code: " + event.getKeyCode());
+        MengineLog.logInfo(TAG, "dispatchKeyEvent action: " + event.getAction() + " code: " + event.getKeyCode());
 
         for(MenginePlugin p : this.getPlugins()) {
             if (p.dispatchKeyEvent(this, event) == true) {

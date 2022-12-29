@@ -20,25 +20,11 @@
 #include "Interface/SDLPlatformExtensionInterface.h"
 #include "Interface/FactoryInterface.h"
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Interface/AndroidPlatformExtensionInterface.h"
-#endif
-
 #if defined(MENGINE_PLATFORM_MACOS)
 #   import "SDLPlatformMacOSWorkspace.h"
 #endif
 
 #include "Environment/SDL2/SDL2Includer.h"
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Environment/Android/AndroidIncluder.h"
-#   include "Environment/Android/AndroidUtils.h"
-#   include "Environment/Android/AndroidEventationHub.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "SDLPlatformAndroidExtension.h"
-#endif
 
 #include "SDLInput.h"
 
@@ -52,9 +38,6 @@ namespace Mengine
     class SDLPlatform
         : public ServiceBase<PlatformInterface>
         , public SDLPlatformExtensionInterface
-#if defined(MENGINE_PLATFORM_ANDROID)
-        , public SDLPlatformAndroidExtension
-#endif
     {
         DECLARE_UNKNOWABLE();
 

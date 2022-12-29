@@ -9,6 +9,9 @@ src
     AndroidEventationHub.cpp
     AndroidUtils.h
     AndroidUtils.cpp
+
+        AndroidEnvironmentService.h
+        AndroidEnvironmentService.cpp
 )
 
 ADD_MENGINE_LIBRARY(Environment)

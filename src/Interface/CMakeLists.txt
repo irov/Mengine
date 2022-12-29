@@ -33,7 +33,6 @@ Common
     MemoryServiceInterface.h
     PlatformInterface.h
     Win32PlatformExtensionInterface.h
-    AndroidPlatformExtensionInterface.h
     SDLPlatformExtensionInterface.h
     ImageCodecInterface.h
     PickCodecInterface.h
@@ -137,6 +136,11 @@ Common
     StatisticServiceInterface.h
     PersistentSystemInterface.h
     DateTimeSystemInterface.h
+)
+
+ADD_FILTER(
+Environment
+        AndroidEnvironmentServiceInterface.h
 )
 
 ADD_FILTER(

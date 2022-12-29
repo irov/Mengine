@@ -5,7 +5,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/AndroidPlatformExtensionInterface.h"
+#include "Interface/AndroidEnvironmentServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
@@ -82,6 +82,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidNativePythonModule::AndroidNativePythonModule()
         : m_jenv( nullptr )
+        , m_jclass_MengineActivity( nullptr )
+        , m_jobject_MengineActivity( nullptr )
         , m_jclass_Object( nullptr )
         , m_jclass_Boolean( nullptr )
         , m_jclass_Character( nullptr )
@@ -128,34 +130,50 @@ namespace Mengine
 
         m_eventation->setEventHandler( PythonEventHandlerInterfacePtr::from( this ) );
 
-        AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->addAndroidEventation( m_eventation );
 
-        extension->addAndroidEventation( m_eventation );
+        m_jenv = ANDROID_ENVIRONMENT_SERVICE()
+            ->getJENV();
 
-        m_jenv = extension->getJENV();
-        jobject jActivity = extension->getJObjectActivity();
+        m_jclass_Object = ANDROID_ENVIRONMENT_SERVICE()
+                ->getJClassObject();
 
-        m_jclass_Object = m_jenv->FindClass( "java/lang/Object" );
-        m_jclass_Boolean = m_jenv->FindClass( "java/lang/Boolean" );
-        m_jclass_Character = m_jenv->FindClass( "java/lang/Character" );
-        m_jclass_Integer = m_jenv->FindClass( "java/lang/Integer" );
-        m_jclass_Long = m_jenv->FindClass( "java/lang/Long" );
-        m_jclass_Float = m_jenv->FindClass( "java/lang/Float" );
-        m_jclass_Double = m_jenv->FindClass( "java/lang/Double" );
-        m_jclass_String = m_jenv->FindClass( "java/lang/String" );
-        m_jclass_ArrayList = m_jenv->FindClass( "java/util/ArrayList" );
+        m_jclass_Boolean = ANDROID_ENVIRONMENT_SERVICE()
+                ->getJClassBoolean();
 
-        AndroidPlatformExtensionInterface * unknownAndroidPlatform = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
+        m_jclass_Character = ANDROID_ENVIRONMENT_SERVICE()
+                ->getJClassCharacter();
 
-        jclass jclassActivity = unknownAndroidPlatform->getJClassActivity();
+        m_jclass_Integer = ANDROID_ENVIRONMENT_SERVICE()
+                -> getJClassInteger();
 
-        jmethodID jmethodID_initializePlugins = m_jenv->GetMethodID( jclassActivity, "pythonInitializePlugins", "()V" );
+        m_jclass_Long = ANDROID_ENVIRONMENT_SERVICE()
+                -> getJClassLong();
+
+        m_jclass_Float = ANDROID_ENVIRONMENT_SERVICE()
+                -> getJClassFloat();
+
+        m_jclass_Double = ANDROID_ENVIRONMENT_SERVICE()
+                -> getJClassDouble();
+
+        m_jclass_String = ANDROID_ENVIRONMENT_SERVICE()
+                -> getJClassString();
+
+        m_jclass_ArrayList = ANDROID_ENVIRONMENT_SERVICE()
+                ->getJClassArrayList();
+
+        m_jclass_MengineActivity = ANDROID_ENVIRONMENT_SERVICE()
+                ->getJClassMengineActivity();
+
+        m_jobject_MengineActivity = ANDROID_ENVIRONMENT_SERVICE()
+                ->getJObjectMengineActivity();
+
+        jmethodID jmethodID_initializePlugins = m_jenv->GetMethodID( m_jclass_MengineActivity, "pythonInitializePlugins", "()V" );
 
         MENGINE_ASSERTION_FATAL( jmethodID_initializePlugins != nullptr, "invalid get android method 'pythonInitializePlugins'" );
 
-        m_jenv->CallVoidMethod( jActivity, jmethodID_initializePlugins );
+        m_jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_initializePlugins );
 
         m_eventation->invoke();
 
@@ -169,10 +187,8 @@ namespace Mengine
         m_callbacks.clear();
         m_plugins.clear();
 
-        AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
-
-        extension->removeAndroidEventation( m_eventation );
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->removeAndroidEventation( m_eventation );
 
         m_eventation->finalize();
         m_eventation = nullptr;
@@ -433,35 +449,35 @@ namespace Mengine
         }
         else if( _result.is_bool() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(Z)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Boolean, "<init>", "(Z)V" );
 
             MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (Z)V'" );
 
-            jresult = m_jenv->NewObject( m_jclass_Object, constructor, (bool)_result.extract() );
+            jresult = m_jenv->NewObject( m_jclass_Boolean, constructor, (bool)_result.extract() );
         }
         else if( _result.is_integer() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(I)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Integer, "<init>", "(I)V" );
 
             MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (I)V'" );
 
-            jresult = m_jenv->NewObject( m_jclass_Object, constructor, (int32_t)_result.extract() );
+            jresult = m_jenv->NewObject( m_jclass_Integer, constructor, (int32_t)_result.extract() );
         }
         else if( _result.is_long() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(L)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Long, "<init>", "(L)V" );
 
             MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (L)V'" );
 
-            jresult = m_jenv->NewObject( m_jclass_Object, constructor, (int64_t)_result.extract() );
+            jresult = m_jenv->NewObject( m_jclass_Long, constructor, (int64_t)_result.extract() );
         }
         else if( _result.is_float() == true )
         {
-            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(F)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Float, "<init>", "(F)V" );
 
             MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (F)V'" );
 
-            jresult = m_jenv->NewObject( m_jclass_Object, constructor, (float)_result.extract() );
+            jresult = m_jenv->NewObject( m_jclass_Float, constructor, (float)_result.extract() );
         }
         else if( _result.is_string() == true )
         {
@@ -469,11 +485,11 @@ namespace Mengine
 
             jstring jvalue = m_jenv->NewStringUTF( value_str );
 
-            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_Object, "<init>", "(Ljava/lang/String;)V" );
+            static jmethodID constructor = m_jenv->GetMethodID( m_jclass_String, "<init>", "(Ljava/lang/String;)V" );
 
             MENGINE_ASSERTION_FATAL( constructor != nullptr, "invalid get android method 'java/lang/Object [<init>] (Ljava/lang/String;)V'" );
 
-            jresult = m_jenv->NewObject( m_jclass_Object, constructor, jvalue );
+            jresult = m_jenv->NewObject( m_jclass_String, constructor, jvalue );
 
             m_jenv->DeleteLocalRef( jvalue );
         }
@@ -487,18 +503,13 @@ namespace Mengine
             return false;
         }
 
-        AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
-        jclass jclass_activity = extension->getJClassActivity();
-
-        static jmethodID jmethodID_responseCall = m_jenv->GetMethodID( jclass_activity, "responseCall", "(ILjava/lang/Object;)V" );
+        static jmethodID jmethodID_responseCall = m_jenv->GetMethodID( m_jclass_MengineActivity, "responseCall", "(ILjava/lang/Object;)V" );
 
         MENGINE_ASSERTION_FATAL( jmethodID_responseCall != 0, "android activity not found method 'Activity [responseCall] (ILjava/lang/Object;)V'" );
 
-        jobject jobject_activity = extension->getJObjectActivity();
+        m_jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_responseCall, _id, jresult );
 
-        m_jenv->CallVoidMethod( jobject_activity, jmethodID_responseCall, _id, jresult );
+        m_jenv->DeleteLocalRef( jresult );
 
         m_eventation->invoke();
 

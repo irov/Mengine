@@ -119,7 +119,9 @@ namespace Mengine
     public:
         virtual void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter ) = 0;
 
-        typedef Lambda<void( const ConstString &, const AnalyticsEventParameterInterfacePtr &)> LambdaEventParameter;
+        virtual uint32_t getCountParameters() const = 0;
+
+        typedef Lambda<void( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )> LambdaEventParameter;
         virtual void foreachParameters( const LambdaEventParameter & _lambda ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -129,7 +131,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) const = 0;
+        virtual void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AnalyticsEventProviderInterface> AnalyticsEventProviderInterfacePtr;
@@ -152,7 +154,7 @@ namespace Mengine
     class AnalyticsServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AnalyticsSystem" )
+        SERVICE_DECLARE( "AnalyticsService" )
 
     public:
         virtual void addEventProvider( const AnalyticsEventProviderInterfacePtr & _provider ) = 0;

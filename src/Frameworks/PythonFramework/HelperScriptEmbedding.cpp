@@ -23,7 +23,7 @@
 #include "Interface/DateTimeSystemInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Interface/AndroidPlatformExtensionInterface.h"
+#   include "Interface/AndroidEnvironmentServiceInterface.h"
 #endif
 
 #include "Environment/Python/PythonIncluder.h"
@@ -754,11 +754,9 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_getAndroidId()
             {
-                AndroidPlatformExtensionInterface * extension = PLATFORM_SERVICE()
-                    ->getDynamicUnknown();
-
                 Char androidId[128];
-                extension->getAndroidId( androidId, 128 );
+                ANDROID_ENVIRONMENT_SERVICE()
+                    ->getAndroidId( androidId, 128 );
 
                 return String(androidId);
             }

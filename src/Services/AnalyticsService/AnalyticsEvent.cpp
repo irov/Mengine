@@ -51,6 +51,13 @@ namespace Mengine
         m_parameters.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t AnalyticsEvent::getCountParameters() const
+    {
+        VectorAnalyticsEventParameter::size_type parameters_size = m_parameters.size();
+
+        return (uint32_t)parameters_size;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AnalyticsEvent::foreachParameters( const LambdaEventParameter & _lambda ) const
     {
         for( const AnalyticsEventParameterDesc & desc : m_parameters )

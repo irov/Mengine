@@ -18,14 +18,6 @@ IF(MENGINE_TARGET_MACOS)
     )
 ENDIF()
 
-IF(MENGINE_TARGET_ANDROID)
-    ADD_FILTER(
-    android
-            SDLPlatformAndroidExtension.h
-            SDLPlatformAndroidExtension.cpp
-    )
-ENDIF()
-
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 

@@ -31,8 +31,7 @@ namespace Mengine
 
     public:
         void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter ) override;
-
-    public:
+        uint32_t getCountParameters() const override;
         void foreachParameters( const LambdaEventParameter & _lambda ) const override;
 
     protected:

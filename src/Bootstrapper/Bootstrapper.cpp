@@ -15,6 +15,10 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Interface/AndroidEnvironmentServiceInterface.h"
+#endif
+
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/DocumentHelper.h"
@@ -100,6 +104,10 @@ SERVICE_EXTERN( StatisticService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+    SERVICE_EXTERN( AndroidEnvironmentService );
+#endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_EXTERNAL_SOURCE
 PLUGIN_EXPORT( ExternalBootstrapper );
@@ -765,6 +773,13 @@ namespace Mengine
         MENGINE_ADD_SERVICE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        MENGINE_ADD_SERVICE( AndroidEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         MENGINE_ADD_SERVICE( Platform, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
@@ -865,8 +880,6 @@ namespace Mengine
             return false;\
         }
 
-        BOOTSTRAPPER_SERVICE_CREATE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
-        BOOTSTRAPPER_SERVICE_CREATE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1733,8 +1746,6 @@ namespace Mengine
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( TimepipeService );
-        SERVICE_FINALIZE( AnalyticsService );
-        SERVICE_FINALIZE( StatisticService );
 
         if( m_loggerFile != nullptr )
         {
@@ -1755,6 +1766,14 @@ namespace Mengine
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( RenderSystem );
         SERVICE_FINALIZE( SoundSystem );
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_FINALIZE( AndroidEnvironmentService );
+#endif
+
+        SERVICE_FINALIZE( AnalyticsService );
+        SERVICE_FINALIZE( StatisticService );
+
         SERVICE_FINALIZE( Platform );
         SERVICE_FINALIZE( LoggerService );
         SERVICE_FINALIZE( FactoryService );
@@ -1815,6 +1834,11 @@ namespace Mengine
         SERVICE_DESTROY( TimepipeService );
         SERVICE_DESTROY( AnalyticsService );
         SERVICE_DESTROY( StatisticService );
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_DESTROY( AndroidEnvironmentService );
+#endif
+
         SERVICE_DESTROY( Platform );
         SERVICE_DESTROY( NotificationService );
         SERVICE_DESTROY( LoggerService );

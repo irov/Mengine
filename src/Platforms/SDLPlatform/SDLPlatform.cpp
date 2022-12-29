@@ -10,6 +10,10 @@
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Interface/AndroidEnvironmentServiceInterface.h"
+#endif
+
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
 #elif defined(MENGINE_PLATFORM_APPLE)
@@ -700,13 +704,6 @@ namespace Mengine
             this->finalizeFileService_();
         } );
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-        if( SDLPlatformAndroidExtension::initializePlatformExtension() == false )
-        {
-            return false;
-        }
-#endif
-
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
         LOGGER_MESSAGE( "Device Seed: %u"
@@ -877,14 +874,16 @@ namespace Mengine
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         Char androidId[128];
-        SDLPlatformAndroidExtension::getAndroidId( androidId, 128 );
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getAndroidId( androidId, 128 );
 
         Helper::makeSHA1String( androidId, m_fingerprint.data() );
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-        SDLPlatformAndroidExtension::getDeviceName( m_deviceName, 128 );
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getDeviceName( m_deviceName, 128 );
 #endif
         
 #if defined(MENGINE_PLATFORM_MACOS)
@@ -948,10 +947,6 @@ namespace Mengine
         m_updates.clear();
 
         this->destroyWindow_();
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-        SDLPlatformAndroidExtension::finalizePlatformExtension();
-#endif
 
         SDL_Quit();
 
@@ -1165,7 +1160,8 @@ namespace Mengine
 
         return true;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( SDLPlatformAndroidExtension::openUrlInDefaultBrowser( _url ) == false )
+        if(ANDROID_ENVIRONMENT_SERVICE()
+            ->openUrlInDefaultBrowser( _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url
@@ -1197,7 +1193,8 @@ namespace Mengine
 
         return false;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( SDLPlatformAndroidExtension::openMail( _email, _subject, _body ) == false )
+        if(ANDROID_ENVIRONMENT_SERVICE()
+            ->openMail( _email, _subject, _body ) == false )
         {
             LOGGER_ERROR( "error open mail '%s'"
                 , _email

@@ -72,6 +72,9 @@ namespace Mengine
     protected:
         JNIEnv * m_jenv;
 
+        jclass m_jclass_MengineActivity;
+        jobject m_jobject_MengineActivity;
+
         jclass m_jclass_Object;
         jclass m_jclass_Boolean;
         jclass m_jclass_Character;

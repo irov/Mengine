@@ -15,9 +15,9 @@ namespace Mengine
     enum EAnalyticsEventParameterType
     {
         EAEPT_BOOLEAN,
-        EAEPT_STRING,
         EAEPT_INTEGER,
-        EAEPT_DOUBLE
+        EAEPT_DOUBLE,
+        EAEPT_STRING
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class AnalyticsEventParameterInterface> AnalyticsEventParameterInterfacePtr;

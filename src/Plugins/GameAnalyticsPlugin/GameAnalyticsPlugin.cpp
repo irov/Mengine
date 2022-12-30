@@ -134,11 +134,30 @@ namespace Mengine
 
         gameanalytics::GameAnalytics::configureWritablePath( analyticsPath );
 
-        bool GameAnalytics_InfoLog = CONFIG_VALUE( "GameAnalyticsPlugin", "InfoLog", false );
-        gameanalytics::GameAnalytics::setEnabledInfoLog( GameAnalytics_InfoLog );
+        bool OPTION_gameanalyticslog = HAS_OPTION( "gameanalyticslog" );
+        
+        if( OPTION_gameanalyticslog == true )
+        {
+            gameanalytics::GameAnalytics::setEnabledInfoLog( true );
+        }
+        else
+        {
+            bool GameAnalytics_InfoLog = CONFIG_VALUE( "GameAnalyticsPlugin", "InfoLog", false );
 
-        bool GameAnalytics_VerboseLog = CONFIG_VALUE( "GameAnalyticsPlugin", "VerboseLog", false );
-        gameanalytics::GameAnalytics::setEnabledVerboseLog( GameAnalytics_VerboseLog );
+            gameanalytics::GameAnalytics::setEnabledInfoLog( GameAnalytics_InfoLog );
+        }
+
+        bool OPTION_gameanalyticsverbose = HAS_OPTION( "gameanalyticsverbose" );
+
+        if( OPTION_gameanalyticsverbose == true )
+        {
+            gameanalytics::GameAnalytics::setEnabledVerboseLog( true );
+        }
+        else
+        {
+            bool GameAnalytics_VerboseLog = CONFIG_VALUE( "GameAnalyticsPlugin", "VerboseLog", false );
+            gameanalytics::GameAnalytics::setEnabledVerboseLog( GameAnalytics_VerboseLog );
+        }
 
         const Char * EngineGITSHA1 = Helper::getEngineGITSHA1();
         gameanalytics::GameAnalytics::configureSdkGameEngineVersion( EngineGITSHA1 );

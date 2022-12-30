@@ -586,15 +586,6 @@ namespace Mengine
 
                        parameter_jobject = this->makeJObjectBoolean( parameter_value );
                    }break;
-               case EAEPT_STRING:
-                   {
-                       AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
-                       const String & parameter_value = parameter_string->resolveValue();
-
-                       const Char * parameter_value_str = parameter_value.c_str();
-
-                       parameter_jobject = this->makeJObjectString( parameter_value_str );
-                   }break;
                case EAEPT_INTEGER:
                    {
                        AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
@@ -608,6 +599,15 @@ namespace Mengine
                        double parameter_value = parameter_double->resolveValue();
 
                        parameter_jobject = this->makeJObjectDouble( parameter_value );
+                   }break;
+               case EAEPT_STRING:
+                   {
+                       AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
+                       const String & parameter_value = parameter_string->resolveValue();
+
+                       const Char * parameter_value_str = parameter_value.c_str();
+
+                       parameter_jobject = this->makeJObjectString( parameter_value_str );
                    }break;
                }
 

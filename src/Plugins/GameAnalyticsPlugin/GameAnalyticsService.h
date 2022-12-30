@@ -2,12 +2,15 @@
 
 #include "GameAnalyticsInterface.h"
 
+#include "Interface/AnalyticsServiceInterface.h"
+
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {
     class GameAnalyticsService
         : public ServiceBase<GameAnalyticsServiceInterface>
+        , public AnalyticsEventProviderInterface
     {
     public:
         GameAnalyticsService();
@@ -28,5 +31,8 @@ namespace Mengine
     protected:
         void notifyBootstrapperInitializeGame_();
         void notifyBootstrapperFinalizeGame_();
+
+    protected:
+        void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
     };
 }

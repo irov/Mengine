@@ -78,8 +78,10 @@ namespace Mengine
         json += "{";
         _event->foreachParameters( [&json]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
         {
+            const Char * name_str = _name.c_str();
+
             json += "\"";
-            json += _name.c_str();
+            json += name_str;
             json += "\":";
 
             EAnalyticsEventParameterType parameterType = _parameter->getType();

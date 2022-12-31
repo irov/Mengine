@@ -1,15 +1,13 @@
-#import "AppleFacebookApplicationDelegate.h"
+#import "AppleFirebaseAnalyticsApplicationDelegate.h"
 
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
+#import <Firebase/Firebase.h>
 
-@implementation AppleFacebookApplicationDelegate
+@implementation AppleFirebaseAnalyticsApplicationDelegate
 
 #pragma mark -
 
 + (void)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [FBSDKApplicationDelegate.sharedInstance application:application didFinishLaunchingWithOptions:launchOptions];
+    [FIRApp configure];
 }
 
 #pragma mark - UISceneSession lifecycle
@@ -56,11 +54,11 @@
 }
 
 + (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    return [FBSDKApplicationDelegate.sharedInstance application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
+    return false;
 }
 
 + (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
-    return [FBSDKApplicationDelegate.sharedInstance application:application openURL:url options:options];
+    return false;
 }
 
 @end

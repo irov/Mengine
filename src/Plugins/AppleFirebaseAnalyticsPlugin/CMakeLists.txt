@@ -6,13 +6,17 @@ src
 
     AppleFirebaseAnalyticsPlugin.h
     AppleFirebaseAnalyticsPlugin.cpp
-
     
     AppleFirebaseAnalyticsService.h
     AppleFirebaseAnalyticsService.mm
+    
+    AppleFirebaseAnalyticsApplicationDelegate.h
+    AppleFirebaseAnalyticsApplicationDelegate.mm
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS)
 
 ADD_MENGINE_COCOAPOD("Firebase" "NO-GIT" "9.2.0")
 ADD_MENGINE_COCOAPOD("FirebaseAnalytics" "NO-GIT" "9.2.0")
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseAnalyticsApplicationDelegate")

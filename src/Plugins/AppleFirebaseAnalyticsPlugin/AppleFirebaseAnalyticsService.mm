@@ -22,14 +22,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseAnalyticsService::_initializeService()
     {
-        @try {
-            [FIRApp configure];
-        } @catch (NSException *exception) {
-            LOGGER_ERROR( "%s"
-                , [exception.reason UTF8String]
-            );
-        }
-        
         ANALYTICS_SERVICE()
             ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
         

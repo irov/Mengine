@@ -26,7 +26,7 @@ namespace Mengine
         ConstString roleID;
         ConstString roleName;
         ConstString roleLevel;
-        int32_t serverID;
+        ConstString serverID;
         ConstString serverName;
         int32_t moneyNum;
         int64_t roleCreateTime;//time(NULL)
@@ -41,8 +41,6 @@ namespace Mengine
         ConstString partyName;
         ConstString partyMasterID;
         ConstString partyMasterName;
-        
-        int32_t serverId;
     };
     //////////////////////////////////////////////////////////////////////////
     struct MARSDKProductInfo

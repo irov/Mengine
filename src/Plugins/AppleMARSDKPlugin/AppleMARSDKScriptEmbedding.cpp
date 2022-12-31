@@ -291,8 +291,6 @@ namespace Mengine
             data.partyMasterID = _d["partyMasterID"];
             data.partyMasterName = _d["partyMasterName"];
 
-            data.serverId = _d["serverId"];
-
             APPLE_MARSDK_SERVICE()
                 ->submitExtendedData( data );
         }

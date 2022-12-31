@@ -99,7 +99,7 @@ namespace Mengine
         extraData.roleID = [NSString stringWithUTF8String: _data.roleID.c_str()];
         extraData.roleName = [NSString stringWithUTF8String: _data.roleName.c_str()];
         extraData.roleLevel = [NSString stringWithUTF8String: _data.roleLevel.c_str()];
-        extraData.serverID = _data.serverId;
+        extraData.serverID = [NSString stringWithUTF8String: _data.serverID.c_str()];
         extraData.serverName = [NSString stringWithUTF8String: _data.serverName.c_str()];
         extraData.moneyNum = _data.moneyNum;
         extraData.roleCreateTime = _data.roleCreateTime;

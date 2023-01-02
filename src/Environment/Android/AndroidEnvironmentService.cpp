@@ -300,6 +300,7 @@ namespace Mengine
         , m_jclass_Double( nullptr )
         , m_jclass_String( nullptr )
         , m_jclass_ArrayList( nullptr )
+        , m_jclass_Map( nullptr )
         , m_jclass_HashMap( nullptr )
     {
     }
@@ -323,6 +324,7 @@ namespace Mengine
         m_jclass_Double = m_jenv->FindClass( "java/lang/Double" );
         m_jclass_String = m_jenv->FindClass( "java/lang/String" );
         m_jclass_ArrayList = m_jenv->FindClass( "java/util/ArrayList" );
+        m_jclass_Map = m_jenv->FindClass( "java/util/Map" );
         m_jclass_HashMap = m_jenv->FindClass( "java/util/HashMap" );
 
         m_androidEventationHub = Helper::makeFactorableUnique<AndroidEventationHub>( MENGINE_DOCUMENT_FACTORABLE );
@@ -431,6 +433,11 @@ namespace Mengine
     jclass AndroidEnvironmentService::getJClassArrayList() const
     {
         return  m_jclass_ArrayList;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jclass AndroidEnvironmentService::getJClassMap() const
+    {
+        return  m_jclass_Map;
     }
     //////////////////////////////////////////////////////////////////////////
     jclass AndroidEnvironmentService::getJClassHashMap() const
@@ -548,7 +555,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::onAnalyticsEvent(const AnalyticsEventInterfacePtr & _event )
     {
-        static jmethodID jmethodID_onMengineAnalyticsEvent = m_jenv->GetMethodID( g_jclass_MengineActivity, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/HashMap;)V" );
+        static jmethodID jmethodID_onMengineAnalyticsEvent = m_jenv->GetMethodID( g_jclass_MengineActivity, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;)V" );
 
         MENGINE_ASSERTION( jmethodID_onMengineAnalyticsEvent != nullptr, "invalid get android method 'onAnalyticsEvent'" );
 
@@ -567,8 +574,6 @@ namespace Mengine
 
         _event->foreachParameters( [this, parameters_jobject]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
            {
-               static jmethodID HashMap_put = m_jenv->GetMethodID( m_jclass_HashMap, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;" );
-
                const Char * name_str = _name.c_str();
 
                jobject name_jvalue = this->makeJObjectString( name_str );
@@ -611,7 +616,9 @@ namespace Mengine
                    }break;
                }
 
-               m_jenv->CallObjectMethod( parameters_jobject, HashMap_put, name_jvalue, parameter_jobject );
+               static jmethodID Map_put = m_jenv->GetMethodID( m_jclass_Map, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;" );
+
+               m_jenv->CallObjectMethod( parameters_jobject, Map_put, name_jvalue, parameter_jobject );
 
                m_jenv->DeleteLocalRef( parameter_jobject );
            });

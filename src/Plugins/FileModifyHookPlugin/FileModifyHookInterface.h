@@ -13,7 +13,7 @@ namespace Mengine
     class FileModifyHookServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AreaOfInterest" )
+        SERVICE_DECLARE( "FileModifyHookService" )
 
     public:
         typedef Lambda<void()> LambdaFileModifyHook;

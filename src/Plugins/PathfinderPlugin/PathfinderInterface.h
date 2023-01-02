@@ -38,8 +38,10 @@ namespace Mengine
 	public:
         virtual void setCellLayer( uint16_t _width, uint16_t _height, uint16_t _layer ) = 0;
 		virtual uint16_t getCellLayer( uint16_t _width, uint16_t _height ) const = 0;
+
         virtual void setCellBlock( uint16_t _width, uint16_t _height, bool _block ) = 0;
 		virtual bool getCellBlock( uint16_t _width, uint16_t _height ) const = 0;
+
         virtual void setCellWeight( uint16_t _width, uint16_t _height, float _weight ) = 0;
 		virtual float getCellWeight( uint16_t _width, uint16_t _height ) const = 0;
 
@@ -52,7 +54,7 @@ namespace Mengine
 	class PathfinderServiceInterface
 		: public ServiceInterface
 	{
-        SERVICE_DECLARE( "Pathfinder" )
+        SERVICE_DECLARE( "PathfinderService" )
 
 	public:
         virtual PathfinderMapInterfacePtr createPathfinderMap( uint16_t _width, uint16_t _height ) = 0;

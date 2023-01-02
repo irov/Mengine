@@ -31,6 +31,7 @@ namespace Mengine
         virtual jclass getJClassDouble() const = 0;
         virtual jclass getJClassString() const = 0;
         virtual jclass getJClassArrayList() const = 0;
+        virtual jclass getJClassMap() const = 0;
         virtual jclass getJClassHashMap() const = 0;
 
     public:

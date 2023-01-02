@@ -36,6 +36,7 @@ namespace Mengine
         jclass getJClassDouble() const override;
         jclass getJClassString() const override;
         jclass getJClassArrayList() const override;
+        jclass getJClassMap() const override;
         jclass getJClassHashMap() const override;
 
     public:
@@ -90,6 +91,7 @@ namespace Mengine
         jclass m_jclass_Double;
         jclass m_jclass_String;
         jclass m_jclass_ArrayList;
+        jclass m_jclass_Map;
         jclass m_jclass_HashMap;
 
         AndroidEventationHubPtr m_androidEventationHub;

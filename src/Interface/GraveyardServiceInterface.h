@@ -14,7 +14,7 @@ namespace Mengine
     class GraveyardServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "Graveyard" )
+        SERVICE_DECLARE( "GraveyardService" )
 
     public:
         virtual void clearTextures() = 0;

@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 public class MenginePlugin {
     private MengineApplication m_application;
@@ -166,7 +166,7 @@ public class MenginePlugin {
         //Empty
     }
 
-    public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, HashMap<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, Map<String, Object> parameters) {
         //Empty
     }
 

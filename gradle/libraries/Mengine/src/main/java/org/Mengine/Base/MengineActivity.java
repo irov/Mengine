@@ -273,7 +273,7 @@ public class MengineActivity extends SDLActivity {
         m_initializeBaseServices = false;
     }
 
-    public void onMengineAnalyticsEvent(String eventName, long timestamp, HashMap<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(String eventName, long timestamp, Map<String, Object> parameters) {
         MengineLog.logWarning(TAG, "onMengineAnalyticsEvent %s %d [%s]", eventName, timestamp, parameters.toString());
 
         for(MenginePlugin p : this.getPlugins()) {

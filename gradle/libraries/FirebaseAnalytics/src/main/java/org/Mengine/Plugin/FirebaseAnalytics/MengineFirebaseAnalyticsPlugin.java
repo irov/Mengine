@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.Size;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -13,7 +12,6 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
@@ -33,7 +31,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, HashMap<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, Map<String, Object> parameters) {
         Bundle params = new Bundle();
 
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -47,6 +45,13 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
                 params.putDouble(name, (Double)parameter);
             } else if (parameter instanceof String) {
                 params.putString(name, (String)parameter);
+            } else {
+                this.logError("onMengineAnalyticsEvent: unsupported parameter [%s] %s"
+                        , parameter.getClass().toString()
+                        , parameter.toString()
+                );
+
+                return;
             }
         }
 

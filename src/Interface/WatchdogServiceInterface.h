@@ -11,7 +11,7 @@ namespace Mengine
     class WatchdogServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "Watchdog" )
+        SERVICE_DECLARE( "WatchdogService" )
 
     public:
         virtual double watch( const ConstString & _tag ) = 0;

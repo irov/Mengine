@@ -1,3 +1,5 @@
+import com.Mengine.Utils
+
 apply plugin: 'com.android.library'
 
 android {
@@ -34,11 +36,13 @@ dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
 
-    implementation 'androidx.preference:preference:1.2.0'
-    implementation 'com.android.installreferrer:installreferrer:2.2'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'com.google.android.gms:play-services-base:18.1.0'
-    implementation 'com.google.code.gson:gson:2.8.8'
-    implementation 'com.google.firebase:firebase-core:21.0.0'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+    implementation 'com.devtodev:android-google:1.0.0'
 
-    implementation 'com.devtodev:android-analytics:2.1.4'
+    implementation 'com.devtodev:android-analytics:2.3.0'
+
+    implementation 'com.android.installreferrer:installreferrer:2.2'
 }

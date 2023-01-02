@@ -156,7 +156,7 @@ dependencies {
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST == true) {
         implementation 'com.applovin.mediation:chartboost-adapter:9.1.1.1'
-        implementation 'com.google.android.gms:play-services-base:16.1.0'
+        implementation 'com.google.android.gms:play-services-base:18.1.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CRITEO == true) {

@@ -64,7 +64,7 @@ namespace Mengine
 	class AreaOfInterestServiceInterface
 		: public ServiceInterface
 	{
-        SERVICE_DECLARE( "AreaOfInterest" )
+        SERVICE_DECLARE( "AreaOfInterestService" )
 
 	public:
 		virtual AreaOfInterestZoneInterfacePtr createZone( const DocumentPtr & _doc ) = 0;

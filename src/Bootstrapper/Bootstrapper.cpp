@@ -329,6 +329,10 @@ PLUGIN_EXPORT( AppleMARSDK );
 PLUGIN_EXPORT( AppleAppLovinPlugin );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_STATIC
+PLUGIN_EXPORT( AppleFirebase );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC
 PLUGIN_EXPORT( AppleFirebaseAnalytics );
 #endif
@@ -1175,6 +1179,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
         MENGINE_ADD_PLUGIN( AppleAppLovinPlugin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_STATIC
+        MENGINE_ADD_PLUGIN( AppleFirebase, "Plugin Apple Firebase...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS_STATIC

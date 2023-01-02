@@ -1,8 +1,8 @@
-#import "AppleFirebaseAnalyticsApplicationDelegate.h"
+#import "AppleFirebaseApplicationDelegate.h"
 
 #import <Firebase/Firebase.h>
 
-@implementation AppleFirebaseAnalyticsApplicationDelegate
+@implementation AppleFirebaseApplicationDelegate
 
 #pragma mark -
 

@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AppleFirebaseAnalyticsApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface>
+@interface AppleFirebaseApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface>
 {
 }
 

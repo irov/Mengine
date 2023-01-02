@@ -22,14 +22,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseCrashlyticsService::_initializeService()
     {
-        @try {
-            [FIRApp configure];
-        } @catch (NSException *exception) {
-            LOGGER_ERROR( "%s"
-                , [exception.reason UTF8String]
-            );
-        }
-        
 #ifdef MENGINE_DEBUG
         [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:false];
 #else

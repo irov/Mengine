@@ -40,8 +40,10 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     embedding
         MovieEvent.h
         MovieEvent.cpp
+
         MovieInternalObject.h
         MovieInternalObject.cpp
+
         MovieScriptEmbedding.cpp
         MovieScriptEmbedding.h
         )
@@ -51,7 +53,6 @@ endif()
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_MOVIE1)

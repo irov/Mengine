@@ -13,7 +13,6 @@ namespace Mengine
         ETA_VISIBILITY,
         ETA_SCRIPT,
         ETA_USER,
-        ETA_END,
-        __ETA_LAST__
+        ETA_END
     };
 }

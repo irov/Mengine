@@ -47,7 +47,7 @@ namespace Mengine
         float tangentImpulses[2];
     };
     //////////////////////////////////////////////////////////////////////////
-    enum Box2DBodyEventFlag
+    enum EBox2DBodyEventFlag
     {
         EVENT_BOX2DBODY_BEGIN_CONTACT = 0,
         EVENT_BOX2DBODY_END_CONTACT,

@@ -118,9 +118,6 @@ namespace Mengine
             return false;
         }
 
-        m_gameKey.assign( GameAnalytics_GameKey );
-        m_gameSecret.assign( GameAnalytics_GameSecret );
-
         gameanalytics::GameAnalytics::configureCustomLogHandler( &Detail::logHandler );
 
         Char analyticsPath[MENGINE_MAX_PATH] = {'\0'};
@@ -170,7 +167,7 @@ namespace Mengine
 
         gameanalytics::GameAnalytics::setEnabledManualSessionHandling( true );
 
-        gameanalytics::GameAnalytics::initialize( m_gameKey.c_str(), m_gameSecret.c_str() );
+        gameanalytics::GameAnalytics::initialize( GameAnalytics_GameKey, GameAnalytics_GameSecret );
 
         if( SERVICE_CREATE( GameAnalyticsService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {

@@ -58,6 +58,6 @@ namespace Mengine
         uint32_t m_iff;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<NodeAreaOfInterestActor> NodeAreaOfInterestActorPtr;
+    typedef IntrusiveNodePtr<NodeAreaOfInterestActor> NodeAreaOfInterestActorPtr;
     //////////////////////////////////////////////////////////////////////////
 }

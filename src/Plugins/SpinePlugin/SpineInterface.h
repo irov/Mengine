@@ -18,6 +18,7 @@ namespace Mengine
     {
         EVENT_SAMPLER_SPINE_EVENT = __EVENT_ANIMATION_LAST__,
         EVENT_SAMPLER_SPINE_STATE_ANIMATION_END,
+
         __EVENT_SPINE_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

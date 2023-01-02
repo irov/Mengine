@@ -66,7 +66,6 @@ namespace Mengine
     bool FileModifyHookService::setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda )
     {
         FileModifyDesc desc;
-
         _fileGroup->getFullPath( _filePath, desc.fullPath );
 
         desc.lambda = _lambda;

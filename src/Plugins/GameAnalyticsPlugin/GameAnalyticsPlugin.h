@@ -27,7 +27,5 @@ namespace Mengine
 
     protected:
         StaticString<21> m_userId;
-        StaticString<256> m_gameKey;
-        StaticString<256> m_gameSecret;
     };
 }

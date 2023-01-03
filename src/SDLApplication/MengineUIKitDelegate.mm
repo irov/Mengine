@@ -34,8 +34,8 @@
 //////////////////////////////////////////////////////////////////////////
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
     for(id delegate in self.m_applicationDelegates) {
-        if([delegate application:application didFinishLaunchingWithOptions:launchOptions] == FALSE) {
-            return FALSE;
+        if([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
+            return NO;
         }
     }
     
@@ -99,23 +99,23 @@
 //////////////////////////////////////////////////////////////////////////
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url API_DEPRECATED_WITH_REPLACEMENT("application:openURL:options:", ios(2.0, 9.0)) API_UNAVAILABLE(tvos) {
     for (id delegate in self.m_applicationDelegates) {
-        BOOL handler = FALSE;
+        BOOL handler = NO;
         BOOL result = [delegate application:application handleOpenURL:url handled:&handler];
         
-        if (handler == TRUE) {
+        if (handler == YES) {
             return result;
         }
     }
     
-    return FALSE;
+    return NO;
 }
 //////////////////////////////////////////////////////////////////////////
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation API_DEPRECATED_WITH_REPLACEMENT("application:openURL:options:", ios(4.2, 9.0)) API_UNAVAILABLE(tvos) {
     for(id delegate in self.m_applicationDelegates) {
-        BOOL handler = FALSE;
+        BOOL handler = NO;
         BOOL result = [delegate application:application openURL:url sourceApplication:sourceApplication annotation:annotation handled:&handler];
         
-        if (handler == TRUE) {
+        if (handler == YES) {
             return result;
         }
     }
@@ -125,10 +125,10 @@
 //////////////////////////////////////////////////////////////////////////
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
     for (id delegate in self.m_applicationDelegates) {
-        BOOL handler = FALSE;
+        BOOL handler = NO;
         BOOL result = [delegate application:application openURL:url options:options handled:&handler];
         
-        if (handler == TRUE) {
+        if (handler == YES) {
             return result;
         }
     }

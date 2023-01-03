@@ -8,8 +8,10 @@
 
 #pragma mark -
 
-+ (void)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
++ (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [FBSDKApplicationDelegate.sharedInstance application:application didFinishLaunchingWithOptions:launchOptions];
+
+    return YES;
 }
 
 #pragma mark - UISceneSession lifecycle
@@ -51,16 +53,20 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-+ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    return false;
-}
-
-+ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
++ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation handled:(BOOL *)handler {
+    *handler = YES;
+    
     return [FBSDKApplicationDelegate.sharedInstance application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
-+ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
++ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options handled:(BOOL *)handler {
+    *handler = YES;
+    
     return [FBSDKApplicationDelegate.sharedInstance application:application openURL:url options:options];
+}
+
++ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url handled:(BOOL *)handler{
+    return NO;
 }
 
 @end

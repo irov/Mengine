@@ -2,7 +2,7 @@
 
 @protocol UIKitProxyApplicationDelegateInterface
 
-+ (void)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
++ (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 + (void)applicationWillResignActive:(UIApplication *)application;
 + (void)applicationDidEnterBackground:(UIApplication *)application;
 + (void)applicationWillEnterForeground:(UIApplication *)application;

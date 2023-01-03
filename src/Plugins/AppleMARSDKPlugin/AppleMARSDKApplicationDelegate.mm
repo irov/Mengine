@@ -6,10 +6,12 @@
 
 #pragma mark -
 
-+ (void)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
++ (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSDictionary *sdkconfig = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"MARSDK"];
     [[MARSDK sharedInstance] initWithParams:sdkconfig];
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+    
+    return YES;
 }
 
 #pragma mark - UISceneSession lifecycle
@@ -63,22 +65,22 @@
     [[MARSDK sharedInstance] applicationWillTerminate:application];
 }
 
-+ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url handled:(BOOL *)handler {
-    *handler = TRUE;
-    
-    return [[MARSDK sharedInstance] application:application handleOpenURL:url];
-}
-
 + (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation handled:(BOOL *)handler {
-    *handler = TRUE;
+    *handler = YES;
     
     return [[MARSDK sharedInstance] application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
 + (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options handled:(BOOL *)handler {
-    *handler = TRUE;
+    *handler = YES;
     
     return [[MARSDK sharedInstance] application:application openURL:url options:options];
+}
+
++ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url handled:(BOOL *)handler {
+    *handler = YES;
+    
+    return [[MARSDK sharedInstance] application:application handleOpenURL:url];
 }
 
 @end

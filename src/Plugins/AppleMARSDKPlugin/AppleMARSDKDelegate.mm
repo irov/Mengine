@@ -34,16 +34,9 @@
 }
 
 - (void) OnPlatformInit: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnPlatformInit params[%lu]:"
-        , [params count]
+    LOGGER_INFO( "marsdk", "OnPlatformInit params: %s"
+        , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO( "marsdk", "%s = %s"
-            , [[NSString stringWithFormat:@"%@", key] UTF8String]
-            , [[NSString stringWithFormat:@"%@", value] UTF8String]
-        );
-    }];
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
 
@@ -54,16 +47,9 @@
 }
 
 - (void) OnRealName:(NSDictionary*)params {
-    LOGGER_INFO( "marsdk", "OnRealName params[%lu]:"
-        , [params count]
+    LOGGER_INFO( "marsdk", "OnRealName params: %s"
+        , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO( "marsdk", "%s = %s"
-            , [[NSString stringWithFormat:@"%@", key] UTF8String]
-            , [[NSString stringWithFormat:@"%@", value] UTF8String]
-        );
-    }];
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
 
@@ -74,7 +60,7 @@
 }
 
 - (void) OnEventWithCode: (int)code msg: (NSString*)msg {
-    LOGGER_INFO( "marsdk", "OnEventWithCode [%d] msg [%s]"
+    LOGGER_INFO( "marsdk", "OnEventWithCode code:%d msg:%s"
         , code
         , [msg UTF8String]
     );
@@ -87,17 +73,10 @@
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
-    LOGGER_INFO( "marsdk", "OnEventCustom event '%s' params[%lu]:"
+    LOGGER_INFO( "marsdk", "OnEventCustom event:%s params:%s"
         , [eventName UTF8String]
-        , [params count]
+        , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO( "marsdk", "%s = %s"
-            , [[NSString stringWithFormat:@"%@", key] UTF8String]
-            , [[NSString stringWithFormat:@"%@", value] UTF8String]
-        );
-    }];
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
 
@@ -110,16 +89,9 @@
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnUserLogin params[%lu]:"
-        , [params count]
+    LOGGER_INFO( "marsdk", "OnUserLogin params:%s"
+        , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO( "marsdk", "%s = %s"
-            , [[NSString stringWithFormat:@"%@", key] UTF8String]
-            , [[NSString stringWithFormat:@"%@", value] UTF8String]
-        );
-    }];
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
@@ -130,16 +102,9 @@
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnUserLogout params[%lu]:"
-        , [params count]
+    LOGGER_INFO( "marsdk", "OnUserLogout params:%s"
+        , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO( "marsdk", "%s = %s"
-            , [[NSString stringWithFormat:@"%@", key] UTF8String]
-            , [[NSString stringWithFormat:@"%@", value] UTF8String]
-        );
-    }];
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
@@ -150,16 +115,9 @@
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnPayPaid params[%lu]:"
-        , [params count]
+    LOGGER_INFO( "marsdk", "OnPayPaid params:%s"
+        , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
-    
-    [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        LOGGER_INFO( "marsdk", "%s = %s"
-            , [[NSString stringWithFormat:@"%@", key] UTF8String]
-            , [[NSString stringWithFormat:@"%@", value] UTF8String]
-        );
-    }];
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     

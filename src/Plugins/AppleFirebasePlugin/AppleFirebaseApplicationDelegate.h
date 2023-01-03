@@ -1,5 +1,5 @@
 #import "Environment/iOS/UIKitProxyApplicationDelegateBase.h"
 
-@interface AppleFirebaseApplicationDelegate : NSObject<UIKitProxyApplicationDelegateBase>
+@interface AppleFirebaseApplicationDelegate : UIKitProxyApplicationDelegateBase
 
 @end

@@ -34,11 +34,22 @@ namespace Mengine
             return YES;
         }
         //////////////////////////////////////////////////////////////////////////
-        NSString * iOSGetBundlePluginConfigString( NSString * _plugin, NSString * _key, NSString * _default )
+        NSDictionary * iOSGetBundlePluginConfig( NSString * _plugin )
         {
             NSBundle * mainBundle = [NSBundle mainBundle];
             
-            NSDictionary<NSString *, id> * PluginBundle = [mainBundle objectForInfoDictionaryKey:_plugin];
+            NSDictionary * PluginBundle = [mainBundle objectForInfoDictionaryKey:_plugin];
+
+            if (PluginBundle == nil) {
+                return nil;
+            }
+
+            return PluginBundle;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        NSString * iOSGetBundlePluginConfigString( NSString * _plugin, NSString * _key, NSString * _default )
+        {
+            NSDictionary * PluginBundle = Helper::iOSGetBundlePluginConfig( _plugin );
 
             if (PluginBundle == nil) {
                 return _default;
@@ -55,9 +66,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NSNumber * iOSGetBundlePluginConfigNumber( NSString * _plugin, NSString * _key, NSNumber * _default )
         {
-            NSBundle * mainBundle = [NSBundle mainBundle];
-            
-            NSDictionary<NSString *, id> * PluginBundle = [mainBundle objectForInfoDictionaryKey:_plugin];
+            NSDictionary * PluginBundle = Helper::iOSGetBundlePluginConfig( _plugin );
 
             if (PluginBundle == nil) {
                 return _default;
@@ -74,9 +83,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NSInteger iOSGetBundlePluginConfigInteger( NSString * _plugin, NSString * _key, NSInteger _default )
         {
-            NSBundle * mainBundle = [NSBundle mainBundle];
-            
-            NSDictionary<NSString *, id> * PluginBundle = [mainBundle objectForInfoDictionaryKey:_plugin];
+            NSDictionary * PluginBundle = Helper::iOSGetBundlePluginConfig( _plugin );
 
             if (PluginBundle == nil) {
                 return _default;
@@ -95,9 +102,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         double iOSGetBundlePluginConfigDouble( NSString * _plugin, NSString * _key, double _default )
         {
-            NSBundle * mainBundle = [NSBundle mainBundle];
-            
-            NSDictionary<NSString *, id> * PluginBundle = [mainBundle objectForInfoDictionaryKey:_plugin];
+            NSDictionary * PluginBundle = Helper::iOSGetBundlePluginConfig( _plugin );
 
             if (PluginBundle == nil) {
                 return _default;
@@ -116,9 +121,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         BOOL iOSGetBundlePluginConfigBoolean( NSString * _plugin, NSString * _key, BOOL _default )
         {
-            NSBundle * mainBundle = [NSBundle mainBundle];
-            
-            NSDictionary<NSString *, id> * PluginBundle = [mainBundle objectForInfoDictionaryKey:_plugin];
+            NSDictionary * PluginBundle = Helper::iOSGetBundlePluginConfig( _plugin );
 
             if (PluginBundle == nil) {
                 return _default;

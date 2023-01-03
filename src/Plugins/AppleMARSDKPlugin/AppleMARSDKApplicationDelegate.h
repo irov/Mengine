@@ -1,5 +1,5 @@
 #import "Environment/iOS/UIKitProxyApplicationDelegateBase.h"
 
-@interface AppleMARSDKApplicationDelegate : NSObject<UIKitProxyApplicationDelegateBase>
+@interface AppleMARSDKApplicationDelegate : UIKitProxyApplicationDelegateBase
 
 @end

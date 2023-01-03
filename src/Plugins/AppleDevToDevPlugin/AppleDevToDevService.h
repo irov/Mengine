@@ -25,8 +25,5 @@ namespace Mengine
         
     protected:
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
-        
-    protected:
-        BOOL m_initializeSuccessful;
     };
 }

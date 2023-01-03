@@ -8,20 +8,20 @@
 @implementation MengineUIKitDelegate
 //////////////////////////////////////////////////////////////////////////
 - (id)init {
-    NSArray *proxysClassed = getMengineAppleApplicationDelegates();
+    NSArray * proxysClassed = getMengineAppleApplicationDelegates();
 
     self.m_applicationDelegates = [NSMutableArray array];
     
     for (id className in proxysClassed) {
         id c = NSClassFromString(className);
 
-        if( c == nil ) {
+        if (c == nil) {
             continue;
         }
         
         id delegate = [c alloc];
 
-        [self.m_applicationDelegates addObject: delegate];
+        [self.m_applicationDelegates addObject:delegate];
     }
     
     return [super init];

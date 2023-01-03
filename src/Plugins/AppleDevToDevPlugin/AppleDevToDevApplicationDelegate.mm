@@ -1,5 +1,7 @@
 #import "AppleDevToDevApplicationDelegate.h"
 
+#import "Environment/iOS/iOSDetail.h"
+
 #import <DTDAnalytics/DTDAnalytics-Swift.h>
 
 @implementation AppleDevToDevApplicationDelegate

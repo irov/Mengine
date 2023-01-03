@@ -16,7 +16,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleDevToDevService::AppleDevToDevService()
-        : m_initializeSuccessful( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,8 +27,6 @@ namespace Mengine
     {
         [DTDAnalytics trackingAvailabilityHandler:^(BOOL value) {
             LOGGER_INFO("devtodev", "Initialized has been finished [%s]", (value == TRUE ? "SUCCESSFUL" : "FAILED"));
-            
-            m_initializeSuccessful = value;
         }];
         
         ANALYTICS_SERVICE()
@@ -46,11 +43,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleDevToDevService::sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * _parameters )
     {
-        if( m_initializeSuccessful == NO )
-        {
-            return;
-        }
-        
         LOGGER_INFO( "devtodev", "sendEvent %s %s"
             , [ _eventName UTF8String]
             , [[NSString stringWithFormat:@"%@", _parameters] UTF8String]
@@ -72,12 +64,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleDevToDevService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
-    {
-        if( m_initializeSuccessful == NO )
-        {
-            return;
-        }
-        
+    {        
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
         

@@ -18,8 +18,10 @@
         if( c == nil ) {
             continue;
         }
+        
+        id delegate = [c alloc];
 
-        [self.m_applicationDelegates addObject: c];
+        [self.m_applicationDelegates addObject: delegate];
     }
     
     return [super init];
@@ -33,8 +35,8 @@
 }
 //////////////////////////////////////////////////////////////////////////
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
-    for(id delegate in self.m_applicationDelegates) {
-        if([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
+    for (id delegate in self.m_applicationDelegates) {
+        if ([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
             return NO;
         }
     }
@@ -43,13 +45,13 @@
 }
 //////////////////////////////////////////////////////////////////////////
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken API_AVAILABLE(ios(3.0)) {
-    for(id delegate in self.m_applicationDelegates) {
+    for (id delegate in self.m_applicationDelegates) {
         [delegate application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
     }
 }
 //////////////////////////////////////////////////////////////////////////
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo API_DEPRECATED("Use UserNotifications Framework's -[UNUserNotificationCenterDelegate willPresentNotification:withCompletionHandler:] or -[UNUserNotificationCenterDelegate didReceiveNotificationResponse:withCompletionHandler:] for user visible notifications and -[UIApplicationDelegate application:didReceiveRemoteNotification:fetchCompletionHandler:] for silent remote notifications", ios(3.0, 10.0)) {
-    for(id delegate in self.m_applicationDelegates) {
+    for (id delegate in self.m_applicationDelegates) {
         [delegate application:application didReceiveRemoteNotification:userInfo];
     }
 }

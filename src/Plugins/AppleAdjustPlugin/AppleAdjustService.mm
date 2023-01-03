@@ -20,29 +20,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAdjustService::_initializeService()
     {
-        const Char * AppleAdjustPlugin_AppToken = CONFIG_VALUE( "AdjustPlugin", "AppToken", "" );
-        double AppleAdjustPlugin_DelayStart = CONFIG_VALUE( "AdjustPlugin", "StartDelay", 0.0 );
-        
-        LOGGER_INFO("adjust", "App Token '%s'"
-            , AppleAdjustPlugin_AppToken
+        LOGGER_INFO( "adjust", "adid: %s"
+            , [[Adjust adid] UTF8String]
         );
-        
-#ifdef MENGINE_DEBUG
-        NSString *environment = ADJEnvironmentSandbox;
-#else
-        NSString *environment = ADJEnvironmentProduction;
-#endif
-        ADJConfig *adjustConfig = [ADJConfig configWithAppToken:[NSString stringWithUTF8String:AppleAdjustPlugin_AppToken]
-                                                    environment:environment];
-        
-#ifdef MENGINE_DEBUG
-        [adjustConfig setLogLevel:ADJLogLevelVerbose];
-#endif
-        [adjustConfig setDelayStart:Adjust_DelayStart];
-        
-        [Adjust appDidLaunch:adjustConfig];
-        
-        LOGGER_INFO( "adjust", "adjustUserId = %s",[Adjust adid].UTF8String );
         
         [Adjust requestTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
             switch (status) {

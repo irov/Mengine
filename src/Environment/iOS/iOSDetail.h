@@ -11,5 +11,7 @@ namespace Mengine
     {
         UIViewController * iOSGetRootViewController();
         NSUUID * iOSGetAdIdentifier();
+        BOOL iOSHasBundlePluginConfig( NSString * _plugin );
+        NSString * iOSGetBundlePluginConfigString( NSString * _plugin, NSString * _key, NSString * _default );
     }
 }

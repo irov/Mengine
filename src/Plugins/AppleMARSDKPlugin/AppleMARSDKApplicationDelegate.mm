@@ -23,7 +23,7 @@
 }
 
 + (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void(^)(UIBackgroundFetchResult)) completionHandler {
-    [[MARSDK sharedInstance] application:application didReceiveRemoteNotification: userInfo];
+    [[MARSDK sharedInstance] application:application didReceiveRemoteNotification: userInfo fetchCompletionHandler:completionHandler];
 }
 
 + (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
@@ -63,15 +63,21 @@
     [[MARSDK sharedInstance] applicationWillTerminate:application];
 }
 
-+ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
++ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url handled:(BOOL *)handler {
+    *handler = TRUE;
+    
     return [[MARSDK sharedInstance] application:application handleOpenURL:url];
 }
 
-+ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
++ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation handled:(BOOL *)handler {
+    *handler = TRUE;
+    
     return [[MARSDK sharedInstance] application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
-+ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
++ (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options handled:(BOOL *)handler {
+    *handler = TRUE;
+    
     return [[MARSDK sharedInstance] application:application openURL:url options:options];
 }
 

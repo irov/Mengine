@@ -26,30 +26,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleDevToDevService::_initializeService()
     {
-        const Char * DevToDevPlugin_AppKey = CONFIG_VALUE( "DevToDevPlugin", "AppKey", "" );
-
-        if( MENGINE_STRCMP( DevToDevPlugin_AppKey, "" ) == 0 )
-        {
-            LOGGER_ERROR( "Don't setup AppKey" );
-
-            return false;
-        }
-        
         [DTDAnalytics trackingAvailabilityHandler:^(BOOL value) {
             LOGGER_INFO("devtodev", "Initialized has been finished [%s]", (value == TRUE ? "SUCCESSFUL" : "FAILED"));
             
             m_initializeSuccessful = value;
         }];
-
-        DTDAnalyticsConfiguration * config = [[DTDAnalyticsConfiguration alloc] init];
-
-#ifdef MENGINE_DEBUG
-        config.logLevel = DTDLogLevelDebug;
-#else
-        config.logLevel = DTDLogLevelError;
-#endif        
-
-        [DTDAnalytics applicationKey:@(DevToDevPlugin_AppKey) configuration:config];
         
         ANALYTICS_SERVICE()
             ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );

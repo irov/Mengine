@@ -6,6 +6,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
 
+#include "Config/StdString.h"
+
 #import <Foundation/Foundation.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -47,13 +49,20 @@ namespace Mengine
             
         const Char * AppleHelpshiftPlugin_PlatformId = CONFIG_VALUE( "HelpshiftPlugin", "PlatformId", "" );
         const Char * AppleHelpshiftPlugin_Domain = CONFIG_VALUE( "HelpshiftPlugin", "Domain", "" );
+        
+        if( MENGINE_STRCMP( AppleHelpshiftPlugin_PlatformId, "" ) == 0 || MENGINE_STRCMP( AppleHelpshiftPlugin_Domain, "" ) == 0 )
+        {
+            LOGGER_ERROR( "don't setup PlatformId or Domain" );
             
+            return false;
+        }
+
         @try {
             [Helpshift installWithPlatformId:[NSString stringWithUTF8String: AppleHelpshiftPlugin_PlatformId]
                                       domain:[NSString stringWithUTF8String: AppleHelpshiftPlugin_Domain]
                                       config:config];
         } @catch (NSException * ex) {
-            LOGGER_ERROR("Helpshift install with platformId '%s' domain '%s' throw exception: %s"
+            LOGGER_ERROR("install with platformId '%s' domain '%s' throw exception: %s"
                 , AppleHelpshiftPlugin_PlatformId
                 , AppleHelpshiftPlugin_Domain
                 , [ex.reason UTF8String]

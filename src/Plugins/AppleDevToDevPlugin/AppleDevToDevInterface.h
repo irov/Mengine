@@ -12,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "AppleDevToDevService" )
 
     public:
-        virtual void sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * parameters ) = 0;
+        virtual void sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * _parameters ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -52,7 +52,7 @@ namespace Mengine
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FUNCTION(Name)\
-    initPlugin##Name
+    initMenginePlugin##Name
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
     extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid, bool _dynamic ){\

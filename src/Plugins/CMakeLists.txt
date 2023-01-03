@@ -274,6 +274,10 @@ if(MENGINE_PLUGIN_APPLE_STOREREVIEW)
     ADD_SUBDIRECTORY(AppleStoreReviewPlugin)
 endif()
 
+if(MENGINE_PLUGIN_APPLE_FIREBASE)
+    ADD_SUBDIRECTORY(AppleFirebasePlugin)
+endif()
+
 if(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS)
     ADD_SUBDIRECTORY(AppleFirebaseAnalyticsPlugin)
 endif()

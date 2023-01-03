@@ -174,6 +174,8 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
                 , ex.what()
             );
+            
+            return;
         }
 
 #ifdef MENGINE_DEBUG
@@ -186,6 +188,8 @@ namespace Mengine
                 , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
+            
+            return;
         }
 
         _desc.initialize = true;

@@ -3,8 +3,11 @@
 #include "Environment/iOS/iOSUtils.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
+
+#import <DTDAnalytics/DTDAnalytics-Swift.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleDevToDevService, Mengine::AppleDevToDevService );
@@ -13,6 +16,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleDevToDevService::AppleDevToDevService()
+        : m_initializeSuccessful( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,14 +30,18 @@ namespace Mengine
 
         if( MENGINE_STRCMP( DevToDevPlugin_AppKey, "" ) == 0 )
         {
-            LOGGER_WARNING( "DevToDev don't setup AppKey" );
+            LOGGER_ERROR( "Don't setup AppKey" );
 
             return false;
         }
+        
+        [DTDAnalytics trackingAvailabilityHandler:^(BOOL value) {
+            LOGGER_INFO("devtodev", "Initialized has been finished [%s]", (value == TRUE ? "SUCCESSFUL" : "FAILED"));
+            
+            m_initializeSuccessful = value;
+        }];
 
-        [DTDAnalytics coppaControlEnable];
-
-        DTDAnalyticsConfiguration *config = [[DTDAnalyticsConfiguration alloc] init];
+        DTDAnalyticsConfiguration * config = [[DTDAnalyticsConfiguration alloc] init];
 
 #ifdef MENGINE_DEBUG
         config.logLevel = DTDLogLevelDebug;
@@ -42,19 +50,29 @@ namespace Mengine
 #endif        
 
         [DTDAnalytics applicationKey:@(DevToDevPlugin_AppKey) configuration:config];
+        
+        ANALYTICS_SERVICE()
+            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleDevToDevService::_finalizeService()
     {
-        //Empty
+        ANALYTICS_SERVICE()
+            ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleDevToDevService::sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * parameters )
+    void AppleDevToDevService::sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * _parameters )
     {
-        LOGGER_INFO( "devtodev", "sendEvent %s"
+        if( m_initializeSuccessful == NO )
+        {
+            return;
+        }
+        
+        LOGGER_INFO( "devtodev", "sendEvent %s %s"
             , [ _eventName UTF8String]
+            , [[NSString stringWithFormat:@"%@", _parameters] UTF8String]
         );
 
         DTDCustomEventParameters * devtodev_parameters = [[DTDCustomEventParameters alloc] init];
@@ -63,12 +81,10 @@ namespace Mengine
         {
             id value = _parameters[key];
             
-            LOGGER_INFO( "devtodev", "['%s' : '%s']"
-                , [key UTF8String]
-                , [[value description] UTF8String]
-            );
-
-            [devtodev_parameters addString:@"key for string value" value:@"string value"];
+            //NSString * s = [NSString stringWithFormat:@"%@", [value class]];
+            
+            //TODO!!!
+            [devtodev_parameters addString:key value:@"TODO"];
         }
 
         [DTDAnalytics customEvent:_eventName withParameters:devtodev_parameters];
@@ -76,6 +92,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleDevToDevService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {
+        if( m_initializeSuccessful == NO )
+        {
+            return;
+        }
+        
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
         
@@ -101,14 +122,14 @@ namespace Mengine
                     AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
                     int64_t parameter_value = parameter_integer->resolveValue();
 
-                    [devtodev_parameters addInt:@(name_str) value:@(parameter_value)];
+                    [devtodev_parameters addInt:@(name_str) value:parameter_value];
                 }break;
             case EAEPT_DOUBLE:
                 {
                     AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
                     double parameter_value = parameter_double->resolveValue();
 
-                    [devtodev_parameters addDouble:@(name_str) value:@(parameter_value)];
+                    [devtodev_parameters addDouble:@(name_str) value:parameter_value];
                 }break;
             case EAEPT_STRING:
                 {
@@ -122,7 +143,7 @@ namespace Mengine
             }
         } );
         
-        [DTDAnalytics customEvent:_eventName withParameters:devtodev_parameters];
+        [DTDAnalytics customEvent:@(eventName_str) withParameters:devtodev_parameters];
     }
     //////////////////////////////////////////////////////////////////////////
 }

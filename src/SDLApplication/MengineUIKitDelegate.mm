@@ -1,4 +1,4 @@
-#import "MengineUIKitAppDelegate.h"
+#import "MengineUIKitDelegate.h"
 
 #import "MengineAppleApplicationDelegates.h"
 
@@ -35,7 +35,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
     
     for(id delegate in self.m_applicationDelegates) {
-        [delegate application:application didFinishLaunchingWithOptions:launchOptions];
+        if([delegate application:application didFinishLaunchingWithOptions:launchOptions] == FALSE) {
+            return FALSE;
+        }
     }
     
     return [super application:application didFinishLaunchingWithOptions:launchOptions];
@@ -46,8 +48,6 @@
     for(id delegate in self.m_applicationDelegates) {
         [delegate application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
     }
-    
-    [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo API_DEPRECATED("Use UserNotifications Framework's -[UNUserNotificationCenterDelegate willPresentNotification:withCompletionHandler:] or -[UNUserNotificationCenterDelegate didReceiveNotificationResponse:withCompletionHandler:] for user visible notifications and -[UIApplicationDelegate application:didReceiveRemoteNotification:fetchCompletionHandler:] for silent remote notifications", ios(3.0, 10.0)) {
@@ -55,17 +55,13 @@
     for(id delegate in self.m_applicationDelegates) {
         [delegate application:application didReceiveRemoteNotification:userInfo];
     }
-    
-    [super application:application didReceiveRemoteNotification:userInfo];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler API_AVAILABLE(ios(7.0)) {
 
-    for(id delegate in self.m_applicationDelegates) {
-        [delegate application:application didReceiveRemoteNotification:userInfo];
+    for (id delegate in self.m_applicationDelegates) {
+        [delegate application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
     }
-    
-    [super application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification API_DEPRECATED("Use UserNotifications Framework's -[UNUserNotificationCenterDelegate willPresentNotification:withCompletionHandler:] or -[UNUserNotificationCenterDelegate didReceiveNotificationResponse:withCompletionHandler:]", ios(4.0, 10.0)) API_UNAVAILABLE(tvos) {
@@ -73,66 +69,55 @@
     for(id delegate in self.m_applicationDelegates) {
         [delegate application:application didReceiveLocalNotification:notification];
     }
-    
-    [super application:application didReceiveLocalNotification:notification];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    
-    for(id delegate in self.m_applicationDelegates) {
-        [delegate applicationDidBecomeActive:application ];
+    for (id delegate in self.m_applicationDelegates) {
+        [delegate applicationDidBecomeActive:application];
     }
-    
-    [super applicationDidBecomeActive:application];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    for(id delegate in self.m_applicationDelegates) {
+    for (id delegate in self.m_applicationDelegates) {
         [delegate applicationWillEnterForeground:application];
     }
-    
-    [super applicationWillEnterForeground:application];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     for(id delegate in self.m_applicationDelegates) {
         [delegate applicationDidEnterBackground:application];
     }
-    
-    [super applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    
     for(id delegate in self.m_applicationDelegates) {
         [delegate applicationWillResignActive:application];
     }
-    
-    [super applicationWillResignActive:application];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    
-    for(id delegate in self.m_applicationDelegates) {
+    for (id delegate in self.m_applicationDelegates) {
         [delegate applicationWillTerminate:application];
     }
-    
-    [super applicationWillTerminate:application];
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url API_DEPRECATED_WITH_REPLACEMENT("application:openURL:options:", ios(2.0, 9.0)) API_UNAVAILABLE(tvos) {
     
-    for(id delegate in self.m_applicationDelegates) {
-        [delegate application:application handleOpenURL:url];
+    for (id delegate in self.m_applicationDelegates) {
+        if([delegate application:application handleOpenURL:url] == TRUE) {
+            return TRUE;
+        }
     }
     
-    return [super application:application handleOpenURL:url];
+    return FALSE;
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation API_DEPRECATED_WITH_REPLACEMENT("application:openURL:options:", ios(4.2, 9.0)) API_UNAVAILABLE(tvos) {
     
     for(id delegate in self.m_applicationDelegates) {
-        [delegate application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
+        if([delegate application:application openURL:url sourceApplication:sourceApplication annotation:annotation] == TRUE) {
+            return TRUE;
+        }
     }
     
     return [super application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
@@ -140,8 +125,10 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
     
-    for(id delegate in self.m_applicationDelegates) {
-        [delegate application:application openURL:url options:options];
+    for (id delegate in self.m_applicationDelegates) {
+        if([delegate application:application openURL:url options:options] == TRUE) {
+            return TRUE;
+        }
     }
     
     return [super application:application openURL:url options:options];

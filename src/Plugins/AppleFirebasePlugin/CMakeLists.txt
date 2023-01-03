@@ -2,8 +2,8 @@ MENGINE_PROJECT(AppleFirebasePlugin)
 
 ADD_FILTER(
 src
-    AppleFirebaseAnalyticsPlugin.h
-    AppleFirebaseAnalyticsPlugin.cpp
+    AppleFirebasePlugin.h
+    AppleFirebasePlugin.cpp
     
     AppleFirebaseApplicationDelegate.h
     AppleFirebaseApplicationDelegate.mm

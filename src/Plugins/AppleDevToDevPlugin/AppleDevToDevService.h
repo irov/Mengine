@@ -2,12 +2,15 @@
 
 #include "AppleDevToDevInterface.h"
 
+#include "Interface/AnalyticsServiceInterface.h"
+
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {
 	class AppleDevToDevService
 		: public ServiceBase<AppleDevToDevInterface>
+        , public AnalyticsEventProviderInterface
 	{
 	public:
         AppleDevToDevService();
@@ -18,6 +21,12 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        void sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * parameters ) override;
+        void sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * _parameters ) override;
+        
+    protected:
+        void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
+        
+    protected:
+        BOOL m_initializeSuccessful;
     };
 }

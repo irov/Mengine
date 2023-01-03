@@ -106,7 +106,7 @@ SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
-    SERVICE_EXTERN( AndroidEnvironmentService );
+SERVICE_EXTERN( AndroidEnvironmentService );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_EXTERNAL_SOURCE
@@ -326,7 +326,7 @@ PLUGIN_EXPORT( AppleMARSDK );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
-PLUGIN_EXPORT( AppleAppLovinPlugin );
+PLUGIN_EXPORT( AppleAppLovin );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_FIREBASE_STATIC
@@ -342,19 +342,23 @@ PLUGIN_EXPORT( AppleFirebaseCrashlytics );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
-PLUGIN_EXPORT( AppleFacebookPlugin );
+PLUGIN_EXPORT( AppleFacebook );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_HELPSHIFT_STATIC
-PLUGIN_EXPORT( AppleHelpshiftPlugin );
+PLUGIN_EXPORT( AppleHelpshift );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_STOREREVIEW_STATIC
-PLUGIN_EXPORT( AppleStoreReviewPlugin );
+PLUGIN_EXPORT( AppleStoreReview );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
-PLUGIN_EXPORT( AppleAdjustPlugin );
+PLUGIN_EXPORT( AppleAdjust );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_DEVTODEV_STATIC
+PLUGIN_EXPORT( AppleDevToDev );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
@@ -1178,7 +1182,7 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_STATIC
-        MENGINE_ADD_PLUGIN( AppleAppLovinPlugin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleAppLovin, "Plugin Apple AppLovin...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_FIREBASE_STATIC
@@ -1194,19 +1198,23 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
-        MENGINE_ADD_PLUGIN( AppleFacebookPlugin, "Plugin Apple Facebook...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleFacebook, "Plugin Apple Facebook...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_HELPSHIFT_STATIC
-        MENGINE_ADD_PLUGIN( AppleHelpshiftPlugin, "Plugin Apple Helpshift...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleHelpshift, "Plugin Apple Helpshift...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_STOREREVIEW_STATIC
-        MENGINE_ADD_PLUGIN( AppleStoreReviewPlugin, "Plugin Apple Store Review...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleStoreReview, "Plugin Apple Store Review...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
-        MENGINE_ADD_PLUGIN( AppleAdjustPlugin, "Plugin Apple Adjust...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AppleAdjust, "Plugin Apple Adjust...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+        
+#ifdef MENGINE_PLUGIN_APPLE_DEVTODEV_STATIC
+        MENGINE_ADD_PLUGIN( AppleDevToDev, "Plugin Apple DevToDev...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC

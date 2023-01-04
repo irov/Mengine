@@ -30,8 +30,8 @@ namespace Mengine
         bool logout() override;
         bool switchAccount() override;
         
-        void submitExtendedData( const MARSDKExtraData & extradata ) override;
-        void submitPaymentData( const MARSDKProductInfo & product ) override;
+        void submitExtendedData( const Char * _data ) override;
+        void submitPaymentData( const Char * _data ) override;
         
     public:
         void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) override;

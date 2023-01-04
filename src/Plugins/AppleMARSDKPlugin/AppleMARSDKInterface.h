@@ -10,61 +10,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EMARSDKDataType
-    {
-        TYPE_SELECT_SERVER = 1,
-        TYPE_CREATE_ROLE,
-        TYPE_ENTER_GAME,
-        TYPE_LEVEL_UP,
-        TYPE_EXIT_GAME
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct MARSDKExtraData
-    {
-        EMARSDKDataType dataType;
-        ConstString opType;
-        ConstString roleID;
-        ConstString roleName;
-        ConstString roleLevel;
-        ConstString serverID;
-        ConstString serverName;
-        int32_t moneyNum;
-        int64_t roleCreateTime;//time(NULL)
-        int64_t roleLevelUpTime;//time(NULL)
-
-        ConstString vip;
-        int32_t roleGender;
-        ConstString professionID;
-        ConstString professionName;
-        ConstString power;
-        ConstString partyID;
-        ConstString partyName;
-        ConstString partyMasterID;
-        ConstString partyMasterName;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct MARSDKProductInfo
-    {
-        ConstString orderID;
-        ConstString productId;
-        String productName;
-        String productDesc;
-        
-        int32_t payType;
-
-        double price;
-        int32_t buyNum;
-        int32_t coinNum;
-
-        ConstString roleId;
-        ConstString roleName;
-        ConstString roleLevel;
-        ConstString vip;
-        ConstString serverId;
-        ConstString serverName;
-        ConstString notifyUrl;
-    };
-    //////////////////////////////////////////////////////////////////////////
     typedef Map<String, String> MARSDKResultParams;
     //////////////////////////////////////////////////////////////////////////
     class AppleMARSDKProviderInterface
@@ -107,8 +52,8 @@ namespace Mengine
         virtual bool logout() = 0;
         virtual bool switchAccount() = 0;
         
-        virtual void submitExtendedData( const MARSDKExtraData & _data ) = 0;
-        virtual void submitPaymentData( const MARSDKProductInfo & _info ) = 0;
+        virtual void submitExtendedData( const Char * _data ) = 0;
+        virtual void submitPaymentData( const Char * _data ) = 0;
         
         virtual void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) = 0;
     };

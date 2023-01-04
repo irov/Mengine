@@ -90,31 +90,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::submitExtendedData( const MARSDKExtraData & _data )
+    void AppleMARSDKService::submitExtendedData( const Char * _data )
     {
-        MARUserExtraData* extraData = [[MARUserExtraData alloc] init];
-        
-        extraData.dataType = _data.dataType;
-        extraData.opType = [NSString stringWithUTF8String: _data.opType.c_str()];
-        extraData.roleID = [NSString stringWithUTF8String: _data.roleID.c_str()];
-        extraData.roleName = [NSString stringWithUTF8String: _data.roleName.c_str()];
-        extraData.roleLevel = [NSString stringWithUTF8String: _data.roleLevel.c_str()];
-        extraData.serverID = [NSString stringWithUTF8String: _data.serverID.c_str()];
-        extraData.serverName = [NSString stringWithUTF8String: _data.serverName.c_str()];
-        extraData.moneyNum = _data.moneyNum;
-        extraData.roleCreateTime = _data.roleCreateTime;
-        extraData.roleLevelUpTime = _data.roleLevelUpTime;
-        
-        extraData.vip = [NSString stringWithUTF8String: _data.vip.c_str()];
-        
-        extraData.roleGender = _data.roleGender;
-        extraData.professionID = [NSString stringWithUTF8String: _data.professionID.c_str()];
-        extraData.professionName = [NSString stringWithUTF8String: _data.professionName.c_str()];
-        extraData.power = [NSString stringWithUTF8String: _data.power.c_str()];
-        extraData.partyID = [NSString stringWithUTF8String: _data.partyID.c_str()];
-        extraData.partyName = [NSString stringWithUTF8String: _data.partyName.c_str()];
-        extraData.partyMasterID = [NSString stringWithUTF8String: _data.partyMasterID.c_str()];
-        extraData.partyMasterName = [NSString stringWithUTF8String: _data.partyMasterName.c_str()];
+        MARUserExtraData* extraData = [MARUserExtraData dataFromJsonString:@(_data)];
         
         LOGGER_INFO( "marsdk", "submit extended data: %s"
             , [[extraData toJsonString] UTF8String]
@@ -123,28 +101,9 @@ namespace Mengine
         [[MARSDK sharedInstance] submitExtraData:extraData];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::submitPaymentData( const MARSDKProductInfo & _info )
+    void AppleMARSDKService::submitPaymentData( const Char * _data )
     {
-        MARProductInfo* productInfo = [[MARProductInfo alloc] init];
-        
-        productInfo.orderID = [NSString stringWithUTF8String:_info.orderID.c_str()];
-        productInfo.productId = [NSString stringWithUTF8String:_info.productId.c_str()];
-        productInfo.productName = [NSString stringWithUTF8String:_info.productName.c_str()];
-        productInfo.productDesc = [NSString stringWithUTF8String:_info.productDesc.c_str()];
-        
-        productInfo.payType = _info.payType;
-        
-        productInfo.price = [NSNumber numberWithInt:_info.price];
-        productInfo.buyNum = _info.buyNum;
-        productInfo.coinNum = _info.coinNum;
-        
-        productInfo.roleId = [NSString stringWithUTF8String: _info.roleId.c_str()];
-        productInfo.roleName = [NSString stringWithUTF8String: _info.roleName.c_str()];
-        productInfo.roleLevel = [NSString stringWithUTF8String: _info.roleLevel.c_str()];
-        productInfo.vip = [NSString stringWithUTF8String: _info.vip.c_str()];
-        productInfo.serverId = [NSString stringWithUTF8String: _info.serverId.c_str()];
-        productInfo.serverName = [NSString stringWithUTF8String: _info.serverName.c_str()];
-        productInfo.notifyUrl = [NSString stringWithUTF8String: _info.notifyUrl.c_str()];
+        MARProductInfo* productInfo = [MARProductInfo productFromJsonString:@(_data)];
 
         LOGGER_INFO( "marsdk", "submit payment data: %s"
             , [[productInfo toJsonString] UTF8String]

@@ -266,60 +266,16 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_submitExtendedData( const pybind::dict & _d )
+        static void s_AppleMARSDK_submitExtendedData( const Char * _data )
         {
-            MARSDKExtraData data;
-
-            data.dataType = _d["dataType"];
-            data.opType = _d["opType"];
-            data.roleID = _d["roleID"];
-            data.roleName = _d["roleName"];
-            data.roleLevel = _d["roleLevel"];
-            data.serverID = _d["serverID"];
-            data.serverName = _d["serverName"];
-            data.moneyNum = _d["moneyNum"];
-            data.roleCreateTime = _d["roleCreateTime"];
-            data.roleLevelUpTime = _d["roleLevelUpTime"];
-
-            data.vip = _d["vip"];
-            data.roleGender = _d["roleGender"];
-            data.professionID = _d["professionID"];
-            data.professionName = _d["professionName"];
-            data.power = _d["power"];
-            data.partyID = _d["partyID"];
-            data.partyName = _d["partyName"];
-            data.partyMasterID = _d["partyMasterID"];
-            data.partyMasterName = _d["partyMasterName"];
-
             APPLE_MARSDK_SERVICE()
-                ->submitExtendedData( data );
+                ->submitExtendedData( _data );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_submitPaymentData( const pybind::dict & _d )
+        static void s_AppleMARSDK_submitPaymentData( const Char * _data )
         {
-            MARSDKProductInfo info;
-
-            info.orderID = _d["orderID"];
-            info.productId = _d["productId"];
-            info.productName = (String)_d["productName"];
-            info.productDesc = (String)_d["productDesc"];
-            
-            info.payType = _d.get_default("payType", 0);
-
-            info.price = _d["price"];
-            info.buyNum = _d["buyNum"];
-            info.coinNum = _d["coinNum"];
-
-            info.roleId = _d["roleId"];
-            info.roleName = _d["roleName"];
-            info.roleLevel = _d["roleLevel"];
-            info.vip = _d["vip"];
-            info.serverId = _d["serverId"];
-            info.serverName = _d["serverName"];
-            info.notifyUrl = _d["notifyUrl"];
-
             APPLE_MARSDK_SERVICE()
-                ->submitPaymentData( info );
+                ->submitPaymentData( _data );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleMARSDK_showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
@@ -342,14 +298,6 @@ namespace Mengine
     {
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleMARSDK", true );
-
-        pybind::enum_<EMARSDKDataType>( _kernel, "MARSDKDataType" )
-            .def( "TYPE_SELECT_SERVER", TYPE_SELECT_SERVER )
-            .def( "TYPE_CREATE_ROLE", TYPE_CREATE_ROLE )
-            .def( "TYPE_ENTER_GAME", TYPE_ENTER_GAME )
-            .def( "TYPE_LEVEL_UP", TYPE_LEVEL_UP )
-            .def( "TYPE_EXIT_GAME", TYPE_EXIT_GAME )
-            ;
 
         pybind::def_function_kernel_args( _kernel, "appleMARSDKSetProvider", &Detail::s_AppleMARSDK_setProvider );
         pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::s_AppleMARSDK_login );

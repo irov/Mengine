@@ -17,7 +17,7 @@ allprojects {
         ndkVersion = '22.0.7026061'
         buildToolsVersion = '31.0.0'
         cmakeVersion = "3.18.1"
-        minSdkVersion = 19
+        minSdkVersion = 21
         targetSdkVersion = 33
         compileSdkVersion = 33
     }

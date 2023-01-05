@@ -257,9 +257,9 @@ public class MengineFacebookPlugin extends MenginePlugin {
                     } catch (JSONException e) {
                         e.printStackTrace();
 
-                        MengineFacebookPlugin.this.logError("profile user picture link [%s] catch exception [%s]"
+                        MengineFacebookPlugin.this.logError("profile user picture link [%s] catch JSONException [%s]"
                             , graphPath
-                            , e.toString()
+                            , e.getLocalizedMessage()
                         );
 
                         MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");

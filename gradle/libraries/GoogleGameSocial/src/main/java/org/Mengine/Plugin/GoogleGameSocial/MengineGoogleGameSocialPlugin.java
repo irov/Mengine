@@ -123,7 +123,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                 @Override
                 public void onFailure(@NonNull Exception ex) {
                     MengineGoogleGameSocialPlugin.this.logInfo("google game social log OUT failure: %s"
-                            , ex.getLocalizedMessage()
+                        , ex.getLocalizedMessage()
                     );
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialSignOutFailure");
@@ -171,7 +171,8 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                             try {
                                 status.startResolutionForResult(activity, RC_SIGN_IN);
                             } catch (IntentSender.SendIntentException ex) {
-                                this.logError("!!!!!"
+                                this.logError("Start resolution for result RC_SIGN_IN catch SendIntentException: %s"
+                                    , ex.getLocalizedMessage()
                                 );
                             }
                         } else {
@@ -182,8 +183,8 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                     }break;
                     default: {
                         this.logError("Google game social signIn failed status error '%s' code [%d]"
-                                , status.getStatusMessage()
-                                , status.getStatusCode()
+                            , status.getStatusMessage()
+                            , status.getStatusCode()
                         );
 
                         this.pythonCall("onGoogleGameSocialOnSignError");
@@ -299,7 +300,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     MengineGoogleGameSocialPlugin.this.logError("achievements error '%s'"
-                            , e.getLocalizedMessage()
+                        , e.getLocalizedMessage()
                     );
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementError");

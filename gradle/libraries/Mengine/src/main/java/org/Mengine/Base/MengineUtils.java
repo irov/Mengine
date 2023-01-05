@@ -17,20 +17,20 @@ public class MengineUtils {
             T ob = (T)ctr.newInstance();
 
             return ob;
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException e) {
             if (exist == true) {
-                Log.e(TAG, "invalid create new instance: " + name + " ClassNotFoundException: " + ex.toString());
+                Log.e(TAG, "invalid create new instance: " + name + " ClassNotFoundException: " + e.getLocalizedMessage());
             }
-        } catch (NoSuchMethodException ex) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " NoSuchMethodException: " + ex.toString());
-        } catch (IllegalAccessException ex) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " IllegalAccessException: " + ex.toString());
-        } catch (InstantiationException ex) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " InstantiationException: " + ex.toString());
-        } catch (InvocationTargetException ex) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " InvocationTargetException: " + ex.toString());
-        } catch (NullPointerException ex) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " NullPointerException: " + ex.toString());
+        } catch (NoSuchMethodException e) {
+            Log.e(TAG, "invalid create mediation extension: " + name + " NoSuchMethodException: " + e.getLocalizedMessage());
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "invalid create mediation extension: " + name + " IllegalAccessException: " + e.getLocalizedMessage());
+        } catch (InstantiationException e) {
+            Log.e(TAG, "invalid create mediation extension: " + name + " InstantiationException: " + e.getLocalizedMessage());
+        } catch (InvocationTargetException e) {
+            Log.e(TAG, "invalid create mediation extension: " + name + " InvocationTargetException: " + e.getLocalizedMessage());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "invalid create mediation extension: " + name + " NullPointerException: " + e.getLocalizedMessage());
         }
 
         return null;

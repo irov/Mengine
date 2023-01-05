@@ -96,7 +96,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             return;
         } catch (HelpshiftInstallException e) {
             this.logError("Install exception: %s"
-                , e.toString()
+                , e.getLocalizedMessage()
             );
 
             return;

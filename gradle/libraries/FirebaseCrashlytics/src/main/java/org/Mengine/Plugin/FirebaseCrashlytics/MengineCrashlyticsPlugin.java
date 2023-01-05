@@ -34,7 +34,7 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
-                logError("app crash -> %s", throwable.getMessage());
+                MengineCrashlyticsPlugin.this.logError("app crash -> %s", throwable.getMessage());
                 throwable.printStackTrace();
 
                 FirebaseCrashlytics.getInstance().recordException(throwable);

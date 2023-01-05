@@ -42,24 +42,6 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-    }
-
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        if (m_facebookCallbackManager != null) {
-            LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
-            m_facebookCallbackManager = null;
-        }
-    }
-
-    @Override
-    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        if (m_facebookCallbackManager != null) {
-            m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    public void initialize() {
         if (BuildConfig.DEBUG) {
             FacebookSdk.setIsDebugEnabled(true);
             FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
@@ -74,24 +56,35 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
                 String token = m_facebookAccessToken.getToken();
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookLoginSuccess", token);
+                MengineFacebookPlugin.this.logInfo("onFacebookLoginSuccess: %s", token);
             }
 
             @Override
             public void onCancel() {
-                MengineFacebookPlugin.this.pythonCall("onFacebookLoginCancel");
+                MengineFacebookPlugin.this.logInfo("onFacebookLoginCancel");
             }
 
             @Override
             public void onError(FacebookException exception) {
                 String message = exception.getMessage();
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookLoginError", message);
+                MengineFacebookPlugin.this.logError("onFacebookLoginError: %s", message);
             }
         });
 
         Application application = this.getApplication();
         AppEventsLogger.activateApp(application);
+    }
+
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
+        m_facebookCallbackManager = null;
+    }
+
+    @Override
+    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+        m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public boolean isLoggedIn() {

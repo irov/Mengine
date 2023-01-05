@@ -236,16 +236,42 @@ public class MengineFacebookPlugin extends MenginePlugin {
         GraphRequest request = GraphRequest.newGraphPathRequest(m_facebookAccessToken, graphPath, new GraphRequest.Callback() {
                 @Override
                 public void onCompleted(GraphResponse response) {
+                    if (response == null) {
+                        MengineFacebookPlugin.this.logError("profile user picture link [%s] null response"
+                            , graphPath
+                        );
+
+                        MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                        return;
+                    }
+
+                    JSONObject responseObject = response.getJSONObject();
+                    if (responseObject == null) {
+                        MengineFacebookPlugin.this.logError("profile user picture link [%s] invalid response [%s]"
+                            , graphPath
+                            , response.toString()
+                        );
+
+                        MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                        return;
+                    }
+
                     String pictureURL = "";
-                    if (response != null) {
-                        JSONObject responseObject = response.getJSONObject();
-                        if (responseObject != null) {
-                            try {
-                                pictureURL = responseObject.getJSONObject("data").getString("url");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                    try {
+                        pictureURL = responseObject.getJSONObject("data").getString("url");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+
+                        MengineFacebookPlugin.this.logError("profile user picture link [%s] catch exception [%s]"
+                            , graphPath
+                            , e.toString()
+                        );
+
+                        MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                        return;
                     }
 
                     MengineFacebookPlugin.this.logInfo("request profile user [%s] picture link completed: %s"

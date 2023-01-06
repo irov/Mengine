@@ -3,6 +3,7 @@ package org.Mengine.Base;
 import android.util.Log;
 
 import java.util.Formatter;
+import java.util.IllegalFormatException;
 
 public class MengineLog {
     private static native void AndroidEnvironmentService_logInfo(String msg);
@@ -20,7 +21,15 @@ public class MengineLog {
     private static String logBuildTotalMsg(String tag, String format, Object ... args) {
         StringBuilder sb = new StringBuilder();
         Formatter formatter = new Formatter(sb);
-        String msg = formatter.format(format, args).toString();
+        String msg;
+
+        try {
+            msg = formatter.format(format, args).toString();
+        } catch (IllegalFormatException e) {
+            String error = "Catch illegal format '" + format + "' exception: " + e.getLocalizedMessage();
+
+            return error;
+        }
 
         if( tag == null) {
             return msg;

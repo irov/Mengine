@@ -150,6 +150,8 @@ public class MengineFacebookPlugin extends MenginePlugin {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+
+                        //ToDo???
                     }
 
                     MengineFacebookPlugin.this.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);

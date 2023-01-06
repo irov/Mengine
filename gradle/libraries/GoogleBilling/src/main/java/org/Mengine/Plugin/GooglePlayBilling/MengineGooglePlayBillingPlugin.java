@@ -218,7 +218,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                     int responseCode = billingResult.getResponseCode();
 
                     if (responseCode != BillingClient.BillingResponseCode.OK) {
-                        MengineGooglePlayBillingPlugin.this.logError("Billing invalid connection [%u] %s"
+                        MengineGooglePlayBillingPlugin.this.logError("Billing invalid connection [%d] %s"
                             , responseCode
                             , billingResult.getDebugMessage()
                         );

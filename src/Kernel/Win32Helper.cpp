@@ -107,7 +107,7 @@ namespace Mengine
                 , 2048
                 , NULL ) == 0 )
             {
-                MENGINE_WSPRINTF( errorMessageBuffer, L"#Error FormatMessage [%u]#"
+                MENGINE_WNSPRINTF( errorMessageBuffer, 2048, L"#Error FormatMessage [%u]#"
                     , _messageId
                 );
             }
@@ -127,7 +127,7 @@ namespace Mengine
 
             static MENGINE_THREAD_LOCAL WChar errorMessageBufferWithErrorCode[2048] = {L'\0'};
 
-            MENGINE_WSPRINTF( errorMessageBufferWithErrorCode, L"%s [%lu]"
+            MENGINE_WNSPRINTF( errorMessageBufferWithErrorCode, 2048, L"%s [%lu]"
                 , errorMessage
                 , error
             );

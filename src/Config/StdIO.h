@@ -17,7 +17,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE int32_t __mengine_VSPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, va_list _argList )
         {
-            int32_t size_vsnprintf = ::vsnprintf( _buffer, _bufferCount, _format, _argList );
+            int32_t size_vsnprintf = std::vsnprintf( _buffer, _bufferCount, _format, _argList );
 
             if( size_vsnprintf < 0 )
             {
@@ -41,23 +41,19 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SWSCANF
-#define MENGINE_SWSCANF(Buffer, ...) ::swscanf( Buffer, __VA_ARGS__ )
+#define MENGINE_SWSCANF(Buffer, ...) std::swscanf( Buffer, __VA_ARGS__ )
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SSCANF
-#define MENGINE_SSCANF(Buffer, ...) ::sscanf( Buffer, __VA_ARGS__ )
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WSPRINTF
-#define MENGINE_WSPRINTF(Buffer, ...) ::wsprintf(Buffer, __VA_ARGS__ )
+#define MENGINE_SSCANF(Buffer, ...) std::sscanf( Buffer, __VA_ARGS__ )
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WNSPRINTF
-#define MENGINE_WNSPRINTF(Buffer, Capacity, ...) ::wnsprintf(Buffer, Capacity, __VA_ARGS__ )
+#define MENGINE_WNSPRINTF(Buffer, Capacity, ...) std::swprintf(Buffer, Capacity, __VA_ARGS__ )
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SPRINTF
-#define MENGINE_SPRINTF(Buffer, ...) ::sprintf(Buffer, __VA_ARGS__ )
+#define MENGINE_SPRINTF(Buffer, ...) std::sprintf(Buffer, __VA_ARGS__ )
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SNPRINTF
@@ -87,6 +83,6 @@ namespace Mengine
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_VSPRINTF
-#define MENGINE_VSPRINTF(Buffer, Format, Args) ::vsprintf( Buffer, Format, Args )
+#define MENGINE_VSPRINTF(Buffer, Format, Args) std::vsprintf( Buffer, Format, Args )
 #endif
 //////////////////////////////////////////////////////////////////////////

@@ -1214,7 +1214,7 @@ namespace Mengine
         }
 
         WChar fullDir[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WSPRINTF( fullDir, L"Fonts\\%s"
+        MENGINE_WNSPRINTF( fullDir, MENGINE_MAX_PATH, L"Fonts\\%s"
             , unicode_fontPath
         );
 
@@ -4710,7 +4710,7 @@ namespace Mengine
                 uint32_t botId = GET_OPTION_VALUE_UINT32( "bot", Engine_BotId );
 
                 WChar botId_suffix[16];
-                MENGINE_WSPRINTF( botId_suffix, L"%u", botId );
+                MENGINE_WNSPRINTF( botId_suffix, 16, L"%u", botId );
 
                 MENGINE_WCSCAT( currentPath, botId_suffix );
             }

@@ -11,6 +11,7 @@ extern "C" {
     extern void init_sre( void );
     extern void init_struct( void );
     extern void init_weakref( void );
+    extern void init_codecs( void );
     extern void initbinascii( void );
     extern void initzlib( void );
     extern void PyMarshal_Init( void );
@@ -29,6 +30,7 @@ extern "C" {
         {"math", initmath},
         {"_sre", init_sre},
         {"_struct", init_struct},
+        {"_codecs", init_codecs},
         {"__main__", NULL},
         {"__builtin__", NULL},
         {"sys", NULL},

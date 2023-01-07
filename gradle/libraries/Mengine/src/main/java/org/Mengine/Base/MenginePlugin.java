@@ -79,22 +79,10 @@ public class MenginePlugin {
     }
 
     public void pythonCall(String method, Object ... args) {
-        if(m_pluginName == null) {
-            this.logError("invalid python method '%s' call before embedding", method);
-
-            return;
-        }
-
         m_activity.pythonCall(m_pluginName, method, args);
     }
 
     public void pythonCallCb(String method, CallbackInterface cb, Object ... args) {
-        if(m_pluginName == null) {
-            this.logError("invalid python method '%s' call before embedding", method);
-
-            return;
-        }
-
         m_activity.pythonCallCb(m_pluginName, method, cb, args);
     }
 
@@ -244,39 +232,15 @@ public class MenginePlugin {
         //Empty
     }
 
-    public void onLifecycleCreate(@NonNull LifecycleOwner owner) {
+    public void onTrimMemory(MengineApplication application, int level) {
         //Empty
     }
 
-    public void onLifecycleStart(@NonNull LifecycleOwner owner) {
+    public void onConfigurationChanged(MengineApplication application, @NonNull Configuration newConfig) {
         //Empty
     }
 
-    public void onLifecycleResume(@NonNull LifecycleOwner owner) {
-        //Empty
-    }
-
-    public void onLifecyclePause(@NonNull LifecycleOwner owner) {
-        //Empty
-    }
-
-    public void onLifecycleStop(@NonNull LifecycleOwner owner) {
-        //Empty
-    }
-
-    public void onLifecycleDestroy(@NonNull LifecycleOwner owner) {
-        //Empty
-    }
-
-    public void onTrimMemory(int level) {
-        //Empty
-    }
-
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        //Empty
-    }
-
-    public void onLowMemory() {
+    public void onLowMemory(MengineApplication application) {
         //Empty
     }
 }

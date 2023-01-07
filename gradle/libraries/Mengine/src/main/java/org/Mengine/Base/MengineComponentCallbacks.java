@@ -29,7 +29,7 @@ public class MengineComponentCallbacks implements ComponentCallbacks2 {
         ArrayList<MenginePlugin> plugins = m_application.getPlugins();
 
         for (MenginePlugin p : plugins) {
-            p.onTrimMemory(level);
+            p.onTrimMemory(m_application, level);
         }
 
         m_activity.pythonCall(TAG, "onTrimMemory", level);
@@ -42,7 +42,7 @@ public class MengineComponentCallbacks implements ComponentCallbacks2 {
         ArrayList<MenginePlugin> plugins = m_application.getPlugins();
 
         for (MenginePlugin p : plugins) {
-            p.onConfigurationChanged(newConfig);
+            p.onConfigurationChanged(m_application, newConfig);
         }
 
         m_activity.pythonCall(TAG, "onConfigurationChanged");
@@ -55,7 +55,7 @@ public class MengineComponentCallbacks implements ComponentCallbacks2 {
         ArrayList<MenginePlugin> plugins = m_application.getPlugins();
 
         for (MenginePlugin p : plugins) {
-            p.onLowMemory();
+            p.onLowMemory(m_application);
         }
 
         m_activity.pythonCall(TAG, "onLowMemory");

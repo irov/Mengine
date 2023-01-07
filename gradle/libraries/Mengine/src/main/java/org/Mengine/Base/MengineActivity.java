@@ -23,6 +23,7 @@ public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
 
     private boolean m_initializeBaseServices;
+    private boolean m_initializePython;
 
     private String m_androidId;
 
@@ -61,6 +62,7 @@ public class MengineActivity extends SDLActivity {
 
     public MengineActivity() {
         m_initializeBaseServices = false;
+        m_initializePython = false;
 
         m_openFiles = new HashMap<Integer, InputStream>();
         m_fileEnumerator = 0;
@@ -182,8 +184,6 @@ public class MengineActivity extends SDLActivity {
         if(mBrokenLibraries == true) {
             Log.e(TAG, "onCreate: broken libraries");
 
-            AndroidEnvironmentService_quitMengineAndroidActivityJNI();
-
             return;
         }
 
@@ -274,7 +274,11 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void onMengineAnalyticsEvent(String eventName, long timestamp, Map<String, Object> parameters) {
-        MengineLog.logWarning(TAG, "onMengineAnalyticsEvent %s %d [%s]", eventName, timestamp, parameters.toString());
+        MengineLog.logWarning(TAG, "onMengineAnalyticsEvent %s %d [%s]"
+            , eventName
+            , timestamp
+            , parameters.toString()
+        );
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onMengineAnalyticsEvent(this, eventName, timestamp, parameters);
@@ -364,7 +368,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
 
         MengineLog.logInfo(TAG, "onDestroy");
@@ -379,7 +383,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onRestart(){
+    public void onRestart() {
         super.onRestart();
 
         MengineLog.logInfo(TAG, "onRestart");
@@ -394,7 +398,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig){
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         for(MenginePlugin p : this.getPlugins()) {
@@ -403,7 +407,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         for(MenginePlugin p : this.getPlugins()) {
@@ -412,8 +416,11 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event){
-        MengineLog.logInfo(TAG, "dispatchKeyEvent action: " + event.getAction() + " code: " + event.getKeyCode());
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        MengineLog.logInfo(TAG, "dispatchKeyEvent action: %d code: %d"
+            , event.getAction()
+            , event.getKeyCode()
+        );
 
         for(MenginePlugin p : this.getPlugins()) {
             if (p.dispatchKeyEvent(this, event) == true) {
@@ -461,6 +468,8 @@ public class MengineActivity extends SDLActivity {
     public void pythonInitializePlugins() {
         MengineLog.logInfo(TAG, "Python initialize");
 
+        m_initializePython = true;
+
         AndroidNativePython_addPlugin("Activity", this);
 
         for(MenginePlugin p : this.getPlugins()) {
@@ -484,21 +493,35 @@ public class MengineActivity extends SDLActivity {
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private static void appendBuildArgsString(StringBuilder py_args, String s) {
-        py_args.append("\"");
-        py_args.append(s.replaceAll("\"","\\\\\""));
-        py_args.append("\"");
+    public void pythonFinalizePlugins() {
+        MengineLog.logInfo(TAG, "Python finalize");
+
+        m_initializePython = false;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonCall(String plugin, String method, Object ... args) {
+        if (m_initializePython == false) {
+            MengineLog.logError("invalid python plugin [%s] method [%s] args [%s] call before embedding"
+                , plugin
+                , method
+                , args.toString()
+            );
+
+            return;
+        }
+
         if (BuildConfig.DEBUG) {
-            MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] args [" + args + "]");
+            MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] args [%s]"
+                , plugin
+                , method
+                , args.toString()
+            );
         }
 
         AndroidNativePython_call(plugin, method, 0, args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void pythonCallCb(String plugin, String method, MenginePlugin.CallbackInterface cb, Object ... args) {
+    protected int responseCreate(MenginePlugin.CallbackInterface cb) {
         m_callbackResponseEnumerator++;
 
         int id = m_callbackResponseEnumerator;
@@ -509,41 +532,82 @@ public class MengineActivity extends SDLActivity {
 
         m_callbackResponses.add(cr);
 
+        return id;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void pythonCallCb(String plugin, String method, MenginePlugin.CallbackInterface cb, Object ... args) {
+        if (m_initializePython == false) {
+            MengineLog.logError("invalid python plugin [%s] method [%s] args [%s] call before embedding"
+                , plugin
+                , method
+                , args.toString()
+            );
+
+            return;
+        }
+
+        int id = this.responseCreate(cb);
+
         if (BuildConfig.DEBUG) {
-            MengineLog.logInfo(TAG, "pythonCall [" + plugin + "] method [" + method + "] response [" + id + "] args [" + args + "]");
+            MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] response [%d] args [%s]"
+                , plugin
+                , method
+                , id
+                , args.toString()
+            );
         }
 
         AndroidNativePython_call(plugin, method, id, args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void responseCall(int id, Object result) {
-        if (BuildConfig.DEBUG) {
-            MengineLog.logInfo(TAG, "responseCall [" + id + "] result [" + result.toString() + "]");
-        }
-
+    protected CallbackResponse responseGet(int id) {
         Iterator itr = m_callbackResponses.iterator();
+
+        CallbackResponse response;
 
         while(itr.hasNext())
         {
-            CallbackResponse cr = (CallbackResponse)itr.next();
+            response = (CallbackResponse)itr.next();
 
-            if( cr.id != id )
+            if( response.id != id )
             {
                 continue;
             }
 
-            cr.cb.callback(result);
-
             itr.remove();
+
+            return response;
+        }
+
+        return null;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void responseCall(int id, Object result) {
+        if (BuildConfig.DEBUG) {
+            MengineLog.logInfo(TAG, "responseCall [%d] result [%s]"
+                , id
+                , result.toString()
+            );
+        }
+
+        CallbackResponse response = this.responseGet(id);
+
+        if (response == null) {
+            MengineLog.logError(TAG, "responceCall [%d] not found"
+                , id
+            );
 
             return;
         }
 
-        MengineLog.logError(TAG, "responceCall [" + id + "] not found");
+        response.cb.callback(result);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void addPythonPlugin(String name, Object plugin) {
-        MengineLog.logInfo(TAG, "addPythonPlugin [" + name + "] plugin: " + plugin.toString());
+        MengineLog.logInfo(TAG, "addPythonPlugin [%s] plugin: %s"
+            , name
+            , plugin.toString()
+        );
 
         AndroidNativePython_addPlugin(name, plugin);
     }
@@ -579,8 +643,11 @@ public class MengineActivity extends SDLActivity {
             m_openFiles.put(id, stream);
 
             return id;
-        } catch(IOException ex) {
-            MengineLog.logError(TAG, "open asset file [" + path + "] ex: " + ex);
+        } catch(IOException e) {
+            MengineLog.logError(TAG, "open asset file [%s] ex: %s"
+                , path
+                , e.getLocalizedMessage()
+            );
 
             return 0;
         }
@@ -593,8 +660,11 @@ public class MengineActivity extends SDLActivity {
 
         try {
             size = stream.available();
-        } catch (IOException ex) {
-            MengineLog.logError(TAG, "available asset file [" + id + "] ex: " + ex);
+        } catch (IOException e) {
+            MengineLog.logError(TAG, "available asset file [%d] ex: %s"
+                , id
+                , e.getLocalizedMessage()
+            );
 
             return 0;
         }
@@ -611,8 +681,13 @@ public class MengineActivity extends SDLActivity {
 
         try {
             read = stream.read(buffer, offset, size);
-        } catch (IOException ex) {
-            MengineLog.logError(TAG, "read asset file [" + id + "] offset [" + offset + "] size [" + size + "] ex: " + ex);
+        } catch (IOException e) {
+            MengineLog.logError(TAG, "read asset file [%d] offset [%d] size [%d] ex: %s"
+                , id
+                , offset
+                , size
+                , e.getLocalizedMessage()
+            );
 
             return null;
         }
@@ -627,8 +702,12 @@ public class MengineActivity extends SDLActivity {
 
         try {
             skip = stream.skip(offset);
-        } catch (IOException ex) {
-            MengineLog.logError(TAG, "skip asset file [" + id + "] offset [" + offset + "] ex: " + ex);
+        } catch (IOException e) {
+            MengineLog.logError(TAG, "skip asset file [%d] offset [%d] ex: %s"
+                , id
+                , offset
+                , e.getLocalizedMessage()
+            );
 
             return 0;
         }
@@ -641,8 +720,11 @@ public class MengineActivity extends SDLActivity {
 
         try {
             stream.reset();
-        } catch (IOException ex) {
-            MengineLog.logError(TAG, "reset asset file [" + id + "] ex: " + ex);
+        } catch (IOException e) {
+            MengineLog.logError(TAG, "reset asset file [%d] ex: %s"
+                , id
+                , e.getLocalizedMessage()
+            );
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -651,8 +733,11 @@ public class MengineActivity extends SDLActivity {
 
         try {
             stream.close();
-        } catch (IOException ex) {
-            MengineLog.logError(TAG, "close asset file [" + id + "] ex: " + ex);
+        } catch (IOException e) {
+            MengineLog.logError(TAG, "close asset file [%d] ex: %s"
+                , id
+                , e.getLocalizedMessage()
+            );
         }
 
         m_openFiles.remove(id);

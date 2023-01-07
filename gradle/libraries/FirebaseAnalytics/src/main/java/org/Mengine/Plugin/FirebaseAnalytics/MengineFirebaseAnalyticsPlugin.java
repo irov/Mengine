@@ -27,7 +27,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
     @Override
     public void onAppCreate(MengineApplication application) {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(application);
-        mFirebaseAnalytics.setAnalyticsCollectionEnabled(!BuildConfig.DEBUG);
     }
 
     @Override

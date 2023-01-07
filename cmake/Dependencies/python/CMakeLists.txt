@@ -43,6 +43,7 @@ add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
 #add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)
 add_python_module(_sre      MOD_SRCS ${SOURCE_DIR}/Modules/_sre.c)
 add_python_module(_codecs   MOD_SRCS ${SOURCE_DIR}/Modules/_codecsmodule.c)
+add_python_module(_json     MOD_SRCS ${SOURCE_DIR}/Modules/_json.c)
 #add_python_module(zipimport MOD_SRCS ${SOURCE_DIR}/Modules/zipimport.c)
 add_python_module(zlib MOD_SRCS ${SOURCE_DIR}/Modules/zlibmodule.c)
 add_python_module(_symtable MOD_SRCS ${SOURCE_DIR}/Modules/symtablemodule.c)
@@ -265,7 +266,7 @@ add_library(${PROJECT_NAME} STATIC
             ${OBJECT_SRCS}
             ${PYTHON_SRCS}
             ${PLATFORM_SRCS}
-            ${MODULE_SRCS} 
+            ${MODULE_SRCS}
             ${DEBUG_SRCS}
             )
 

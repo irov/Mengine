@@ -85,6 +85,11 @@ namespace Mengine
         this->writeMessage_( "\n" );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32ExtraFileLogger::flush()
+    {
+        ::FlushFileBuffers( m_hLogFile );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32ExtraFileLogger::writeMessage_( const Char * _msg )
     {
         size_t msgLen = MENGINE_STRLEN( _msg );

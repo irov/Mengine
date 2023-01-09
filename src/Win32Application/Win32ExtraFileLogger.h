@@ -24,6 +24,9 @@ namespace Mengine
         void log( const LoggerMessage & _message ) override;
 
     protected:
+        void flush() override;
+
+    protected:
         void writeMessage_( const Char * _msg );
 
     protected:

@@ -195,7 +195,7 @@ extern "C"
         const Mengine::Char * option_str = env->GetStringUTFChars( _option, nullptr );
 
         bool result = OPTIONS_SERVICE()
-            ->hasOption( option_str );
+            ->hasOption( option_str, false );
 
         env->ReleaseStringUTFChars( _option, option_str );
 

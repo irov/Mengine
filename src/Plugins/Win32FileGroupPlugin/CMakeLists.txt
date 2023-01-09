@@ -18,8 +18,10 @@ src
     Win32FileMapped.cpp
     Win32FileMappedInputStream.h
     Win32FileMappedInputStream.cpp
-    Win32FileHelper.h
-    Win32FileHelper.cpp
+    Win32ConcatenateFileHelper.h
+    Win32ConcatenateFileHelper.cpp
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_WIN32_FILEGROUP)
+
+ADD_DEPENDENCIES(${PROJECT_NAME} Windows)

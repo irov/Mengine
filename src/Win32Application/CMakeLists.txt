@@ -23,6 +23,8 @@ Win32Application
     Win32MessageBoxLogger.cpp
     Win32OutputDebugLogger.h
     Win32OutputDebugLogger.cpp
+    Win32ExtraFileLogger.h
+    Win32ExtraFileLogger.cpp
 )
 
 if(MENGINE_TOOLCHAIN_MINGW)
@@ -52,6 +54,8 @@ if(MENGINE_PLUGIN_MENGINE_STATIC)
 else()
     ADD_DEPENDENCIES(${PROJECT_NAME} Mengine)
 endif()
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Windows)
 
 if(NOT MSVC)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} libole32.a)

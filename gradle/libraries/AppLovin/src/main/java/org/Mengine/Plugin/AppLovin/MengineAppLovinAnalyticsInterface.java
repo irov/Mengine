@@ -5,8 +5,8 @@ import com.applovin.mediation.MaxAd;
 import org.Mengine.Base.MengineActivity;
 
 public interface MengineAppLovinAnalyticsInterface {
-    public boolean initializeAnalytics(MengineActivity activity);
-    public void finalizeAnalytics();
+    boolean initializeAnalytics(MengineActivity activity);
+    void finalizeAnalytics();
 
-    public void eventRevenuePaid(MaxAd ad);
+    void eventRevenuePaid(MaxAd ad);
 }

@@ -32,7 +32,7 @@ namespace Mengine
         bool setArguments( const ArgumentsInterfacePtr & _arguments ) override;
 
     public:
-        bool hasOption( const Char * _key ) const override;
+        bool hasOption( const Char * _key, bool _withValue ) const override;
         bool setOptionValue( const Char * _key, const Char * _value ) override;
         const Char * getOptionValue( const Char * _key, const Char * _default ) const override;
         bool getOptionValues( const Char * _key, const Char ** _values, uint32_t * const _count ) const override;

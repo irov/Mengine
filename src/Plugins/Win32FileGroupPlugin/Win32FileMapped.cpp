@@ -3,7 +3,9 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 
-#include "Win32FileHelper.h"
+#include "Environment/Windows/Win32FileHelper.h"
+
+#include "Win32ConcatenateFileHelper.h"
 #include "Win32FileMappedInputStream.h"
 
 #include "Kernel/Win32Helper.h"

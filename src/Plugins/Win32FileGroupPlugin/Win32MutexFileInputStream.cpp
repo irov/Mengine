@@ -4,7 +4,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
-#include "Win32FileHelper.h"
+#include "Win32ConcatenateFileHelper.h"
 
 #include "Kernel/Win32Helper.h"
 #include "Kernel/ThreadMutexScope.h"

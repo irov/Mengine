@@ -159,7 +159,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OptionsService::hasOption( const Char * _key ) const
+    bool OptionsService::hasOption( const Char * _key, bool _withValue ) const
     {
         MENGINE_ASSERTION_FATAL( Algorithm::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
@@ -171,6 +171,11 @@ namespace Mengine
             if( op.key.compare( _key ) != 0 )
             {
                 continue;
+            }
+
+            if( _withValue == true && op.value_count == 0 )
+            {
+                return false;
             }
 
             return true;
@@ -302,7 +307,7 @@ namespace Mengine
             return MENGINE_ISUPPER( _ch ) != 0;
         } ) == 0 );
 
-        if( this->hasOption( _key ) == false )
+        if( this->hasOption( _key, true ) == false )
         {
             return false;
         }

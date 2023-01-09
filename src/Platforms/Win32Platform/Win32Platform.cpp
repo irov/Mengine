@@ -1214,7 +1214,7 @@ namespace Mengine
         }
 
         WChar fullDir[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WNSPRINTF( fullDir, MENGINE_MAX_PATH, L"Fonts\\%s"
+        MENGINE_WNSPRINTF( fullDir, MENGINE_MAX_PATH, L"Fonts\\%ls"
             , unicode_fontPath
         );
 
@@ -3045,6 +3045,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _path, const Char * _directory )
     {
+        LOGGER_INFO( "platform", "create directory path '%s' directory '%s'"
+            , _path
+            , _directory
+        );
+
         MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/' || _path[MENGINE_STRLEN( _path ) - 1] == '\\') );
 
         MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/' || _directory[MENGINE_STRLEN( _directory ) - 1] == '\\') );
@@ -3086,7 +3091,7 @@ namespace Mengine
         }
 
         WChar pathTestDirectory[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%s%s", _path, pathDirectory );
+        MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, pathDirectory );
 
         if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
         {
@@ -3108,7 +3113,7 @@ namespace Mengine
 
             Helper::pathRemoveBackslashW( pathDirectory );
 
-            MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%s%s", _path, pathDirectory );
+            MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, pathDirectory );
 
             if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
             {
@@ -3127,7 +3132,7 @@ namespace Mengine
             const WChar * path_str = path.c_str();
 
             WChar pathCreateDirectory[MENGINE_MAX_PATH] = {L'\0'};
-            MENGINE_WNSPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, L"%s%s", _path, path_str );
+            MENGINE_WNSPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, path_str );
 
             BOOL successful = ::CreateDirectory( pathCreateDirectory, NULL );
 
@@ -3212,6 +3217,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::removeFile( const Char * _filePath )
     {
+        LOGGER_INFO( "platform", "remove file '%s'"
+            , _filePath
+        );
+
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
@@ -3236,6 +3245,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
+        LOGGER_INFO( "platform", "move file from '%s' to '%s'"
+            , _oldFilePath
+            , _newFilePath
+        );
+
         WChar unicode_oldFilePath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _oldFilePath, unicode_oldFilePath, MENGINE_MAX_PATH ) == false )
         {
@@ -3604,13 +3618,18 @@ namespace Mengine
 
         ::PathAddBackslash( _path );
 
-        Helper::pathCorrectBackslashW( _path );        
+        Helper::pathCorrectBackslashW( _path );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
+        LOGGER_INFO( "platform", "update desktop wallpaper directory '%s' path '%s'"
+            , _directoryPath
+            , _filePath
+        );
+
         WChar unicode_directoryPath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_directoryPath, MENGINE_MAX_PATH ) == false )
         {
@@ -3664,6 +3683,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
+        LOGGER_INFO( "platform", "create directory user picture '%s' path '%s'"
+            , _directoryPath
+            , _filePath
+        );
+
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
@@ -3703,6 +3727,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
+        LOGGER_INFO( "platform", "create directory user music '%s' path '%s'"
+            , _directoryPath
+            , _filePath
+        );
+
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
@@ -4397,7 +4426,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE( "create process '%s %s'"
+        LOGGER_INFO( "platform", "create process '%s %s'"
             , _process
             , _command
         );
@@ -4487,7 +4516,9 @@ namespace Mengine
                 return false;
             }
 
-            LOGGER_MESSAGE( "result [%lu]"
+            LOGGER_INFO( "platform", "process result '%s' command '%s' [%lu]"
+                , _process
+                , _command
                 , exitCode
             );
 
@@ -4852,6 +4883,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::minimizeWindow()
     {
+        LOGGER_INFO( "platform", "minimize window" );
+
         if( ::ShowWindow( m_hWnd, SW_MINIMIZE ) == FALSE )
         {
             LOGGER_ERROR( "invalid hwnd [%p] ShowWindow %ls"
@@ -4877,6 +4910,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setCursorIcon( const ConstString & _icon )
     {
+        LOGGER_INFO( "platform", "set cursor icon '%s'"
+            , _icon.c_str() 
+        );
+
         MapCursors::const_iterator it_found = m_cursors.find( _icon );
 
         MENGINE_ASSERTION_FATAL( it_found != m_cursors.end() );
@@ -4934,6 +4971,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::openUrlInDefaultBrowser( const Char * _url )
     {
+        LOGGER_INFO( "platform", "open url in default browser '%s'"
+            , _url
+        );
+
         WChar unicode_url[4096] = {L'\0'};
         if( Helper::utf8ToUnicode( _url, unicode_url, 4096 ) == false )
         {

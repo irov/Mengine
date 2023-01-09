@@ -3,7 +3,9 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
 
-#include "Win32FileHelper.h"
+#include "Environment/Windows/Win32FileHelper.h"
+
+#include "Win32ConcatenateFileHelper.h"
 
 #include "Kernel/Win32Helper.h"
 #include "Kernel/Assertion.h"

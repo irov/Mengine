@@ -41,10 +41,10 @@ public class MengineFacebookPlugin extends MenginePlugin {
     public static boolean PLUGIN_EMBEDDING = true;
 
     private CallbackManager m_facebookCallbackManager;
-    private String m_facebookUserId;
-
     private AccessTokenTracker m_accessTokenTracker;
     private ProfileTracker m_profileTracker;
+
+    private String m_facebookUserId;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

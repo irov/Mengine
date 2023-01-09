@@ -3,7 +3,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/PlatformInterface.h"
 
-#include "Win32FileHelper.h"
+#include "Win32ConcatenateFileHelper.h"
 #include "Win32FileInputStream.h"
 #include "Win32FileOutputStream.h"
 #include "Win32MutexFileInputStream.h"

@@ -22,7 +22,7 @@ namespace Mengine
         virtual bool setArguments( const ArgumentsInterfacePtr & _arguments ) = 0;
 
     public:
-        virtual bool hasOption( const Char * _key ) const = 0;
+        virtual bool hasOption( const Char * _key, bool _withValue ) const = 0;
         virtual bool setOptionValue( const Char * _key, const Char * _value ) = 0;
         virtual const Char * getOptionValue( const Char * _key, const Char * _default ) const = 0;
         virtual bool getOptionValues( const Char * _key, const Char ** _values, uint32_t * const _count ) const = 0;

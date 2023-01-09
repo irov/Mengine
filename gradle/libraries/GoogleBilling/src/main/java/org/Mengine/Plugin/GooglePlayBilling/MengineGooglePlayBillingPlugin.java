@@ -64,11 +64,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     public interface IBillingResponse {
         void skuResponse(List<ProductDetails> priceOffers);
-
         void consume(List<String> ids);
-
         void acknowledge(List<String> ids);
-
         void hasAcknowledge(List<String> ids, CallbackInterface cb);
     }
 

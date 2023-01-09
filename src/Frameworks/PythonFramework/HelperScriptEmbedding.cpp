@@ -668,7 +668,7 @@ namespace Mengine
             bool s_hasOption( const Char * _option )
             {
                 bool exist = OPTIONS_SERVICE()
-                    ->hasOption( _option );
+                    ->hasOption( _option, false );
 
                 return exist;
             }

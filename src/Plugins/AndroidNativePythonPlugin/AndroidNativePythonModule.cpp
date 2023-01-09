@@ -336,7 +336,7 @@ namespace Mengine
 
             const Char * obj_class_name_str = m_jenv->GetStringUTFChars( obj_class_name, NULL);
 
-            LOGGER_ERROR( "unsuported java argument type '%s'"
+            LOGGER_ERROR( "unsupported java argument type '%s'"
                 , obj_class_name_str
             );
 

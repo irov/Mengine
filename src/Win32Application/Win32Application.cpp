@@ -12,9 +12,13 @@
 #include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Win32MessageBoxLogger.h"
-#include "Win32OutputDebugLogger.h"
+#if defined(MENGINE_WINDOWS_DEBUG)
+#   include "Win32OutputDebugLogger.h"
+#endif
+#include "Win32ExtraFileLogger.h"
 
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Win32Helper.h"
@@ -155,6 +159,18 @@ namespace Mengine
         m_loggerOutputDebug = loggerOutputDebug;
 #endif
 
+        if( HAS_OPTION( "extralog" ) == true )
+        {
+            Win32ExtraFileLoggerPtr extraFileLogger = Helper::makeFactorableUnique<Win32ExtraFileLogger>( MENGINE_DOCUMENT_FUNCTION );
+
+            extraFileLogger->setVerboseLevel( LM_VERBOSE );
+
+            LOGGER_SERVICE()
+                ->registerLogger( extraFileLogger );
+
+            m_loggerExtraFile = extraFileLogger;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -183,6 +199,17 @@ namespace Mengine
             m_loggerOutputDebug = nullptr;
         }
 #endif
+
+        if( m_loggerExtraFile != nullptr )
+        {
+            if( SERVICE_EXIST( LoggerServiceInterface ) == true )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerExtraFile );
+            }
+
+            m_loggerExtraFile = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()

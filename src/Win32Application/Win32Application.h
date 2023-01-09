@@ -37,6 +37,8 @@ namespace Mengine
 #if defined(MENGINE_WINDOWS_DEBUG)
         LoggerInterfacePtr m_loggerOutputDebug;
 #endif
+
+        LoggerInterfacePtr m_loggerExtraFile;
     };
     //////////////////////////////////////////////////////////////////////////
 }

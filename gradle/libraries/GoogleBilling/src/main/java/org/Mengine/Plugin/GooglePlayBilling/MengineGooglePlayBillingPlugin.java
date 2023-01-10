@@ -72,6 +72,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     private final IBillingResponse m_callbackListener = new IBillingResponse() {
         @Override
         public void skuResponse(List<ProductDetails> priceOffers) {
+            MengineGooglePlayBillingPlugin.this.logInfo("Billing response skuResponse");
+
             List<String> stringArray = new ArrayList<>();
 
             for (ProductDetails product : priceOffers) {
@@ -83,16 +85,22 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
         @Override
         public void consume(List<String> products) {
+            MengineGooglePlayBillingPlugin.this.logInfo("Billing response consume");
+
             MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnConsume", products);
         }
 
         @Override
         public void hasAcknowledge(List<String> products, CallbackInterface cb) {
+            MengineGooglePlayBillingPlugin.this.logInfo("Billing response hasAcknowledge");
+
             MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, products);
         }
 
         @Override
         public void acknowledge(List<String> products) {
+            MengineGooglePlayBillingPlugin.this.logInfo("Billing response acknowledge");
+
             MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingAcknowledge", products);
         }
     };
@@ -131,25 +139,24 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
                 switch (responseCode) {
                     case BillingClient.BillingResponseCode.OK: {
+                        MengineGooglePlayBillingPlugin.this.logInfo("onPurchasesUpdated: User successful the purchase");
+
                         if (purchases != null) {
                             for (Purchase purchase : purchases) {
                                 MengineGooglePlayBillingPlugin.this.handlePurchase(purchase);
                             }
                         }
-                        break;
-                    }
+                    }break;
                     case BillingClient.BillingResponseCode.USER_CANCELED: {
                         MengineGooglePlayBillingPlugin.this.logWarning("onPurchasesUpdated: User canceled the purchase");
 
                         MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingUserCanceled");
-                        break;
-                    }
+                    }break;
                     case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED: {
                         MengineGooglePlayBillingPlugin.this.logWarning("onPurchasesUpdated: The user already owns this item");
 
                         MengineGooglePlayBillingPlugin.this.queryPurchases();
-                        break;
-                    }
+                    }break;
                     case BillingClient.BillingResponseCode.DEVELOPER_ERROR: {
                         MengineGooglePlayBillingPlugin.this.logError(
                                 "onPurchasesUpdated: Developer error means that Google Play " +
@@ -160,22 +167,18 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                         );
 
                         MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingDeveloperError");
-                        break;
-                    }
+                    }break;
                     case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED: {
                         MengineGooglePlayBillingPlugin.this.logWarning("onPurchasesUpdated: service disconnected");
 
                         MengineGooglePlayBillingPlugin.this.connectAndQueryProducts();
-                        break;
-                    }
+                    }break;
                     default: {
                         MengineGooglePlayBillingPlugin.this.logError("onPurchasesUpdated: unsupported response [%d] %s"
                             , responseCode
                             , billingResult.getDebugMessage()
                         );
-
-                        break;
-                    }
+                    }break;
                 }
             }
         };
@@ -205,6 +208,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             m_billingClient.startConnection(new BillingClientStateListener() {
                 @Override
                 public void onBillingServiceDisconnected() {
+                    MengineGooglePlayBillingPlugin.this.logInfo("Billing disconnected");
+
                     m_connectionSucces = false;
                 }
 
@@ -222,6 +227,10 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
                         return;
                     }
+
+                    MengineGooglePlayBillingPlugin.this.logInfo("Billing setup finished %s"
+                        , billingResult.getDebugMessage()
+                    );
 
                     MengineGooglePlayBillingPlugin.this.queryProducts();
                     MengineGooglePlayBillingPlugin.this.queryPurchases();
@@ -298,27 +307,33 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                 .build();
 
         m_billingClient.queryPurchasesAsync(purchasesParams, new PurchasesResponseListener() {
-                    @Override
-                    public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchasesList) {
-                        int responseCode = billingResult.getResponseCode();
+            @Override
+            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchasesList) {
+                int responseCode = billingResult.getResponseCode();
 
-                        if (responseCode != BillingClient.BillingResponseCode.OK) {
-                            MengineGooglePlayBillingPlugin.this.logError("Billing invalid query purchases [%d] %s"
-                                , responseCode
-                                , billingResult.getDebugMessage()
-                            );
-                            return;
-                        }
-                        for (Purchase purchase : purchasesList) {
-                            handlePurchase(purchase);
-                        }
-                    }
-                });
+                if (responseCode != BillingClient.BillingResponseCode.OK) {
+                    MengineGooglePlayBillingPlugin.this.logError("Billing invalid query purchases [%d] %s"
+                        , responseCode
+                        , billingResult.getDebugMessage()
+                    );
+
+                    return;
+                }
+
+                MengineGooglePlayBillingPlugin.this.logInfo("Billing successful query purchases: %s"
+                    , billingResult.getDebugMessage()
+                );
+
+                for (Purchase purchase : purchasesList) {
+                    handlePurchase(purchase);
+                }
+            }
+        });
     }
 
     boolean buyInApp(String productId) {
         this.logInfo("buy InApp sku %s"
-            , productId.toString()
+            , productId
         );
 
         if (m_billingClient == null) {
@@ -356,8 +371,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                 return false;
             }
 
-            this.logInfo("buy InApp OK %s"
+            this.logInfo("buy InApp successful sku '%s' message: %s"
                 , productId
+                , billingResult.getDebugMessage()
             );
 
             this.pythonCall("onGooglePlayBillingBuyInAppSuccess", productId, true);
@@ -412,7 +428,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                         return;
                     }
 
-                    MengineGooglePlayBillingPlugin.this.logInfo("success acknowledge");
+                    MengineGooglePlayBillingPlugin.this.logInfo("Billing success acknowledge purchase: %s"
+                        , billingResult.getDebugMessage()
+                    );
 
                     MengineGooglePlayBillingPlugin.this.m_callbackListener.acknowledge(products);
                 });
@@ -427,11 +445,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             m_billingClient.consumeAsync(consumeParams, new ConsumeResponseListener() {
                 @Override
                 public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String purchaseToken) {
-                    MengineGooglePlayBillingPlugin.this.logInfo("consumeAsync: %d message %s"
-                        , billingResult.getResponseCode()
-                        , billingResult.getDebugMessage()
-                    );
-
                     int responseCode = billingResult.getResponseCode();
 
                     if (responseCode != BillingClient.BillingResponseCode.OK) {
@@ -442,6 +455,10 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
                         return;
                     }
+
+                    MengineGooglePlayBillingPlugin.this.logInfo("Billing successful consume: %s"
+                            , billingResult.getDebugMessage()
+                    );
 
                     List<String> products = purchase.getProducts();
                     MengineGooglePlayBillingPlugin.this.m_callbackListener.consume(products);

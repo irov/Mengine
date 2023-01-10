@@ -270,7 +270,10 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
 
     @Override
     public void onLoginResult(int code, UToken uToken) {
-        this.logInfo("marsdk.onLoginResult code: %d uToken: %s", code, uToken.toString());
+        this.logInfo("marsdk.onLoginResult code: %d uToken: %s"
+            , code
+            , uToken
+        );
 
         switch(code) {
             case MARCode.CODE_LOGIN_SUCCESS: {
@@ -300,7 +303,9 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
     
     @Override
     public void onSwitchAccount(UToken uToken) {
-        this.logInfo("marsdk.onSwitchAccount uToken: %s", uToken.toString());
+        this.logInfo("marsdk.onSwitchAccount uToken: %s"
+            , uToken
+        );
 
         if (uToken != null) {
             this.pythonCall("onMarSDKSwitchAccount");

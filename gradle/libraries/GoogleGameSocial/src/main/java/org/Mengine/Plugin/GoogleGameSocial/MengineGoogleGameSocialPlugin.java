@@ -217,7 +217,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         String accountServerAuthCode = account.getServerAuthCode();
 
         //аккаунт от гугла - профиль от гугла
-        this.logInfo("PhotoUrl: %s", accountPhotoUrl != null ? accountPhotoUrl.toString() : "");
+        this.logInfo("PhotoUrl: %s", accountPhotoUrl);
         this.logInfo("DisplayName: %s", accountDisplayName);
         this.logInfo("Email: %s", accountEmail);
         this.logInfo("FamilyName: %s", accountFamilyName);

@@ -277,7 +277,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logWarning(TAG, "onMengineAnalyticsEvent %s %d [%s]"
             , eventName
             , timestamp
-            , parameters.toString()
+            , parameters
         );
 
         for(MenginePlugin p : this.getPlugins()) {
@@ -504,7 +504,7 @@ public class MengineActivity extends SDLActivity {
             MengineLog.logError("invalid python plugin [%s] method [%s] args [%s] call before embedding"
                 , plugin
                 , method
-                , args.toString()
+                , args
             );
 
             return;
@@ -514,7 +514,7 @@ public class MengineActivity extends SDLActivity {
             MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] args [%s]"
                 , plugin
                 , method
-                , args.toString()
+                , args
             );
         }
 
@@ -540,7 +540,7 @@ public class MengineActivity extends SDLActivity {
             MengineLog.logError("invalid python plugin [%s] method [%s] args [%s] call before embedding"
                 , plugin
                 , method
-                , args.toString()
+                , args
             );
 
             return;
@@ -553,7 +553,7 @@ public class MengineActivity extends SDLActivity {
                 , plugin
                 , method
                 , id
-                , args.toString()
+                , args
             );
         }
 
@@ -586,7 +586,7 @@ public class MengineActivity extends SDLActivity {
         if (BuildConfig.DEBUG) {
             MengineLog.logInfo(TAG, "responseCall [%d] result [%s]"
                 , id
-                , result.toString()
+                , result
             );
         }
 
@@ -606,7 +606,7 @@ public class MengineActivity extends SDLActivity {
     public void addPythonPlugin(String name, Object plugin) {
         MengineLog.logInfo(TAG, "addPythonPlugin [%s] plugin: %s"
             , name
-            , plugin.toString()
+            , plugin
         );
 
         AndroidNativePython_addPlugin(name, plugin);

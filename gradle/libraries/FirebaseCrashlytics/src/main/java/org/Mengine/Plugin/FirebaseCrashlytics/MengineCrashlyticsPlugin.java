@@ -48,14 +48,24 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
     }
 
     public void recordException(Throwable throwable) {
+        this.logInfo("recordException throwable: %s"
+            , throwable.getLocalizedMessage()
+        );
+
         FirebaseCrashlytics.getInstance().recordException(throwable);
     }
 
     public void recordLog(String msg) {
+        this.logInfo("recordLog msg: %s"
+                , msg
+        );
+
         FirebaseCrashlytics.getInstance().log(msg);
     }
 
     public void testCrash() {
+        this.logError("testCrash");
+
         FirebaseCrashlytics.getInstance().setCustomKey("TestCrash", true);
 
         throw new RuntimeException("Firebase Crashlytics Test Crash");

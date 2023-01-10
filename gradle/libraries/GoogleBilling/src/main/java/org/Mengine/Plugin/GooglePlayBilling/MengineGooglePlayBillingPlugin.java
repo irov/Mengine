@@ -77,7 +77,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             List<String> stringArray = new ArrayList<>();
 
             for (ProductDetails product : priceOffers) {
-                stringArray.add(product.toString());
+                String product_str = product.toString();
+
+                stringArray.add(product_str);
             }
 
             MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnSkuResponse", stringArray);
@@ -106,7 +108,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     };
 
     public void setSkuList(List<String> ids) {
-        this.logInfo("setSkuList: %s", ids);
+        this.logInfo("setSkuList ids: %s"
+            , ids
+        );
 
         m_idsNames = ids;
 
@@ -132,6 +136,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     public void initialize() {
+        this.logInfo("initialize");
+
         final PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
             @Override
             public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchases) {
@@ -192,7 +198,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     private void connectAndQueryProducts() {
-        this.logInfo("connect and query sku");
+        this.logInfo("connectAndQueryProducts");
 
         if (m_billingClient == null) {
             return;
@@ -241,7 +247,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     @AnyThread
     private void queryProducts() {
-        this.logInfo("query sku details");
+        this.logInfo("queryProducts");
 
         if (m_billingClient == null) {
             return;
@@ -286,7 +292,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                     m_productsDetails.addAll(productDetailList);
 
                     MengineGooglePlayBillingPlugin.this.logInfo("sku responses details: %s"
-                        , m_productsDetails.toString()
+                        , m_productsDetails
                     );
 
                     m_callbackListener.skuResponse(m_productsDetails);
@@ -296,7 +302,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     private void queryPurchases() {
-        this.logInfo("query purchases");
+        this.logInfo("queryPurchases");
 
         if (m_billingClient == null) {
             return;
@@ -332,7 +338,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     boolean buyInApp(String productId) {
-        this.logInfo("buy InApp sku %s"
+        this.logInfo("buyInApp productId: %s"
             , productId
         );
 
@@ -388,16 +394,13 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     @AnyThread
     private void handlePurchase(@Nullable Purchase purchase) {
-        if (purchase == null) {
-            this.logInfo("handlePurchase state null null");
+        this.logInfo("handlePurchase purchase: %s"
+            , purchase
+        );
 
+        if (purchase == null) {
             return;
         }
-
-        this.logInfo("handlePurchase state %d %s"
-            , purchase.getPurchaseState()
-            , purchase.toString()
-        );
 
         int state = purchase.getPurchaseState();
 

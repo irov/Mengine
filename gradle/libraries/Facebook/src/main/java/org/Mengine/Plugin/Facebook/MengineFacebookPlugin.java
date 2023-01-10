@@ -194,12 +194,18 @@ public class MengineFacebookPlugin extends MenginePlugin {
     }
     
     public void performLogin(List<String> permissions) {
+        this.logInfo("performLogin permissions: %s"
+            , permissions
+        );
+
         MengineActivity activity = this.getActivity();
 
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
     }
     
     public void logout() {
+        this.logInfo("logout");
+
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         
         // user already logged out
@@ -214,15 +220,21 @@ public class MengineFacebookPlugin extends MenginePlugin {
         new GraphRequest(accessToken, "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
-                MengineFacebookPlugin.this.pythonCall("onFacebookLogoutSuccess", token);
+                MengineFacebookPlugin.this.logInfo("GraphRequest DELETE onCompleted");
 
                 LoginManager.getInstance().logOut();
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookLogoutSuccess", token);
             }
         }).executeAsync();
     }
     
     public void getUser() {
+        this.logInfo("getUser");
+
         if (this.isLoggedIn() == false) {
+            this.logError("is not logged in");
+
             this.pythonCall("onFacebookUserFetchSuccess", "", "");
             
             return;
@@ -233,6 +245,8 @@ public class MengineFacebookPlugin extends MenginePlugin {
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
+                    MengineFacebookPlugin.this.logInfo("GraphRequest new Me request completed");
+
                     String objectString = object != null ? object.toString() : "";
                     String responseString = response != null ? response.toString() : "";
 
@@ -243,7 +257,9 @@ public class MengineFacebookPlugin extends MenginePlugin {
                     } catch (JSONException e) {
                         e.printStackTrace();
 
-                        //ToDo???
+                        MengineFacebookPlugin.this.logError("GraphRequest new Me request exception: %s"
+                            , e.getLocalizedMessage()
+                        );
                     }
 
                     MengineFacebookPlugin.this.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);
@@ -257,6 +273,12 @@ public class MengineFacebookPlugin extends MenginePlugin {
     }
     
     public void shareLink(String link, String picture, String message) {
+        this.logInfo("shareLink link: %s picture: %s message: %s"
+            , link
+            , picture
+            , message
+        );
+
         MengineActivity activity = this.getActivity();
 
         ShareDialog shareDialog = new ShareDialog(activity);
@@ -302,7 +324,13 @@ public class MengineFacebookPlugin extends MenginePlugin {
     }
     
     public void getProfilePictureLink(final String typeParameter) {
+        this.logInfo("getProfilePictureLink typeParameter: %s"
+            , typeParameter
+        );
+
         if (this.isLoggedIn() == false) {
+            this.logError("is not logged in");
+
             this.pythonCall("onFacebookProfilePictureLinkGet", m_facebookUserId, false, "");
             
             return;
@@ -312,7 +340,14 @@ public class MengineFacebookPlugin extends MenginePlugin {
     }
     
     public void getProfileUserPictureLink(final String user_id, final String typeParameter) {
+        this.logInfo("getProfileUserPictureLink user_id: %s typeParameter: %s"
+            , user_id
+            , typeParameter
+        );
+
         if (this.isLoggedIn() == false || user_id.isEmpty() == true) {
+            this.logError("is not logged in");
+
             this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
 
             return;
@@ -340,7 +375,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
                     if (responseObject == null) {
                         MengineFacebookPlugin.this.logError("profile user picture link [%s] invalid response [%s]"
                             , graphPath
-                            , response.toString()
+                            , response
                         );
 
                         MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");

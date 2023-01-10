@@ -46,56 +46,90 @@ public class MengineDevToDevPlugin extends MenginePlugin {
     }
 
     public void tutorialEvent(int stateOrStep) {
-        if( m_initializeSuccessful == false ) {
+        if (m_initializeSuccessful == false) {
             return;
         }
+
+        this.logInfo("tutorialEvent stateOrStep: %d"
+            , stateOrStep
+        );
 
         DTDAnalytics.INSTANCE.tutorial(stateOrStep);
     }
 
     public void setCurrentLevelEvent(int level) {
-        if( m_initializeSuccessful == false ) {
+        if (m_initializeSuccessful == false) {
             return;
         }
+
+        this.logInfo("setCurrentLevelEvent level: %d"
+            , level
+        );
 
         DTDAnalytics.INSTANCE.setCurrentLevel(level);
     }
 
     public void levelUpEvent(int level) {
-        if( m_initializeSuccessful == false ) {
+        if (m_initializeSuccessful == false) {
             return;
         }
+
+        this.logInfo("levelUpEvent level: %d"
+            , level
+        );
 
         DTDAnalytics.INSTANCE.levelUp(level);
     }
 
     public void currencyAccrualEvent(String currencyName, int currencyAmount, String sourceName, int accrualType) {
-        if( m_initializeSuccessful == false ) {
+        if (m_initializeSuccessful == false) {
             return;
         }
+
+        this.logInfo("levelUpEvent currencyName: %s currencyAmount: %d sourceName: %s accrualType: %d"
+            , currencyName
+            , currencyAmount
+            , sourceName
+            , accrualType
+        );
 
         DTDAnalytics.INSTANCE.currencyAccrual(currencyName, currencyAmount, sourceName, DTDAccrualType.values()[accrualType]);
     }
 
     public void realCurrencyPaymentEvent(String paymentId, float inAppPrice, String inAppName, String inAppCurrencyISOCode) {
-        if( m_initializeSuccessful == false ) {
+        if (m_initializeSuccessful == false) {
             return;
         }
+
+        this.logInfo("realCurrencyPaymentEvent paymentId: %s inAppPrice: %f inAppName: %s inAppCurrencyISOCode: %s"
+            , paymentId
+            , inAppPrice
+            , inAppName
+            , inAppCurrencyISOCode
+        );
 
         DTDAnalytics.INSTANCE.realCurrencyPayment(paymentId, inAppPrice, inAppName, inAppCurrencyISOCode);
     }
 
     public void virtualCurrencyPaymentEvent(String purchaseId, String purchaseType, int purchaseAmount, int purchasePrice, String purchaseCurrency) {
-        if( m_initializeSuccessful == false ) {
+        if (m_initializeSuccessful == false) {
             return;
         }
+
+        this.logInfo("virtualCurrencyPaymentEvent purchaseId: %s purchaseType: %s purchaseAmount: %d purchasePrice: %d purchaseCurrency: %s"
+            , purchaseId
+            , purchaseType
+            , purchaseAmount
+            , purchasePrice
+            , purchaseCurrency
+        );
 
         DTDAnalytics.INSTANCE.virtualCurrencyPayment(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
     }
 
     @Override
     public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, Map<String, Object> parameters) {
-        if( m_initializeSuccessful == false ) {
+        if (m_initializeSuccessful == false) {
             return;
         }
 
@@ -114,21 +148,26 @@ public class MengineDevToDevPlugin extends MenginePlugin {
                 params.add(name, (String)parameter);
             } else {
                 this.logError("onMengineAnalyticsEvent: unsupported parameter [%s] %s"
-                        , parameter.getClass().toString()
-                        , parameter.toString()
+                    , parameter.getClass()
+                    , parameter
                 );
 
                 return;
             }
         }
 
-        this.logEvent(eventName, params);
+        DTDAnalytics.INSTANCE.customEvent(eventName, params);
     }
     
     public void logEvent(@NonNull String eventName, @NonNull DTDCustomEventParameters params) {
-        if( m_initializeSuccessful == false ) {
+        if (m_initializeSuccessful == false) {
             return;
         }
+
+        this.logInfo("logEvent eventName: %s params: %s"
+            , eventName
+            , params
+        );
 
         DTDAnalytics.INSTANCE.customEvent(eventName, params);
     }

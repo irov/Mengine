@@ -39,7 +39,10 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
                 m_reviewInfo = task.getResult();
                 this.pythonCall("onGoogleInAppReviewsGettingReviewObject");
             } else {
-                this.logInfo("requestReviewFlow error %s -> %s", task.getException().getMessage(), task.getException().fillInStackTrace().toString());
+                this.logInfo("requestReviewFlow error %s -> %s"
+                    , task.getException().getMessage()
+                    , task.getException().fillInStackTrace()
+                );
             }
         });
     }

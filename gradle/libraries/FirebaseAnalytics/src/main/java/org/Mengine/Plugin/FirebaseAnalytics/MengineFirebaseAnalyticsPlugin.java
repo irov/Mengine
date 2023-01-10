@@ -46,8 +46,8 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
                 params.putString(name, (String)parameter);
             } else {
                 this.logError("onMengineAnalyticsEvent: unsupported parameter [%s] %s"
-                        , parameter.getClass().toString()
-                        , parameter.toString()
+                    , parameter.getClass()
+                    , parameter
                 );
 
                 return;

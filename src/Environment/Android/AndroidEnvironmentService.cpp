@@ -477,6 +477,7 @@ namespace Mengine
         MENGINE_STRNCPY( _androidId, jStringValue, _capacity );
 
         m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+        m_jenv->DeleteLocalRef( jReturnValue );
 
         m_androidEventationHub->invoke();
 
@@ -497,6 +498,7 @@ namespace Mengine
         MENGINE_STRNCPY( _deviceName, jStringValue, _capacity );
 
         m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+        m_jenv->DeleteLocalRef( jReturnValue );
 
         m_androidEventationHub->invoke();
 
@@ -517,6 +519,7 @@ namespace Mengine
         MENGINE_STRNCPY( _packageName, jStringValue, _capacity );
 
         m_jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+        m_jenv->DeleteLocalRef( jReturnValue );
 
         m_androidEventationHub->invoke();
 
@@ -573,10 +576,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::onAnalyticsEvent(const AnalyticsEventInterfacePtr & _event )
     {
-        static jmethodID jmethodID_onMengineAnalyticsEvent = m_jenv->GetMethodID( g_jclass_MengineActivity, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;)V" );
-
-        MENGINE_ASSERTION( jmethodID_onMengineAnalyticsEvent != nullptr, "invalid get android method 'onAnalyticsEvent'" );
-
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
 
@@ -636,10 +635,16 @@ namespace Mengine
 
                static jmethodID Map_put = m_jenv->GetMethodID( m_jclass_Map, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;" );
 
-               m_jenv->CallObjectMethod( parameters_jobject, Map_put, name_jvalue, parameter_jobject );
+               jobject result_jobject = m_jenv->CallObjectMethod( parameters_jobject, Map_put, name_jvalue, parameter_jobject );
+
+               m_jenv->DeleteLocalRef( result_jobject );
 
                m_jenv->DeleteLocalRef( parameter_jobject );
            });
+
+        static jmethodID jmethodID_onMengineAnalyticsEvent = m_jenv->GetMethodID( g_jclass_MengineActivity, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;)V" );
+
+        MENGINE_ASSERTION( jmethodID_onMengineAnalyticsEvent != nullptr, "invalid get android method 'onMengineAnalyticsEvent'" );
 
         m_jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineAnalyticsEvent, eventName_jobject, eventTimestamp_jobject, parameters_jobject );
 
@@ -701,7 +706,7 @@ namespace Mengine
         m_androidEventationHub->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::makeJObjectBoolean(bool _value )
+    jobject AndroidEnvironmentService::makeJObjectBoolean( bool _value )
     {
         static jmethodID Boolean_constructor = m_jenv->GetMethodID( m_jclass_Boolean, "<init>", "(Z)V" );
 
@@ -709,10 +714,14 @@ namespace Mengine
 
         jobject value_jobject = m_jenv->NewObject( m_jclass_Boolean, Boolean_constructor, _value );
 
+        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Boolean '%s'"
+            , _value == true ? "true" : "false"
+        );
+
         return value_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::makeJObjectInteger(int32_t _value )
+    jobject AndroidEnvironmentService::makeJObjectInteger( int32_t _value )
     {
         static jmethodID Integer_constructor = m_jenv->GetMethodID( m_jclass_Integer, "<init>", "(I)V" );
 
@@ -720,10 +729,14 @@ namespace Mengine
 
         jobject value_jobject = m_jenv->NewObject( m_jclass_Integer, Integer_constructor, _value );
 
+        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Integer '%d'"
+            , _value
+        );
+
         return value_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::makeJObjectLong(int64_t _value )
+    jobject AndroidEnvironmentService::makeJObjectLong( int64_t _value )
     {
         static jmethodID Long_constructor = m_jenv->GetMethodID( m_jclass_Long, "<init>", "(J)V" );
 
@@ -731,10 +744,14 @@ namespace Mengine
 
         jobject value_jobject = m_jenv->NewObject( m_jclass_Long, Long_constructor, _value );
 
+        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Long '%ld'"
+            , _value
+        );
+
         return value_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::makeJObjectFloat(float _value )
+    jobject AndroidEnvironmentService::makeJObjectFloat( float _value )
     {
         static jmethodID Float_constructor = m_jenv->GetMethodID( m_jclass_Float, "<init>", "(F)V" );
 
@@ -742,10 +759,14 @@ namespace Mengine
 
         jobject value_jobject = m_jenv->NewObject( m_jclass_Float, Float_constructor, _value );
 
+        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Float '%f'"
+            , _value
+        );
+
         return value_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::makeJObjectDouble(double _value )
+    jobject AndroidEnvironmentService::makeJObjectDouble( double _value )
     {
         static jmethodID Double_constructor = m_jenv->GetMethodID( m_jclass_Double, "<init>", "(D)V" );
 
@@ -753,10 +774,14 @@ namespace Mengine
 
         jobject value_jobject = m_jenv->NewObject( m_jclass_Double, Double_constructor, _value );
 
+        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Double '%lf'"
+            , _value
+        );
+
         return value_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::makeJObjectString(const Char * _value )
+    jobject AndroidEnvironmentService::makeJObjectString( const Char * _value )
     {
         static jmethodID String_constructor = m_jenv->GetMethodID( m_jclass_String, "<init>", "(Ljava/lang/String;)V" );
 
@@ -768,6 +793,10 @@ namespace Mengine
 
         m_jenv->DeleteLocalRef( value_jstring );
 
+        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create String '%s'"
+            , _value
+        );
+
         return value_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -778,6 +807,10 @@ namespace Mengine
         MENGINE_ASSERTION( HashMap_constructor != nullptr, "invalid get android method 'HashMap <init> (I)V'" );
 
         jobject value_jobject = m_jenv->NewObject( m_jclass_HashMap, HashMap_constructor, _count );
+
+        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create HashMap '%d'"
+            , _count
+        );
 
         return value_jobject;
     }

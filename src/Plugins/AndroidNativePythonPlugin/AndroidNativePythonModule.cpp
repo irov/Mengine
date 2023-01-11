@@ -339,6 +339,9 @@ namespace Mengine
             );
 
             m_jenv->ReleaseStringUTFChars( obj_class_name, obj_class_name_str );
+            m_jenv->DeleteLocalRef( obj_class_name );
+
+            m_jenv->DeleteLocalRef( obj_class );
         }
 
         return py_value;
@@ -732,6 +735,7 @@ namespace Mengine
         Mengine::String result = result_str;
 
         m_jenv->ReleaseStringUTFChars( jresult, result_str );
+        m_jenv->DeleteLocalRef( jresult );
 
         return result;
     }

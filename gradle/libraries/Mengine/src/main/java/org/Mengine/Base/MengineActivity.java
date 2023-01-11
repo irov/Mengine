@@ -296,7 +296,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void onMengineAnalyticsEvent(String eventName, long timestamp, Map<String, Object> parameters) {
-        MengineLog.logWarning(TAG, "onMengineAnalyticsEvent %s %d [%s]"
+        MengineLog.logInfo(TAG, "onMengineAnalyticsEvent %s %d [%s]"
             , eventName
             , timestamp
             , parameters

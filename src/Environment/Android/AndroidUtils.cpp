@@ -126,6 +126,8 @@ namespace Mengine
 
             jenv->GetByteArrayRegion( jbuffer, 0, len, reinterpret_cast<jbyte *>(_buffer) );
 
+            jenv->DeleteLocalRef( jbuffer );
+
             return len;
         }
         //////////////////////////////////////////////////////////////////////////

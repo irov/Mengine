@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
@@ -22,11 +21,11 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
      * void logEvent (String name, Bundle params)
      */
 
-    FirebaseAnalytics mFirebaseAnalytics;
+    FirebaseAnalytics m_firebaseAnalytics;
 
     @Override
     public void onAppCreate(MengineApplication application) {
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(application);
+        m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
     }
 
     @Override
@@ -64,10 +63,15 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
             }
         }
 
-        this.logEvent(eventName, params);
+        m_firebaseAnalytics.logEvent(eventName, params);
     }
 
-    public void logEvent(@NonNull String name, @Nullable Bundle params) {
-        mFirebaseAnalytics.logEvent(name, params);
+    public void logEvent(@NonNull String eventName, @Nullable Bundle params) {
+        this.logError("logEvent eventName: %s params: %s"
+            , eventName
+            , params
+        );
+
+        m_firebaseAnalytics.logEvent(eventName, params);
     }
 }

@@ -187,6 +187,7 @@ dependencies {
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
         implementation 'com.applovin.mediation:ironsource-adapter:7.2.6.0.1'
+        implementation 'com.ironsource.sdk:mediationsdk:7.2.6'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {

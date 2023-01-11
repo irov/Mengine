@@ -182,13 +182,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonModule::_finalizeModule()
     {
-        jmethodID jmethodID_finalizePlugins = m_jenv->GetMethodID( m_jclass_MengineActivity, "pythonFinalizePlugins", "()V" );
+        jmethodID jmethodID_pythonFinalizePlugins = m_jenv->GetMethodID( m_jclass_MengineActivity, "pythonFinalizePlugins", "()V" );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_finalizePlugins != nullptr, "invalid get android method 'pythonFinalizePlugins'" );
+        MENGINE_ASSERTION_FATAL( jmethodID_pythonFinalizePlugins != nullptr, "invalid get android method 'pythonFinalizePlugins'" );
 
-        m_jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_finalizePlugins );
-
-        m_eventation->invoke();
+        m_jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_pythonFinalizePlugins );
 
         s_androidNativePythonModule = nullptr;
 

@@ -40,6 +40,9 @@ public class MengineActivity extends SDLActivity {
     private ArrayList<CallbackResponse> m_callbackResponses;
     private int m_callbackResponseEnumerator;
 
+    public ArrayList<MenginePlugin> m_loggerPlugins;
+    public ArrayList<MenginePlugin> m_analyticsPlugins;
+
     private static native void AndroidEnvironmentService_setMengineAndroidActivityJNI(Object Activity);
     private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     private static native String AndroidEnvironmentService_getCompanyName();
@@ -71,6 +74,9 @@ public class MengineActivity extends SDLActivity {
 
         m_callbackResponses = new ArrayList<CallbackResponse>();
         m_callbackResponseEnumerator = 0;
+
+        m_loggerPlugins = new ArrayList<MenginePlugin>();
+        m_analyticsPlugins = new ArrayList<MenginePlugin>();
     }
 
     @Override
@@ -167,6 +173,22 @@ public class MengineActivity extends SDLActivity {
         MenginePlugin plugin = app.findPlugin(name);
 
         return (T)plugin;
+    }
+
+    public void addLoggerPlugin(MenginePlugin plugin) {
+        m_loggerPlugins.add(plugin);
+    }
+
+    public void removeLoggerPlugin(MenginePlugin plugin) {
+        m_loggerPlugins.remove(plugin);
+    }
+
+    public void addAnalyticsPlugin(MenginePlugin plugin) {
+        m_analyticsPlugins.add(plugin);
+    }
+
+    public void removeAnalyticsPlugin(MenginePlugin plugin) {
+        m_analyticsPlugins.remove(plugin);
     }
 
     public void sendEvent(String id, Object ... args) {
@@ -280,7 +302,7 @@ public class MengineActivity extends SDLActivity {
             , parameters
         );
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for(MenginePlugin p : m_analyticsPlugins) {
             p.onMengineAnalyticsEvent(this, eventName, timestamp, parameters);
         }
     }
@@ -380,6 +402,9 @@ public class MengineActivity extends SDLActivity {
         m_openFiles = null;
         m_requestCodes = null;
         m_callbackResponses = null;
+
+        m_analyticsPlugins = null;
+        m_loggerPlugins = null;
     }
 
     @Override
@@ -463,6 +488,12 @@ public class MengineActivity extends SDLActivity {
         return code;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void onMengineLogger(String category, int level, int filter, int color, String msg) {
+        for(MenginePlugin plugin : m_loggerPlugins) {
+            plugin.onMengineLogger(category, level, filter, color, msg);
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     //Python Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonInitializePlugins() {
@@ -494,8 +525,6 @@ public class MengineActivity extends SDLActivity {
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonFinalizePlugins() {
-        MengineLog.logInfo(TAG, "Python finalize");
-
         m_initializePython = false;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

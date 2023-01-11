@@ -8,6 +8,8 @@
 
 #include "Environment/Android/AndroidUtils.h"
 
+#include "AndroidProxyLogger.h"
+
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/BuildMode.h"
@@ -337,6 +339,17 @@ namespace Mengine
         ANALYTICS_SERVICE()
             ->addEventProvider( AnalyticsEventProviderInterfacePtr::from(this) );
 
+        AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
+
+        proxyLogger->setJNIEnv( m_jenv );
+        proxyLogger->setJClassMengineActivity( g_jclass_MengineActivity );
+        proxyLogger->setJObjectMengineActivity( g_jobject_MengineActivity );
+
+        LOGGER_SERVICE()
+            ->registerLogger( proxyLogger );
+
+        m_proxyLogger = proxyLogger;
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_APPLICATION_RUN, &AndroidEnvironmentService::notifyApplicationRun_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_APPLICATION_READY, &AndroidEnvironmentService::notifyApplicationReady_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_APPLICATION_STOP, &AndroidEnvironmentService::notifyApplicationStop_, MENGINE_DOCUMENT_FACTORABLE );
@@ -353,6 +366,11 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_STOP );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+
+        LOGGER_SERVICE()
+            ->unregisterLogger( m_proxyLogger );
+
+        m_proxyLogger = nullptr;
 
         ANALYTICS_SERVICE()
             ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from(this) );

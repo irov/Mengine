@@ -2,6 +2,7 @@
 
 #include "Interface/AndroidEnvironmentServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
+#include "Interface/LoggerInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -95,5 +96,7 @@ namespace Mengine
         jclass m_jclass_HashMap;
 
         AndroidEventationHubPtr m_androidEventationHub;
+
+        LoggerInterfacePtr m_proxyLogger;
     };
 }

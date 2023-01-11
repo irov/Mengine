@@ -30,6 +30,16 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
     }
 
     @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+        activity.addAnalyticsPlugin(this);
+    }
+
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        activity.removeAnalyticsPlugin(this);
+    }
+
+    @Override
     public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, Map<String, Object> parameters) {
         Bundle params = new Bundle();
 

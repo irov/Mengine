@@ -10,8 +10,11 @@ src
     AndroidUtils.h
     AndroidUtils.cpp
 
-        AndroidEnvironmentService.h
-        AndroidEnvironmentService.cpp
+    AndroidEnvironmentService.h
+    AndroidEnvironmentService.cpp
+    
+    AndroidProxyLogger.h
+    AndroidProxyLogger.cpp
 )
 
 ADD_MENGINE_LIBRARY(Environment)

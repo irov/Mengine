@@ -389,7 +389,7 @@ if (MENGINE_APP_PLUGIN_GOOGLE_CONSENT == true) {
 println "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS: $MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS"
 
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.FirebaseCrashlytics.MengineCrashlyticsPlugin'
+    android.ext.plugins += 'org.Mengine.Plugin.FirebaseCrashlytics.MengineFirebaseCrashlyticsPlugin'
 
     dependencies {
         implementation project(':libraries:FirebaseCrashlytics')

@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.FirebaseCrashlytics;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -13,7 +14,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 
 
-public class MengineCrashlyticsPlugin extends MenginePlugin {
+public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin {
     public static String PLUGIN_NAME = "FirebaseCrashlytics";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -34,7 +35,7 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
-                MengineCrashlyticsPlugin.this.logError("app crash -> %s", throwable.getMessage());
+                MengineFirebaseCrashlyticsPlugin.this.logError("app crash -> %s", throwable.getMessage());
                 throwable.printStackTrace();
 
                 FirebaseCrashlytics.getInstance().recordException(throwable);
@@ -47,6 +48,17 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
         });
     }
 
+    @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+        activity.addLoggerPlugin(this);
+    }
+
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        activity.removeLoggerPlugin(this);
+    }
+
+
     public void recordException(Throwable throwable) {
         this.logInfo("recordException throwable: %s"
             , throwable.getLocalizedMessage()
@@ -57,7 +69,7 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
 
     public void recordLog(String msg) {
         this.logInfo("recordLog msg: %s"
-                , msg
+            , msg
         );
 
         FirebaseCrashlytics.getInstance().log(msg);
@@ -69,5 +81,13 @@ public class MengineCrashlyticsPlugin extends MenginePlugin {
         FirebaseCrashlytics.getInstance().setCustomKey("TestCrash", true);
 
         throw new RuntimeException("Firebase Crashlytics Test Crash");
+    }
+
+    public void onMengineLogger(String category, int level, int filter, int color, String msg) {
+        if(level > LM_ERROR) {
+            return;
+        }
+
+        FirebaseCrashlytics.getInstance().log(msg);
     }
 }

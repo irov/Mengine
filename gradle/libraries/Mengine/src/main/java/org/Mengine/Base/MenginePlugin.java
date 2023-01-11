@@ -20,6 +20,19 @@ public class MenginePlugin {
     private ArrayList<MenginePluginExtension> m_extensions;
     private String m_pluginName;
 
+    public static int LM_SILENT = 0;
+    public static int LM_FATAL = 1;
+    public static int LM_CRITICAL = 2;
+    public static int LM_MESSAGE_RELEASE = 3;
+    public static int LM_ERROR = 4;
+    public static int LM_PERFOMANCE = 5;
+    public static int LM_STATISTIC = 6;
+    public static int LM_WARNING = 7;
+    public static int LM_MESSAGE = 8;
+    public static int LM_INFO = 9;
+    public static int LM_DEBUG = 10;
+    public static int LM_VERBOSE = 11;
+
     @FunctionalInterface
     public interface CallbackInterface {
         void callback(Object result);
@@ -241,6 +254,10 @@ public class MenginePlugin {
     }
 
     public void onLowMemory(MengineApplication application) {
+        //Empty
+    }
+
+    public void onMengineLogger(String category, int level, int filter, int color, String msg) {
         //Empty
     }
 }

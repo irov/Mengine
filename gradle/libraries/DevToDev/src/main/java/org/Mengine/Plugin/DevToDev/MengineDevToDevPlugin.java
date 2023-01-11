@@ -43,7 +43,15 @@ public class MengineDevToDevPlugin extends MenginePlugin {
         String appKey = activity.getString(R.string.dev_to_dev_app_id);
 
         DTDAnalytics.INSTANCE.initialize(appKey, configuration, activity);
+
+        activity.addAnalyticsPlugin(this);
     }
+
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        activity.removeAnalyticsPlugin(this);
+    }
+
 
     public void tutorialEvent(int stateOrStep) {
         if (m_initializeSuccessful == false) {

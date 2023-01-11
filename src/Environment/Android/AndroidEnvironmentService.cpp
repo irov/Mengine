@@ -583,8 +583,6 @@ namespace Mengine
 
         TimeMilliseconds eventTimestamp = _event->getTimestamp();
 
-        jobject eventTimestamp_jobject = this->makeJObjectLong( eventTimestamp );
-
         uint32_t countParameters = _event->getCountParameters();
 
         jobject parameters_jobject = this->makeJObjectHashMap( countParameters );
@@ -646,7 +644,10 @@ namespace Mengine
 
         MENGINE_ASSERTION( jmethodID_onMengineAnalyticsEvent != nullptr, "invalid get android method 'onMengineAnalyticsEvent'" );
 
-        m_jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineAnalyticsEvent, eventName_jobject, eventTimestamp_jobject, parameters_jobject );
+        m_jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineAnalyticsEvent, eventName_jobject, (jlong)eventTimestamp, parameters_jobject );
+
+        m_jenv->DeleteLocalRef( eventName_jobject );
+        m_jenv->DeleteLocalRef( parameters_jobject );
 
         m_androidEventationHub->invoke();
     }

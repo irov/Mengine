@@ -1,5 +1,7 @@
 #include "AndroidProxyLogger.h"
 
+#include "Environment/Android/AndroidUtils.h"
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/LoggerHelper.h"
 
@@ -30,16 +32,6 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidProxyLogger::setJNIEnv( JNIEnv * _jenv )
-    {
-        m_jenv = _jenv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEnv * AndroidProxyLogger::getJNIEnv() const
-    {
-        return m_jenv;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void AndroidProxyLogger::setJClassMengineActivity( jclass _jclassMengineActivity )
     {
         m_jclassMengineActivity = _jclassMengineActivity;
@@ -62,13 +54,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidProxyLogger::log( const LoggerMessage & _message )
     {
-        static jmethodID jmethodID_onMengineLogger = m_jenv->GetMethodID(m_jclassMengineActivity, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        static jmethodID jmethodID_onMengineLogger = jenv->GetMethodID(m_jclassMengineActivity, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
 
         MENGINE_ASSERTION(jmethodID_onMengineLogger != nullptr, "invalid get android method 'onMengineLogger'" );
 
         const Char * category_str = _message.category.c_str();
 
-        jstring category_jstring = m_jenv->NewStringUTF( category_str );
+        jstring category_jstring = jenv->NewStringUTF( category_str );
 
         ELoggerLevel level = _message.level;
         uint32_t filter = _message.filter;
@@ -80,12 +74,12 @@ namespace Mengine
         MENGINE_MEMCPY( m_loggerMessage, data_value, data_size * sizeof(Char) );
         m_loggerMessage[data_size] = '\0';
 
-        jstring data_jstring = m_jenv->NewStringUTF( m_loggerMessage );
+        jstring data_jstring = jenv->NewStringUTF( m_loggerMessage );
 
-        m_jenv->CallVoidMethod(m_jobjectMengineActivity, jmethodID_onMengineLogger, category_jstring, level, filter, color, data_jstring);
+        jenv->CallVoidMethod(m_jobjectMengineActivity, jmethodID_onMengineLogger, category_jstring, level, filter, color, data_jstring);
 
-        m_jenv->DeleteLocalRef( category_jstring );
-        m_jenv->DeleteLocalRef( data_jstring );
+        jenv->DeleteLocalRef( category_jstring );
+        jenv->DeleteLocalRef( data_jstring );
     }
     //////////////////////////////////////////////////////////////////////////
 }

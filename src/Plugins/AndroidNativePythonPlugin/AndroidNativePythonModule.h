@@ -50,7 +50,7 @@ namespace Mengine
         void addCommand( const LambdaPythonEventHandler & _command );
 
     protected:
-        PyObject * getPythonAttribute( jobject obj );
+        PyObject * getPythonAttribute( JNIEnv * _jenv, jobject obj );
 
     public:
         void pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args ) override;
@@ -58,7 +58,7 @@ namespace Mengine
 
     public:
         void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb );
-        bool androidResponse( int32_t _id, const pybind::object & _result ) const;
+        bool androidResponse( JNIEnv * _jenv, int32_t _id, const pybind::object & _result ) const;
         void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
         bool androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
         int32_t androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
@@ -67,11 +67,9 @@ namespace Mengine
         String androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const;
 
     protected:
-        bool getAndroidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
+        bool getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
 
     protected:
-        JNIEnv * m_jenv;
-
         jclass m_jclass_MengineActivity;
         jobject m_jobject_MengineActivity;
 

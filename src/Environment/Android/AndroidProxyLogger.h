@@ -16,9 +16,6 @@ namespace Mengine
         ~AndroidProxyLogger() override;
 
     public:
-        void setJNIEnv( JNIEnv * _jenv );
-        JNIEnv * getJNIEnv() const;
-
         void setJClassMengineActivity( jclass _jclassMengineActivity );
         jclass getJClassMengineActivity() const;
 

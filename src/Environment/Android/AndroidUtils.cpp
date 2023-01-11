@@ -36,23 +36,30 @@ extern "C"
         */
 
         JNIEnv *env;
-        int status = mJavaVM->AttachCurrentThread( &env, NULL );
-        if( status < 0 ) {
-            return 0;
+        int get_status = mJavaVM->GetEnv((void **)&env, JNI_VERSION_1_6);
+        if (get_status == JNI_OK) {
+            return env;
+        } else if (get_status == JNI_EDETACHED ) {
+            int attach_status = mJavaVM->AttachCurrentThread(&env, NULL);
+            if (attach_status < 0) {
+                return 0;
+            }
+
+            /* From http://developer.android.com/guide/practices/jni.html
+            * Threads attached through JNI must call DetachCurrentThread before they exit. If coding this directly is awkward,
+            * in Android 2.0 (Eclair) and higher you can use pthread_key_create to define a destructor function that will be
+            * called before the thread exits, and call DetachCurrentThread from there. (Use that key with pthread_setspecific
+            * to store the JNIEnv in thread-local-storage; that way it'll be passed into your destructor as the argument.)
+            * Note: The destructor is not called unless the stored value is != NULL
+            * Note: You can call this function any number of times for the same thread, there's no harm in it
+            *       (except for some lost CPU cycles)
+            */
+            pthread_setspecific(mThreadKey, (void *) env);
+
+            return env;
         }
 
-        /* From http://developer.android.com/guide/practices/jni.html
-        * Threads attached through JNI must call DetachCurrentThread before they exit. If coding this directly is awkward,
-        * in Android 2.0 (Eclair) and higher you can use pthread_key_create to define a destructor function that will be
-        * called before the thread exits, and call DetachCurrentThread from there. (Use that key with pthread_setspecific
-        * to store the JNIEnv in thread-local-storage; that way it'll be passed into your destructor as the argument.)
-        * Note: The destructor is not called unless the stored value is != NULL
-        * Note: You can call this function any number of times for the same thread, there's no harm in it
-        *       (except for some lost CPU cycles)
-        */
-        pthread_setspecific( mThreadKey, (void *)env );
-
-        return env;
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     static int Mengine_JNI_SetupThread( void )
@@ -63,22 +70,23 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jint JNICALL JNI_OnLoad( JavaVM *vm, void *reserved ) {
-        JNIEnv *env;
         mJavaVM = vm;
-        if( mJavaVM->GetEnv( (void **)&env, JNI_VERSION_1_4 ) != JNI_OK ) {
-            return -1;
+
+        JNIEnv *env;
+        if( mJavaVM->GetEnv( (void **)&env, JNI_VERSION_1_6 ) != JNI_OK ) {
+            return JNI_ERR;
         }
         /*
         * Create mThreadKey so we can keep track of the JNIEnv assigned to each thread
         * Refer to http://developer.android.com/guide/practices/design/jni.html for the rationale behind this
         */
         if( pthread_key_create( &mThreadKey, Mengine_JNI_ThreadDestroyed ) != 0 ) {
-            return -1;
+            return JNI_ERR;
         }
 
         Mengine_JNI_SetupThread();
 
-        return JNI_VERSION_1_4;
+        return JNI_VERSION_1_6;
     }
     //////////////////////////////////////////////////////////////////////////
 }

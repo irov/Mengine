@@ -15,9 +15,6 @@ namespace Mengine
         SERVICE_DECLARE( "AndroidEnvironmentService" )
 
     public:
-        virtual JNIEnv * getJENV() const = 0;
-
-    public:
         virtual jclass getJClassMengineActivity() const = 0;
         virtual jobject getJObjectMengineActivity() const = 0;
 

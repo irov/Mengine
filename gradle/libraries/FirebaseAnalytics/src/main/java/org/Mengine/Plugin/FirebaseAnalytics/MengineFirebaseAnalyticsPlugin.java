@@ -67,7 +67,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
     }
 
     public void logEvent(@NonNull String eventName, @Nullable Bundle params) {
-        this.logError("logEvent eventName: %s params: %s"
+        this.logInfo("logEvent eventName: %s params: %s"
             , eventName
             , params
         );

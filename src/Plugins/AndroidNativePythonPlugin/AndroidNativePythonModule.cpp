@@ -74,6 +74,29 @@ extern "C"
             _handler->addPlugin( name, new_plugin );
         } );
     }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
+    {
+        const Mengine::Char * name_str = env->GetStringUTFChars( _name, nullptr );
+
+        Mengine::String name = name_str;
+
+        env->ReleaseStringUTFChars( _name, name_str );
+
+        if( s_androidNativePythonModule == nullptr )
+        {
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android activate semaphore '%s'"
+                , name.c_str()
+            );
+
+            return;
+        }
+
+        s_androidNativePythonModule->addCommand( [name]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
+        {
+            _handler->activateSemaphore( name );
+        } );
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +135,8 @@ namespace Mengine
         pybind::def_functor_args( kernel, "androidInteger64Method", this, &AndroidNativePythonModule::androidInteger64Method );
         pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonModule::androidFloatMethod );
         pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonModule::androidStringMethod );
+
+        pybind::def_functor_args( kernel, "waitAndroidSemaphore", this, &AndroidNativePythonModule::waitAndroidSemaphore );
 
         m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -190,6 +215,7 @@ namespace Mengine
 
         s_androidNativePythonModule = nullptr;
 
+        m_semaphoreListeners.clear();
         m_callbacks.clear();
         m_plugins.clear();
 
@@ -514,11 +540,11 @@ namespace Mengine
             return false;
         }
 
-        static jmethodID jmethodID_responseCall = _jenv->GetMethodID( m_jclass_MengineActivity, "responseCall", "(ILjava/lang/Object;)V" );
+        static jmethodID jmethodID_pythonCallResponse = _jenv->GetMethodID(m_jclass_MengineActivity, "pythonCallResponse", "(ILjava/lang/Object;)V" );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_responseCall != 0, "android activity not found method 'Activity [responseCall] (ILjava/lang/Object;)V'" );
+        MENGINE_ASSERTION_FATAL( jmethodID_pythonCallResponse != 0, "android activity not found method 'Activity [pythonCallResponse] (ILjava/lang/Object;)V'" );
 
-        _jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_responseCall, _id, jresult );
+        _jenv->CallVoidMethod(m_jobject_MengineActivity, jmethodID_pythonCallResponse, _id, jresult );
 
         _jenv->DeleteLocalRef( jresult );
 
@@ -916,6 +942,43 @@ namespace Mengine
         *_jmethodId = jmethodId;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonModule::waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+    {
+        AndroidSemaphoreListenerDesc desc;
+        desc.name = _name;
+        desc.cb = _cb;
+        desc.args = _args;
+
+        m_semaphoreListeners.emplace_back( desc );
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        jmethodID jmethodID_waitAndroidSemaphore = jenv->GetMethodID( m_jclass_MengineActivity, "waitAndroidSemaphore", "(Ljava/lang/String;)V" );
+
+        MENGINE_ASSERTION_FATAL( jmethodID_waitAndroidSemaphore != nullptr, "invalid get android method 'pythonInitializePlugins'" );
+
+        const Char * name_str = _name.c_str();
+
+        jstring name_jvalue = jenv->NewStringUTF( name_str );
+
+        jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_waitAndroidSemaphore, name_jvalue );
+
+        jenv->DeleteLocalRef( name_jvalue );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonModule::activateSemaphore( const String & _name )
+    {
+        for( const AndroidSemaphoreListenerDesc & desc : m_semaphoreListeners )
+        {
+            if( desc.name != _name.c_str() )
+            {
+                continue;
+            }
+
+            desc.cb.call_args( desc.args );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

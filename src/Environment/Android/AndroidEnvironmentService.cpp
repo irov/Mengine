@@ -141,69 +141,6 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getConfigValue )(JNIEnv * env, jclass cls, jstring _section, jstring _key, jstring _default)
-    {
-        const Mengine::ConfigInterfacePtr & defaultConfig = CONFIG_SERVICE()
-            ->getDefaultConfig();
-
-        const Mengine::Char * section_str = env->GetStringUTFChars( _section, nullptr );
-        const Mengine::Char * key_str = env->GetStringUTFChars( _key, nullptr );
-        const Mengine::Char * default_str = env->GetStringUTFChars( _default, nullptr );
-
-        const Mengine::Char * value_str = nullptr;
-        bool result = defaultConfig->hasValue( section_str, key_str, default_str, &value_str );
-
-        env->ReleaseStringUTFChars( _section, section_str );
-        env->ReleaseStringUTFChars( _key, key_str );
-        env->ReleaseStringUTFChars( _default, default_str );
-
-        if( result == false )
-        {
-            return _default;
-        }
-
-        jstring value = env->NewStringUTF( value_str );
-
-        return value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getConfigValueBoolean )(JNIEnv * env, jclass cls, jstring _section, jstring _key, jboolean _default)
-    {
-        const Mengine::ConfigInterfacePtr & defaultConfig = CONFIG_SERVICE()
-            ->getDefaultConfig();
-
-        const Mengine::Char * section_str = env->GetStringUTFChars( _section, nullptr );
-        const Mengine::Char * key_str = env->GetStringUTFChars( _key, nullptr );
-
-        bool value_boolean;
-        bool result = defaultConfig->hasValue( section_str, key_str, _default, &value_boolean );
-
-        env->ReleaseStringUTFChars( _section, section_str );
-        env->ReleaseStringUTFChars( _key, key_str );
-
-        if( result == false )
-        {
-            return _default;
-        }
-
-        return value_boolean;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1hasOption )(JNIEnv * env, jclass cls, jstring _option)
-    {
-        const Mengine::ConfigInterfacePtr & defaultConfig = CONFIG_SERVICE()
-            ->getDefaultConfig();
-
-        const Mengine::Char * option_str = env->GetStringUTFChars( _option, nullptr );
-
-        bool result = OPTIONS_SERVICE()
-            ->hasOption( option_str, false );
-
-        env->ReleaseStringUTFChars( _option, option_str );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1logInfo )(JNIEnv * env, jclass cls, jstring _msg)
     {
         if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
@@ -214,7 +151,7 @@ extern "C"
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-                , msg_str
+            , msg_str
         );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
@@ -230,7 +167,7 @@ extern "C"
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-                , msg_str
+            , msg_str
         );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
@@ -246,7 +183,7 @@ extern "C"
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-                , msg_str
+            , msg_str
         );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
@@ -262,7 +199,7 @@ extern "C"
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-                , msg_str
+            , msg_str
         );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
@@ -278,7 +215,7 @@ extern "C"
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-                , msg_str
+            , msg_str
         );
 
         env->ReleaseStringUTFChars( _msg, msg_str );
@@ -326,12 +263,14 @@ namespace Mengine
         m_jclass_Map = jenv->FindClass( "java/util/Map" );
         m_jclass_HashMap = jenv->FindClass( "java/util/HashMap" );
 
-        m_androidEventationHub = Helper::makeFactorableUnique<AndroidEventationHub>( MENGINE_DOCUMENT_FACTORABLE );
+        AndroidEventationHubPtr androidEventationHub = Helper::makeFactorableUnique<AndroidEventationHub>( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( m_androidEventationHub->initialize() == false )
+        if( androidEventationHub->initialize() == false )
         {
             return false;
         }
+
+        m_androidEventationHub = androidEventationHub;
 
         ANALYTICS_SERVICE()
             ->addEventProvider( AnalyticsEventProviderInterfacePtr::from(this) );
@@ -375,7 +314,7 @@ namespace Mengine
         m_androidEventationHub = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidEnvironmentService::openUrlInDefaultBrowser(const Char * _url )
+    bool AndroidEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -384,7 +323,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidEnvironmentService::openMail(const Char * _email, const Char * _subject, const Char * _body )
+    bool AndroidEnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -458,7 +397,7 @@ namespace Mengine
         return  m_jclass_HashMap;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getAndroidId(Char * _androidId, size_t _capacity ) const
+    size_t AndroidEnvironmentService::getAndroidId( Char * _androidId, size_t _capacity ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -481,7 +420,7 @@ namespace Mengine
         return jStringLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getDeviceName(Char * _deviceName, size_t _capacity ) const
+    size_t AndroidEnvironmentService::getDeviceName( Char * _deviceName, size_t _capacity ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -504,7 +443,7 @@ namespace Mengine
         return jStringLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getAndroidPackageName(Char * _packageName, size_t _capacity ) const
+    size_t AndroidEnvironmentService::getAndroidPackageName( Char * _packageName, size_t _capacity ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -527,7 +466,7 @@ namespace Mengine
         return jStringLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t AndroidEnvironmentService::androidOpenAssetFile(const Char * _path )
+    int32_t AndroidEnvironmentService::androidOpenAssetFile( const Char * _path )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -536,7 +475,7 @@ namespace Mengine
         return fileId;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t AndroidEnvironmentService::androidAvailableAssetFile(int32_t _fileId )
+    int32_t AndroidEnvironmentService::androidAvailableAssetFile( int32_t _fileId )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -545,7 +484,7 @@ namespace Mengine
         return available;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t AndroidEnvironmentService::androidReadAssetFile(int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer )
+    int32_t AndroidEnvironmentService::androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -554,7 +493,7 @@ namespace Mengine
         return read;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t AndroidEnvironmentService::androidSkipAssetFile(int32_t _fileId, int32_t _offset )
+    int32_t AndroidEnvironmentService::androidSkipAssetFile( int32_t _fileId, int32_t _offset )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -563,31 +502,31 @@ namespace Mengine
         return skip;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::androidResetAssetFile(int32_t _fileId )
+    void AndroidEnvironmentService::androidResetAssetFile( int32_t _fileId )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         Helper::AndroidResetAssetFile( jenv, g_jclass_MengineActivity, g_jobject_MengineActivity, _fileId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::androidCloseAssetFile(int32_t _fileId )
+    void AndroidEnvironmentService::androidCloseAssetFile( int32_t _fileId )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         Helper::AndroidCloseAssetFile( jenv, g_jclass_MengineActivity, g_jobject_MengineActivity, _fileId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::addAndroidEventation(const AndroidEventationInterfacePtr & _eventation )
+    void AndroidEnvironmentService::addAndroidEventation( const AndroidEventationInterfacePtr & _eventation )
     {
         m_androidEventationHub->addAndroidEventation( _eventation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::removeAndroidEventation(const AndroidEventationInterfacePtr & _eventation )
+    void AndroidEnvironmentService::removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation )
     {
         m_androidEventationHub->removeAndroidEventation( _eventation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::onAnalyticsEvent(const AnalyticsEventInterfacePtr & _event )
+    void AndroidEnvironmentService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 

@@ -1,8 +1,5 @@
 package org.Mengine.Plugin.Adjust;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.adjust.sdk.Adjust;
@@ -30,11 +27,16 @@ public class MengineAdjustPlugin extends MenginePlugin {
 
     @Override
     public void onAppCreate(MengineApplication application) {
-        String environment = AdjustConfig.ENVIRONMENT_SANDBOX;
-        if (!BuildConfig.DEBUG) {
-            environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
+        String environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
+
+        if (BuildConfig.DEBUG == true) {
+            environment = AdjustConfig.ENVIRONMENT_SANDBOX;
         }
-        AdjustConfig config = new AdjustConfig(application, application.getString(R.string.adjust_app_token), environment);
+
+        String adjust_app_token = application.getString(R.string.adjust_app_token);
+
+        AdjustConfig config = new AdjustConfig(application, adjust_app_token, environment);
+
         if (BuildConfig.DEBUG) {
             config.setLogLevel(LogLevel.VERBOSE);
         }
@@ -42,7 +44,7 @@ public class MengineAdjustPlugin extends MenginePlugin {
         config.setPreinstallTrackingEnabled(true);
         Adjust.onCreate(config);
 
-        this.logInfo("adjust inited  user id = '%s'"
+        this.logInfo("Adjust Adid: %s"
             , Adjust.getAdid()
         );
     }
@@ -63,14 +65,23 @@ public class MengineAdjustPlugin extends MenginePlugin {
     }
 
     void eventTraking(String token) {
+        this.logInfo("eventTraking token: %s"
+            , token
+        );
+
         AdjustEvent adjustEvent = new AdjustEvent(token);
         Adjust.trackEvent(adjustEvent);
     }
 
     void revenueTracking(String token, double amount, String currency) {
+        this.logInfo("revenueTracking token: %s amount: %f currency: %s"
+            , token
+            , amount
+            , currency
+        );
+
         AdjustEvent adjustEvent = new AdjustEvent(token);
         adjustEvent.setRevenue(amount, currency);
         Adjust.trackEvent(adjustEvent);
     }
-
 }

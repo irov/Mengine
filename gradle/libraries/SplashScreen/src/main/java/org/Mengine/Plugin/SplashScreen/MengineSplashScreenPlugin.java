@@ -40,10 +40,12 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     public void showSplash() {
+        this.logInfo("showSplash");
+
         m_image.clearAnimation();
 
         AlphaAnimation animation = new AlphaAnimation(0.f, 1.f);
-        animation.setDuration(800);
+        animation.setDuration(R.integer.splashscreen_show_duration);
         animation.setFillAfter(true);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -66,10 +68,12 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     public void hideSplash() {
+        this.logInfo("hideSplash");
+
         m_image.clearAnimation();
 
         AlphaAnimation animation = new AlphaAnimation(1.f, 0.f);
-        animation.setDuration(400);
+        animation.setDuration(R.integer.splashscreen_hide_duration);
         animation.setFillAfter(true);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -94,6 +98,8 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     public void removeSpash() {
+        this.logInfo("removeSpash");
+
         MengineActivity activity = this.getActivity();
 
         ViewGroup view = (ViewGroup)activity.getContentView();

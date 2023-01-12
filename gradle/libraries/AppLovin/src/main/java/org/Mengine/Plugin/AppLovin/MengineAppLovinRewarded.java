@@ -18,20 +18,14 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     private int m_retryAttemptRewarded;
 
-    public MengineAppLovinRewarded(MengineAppLovinPlugin plugin) throws Exception {
+    public MengineAppLovinRewarded(MengineAppLovinPlugin plugin, String adUnitId) throws Exception {
         super(plugin);
 
         m_retryAttemptRewarded = 0;
 
         MengineActivity activity = m_plugin.getActivity();
 
-        String AppLovin_RewardedAdUnitId = activity.getConfigValue("AppLovinPlugin", "RewardedAdUnitId", "");
-
-        if (AppLovin_RewardedAdUnitId.isEmpty() == true) {
-            throw new Exception("Need to add config value for [AppLovin] RewardedAdUnitId");
-        }
-
-        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(AppLovin_RewardedAdUnitId, activity);
+        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(adUnitId, activity);
 
         rewardedAd.setRequestListener(this);
         rewardedAd.setListener(this);
@@ -40,6 +34,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         m_rewardedAd = rewardedAd;
     }
 
+    @Override
     public void destroy() {
         super.destroy();
 
@@ -50,6 +45,8 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     public void loadRewarded() {
+        m_plugin.logInfo("[Rewarded] load");
+
         MengineActivity activity = m_plugin.getActivity();
 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
@@ -65,7 +62,13 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     public void showRewarded() {
-        if (m_rewardedAd.isReady() == true) {
+        boolean ready = m_rewardedAd.isReady();
+
+        m_plugin.logInfo("[Rewarded] showInterstitial [%d]"
+            , ready
+        );
+
+        if (ready == true) {
             m_rewardedAd.showAd();
         }
     }
@@ -170,6 +173,6 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.pythonCall("onApplovinRewardedOnAdRevenuePaid");
 
-        m_plugin.eventRevenuePaid(ad);
+        m_plugin.onEventRevenuePaid(ad);
     }
 }

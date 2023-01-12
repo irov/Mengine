@@ -47,12 +47,24 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void scheduleJobServiceNotification(int id, String title, String content, int delay) {
+        this.logInfo("scheduleJobServiceNotification id: %d title: %s content: %s delay: %d"
+            , id
+            , title
+            , content
+            , delay
+        );
+
         PersistableBundle bundle = NotificationJobService.notificationBundle(id, title, content);
 
         this.scheduleJobNotification(delay, bundle);
     }
 
     public void scheduleNotification(Notification notification, int id, int delay) {
+        this.logInfo("scheduleNotification id: %d delay: %d"
+            , id
+            , delay
+        );
+
         MengineActivity activity = this.getActivity();
         
         Intent notificationIntent = new Intent(activity, NotificationPublisher.class);
@@ -61,6 +73,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
 
         int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
         }
@@ -73,6 +86,10 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     }
 
     public void instantlyPresentNotification(Notification notification, int id) {
+        this.logInfo("instantlyPresentNotification id: %d"
+            , id
+        );
+
         MengineActivity activity = this.getActivity();
         
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -104,6 +121,8 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     }
     
     public void cancelAll() {
+        this.logInfo("cancelAll");
+
         MengineActivity activity = this.getActivity();
         
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -131,13 +150,13 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
         return builder.setContentTitle(title)
-                .setContentText(content)
-                .setSmallIcon(R.drawable.ic_stat_onesignal_default)
-                .setColor(Color.parseColor("#422b00"))  // todo: take out in xml
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .build();
+            .setContentText(content)
+            .setSmallIcon(R.drawable.ic_stat_onesignal_default)
+            .setColor(Color.parseColor("#422b00"))  // todo: take out in xml
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .build();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

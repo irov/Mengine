@@ -5,13 +5,16 @@ import org.Mengine.Base.MenginePlugin;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MengineAdvertisingPlugin extends MenginePlugin {
     public static String PLUGIN_NAME = "Advertising";
@@ -21,22 +24,10 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        GetAdvertisingIdTask task = new GetAdvertisingIdTask(activity);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        task.execute();
-    }
-
-    private class GetAdvertisingIdTask extends AsyncTask<String, Integer, AdvertisingIdClient.Info> {
-        private MengineActivity m_activity;
-
-        public GetAdvertisingIdTask(MengineActivity activity) {
-            super();
-            this.m_activity = activity;
-        }
-
-        @Override
-        protected AdvertisingIdClient.Info doInBackground(String... strings) {
-            final Context context = this.m_activity.getApplicationContext();
+        executor.execute(() -> {
+            final Context context = activity.getApplicationContext();
 
             AdvertisingIdClient.Info adInfo = null;
 
@@ -52,11 +43,14 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
                 e.printStackTrace();
             }
 
-            return adInfo;
-        }
+            MengineAdvertisingPlugin.this.onPostAdInfo(activity, adInfo);
+        });
+    }
 
-        @Override
-        protected void onPostExecute(AdvertisingIdClient.Info adInfo) {
+    public void onPostAdInfo(MengineActivity activity, AdvertisingIdClient.Info adInfo) {
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        handler.post(() -> {
             if (adInfo == null ) {
                 MengineAdvertisingPlugin.m_advertisingId = "00000000-0000-0000-0000-000000000000";
                 MengineAdvertisingPlugin.m_advertisingLimitTrackingEnabled = true;
@@ -73,7 +67,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
                 , MengineAdvertisingPlugin.m_advertisingLimitTrackingEnabled == true ? "true" : "false"
             );
 
-            this.m_activity.sendEvent("AdvertisingId", MengineAdvertisingPlugin.m_advertisingId, MengineAdvertisingPlugin.m_advertisingLimitTrackingEnabled);
-        }
+            activity.sendEvent("AdvertisingId", MengineAdvertisingPlugin.m_advertisingId, MengineAdvertisingPlugin.m_advertisingLimitTrackingEnabled);
+        });
     }
 }

@@ -19,6 +19,8 @@ namespace Mengine
         virtual void pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args ) = 0;
 
         virtual void addPlugin( const String & _name, const jobject & _plugin ) = 0;
+
+        virtual void activateSemaphore( const String & _name ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonEventHandlerInterface> PythonEventHandlerInterfacePtr;
@@ -69,6 +71,12 @@ namespace Mengine
     protected:
         bool getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
 
+    public:
+        void waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args );
+
+    public:
+        void activateSemaphore( const String & _name ) override;
+
     protected:
         jclass m_jclass_MengineActivity;
         jobject m_jobject_MengineActivity;
@@ -87,6 +95,16 @@ namespace Mengine
 
         typedef Map<Pair<ConstString, ConstString>, pybind::object> MapAndroidCallbacks;
         MapAndroidCallbacks m_callbacks;
+
+        struct AndroidSemaphoreListenerDesc
+        {
+            ConstString name;
+            pybind::object cb;
+            pybind::args args;
+        };
+
+        typedef Vector<AndroidSemaphoreListenerDesc> VectorAndroidSemaphoreListeners;
+        VectorAndroidSemaphoreListeners m_semaphoreListeners;
 
         typedef Map<ConstString, jobject> MapAndroidPlugins;
         MapAndroidPlugins m_plugins;

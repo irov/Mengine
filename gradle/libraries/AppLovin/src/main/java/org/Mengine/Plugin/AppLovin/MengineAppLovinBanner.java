@@ -20,18 +20,12 @@ import android.widget.FrameLayout;
 public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener {
     private MaxAdView m_adView;
 
-    public MengineAppLovinBanner(MengineAppLovinPlugin plugin) throws Exception {
+    public MengineAppLovinBanner(MengineAppLovinPlugin plugin, String adUnitId) throws Exception {
         super(plugin);
 
         MengineActivity activity = plugin.getActivity();
 
-        String AppLovin_BannerAdUnitId = activity.getConfigValue("AppLovinPlugin", "BannerAdUnitId", "");
-
-        if (AppLovin_BannerAdUnitId.isEmpty() == true) {
-            throw new Exception("Need to add config value for [AppLovin] BannerAdUnitId");
-        }
-
-        MaxAdView adView = new MaxAdView(AppLovin_BannerAdUnitId, activity);
+        MaxAdView adView = new MaxAdView(adUnitId, activity);
 
         adView.setRequestListener(this);
         adView.setListener(this);
@@ -70,6 +64,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         m_adView = adView;
     }
 
+    @Override
     public void destroy() {
         super.destroy();
 
@@ -160,6 +155,6 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         m_plugin.pythonCall("onApplovinBannerOnAdRevenuePaid");
 
-        m_plugin.eventRevenuePaid(ad);
+        m_plugin.onEventRevenuePaid(ad);
     }
 }

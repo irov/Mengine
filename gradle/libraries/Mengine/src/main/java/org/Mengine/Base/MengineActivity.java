@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import android.content.*;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,11 +32,13 @@ public class MengineActivity extends SDLActivity {
     private Map<Integer, InputStream> m_openFiles;
     private int m_fileEnumerator;
 
+    private Map<String, MengineSemaphore> m_semaphores;
+
     private Map<String, Integer> m_requestCodes;
 
     class CallbackResponse {
         public Integer id;
-        public MenginePlugin.CallbackInterface cb;
+        public MengineCallbackInterface cb;
     };
 
     private ArrayList<CallbackResponse> m_callbackResponses;
@@ -56,93 +60,82 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidEnvironmentService_getBuildTimestamp();
     private static native String AndroidEnvironmentService_getBuildUsername();
     private static native String AndroidEnvironmentService_getBuildVersion();
-    private static native String AndroidEnvironmentService_getConfigValue(String section, String key, String default_value);
-    private static native boolean AndroidEnvironmentService_getConfigValueBoolean(String section, String key, boolean default_value);
-    private static native boolean AndroidEnvironmentService_hasOption(String option);
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, int responseId, Object args[]);
+    private static native void AndroidNativePython_activateSemaphore(String name);
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public MengineActivity() {
         m_initializeBaseServices = false;
         m_initializePython = false;
 
-        m_openFiles = new HashMap<Integer, InputStream>();
+        m_openFiles = new HashMap<>();
         m_fileEnumerator = 0;
 
-        m_requestCodes = new HashMap<String, Integer>();
+        m_semaphores = new HashMap<>();
 
-        m_callbackResponses = new ArrayList<CallbackResponse>();
+        m_requestCodes = new HashMap<>();
+
+        m_callbackResponses = new ArrayList<>();
         m_callbackResponseEnumerator = 0;
 
-        m_loggerPlugins = new ArrayList<MenginePlugin>();
-        m_analyticsPlugins = new ArrayList<MenginePlugin>();
+        m_loggerPlugins = new ArrayList<>();
+        m_analyticsPlugins = new ArrayList<>();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected String[] getLibraries() {
         return new String[]{
-                "SDL2",
-                "SDLApplication"
+            "SDL2",
+            "SDLApplication"
         };
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getCompanyName() {
        return AndroidEnvironmentService_getCompanyName();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getProjectName() {
         return AndroidEnvironmentService_getProjectName();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public int getProjectVersion() {
         return AndroidEnvironmentService_getProjectVersion();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public boolean isDebugMode() {
         return AndroidEnvironmentService_isDebugMode();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public boolean isDevelopmentMode() {
         return AndroidEnvironmentService_isDevelopmentMode();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public boolean isMasterRelease() {
         return AndroidEnvironmentService_isMasterRelease();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public boolean isBuildPublish() {
         return AndroidEnvironmentService_isBuildPublish();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getEngineGITSHA1() {
         return AndroidEnvironmentService_getEngineGITSHA1();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getBuildTimestamp() {
         return AndroidEnvironmentService_getBuildTimestamp();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getBuildUsername() {
         return AndroidEnvironmentService_getBuildUsername();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getBuildVersion() {
         return AndroidEnvironmentService_getBuildVersion();
     }
-
-    public String getConfigValue(String section, String key, String default_value) {
-        return AndroidEnvironmentService_getConfigValue(section, key, default_value);
-    }
-
-    public boolean getConfigValueBoolean(String section, String key, boolean default_value) {
-        return AndroidEnvironmentService_getConfigValueBoolean(section, key, default_value);
-    }
-
-    public boolean hasOption(String option) {
-        return AndroidEnvironmentService_hasOption(option);
-    }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     protected ArrayList<MenginePlugin> getPlugins() {
         MengineApplication app = (MengineApplication)this.getApplication();
 
@@ -150,7 +143,7 @@ public class MengineActivity extends SDLActivity {
 
         return plugins;
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public <T> T findPlugin(Class<T> cls) {
         String name;
 
@@ -174,29 +167,82 @@ public class MengineActivity extends SDLActivity {
 
         return (T)plugin;
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void addLoggerPlugin(MenginePlugin plugin) {
         m_loggerPlugins.add(plugin);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void removeLoggerPlugin(MenginePlugin plugin) {
         m_loggerPlugins.remove(plugin);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void addAnalyticsPlugin(MenginePlugin plugin) {
         m_analyticsPlugins.add(plugin);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void removeAnalyticsPlugin(MenginePlugin plugin) {
         m_analyticsPlugins.remove(plugin);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void sendEvent(String id, Object ... args) {
         for(MenginePlugin p : this.getPlugins()) {
             p.onEvent(this, id, args);
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public Bundle getMetaDataBundle() {
+        Context context = this.getContext();
+        String packageName = context.getPackageName();
+        PackageManager packageManager = context.getPackageManager();
 
+        try {
+            ApplicationInfo ai = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+
+            return bundle;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Unable to load meta-data: " + e.getMessage());
+        }
+
+        return null;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public String getMetaDataString(String name) {
+        Bundle bundle = this.getMetaDataBundle();
+
+        if (bundle == null) {
+            return null;
+        }
+
+        String value = bundle.getString(name);
+
+        return value;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public boolean getMetaDataBoolean(String name, boolean d) {
+        Bundle bundle = this.getMetaDataBundle();
+
+        if (bundle == null) {
+            return d;
+        }
+
+        boolean value = bundle.getBoolean(name, d);
+
+        return value;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public int getMetaDataInteger(String name, int d) {
+        Bundle bundle = this.getMetaDataBundle();
+
+        if (bundle == null) {
+            return d;
+        }
+
+        int value = bundle.getInt(name, d);
+
+        return value;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -225,11 +271,11 @@ public class MengineActivity extends SDLActivity {
             p.onExtension(this);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void quitMengineApplication() {
         AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void onMengineInitializeBaseServices() {
         m_initializeBaseServices = true;
 
@@ -244,7 +290,7 @@ public class MengineActivity extends SDLActivity {
         MengineApplication app = (MengineApplication)this.getApplication();
         app.onMengineInitializeBaseServices(this);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void onMengineCreateApplication() {
         MengineLog.logInfo(TAG, "onMengineCreateApplication");
 
@@ -259,7 +305,7 @@ public class MengineActivity extends SDLActivity {
         MengineApplication app = (MengineApplication)this.getApplication();
         app.onMengineCreateApplication(this);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void onMengineApplicationRun() {
         MengineLog.logInfo(TAG, "onMengineApplicationRun");
 
@@ -270,7 +316,7 @@ public class MengineActivity extends SDLActivity {
         MengineApplication app = (MengineApplication)this.getApplication();
         app.onMengineApplicationRun(this);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void onMengineApplicationReady() {
         MengineLog.logInfo(TAG, "onMengineApplicationReady");
 
@@ -281,7 +327,7 @@ public class MengineActivity extends SDLActivity {
         MengineApplication app = (MengineApplication)this.getApplication();
         app.onMengineApplicationReady(this);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void onMengineApplicationStop() {
         MengineLog.logInfo(TAG, "onMengineApplicationStop");
 
@@ -294,7 +340,7 @@ public class MengineActivity extends SDLActivity {
 
         m_initializeBaseServices = false;
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void onMengineAnalyticsEvent(String eventName, long timestamp, Map<String, Object> parameters) {
         MengineLog.logInfo(TAG, "onMengineAnalyticsEvent %s %d [%s]"
             , eventName
@@ -306,7 +352,7 @@ public class MengineActivity extends SDLActivity {
             p.onMengineAnalyticsEvent(this, eventName, timestamp, parameters);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -317,7 +363,7 @@ public class MengineActivity extends SDLActivity {
             p.onActivityResult(this, requestCode, resultCode, data);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onStart(){
         super.onStart();
@@ -332,7 +378,7 @@ public class MengineActivity extends SDLActivity {
             this.pythonCall(TAG, "onStart");
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onStop() {
         super.onStop();
@@ -347,7 +393,7 @@ public class MengineActivity extends SDLActivity {
             this.pythonCall(TAG, "onStop");
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onPause() {
         super.onPause();
@@ -362,7 +408,7 @@ public class MengineActivity extends SDLActivity {
             this.pythonCall(TAG, "onPause");
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onResume() {
         super.onResume();
@@ -377,7 +423,7 @@ public class MengineActivity extends SDLActivity {
             this.pythonCall(TAG, "onResume");
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -388,7 +434,7 @@ public class MengineActivity extends SDLActivity {
             p.onNewIntent(this, intent);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -400,13 +446,14 @@ public class MengineActivity extends SDLActivity {
         }
 
         m_openFiles = null;
+        m_semaphores = null;
         m_requestCodes = null;
         m_callbackResponses = null;
 
         m_analyticsPlugins = null;
         m_loggerPlugins = null;
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onRestart() {
         super.onRestart();
@@ -421,7 +468,7 @@ public class MengineActivity extends SDLActivity {
             this.pythonCall(TAG, "onRestart");
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -430,7 +477,7 @@ public class MengineActivity extends SDLActivity {
             p.onConfigurationChanged(this, newConfig);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -439,7 +486,7 @@ public class MengineActivity extends SDLActivity {
             p.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         MengineLog.logInfo(TAG, "dispatchKeyEvent action: %d code: %d"
@@ -455,12 +502,11 @@ public class MengineActivity extends SDLActivity {
 
         return super.dispatchKeyEvent(event);
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected SDLSurface createSDLSurface(Context context) {
         return new MengineSurface(context);
     }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Kernel Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +549,7 @@ public class MengineActivity extends SDLActivity {
 
         AndroidNativePython_addPlugin("Activity", this);
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             try {
                 Class<?> cls = p.getClass();
 
@@ -550,7 +596,7 @@ public class MengineActivity extends SDLActivity {
         AndroidNativePython_call(plugin, method, 0, args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    protected int responseCreate(MenginePlugin.CallbackInterface cb) {
+    protected int pythonCallResponseCreate(MengineCallbackInterface cb) {
         m_callbackResponseEnumerator++;
 
         int id = m_callbackResponseEnumerator;
@@ -564,7 +610,7 @@ public class MengineActivity extends SDLActivity {
         return id;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void pythonCallCb(String plugin, String method, MenginePlugin.CallbackInterface cb, Object ... args) {
+    public void pythonCallCb(String plugin, String method, MengineCallbackInterface cb, Object ... args) {
         if (m_initializePython == false) {
             MengineLog.logError("invalid python plugin [%s] method [%s] args [%s] call before embedding"
                 , plugin
@@ -575,7 +621,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        int id = this.responseCreate(cb);
+        int id = this.pythonCallResponseCreate(cb);
 
         if (BuildConfig.DEBUG) {
             MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] response [%d] args [%s]"
@@ -589,7 +635,7 @@ public class MengineActivity extends SDLActivity {
         AndroidNativePython_call(plugin, method, id, args);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    protected CallbackResponse responseGet(int id) {
+    protected CallbackResponse pythonCallResponseGet(int id) {
         Iterator itr = m_callbackResponses.iterator();
 
         CallbackResponse response;
@@ -611,15 +657,15 @@ public class MengineActivity extends SDLActivity {
         return null;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void responseCall(int id, Object result) {
+    public void pythonCallResponse(int id, Object result) {
         if (BuildConfig.DEBUG) {
-            MengineLog.logInfo(TAG, "responseCall [%d] result [%s]"
+            MengineLog.logInfo(TAG, "pythonCallResponse [%d] result [%s]"
                 , id
                 , result
             );
         }
 
-        CallbackResponse response = this.responseGet(id);
+        CallbackResponse response = this.pythonCallResponseGet(id);
 
         if (response == null) {
             MengineLog.logError(TAG, "responceCall [%d] not found"
@@ -639,6 +685,46 @@ public class MengineActivity extends SDLActivity {
         );
 
         AndroidNativePython_addPlugin(name, plugin);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Semaphore Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void activateSemaphore(String name) {
+        MengineSemaphore semaphore = m_semaphores.get(name);
+
+        if (semaphore == null) {
+            MengineSemaphore new_semaphore = new MengineSemaphore(true);
+
+            m_semaphores.put(name, new_semaphore);
+
+            return;
+        }
+
+        semaphore.activate();
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void waitSemaphore(String name, MengineCallbackInterface cb) {
+        MengineSemaphore semaphore = m_semaphores.get(name);
+
+        if (semaphore == null) {
+            MengineSemaphore new_semaphore = new MengineSemaphore(false);
+
+            new_semaphore.addListener(cb);
+
+            m_semaphores.put(name, new_semaphore);
+
+            return;
+        }
+
+        semaphore.addListener(cb);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void waitAndroidSemaphore(String name) {
+        MengineCallbackInterface cb = (Object) -> {
+            AndroidNativePython_activateSemaphore(name);
+        };
+
+        this.waitSemaphore(name, cb);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Linking Methods

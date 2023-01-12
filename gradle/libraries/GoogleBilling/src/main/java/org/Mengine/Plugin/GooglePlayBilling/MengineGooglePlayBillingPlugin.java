@@ -22,6 +22,7 @@ import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineCallbackInterface;
 import org.Mengine.Base.MenginePlugin;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         void skuResponse(List<ProductDetails> priceOffers);
         void consume(List<String> ids);
         void acknowledge(List<String> ids);
-        void hasAcknowledge(List<String> ids, CallbackInterface cb);
+        void hasAcknowledge(List<String> ids, MengineCallbackInterface cb);
     }
 
     private final IBillingResponse m_callbackListener = new IBillingResponse() {
@@ -93,7 +94,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         }
 
         @Override
-        public void hasAcknowledge(List<String> products, CallbackInterface cb) {
+        public void hasAcknowledge(List<String> products, MengineCallbackInterface cb) {
             MengineGooglePlayBillingPlugin.this.logInfo("Billing response hasAcknowledge");
 
             MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, products);
@@ -192,9 +193,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         MengineActivity activity = this.getActivity();
 
         m_billingClient = BillingClient.newBuilder(activity.getBaseContext())
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build();
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
+            .build();
     }
 
     private void connectAndQueryProducts() {
@@ -234,7 +235,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                         return;
                     }
 
-                    MengineGooglePlayBillingPlugin.this.logInfo("Billing setup finished %s"
+                    MengineGooglePlayBillingPlugin.this.logInfo("Billing setup finished: %s"
                         , billingResult.getDebugMessage()
                     );
 
@@ -263,9 +264,10 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
             for (String productId : m_idsNames) {
                 QueryProductDetailsParams.Product product = QueryProductDetailsParams.Product.newBuilder()
-                        .setProductId(productId)
-                        .setProductType(BillingClient.ProductType.INAPP)
-                        .build();
+                    .setProductId(productId)
+                    .setProductType(BillingClient.ProductType.INAPP)
+                    .build();
+
                 productList.add(product);
             }
 
@@ -309,8 +311,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         }
 
         QueryPurchasesParams purchasesParams = QueryPurchasesParams.newBuilder()
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build();
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build();
 
         m_billingClient.queryPurchasesAsync(purchasesParams, new PurchasesResponseListener() {
             @Override
@@ -356,13 +358,13 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<>();
 
             productDetailsParamsList.add(
-                    BillingFlowParams.ProductDetailsParams.newBuilder()
-                            .setProductDetails(product)
-                            .build());
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    .setProductDetails(product)
+                    .build());
 
             BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-                    .setProductDetailsParamsList(productDetailsParamsList)
-                    .build();
+                .setProductDetailsParamsList(productDetailsParamsList)
+                .build();
 
             BillingResult billingResult = m_billingClient.launchBillingFlow(activity, flowParams);
 
@@ -415,10 +417,13 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                 String token = purchase.getPurchaseToken();
 
                 AcknowledgePurchaseParams.Builder acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                        .setPurchaseToken(token);
+                    .setPurchaseToken(token);
 
                 m_billingClient.acknowledgePurchase(acknowledgePurchaseParams.build(), billingResult -> {
-                    MengineGooglePlayBillingPlugin.this.logInfo("acknowledgePurchase: " + billingResult.getResponseCode() + " " + billingResult.getDebugMessage());
+                    MengineGooglePlayBillingPlugin.this.logInfo("acknowledgePurchase responseCode: %d debugMessage: %s"
+                        , billingResult.getResponseCode()
+                        , billingResult.getDebugMessage()
+                    );
 
                     int responseCode = billingResult.getResponseCode();
 
@@ -442,8 +447,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             String token = purchase.getPurchaseToken();
 
             ConsumeParams consumeParams = ConsumeParams.newBuilder()
-                    .setPurchaseToken(token)
-                    .build();
+                .setPurchaseToken(token)
+                .build();
 
             m_billingClient.consumeAsync(consumeParams, new ConsumeResponseListener() {
                 @Override
@@ -460,7 +465,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                     }
 
                     MengineGooglePlayBillingPlugin.this.logInfo("Billing successful consume: %s"
-                            , billingResult.getDebugMessage()
+                        , billingResult.getDebugMessage()
                     );
 
                     List<String> products = purchase.getProducts();

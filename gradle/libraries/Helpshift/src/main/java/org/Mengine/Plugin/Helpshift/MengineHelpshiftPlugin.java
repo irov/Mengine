@@ -63,7 +63,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     @Override
-    public void onMengineCreateApplication(MengineActivity activity) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         Map<String, Object> config = new HashMap<>();
 
         if (BuildConfig.DEBUG) {
@@ -77,19 +77,13 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         config.put("screenOrientation", screenOrientation);
         config.put("notificationIcon", R.drawable.ic_stat_onesignal_default);
 
-//        config.put("enableInAppNotification", false);
-//        config.put("notificationLargeIcon", R.drawable.notification_large_icon);
-//        config.put("notificationSoundId",  R.raw.notification_sound);
-//        config.put("notificationChannelId",  "mengine_channel_id");
-//        config.put("fullPrivacy", true);
-
-        String HelpshiftPlugin_PlatformId = activity.getConfigValue("HelpshiftPlugin", "PlatformId", "");
-        String HelpshiftPlugin_Domain = activity.getConfigValue("HelpshiftPlugin", "Domain", "");
+        String MengineHelpshiftPlugin_PlatformId = activity.getMetaDataString("MengineHelpshiftPlugin_PlatformId");
+        String MengineHelpshiftPlugin_Domain = activity.getMetaDataString("MengineHelpshiftPlugin_Domain");
 
         try {
             MengineApplication application = this.getApplication();
 
-            Helpshift.install(application, HelpshiftPlugin_PlatformId, HelpshiftPlugin_Domain, config);
+            Helpshift.install(application, MengineHelpshiftPlugin_PlatformId, MengineHelpshiftPlugin_Domain, config);
         } catch (UnsupportedOSVersionException e) {
             this.logError("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
 
@@ -214,8 +208,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
     @Override
     public void onUserAuthenticationFailure(HelpshiftAuthenticationFailureReason reason) {
-        this.logInfo("onUserAuthenticationFailure ->" + reason);
-
         switch (reason) {
             case REASON_AUTH_TOKEN_NOT_PROVIDED:
                 this.logInfo("onUserAuthenticationFailure REASON_AUTH_TOKEN_NOT_PROVIDED");

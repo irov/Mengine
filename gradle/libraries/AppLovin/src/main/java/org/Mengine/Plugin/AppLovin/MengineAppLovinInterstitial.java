@@ -17,20 +17,14 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     private int m_retryAttemptInterstitial;
 
-    public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin) throws Exception {
+    public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) throws Exception {
         super(plugin);
 
         m_retryAttemptInterstitial = 0;
 
         MengineActivity activity = m_plugin.getActivity();
 
-        String AppLovin_InterstitialAdUnitId = activity.getConfigValue("AppLovinPlugin", "InterstitialAdUnitId", "");
-
-        if (AppLovin_InterstitialAdUnitId.isEmpty() == true) {
-            throw new Exception("Need to add config value for [AppLovin] InterstitialAdUnitId");
-        }
-
-        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(AppLovin_InterstitialAdUnitId, activity);
+        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(adUnitId, activity);
 
         interstitialAd.setRequestListener(this);
         interstitialAd.setListener(this);
@@ -39,6 +33,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         m_interstitialAd = interstitialAd;
     }
 
+    @Override
     public void destroy() {
         super.destroy();
 
@@ -49,6 +44,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     public void loadInterstitial() {
+        m_plugin.logInfo("[Interstitial] load");
+
         MengineActivity activity = m_plugin.getActivity();
 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
@@ -64,14 +61,20 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     public void showInterstitial() {
-        if (m_interstitialAd.isReady()) {
+        boolean ready = m_interstitialAd.isReady();
+
+        m_plugin.logInfo("[Interstitial] showInterstitial [%d]"
+            , ready
+        );
+
+        if (ready == true) {
             m_interstitialAd.showAd();
         }
     }
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logInfo("[Banner] onAdRequestStarted %s"
+        m_plugin.logInfo("[Interstitial] onAdRequestStarted %s"
             , adUnitId
         );
 
@@ -140,6 +143,6 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdRevenuePaid");
 
-        m_plugin.eventRevenuePaid(ad);
+        m_plugin.onEventRevenuePaid(ad);
     }
 }

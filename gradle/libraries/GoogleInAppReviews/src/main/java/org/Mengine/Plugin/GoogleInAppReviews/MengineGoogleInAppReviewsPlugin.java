@@ -30,16 +30,17 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         m_manager = ReviewManagerFactory.create(activity);
-    }
 
-    public void initialize() {
         Task<ReviewInfo> request = m_manager.requestReviewFlow();
         request.addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
+            if (task.isSuccessful() == true) {
+                MengineGoogleInAppReviewsPlugin.this.logInfo("requestReviewFlow successful");
+
                 m_reviewInfo = task.getResult();
-                this.pythonCall("onGoogleInAppReviewsGettingReviewObject");
+
+                MengineGoogleInAppReviewsPlugin.this.pythonCall("onGoogleInAppReviewsGettingReviewObject");
             } else {
-                this.logInfo("requestReviewFlow error %s -> %s"
+                MengineGoogleInAppReviewsPlugin.this.logError("requestReviewFlow error %s -> %s"
                     , task.getException().getMessage()
                     , task.getException().fillInStackTrace()
                 );
@@ -49,13 +50,21 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
 
     public void launchTheInAppReview() {
         if (m_reviewInfo == null) {
-            this.logInfo("reviewInfo == null -> laynchTheInAppReview disable");
+            this.logInfo("reviewInfo == null");
+
             return;
         }
 
-        Task<Void> flow = m_manager.launchReviewFlow(this.getActivity(), m_reviewInfo);
+        this.logInfo("launchTheInAppReview");
+
+        MengineActivity activity = this.getActivity();
+
+        Task<Void> flow = m_manager.launchReviewFlow(activity, m_reviewInfo);
+
         flow.addOnCompleteListener(task -> {
-            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewCompleted");
+            MengineGoogleInAppReviewsPlugin.this.logInfo("Launching the review completed");
+
+            MengineGoogleInAppReviewsPlugin.this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewCompleted");
         });
     }
 }

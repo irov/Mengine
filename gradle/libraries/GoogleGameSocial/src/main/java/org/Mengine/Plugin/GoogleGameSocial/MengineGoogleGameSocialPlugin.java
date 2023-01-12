@@ -84,7 +84,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         RC_UNUSED = activity.genRequestCode("RC_UNUSED");
 
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                .build();
+            .build();
 
         m_signInClient = GoogleSignIn.getClient(activity, signInOptions);
     }
@@ -196,7 +196,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
     private void signInCallback(@Nullable GoogleSignInAccount account) {
         if (account == null) {
-            this.logError("GoogleSignInAccount == null");
+            this.logError("account == null");
 
             return;
         }

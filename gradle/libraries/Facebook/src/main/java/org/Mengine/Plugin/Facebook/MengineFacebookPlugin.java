@@ -210,6 +210,8 @@ public class MengineFacebookPlugin extends MenginePlugin {
         
         // user already logged out
         if (accessToken == null) {
+            this.logInfo("user already logged out");
+
             this.pythonCall("onFacebookLogoutCancel");
             
             return;
@@ -315,9 +317,9 @@ public class MengineFacebookPlugin extends MenginePlugin {
         
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    .setContentUrl(Uri.parse(link))
-                    .setQuote(message)
-                    .build();
+                .setContentUrl(Uri.parse(link))
+                .setQuote(message)
+                .build();
 
             shareDialog.show(linkContent);
         }
@@ -358,55 +360,55 @@ public class MengineFacebookPlugin extends MenginePlugin {
         String graphPath = "/" + user_id + "/picture" + typeParameter;
         
         GraphRequest request = GraphRequest.newGraphPathRequest(accessToken, graphPath, new GraphRequest.Callback() {
-                @Override
-                public void onCompleted(GraphResponse response) {
-                    if (response == null) {
-                        MengineFacebookPlugin.this.logError("profile user picture link [%s] null response"
-                            , graphPath
-                        );
-
-                        MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
-
-                        return;
-                    }
-
-                    JSONObject responseObject = response.getJSONObject();
-
-                    if (responseObject == null) {
-                        MengineFacebookPlugin.this.logError("profile user picture link [%s] invalid response [%s]"
-                            , graphPath
-                            , response
-                        );
-
-                        MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
-
-                        return;
-                    }
-
-                    String pictureURL = "";
-                    try {
-                        pictureURL = responseObject.getJSONObject("data").getString("url");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-
-                        MengineFacebookPlugin.this.logError("profile user picture link [%s] catch JSONException [%s]"
-                            , graphPath
-                            , e.getLocalizedMessage()
-                        );
-
-                        MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
-
-                        return;
-                    }
-
-                    MengineFacebookPlugin.this.logInfo("request profile user [%s] picture link completed: %s"
-                        , user_id
-                        , pictureURL
+            @Override
+            public void onCompleted(GraphResponse response) {
+                if (response == null) {
+                    MengineFacebookPlugin.this.logError("profile user picture link [%s] null response"
+                        , graphPath
                     );
 
-                    MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, true, pictureURL);
+                    MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                    return;
                 }
-            });
+
+                JSONObject responseObject = response.getJSONObject();
+
+                if (responseObject == null) {
+                    MengineFacebookPlugin.this.logError("profile user picture link [%s] invalid response [%s]"
+                        , graphPath
+                        , response
+                    );
+
+                    MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                    return;
+                }
+
+                String pictureURL = "";
+                try {
+                    pictureURL = responseObject.getJSONObject("data").getString("url");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                    MengineFacebookPlugin.this.logError("profile user picture link [%s] catch JSONException [%s]"
+                        , graphPath
+                        , e.getLocalizedMessage()
+                    );
+
+                    MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                    return;
+                }
+
+                MengineFacebookPlugin.this.logInfo("request profile user [%s] picture link completed: %s"
+                    , user_id
+                    , pictureURL
+                );
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, true, pictureURL);
+            }
+        });
 
         Bundle parameters = new Bundle();
         parameters.putBoolean("redirect", false);

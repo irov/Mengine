@@ -49,9 +49,9 @@ public class MengineAppLovinBase {
 
     public void logMaxNetworkResponseInfo(MaxNetworkResponseInfo networkResponse) {
         String waterfallInfoStr = "Network -> " + networkResponse.getMediatedNetwork() +
-                "\n...adLoadState: " + networkResponse.getAdLoadState() +
-                "\n...latency: " + networkResponse.getLatencyMillis() + " milliseconds" +
-                "\n...credentials: " + networkResponse.getCredentials();
+            "\n...adLoadState: " + networkResponse.getAdLoadState() +
+            "\n...latency: " + networkResponse.getLatencyMillis() + " milliseconds" +
+            "\n...credentials: " + networkResponse.getCredentials();
 
         if (networkResponse.getError() != null) {
             waterfallInfoStr += "\n...error: " + networkResponse.getError();

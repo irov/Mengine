@@ -1,6 +1,8 @@
 package org.Mengine.Plugin.AppLovin;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
+
 import org.Mengine.Plugin.AppLovin.MengineAppLovinAnalyticsInterface;
 import org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseAnalyticsPlugin;
 
@@ -13,7 +15,8 @@ import android.os.Bundle;
 public class MengineAppLovinFirebaseAnalytics implements MengineAppLovinAnalyticsInterface {
     MengineFirebaseAnalyticsPlugin m_firebaseAnalyticsPlugin;
 
-    public boolean initializeAnalytics(MengineActivity activity) {
+    @Override
+    public boolean initializeAnalytics(MenginePlugin plugin, MengineActivity activity) {
         MengineFirebaseAnalyticsPlugin firebaseAnalyticsPlugin = activity.findPlugin(MengineFirebaseAnalyticsPlugin.class);
 
         if (firebaseAnalyticsPlugin == null) {
@@ -25,11 +28,13 @@ public class MengineAppLovinFirebaseAnalytics implements MengineAppLovinAnalytic
         return  true;
     }
 
-    public void finalizeAnalytics() {
+    @Override
+    public void finalizeAnalytics(MenginePlugin plugin) {
         m_firebaseAnalyticsPlugin = null;
     }
 
-    public void eventRevenuePaid(MaxAd ad) {
+    @Override
+    public void onEventRevenuePaid(MenginePlugin plugin, MaxAd ad) {
         Bundle params = new Bundle();
         params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "appLovin");
         params.putString(FirebaseAnalytics.Param.AD_SOURCE, ad.getNetworkName());

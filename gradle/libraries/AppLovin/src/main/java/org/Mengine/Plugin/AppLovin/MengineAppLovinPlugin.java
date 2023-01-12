@@ -96,6 +96,71 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+        final Context context = activity.getBaseContext();
+
+        MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
+
+        if (mediationAmazon != null) {
+            try {
+                mediationAmazon.initializeMediator(activity);
+
+                m_mediationAmazon = mediationAmazon;
+            } catch (Exception e) {
+            }
+        }
+
+        m_analytics = new ArrayList<MengineAppLovinAnalyticsInterface>();
+
+        MengineAppLovinAnalyticsInterface firebaseAnalytics = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinFirebaseAnalytics", false);
+
+        if (firebaseAnalytics != null) {
+            if (firebaseAnalytics.initializeAnalytics(this, activity) == true) {
+                m_analytics.add(firebaseAnalytics);
+            }
+        }
+
+        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
+
+        appLovinSdk.setMediationProvider("max");
+
+        boolean MengineAppLovinPlugin_VerboseLogging = activity.getMetaDataBoolean("MengineAppLovinPlugin_VerboseLogging", false);
+
+        if (MengineAppLovinPlugin_VerboseLogging == true) {
+            this.logInfo("setVerboseLogging: true");
+
+            appLovinSdk.getSettings().setVerboseLogging(true);
+        }
+
+        boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean("MengineAppLovinPlugin_IsAgeRestrictedUser", true);
+
+        this.logInfo("setIsAgeRestrictedUser: %b"
+            , MengineAppLovinPlugin_IsAgeRestrictedUser
+        );
+
+        AppLovinPrivacySettings.setIsAgeRestrictedUser(MengineAppLovinPlugin_IsAgeRestrictedUser, context);
+
+        boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean("MengineAppLovinPlugin_CCPA", true);
+
+        this.logInfo("CCPA: %b"
+            , MengineAppLovinPlugin_CCPA
+        );
+
+        AppLovinPrivacySettings.setDoNotSell(MengineAppLovinPlugin_CCPA, context);
+
+        AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
+            @Override
+            public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
+                MengineAppLovinPlugin.this.logInfo("AppLovinSdk initialized: country [%s]"
+                    , configuration.getCountryCode()
+                );
+
+                MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");
+            }
+        });
+
+        if (BuildConfig.DEBUG == true) {
+            this.showMediationDebugger();
+        }
     }
 
     @Override
@@ -106,7 +171,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         if( m_analytics != null ) {
             for (MengineAppLovinAnalyticsInterface analytic : m_analytics) {
-                analytic.finalizeAnalytics();
+                analytic.finalizeAnalytics(this);
             }
 
             m_analytics = null;
@@ -128,92 +193,20 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         }
     }
 
-    public void initialize() {
-        MengineActivity activity = this.getActivity();
-        final Context context = activity.getBaseContext();
-
-        MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
-
-        if (mediationAmazon != null) {
-            try {
-                mediationAmazon.initializeMediator(activity);
-
-                m_mediationAmazon = mediationAmazon;
-            } catch (Exception e) {
-            }
-        }
-
-        m_analytics = new ArrayList<MengineAppLovinAnalyticsInterface>();
-
-        MengineAppLovinAnalyticsInterface firebaseAnalytics = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinFirebaseAnalytics", false);
-
-        if (firebaseAnalytics != null) {
-            if (firebaseAnalytics.initializeAnalytics(activity) == true) {
-                m_analytics.add(firebaseAnalytics);
-            }
-        }
-
-        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
-
-        appLovinSdk.setMediationProvider("max");
-
-        boolean OPTION_applovinverbose = activity.hasOption("applovinverbose");
-        boolean AppLovinPlugin_VerboseLogging = activity.getConfigValueBoolean("AppLovinPlugin", "VerboseLogging", false);
-
-        if (OPTION_applovinverbose == true || AppLovinPlugin_VerboseLogging == true) {
-            this.logInfo("setVerboseLogging: true");
-
-            appLovinSdk.getSettings().setVerboseLogging(true);
-        }
-
-        boolean AppLovinPlugin_IsAgeRestrictedUser = activity.getConfigValueBoolean("AppLovinPlugin", "IsAgeRestrictedUser", true);
-
-        this.logInfo("setIsAgeRestrictedUser: %b"
-            , AppLovinPlugin_IsAgeRestrictedUser
-        );
-
-        AppLovinPrivacySettings.setIsAgeRestrictedUser(AppLovinPlugin_IsAgeRestrictedUser, context);
-
-        boolean AppLovinPlugin_CCPA = activity.getConfigValueBoolean("AppLovinPlugin", "CCPA", true);
-
-        this.logInfo("CCPA: %b"
-            , AppLovinPlugin_CCPA
-        );
-
-        AppLovinPrivacySettings.setDoNotSell(AppLovinPlugin_CCPA, context);
-
-        AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
-            @Override
-            public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineAppLovinPlugin.this.logInfo("AppLovinSdk initialized: country [%s]"
-                    , configuration.getCountryCode()
-                );
-
-                MengineAppLovinPlugin.this.pythonCall("onApplovinPluginOnSdkInitialized");
-            }
-        });
-
-        boolean OPTION_applovindebugger = activity.hasOption("applovindebugger");
-
-        if (OPTION_applovindebugger == true) {
-            this.showMediationDebugger();
-        }
-    }
-
     public MengineAppLovinMediationInterface getMediationAmazon() {
         return m_mediationAmazon;
     }
 
-    public void initBanner() throws Exception {
-        m_banner = new MengineAppLovinBanner(this);
+    public void initBanner(String adUnitId) throws Exception {
+        m_banner = new MengineAppLovinBanner(this, adUnitId);
     }
 
     public void bannerVisible(boolean show) {
         m_banner.bannerVisible(show);
     }
 
-    public void initInterstitial() throws Exception {
-        m_interstitial = new MengineAppLovinInterstitial(this);
+    public void initInterstitial(String adUnitId) throws Exception {
+        m_interstitial = new MengineAppLovinInterstitial(this, adUnitId);
     }
 
     public void loadInterstitial() {
@@ -224,8 +217,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         m_interstitial.showInterstitial();
     }
 
-    public void initRewarded() throws Exception {
-        m_rewarded = new MengineAppLovinRewarded(this);
+    public void initRewarded(String adUnitId) throws Exception {
+        m_rewarded = new MengineAppLovinRewarded(this, adUnitId);
     }
 
     public void loadRewarded() {
@@ -236,9 +229,9 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         m_rewarded.showRewarded();
     }
 
-    public void eventRevenuePaid(MaxAd ad) {
+    public void onEventRevenuePaid(MaxAd ad) {
         for (MengineAppLovinAnalyticsInterface analytic : m_analytics) {
-            analytic.eventRevenuePaid(ad);
+            analytic.onEventRevenuePaid(this, ad);
         }
     }
 

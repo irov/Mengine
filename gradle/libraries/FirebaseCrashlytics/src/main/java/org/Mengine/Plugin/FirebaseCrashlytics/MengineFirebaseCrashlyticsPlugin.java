@@ -26,7 +26,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin {
 
     @Override
     public void onAppCreate(MengineApplication application) {
-        if (!BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == false) {
             return;
         }
 
@@ -84,7 +84,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin {
     }
 
     public void onMengineLogger(String category, int level, int filter, int color, String msg) {
-        if(level > LM_ERROR) {
+        if (level > LM_ERROR) {
             return;
         }
 

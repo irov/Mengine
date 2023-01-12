@@ -3,10 +3,11 @@ package org.Mengine.Plugin.AppLovin;
 import com.applovin.mediation.MaxAd;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
 
 public interface MengineAppLovinAnalyticsInterface {
-    boolean initializeAnalytics(MengineActivity activity);
-    void finalizeAnalytics();
+    boolean initializeAnalytics(MenginePlugin plugin, MengineActivity activity);
+    void finalizeAnalytics(MenginePlugin plugin);
 
-    void eventRevenuePaid(MaxAd ad);
+    void onEventRevenuePaid(MenginePlugin plugin, MaxAd ad);
 }

@@ -33,11 +33,6 @@ public class MenginePlugin {
     public static int LM_DEBUG = 10;
     public static int LM_VERBOSE = 11;
 
-    @FunctionalInterface
-    public interface CallbackInterface {
-        void callback(Object result);
-    }
-
     public MengineApplication getApplication() {
         return m_application;
     }
@@ -95,8 +90,16 @@ public class MenginePlugin {
         m_activity.pythonCall(m_pluginName, method, args);
     }
 
-    public void pythonCallCb(String method, CallbackInterface cb, Object ... args) {
+    public void pythonCallCb(String method, MengineCallbackInterface cb, Object ... args) {
         m_activity.pythonCallCb(m_pluginName, method, cb, args);
+    }
+
+    public void activateSemaphore(String name) {
+        m_activity.activateSemaphore(name);
+    }
+
+    public void waitSemaphore(String name, MengineCallbackInterface cb) {
+        m_activity.waitSemaphore(name, cb);
     }
 
     public void onAppCreate(MengineApplication application) {

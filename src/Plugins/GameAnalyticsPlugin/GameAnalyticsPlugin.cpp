@@ -79,12 +79,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameAnalyticsPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "analytics" ) == true )
+        if( HAS_OPTION( "gameanalytics" ) == true )
         {
             return true;
         }
 
-        if( HAS_OPTION( "noanalytics" ) == true )
+        if( HAS_OPTION( "nogameanalytics" ) == true )
         {
             return false;
         }

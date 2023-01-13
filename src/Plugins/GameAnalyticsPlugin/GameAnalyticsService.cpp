@@ -4,6 +4,7 @@
 
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameAnalyticsService, Mengine::GameAnalyticsService );
@@ -146,6 +147,11 @@ namespace Mengine
         json += "}";
 
         const Char * json_str = json.c_str();
+
+        LOGGER_INFO( "gameanalytics", "Design Event: %s %s"
+            , eventName_str
+            , json_str
+        );
 
         gameanalytics::GameAnalytics::addDesignEvent( eventName_str, json_str );
     }

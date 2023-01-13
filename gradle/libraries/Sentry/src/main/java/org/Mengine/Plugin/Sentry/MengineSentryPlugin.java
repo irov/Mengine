@@ -12,7 +12,7 @@ public class MengineSentryPlugin extends MenginePlugin {
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         SentryAndroid.init(activity, options -> {
-            String MengineSentryPlugin_DSN = activity.getMetaDataString("MengineSentryPlugin_DSN");
+            String MengineSentryPlugin_DSN = activity.getMetaDataString("mengine.sentry.dsn");
 
             this.logInfo("Sentry DNS: %s", MengineSentryPlugin_DSN);
 

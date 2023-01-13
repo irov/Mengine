@@ -123,7 +123,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         appLovinSdk.setMediationProvider("max");
 
-        boolean MengineAppLovinPlugin_VerboseLogging = activity.getMetaDataBoolean("MengineAppLovinPlugin_VerboseLogging", false);
+        boolean MengineAppLovinPlugin_VerboseLogging = activity.getMetaDataBoolean("mengine.applovin.verbose_logging", false);
 
         if (MengineAppLovinPlugin_VerboseLogging == true) {
             this.logInfo("setVerboseLogging: true");
@@ -131,7 +131,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             appLovinSdk.getSettings().setVerboseLogging(true);
         }
 
-        boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean("MengineAppLovinPlugin_IsAgeRestrictedUser", true);
+        boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean("mengine.applovin.is_age_restricted_user", true);
 
         this.logInfo("setIsAgeRestrictedUser: %b"
             , MengineAppLovinPlugin_IsAgeRestrictedUser
@@ -139,7 +139,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
         AppLovinPrivacySettings.setIsAgeRestrictedUser(MengineAppLovinPlugin_IsAgeRestrictedUser, context);
 
-        boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean("MengineAppLovinPlugin_CCPA", true);
+        boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean("mengine.applovin.CCPA", true);
 
         this.logInfo("CCPA: %b"
             , MengineAppLovinPlugin_CCPA

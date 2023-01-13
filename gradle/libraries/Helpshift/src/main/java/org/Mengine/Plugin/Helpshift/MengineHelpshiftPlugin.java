@@ -77,8 +77,8 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         config.put("screenOrientation", screenOrientation);
         config.put("notificationIcon", R.drawable.ic_stat_onesignal_default);
 
-        String MengineHelpshiftPlugin_PlatformId = activity.getMetaDataString("MengineHelpshiftPlugin_PlatformId");
-        String MengineHelpshiftPlugin_Domain = activity.getMetaDataString("MengineHelpshiftPlugin_Domain");
+        String MengineHelpshiftPlugin_PlatformId = activity.getMetaDataString("mengine.helpshift.platform_id");
+        String MengineHelpshiftPlugin_Domain = activity.getMetaDataString("mengine.helpshift.domain");
 
         try {
             MengineApplication application = this.getApplication();

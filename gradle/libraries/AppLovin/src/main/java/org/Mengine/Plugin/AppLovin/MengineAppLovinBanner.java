@@ -32,10 +32,10 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         adView.setRevenueListener(this);
 
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
+
         boolean tablet = AppLovinSdkUtils.isTablet(activity);
         AppLovinAdSize size = tablet ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER;
         int tablet_size_height = size.getHeight();
-
         int heightPx = AppLovinSdkUtils.dpToPx(activity, tablet_size_height);
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, heightPx);

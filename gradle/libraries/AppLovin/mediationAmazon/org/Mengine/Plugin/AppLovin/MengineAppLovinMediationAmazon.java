@@ -43,13 +43,13 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
         AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
 
-        boolean MengineAppLovinPlugin_AmazonEnableLogging = activity.getMetaDataBoolean("MengineAppLovinPlugin_AmazonEnableTesting", false);
+        boolean MengineAppLovinPlugin_AmazonEnableLogging = activity.getMetaDataBoolean("mengine.applovin.amazon_enable_testing", false);
 
         if (MengineAppLovinPlugin_AmazonEnableLogging == true) {
             AdRegistration.enableTesting(true);
         }
 
-        boolean MengineAppLovinPlugin_AmazonEnableLogging = activity.getMetaDataBoolean("MengineAppLovinPlugin_AmazonEnableLogging", false);
+        boolean MengineAppLovinPlugin_AmazonEnableLogging = activity.getMetaDataBoolean("mengine.applovin.amazon_enable_logging", false);
 
         if (MengineAppLovinPlugin_AmazonEnableLogging == true || BuildConfig.DEBUG == true ) {
             AdRegistration.enableLogging(true);

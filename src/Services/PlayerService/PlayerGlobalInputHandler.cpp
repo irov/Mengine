@@ -47,7 +47,7 @@ namespace Mengine
         }
 #endif
 
-        MENGINE_ASSERTION( m_handlers.empty() == true, "finalized player global input has [%" PRIuPTR "] hadlers"
+        MENGINE_ASSERTION( m_handlers.empty() == true, "finalized player global input has [%" MENGINE_PRIuPTR "] hadlers"
             , m_handlers.size()
         );
 

@@ -17,6 +17,7 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIntTypes.h"
 
 //////////////////////////////////////////////////////////////////////////
 static jclass g_jclass_MengineActivity;
@@ -709,7 +710,7 @@ namespace Mengine
 
         jobject value_jobject = _jenv->NewObject( m_jclass_Long, Long_constructor, _value );
 
-        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Long '%ld'"
+        MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Long '%" MENGINE_PRId64 "'"
             , _value
         );
 

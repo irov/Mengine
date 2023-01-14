@@ -158,7 +158,7 @@ namespace Mengine
         }
 #endif
 
-        MENGINE_ASSERTION_FATAL( m_factories.empty() == true, "detect factory leak [%" PRIuPTR "]"
+        MENGINE_ASSERTION_FATAL( m_factories.empty() == true, "detect factory leak [%" MENGINE_PRIuPTR "]"
             , m_factories.size()
         );
 

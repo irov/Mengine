@@ -59,10 +59,10 @@ def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGI
 buildscript {
     repositories {
         google()
-        maven { url 'https://maven.google.com' }
-        maven { url 'https://artifacts.applovin.com/android' }
         mavenCentral()
-
+        
+        maven { url 'https://artifacts.applovin.com/android' }
+        
         if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE") == true) {
             maven { url "https://artifactory.bidmachine.io/bidmachine" }
         }
@@ -107,10 +107,6 @@ buildscript {
             maven { url "https://artifactory.yahooinc.com/artifactory/maven" }
         }
     }
-
-    dependencies {
-        classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:4.3.4'
-    }
 }
 
 apply plugin: 'com.android.library'
@@ -125,8 +121,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility project.javaVersion
+        targetCompatibility project.javaVersion
     }
 
     lintOptions {

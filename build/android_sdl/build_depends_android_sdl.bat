@@ -12,10 +12,10 @@ set CONFIGURATION=%1
 
 @echo Starting dependencies build %CONFIGURATION% configuration...
 
-set ANDROID_NDK_VERSION=22.0.7026061
-set ANDROID_CMAKE_VERSION=3.18.1
+set ANDROID_NDK_VERSION=25.1.8937393
+set ANDROID_CMAKE_VERSION=3.22.1
 
-set ANDROID_PLATFORM=android-19
+set ANDROID_PLATFORM=android-21
 set ANDROID_SDK=%LOCALAPPDATA%\Android\sdk
 set ANDROID_NDK=%ANDROID_SDK%\ndk\%ANDROID_NDK_VERSION%
 set CMAKE_GENERATOR="Ninja"
@@ -27,7 +27,7 @@ set CMAKE_TOOLCHAIN_FILE=%ANDROID_NDK%\build\cmake\android.toolchain.cmake
 set CMAKELIST_PATH=%CD%\..\..\cmake\Depends_Android_SDL
 set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
 
-for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
+for %%A in (x86_64 armeabi-v7a arm64-v8a) do (
     @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A
     @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A
 

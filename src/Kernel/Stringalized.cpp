@@ -15,7 +15,7 @@ namespace Mengine
         bool stringalized( const Char * _string, bool * const _value )
         {
             uint32_t tmp_value;
-            if( MENGINE_SSCANF( _string, "%" SCNu32, &tmp_value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu32, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -28,7 +28,7 @@ namespace Mengine
         bool stringalized( const Char * _string, int8_t * const _value )
         {
             int32_t tmp_value;
-            if( MENGINE_SSCANF( _string, "%" SCNd32, &tmp_value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNd32, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -41,7 +41,7 @@ namespace Mengine
         bool stringalized( const Char * _string, uint8_t * const _value )
         {
             uint32_t tmp_value;
-            if( MENGINE_SSCANF( _string, "%" SCNu32, &tmp_value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu32, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -53,7 +53,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int32_t * const _value )
         {
-            if( MENGINE_SSCANF( _string, "%" SCNd32, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNd32, _value ) != 1 )
             {
                 return false;
             }
@@ -63,7 +63,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint32_t * const _value )
         {
-            if( MENGINE_SSCANF( _string, "%" SCNu32, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu32, _value ) != 1 )
             {
                 return false;
             }
@@ -73,7 +73,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int64_t * const _value )
         {
-            if( MENGINE_SSCANF( _string, "%" SCNd64, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNd64, _value ) != 1 )
             {
                 return false;
             }
@@ -83,7 +83,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint64_t * const _value )
         {
-            if( MENGINE_SSCANF( _string, "%" SCNu64, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu64, _value ) != 1 )
             {
                 return false;
             }
@@ -215,7 +215,7 @@ namespace Mengine
         {
             uint32_t width;
             uint32_t height;
-            if( MENGINE_SSCANF( _string, "%" SCNu32" %" SCNu32, &width, &height ) != 2 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu32" %" MENGINE_SCNu32, &width, &height ) != 2 )
             {
                 return false;
             }
@@ -277,7 +277,7 @@ namespace Mengine
         {
             uint32_t tmp_value = _value;
 
-            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu32, tmp_value ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu32, tmp_value ) > (int32_t)_capacity )
             {
                 return false;
             }
@@ -287,7 +287,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( int8_t _value, Char * const _string, size_t _capacity )
         {
-            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRId8, _value ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRId8, _value ) > (int32_t)_capacity )
             {
                 return false;
             }
@@ -297,7 +297,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( uint8_t _value, Char * const _string, size_t _capacity )
         {
-            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu8, _value ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu8, _value ) > (int32_t)_capacity )
             {
                 return false;
             }
@@ -307,7 +307,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( int32_t _value, Char * const _string, size_t _capacity )
         {
-            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRId32, _value ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRId32, _value ) > (int32_t)_capacity )
             {
                 return false;
             }
@@ -317,7 +317,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( uint32_t _value, Char * const _string, size_t _capacity )
         {
-            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu32, _value ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu32, _value ) > (int32_t)_capacity )
             {
                 return false;
             }
@@ -327,7 +327,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( int64_t _value, Char * const _string, size_t _capacity )
         {
-            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRId64, _value ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRId64, _value ) > (int32_t)_capacity )
             {
                 return false;
             }
@@ -337,7 +337,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( uint64_t _value, Char * const _string, size_t _capacity )
         {
-            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu64, _value ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu64, _value ) > (int32_t)_capacity )
             {
                 return false;
             }
@@ -457,7 +457,7 @@ namespace Mengine
             uint32_t width = _value.getWidth();
             uint32_t height = _value.getHeight();
 
-            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu32" %" PRIu32, width, height ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu32" %" MENGINE_PRIu32, width, height ) > (int32_t)_capacity )
             {
                 return false;
             }

@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         google()
-        maven { url 'https://maven.google.com' }
         mavenCentral()
     }
 
@@ -22,8 +21,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility project.javaVersion
+        targetCompatibility project.javaVersion
     }
 
     lintOptions {

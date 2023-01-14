@@ -19,12 +19,16 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
 
 fun includePlugin(name: String, d: Boolean, path: String) {
     if( getBooleanProperty(name, d) == false ) {
-        println("[-] Exclude plugin: $path")
+        val red = "\u001b[31m"
+        val reset = "\u001b[0m"
+        println(red + "[-] Exclude plugin: $path" + reset)
 
         return;
     }
 
-    println("[+] Include plugin: $path")
+    val green = "\u001b[32m"
+    val reset = "\u001b[0m"
+    println(green + "[+] Include plugin: $path" + reset)
 
     include(path)
 }

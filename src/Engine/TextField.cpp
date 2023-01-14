@@ -1906,7 +1906,7 @@ namespace Mengine
         String fmt;
         if( Helper::fillStringFormat( textValue, textSize, textFormatArgs, &fmt ) == false )
         {
-            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" PRIuPTR " [alias env: %s]"
+            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" MENGINE_PRIuPTR " [alias env: %s]"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_textId.c_str()

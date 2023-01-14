@@ -1482,7 +1482,7 @@ namespace Mengine
 
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, ELF_FLAG_NONE )("open [multithread:%" PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, ELF_FLAG_NONE )("open [multithread:%" MENGINE_PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1490,7 +1490,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, ELF_FLAG_NONE )("streaming [multithread:%" PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_STATISTIC, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, ELF_FLAG_NONE )("streaming [multithread:%" MENGINE_PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath

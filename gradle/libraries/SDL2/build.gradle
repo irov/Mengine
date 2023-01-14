@@ -8,8 +8,8 @@ android {
     compileSdkVersion project.compileSdkVersion
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility project.javaVersion
+        targetCompatibility project.javaVersion
     }
 
     defaultConfig {
@@ -21,7 +21,7 @@ android {
         if (Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {
                 if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
-                    abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                    abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
                 } else {
                     abiFilters "arm64-v8a", "armeabi-v7a"
                 }
@@ -40,7 +40,7 @@ android {
             reset() //reset the list of ABIs to be included to an empty string
 
             if (Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true) == true) {
-                include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                include "arm64-v8a", "armeabi-v7a", "x86_64"
             } else {
                 include "arm64-v8a", "armeabi-v7a"
             }
@@ -122,9 +122,9 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

@@ -58,7 +58,7 @@ namespace Mengine
                 return;
             }
 
-            LOGGER_ERROR( "TimeoutGuardScope [%" PRIu64 "] %s"
+            LOGGER_ERROR( "TimeoutGuardScope [%" MENGINE_PRIu64 "] %s"
                 , _timeout
                 , message_str.c_str()
             );

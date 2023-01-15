@@ -249,7 +249,7 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "onCreate");
 
-        if(mBrokenLibraries == true) {
+        if (mBrokenLibraries == true) {
             Log.e(TAG, "onCreate: broken libraries");
 
             return;
@@ -261,13 +261,13 @@ public class MengineActivity extends SDLActivity {
         ContentResolver resolver = context.getContentResolver();
         m_androidId = Secure.getString(resolver, Secure.ANDROID_ID);
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.setActivity(this);
 
             p.onCreate(this, savedInstanceState);
         }
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.onExtension(this);
         }
     }
@@ -283,7 +283,7 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.onMengineInitializeBaseServices(this);
         }
 
@@ -294,11 +294,11 @@ public class MengineActivity extends SDLActivity {
     public void onMengineCreateApplication() {
         MengineLog.logInfo(TAG, "onMengineCreateApplication");
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.onMengineCreateApplication(this);
         }
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.onExtensionRun(this);
         }
 
@@ -309,7 +309,7 @@ public class MengineActivity extends SDLActivity {
     public void onMengineApplicationRun() {
         MengineLog.logInfo(TAG, "onMengineApplicationRun");
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.onMengineApplicationRun(this);
         }
 
@@ -320,7 +320,7 @@ public class MengineActivity extends SDLActivity {
     public void onMengineApplicationReady() {
         MengineLog.logInfo(TAG, "onMengineApplicationReady");
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.onMengineApplicationReady(this);
         }
 
@@ -331,7 +331,7 @@ public class MengineActivity extends SDLActivity {
     public void onMengineApplicationStop() {
         MengineLog.logInfo(TAG, "onMengineApplicationStop");
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.onMengineApplicationStop(this);
         }
 
@@ -348,7 +348,7 @@ public class MengineActivity extends SDLActivity {
             , parameters
         );
 
-        for(MenginePlugin p : m_analyticsPlugins) {
+        for (MenginePlugin p : m_analyticsPlugins) {
             p.onMengineAnalyticsEvent(this, eventName, timestamp, parameters);
         }
     }
@@ -359,7 +359,7 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logInfo(TAG, "onActivityResult");
 
-        for(MenginePlugin p : this.getPlugins()) {
+        for (MenginePlugin p : this.getPlugins()) {
             p.onActivityResult(this, requestCode, resultCode, data);
         }
     }
@@ -370,7 +370,13 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logInfo(TAG, "onStart");
 
-        for(MenginePlugin p : this.getPlugins()) {
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onStart: broken libraries");
+
+            return;
+        }
+
+        for (MenginePlugin p : this.getPlugins()) {
             p.onStart(this);
         }
 
@@ -384,6 +390,12 @@ public class MengineActivity extends SDLActivity {
         super.onStop();
 
         MengineLog.logInfo(TAG, "onStop");
+
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onStop: broken libraries");
+
+            return;
+        }
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onStop(this);
@@ -400,6 +412,12 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logInfo(TAG, "onPause");
 
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onPause: broken libraries");
+
+            return;
+        }
+
         for(MenginePlugin p : this.getPlugins()) {
             p.onPause(this);
         }
@@ -414,6 +432,12 @@ public class MengineActivity extends SDLActivity {
         super.onResume();
 
         MengineLog.logInfo(TAG, "onResume");
+
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onResume: broken libraries");
+
+            return;
+        }
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onResume(this);
@@ -430,6 +454,12 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logInfo(TAG, "onNewIntent");
 
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onNewIntent: broken libraries");
+
+            return;
+        }
+
         for(MenginePlugin p : this.getPlugins()) {
             p.onNewIntent(this, intent);
         }
@@ -440,6 +470,12 @@ public class MengineActivity extends SDLActivity {
         super.onDestroy();
 
         MengineLog.logInfo(TAG, "onDestroy");
+
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onDestroy: broken libraries");
+
+            return;
+        }
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onDestroy(this);
@@ -460,6 +496,12 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logInfo(TAG, "onRestart");
 
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onRestart: broken libraries");
+
+            return;
+        }
+
         for(MenginePlugin p : this.getPlugins()) {
             p.onRestart(this);
         }
@@ -473,6 +515,12 @@ public class MengineActivity extends SDLActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onConfigurationChanged: broken libraries");
+
+            return;
+        }
+
         for(MenginePlugin p : this.getPlugins()) {
             p.onConfigurationChanged(this, newConfig);
         }
@@ -481,6 +529,12 @@ public class MengineActivity extends SDLActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "onRequestPermissionsResult: broken libraries");
+
+            return;
+        }
 
         for(MenginePlugin p : this.getPlugins()) {
             p.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
@@ -493,6 +547,12 @@ public class MengineActivity extends SDLActivity {
             , event.getAction()
             , event.getKeyCode()
         );
+
+        if (mBrokenLibraries == true) {
+            Log.e(TAG, "dispatchKeyEvent: broken libraries");
+
+            return false;
+        }
 
         for(MenginePlugin p : this.getPlugins()) {
             if (p.dispatchKeyEvent(this, event) == true) {

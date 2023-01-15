@@ -103,9 +103,14 @@ namespace Mengine
         ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
             ->importModule( Game_PersonalityModule );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid import module '%s'"
-            , Game_PersonalityModule.c_str()
-        );
+        if( module == nullptr )
+        {
+            LOGGER_ERROR("invalid import personality module '%s'"
+                , Game_PersonalityModule.c_str()
+            );
+
+            return false;
+        }
 
         Detail::registerGameEventMethods( _kernel, module, MENGINE_DOCUMENT_FACTORABLE );
 

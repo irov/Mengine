@@ -773,9 +773,14 @@ namespace Mengine
 
             ScriptModuleInterfacePtr module = this->importModule( package.module );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( module, "module '%s' invalid import"
-                , package.module.c_str()
-            );
+            if( module == nullptr )
+            {
+                LOGGER_ERROR( "invalid import module '%s'"
+                    , package.module.c_str()
+                );
+
+                return false;
+            }
         }
 
         return true;
@@ -810,9 +815,10 @@ namespace Mengine
 
         ScriptModuleInterfacePtr module = this->importModule( _pack.module );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( module, "module '%s' invalid import"
-            , _pack.module.c_str()
-        );
+        if( module == nullptr )
+        {
+            return false;
+        }
 
         if( _pack.initializer.empty() == true )
         {

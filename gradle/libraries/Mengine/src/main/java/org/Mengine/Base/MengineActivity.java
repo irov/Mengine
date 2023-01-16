@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 import android.content.*;
@@ -572,6 +573,12 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getAndroidId() {
         return m_androidId;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public String getDeviceLanguage() {
+        String language = Locale.getDefault().getLanguage();
+
+        return language;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public String getDeviceName() {

@@ -4869,6 +4869,18 @@ namespace Mengine
         return userNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t Win32Platform::getDeviceLanguage( Char * const _deviceLanguage ) const
+    {
+        WCHAR unicode_localeName[LOCALE_NAME_MAX_LENGTH];
+        ::GetSystemDefaultLocaleName( unicode_localeName, LOCALE_NAME_MAX_LENGTH );
+
+        Helper::unicodeToUtf8( unicode_localeName, _deviceLanguage, LOCALE_NAME_MAX_LENGTH, nullptr );
+        
+        size_t deviceLanguageLen = MENGINE_STRLEN( _deviceLanguage );
+
+        return deviceLanguageLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getFingerprint( Char * const _fingerprint ) const
     {
         m_fingerprint.copy( _fingerprint );

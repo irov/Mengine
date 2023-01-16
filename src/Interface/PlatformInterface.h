@@ -99,6 +99,7 @@ namespace Mengine
         virtual size_t getCurrentPath( Char * const _filePath ) const = 0;
         virtual size_t getUserPath( Char * const _filePath ) const = 0;
         virtual size_t getUserName( Char * const _userName ) const = 0;
+        virtual size_t getDeviceLanguage( Char * const _deviceLanguage ) const = 0;
         virtual size_t getFingerprint( Char * const _fingerprint ) const = 0;
 
         virtual void closeWindow() = 0;
@@ -112,6 +113,7 @@ namespace Mengine
         virtual void hideKeyboard() = 0;
         virtual bool isShowKeyboard() const = 0;
 
+    public:
         virtual bool notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void notifyVsyncChanged( bool _vsync ) = 0;
         virtual void notifyCursorModeChanged( bool _mode ) = 0;

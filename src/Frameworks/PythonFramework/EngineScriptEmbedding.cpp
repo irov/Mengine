@@ -1633,6 +1633,15 @@ namespace Mengine
                 return codename;
             }
             //////////////////////////////////////////////////////////////////////////
+            PyObject * s_getDeviceLanguage( pybind::kernel_interface * _kernel )
+            {
+                Char deviceLanguage[85] = {'\0'};
+                PLATFORM_SERVICE()
+                    ->getDeviceLanguage( deviceLanguage );
+
+                return _kernel->string_from_char( deviceLanguage );
+            }
+            //////////////////////////////////////////////////////////////////////////
             void s_sleep( uint32_t _time )
             {
                 PLATFORM_SERVICE()
@@ -4376,6 +4385,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "platformEvent", nodeScriptMethod, &EngineScriptMethod::s_platformEvent );
 
         pybind::def_functor( _kernel, "getProjectCodename", nodeScriptMethod, &EngineScriptMethod::s_getProjectCodename );
+
+        pybind::def_functor_kernel( _kernel, "getDeviceLanguage", nodeScriptMethod, &EngineScriptMethod::s_getDeviceLanguage );
 
         pybind::def_functor( _kernel, "sleep", nodeScriptMethod, &EngineScriptMethod::s_sleep );
 

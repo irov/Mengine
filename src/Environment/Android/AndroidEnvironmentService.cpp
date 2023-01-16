@@ -444,6 +444,29 @@ namespace Mengine
         return jStringLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t AndroidEnvironmentService::getDeviceLanguage( Char * _deviceLanguage, size_t _capacity ) const
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        static jmethodID jmethodID_getDeviceLanguage = jenv->GetMethodID(g_jclass_MengineActivity, "getDeviceLanguage", "()Ljava/lang/String;" );
+
+        MENGINE_ASSERTION( jmethodID_getDeviceLanguage != nullptr, "invalid get android method 'getDeviceLanguage'" );
+
+        jstring jReturnValue = (jstring)jenv->CallObjectMethod(g_jobject_MengineActivity, jmethodID_getDeviceLanguage );
+
+        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
+        jsize jStringLen = jenv->GetStringLength( jReturnValue );
+
+        MENGINE_STRNCPY( _deviceLanguage, jStringValue, _capacity );
+
+        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+        jenv->DeleteLocalRef( jReturnValue );
+
+        m_androidEventationHub->invoke();
+
+        return jStringLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getAndroidPackageName( Char * _packageName, size_t _capacity ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();

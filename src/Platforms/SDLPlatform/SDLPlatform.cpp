@@ -261,6 +261,34 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatform::getDeviceLanguage( Char * const _deviceLanguage ) const
+    {
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        MENGINE_STRCPY( _deviceLanguage, "en" );
+
+        return 2;
+#elif defined(MENGINE_PLATFORM_MACOS)
+        MENGINE_STRCPY( _deviceLanguage, "en" );
+
+        return 2;
+#elif defined(MENGINE_PLATFORM_IOS)
+        MENGINE_STRCPY( _deviceLanguage, "en" );
+
+        return 2;
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getDeviceName( _deviceLanguage, 16 );
+
+        size_t deviceLanguageLen = MENGINE_STRLEN( _deviceLanguage );
+
+        return deviceLanguageLen;
+#else
+        MENGINE_STRCPY( _deviceLanguage, "" );
+
+        return 0;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getFingerprint( Char * const _fingerprint ) const
     {
         m_fingerprint.copy( _fingerprint );

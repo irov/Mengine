@@ -34,6 +34,7 @@ namespace Mengine
     public:
         virtual size_t getAndroidId( Char * _androidId, size_t _capacity ) const = 0;
         virtual size_t getDeviceName( Char * _androidId, size_t _capacity ) const = 0;
+        virtual size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const = 0;
         virtual size_t getAndroidPackageName( Char * _androidId, size_t _capacity ) const = 0;
 
     public:

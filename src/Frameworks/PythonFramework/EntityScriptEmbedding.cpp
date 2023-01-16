@@ -28,314 +28,319 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class EntityScriptMethod
-        : public Factorable
+    namespace
     {
-    public:
-        EntityScriptMethod()
+        //////////////////////////////////////////////////////////////////////////
+        class EntityScriptMethod
+            : public Factorable
         {
-        }
-
-        ~EntityScriptMethod() override
-        {
-        }
-
-    public:
-        bool initialize()
-        {
-            m_factoryEntityPrototypeGenerator = Helper::makeFactoryPool<PythonEntityPrototypeGenerator, 64>( MENGINE_DOCUMENT_FACTORABLE );
-
-            return true;
-        }
-
-        void finalize()
-        {
-            for( const PrototypeGeneratorInterfacePtr & generator : m_entityPrototypeGenerators )
+        public:
+            EntityScriptMethod()
             {
-                const ConstString & category = generator->getCategory();
-                const ConstString & prototype = generator->getPrototype();
-
-                PROTOTYPE_SERVICE()
-                    ->removePrototype( category, prototype, nullptr );
             }
 
-            m_entityPrototypeGenerators.clear();
+            ~EntityScriptMethod() override
+            {
+            }
 
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryEntityPrototypeGenerator );
+        public:
+            bool initialize()
+            {
+                m_factoryEntityPrototypeGenerator = Helper::makeFactoryPool<PythonEntityPrototypeGenerator, 64>( MENGINE_DOCUMENT_FACTORABLE );
 
-            m_factoryEntityPrototypeGenerator = nullptr;
-        }
+                return true;
+            }
 
-    public:
+            void finalize()
+            {
+                for( const PrototypeGeneratorInterfacePtr & generator : m_entityPrototypeGenerators )
+                {
+                    const ConstString & category = generator->getCategory();
+                    const ConstString & prototype = generator->getPrototype();
+
+                    PROTOTYPE_SERVICE()
+                        ->removePrototype( category, prototype, nullptr );
+                }
+
+                m_entityPrototypeGenerators.clear();
+
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryEntityPrototypeGenerator );
+
+                m_factoryEntityPrototypeGenerator = nullptr;
+            }
+
+        public:
+            //////////////////////////////////////////////////////////////////////////
+            bool s_hasPrototypeFinder( const ConstString & _category, const ConstString & _prototype )
+            {
+                bool result = PROTOTYPE_SERVICE()
+                    ->hasPrototype( _category, _prototype, nullptr );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_hasEntityPrototypeFinder( const ConstString & _prototype )
+            {
+                bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_hasScenePrototypeFinder( const ConstString & _prototype )
+            {
+                bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_hasArrowPrototypeFinder( const ConstString & _prototype )
+            {
+                bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
+            {
+                PythonEntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
+
+                generator->setGenerator( _generator );
+
+                m_entityPrototypeGenerators.emplace_back( generator );
+
+                bool successful = PROTOTYPE_SERVICE()
+                    ->addPrototype( _category, _prototype, generator );
+
+                return successful;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_addEntityPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
+            {
+                bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, _module );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_addScenePrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
+            {
+                bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, _module );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_addArrowPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
+            {
+                bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, _module );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removePrototypeFinder( const ConstString & _category, const ConstString & _prototype )
+            {
+                PrototypeGeneratorInterfacePtr generator;
+                PROTOTYPE_SERVICE()
+                    ->removePrototype( _category, _prototype, &generator );
+
+                MENGINE_ASSERTION_FATAL( generator != nullptr, "removing generator category '%s' prototype '%s' not found"
+                    , _category.c_str()
+                    , _prototype.c_str()
+                );
+
+                VectorEntityPrototypeGenerators::iterator it_found = Algorithm::find( m_entityPrototypeGenerators.begin(), m_entityPrototypeGenerators.end(), generator );
+
+                MENGINE_ASSERTION_FATAL( it_found != m_entityPrototypeGenerators.end(), "remove generator category '%s' prototype '%s' not add from script"
+                    , _category.c_str()
+                    , _prototype.c_str()
+                );
+
+                *it_found = m_entityPrototypeGenerators.back();
+                m_entityPrototypeGenerators.pop_back();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removeEntityPrototypeFinder( const ConstString & _prototype )
+            {
+                s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removeScenePrototypeFinder( const ConstString & _prototype )
+            {
+                s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removeArrowPrototypeFinder( const ConstString & _prototype )
+            {
+                s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::object s_createEntity( const ConstString & _prototype )
+            {
+                EntityPtr entity = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create entity '%s'"
+                    , _prototype.c_str()
+                );
+
+                const PythonEntityBehaviorPtr & behavior = entity->getBehavior();
+                const pybind::object & py_entity = behavior->getScriptObject();
+
+                return py_entity;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_destroyEntity( const EntityPtr & _entity )
+            {
+                _entity->dispose();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::object s_importEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )
+            {
+                MENGINE_UNUSED( _kernel );
+
+                const PrototypeGeneratorInterfacePtr & generator = PROTOTYPE_SERVICE()
+                    ->getGenerator( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( generator, "importEntity: can't import 'Entity' '%s'"
+                    , _prototype.c_str()
+                );
+
+                PythonEntityPrototypeGeneratorPtr entityGenerator =
+                    stdex::intrusive_static_cast<PythonEntityPrototypeGeneratorPtr>(generator);
+
+                const pybind::object & py_type = entityGenerator->getPythonType();
+
+                return py_type;
+            }
+
+        protected:
+            FactoryInterfacePtr m_factoryEntityPrototypeGenerator;
+
+            typedef Vector<PrototypeGeneratorInterfacePtr> VectorEntityPrototypeGenerators;
+            VectorEntityPrototypeGenerators m_entityPrototypeGenerators;
+        };
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasPrototypeFinder( const ConstString & _category, const ConstString & _prototype )
-        {
-            bool result = PROTOTYPE_SERVICE()
-                ->hasPrototype( _category, _prototype, nullptr );
-
-            return result;
-        }
+        typedef IntrusivePtr<EntityScriptMethod> EntityScriptMethodPtr;
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasEntityPrototypeFinder( const ConstString & _prototype )
+        class superclass_new_Entity
+            : public pybind::new_adapter_interface
         {
-            bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+        public:
+            void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+            {
+                MENGINE_UNUSED( _scope );
+                MENGINE_UNUSED( _args );
+                MENGINE_UNUSED( _kwds );
 
-            return result;
-        }
+                EntityPtr entity = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ), MENGINE_DOCUMENT_PYBIND );
+
+                entity->setEmbed( _kernel, _obj );
+
+                _kernel->decref( _obj );
+
+                Entity * entity_ptr = entity.get();
+
+                IntrusivePtrBase::intrusive_ptr_add_ref( entity_ptr );
+
+                return entity_ptr;
+            }
+        };
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasScenePrototypeFinder( const ConstString & _prototype )
+        class superclass_destroy_Entity
+            : public pybind::destroy_adapter_interface
         {
-            bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
+        public:
+            void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
+            {
+                MENGINE_UNUSED( _kernel );
+                MENGINE_UNUSED( _scope );
 
-            return result;
-        }
+                Entity * entity_ptr = static_cast<Entity *>(_impl);
+
+                IntrusivePtrBase::intrusive_ptr_dec_ref( entity_ptr );
+            }
+        };
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasArrowPrototypeFinder( const ConstString & _prototype )
+        class superclass_new_Arrow
+            : public pybind::new_adapter_interface
         {
-            bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
+        public:
+            void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+            {
+                MENGINE_UNUSED( _scope );
+                MENGINE_UNUSED( _args );
+                MENGINE_UNUSED( _kwds );
 
-            return result;
-        }
+                ArrowPtr arrow = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), MENGINE_DOCUMENT_PYBIND );
+
+                arrow->setEmbed( _kernel, _obj );
+
+                _kernel->decref( _obj );
+
+                Arrow * arrow_ptr = arrow.get();
+
+                IntrusivePtrBase::intrusive_ptr_add_ref( arrow_ptr );
+
+                return arrow_ptr;
+            }
+        };
         //////////////////////////////////////////////////////////////////////////
-        bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
+        class superclass_destroy_Arrow
+            : public pybind::destroy_adapter_interface
         {
-            PythonEntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
+        public:
+            void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
+            {
+                MENGINE_UNUSED( _kernel );
+                MENGINE_UNUSED( _scope );
 
-            generator->setGenerator( _generator );
+                Arrow * arrow_ptr = static_cast<Arrow *>(_impl);
 
-            m_entityPrototypeGenerators.emplace_back( generator );
-
-            bool successful = PROTOTYPE_SERVICE()
-                ->addPrototype( _category, _prototype, generator );
-
-            return successful;
-        }
+                IntrusivePtrBase::intrusive_ptr_dec_ref( arrow_ptr );
+            }
+        };
         //////////////////////////////////////////////////////////////////////////
-        bool s_addEntityPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
+        class superclass_new_Scene
+            : public pybind::new_adapter_interface
         {
-            bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, _module );
+        public:
+            void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+            {
+                MENGINE_UNUSED( _scope );
+                MENGINE_UNUSED( _args );
+                MENGINE_UNUSED( _kwds );
 
-            return result;
-        }
+                ScenePtr scene = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_PYBIND );
+
+                scene->setEmbed( _kernel, _obj );
+
+                _kernel->decref( _obj );
+
+                Scene * scene_ptr = scene.get();
+
+                IntrusivePtrBase::intrusive_ptr_add_ref( scene_ptr );
+
+                return scene_ptr;
+            }
+        };
         //////////////////////////////////////////////////////////////////////////
-        bool s_addScenePrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
+        class superclass_destroy_Scene
+            : public pybind::destroy_adapter_interface
         {
-            bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, _module );
+        public:
+            void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
+            {
+                MENGINE_UNUSED( _kernel );
+                MENGINE_UNUSED( _scope );
 
-            return result;
-        }
+                Scene * scene_ptr = static_cast<Scene *>(_impl);
+
+                IntrusivePtrBase::intrusive_ptr_dec_ref( scene_ptr );
+            }
+        };
         //////////////////////////////////////////////////////////////////////////
-        bool s_addArrowPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
-        {
-            bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, _module );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_removePrototypeFinder( const ConstString & _category, const ConstString & _prototype )
-        {
-            PrototypeGeneratorInterfacePtr generator;
-            PROTOTYPE_SERVICE()
-                ->removePrototype( _category, _prototype, &generator );
-
-            MENGINE_ASSERTION_FATAL( generator != nullptr, "removing generator category '%s' prototype '%s' not found"
-                , _category.c_str()
-                , _prototype.c_str()
-            );
-
-            VectorEntityPrototypeGenerators::iterator it_found = Algorithm::find( m_entityPrototypeGenerators.begin(), m_entityPrototypeGenerators.end(), generator );
-
-            MENGINE_ASSERTION_FATAL( it_found != m_entityPrototypeGenerators.end(), "remove generator category '%s' prototype '%s' not add from script"
-                , _category.c_str()
-                , _prototype.c_str()
-            );
-
-            *it_found = m_entityPrototypeGenerators.back();
-            m_entityPrototypeGenerators.pop_back();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_removeEntityPrototypeFinder( const ConstString & _prototype )
-        {
-            s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_removeScenePrototypeFinder( const ConstString & _prototype )
-        {
-            s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_removeArrowPrototypeFinder( const ConstString & _prototype )
-        {
-            s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        pybind::object s_createEntity( const ConstString & _prototype )
-        {
-            EntityPtr entity = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create entity '%s'"
-                , _prototype.c_str()
-            );
-
-            const PythonEntityBehaviorPtr & behavior = entity->getBehavior();
-            const pybind::object & py_entity = behavior->getScriptObject();
-
-            return py_entity;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_destroyEntity( const EntityPtr & _entity )
-        {
-            _entity->dispose();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        pybind::object s_importEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )
-        {
-            MENGINE_UNUSED( _kernel );
-
-            const PrototypeGeneratorInterfacePtr & generator = PROTOTYPE_SERVICE()
-                ->getGenerator( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( generator, "importEntity: can't import 'Entity' '%s'"
-                , _prototype.c_str()
-            );
-
-            PythonEntityPrototypeGeneratorPtr entityGenerator =
-                stdex::intrusive_static_cast<PythonEntityPrototypeGeneratorPtr>(generator);
-
-            const pybind::object & py_type = entityGenerator->getPythonType();
-
-            return py_type;
-        }
-
-    protected:
-        FactoryInterfacePtr m_factoryEntityPrototypeGenerator;
-
-        typedef Vector<PrototypeGeneratorInterfacePtr> VectorEntityPrototypeGenerators;
-        VectorEntityPrototypeGenerators m_entityPrototypeGenerators;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<EntityScriptMethod> EntityScriptMethodPtr;
-    //////////////////////////////////////////////////////////////////////////
-    class superclass_new_Entity
-        : public pybind::new_adapter_interface
-    {
-    public:
-        void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
-        {
-            MENGINE_UNUSED( _scope );
-            MENGINE_UNUSED( _args );
-            MENGINE_UNUSED( _kwds );
-
-            EntityPtr entity = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ), MENGINE_DOCUMENT_PYBIND );
-
-            entity->setEmbed( _kernel, _obj );
-
-            _kernel->decref( _obj );
-
-            Entity * entity_ptr = entity.get();
-
-            IntrusivePtrBase::intrusive_ptr_add_ref( entity_ptr );
-
-            return entity_ptr;
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class superclass_destroy_Entity
-        : public pybind::destroy_adapter_interface
-    {
-    public:
-        void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
-        {
-            MENGINE_UNUSED( _kernel );
-            MENGINE_UNUSED( _scope );
-
-            Entity * entity_ptr = static_cast<Entity *>(_impl);
-
-            IntrusivePtrBase::intrusive_ptr_dec_ref( entity_ptr );
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class superclass_new_Arrow
-        : public pybind::new_adapter_interface
-    {
-    public:
-        void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
-        {
-            MENGINE_UNUSED( _scope );
-            MENGINE_UNUSED( _args );
-            MENGINE_UNUSED( _kwds );
-
-            ArrowPtr arrow = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), MENGINE_DOCUMENT_PYBIND );
-
-            arrow->setEmbed( _kernel, _obj );
-
-            _kernel->decref( _obj );
-
-            Arrow * arrow_ptr = arrow.get();
-
-            IntrusivePtrBase::intrusive_ptr_add_ref( arrow_ptr );
-
-            return arrow_ptr;
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////    
-    class superclass_destroy_Arrow
-        : public pybind::destroy_adapter_interface
-    {
-    public:
-        void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
-        {
-            MENGINE_UNUSED( _kernel );
-            MENGINE_UNUSED( _scope );
-
-            Arrow * arrow_ptr = static_cast<Arrow *>(_impl);
-
-            IntrusivePtrBase::intrusive_ptr_dec_ref( arrow_ptr );
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class superclass_new_Scene
-        : public pybind::new_adapter_interface
-    {
-    public:
-        void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
-        {
-            MENGINE_UNUSED( _scope );
-            MENGINE_UNUSED( _args );
-            MENGINE_UNUSED( _kwds );
-
-            ScenePtr scene = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_PYBIND );
-
-            scene->setEmbed( _kernel, _obj );
-
-            _kernel->decref( _obj );
-
-            Scene * scene_ptr = scene.get();
-
-            IntrusivePtrBase::intrusive_ptr_add_ref( scene_ptr );
-
-            return scene_ptr;
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////    
-    class superclass_destroy_Scene
-        : public pybind::destroy_adapter_interface
-    {
-    public:
-        void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
-        {
-            MENGINE_UNUSED( _kernel );
-            MENGINE_UNUSED( _scope );
-
-            Scene * scene_ptr = static_cast<Scene *>(_impl);
-
-            IntrusivePtrBase::intrusive_ptr_dec_ref( scene_ptr );
-        }
-    };
+    }
     //////////////////////////////////////////////////////////////////////////
     EntityScriptEmbedding::EntityScriptEmbedding()
     {

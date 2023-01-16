@@ -24,7 +24,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace ScriptMethod
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
         static String vec2f_repr( mt::vec2f * _v )
@@ -630,8 +630,8 @@ namespace Mengine
 
         pybind::struct_<mt::vec2f>( _kernel, "vec2f" )
             .def_constructor( pybind::init<float, float>() )
-            .def_convert( &ScriptMethod::vec2f_convert, nullptr )
-            .def_repr( &ScriptMethod::vec2f_repr )
+            .def_convert( &Detail::vec2f_convert, nullptr )
+            .def_repr( &Detail::vec2f_repr )
             .def_operator_getset()
             .def_operator_add()
             .def_operator_sub()
@@ -647,8 +647,8 @@ namespace Mengine
 
         pybind::struct_<mt::vec3f>( _kernel, "vec3f" )
             .def_constructor( pybind::init<float, float, float>() )
-            .def_convert( &ScriptMethod::vec3f_convert, nullptr )
-            .def_repr( &ScriptMethod::vec3f_repr )
+            .def_convert( &Detail::vec3f_convert, nullptr )
+            .def_repr( &Detail::vec3f_repr )
             .def_operator_getset()
             .def_operator_add()
             .def_operator_sub()
@@ -665,8 +665,8 @@ namespace Mengine
 
         pybind::struct_<mt::vec4f>( _kernel, "vec4f" )
             .def_constructor( pybind::init<float, float, float, float>() )
-            .def_convert( &ScriptMethod::vec4f_convert, nullptr )
-            .def_repr( &ScriptMethod::vec4f_repr )
+            .def_convert( &Detail::vec4f_convert, nullptr )
+            .def_repr( &Detail::vec4f_repr )
             .def_operator_getset()
             .def_operator_add()
             .def_operator_sub()
@@ -684,8 +684,8 @@ namespace Mengine
 
         pybind::struct_<mt::mat4f>( _kernel, "mat4f" )
             .def_constructor( pybind::init<>() )
-            .def_convert( &ScriptMethod::mat4f_convert, nullptr )
-            .def_repr( &ScriptMethod::mat4f_repr )
+            .def_convert( &Detail::mat4f_convert, nullptr )
+            .def_repr( &Detail::mat4f_repr )
             .def_operator_getset()
             .def_member( "v0", &mt::mat4f::v0 )
             .def_member( "v1", &mt::mat4f::v1 )
@@ -695,8 +695,8 @@ namespace Mengine
 
         pybind::struct_<mt::uv4f>( _kernel, "uv4f" )
             .def_constructor( pybind::init<mt::vec2f, mt::vec2f, mt::vec2f, mt::vec2f>() )
-            .def_convert( &ScriptMethod::uv4f_convert, nullptr )
-            .def_repr( &ScriptMethod::uv4f_repr )
+            .def_convert( &Detail::uv4f_convert, nullptr )
+            .def_repr( &Detail::uv4f_repr )
             .def_operator_getset()
             .def_member( "p0", &mt::uv4f::p0 )
             .def_member( "p1", &mt::uv4f::p1 )
@@ -706,15 +706,15 @@ namespace Mengine
 
         pybind::struct_<mt::box2f>( _kernel, "box2f" )
             .def_constructor( pybind::init<mt::vec2f, mt::vec2f>() )
-            .def_convert( &ScriptMethod::box2f_convert, nullptr )
-            .def_repr( &ScriptMethod::box2f_repr )
+            .def_convert( &Detail::box2f_convert, nullptr )
+            .def_repr( &Detail::box2f_repr )
             .def_member( "minimum", &mt::box2f::minimum )
             .def_member( "maximum", &mt::box2f::maximum )
             ;
 
         pybind::struct_<Rect>( _kernel, "Rect" )
             .def_constructor( pybind::init<uint32_t, uint32_t, uint32_t, uint32_t>() )
-            .def_convert( &ScriptMethod::Rect_convert, nullptr )
+            .def_convert( &Detail::Rect_convert, nullptr )
             .def_member( "left", &Rect::left )
             .def_member( "top", &Rect::top )
             .def_member( "right", &Rect::right )
@@ -742,7 +742,7 @@ namespace Mengine
 
         pybind::struct_<Polygon>( _kernel, "Polygon" )
             .def_constructor( pybind::init<>() )
-            .def_convert( &ScriptMethod::Polygon_convert, nullptr )
+            .def_convert( &Detail::Polygon_convert, nullptr )
             .def( "getPoints", &Polygon::getPoints )
             .def( "empty", &Polygon::empty )
             .def( "size", &Polygon::size )
@@ -753,8 +753,8 @@ namespace Mengine
 
         pybind::struct_<Viewport>( _kernel, "Viewport" )
             .def_constructor( pybind::init<mt::vec2f, mt::vec2f>() )
-            .def_convert( &ScriptMethod::Viewport_convert, nullptr )
-            .def_repr( &ScriptMethod::Viewport_repr )
+            .def_convert( &Detail::Viewport_convert, nullptr )
+            .def_repr( &Detail::Viewport_repr )
             .def_member( "begin", &Viewport::begin )
             .def_member( "end", &Viewport::end )
             .def( "getWidth", &Viewport::getWidth )
@@ -774,8 +774,8 @@ namespace Mengine
 
         pybind::struct_<Color>( _kernel, "Color" )
             .def_constructor( pybind::init<float, float, float, float>() )
-            .def_convert( &ScriptMethod::color_convert, nullptr )
-            .def_repr( &ScriptMethod::color_repr )
+            .def_convert( &Detail::color_convert, nullptr )
+            .def_repr( &Detail::color_repr )
             .def( "getA", &Color::getA )
             .def( "getR", &Color::getR )
             .def( "getG", &Color::getG )
@@ -791,8 +791,8 @@ namespace Mengine
 
         pybind::struct_<Resolution>( _kernel, "Resolution" )
             .def_constructor( pybind::init<uint32_t, uint32_t>() )
-            .def_convert( &ScriptMethod::Resolution_convert, nullptr )
-            .def_repr( &ScriptMethod::Resolution_repr )
+            .def_convert( &Detail::Resolution_convert, nullptr )
+            .def_repr( &Detail::Resolution_repr )
             .def( "setWidth", &Resolution::setWidth )
             .def( "setHeight", &Resolution::setHeight )
             .def( "getWidth", &Resolution::getWidth )

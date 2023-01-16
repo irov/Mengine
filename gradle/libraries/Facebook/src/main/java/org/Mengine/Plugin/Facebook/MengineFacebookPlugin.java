@@ -65,6 +65,8 @@ public class MengineFacebookPlugin extends MenginePlugin {
                     , accessToken.getUserId()
                     , accessToken.getToken()
                 );
+
+                MengineFacebookPlugin.this.activateSemaphore("FacebookRetrieveLoginCompleted");
             }
 
             @Override

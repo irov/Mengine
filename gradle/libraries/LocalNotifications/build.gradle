@@ -1,3 +1,5 @@
+import com.Mengine.Utils
+
 apply plugin: 'com.android.library'
 
 android {
@@ -34,6 +36,6 @@ dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
 
-    implementation 'androidx.core:core:1.8.0'
-    implementation 'androidx.annotation:annotation:1.4.0'
+    implementation 'androidx.core:core:1.9.0'
+    implementation 'androidx.annotation:annotation:1.5.0'
 }

@@ -1,9 +1,6 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
+import com.Mengine.Utils
 
+subprojects {
     dependencies {
         classpath 'com.google.gms:google-services:4.3.14'
     }

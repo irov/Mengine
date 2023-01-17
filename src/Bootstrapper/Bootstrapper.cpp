@@ -353,6 +353,10 @@ PLUGIN_EXPORT( AppleHelpshift );
 PLUGIN_EXPORT( AppleStoreReview );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_STOREINAPPPURCHASE_STATIC
+PLUGIN_EXPORT( AppleStoreInAppPurchase );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
 PLUGIN_EXPORT( AppleAdjust );
 #endif
@@ -1207,6 +1211,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_APPLE_STOREREVIEW_STATIC
         MENGINE_ADD_PLUGIN( AppleStoreReview, "Plugin Apple Store Review...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_STOREINAPPPURCHASE_STATIC
+        MENGINE_ADD_PLUGIN( AppleStoreInAppPurchase, "Plugin Apple Store In-App Purchase...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC

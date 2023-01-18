@@ -54,12 +54,12 @@ namespace Mengine
         m_factoryProductsRequest = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleStoreInAppPurchaseService::setProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider )
+    void AppleStoreInAppPurchaseService::setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider )
     {
         m_provider = _provider;
     }
     //////////////////////////////////////////////////////////////////////////
-    const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & AppleStoreInAppPurchaseService::getProvider() const
+    const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & AppleStoreInAppPurchaseService::getPaymentTransactionProvider() const
     {
         return m_provider;
     }

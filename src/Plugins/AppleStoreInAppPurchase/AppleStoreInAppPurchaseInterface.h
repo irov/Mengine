@@ -73,8 +73,8 @@ namespace Mengine
         SERVICE_DECLARE( "AppleStoreInAppPurchaseService" )
             
     public:
-        virtual void setProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider ) = 0;
-        virtual const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & getProvider() const = 0;
+        virtual void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider ) = 0;
+        virtual const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & getPaymentTransactionProvider() const = 0;
         
     public:
         virtual bool canMakePayments() const = 0;

@@ -28,8 +28,8 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        void setProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider ) override;
-        const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & getProvider() const override;
+        void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider ) override;
+        const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & getPaymentTransactionProvider() const override;
         
     public:
         bool canMakePayments() const override;

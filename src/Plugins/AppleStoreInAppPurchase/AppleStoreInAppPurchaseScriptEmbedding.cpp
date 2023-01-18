@@ -100,18 +100,18 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleStoreInAppPurchase_setProvider( const pybind::dict & _cbs, const pybind::args & _args )
+        static void s_AppleStoreInAppPurchase_setPaymentTransactionProvider( const pybind::dict & _cbs, const pybind::args & _args )
         {
             AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentTransactionProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
             APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->setProvider( provider );
+                ->setPaymentTransactionProvider( provider );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleStoreInAppPurchase_removeProvider()
+        static void s_AppleStoreInAppPurchase_removePaymentTransactionProvider()
         {
             APPLE_STOREINAPPPURCHASE_SERVICE()
-                ->setProvider( nullptr );
+                ->setPaymentTransactionProvider( nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         static bool s_AppleStoreInAppPurchase_canMakePayments()
@@ -218,8 +218,8 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleStoreInAppPurchase", true );
 
-        pybind::def_function_args( _kernel, "appleStoreInAppPurchaseSetProvider", &Detail::s_AppleStoreInAppPurchase_setProvider );
-        pybind::def_function( _kernel, "appleStoreInAppPurchaseRemoveProvider", &Detail::s_AppleStoreInAppPurchase_removeProvider );
+        pybind::def_function_args( _kernel, "appleStoreInAppPurchaseSetPaymentTransactionProvider", &Detail::s_AppleStoreInAppPurchase_setPaymentTransactionProvider );
+        pybind::def_function( _kernel, "appleStoreInAppPurchaseRemovePaymentTransactionProvider", &Detail::s_AppleStoreInAppPurchase_removePaymentTransactionProvider );
         
         pybind::def_function( _kernel, "appleStoreInAppPurchaseCanMakePayments", &Detail::s_AppleStoreInAppPurchase_canMakePayments );
         pybind::def_function_args( _kernel, "appleStoreInAppPurchaseRequestProducts", &Detail::s_AppleStoreInAppPurchase_requestProducts );

@@ -23,7 +23,7 @@
 //////////////////////////////////////////////////////////////////////////
 // Sent when the transaction array has changed (additions or state changes).  Client should check state of transactions and finish as appropriate.
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
-    const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & provider = m_service->getProvider();
+    const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & provider = m_service->getPaymentTransactionProvider();
     
     for (SKPaymentTransaction * skPaymentTransaction in transactions)
     {

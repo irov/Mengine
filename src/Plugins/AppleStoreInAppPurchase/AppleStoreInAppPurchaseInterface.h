@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
@@ -12,6 +13,12 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual const ConstString & getProductIdentifier() const = 0;
+        virtual const String & getProductTitle() const = 0;
+        virtual const String & getProductDescription() const = 0;
+        virtual const String & getProductCurrencyCode() const = 0;
+        virtual const String & getProductPriceFormatted() const = 0;
+        virtual double getProductPrice() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchaseProductInterface> AppleStoreInAppPurchaseProductInterfacePtr;
@@ -28,7 +35,7 @@ namespace Mengine
     typedef Vector<AppleStoreInAppPurchaseProductInterfacePtr> VectorAppleStoreInAppPurchaseProducts;
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchaseProductsResponseInterface
-        : public ServantInterface
+        : public Interface
     {
     public:
         virtual void onProductResponse( const VectorAppleStoreInAppPurchaseProducts & _products ) = 0;
@@ -48,7 +55,7 @@ namespace Mengine
     typedef IntrusivePtr<AppleStoreInAppPurchaseProductsRequestInterface> AppleStoreInAppPurchaseProductsRequestInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchasePaymentTransactionProviderInterface
-        : public ServantInterface
+        : public Interface
     {
     public:
         virtual void onPaymentUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
@@ -72,6 +79,8 @@ namespace Mengine
     public:
         virtual bool canMakePayments() const = 0;
         virtual AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( const VectorConstString & _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) = 0;
+        virtual bool purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product ) = 0;
+        virtual void restoreCompletedTransactions() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

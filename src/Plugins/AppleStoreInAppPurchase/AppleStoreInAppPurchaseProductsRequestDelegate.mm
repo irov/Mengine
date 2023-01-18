@@ -29,7 +29,7 @@
     Mengine::VectorAppleStoreInAppPurchaseProducts products;
     for( SKProduct * skProduct in skProducts )
     {
-        LOGGER_INFO( "inapppurchase", "skproduct: %s"
+        LOGGER_INFO( "inapppurchase", "skProduct: %s"
             , [skProduct.productIdentifier UTF8String]
         );
         

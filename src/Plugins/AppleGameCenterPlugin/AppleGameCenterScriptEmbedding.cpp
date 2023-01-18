@@ -24,9 +24,8 @@ namespace Mengine
             , public Factorable
         {
         public:
-            PythonAppleGameCenterProvider( const pybind::object & _cbAuthenticate, const pybind::object & _cbSynchronizate, const pybind::args & _args )
-                : m_cbAuthenticate( _cbAuthenticate )
-                , m_cbSynchronizate( _cbSynchronizate )
+            PythonAppleGameCenterProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : m_cbs( _cbs )
                 , m_args( _args )
             {
             }
@@ -34,23 +33,36 @@ namespace Mengine
         protected:
             void onAppleGameCenterAuthenticate( bool _successful ) override
             {
-                m_cbAuthenticate.call_args( _successful, m_args );
+                pybind::object cb = m_cbs["onAppleGameCenterAuthenticate"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _successful, m_args );
             }
 
             void onAppleGameCenterSynchronizate( bool _successful ) override
             {
-                m_cbSynchronizate.call_args( _successful, m_args );
+                pybind::object cb = m_cbs["onAppleGameCenterSynchronizate"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _successful, m_args );
             }
 
         protected:
-            pybind::object m_cbAuthenticate;
-            pybind::object m_cbSynchronizate;
+            pybind::dict m_cbs;
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleGameCenter_setProvider( const pybind::object & _cbAuthenticate, const pybind::object & _cbSynchronizate, const pybind::args & _args )
+        static void s_AppleGameCenter_setProvider( const pybind::dict & _cbs, const pybind::args & _args )
         {
-            AppleGameCenterProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleGameCenterProvider>( MENGINE_DOCUMENT_PYBIND, _cbAuthenticate, _cbSynchronizate, _args );
+            AppleGameCenterProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleGameCenterProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
             APPLE_GAMECENTER_SERVICE()
                 ->setProvider( provider );

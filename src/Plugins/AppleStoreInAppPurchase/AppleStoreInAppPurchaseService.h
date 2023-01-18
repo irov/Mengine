@@ -34,6 +34,8 @@ namespace Mengine
     public:
         bool canMakePayments() const override;
         AppleStoreInAppPurchaseProductsRequestInterfacePtr requestProducts( const VectorConstString & _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb ) override;
+        bool purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product ) override;
+        void restoreCompletedTransactions() override;
         
     public:
         AppleStoreInAppPurchaseProductInterfacePtr makeProduct( SKProduct * _skProduct ) override;

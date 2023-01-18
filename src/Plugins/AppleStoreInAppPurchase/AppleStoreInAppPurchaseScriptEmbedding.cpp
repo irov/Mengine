@@ -18,8 +18,188 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleStoreReview_launchTheInAppReview()
+        class PythonAppleStoreInAppPurchasePaymentTransactionProvider
+            : public AppleStoreInAppPurchasePaymentTransactionProviderInterface
+            , public Factorable
         {
+        public:
+            PythonAppleStoreInAppPurchasePaymentTransactionProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : m_cbs( _cbs )
+                , m_args( _args )
+            {
+            }
+            
+            ~PythonAppleStoreInAppPurchasePaymentTransactionProvider() override
+            {                
+            }
+
+        protected:
+            void onPaymentUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            {
+                pybind::object cb = m_cbs["onPaymentUpdatedTransactionPurchasing"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _transaction, m_args );
+            }
+            
+            void onPaymentUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            {
+                pybind::object cb = m_cbs["onPaymentUpdatedTransactionPurchased"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _transaction, m_args );
+            }
+            
+            void onPaymentUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            {
+                pybind::object cb = m_cbs["onPaymentUpdatedTransactionFailed"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _transaction, m_args );
+            }
+            
+            void onPaymentUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            {
+                pybind::object cb = m_cbs["onPaymentUpdatedTransactionRestored"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _transaction, m_args );
+            }
+            
+            void onPaymentUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            {
+                pybind::object cb = m_cbs["onPaymentUpdatedTransactionDeferred"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _transaction, m_args );
+            }
+
+        protected:
+            pybind::dict m_cbs;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static void s_AppleStoreInAppPurchase_setProvider( const pybind::dict & _cbs, const pybind::args & _args )
+        {
+            AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentTransactionProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+
+            APPLE_STOREINAPPPURCHASE_SERVICE()
+                ->setProvider( provider );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_AppleStoreInAppPurchase_removeProvider()
+        {
+            APPLE_STOREINAPPPURCHASE_SERVICE()
+                ->setProvider( nullptr );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_AppleStoreInAppPurchase_canMakePayments()
+        {
+            bool result = APPLE_STOREINAPPPURCHASE_SERVICE()
+                ->canMakePayments();
+            
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonAppleStoreInAppPurchaseProductsResponse
+            : public AppleStoreInAppPurchaseProductsResponseInterface
+            , public Factorable
+        {
+        public:
+            PythonAppleStoreInAppPurchaseProductsResponse( const pybind::dict & _cbs, const pybind::args & _args )
+                : m_cbs( _cbs )
+                , m_args( _args )
+            {
+            }
+            
+            ~PythonAppleStoreInAppPurchaseProductsResponse() override
+            {
+            }
+            
+        protected:
+            void onProductResponse( const VectorAppleStoreInAppPurchaseProducts & _products ) override
+            {
+                pybind::object cb = m_cbs["onProductResponse"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _products, m_args );
+            }
+            
+            void onProductFinish() override
+            {
+                pybind::object cb = m_cbs["onProductFinish"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onProductFail() override
+            {
+                pybind::object cb = m_cbs["onProductFail"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+
+        protected:
+            pybind::dict m_cbs;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static AppleStoreInAppPurchaseProductsRequestInterfacePtr s_AppleStoreInAppPurchase_requestProducts( const VectorConstString & _productIdentifiers, const pybind::dict & _cbs, const pybind::args & _args )
+        {
+            AppleStoreInAppPurchaseProductsResponseInterfacePtr response = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchaseProductsResponse>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            
+            AppleStoreInAppPurchaseProductsRequestInterfacePtr request = APPLE_STOREINAPPPURCHASE_SERVICE()
+                ->requestProducts( _productIdentifiers, response );
+            
+            return request;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_AppleStoreInAppPurchase_purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product )
+        {
+            bool successful = APPLE_STOREINAPPPURCHASE_SERVICE()
+                ->purchaseProduct( _product );
+            
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_AppleStoreInAppPurchase_restoreCompletedTransactions()
+        {
+            APPLE_STOREINAPPPURCHASE_SERVICE()
+                ->restoreCompletedTransactions();
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -37,14 +217,20 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleStoreInAppPurchase", true );
 
-        pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::s_AppleStoreReview_launchTheInAppReview );
+        pybind::def_function_args( _kernel, "appleStoreInAppPurchaseSetProvider", &Detail::s_AppleStoreInAppPurchase_setProvider );
+        pybind::def_function( _kernel, "appleStoreInAppPurchaseRemoveProvider", &Detail::s_AppleStoreInAppPurchase_removeProvider );
+        
+        pybind::def_function( _kernel, "appleStoreInAppPurchaseCanMakePayments", &Detail::s_AppleStoreInAppPurchase_canMakePayments );
+        pybind::def_function_args( _kernel, "appleStoreInAppPurchaseRequestProducts", &Detail::s_AppleStoreInAppPurchase_requestProducts );
+        pybind::def_function( _kernel, "appleStoreInAppPurchasePurchaseProduct", &Detail::s_AppleStoreInAppPurchase_purchaseProduct );
+        pybind::def_function( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", &Detail::s_AppleStoreInAppPurchase_restoreCompletedTransactions );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleStoreReviewLaunchTheInAppReview", nullptr );
+        
     }
     //////////////////////////////////////////////////////////////////////////
 }

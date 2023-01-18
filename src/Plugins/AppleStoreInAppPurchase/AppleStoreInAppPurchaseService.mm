@@ -1,6 +1,7 @@
 #include "AppleStoreInAppPurchaseService.h"
 
 #include "Environment/Apple/AppleUtils.h"
+#include "Environment/Apple/AppleString.h"
 
 #include "AppleStoreInAppPurchasePaymentTransaction.h"
 #include "AppleStoreInAppPurchaseProduct.h"
@@ -18,6 +19,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchaseService::AppleStoreInAppPurchaseService()
+        : m_transactionObserver( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -98,6 +100,29 @@ namespace Mengine
         request->setSKProductsRequest( skrequest );
         
         return request;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleStoreInAppPurchaseService::purchaseProduct( const AppleStoreInAppPurchaseProductInterfacePtr & _product )
+    {
+        if( [SKPaymentQueue canMakePayments] == NO )
+        {
+            return false;
+        }
+        
+        AppleStoreInAppPurchaseProductPtr product = AppleStoreInAppPurchaseProductPtr::from( _product );
+        
+        SKProduct * skProduct = product->getSKProduct();
+        
+        SKPayment * payment = [SKPayment paymentWithProduct:skProduct];
+        
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleStoreInAppPurchaseService::restoreCompletedTransactions()
+    {
+        [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
     }
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchaseProductInterfacePtr AppleStoreInAppPurchaseService::makeProduct( SKProduct * _skProduct )

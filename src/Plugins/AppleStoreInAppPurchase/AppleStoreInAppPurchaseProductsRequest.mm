@@ -1,0 +1,31 @@
+#include "AppleStoreInAppPurchaseProductsRequest.h"
+
+//////////////////////////////////////////////////////////////////////////
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    AppleStoreInAppPurchaseProductsRequest::AppleStoreInAppPurchaseProductsRequest()
+        : m_skProductsRequest( nil )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AppleStoreInAppPurchaseProductsRequest::~AppleStoreInAppPurchaseProductsRequest()
+    {
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    void AppleStoreInAppPurchaseProductsRequest::setSKProductsRequest( SKProductsRequest * _skProductsRequest )
+    {
+        m_skProductsRequest = _skProductsRequest;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    SKProductsRequest * AppleStoreInAppPurchaseProductsRequest::getSKProductsRequest() const
+    {
+        return m_skProductsRequest;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    void AppleStoreInAppPurchaseProductsRequest::cancel()
+    {
+        [m_skProductsRequest cancel];
+    }
+    /////////////////////////////////////////////////////////////////////////////
+}

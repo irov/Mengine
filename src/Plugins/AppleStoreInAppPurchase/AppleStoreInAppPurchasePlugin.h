@@ -6,14 +6,14 @@
 
 namespace Mengine
 {    
-    class AppleStoreReviewPlugin
+    class AppleStoreInAppPurchasePlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AppleStoreReview" )
+        PLUGIN_DECLARE( "AppleStoreInAppPurchase" )
 
     public:
-        AppleStoreReviewPlugin();
-        ~AppleStoreReviewPlugin() override;
+        AppleStoreInAppPurchasePlugin();
+        ~AppleStoreInAppPurchasePlugin() override;
 
     protected:
         bool _availablePlugin() const override;

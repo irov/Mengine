@@ -1,12 +1,12 @@
-#include "AppleStoreReviewPlugin.h"
+#include "AppleStoreInAppPurchasePlugin.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "Interface/ScriptServiceInterface.h"
 
-#   include "AppleStoreReviewScriptEmbedding.h"
+#   include "AppleStoreInAppPurchaseScriptEmbedding.h"
 #endif
 
-#include "AppleStoreReviewInterface.h"
+#include "AppleStoreInAppPurchaseInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -14,34 +14,34 @@
 #include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleStoreReviewService );
+SERVICE_EXTERN( AppleStoreInAppPurchaseService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleStoreReview, Mengine::AppleStoreReviewPlugin )
+PLUGIN_FACTORY( AppleStoreInAppPurchase, Mengine::AppleStoreInAppPurchasePlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreReviewPlugin::AppleStoreReviewPlugin()
+    AppleStoreInAppPurchasePlugin::AppleStoreInAppPurchasePlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreReviewPlugin::~AppleStoreReviewPlugin()
+    AppleStoreInAppPurchasePlugin::~AppleStoreInAppPurchasePlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleStoreReviewPlugin::_availablePlugin() const
+    bool AppleStoreInAppPurchasePlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "applestorereview" ) == true )
+        if( HAS_OPTION( "applestoreinapppurchase" ) == true )
         {
             return true;
         }
             
-        if( HAS_OPTION( "noapplestorereview" ) == true )
+        if( HAS_OPTION( "noapplestoreinapppurchase" ) == true )
         {
             return false;
         }
         
-        bool AppleReviewPlugin_Available = CONFIG_VALUE( "StoreReviewPlugin", "Available", true );
+        bool AppleReviewPlugin_Available = CONFIG_VALUE( "AppleStoreInAppPurchasePlugin", "Available", true );
         
         if( AppleReviewPlugin_Available == false )
         {
@@ -51,9 +51,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleStoreReviewPlugin::_initializePlugin()
+    bool AppleStoreInAppPurchasePlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleStoreReviewService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( AppleStoreInAppPurchaseService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -62,32 +62,32 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleStoreReviewScriptEmbedding" ), Helper::makeFactorableUnique<AppleStoreReviewScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleStoreInAppPurchaseScriptEmbedding" ), Helper::makeFactorableUnique<AppleStoreInAppPurchaseScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleStoreReviewScriptEmbedding" ) );
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleStoreInAppPurchaseScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
         
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleStoreReviewPlugin::_finalizePlugin()
+    void AppleStoreInAppPurchasePlugin::_finalizePlugin()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
         
-        SERVICE_FINALIZE( AppleStoreReviewService );
+        SERVICE_FINALIZE( AppleStoreInAppPurchaseService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleStoreReviewPlugin::_destroyPlugin()
+    void AppleStoreInAppPurchasePlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( AppleStoreReviewService );
+        SERVICE_DESTROY( AppleStoreInAppPurchaseService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

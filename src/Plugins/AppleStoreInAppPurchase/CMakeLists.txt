@@ -2,12 +2,27 @@ MENGINE_PROJECT(AppleStoreInAppPurchasePlugin)
 
 ADD_FILTER(
 src
+    AppleStoreInAppPurchaseInterface.h
+    AppleStoreInAppPurchaseFactoryInterface.h
+
     AppleStoreInAppPurchasePlugin.h
     AppleStoreInAppPurchasePlugin.cpp
     
-    AppleStoreInAppPurchaseInterface.h
     AppleStoreInAppPurchaseService.h
     AppleStoreInAppPurchaseService.mm
+
+    AppleStoreInAppPurchasePaymentTransactionObserver.h
+    AppleStoreInAppPurchasePaymentTransactionObserver.mm
+    AppleStoreInAppPurchaseProductsRequestDelegate.h
+    AppleStoreInAppPurchaseProductsRequestDelegate.mm
+
+    AppleStoreInAppPurchasePaymentTransaction.h
+    AppleStoreInAppPurchasePaymentTransaction.mm
+
+    AppleStoreInAppPurchaseProduct.h
+    AppleStoreInAppPurchaseProduct.mm
+    AppleStoreInAppPurchaseProductsRequest.h
+    AppleStoreInAppPurchaseProductsRequest.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

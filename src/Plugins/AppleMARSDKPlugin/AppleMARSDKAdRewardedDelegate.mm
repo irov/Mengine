@@ -19,6 +19,8 @@
     return self;
 }
 
+#pragma mark - MARAdRewardedDelegate
+
 - (void) MARAdRewardedDidFailed: (MARAdErrorCode)code withMessage: (NSString *)message adDict:(NSDictionary *)adDict {
     LOGGER_INFO( "marsdk", "MARAdRewardedDidFailed" );
     

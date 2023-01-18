@@ -1,6 +1,6 @@
-#include "AppleStoreReviewScriptEmbedding.h"
+#include "AppleStoreInAppPurchaseScriptEmbedding.h"
 
-#include "AppleStoreReviewInterface.h"
+#include "AppleStoreInAppPurchaseInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -20,31 +20,29 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleStoreReview_launchTheInAppReview()
         {
-            APPLE_STOREREVIEW_SERVICE()
-                ->launchTheInAppReview();
         }
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreReviewScriptEmbedding::AppleStoreReviewScriptEmbedding()
+    AppleStoreInAppPurchaseScriptEmbedding::AppleStoreInAppPurchaseScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreReviewScriptEmbedding::~AppleStoreReviewScriptEmbedding()
+    AppleStoreInAppPurchaseScriptEmbedding::~AppleStoreInAppPurchaseScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleStoreReviewScriptEmbedding::embed( pybind::kernel_interface * _kernel )
+    bool AppleStoreInAppPurchaseScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleStoreReview", true );
+            ->setAvailablePlugin( "AppleStoreInAppPurchase", true );
 
         pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::s_AppleStoreReview_launchTheInAppReview );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleStoreReviewScriptEmbedding::eject( pybind::kernel_interface * _kernel )
+    void AppleStoreInAppPurchaseScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_from_module( "appleStoreReviewLaunchTheInAppReview", nullptr );
     }

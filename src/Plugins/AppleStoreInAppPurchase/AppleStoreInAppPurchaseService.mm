@@ -1,56 +1,130 @@
-#include "AppleStoreReviewService.h"
+#include "AppleStoreInAppPurchaseService.h"
 
 #include "Environment/Apple/AppleUtils.h"
 
-#include "Kernel/Logger.h"
+#include "AppleStoreInAppPurchasePaymentTransaction.h"
+#include "AppleStoreInAppPurchaseProduct.h"
+#include "AppleStoreInAppPurchaseProductsRequest.h"
 
-#import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
+#include "Kernel/Logger.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/AssertionFactory.h"
+#include "Kernel/DocumentHelper.h"
 
 ////////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AppleStoreReviewService, Mengine::AppleStoreReviewService );
+SERVICE_FACTORY( AppleStoreInAppPurchaseService, Mengine::AppleStoreInAppPurchaseService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreReviewService::AppleStoreReviewService()
+    AppleStoreInAppPurchaseService::AppleStoreInAppPurchaseService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreReviewService::~AppleStoreReviewService()
+    AppleStoreInAppPurchaseService::~AppleStoreInAppPurchaseService()
     {
     }
     /////////////////////////////////////////////////////////////////////////////
-    bool AppleStoreReviewService::_initializeService()
+    bool AppleStoreInAppPurchaseService::_initializeService()
     {
-        //Empty
+        m_factoryPaymentTransaction = Helper::makeFactoryPool<AppleStoreInAppPurchasePaymentTransaction, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryProduct = Helper::makeFactoryPool<AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryProductsRequest = Helper::makeFactoryPool<AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        
+        m_transactionObserver = [[AppleStoreInAppPurchasePaymentTransactionObserver alloc] initWithFactory:this service:this];
+        
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:m_transactionObserver];
         
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    void AppleStoreReviewService::_finalizeService()
+    void AppleStoreInAppPurchaseService::_finalizeService()
     {
-        //Empty
+        [[SKPaymentQueue defaultQueue] removeTransactionObserver:m_transactionObserver];
+        m_transactionObserver = nil;
+        
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPaymentTransaction );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProduct );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProductsRequest );
+
+        m_factoryPaymentTransaction = nullptr;
+        m_factoryProduct = nullptr;
+        m_factoryProductsRequest = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleStoreReviewService::launchTheInAppReview()
+    void AppleStoreInAppPurchaseService::setProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider )
     {
-        LOGGER_INFO("storereview", "launch the InAppReview");
-        
-        if (@available(iOS 14.0, *)) {
-            UIWindowScene * foregroundScene = nil;
-            for( UIWindowScene * scene in UIApplication.sharedApplication.connectedScenes ) {
-                if( scene.activationState == UISceneActivationStateForegroundActive ) {
-                    foregroundScene = scene;
-                }
-            }
-            
-            if( foregroundScene != nil ) {
-                [SKStoreReviewController requestReviewInScene:foregroundScene];
-            }
-        } else if (@available(iOS 10.3, *)) {
-            [SKStoreReviewController requestReview];
+        m_provider = _provider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & AppleStoreInAppPurchaseService::getProvider() const
+    {
+        return m_provider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleStoreInAppPurchaseService::canMakePayments() const
+    {
+        if( [SKPaymentQueue canMakePayments] == NO )
+        {
+            return false;
         }
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchaseService::requestProducts( const VectorConstString & _productIdentifiers, const AppleStoreInAppPurchaseProductsResponseInterfacePtr & _cb )
+    {
+        if( [SKPaymentQueue canMakePayments] == NO )
+        {
+            return nullptr;
+        }
+        
+        NSMutableSet<NSString *> * products = [[NSMutableSet<NSString *> alloc] init];
+        
+        for( const ConstString & productIdentifier : _productIdentifiers )
+        {
+            const Char * productIdentifier_str = productIdentifier.c_str();
+            
+            [products addObject:@(productIdentifier_str)];
+        }
+        
+        SKProductsRequest * skrequest = [[SKProductsRequest alloc] initWithProductIdentifiers:products];
+        skrequest.delegate = [[AppleStoreInAppPurchaseProductsRequestDelegate alloc] initWithFactory:this cb:_cb];
+        
+        [skrequest start];
+        
+        AppleStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        
+        request->setSKProductsRequest( skrequest );
+        
+        return request;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AppleStoreInAppPurchaseProductInterfacePtr AppleStoreInAppPurchaseService::makeProduct( SKProduct * _skProduct )
+    {
+        AppleStoreInAppPurchaseProductPtr product = m_factoryProduct->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        
+        product->setSKProduct( _skProduct );
+        
+        return product;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchaseService::makeProductsRequest( SKProductsRequest * _skProductsRequest )
+    {
+        AppleStoreInAppPurchaseProductsRequestPtr productsRequest = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        
+        productsRequest->setSKProductsRequest( _skProductsRequest );
+        
+        return productsRequest;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AppleStoreInAppPurchasePaymentTransactionInterfacePtr AppleStoreInAppPurchaseService::makePaymentTransaction( SKPaymentTransaction * _skPaymentTransaction )
+    {
+        AppleStoreInAppPurchasePaymentTransactionPtr transaction = m_factoryPaymentTransaction->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        
+        transaction->setSKPaymentTransaction( _skPaymentTransaction );
+        
+        return transaction;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -9,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchasePaymentTransaction
-         : public AppleStoreInAppPurchasePaymentTransactionInterface
+        : public AppleStoreInAppPurchasePaymentTransactionInterface
     {
         DECLARE_FACTORABLE( AppleStoreInAppPurchasePaymentTransaction );
 

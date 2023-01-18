@@ -2,6 +2,8 @@
 
 #include "AppleStoreInAppPurchaseInterface.h"
 
+#include "Kernel/Scriptable.h"
+
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
@@ -9,7 +11,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchaseProductsRequest
-         : public AppleStoreInAppPurchaseProductsRequestInterface
+        : public AppleStoreInAppPurchaseProductsRequestInterface
+        , public Scriptable
     {
         DECLARE_FACTORABLE( AppleStoreInAppPurchaseProductsRequest );
 

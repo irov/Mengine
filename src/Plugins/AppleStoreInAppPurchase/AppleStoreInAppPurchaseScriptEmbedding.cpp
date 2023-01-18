@@ -7,6 +7,7 @@
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
@@ -225,12 +226,31 @@ namespace Mengine
         pybind::def_function( _kernel, "appleStoreInAppPurchasePurchaseProduct", &Detail::s_AppleStoreInAppPurchase_purchaseProduct );
         pybind::def_function( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", &Detail::s_AppleStoreInAppPurchase_restoreCompletedTransactions );
 
+        pybind::interface_<AppleStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchasePaymentTransaction", false )
+            .def( "finish", &AppleStoreInAppPurchasePaymentTransactionInterface::finish )
+            ;
+        
+        pybind::interface_<AppleStoreInAppPurchaseProductInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchaseProductInterface", false )
+            .def( "getProductIdentifier", &AppleStoreInAppPurchaseProductInterface::getProductIdentifier )
+            .def( "getProductTitle", &AppleStoreInAppPurchaseProductInterface::getProductTitle )
+            .def( "getProductDescription", &AppleStoreInAppPurchaseProductInterface::getProductDescription )
+            .def( "getProductCurrencyCode", &AppleStoreInAppPurchaseProductInterface::getProductCurrencyCode )
+            .def( "getProductPriceFormatted", &AppleStoreInAppPurchaseProductInterface::getProductPriceFormatted )
+            .def( "getProductPrice", &AppleStoreInAppPurchaseProductInterface::getProductPrice )
+            ;
+        
+        pybind::interface_<AppleStoreInAppPurchaseProductsRequestInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchaseProductsRequestInterface", false )
+            .def( "cancel", &AppleStoreInAppPurchaseProductsRequestInterface::cancel )
+            ;
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        
+        _kernel->remove_scope<AppleStoreInAppPurchasePaymentTransactionInterface>();
+        _kernel->remove_scope<AppleStoreInAppPurchaseProductInterface>();
+        _kernel->remove_scope<AppleStoreInAppPurchaseProductsRequestInterface>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

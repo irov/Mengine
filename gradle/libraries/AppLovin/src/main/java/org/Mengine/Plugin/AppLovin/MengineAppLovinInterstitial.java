@@ -122,7 +122,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptInterstitial)));
 
         MengineUtils.performOnMainThread(() -> {
-            m_interstitialAd.loadAd();
+            if (m_interstitialAd != null) {
+                m_interstitialAd.loadAd();
+            }
         }, delayMillis);
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdLoadFailed");

@@ -152,7 +152,9 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptRewarded)));
 
         MengineUtils.performOnMainThread(() -> {
-            m_rewardedAd.loadAd();
+            if (m_rewardedAd != null) {
+                m_rewardedAd.loadAd();
+            }
         }, delayMillis);
 
         m_plugin.pythonCall("onApplovinRewardedOnAdLoadFailed");

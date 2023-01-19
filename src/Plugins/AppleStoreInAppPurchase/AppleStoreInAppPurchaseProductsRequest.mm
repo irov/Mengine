@@ -1,5 +1,7 @@
 #include "AppleStoreInAppPurchaseProductsRequest.h"
 
+#include "Kernel/Logger.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -11,11 +13,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchaseProductsRequest::~AppleStoreInAppPurchaseProductsRequest()
     {
+        [m_skProductsRequest release];
     }
     /////////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseProductsRequest::setSKProductsRequest( SKProductsRequest * _skProductsRequest )
     {
-        m_skProductsRequest = _skProductsRequest;
+        m_skProductsRequest = [_skProductsRequest retain];
     }
     /////////////////////////////////////////////////////////////////////////////
     SKProductsRequest * AppleStoreInAppPurchaseProductsRequest::getSKProductsRequest() const
@@ -25,6 +28,8 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseProductsRequest::cancel()
     {
+        LOGGER_INFO( "inapppurchase", "products request cancel" );
+        
         [m_skProductsRequest cancel];
     }
     /////////////////////////////////////////////////////////////////////////////

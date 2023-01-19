@@ -22,10 +22,15 @@ namespace Mengine
         SKPaymentTransaction * getSKPaymentTransaction() const;
         
     public:
+        const ConstString & getProductIdentifier() const override;
+        
+    public:
         void finish() override;
         
     protected:
         SKPaymentTransaction * m_skPaymentTransaction;
+        
+        ConstString m_productIdentifier;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchasePaymentTransaction, AppleStoreInAppPurchasePaymentTransactionInterface> AppleStoreInAppPurchasePaymentTransactionPtr;

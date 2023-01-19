@@ -1,6 +1,7 @@
 #import "AppleStoreInAppPurchasePaymentTransactionObserver.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 @implementation AppleStoreInAppPurchasePaymentTransactionObserver
@@ -23,6 +24,8 @@
 //////////////////////////////////////////////////////////////////////////
 // Sent when the transaction array has changed (additions or state changes).  Client should check state of transactions and finish as appropriate.
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
+    LOGGER_INFO( "inapppurchase", "SKPaymentTransactionObserver updatedTransactions" );
+    
     const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & provider = m_service->getPaymentTransactionProvider();
     
     for (SKPaymentTransaction * skPaymentTransaction in transactions)

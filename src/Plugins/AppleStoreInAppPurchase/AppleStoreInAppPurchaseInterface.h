@@ -27,6 +27,9 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual const ConstString & getProductIdentifier() const = 0;
+        
+    public:
         virtual void finish() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -226,7 +226,8 @@ namespace Mengine
         pybind::def_function( _kernel, "appleStoreInAppPurchasePurchaseProduct", &Detail::s_AppleStoreInAppPurchase_purchaseProduct );
         pybind::def_function( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", &Detail::s_AppleStoreInAppPurchase_restoreCompletedTransactions );
 
-        pybind::interface_<AppleStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchasePaymentTransaction", false )
+        pybind::interface_<AppleStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchasePaymentTransactionInterface", false )
+            .def( "getProductIdentifier", &AppleStoreInAppPurchasePaymentTransactionInterface::getProductIdentifier )
             .def( "finish", &AppleStoreInAppPurchasePaymentTransactionInterface::finish )
             ;
         

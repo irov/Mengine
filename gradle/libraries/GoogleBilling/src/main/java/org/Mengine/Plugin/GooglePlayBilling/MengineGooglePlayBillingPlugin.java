@@ -120,25 +120,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-    }
-
-    @Override
-    public void onResume(MengineActivity activity) {
-        this.connectAndQueryProducts();
-    }
-
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        if (m_billingClient == null) {
-            return;
-        }
-
-        m_billingClient.endConnection();
-    }
-
-    public void initialize() {
-        this.logInfo("initialize");
-
         final PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
             @Override
             public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchases) {
@@ -166,11 +147,11 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                     }break;
                     case BillingClient.BillingResponseCode.DEVELOPER_ERROR: {
                         MengineGooglePlayBillingPlugin.this.logError(
-                                "onPurchasesUpdated: Developer error means that Google Play " +
-                                        "does not recognize the configuration. If you are just getting started, " +
-                                        "make sure you have configured the application correctly in the " +
-                                        "Google Play Console. The SKU product ID must match and the APK you " +
-                                        "are using must be signed with release keys."
+                            "onPurchasesUpdated: Developer error means that Google Play " +
+                            "does not recognize the configuration. If you are just getting started, " +
+                            "make sure you have configured the application correctly in the " +
+                            "Google Play Console. The SKU product ID must match and the APK you " +
+                            "are using must be signed with release keys."
                         );
 
                         MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingDeveloperError");
@@ -190,12 +171,24 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             }
         };
 
-        MengineActivity activity = this.getActivity();
-
         m_billingClient = BillingClient.newBuilder(activity.getBaseContext())
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
             .build();
+    }
+
+    @Override
+    public void onResume(MengineActivity activity) {
+        this.connectAndQueryProducts();
+    }
+
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        if (m_billingClient == null) {
+            return;
+        }
+
+        m_billingClient.endConnection();
     }
 
     private void connectAndQueryProducts() {

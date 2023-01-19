@@ -9,6 +9,10 @@
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Kernel/Scriptable.h"
+#endif
+
 #include "Config/Char.h"
 
 namespace Mengine
@@ -57,7 +61,9 @@ namespace Mengine
         , public Updatable
         , public Animatable
         , public Eventable
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         , public Scriptable
+#endif
     {
     public:
         virtual void setResourceSpineSkeleton( const ResourcePtr & _resourceSpineSkeleton ) = 0;

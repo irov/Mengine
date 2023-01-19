@@ -49,11 +49,13 @@ Mixin\\\\Eventable
     BaseEventation.cpp
 )
 
-ADD_FILTER(
-Mixin\\\\Scriptable
-    Scriptable.cpp
-    Scriptable.h
-)
+if(MENGINE_USE_SCRIPT_SERVICE)
+    ADD_FILTER(
+    Mixin\\\\Scriptable
+        Scriptable.cpp
+        Scriptable.h
+    )
+endif()
 
 ADD_FILTER(
 Mixin\\\\Animatable
@@ -222,14 +224,20 @@ PrototypeGenerator
     FactoryPrototypeGenerator.h
     DefaultPrototypeGenerator.h
     NodePrototypeGenerator.h
-    BaseScriptablePrototypeGenerator.cpp
-    BaseScriptablePrototypeGenerator.h
-    ScriptablePrototypeGenerator.h
     ResourcePrototypeGenerator.h
     SurfacePrototypeGenerator.h
     ObjectPrototypeGenerator.h
     IdentityPrototypeGenerator.h
 )
+
+if(MENGINE_USE_SCRIPT_SERVICE)
+    ADD_FILTER(
+    PrototypeGenerator
+        BaseScriptablePrototypeGenerator.cpp
+        BaseScriptablePrototypeGenerator.h
+        ScriptablePrototypeGenerator.h
+    )
+endif()
 
 ADD_FILTER(
 BoundingBox

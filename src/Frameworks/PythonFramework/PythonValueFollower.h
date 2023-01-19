@@ -26,6 +26,6 @@ namespace Mengine
         pybind::args m_args;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonValueFollower> PythonValueFollowerPtr;
+    typedef IntrusivePtr<PythonValueFollower, Affector> PythonValueFollowerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

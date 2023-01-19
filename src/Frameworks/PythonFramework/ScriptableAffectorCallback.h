@@ -30,5 +30,6 @@ namespace Mengine
         pybind::args m_args;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ScriptableAffectorCallback> ScriptableAffectorCallbackPtr;
+    typedef IntrusivePtr<ScriptableAffectorCallback, AffectorCallbackInterface> ScriptableAffectorCallbackPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

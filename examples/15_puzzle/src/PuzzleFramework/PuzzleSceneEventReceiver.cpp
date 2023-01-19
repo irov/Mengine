@@ -29,6 +29,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Color.h"
+#include "Kernel/ColorHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/NodeCast.h"
 #include "Kernel/ColorHelper.h"
@@ -512,8 +513,8 @@ namespace Mengine
             , imagePartSize.y / imageSize.y
         );
 
-        Color colorLine = Helper::makeColor( 0, 255, 0, 255 );
-        Color colorFill = Helper::makeColor( 0, 0, 255, 50 );
+        Color colorLine = Helper::makeColor8( 0, 255, 0, 255 );
+        Color colorFill = Helper::makeColor8( 0, 0, 255, 50 );
 
         for( int row = 0; row != PUZZLE_ROWS; row++ )
         {
@@ -791,7 +792,7 @@ namespace Mengine
             auto && [race_btn_space, race_mouse_l] = Cook::addRace<2>( _scope_while );
 
             Cook::addGlobalKeyPress( race_btn_space, EKeyCode::KC_SPACE, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-            Cook::addGlobalMouseButton( race_mouse_l, EMouseCode::MC_LBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalMouseButton( race_mouse_l, EMouseButtonCode::MC_LBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             // start
             Cook::addFunction( _scope_while, this, &PuzzleSceneEventReceiver::enableBorders, true );
@@ -866,7 +867,7 @@ namespace Mengine
                 uint32_t idx = 0;
                 for( auto && [race, hotpspot] : Cook::addRaceZip( race_turn_hotspot, m_hotspots ) )
                 {
-                    Cook::addPickerableMouseButton( race, hotpspot, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                    Cook::addPickerableMouseButton( race, hotpspot, EMouseButtonCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                     Cook::addScope( race, this, &PuzzleSceneEventReceiver::scopeMakeTurn, idx );
 
@@ -892,7 +893,7 @@ namespace Mengine
                 auto && [race_text_btn_t, race_text_mouse_r] = Cook::addRace<2>( race_text );
 
                 Cook::addGlobalKeyPress( race_text_btn_t, EKeyCode::KC_T, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-                Cook::addGlobalMouseButton( race_text_mouse_r, EMouseCode::MC_RBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addGlobalMouseButton( race_text_mouse_r, EMouseButtonCode::MC_RBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 Cook::addFunction( race_text, [this]()
                 {

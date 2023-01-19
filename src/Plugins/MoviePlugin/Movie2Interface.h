@@ -8,6 +8,10 @@
 #include "Kernel/Node.h"
 #include "Kernel/RenderContext.h"
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Kernel/Scriptable.h"
+#endif
+
 #include "Config/Lambda.h"
 
 #include "math/box2.h"
@@ -22,7 +26,9 @@ namespace Mengine
         , public Identity
         , public Eventable
         , public Animatable
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         , public Scriptable
+#endif
     {
     public:
         virtual void setSubCompositionEnable( bool _enable ) = 0;

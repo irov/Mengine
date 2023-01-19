@@ -58,6 +58,8 @@ namespace Mengine
     EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_GET_INTERNAL );
 #endif
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<class Movie> MoviePtr;
+    //////////////////////////////////////////////////////////////////////////
     class Movie
         : public Node
         , protected BaseEventation

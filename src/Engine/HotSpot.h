@@ -63,8 +63,12 @@ namespace Mengine
     protected:
         bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
     public:
         Scriptable * getPickerScriptable() override;
+#endif
+
+    public:
         Eventable * getPickerEventable() override;
         InputHandlerInterface * getPickerInputHandler() override;
 

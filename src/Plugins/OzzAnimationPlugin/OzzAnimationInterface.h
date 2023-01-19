@@ -10,7 +10,10 @@
 #include "Kernel/Eventable.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/Compilable.h"
-#include "Kernel/Scriptable.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "Kernel/Scriptable.h"
+#endif
 
 #include "Kernel/AnimationEventReceiver.h"
 
@@ -58,7 +61,9 @@ namespace Mengine
         , public Updatable
         , public Animatable
         , public Eventable
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         , public Scriptable
+#endif
     {
     public:
         virtual void setResourceOzzAnimation( const ResourcePtr & _resource ) = 0;

@@ -24,7 +24,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_embed == nullptr );
 
-#if defined(MENGINE_DEBUG) && defined(MENGINE_USE_SCRIPT_SERVICE)
+#if defined(MENGINE_DEBUG)
         if( _kernel->is_object_bindable( _embed ) == false )
         {
             MENGINE_THROW_EXCEPTION( "'%s' but scope not setup bindable"
@@ -43,7 +43,6 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
         if( m_embed == nullptr )
         {
             PyObject * embed = this->_embedded( _kernel );
@@ -54,7 +53,6 @@ namespace Mengine
         {
             _kernel->incref( m_embed );
         }
-#endif
 
         return m_embed;
     }

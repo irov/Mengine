@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseScriptablePrototypeGenerator.h"
+#include "Kernel/BaseScriptablePrototypeGenerator.h"
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/AssertionMemoryPanic.h"

@@ -17,7 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
-#include "Kernel/ScriptablePrototypeGenerator.h"
+#include "Kernel/ObjectPrototypeGenerator.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/Document.h"
 #include "Kernel/NotificationHelper.h"
@@ -136,7 +136,7 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<SamplerOzzAnimation, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), Helper::makeFactorableUnique<ObjectPrototypeGenerator<SamplerOzzAnimation, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }

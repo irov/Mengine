@@ -63,50 +63,37 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     private final Boolean m_mutex = true;
     private Boolean m_responseEnd = true;
 
-    public interface IBillingResponse {
-        void skuResponse(List<ProductDetails> priceOffers);
-        void consume(List<String> ids);
-        void acknowledge(List<String> ids);
-        void hasAcknowledge(List<String> ids, MengineCallbackInterface cb);
+    public void onBillingResponseSkuResponse(List<ProductDetails> priceOffers) {
+        this.logInfo("Billing response skuResponse");
+
+        List<String> stringArray = new ArrayList<>();
+
+        for (ProductDetails product : priceOffers) {
+            String product_str = product.toString();
+
+            stringArray.add(product_str);
+        }
+
+        this.pythonCall("onGooglePlayBillingOnSkuResponse", stringArray);
     }
 
-    private final IBillingResponse m_callbackListener = new IBillingResponse() {
-        @Override
-        public void skuResponse(List<ProductDetails> priceOffers) {
-            MengineGooglePlayBillingPlugin.this.logInfo("Billing response skuResponse");
+    public void onBillingResponseConsume(List<String> products) {
+        this.logInfo("Billing response consume");
 
-            List<String> stringArray = new ArrayList<>();
+        this.pythonCall("onGooglePlayBillingOnConsume", products);
+    }
 
-            for (ProductDetails product : priceOffers) {
-                String product_str = product.toString();
+    public void onBillingResponseHasAcknowledge(List<String> products, MengineCallbackInterface cb) {
+        this.logInfo("Billing response hasAcknowledge");
 
-                stringArray.add(product_str);
-            }
+        this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, products);
+    }
 
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnSkuResponse", stringArray);
-        }
+    public void onBillingResponseAcknowledge(List<String> products) {
+        this.logInfo("Billing response acknowledge");
 
-        @Override
-        public void consume(List<String> products) {
-            MengineGooglePlayBillingPlugin.this.logInfo("Billing response consume");
-
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingOnConsume", products);
-        }
-
-        @Override
-        public void hasAcknowledge(List<String> products, MengineCallbackInterface cb) {
-            MengineGooglePlayBillingPlugin.this.logInfo("Billing response hasAcknowledge");
-
-            MengineGooglePlayBillingPlugin.this.pythonCallCb("onGooglePlayBillingIsAcknowledge", cb, products);
-        }
-
-        @Override
-        public void acknowledge(List<String> products) {
-            MengineGooglePlayBillingPlugin.this.logInfo("Billing response acknowledge");
-
-            MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingAcknowledge", products);
-        }
-    };
+        this.pythonCall("onGooglePlayBillingAcknowledge", products);
+    }
 
     public void setSkuList(List<String> ids) {
         this.logInfo("setSkuList ids: %s"
@@ -290,7 +277,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                         , m_productsDetails
                     );
 
-                    m_callbackListener.skuResponse(m_productsDetails);
+                    MengineGooglePlayBillingPlugin.this.onBillingResponseSkuResponse(m_productsDetails);
                 }
             });
         }
@@ -406,7 +393,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         if (purchase.isAcknowledged() == true) {
             List<String> products = purchase.getProducts();
 
-            m_callbackListener.hasAcknowledge(products, (Object result) -> {
+            this.onBillingResponseHasAcknowledge(products, (Object result) -> {
                 String token = purchase.getPurchaseToken();
 
                 AcknowledgePurchaseParams.Builder acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
@@ -433,7 +420,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                         , billingResult.getDebugMessage()
                     );
 
-                    MengineGooglePlayBillingPlugin.this.m_callbackListener.acknowledge(products);
+                    MengineGooglePlayBillingPlugin.this.onBillingResponseAcknowledge(products);
                 });
             });
         } else {
@@ -462,7 +449,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                     );
 
                     List<String> products = purchase.getProducts();
-                    MengineGooglePlayBillingPlugin.this.m_callbackListener.consume(products);
+                    MengineGooglePlayBillingPlugin.this.onBillingResponseConsume(products);
                 }
             });
         }

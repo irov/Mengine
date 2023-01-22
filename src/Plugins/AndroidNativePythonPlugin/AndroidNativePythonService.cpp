@@ -1,4 +1,4 @@
-#include "AndroidNativePythonModule.h"
+#include "AndroidNativePythonService.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
@@ -10,13 +10,14 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
 
-#include "Environment/Android/AndroidUtils.h"
+#include "Environment/Android/AndroidEnv.h"
 
 #include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
-static Mengine::AndroidNativePythonModule * s_androidNativePythonModule = nullptr;
+static Mengine::AndroidNativePythonService * s_androidNativePythonService = nullptr;
 //////////////////////////////////////////////////////////////////////////
 extern "C"
 {
@@ -32,7 +33,7 @@ extern "C"
         env->ReleaseStringUTFChars( _plugin, plugin_str );
         env->ReleaseStringUTFChars( _method, method_str );
 
-        if( s_androidNativePythonModule == nullptr )
+        if( s_androidNativePythonService == nullptr )
         {
             __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android call plugin '%s' method '%s'"
                 , plugin.c_str()
@@ -44,7 +45,7 @@ extern "C"
 
         jobjectArray new_args = (jobjectArray)env->NewGlobalRef( _args );
 
-        s_androidNativePythonModule->addCommand( [plugin, method, _id, new_args]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
+        s_androidNativePythonService->addCommand([plugin, method, _id, new_args]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
         {
             _handler->pythonMethod( plugin, method, _id, new_args );
         } );
@@ -58,7 +59,7 @@ extern "C"
 
         env->ReleaseStringUTFChars( _name, name_str );
 
-        if( s_androidNativePythonModule == nullptr )
+        if(s_androidNativePythonService == nullptr )
         {
             __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android add plugin '%s'"
                 , name.c_str()
@@ -69,7 +70,7 @@ extern "C"
 
         jobject new_plugin = env->NewGlobalRef( _plugin );
 
-        s_androidNativePythonModule->addCommand( [name, new_plugin]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
+        s_androidNativePythonService->addCommand([name, new_plugin]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
         {
             _handler->addPlugin( name, new_plugin );
         } );
@@ -83,7 +84,7 @@ extern "C"
 
         env->ReleaseStringUTFChars( _name, name_str );
 
-        if( s_androidNativePythonModule == nullptr )
+        if(s_androidNativePythonService == nullptr )
         {
             __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android activate semaphore '%s'"
                 , name.c_str()
@@ -92,7 +93,7 @@ extern "C"
             return;
         }
 
-        s_androidNativePythonModule->addCommand( [name]( const Mengine::PythonEventHandlerInterfacePtr & _handler )
+        s_androidNativePythonService->addCommand([name]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
         {
             _handler->activateSemaphore( name );
         } );
@@ -100,10 +101,12 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( AndroidNativePythonService, Mengine::AndroidNativePythonService );
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AndroidNativePythonModule::AndroidNativePythonModule()
+    AndroidNativePythonService::AndroidNativePythonService()
         : m_jclass_MengineActivity( nullptr )
         , m_jobject_MengineActivity( nullptr )
         , m_jclass_Object( nullptr )
@@ -119,24 +122,26 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AndroidNativePythonModule::~AndroidNativePythonModule()
+    AndroidNativePythonService::~AndroidNativePythonService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonModule::_initializeModule()
+    bool AndroidNativePythonService::_initializeService()
     {
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
             ->getKernel();
 
-        pybind::def_functor( kernel, "setAndroidCallback", this, &AndroidNativePythonModule::setAndroidCallback );
-        pybind::def_functor_args( kernel, "androidMethod", this, &AndroidNativePythonModule::androidMethod );
-        pybind::def_functor_args( kernel, "androidBooleanMethod", this, &AndroidNativePythonModule::androidBooleanMethod );
-        pybind::def_functor_args( kernel, "androidInteger32Method", this, &AndroidNativePythonModule::androidInteger32Method );
-        pybind::def_functor_args( kernel, "androidInteger64Method", this, &AndroidNativePythonModule::androidInteger64Method );
-        pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonModule::androidFloatMethod );
-        pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonModule::androidStringMethod );
+        pybind::def_functor( kernel, "setAndroidCallback", this, &AndroidNativePythonService::setAndroidCallback );
+        pybind::def_functor_args( kernel, "androidMethod", this, &AndroidNativePythonService::androidMethod );
+        pybind::def_functor_args( kernel, "androidBooleanMethod", this, &AndroidNativePythonService::androidBooleanMethod );
+        pybind::def_functor_args( kernel, "androidInteger32Method", this, &AndroidNativePythonService::androidInteger32Method );
+        pybind::def_functor_args( kernel, "androidInteger64Method", this, &AndroidNativePythonService::androidInteger64Method );
+        pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonService::androidFloatMethod );
+        pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonService::androidStringMethod );
 
-        pybind::def_functor_args( kernel, "waitAndroidSemaphore", this, &AndroidNativePythonModule::waitAndroidSemaphore );
+        pybind::def_functor_args( kernel, "waitAndroidSemaphore", this, &AndroidNativePythonService::waitAndroidSemaphore );
+
+        m_kernel = kernel;
 
         m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -148,11 +153,9 @@ namespace Mengine
             return false;
         }
 
-        m_kernel = kernel;
+        s_androidNativePythonService = this;
 
-        s_androidNativePythonModule = this;
-
-        m_eventation->setEventHandler( PythonEventHandlerInterfacePtr::from( this ) );
+        m_eventation->setEventHandler( AndroidNativePythonEventHandlerInterfacePtr::from( this ) );
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->addAndroidEventation( m_eventation );
@@ -200,11 +203,17 @@ namespace Mengine
 
         m_eventation->invoke();
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE, &AndroidNativePythonService::notifyApplicationBeginUpdate_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_END_UPDATE, &AndroidNativePythonService::notifyApplicationEndUpdate_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::_finalizeModule()
+    void AndroidNativePythonService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_END_UPDATE );
+
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jmethodID jmethodID_pythonFinalizePlugins = jenv->GetMethodID( m_jclass_MengineActivity, "pythonFinalizePlugins", "()V" );
@@ -213,7 +222,7 @@ namespace Mengine
 
         jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_pythonFinalizePlugins );
 
-        s_androidNativePythonModule = nullptr;
+        s_androidNativePythonService = nullptr;
 
         m_semaphoreListeners.clear();
         m_callbacks.clear();
@@ -226,24 +235,22 @@ namespace Mengine
         m_eventation = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::addCommand( const LambdaPythonEventHandler & _command )
+    void AndroidNativePythonService::addCommand( const LambdaPythonEventHandler & _command )
     {
         m_eventation->addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::_beginUpdate( bool _focus )
-    {
-        MENGINE_UNUSED( _focus );
-
-        m_eventation->invoke();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::_endUpdate()
+    void AndroidNativePythonService::notifyApplicationBeginUpdate_()
     {
         m_eventation->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * AndroidNativePythonModule::getPythonAttribute( JNIEnv * _jenv, jobject obj )
+    void AndroidNativePythonService::notifyApplicationEndUpdate_()
+    {
+        m_eventation->invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PyObject * AndroidNativePythonService::getPythonAttribute( JNIEnv * _jenv, jobject obj )
     {
         PyObject * py_value = nullptr;
 
@@ -314,7 +321,7 @@ namespace Mengine
         }
         else if( _jenv->IsInstanceOf( obj, m_jclass_String ) == JNI_TRUE )
         {
-            const Char * obj_str = _jenv->GetStringUTFChars( (jstring)obj, NULL);
+            const Char * obj_str = _jenv->GetStringUTFChars( (jstring)obj, nullptr );
 
             py_value = m_kernel->string_from_char( obj_str );
 
@@ -349,16 +356,21 @@ namespace Mengine
         {
             jclass cls_obj = _jenv->GetObjectClass( obj );
 
-            jmethodID mid_getClass = _jenv->GetMethodID( cls_obj, "getClass", "()Ljava/lang/Class;" );
-            jobject obj_class = _jenv->CallObjectMethod( obj, mid_getClass );
+            jmethodID jmethodID_getClass = _jenv->GetMethodID( cls_obj, "getClass", "()Ljava/lang/Class;" );
+
+            MENGINE_ASSERTION_FATAL( jmethodID_getClass != nullptr, "invalid get android method 'getClass()Ljava/lang/Class;'" );
+
+            jobject obj_class = _jenv->CallObjectMethod( obj, jmethodID_getClass );
 
             jclass cls_class = _jenv->GetObjectClass( obj_class );
 
-            jmethodID mid_getName = _jenv->GetMethodID( cls_class, "getName", "()Ljava/lang/String;" );
+            jmethodID jmethodID_getName = _jenv->GetMethodID( cls_class, "getName", "()Ljava/lang/String;" );
 
-            jstring obj_class_name = (jstring)_jenv->CallObjectMethod( obj_class, mid_getName );
+            MENGINE_ASSERTION_FATAL( jmethodID_getName != nullptr, "invalid get android method 'getName()Ljava/lang/String;'" );
 
-            const Char * obj_class_name_str = _jenv->GetStringUTFChars( obj_class_name, NULL);
+            jstring obj_class_name = (jstring)_jenv->CallObjectMethod( obj_class, jmethodID_getName );
+
+            const Char * obj_class_name_str = _jenv->GetStringUTFChars( obj_class_name, nullptr );
 
             LOGGER_ERROR( "unsupported java argument type '%s'"
                 , obj_class_name_str
@@ -373,7 +385,7 @@ namespace Mengine
         return py_value;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args )
+    void AndroidNativePythonService::pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args )
     {
         m_eventation->invoke();
 
@@ -448,7 +460,7 @@ namespace Mengine
         this->androidResponse( jenv, _id, py_result );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::addPlugin( const String & _name, const jobject & _plugin )
+    void AndroidNativePythonService::addPlugin( const String & _name, const jobject & _plugin )
     {
         MENGINE_ASSERTION_FATAL( m_plugins.find( Helper::stringizeString( _name ) ) == m_plugins.end(), "invalid add plugin '%s' [double]"
             , _name.c_str()
@@ -460,7 +472,7 @@ namespace Mengine
         m_plugins.emplace( Helper::stringizeString( _name ), _plugin );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
+    void AndroidNativePythonService::setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
     {
         MENGINE_ASSERTION_FATAL( m_callbacks.find( Helper::makePair( _plugin, _method ) ) == m_callbacks.end(), "invalid add plugin '%s' callback '%s' [double]"
             , _plugin.c_str()
@@ -470,7 +482,7 @@ namespace Mengine
         m_callbacks.emplace( Helper::makePair( _plugin, _method ), _cb );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonModule::androidResponse( JNIEnv * _jenv, int32_t _id, const pybind::object & _result ) const
+    bool AndroidNativePythonService::androidResponse( JNIEnv * _jenv, int32_t _id, const pybind::object & _result ) const
     {
         m_eventation->invoke();
 
@@ -553,7 +565,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    void AndroidNativePythonService::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [void]"
             , _plugin.c_str()
@@ -588,7 +600,7 @@ namespace Mengine
         m_eventation->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonModule::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    bool AndroidNativePythonService::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [boolean]"
             , _plugin.c_str()
@@ -625,7 +637,7 @@ namespace Mengine
         return (bool)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t AndroidNativePythonModule::androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    int32_t AndroidNativePythonService::androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [int]"
             , _plugin.c_str()
@@ -662,7 +674,7 @@ namespace Mengine
         return (int32_t)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    int64_t AndroidNativePythonModule::androidInteger64Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    int64_t AndroidNativePythonService::androidInteger64Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [long]"
             , _plugin.c_str()
@@ -699,7 +711,7 @@ namespace Mengine
         return (int64_t)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    float AndroidNativePythonModule::androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    float AndroidNativePythonService::androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [float]"
             , _plugin.c_str()
@@ -736,7 +748,7 @@ namespace Mengine
         return (float)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    String AndroidNativePythonModule::androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    String AndroidNativePythonService::androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [string]"
             , _plugin.c_str()
@@ -768,8 +780,6 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        m_eventation->invoke();
-
         const Mengine::Char * result_str = jenv->GetStringUTFChars( jresult, nullptr );
 
         Mengine::String result = result_str;
@@ -777,10 +787,12 @@ namespace Mengine
         jenv->ReleaseStringUTFChars( jresult, result_str );
         jenv->DeleteLocalRef( jresult );
 
+        m_eventation->invoke();
+
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativePythonModule::getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const
+    bool AndroidNativePythonService::getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const
     {
         MENGINE_ASSERTION_FATAL( _args.size() <= 32, "android method plugin '%s' method '%s' max args [32 < %u]"
             , _plugin.c_str()
@@ -807,6 +819,11 @@ namespace Mengine
 
         if( jplugin == nullptr )
         {
+            if( _jenv->ExceptionCheck() == true )
+            {
+                _jenv->ExceptionClear();
+            }
+
             LOGGER_ERROR( "android not found java plugin '%s' (call method '%s' args '%s')"
                 , _plugin.c_str()
                 , _method.c_str()
@@ -928,6 +945,11 @@ namespace Mengine
 
         if( jmethodId == nullptr )
         {
+            if( _jenv->ExceptionCheck() == true )
+            {
+                _jenv->ExceptionClear();
+            }
+
             LOGGER_ERROR( "android plugin '%s' not found method '%s' with signature '%s'"
                 , _plugin.c_str()
                 , _method.c_str()
@@ -944,7 +966,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+    void AndroidNativePythonService::waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
     {
         AndroidSemaphoreListenerDesc desc;
         desc.name = _name;
@@ -968,7 +990,7 @@ namespace Mengine
         jenv->DeleteLocalRef( name_jvalue );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonModule::activateSemaphore( const String & _name )
+    void AndroidNativePythonService::activateSemaphore( const String & _name )
     {
         for( const AndroidSemaphoreListenerDesc & desc : m_semaphoreListeners )
         {

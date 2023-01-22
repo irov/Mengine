@@ -147,61 +147,63 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
     @Override
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+        if (requestCode != RC_SIGN_IN) {
+            return;
+        }
 
-            if (result != null && result.isSuccess() == true) {
-                this.logInfo("resign");
+        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
-                GoogleSignInAccount account = result.getSignInAccount();
+        if (result != null && result.isSuccess() == true) {
+            this.logInfo("resign");
 
-                this.signInCallback(account);
-            } else {
-                this.logInfo("login");
+            GoogleSignInAccount account = result.getSignInAccount();
 
-                Status status = result.getStatus();
+            this.signInCallback(account);
+        } else {
+            this.logInfo("login");
 
-                int statusCode = status.getStatusCode();
+            Status status = result.getStatus();
 
-                switch (statusCode) {
-                    case CommonStatusCodes.SIGN_IN_REQUIRED: {
-                        this.logError("Google game social signIn required" );
+            int statusCode = status.getStatusCode();
 
-                        if (status.hasResolution() == true) {
-                            try {
-                                status.startResolutionForResult(activity, RC_SIGN_IN);
-                            } catch (IntentSender.SendIntentException ex) {
-                                this.logError("Start resolution for result RC_SIGN_IN catch SendIntentException: %s"
-                                    , ex.getLocalizedMessage()
-                                );
-                            }
-                        } else {
-                            this.logError("Google game social signIn required failed has resolution" );
+            switch (statusCode) {
+                case CommonStatusCodes.SIGN_IN_REQUIRED: {
+                    this.logError("Google game social signIn required" );
 
-                            this.pythonCall("onGoogleGameSocialOnSignError");
+                    if (status.hasResolution() == true) {
+                        try {
+                            status.startResolutionForResult(activity, RC_SIGN_IN);
+                        } catch (IntentSender.SendIntentException ex) {
+                            this.logError("Start resolution for result RC_SIGN_IN catch SendIntentException: %s"
+                                , ex.getLocalizedMessage()
+                            );
                         }
-                    }break;
-                    default: {
-                        this.logError("Google game social signIn failed status error '%s' code [%d]"
-                            , status.getStatusMessage()
-                            , status.getStatusCode()
-                        );
+                    } else {
+                        this.logError("Google game social signIn required failed has resolution" );
 
                         this.pythonCall("onGoogleGameSocialOnSignError");
-                    }break;
-                }
+                    }
+                }break;
+                default: {
+                    this.logError("Google game social signIn failed status error '%s' code [%d]"
+                        , status.getStatusMessage()
+                        , status.getStatusCode()
+                    );
+
+                    this.pythonCall("onGoogleGameSocialOnSignError");
+                }break;
             }
         }
     }
 
     private void signInCallback(@Nullable GoogleSignInAccount account) {
+        this.logInfo("Account sign in");
+
         if (account == null) {
             this.logError("account == null");
 
             return;
         }
-
-        this.logInfo("Account sign in");
 
         MengineActivity activity = this.getActivity();
 
@@ -347,8 +349,8 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
         this.logInfo("incrementAchievement '%s' [%d]"
-                , achievementId
-                , numSteps
+            , achievementId
+            , numSteps
         );
 
         if (m_achievementsClient == null) {

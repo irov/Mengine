@@ -253,12 +253,12 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
             case MARCode.CODE_INIT_SUCCESS:
                 this.logInfo("marsdk init success");
 
-                this.pythonCall("onMarSDKInitSuccess");
+                this.activateSemaphore("onMarSDKInitSuccess");
                 break;
             case MARCode.CODE_INIT_FAIL:
                 this.logError("marsdk init fail");
 
-                this.pythonCall("onMarSDKInitFail");
+                this.activateSemaphore("onMarSDKInitFail");
                 break;
         }
     }

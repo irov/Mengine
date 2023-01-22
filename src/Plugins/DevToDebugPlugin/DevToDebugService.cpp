@@ -6,7 +6,7 @@
 #include "Interface/LoggerServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Environment/Android/AndroidUtils.h"
+#   include "Environment/Android/AndroidEnv.h"
 #endif
 
 #include "DevToDebugTab.h"
@@ -37,7 +37,6 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/JSONHelper.h"
-#include "Kernel/NotificationHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/DocumentHelper.h"
 

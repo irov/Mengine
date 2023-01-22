@@ -643,7 +643,7 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonCall(String plugin, String method, Object ... args) {
         if (m_initializePython == false) {
-            MengineLog.logError("invalid python plugin [%s] method [%s] args [%s] call before embedding"
+            MengineLog.logError(TAG,"invalid python plugin [%s] method [%s] args [%s] call before embedding"
                 , plugin
                 , method
                 , args
@@ -679,7 +679,7 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void pythonCallCb(String plugin, String method, MengineCallbackInterface cb, Object ... args) {
         if (m_initializePython == false) {
-            MengineLog.logError("invalid python plugin [%s] method [%s] args [%s] call before embedding"
+            MengineLog.logError(TAG, "invalid python plugin [%s] method [%s] args [%s] call before embedding"
                 , plugin
                 , method
                 , args

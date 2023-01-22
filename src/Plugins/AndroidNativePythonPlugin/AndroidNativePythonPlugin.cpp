@@ -1,10 +1,12 @@
 #include "AndroidNativePythonPlugin.h"
 
-#include "AndroidNativePythonModule.h"
+#include "AndroidNativePythonService.h"
 
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AndroidNativePythonService );
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AndroidNativePython, Mengine::AndroidNativePythonPlugin )
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,14 +23,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonPlugin::_initializePlugin()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidPython" )
-            , Helper::makeModuleFactory<AndroidNativePythonModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( AndroidNativePythonService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonPlugin::_finalizePlugin()
     {
+        SERVICE_FINALIZE( AndroidNativePythonService );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonPlugin::_destroyPlugin()
+    {
+        SERVICE_DESTROY( AndroidNativePythonService );
     }
     ///////////////////////////////////////////////////////////////////////
 }

@@ -2,10 +2,15 @@ MENGINE_PROJECT(AndroidNativePythonPlugin)
 
 ADD_FILTER(
 src
-    AndroidNativePythonModule.h
-    AndroidNativePythonModule.cpp
-	AndroidNativePythonPlugin.h
-	AndroidNativePythonPlugin.cpp
+    AndroidNativePythonPlugin.h
+    AndroidNativePythonPlugin.cpp
+    
+    AndroidNativePythonInterface.h
+    AndroidNativePythonEventHandlerInterface.h
+    
+    AndroidNativePythonService.h
+    AndroidNativePythonService.cpp
+
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

@@ -24,7 +24,7 @@
 #       include "Environment/iOS/iOSUtils.h"
 #   endif
 #elif defined(MENGINE_PLATFORM_ANDROID)
-#   include "Environment/Android/AndroidUtils.h"
+#   include "Environment/Android/AndroidEnv.h"
 #endif
 
 #include "SDLDynamicLibrary.h"

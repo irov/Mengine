@@ -1693,6 +1693,8 @@ namespace Mengine
             }
         }
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
+
         GAME_SERVICE()
             ->update();
 
@@ -1767,6 +1769,8 @@ namespace Mengine
 
         MODULE_SERVICE()
             ->endUpdate();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_END_UPDATE );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()

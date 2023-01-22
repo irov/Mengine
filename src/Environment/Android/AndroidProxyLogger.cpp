@@ -1,6 +1,6 @@
 #include "AndroidProxyLogger.h"
 
-#include "Environment/Android/AndroidUtils.h"
+#include "Environment/Android/AndroidEnv.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/LoggerHelper.h"

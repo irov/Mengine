@@ -13,6 +13,7 @@ public class MengineLog {
     private static native void AndroidEnvironmentService_logError(String msg);
 
     private static boolean m_initializeBaseServices = false;
+    private static Object m_lock = new Object();
 
     public static void onMengineInitializeBaseServices() {
         MengineLog.m_initializeBaseServices = true;
@@ -44,7 +45,9 @@ public class MengineLog {
         String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
         if( MengineLog.m_initializeBaseServices == true ) {
-            AndroidEnvironmentService_logInfo(totalMsg);
+            synchronized (MengineLog.m_lock) {
+                AndroidEnvironmentService_logInfo(totalMsg);
+            }
         } else {
             Log.i(tag, totalMsg);
         }
@@ -54,7 +57,9 @@ public class MengineLog {
         String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
         if( MengineLog.m_initializeBaseServices == true ) {
-            AndroidEnvironmentService_logWarning(totalMsg);
+            synchronized (MengineLog.m_lock) {
+                AndroidEnvironmentService_logWarning(totalMsg);
+            }
         } else {
             Log.w(tag, totalMsg);
         }
@@ -64,7 +69,9 @@ public class MengineLog {
         String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
         if( MengineLog.m_initializeBaseServices == true ) {
-            AndroidEnvironmentService_logMessage(totalMsg);
+            synchronized (MengineLog.m_lock) {
+                AndroidEnvironmentService_logMessage(totalMsg);
+            }
         } else {
             Log.w(tag, totalMsg);
         }
@@ -74,7 +81,9 @@ public class MengineLog {
         String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
         if( MengineLog.m_initializeBaseServices == true ) {
-            AndroidEnvironmentService_logMessageRelease(totalMsg);
+            synchronized (MengineLog.m_lock) {
+                AndroidEnvironmentService_logMessageRelease(totalMsg);
+            }
         } else {
             Log.w(tag, totalMsg);
         }
@@ -84,7 +93,9 @@ public class MengineLog {
         String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
 
         if( MengineLog.m_initializeBaseServices == true ) {
-            AndroidEnvironmentService_logError(totalMsg);
+            synchronized (MengineLog.m_lock) {
+                AndroidEnvironmentService_logError(totalMsg);
+            }
         } else {
             Log.e(tag, totalMsg);
         }

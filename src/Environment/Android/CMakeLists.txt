@@ -7,6 +7,10 @@ src
     AndroidEventationInterface.h
     AndroidEventationHub.h
     AndroidEventationHub.cpp
+    AndroidEnv.h
+    AndroidEnv.cpp
+    AndroidAssetFile.h
+    AndroidAssetFile.cpp
     AndroidUtils.h
     AndroidUtils.cpp
 

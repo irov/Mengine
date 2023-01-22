@@ -6,6 +6,8 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidAssetFile.h"
 #include "Environment/Android/AndroidUtils.h"
 
 #include "AndroidProxyLogger.h"

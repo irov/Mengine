@@ -86,7 +86,7 @@ namespace Mengine
     public:
         void addDebugLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter );
         void removeDebugLogFunction( const ConstString & _className, const ConstString & _functionName );
-        void debugCallFunction( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds );
+        void debugCallFunction( const Char * _className, const Char * _functionName, PyObject * _args, PyObject * _kwds );
 #endif
 
     public:

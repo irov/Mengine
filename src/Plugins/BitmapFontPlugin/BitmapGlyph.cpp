@@ -109,14 +109,14 @@ namespace Mengine
             void operator = ( const BitmapGlyphSaxCallback & ) = delete;
 
         public:
-            void parse( const char * _node, uint32_t _count, const char ** const _keys, const char ** const _values )
+            void parse( const xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _keys, const xmlsax_char_t ** const _values )
             {
                 if( MENGINE_STRCMP( _node, "font" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
-                        const char * key = _keys[i];
-                        const char * value = _values[i];
+                        const xmlsax_char_t * key = _keys[i];
+                        const xmlsax_char_t * value = _values[i];
 
                         if( MENGINE_STRCMP( key, "type" ) == 0 )
                         {
@@ -131,8 +131,8 @@ namespace Mengine
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
-                        const char * key = _keys[i];
-                        const char * value = _values[i];
+                        const xmlsax_char_t * key = _keys[i];
+                        const xmlsax_char_t * value = _values[i];
 
                         if( MENGINE_STRCMP( key, "size" ) == 0 )
                         {
@@ -153,8 +153,8 @@ namespace Mengine
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
-                        const char * key = _keys[i];
-                        const char * value = _values[i];
+                        const xmlsax_char_t * key = _keys[i];
+                        const xmlsax_char_t * value = _values[i];
 
                         if( MENGINE_STRCMP( key, "ascender" ) == 0 )
                         {
@@ -201,8 +201,8 @@ namespace Mengine
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
-                        const char * key = _keys[i];
-                        const char * value = _values[i];
+                        const xmlsax_char_t * key = _keys[i];
+                        const xmlsax_char_t * value = _values[i];
 
                         if( MENGINE_STRCMP( key, "width" ) == 0 )
                         {
@@ -241,12 +241,12 @@ namespace Mengine
                     float advance = 0.f;
                     mt::vec2f offset( 0.f, 0.f );
                     mt::vec4f rect( 0.f, 0.f, 0.f, 0.f );
-                    const char * id = "";
+                    const xmlsax_char_t * id = "";
 
                     for( uint32_t i = 0; i != _count; ++i )
                     {
-                        const char * key = _keys[i];
-                        const char * value = _values[i];
+                        const xmlsax_char_t * key = _keys[i];
+                        const xmlsax_char_t * value = _values[i];
 
                         if( MENGINE_STRCMP( key, "advance" ) == 0 )
                         {
@@ -314,8 +314,8 @@ namespace Mengine
 
                     for( uint32_t i = 0; i != _count; ++i )
                     {
-                        const char * key = _keys[i];
-                        const char * value = _values[i];
+                        const xmlsax_char_t * key = _keys[i];
+                        const xmlsax_char_t * value = _values[i];
 
                         if( MENGINE_STRCMP( key, "advance" ) == 0 )
                         {
@@ -329,7 +329,7 @@ namespace Mengine
                         }
                         else if( MENGINE_STRCMP( key, "id" ) == 0 )
                         {
-                            const char * id = value;
+                            const xmlsax_char_t * id = value;
 
                             uint32_t cp = 0;
                             size_t id_length = MENGINE_STRLEN( id );

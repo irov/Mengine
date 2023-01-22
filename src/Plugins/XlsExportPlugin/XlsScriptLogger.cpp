@@ -42,7 +42,7 @@ namespace Mengine
         PyObject * arg = _kernel->tuple_getitem( _args, 0 );
 
         size_t arg_str_size;
-        const char * arg_str;
+        const Char * arg_str;
 
         if( _kernel->string_check( arg ) == true )
         {

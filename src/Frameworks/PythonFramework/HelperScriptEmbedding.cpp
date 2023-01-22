@@ -3449,7 +3449,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _kernel );
 
-                const char * value_str = reinterpret_cast<const char *>(_value.data());
+                const Char * value_str = reinterpret_cast<const char *>(_value.data());
                 value_type::size_type value_size = _value.size();
 
                 PyObject * py_value = _kernel->string_from_char_size( value_str, (uint32_t)value_size );

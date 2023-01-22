@@ -1153,7 +1153,7 @@ namespace Mengine
         m_debugCallFunctions.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::debugCallFunction( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+    void PythonScriptService::debugCallFunction( const Char * _className, const Char * _functionName, PyObject * _args, PyObject * _kwds )
     {
         for( const DebugCallDesc & _desc : m_debugCallFunctions )
         {

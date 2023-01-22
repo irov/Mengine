@@ -108,7 +108,7 @@ namespace Mengine
         void operator = ( const TextManagerLoadSaxCallback & ) = delete;
 
     public:
-        void parse( const char * _node, uint32_t _count, const char ** const _keys, const char ** const _values )
+        void parse( const xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _keys, const xmlsax_char_t ** const _values )
         {
             if( MENGINE_STRCMP( _node, "Text" ) != 0 )
             {
@@ -139,8 +139,8 @@ namespace Mengine
 
             for( uint32_t i = 0; i != _count; ++i )
             {
-                const char * str_key = _keys[i];
-                const char * str_value = _values[i];
+                const xmlsax_char_t * str_key = _keys[i];
+                const xmlsax_char_t * str_value = _values[i];
 
                 if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
@@ -150,8 +150,8 @@ namespace Mengine
                 {
                     size_t str_value_size = MENGINE_STRLEN( str_value );
 
-                    const char * str_value_end = str_value + str_value_size;
-                    const char * str_value_valid = utf8::find_invalid( str_value, str_value_end );
+                    const xmlsax_char_t * str_value_end = str_value + str_value_size;
+                    const xmlsax_char_t * str_value_valid = utf8::find_invalid( str_value, str_value_end );
 
                     if( str_value_valid != str_value_end )
                     {
@@ -535,8 +535,8 @@ namespace Mengine
 
             for( uint32_t i = 0; i != _count; ++i )
             {
-                const char * str_key = _keys[i];
-                const char * str_value = _values[i];
+                const xmlsax_char_t * str_key = _keys[i];
+                const xmlsax_char_t * str_value = _values[i];
 
                 if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {

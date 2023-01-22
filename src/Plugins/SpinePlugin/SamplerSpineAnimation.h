@@ -87,10 +87,10 @@ namespace Mengine
             int trackIndex;
             spEventType type;
 
-            const char * eventName;
+            const Char * eventName;
             int eventIntValue;
             float eventFloatValue;
-            const char * eventStringValue;
+            const Char * eventStringValue;
 
             int loopCount;
         };

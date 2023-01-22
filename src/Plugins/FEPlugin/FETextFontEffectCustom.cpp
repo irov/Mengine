@@ -36,7 +36,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_memory );
 
-        const char * memory_buffer = m_memory->getBuffer();
+        const Char * memory_buffer = m_memory->getBuffer();
         size_t memory_size = m_memory->getSize();
 
         fe_bundle * bundle = fe_bundle_load( memory_buffer, (int32_t)memory_size );

@@ -29,10 +29,10 @@ namespace Mengine
         template <typename T>
         class has_c_str
         {
-            typedef char one;
+            typedef Char one;
             struct two
             {
-                char x[2];
+                Char x[2];
             };
 
             template <typename C> static one test( decltype(&C::c_str) );

@@ -1833,8 +1833,8 @@ namespace Mengine
 
                 for( uint32_t i = 0; i != _count; ++i )
                 {
-                    const char * key = _keys[i];
-                    const char * value = _values[i];
+                    const xmlsax_char_t * key = _keys[i];
+                    const xmlsax_char_t * value = _values[i];
 
                     py_attr[key] = value;
                 }

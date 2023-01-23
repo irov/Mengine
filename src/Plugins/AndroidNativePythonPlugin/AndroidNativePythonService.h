@@ -39,11 +39,11 @@ namespace Mengine
         void addCommand( const LambdaPythonEventHandler & _command );
 
     protected:
-        PyObject * getPythonAttribute( JNIEnv * _jenv, jobject obj );
+        PyObject * getPythonAttribute( JNIEnv * _jenv, jobject _obj );
 
     public:
         void pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args ) override;
-        void addPlugin( const String & _name, const jobject & _plugin ) override;
+        void addPlugin( const String & _name, jobject _plugin ) override;
         void activateSemaphore( const String & _name ) override;
 
     public:

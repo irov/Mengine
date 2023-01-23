@@ -59,7 +59,7 @@ extern "C"
 
         env->ReleaseStringUTFChars( _name, name_str );
 
-        if(s_androidNativePythonService == nullptr )
+        if( s_androidNativePythonService == nullptr )
         {
             __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android add plugin '%s'"
                 , name.c_str()
@@ -226,6 +226,12 @@ namespace Mengine
 
         m_semaphoreListeners.clear();
         m_callbacks.clear();
+
+        for( auto && [name, jplugin] : m_plugins )
+        {
+            jenv->DeleteGlobalRef( jplugin );
+        }
+
         m_plugins.clear();
 
         ANDROID_ENVIRONMENT_SERVICE()
@@ -250,90 +256,90 @@ namespace Mengine
         m_eventation->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * AndroidNativePythonService::getPythonAttribute( JNIEnv * _jenv, jobject obj )
+    PyObject * AndroidNativePythonService::getPythonAttribute( JNIEnv * _jenv, jobject _obj )
     {
         PyObject * py_value = nullptr;
 
-        if( obj == nullptr )
+        if( _obj == nullptr )
         {
             py_value = m_kernel->ret_none();
         }
-        else if( _jenv->IsInstanceOf( obj, m_jclass_Boolean ) == JNI_TRUE )
+        else if( _jenv->IsInstanceOf(_obj, m_jclass_Boolean ) == JNI_TRUE )
         {
             static jmethodID methodValue = _jenv->GetMethodID( m_jclass_Boolean, "booleanValue", "()Z" );
 
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Boolean [booleanValue] ()C'" );
 
-            jboolean value = _jenv->CallBooleanMethod( obj, methodValue );
+            jboolean value = _jenv->CallBooleanMethod( _obj, methodValue );
 
             py_value = m_kernel->ret_bool( value );
         }
-        else if( _jenv->IsInstanceOf( obj, m_jclass_Character ) == JNI_TRUE )
+        else if( _jenv->IsInstanceOf(_obj, m_jclass_Character ) == JNI_TRUE )
         {
             static jmethodID methodValue = _jenv->GetMethodID( m_jclass_Character, "charValue", "()C" );
 
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Character [charValue] ()C'" );
 
-            jchar value = _jenv->CallCharMethod( obj, methodValue );
+            jchar value = _jenv->CallCharMethod( _obj, methodValue );
 
             Char value_str[2] = {(Char)value, '\0'};
             py_value = m_kernel->string_from_char_size( value_str, 1 );
         }
-        else if( _jenv->IsInstanceOf( obj, m_jclass_Integer ) == JNI_TRUE )
+        else if( _jenv->IsInstanceOf(_obj, m_jclass_Integer ) == JNI_TRUE )
         {
             static jmethodID methodValue = _jenv->GetMethodID( m_jclass_Integer, "intValue", "()I" );
 
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Integer [intValue] ()I'" );
 
-            jint value = _jenv->CallIntMethod( obj, methodValue );
+            jint value = _jenv->CallIntMethod( _obj, methodValue );
 
             py_value = m_kernel->ptr_int32( value );
         }
-        else if( _jenv->IsInstanceOf( obj, m_jclass_Long ) == JNI_TRUE )
+        else if( _jenv->IsInstanceOf( _obj, m_jclass_Long ) == JNI_TRUE )
         {
             static jmethodID methodValue = _jenv->GetMethodID( m_jclass_Long, "longValue", "()J" );
 
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Long [longValue] ()J'" );
 
-            jlong value = _jenv->CallLongMethod( obj, methodValue );
+            jlong value = _jenv->CallLongMethod(_obj, methodValue );
 
             py_value = m_kernel->ptr_int64( value );
         }
-        else if( _jenv->IsInstanceOf( obj, m_jclass_Float ) == JNI_TRUE )
+        else if( _jenv->IsInstanceOf( _obj, m_jclass_Float ) == JNI_TRUE )
         {
             static jmethodID methodValue = _jenv->GetMethodID( m_jclass_Float, "floatValue", "()F" );
 
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Float [floatValue] ()F'" );
 
-            jfloat value = _jenv->CallFloatMethod( obj, methodValue );
+            jfloat value = _jenv->CallFloatMethod( _obj, methodValue );
 
             py_value = m_kernel->ptr_float( value );
         }
-        else if( _jenv->IsInstanceOf( obj, m_jclass_Double ) == JNI_TRUE )
+        else if(_jenv->IsInstanceOf( _obj, m_jclass_Double ) == JNI_TRUE )
         {
             static jmethodID methodValue = _jenv->GetMethodID( m_jclass_Double, "doubleValue", "()D" );
 
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Double [doubleValue] ()D'" );
 
-            jfloat value = _jenv->CallDoubleMethod( obj, methodValue );
+            jfloat value = _jenv->CallDoubleMethod( _obj, methodValue );
 
             py_value = m_kernel->ptr_float( value );
         }
-        else if( _jenv->IsInstanceOf( obj, m_jclass_String ) == JNI_TRUE )
+        else if( _jenv->IsInstanceOf(_obj, m_jclass_String ) == JNI_TRUE )
         {
-            const Char * obj_str = _jenv->GetStringUTFChars( (jstring)obj, nullptr );
+            const Char * obj_str = _jenv->GetStringUTFChars( (jstring)_obj, nullptr );
 
             py_value = m_kernel->string_from_char( obj_str );
 
-            _jenv->ReleaseStringUTFChars( (jstring)obj, obj_str );
+            _jenv->ReleaseStringUTFChars( (jstring)_obj, obj_str );
         }
-        else if( _jenv->IsInstanceOf( obj, m_jclass_ArrayList ) == JNI_TRUE )
+        else if( _jenv->IsInstanceOf( _obj, m_jclass_ArrayList ) == JNI_TRUE )
         {
             static jfieldID fieldElementData = _jenv->GetFieldID( m_jclass_ArrayList, "elementData", "[Ljava/lang/Object;" );
 
             MENGINE_ASSERTION_FATAL( fieldElementData != nullptr );
 
-            jobjectArray list_elementData = (jobjectArray)_jenv->GetObjectField( obj, fieldElementData );
+            jobjectArray list_elementData = (jobjectArray)_jenv->GetObjectField( _obj, fieldElementData );
 
             jsize list_size = _jenv->GetArrayLength( list_elementData );
 
@@ -358,13 +364,13 @@ namespace Mengine
         }
         else
         {
-            jclass cls_obj = _jenv->GetObjectClass( obj );
+            jclass cls_obj = _jenv->GetObjectClass( _obj );
 
             jmethodID jmethodID_getClass = _jenv->GetMethodID( cls_obj, "getClass", "()Ljava/lang/Class;" );
 
             MENGINE_ASSERTION_FATAL( jmethodID_getClass != nullptr, "invalid get android method 'getClass()Ljava/lang/Class;'" );
 
-            jobject obj_class = _jenv->CallObjectMethod( obj, jmethodID_getClass );
+            jobject obj_class = _jenv->CallObjectMethod( _obj, jmethodID_getClass );
 
             jclass cls_class = _jenv->GetObjectClass( obj_class );
 
@@ -384,6 +390,8 @@ namespace Mengine
             _jenv->DeleteLocalRef( obj_class_name );
 
             _jenv->DeleteLocalRef( obj_class );
+            _jenv->DeleteLocalRef( cls_class );
+            _jenv->DeleteLocalRef( cls_obj );
         }
 
         return py_value;
@@ -466,7 +474,7 @@ namespace Mengine
         this->androidResponse( jenv, _id, py_result );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::addPlugin( const String & _name, const jobject & _plugin )
+    void AndroidNativePythonService::addPlugin( const String & _name, jobject _plugin )
     {
         MENGINE_ASSERTION_FATAL( m_plugins.find( Helper::stringizeString( _name ) ) == m_plugins.end(), "invalid add plugin '%s' [double]"
             , _name.c_str()
@@ -933,6 +941,8 @@ namespace Mengine
             }
             else
             {
+                _jenv->DeleteLocalRef( plugin_class );
+
                 LOGGER_ERROR( "android plugin '%s' method '%s' unsupported arg [%u] type [%s]"
                     , _plugin.c_str()
                     , _method.c_str()
@@ -956,6 +966,8 @@ namespace Mengine
                 _jenv->ExceptionClear();
             }
 
+            _jenv->DeleteLocalRef( plugin_class );
+
             LOGGER_ERROR( "android plugin '%s' not found method '%s' with signature '%s'"
                 , _plugin.c_str()
                 , _method.c_str()
@@ -964,6 +976,8 @@ namespace Mengine
 
             return false;
         }
+
+        _jenv->DeleteLocalRef( plugin_class );
 
         *_freeCount = index_free;
         *_jplugin = jplugin;

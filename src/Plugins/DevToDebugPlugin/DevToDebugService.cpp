@@ -117,6 +117,8 @@ extern "C" {
                                                env->CallVoidMethod(jcb, jmethodId_callback);
                                            } );
 
+        env->DeleteLocalRef( cls_cb );
+
         t->addWidget( button );
     }
     ///////////////////////////////////////////////////////////////////////

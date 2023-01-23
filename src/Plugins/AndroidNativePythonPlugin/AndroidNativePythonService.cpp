@@ -348,7 +348,11 @@ namespace Mengine
                 MENGINE_ASSERTION_FATAL( py_obj != nullptr );
 
                 m_kernel->tuple_setitem( py_list, index, py_obj );
+
+                _jenv->DeleteLocalRef( list_obj );
             }
+
+            _jenv->DeleteLocalRef( list_elementData );
 
             py_value = py_list;
         }
@@ -426,6 +430,8 @@ namespace Mengine
             );
 
             m_kernel->tuple_setitem( py_args, index, py_arg );
+
+            jenv->DeleteLocalRef( obj );
         }
 
         jenv->DeleteGlobalRef( _args );
@@ -911,7 +917,7 @@ namespace Mengine
 
                     static jmethodID jmethodID_List_add = _jenv->GetMethodID( m_jclass_ArrayList, "add", "(Ljava/lang/Object;)Z" );
 
-                    MENGINE_ASSERTION_FATAL( jmethodID_List_add != nullptr, "invalid get android method 'java/lang/ArrayList [add] (I)V'" );
+                    MENGINE_ASSERTION_FATAL( jmethodID_List_add != nullptr, "invalid get android method 'java/lang/ArrayList [add] (Ljava/lang/Object;)Z'" );
 
                     jboolean result = _jenv->CallBooleanMethod( jlist, jmethodID_List_add, jelement );
 

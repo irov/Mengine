@@ -89,15 +89,15 @@ extern "C" {
         env->ReleaseStringUTFChars( _title, title_str );
 
         const Mengine::DevToDebugTabInterfacePtr & t = DEVTODEBUG_SERVICE()
-                ->getTab( tab );
+            ->getTab( tab );
 
         Mengine::DevToDebugWidgetInterfacePtr button = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FUNCTION );
 
         button->setId( id );
 
         Mengine::DevToDebugPropertyInterfacePtr button_title = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FUNCTION );
 
         Mengine::UnknownDevToDebugPropertyConstStringInterfacePtr unknown_button_title = button_title->getUnknown();
         unknown_button_title->setValue( "Change" );

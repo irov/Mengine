@@ -84,8 +84,11 @@ namespace Mengine
             }
 
             const Char * MENGINE_APP_OPTIONS_str = _jenv->GetStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, nullptr );
+
             *_options = MENGINE_APP_OPTIONS_str;
+
             _jenv->ReleaseStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, MENGINE_APP_OPTIONS_str );
+            _jenv->DeleteLocalRef( j_MENGINE_APP_OPTIONS );
 
             return true;
         }

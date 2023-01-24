@@ -16,7 +16,13 @@ public class MengineSentryPlugin extends MenginePlugin {
         SentryAndroid.init(activity, options -> {
             String MengineSentryPlugin_DSN = activity.getMetaDataString("mengine.sentry.dsn");
 
-            this.logInfo("Sentry DNS: %s", MengineSentryPlugin_DSN);
+            if (MengineSentryPlugin_DSN == null) {
+                MengineSentryPlugin.this.logError("Invalid setup meta data [mengine.sentry.dsn]");
+
+                return;
+            }
+
+            MengineSentryPlugin.this.logInfo("Sentry DNS: %s", MengineSentryPlugin_DSN);
 
             options.setDsn(MengineSentryPlugin_DSN);
 

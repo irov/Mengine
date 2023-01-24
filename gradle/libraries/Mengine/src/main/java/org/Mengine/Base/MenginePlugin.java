@@ -52,11 +52,6 @@ public class MenginePlugin {
     }
 
     public void onFinalize(MengineApplication application) {
-        for( MenginePluginExtension extension : m_extensions ) {
-            extension.onFinalize(m_activity, this);
-        }
-
-        m_extensions = null;
         m_application = null;
     }
 
@@ -87,19 +82,35 @@ public class MenginePlugin {
     }
 
     public void pythonCall(String method, Object ... args) {
+        if (m_activity == null) {
+            return;
+        }
+
         m_activity.pythonCall(m_pluginName, method, args);
     }
 
     public void pythonCallCb(String method, MengineCallbackInterface cb, Object ... args) {
+        if (m_activity == null) {
+            return;
+        }
+
         m_activity.pythonCallCb(m_pluginName, method, cb, args);
     }
 
     public void activateSemaphore(String name) {
-        m_application.activateSemaphore(name);
+        if (m_activity == null) {
+            return;
+        }
+
+        m_activity.activateSemaphore(name);
     }
 
     public void waitSemaphore(String name, MengineCallbackInterface cb) {
-        m_application.waitSemaphore(name, cb);
+        if (m_activity == null) {
+            return;
+        }
+
+        m_activity.waitSemaphore(name, cb);
     }
 
     public void onAppCreate(MengineApplication application) {
@@ -148,6 +159,14 @@ public class MenginePlugin {
         for( MenginePluginExtension extension : m_extensions ) {
             extension.onRun(activity, this);
         }
+    }
+
+    public void onExtensionFinalize(MengineActivity activity) {
+        for( MenginePluginExtension extension : m_extensions ) {
+            extension.onFinalize(activity, this);
+        }
+
+        m_extensions = null;
     }
 
     public void onMengineInitializeBaseServices(MengineActivity activity) {

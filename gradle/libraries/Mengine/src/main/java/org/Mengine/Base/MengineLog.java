@@ -15,8 +15,12 @@ public class MengineLog {
     private static boolean m_initializeBaseServices = false;
     private static Object m_lock = new Object();
 
-    public static void onMengineInitializeBaseServices() {
+    public static void onMengineInitializeBaseServices(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = true;
+    }
+
+    public static void onMengineApplicationStop(MengineActivity activity) {
+        MengineLog.m_initializeBaseServices = false;
     }
 
     private static String logBuildTotalMsg(String tag, String format, Object ... args) {

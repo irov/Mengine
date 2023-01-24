@@ -78,7 +78,20 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         config.put("notificationIcon", R.drawable.ic_stat_onesignal_default);
 
         String MengineHelpshiftPlugin_PlatformId = activity.getMetaDataString("mengine.helpshift.platform_id");
+
+        if (MengineHelpshiftPlugin_PlatformId == null) {
+            this.logError("Invalid setup meta data [mengine.helpshift.platform_id]");
+
+            return;
+        }
+
         String MengineHelpshiftPlugin_Domain = activity.getMetaDataString("mengine.helpshift.domain");
+
+        if (MengineHelpshiftPlugin_Domain == null) {
+            this.logError("Invalid setup meta data [mengine.helpshift.domain]");
+
+            return;
+        }
 
         try {
             MengineApplication application = this.getApplication();
@@ -129,9 +142,9 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_IS_ISSUE_OPEN = data.get(HelpshiftEvent.DATA_IS_ISSUE_OPEN);
 
                 this.logInfo("onEventOccurred CONVERSATION_STATUS DATA_LATEST_ISSUE_ID:%s DATA_LATEST_ISSUE_PUBLISH_ID:%s DATA_IS_ISSUE_OPEN:%s"
-                        , DATA_LATEST_ISSUE_ID
-                        , DATA_LATEST_ISSUE_PUBLISH_ID
-                        , DATA_IS_ISSUE_OPEN
+                    , DATA_LATEST_ISSUE_ID
+                    , DATA_LATEST_ISSUE_PUBLISH_ID
+                    , DATA_IS_ISSUE_OPEN
                 );
 
                 this.pythonCall("onHelpshiftConversationStatus", DATA_LATEST_ISSUE_ID, DATA_LATEST_ISSUE_PUBLISH_ID, DATA_IS_ISSUE_OPEN);
@@ -140,7 +153,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_SDK_VISIBLE = data.get(HelpshiftEvent.DATA_SDK_VISIBLE);
 
                 this.logInfo("onEventOccurred WIDGET_TOGGLE DATA_SDK_VISIBLE:%s"
-                        , DATA_SDK_VISIBLE
+                    , DATA_SDK_VISIBLE
                 );
 
                 this.pythonCall("onHelpshiftWidgetToggle", DATA_SDK_VISIBLE);
@@ -149,7 +162,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_MESSAGE = data.get(HelpshiftEvent.DATA_MESSAGE);
 
                 this.logInfo("onEventOccurred CONVERSATION_START DATA_MESSAGE:%s"
-                        , DATA_MESSAGE
+                    , DATA_MESSAGE
                 );
 
                 this.pythonCall("onHelpshiftConversationStart", DATA_MESSAGE);
@@ -161,10 +174,10 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_MESSAGE_TYPE_TEXT = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE_TEXT);
 
                 this.logInfo("onEventOccurred MESSAGE_ADD DATA_MESSAGE_TYPE:%s DATA_MESSAGE_BODY:%s DATA_MESSAGE_TYPE_ATTACHMENT:%s DATA_MESSAGE_TYPE_TEXT:%s"
-                        , DATA_MESSAGE_TYPE
-                        , DATA_MESSAGE_BODY
-                        , DATA_MESSAGE_TYPE_ATTACHMENT
-                        , DATA_MESSAGE_TYPE_TEXT
+                    , DATA_MESSAGE_TYPE
+                    , DATA_MESSAGE_BODY
+                    , DATA_MESSAGE_TYPE_ATTACHMENT
+                    , DATA_MESSAGE_TYPE_TEXT
                 );
 
                 this.pythonCall("onHelpshiftMessageAdd", DATA_MESSAGE_TYPE, DATA_MESSAGE_BODY, DATA_MESSAGE_TYPE_ATTACHMENT, DATA_MESSAGE_TYPE_TEXT);
@@ -174,8 +187,8 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_ADDITIONAL_FEEDBACK = data.get(HelpshiftEvent.DATA_ADDITIONAL_FEEDBACK);
 
                 this.logInfo("onEventOccurred CSAT_SUBMIT DATA_CSAT_RATING:%s DATA_ADDITIONAL_FEEDBACK:%s"
-                        , DATA_CSAT_RATING
-                        , DATA_ADDITIONAL_FEEDBACK
+                    , DATA_CSAT_RATING
+                    , DATA_ADDITIONAL_FEEDBACK
                 );
 
                 this.pythonCall("onHelpshiftCSATSubmit", DATA_CSAT_RATING, DATA_ADDITIONAL_FEEDBACK);
@@ -228,33 +241,47 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public void showFAQs() {
         this.logInfo("showFAQs");
 
+        MengineActivity activity = this.getActivity();
+
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showFAQs(this.getActivity(), config);
+        Helpshift.showFAQs(activity, config);
     }
 
     public void showConversation() {
         this.logInfo("showConversation");
 
+        MengineActivity activity = this.getActivity();
+
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showConversation(this.getActivity(), config);
+        Helpshift.showConversation(activity, config);
     }
 
     public void showFAQSection(final String sectionPublishId) {
-        this.logInfo("showFAQSection");
+        this.logInfo("showFAQSection sectionPublishId: %s"
+            , sectionPublishId
+        );
+
+        MengineActivity activity = this.getActivity();
 
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showFAQSection(this.getActivity(), sectionPublishId, config);
+        Helpshift.showFAQSection(activity, sectionPublishId, config);
     }
 
     public void showSingleFAQ(final String publishId) {
-        this.logInfo("showSingleFAQ");
+        this.logInfo("showSingleFAQ publishId: %s"
+            , publishId
+        );
+
+        MengineActivity activity = this.getActivity();
 
         Map<String, Object> config = new HashMap<>();
-        Helpshift.showSingleFAQ(this.getActivity(), publishId, config);
+        Helpshift.showSingleFAQ(activity, publishId, config);
     }
 
     public void setLanguage(final String language) {
-        this.logInfo("setLanguage");
+        this.logInfo("setLanguage language: %s"
+            , language
+        );
 
         Helpshift.setLanguage(language);
     }

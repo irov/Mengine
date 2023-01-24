@@ -8,7 +8,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class MengineUtils {
-    public static <T> T newInstance(String TAG, String name, boolean exist) {
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(String TAG, String name, boolean required) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
 
         try {
@@ -18,7 +19,7 @@ public class MengineUtils {
 
             return ob;
         } catch (ClassNotFoundException e) {
-            if (exist == true) {
+            if (required == true) {
                 Log.e(TAG, "invalid create new instance: " + name + " ClassNotFoundException: " + e.getLocalizedMessage());
             }
         } catch (NoSuchMethodException e) {

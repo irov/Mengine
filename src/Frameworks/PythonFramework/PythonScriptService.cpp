@@ -292,6 +292,33 @@ namespace Mengine
         uint32_t python_version = kernel->get_python_version();
         this->addGlobalModuleT( "_PYTHON_VERSION", python_version );
 
+        const Char * engineGITSHA1 = Helper::getEngineGITSHA1();
+        this->addGlobalModuleT( "_ENGINE_GITSHA1", engineGITSHA1 );
+
+        const Char * engineGITURL = Helper::getEngineGITURL();
+        this->addGlobalModuleT( "_ENGINE_GITURL", engineGITURL );
+
+        const Char * engineGITBranch = Helper::getEngineGITBranch();
+        this->addGlobalModuleT( "_ENGINE_GITBRANCH", engineGITBranch );
+
+        const Char * engineGITData = Helper::getEngineGITDate();
+        this->addGlobalModuleT( "_ENGINE_GITDATA", engineGITData );
+
+        const Char * contentCommit = Helper::getContentCommit();
+        this->addGlobalModuleT( "_CONTENT_COMMIT", contentCommit );
+
+        const Char * buildProjectName = Helper::getBuildProjectName();
+        this->addGlobalModuleT( "_BUILD_PROJECTNAME", buildProjectName );
+
+        const Char * buildTimestamp = Helper::getBuildTimestamp();
+        this->addGlobalModuleT( "_BUILD_TIMESTAMP", buildTimestamp );
+
+        const Char * buildUsername = Helper::getBuildUsername();
+        this->addGlobalModuleT( "_BUILD_USERNAME", buildUsername );
+
+        const Char * buildVersion = Helper::getBuildVersion();
+        this->addGlobalModuleT( "_BUILD_VERSION", buildVersion );
+
         m_availablePlugins = pybind::make_dict_t( kernel );
 
         this->addGlobalModule( "_PLUGINS", m_availablePlugins.ptr() );

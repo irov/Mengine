@@ -12,6 +12,9 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
+        virtual void blockAllocator( const Char * _doc ) = 0;
+
+    public:
         virtual uint32_t getAllocatorReportCount() const = 0;
         virtual size_t getAllocatorReportInfo( uint32_t _index, const Char ** _doc ) const = 0;
 

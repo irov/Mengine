@@ -26,7 +26,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxService::AstralaxService()
         : m_maxParticlesNum( 0 )
-        , m_renderPlatform( RP_UNKNOWN )
         , m_stageCount( 0 )
     {
         Algorithm::fill_n( m_stages, 256, nullptr );
@@ -72,12 +71,6 @@ namespace Mengine
         Magic_EnableZBuffer( false );
 
         Magic_SetAxis( MAGIC_pXnYpZ );
-
-        if( SERVICE_EXIST( RenderSystemInterface ) == true )
-        {
-            m_renderPlatform = RENDER_SYSTEM()
-                ->getRenderPlatformType();
-        }
 
         m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer, 16>( this, &AstralaxService::onEmitterContainerRelease_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryPoolAstralaxEmitter = Helper::makeFactoryPoolWithListener<AstralaxEmitter2, 16>( this, &AstralaxService::onEmitterRelease_, MENGINE_DOCUMENT_FACTORABLE );
@@ -1511,8 +1504,11 @@ namespace Mengine
         }
 
 #ifdef MENGINE_DEBUG
+        ERenderPlatform renderPlatform = RENDER_SYSTEM()
+            ->getRenderPlatformType();
+
         Stringstream ss;
-        switch( m_renderPlatform )
+        switch( renderPlatform )
         {
         case RP_DX9:
             {
@@ -1533,7 +1529,7 @@ namespace Mengine
         default:
             {
                 LOGGER_ERROR( "not supported render platform [%u]"
-                    , m_renderPlatform
+                    , renderPlatform
                 );
 
                 return nullptr;

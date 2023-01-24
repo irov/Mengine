@@ -204,18 +204,33 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        PLUGIN_SERVICE_WAIT( ResourcePrefetcherServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
         {
             ResourcePrefetcherInterfacePtr resourcePrefetcherDataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
 
             VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), resourcePrefetcherDataflow, MENGINE_DOCUMENT_FACTORABLE );
-        }
 
-        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
+            return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+        } );
+
+        PLUGIN_SERVICE_WAIT( NodeDebugRenderServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
         {
             NODEDEBUGRENDER_SERVICE()
                 ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }
+
+            return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( NodeDebugRenderServiceInterface, []()
+        {
+            NODEDEBUGRENDER_SERVICE()
+                ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ) );
+        } );
 
         PLUGIN_SERVICE_WAIT( ResourceValidateServiceInterface, [this]()
         {
@@ -233,6 +248,11 @@ namespace Mengine
             VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), movie2Validator, MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( ResourceValidateServiceInterface, []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         } );
 
         PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
@@ -275,22 +295,6 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), nullptr );
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
-
-        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
-        }
-
-        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
-        {
-            NODEDEBUGRENDER_SERVICE()
-                ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ) );
-        }
-
-        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
-        }
 
         MENGINE_ASSERTION_ALLOCATOR( "movie" );
     }

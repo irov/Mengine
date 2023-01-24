@@ -271,6 +271,8 @@ namespace Mengine
                 continue;
             }
 
+            MENGINE_ASSERTION_FATAL( r.block == false );
+
             MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus );
 
             r.count += report_add;
@@ -288,6 +290,8 @@ namespace Mengine
                 continue;
             }
 
+            MENGINE_ASSERTION_FATAL( r.block == false );
+
             MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus );
 
             r.doc.assign( _doc );
@@ -296,6 +300,28 @@ namespace Mengine
             r.count -= report_minus;
 
             break;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////
+    void DebugAllocatorSystem::blockAllocator( const Char * _doc )
+    {
+        if( _doc == nullptr )
+        {
+            return;
+        }
+
+        for( uint32_t index = 0; index != MENGINE_ALLOCATOR_DEBUG_REPORT_COUNT; ++index )
+        {
+            ReportDesc & r = m_reports[index];
+
+            if( r.doc.compare( _doc ) != 0 )
+            {
+                continue;
+            }
+
+            r.block = true;
+
+            return;
         }
     }
     ////////////////////////////////////////////////////////////////////////

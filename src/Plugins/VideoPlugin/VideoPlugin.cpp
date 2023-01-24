@@ -95,11 +95,21 @@ namespace Mengine
             return true;
         } );
 
+        PLUGIN_SERVICE_LEAVE( ResourceValidateServiceInterface, [this]()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
+        } );
+
         PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [this]()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<LoaderResourceVideo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
         } );
 
         return true;
@@ -117,16 +127,6 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), nullptr );
-
-        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-        };
-
-        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

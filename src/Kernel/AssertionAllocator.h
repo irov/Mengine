@@ -13,6 +13,7 @@
         if( debugReport == nullptr ){ return; }\
         size_t alloc_count = debugReport->findAllocatorReportInfo( C );\
         MENGINE_ASSERTION( alloc_count == 0, "'%s' memleak [%zu]", C , alloc_count);\
+        debugReport->blockAllocator( C );\
     }())
 #else
 #   define MENGINE_ASSERTION_ALLOCATOR(C)

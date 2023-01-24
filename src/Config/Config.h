@@ -183,6 +183,12 @@
 #   define MENGINE_DOCUMENT_VALUE(X, Y) (Y)
 #endif
 
+#ifdef MENGINE_DOCUMENT_ENABLE
+#   define MENGINE_DOCUMENT_ARGUMENTS(...) __VA_ARGS__
+#else
+#   define MENGINE_DOCUMENT_ARGUMENTS(...)
+#endif
+
 #ifndef MENGINE_CONSTEXPR
 #define MENGINE_CONSTEXPR constexpr
 #endif

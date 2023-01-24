@@ -10,8 +10,6 @@ src
     AstralaxPlugin.h
     AstralaxPlugin.def
 
-    AstralaxModule.cpp
-    AstralaxModule.h
     AstralaxEmitter.cpp
     AstralaxEmitter.h
     AstralaxEmitter2.cpp

@@ -47,6 +47,9 @@ namespace Mengine
         void report( const Char * _doc, size_t _add, size_t _minus );
 
     protected:
+        void blockAllocator( const Char * _doc ) override;
+
+    protected:
         uint32_t getAllocatorReportCount() const override;
         size_t getAllocatorReportInfo( uint32_t _index, const Char ** _doc ) const override;
 
@@ -60,6 +63,7 @@ namespace Mengine
         {
             StaticString<2048> doc;
             AtomicUInt32 count = 0;
+            bool block = false;
         };
 
         ReportDesc m_reports[MENGINE_ALLOCATOR_DEBUG_REPORT_COUNT];

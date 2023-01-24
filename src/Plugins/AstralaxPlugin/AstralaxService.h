@@ -60,8 +60,6 @@ namespace Mengine
 
         uint32_t m_maxParticlesNum;
 
-        ERenderPlatform m_renderPlatform;
-
         FactoryInterfacePtr m_factoryPoolAstralaxEmitterContainer;
         FactoryInterfacePtr m_factoryPoolAstralaxEmitter;
 

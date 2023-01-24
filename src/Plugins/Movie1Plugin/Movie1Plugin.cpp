@@ -162,23 +162,42 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( STRINGIZE_STRING_LOCAL( "aek" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
-        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        PLUGIN_SERVICE_WAIT( ResourcePrefetcherServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
         {
             ResourcePrefetcherInterfacePtr resourcePrefetcherDataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
 
             VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), resourcePrefetcherDataflow, MENGINE_DOCUMENT_FACTORABLE );
-        }
 
-        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+            return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+        } );
+
+        PLUGIN_SERVICE_WAIT( ResourceValidateServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS(this)]()
         {
             VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<ResourceMovieValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        }
 
-        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
+            return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( ResourceValidateServiceInterface, []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+        } );
+
+        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<LoaderResourceMovie>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
         } );
 
         return true;
@@ -219,21 +238,6 @@ namespace Mengine
 
         CODEC_SERVICE()
             ->removeCodecExt( STRINGIZE_STRING_LOCAL( "aek" ) );
-
-        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
-        }
-
-        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
-        }
-
-        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie1Plugin::_destroyPlugin()

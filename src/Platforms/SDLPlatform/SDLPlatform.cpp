@@ -1249,7 +1249,10 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_STOP );
 
-        SDL_HideWindow( m_sdlWindow );
+        if( m_sdlWindow != nullptr )
+        {
+            SDL_HideWindow( m_sdlWindow );
+        }
         
         this->pushQuitEvent_();
     }

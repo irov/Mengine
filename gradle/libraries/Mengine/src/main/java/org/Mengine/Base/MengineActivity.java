@@ -33,8 +33,6 @@ public class MengineActivity extends SDLActivity {
     private Map<Integer, InputStream> m_openFiles;
     private int m_fileEnumerator;
 
-    private Map<String, MengineSemaphore> m_semaphores;
-
     private Map<String, Integer> m_requestCodes;
 
     class CallbackResponse {
@@ -73,8 +71,6 @@ public class MengineActivity extends SDLActivity {
 
         m_openFiles = new HashMap<>();
         m_fileEnumerator = 0;
-
-        m_semaphores = new HashMap<>();
 
         m_requestCodes = new HashMap<>();
 
@@ -483,7 +479,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         m_openFiles = null;
-        m_semaphores = null;
         m_requestCodes = null;
         m_callbackResponses = null;
 
@@ -756,42 +751,14 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Semaphore Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void activateSemaphore(String name) {
-        MengineSemaphore semaphore = m_semaphores.get(name);
-
-        if (semaphore == null) {
-            MengineSemaphore new_semaphore = new MengineSemaphore(true);
-
-            m_semaphores.put(name, new_semaphore);
-
-            return;
-        }
-
-        semaphore.activate();
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void waitSemaphore(String name, MengineCallbackInterface cb) {
-        MengineSemaphore semaphore = m_semaphores.get(name);
-
-        if (semaphore == null) {
-            MengineSemaphore new_semaphore = new MengineSemaphore(false);
-
-            new_semaphore.addListener(cb);
-
-            m_semaphores.put(name, new_semaphore);
-
-            return;
-        }
-
-        semaphore.addListener(cb);
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
     public void waitAndroidSemaphore(String name) {
         MengineCallbackInterface cb = (Object) -> {
             AndroidNativePython_activateSemaphore(name);
         };
 
-        this.waitSemaphore(name, cb);
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        application.waitSemaphore(name, cb);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Linking Methods

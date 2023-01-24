@@ -95,11 +95,11 @@ public class MenginePlugin {
     }
 
     public void activateSemaphore(String name) {
-        m_activity.activateSemaphore(name);
+        m_application.activateSemaphore(name);
     }
 
     public void waitSemaphore(String name, MengineCallbackInterface cb) {
-        m_activity.waitSemaphore(name, cb);
+        m_application.waitSemaphore(name, cb);
     }
 
     public void onAppCreate(MengineApplication application) {

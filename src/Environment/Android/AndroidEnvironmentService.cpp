@@ -280,9 +280,6 @@ namespace Mengine
 
         AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
 
-        proxyLogger->setJClassMengineActivity( g_jclass_MengineActivity );
-        proxyLogger->setJObjectMengineActivity( g_jobject_MengineActivity );
-
         LOGGER_SERVICE()
             ->registerLogger( proxyLogger );
 
@@ -333,16 +330,6 @@ namespace Mengine
         bool result = Mengine::Helper::AndroidOpenMail( jenv, g_jclass_MengineActivity, g_jobject_MengineActivity, _email, _subject, _body );
 
         return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassMengineActivity() const
-    {
-        return g_jclass_MengineActivity;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::getJObjectMengineActivity() const
-    {
-        return g_jobject_MengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
     jclass AndroidEnvironmentService::getJClassObject() const
@@ -400,15 +387,47 @@ namespace Mengine
         return  m_jclass_HashMap;
     }
     //////////////////////////////////////////////////////////////////////////
+    jmethodID AndroidEnvironmentService::getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
+    {
+        jmethodID jmethodID_function = _jenv->GetMethodID( g_jclass_MengineActivity, _name, _signature );
+
+        MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android method '%s' with signature '%s'"
+            , _name
+            , _signature
+        );
+
+        return jmethodID_function;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::callVoidMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const
+    {
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _method );
+
+        _jenv->CallVoidMethodV( g_jobject_MengineActivity, _method, args );
+
+        MENGINE_VA_LIST_END( args );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jobject AndroidEnvironmentService::callObjectMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const
+    {
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _method );
+
+        jobject result_jobject = _jenv->CallObjectMethodV( g_jobject_MengineActivity, _method, args );
+
+        MENGINE_VA_LIST_END( args );
+
+        return result_jobject;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getAndroidId( Char * _androidId, size_t _capacity ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_getAndroidId = jenv->GetMethodID( g_jclass_MengineActivity, "getAndroidId", "()Ljava/lang/String;" );
+        static jmethodID jmethodID_getAndroidId = this->getMengineActivityMethodID( jenv, "getAndroidId", "()Ljava/lang/String;" );
 
-        MENGINE_ASSERTION( jmethodID_getAndroidId != nullptr, "invalid get android method 'getAndroidId'" );
-
-        jstring jReturnValue = (jstring)jenv->CallObjectMethod( g_jobject_MengineActivity, jmethodID_getAndroidId );
+        jstring jReturnValue = (jstring)this->callObjectMengineActivityMethod( jenv, jmethodID_getAndroidId );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -427,11 +446,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_getDeviceName = jenv->GetMethodID( g_jclass_MengineActivity, "getDeviceName", "()Ljava/lang/String;" );
+        static jmethodID jmethodID_getDeviceName = this->getMengineActivityMethodID( jenv, "getDeviceName", "()Ljava/lang/String;" );
 
-        MENGINE_ASSERTION( jmethodID_getDeviceName != nullptr, "invalid get android method 'getDeviceName'" );
-
-        jstring jReturnValue = (jstring)jenv->CallObjectMethod( g_jobject_MengineActivity, jmethodID_getDeviceName );
+        jstring jReturnValue = (jstring)this->callObjectMengineActivityMethod( jenv, jmethodID_getDeviceName );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -450,11 +467,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_getDeviceLanguage = jenv->GetMethodID(g_jclass_MengineActivity, "getDeviceLanguage", "()Ljava/lang/String;" );
+        static jmethodID jmethodID_getDeviceLanguage = this->getMengineActivityMethodID( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
 
-        MENGINE_ASSERTION( jmethodID_getDeviceLanguage != nullptr, "invalid get android method 'getDeviceLanguage'" );
-
-        jstring jReturnValue = (jstring)jenv->CallObjectMethod(g_jobject_MengineActivity, jmethodID_getDeviceLanguage );
+        jstring jReturnValue = (jstring) this->callObjectMengineActivityMethod(jenv, jmethodID_getDeviceLanguage );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -473,11 +488,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_getPackageName = jenv->GetMethodID( g_jclass_MengineActivity, "getPackageName", "()Ljava/lang/String;" );
+        static jmethodID jmethodID_getPackageName = this->getMengineActivityMethodID( jenv, "getPackageName", "()Ljava/lang/String;" );
 
-        MENGINE_ASSERTION( jmethodID_getPackageName != nullptr, "invalid get android method 'getPackageName'" );
-
-        jstring jReturnValue = (jstring)jenv->CallObjectMethod( g_jobject_MengineActivity, jmethodID_getPackageName );
+        jstring jReturnValue = (jstring) this->callObjectMengineActivityMethod( jenv, jmethodID_getPackageName );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -620,11 +633,9 @@ namespace Mengine
                jenv->DeleteLocalRef( parameter_jobject );
            });
 
-        static jmethodID jmethodID_onMengineAnalyticsEvent = jenv->GetMethodID( g_jclass_MengineActivity, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;)V" );
+        static jmethodID jmethodID_onMengineAnalyticsEvent = this->getMengineActivityMethodID( jenv, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;)V" );
 
-        MENGINE_ASSERTION( jmethodID_onMengineAnalyticsEvent != nullptr, "invalid get android method 'onMengineAnalyticsEvent'" );
-
-        jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineAnalyticsEvent, eventName_jobject, (jlong)eventTimestamp, parameters_jobject );
+        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineAnalyticsEvent, eventName_jobject, (jlong)eventTimestamp, parameters_jobject );
 
         jenv->DeleteLocalRef( eventName_jobject );
         jenv->DeleteLocalRef( parameters_jobject );
@@ -636,11 +647,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_onMengineApplicationRun = jenv->GetMethodID( g_jclass_MengineActivity, "onMengineApplicationRun", "()V" );
+        static jmethodID jmethodID_onMengineApplicationRun = this->getMengineActivityMethodID( jenv, "onMengineApplicationRun", "()V" );
 
-        MENGINE_ASSERTION( jmethodID_onMengineApplicationRun != nullptr, "invalid get android method 'onMengineApplicationRun'" );
-
-        jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineApplicationRun );
+        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineApplicationRun );
 
         m_androidEventationHub->invoke();
     }
@@ -649,11 +658,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_onMengineApplicationReady = jenv->GetMethodID( g_jclass_MengineActivity, "onMengineApplicationReady", "()V" );
+        static jmethodID jmethodID_onMengineApplicationReady = this->getMengineActivityMethodID( jenv, "onMengineApplicationReady", "()V" );
 
-        MENGINE_ASSERTION( jmethodID_onMengineApplicationReady != nullptr, "invalid get android method 'onMengineApplicationReady'" );
-
-        jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineApplicationReady );
+        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineApplicationReady );
 
         m_androidEventationHub->invoke();
     }
@@ -662,11 +669,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_onMengineApplicationStop = jenv->GetMethodID( g_jclass_MengineActivity, "onMengineApplicationStop", "()V" );
+        static jmethodID jmethodID_onMengineApplicationStop = this->getMengineActivityMethodID( jenv, "onMengineApplicationStop", "()V" );
 
-        MENGINE_ASSERTION( jmethodID_onMengineApplicationStop != nullptr, "invalid get android method 'onMengineApplicationStop'" );
-
-        jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineApplicationStop );
+        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineApplicationStop );
 
         m_androidEventationHub->invoke();
     }
@@ -675,11 +680,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_onMengineInitializeBaseServices = jenv->GetMethodID( g_jclass_MengineActivity, "onMengineInitializeBaseServices", "()V" );
+        static jmethodID jmethodID_onMengineInitializeBaseServices = this->getMengineActivityMethodID( jenv, "onMengineInitializeBaseServices", "()V" );
 
-        MENGINE_ASSERTION( jmethodID_onMengineInitializeBaseServices != nullptr, "invalid get android method 'onMengineInitializeBaseServices'" );
-
-        jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineInitializeBaseServices );
+        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineInitializeBaseServices );
 
         m_androidEventationHub->invoke();
     }
@@ -688,11 +691,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_onMengineCreateApplication = jenv->GetMethodID( g_jclass_MengineActivity, "onMengineCreateApplication", "()V" );
+        static jmethodID jmethodID_onMengineCreateApplication = this->getMengineActivityMethodID( jenv, "onMengineCreateApplication", "()V" );
 
-        MENGINE_ASSERTION( jmethodID_onMengineCreateApplication != nullptr, "invalid get android method 'onMengineCreateApplication'" );
-
-        jenv->CallVoidMethod( g_jobject_MengineActivity, jmethodID_onMengineCreateApplication );
+        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineCreateApplication );
 
         m_androidEventationHub->invoke();
     }

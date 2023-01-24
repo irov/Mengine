@@ -1,5 +1,7 @@
 #include "AndroidProxyLogger.h"
 
+#include "Interface/AndroidEnvironmentServiceInterface.h"
+
 #include "Environment/Android/AndroidEnv.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -11,8 +13,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AndroidProxyLogger::AndroidProxyLogger()
-        : m_jenv( nullptr )
-        , m_jobjectMengineActivity( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -32,33 +32,12 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidProxyLogger::setJClassMengineActivity( jclass _jclassMengineActivity )
-    {
-        m_jclassMengineActivity = _jclassMengineActivity;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidProxyLogger::getJClassMengineActivity() const
-    {
-        return m_jclassMengineActivity;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidProxyLogger::setJObjectMengineActivity( jobject _jobjectMengineActivity )
-    {
-        m_jobjectMengineActivity = _jobjectMengineActivity;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jobject AndroidProxyLogger::getJObjectMengineActivity() const
-    {
-        return m_jobjectMengineActivity;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void AndroidProxyLogger::log( const LoggerMessage & _message )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_onMengineLogger = jenv->GetMethodID(m_jclassMengineActivity, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
-
-        MENGINE_ASSERTION(jmethodID_onMengineLogger != nullptr, "invalid get android method 'onMengineLogger'" );
+        static jmethodID jmethodID_onMengineLogger = ANDROID_ENVIRONMENT_SERVICE()
+            ->getMengineActivityMethodID( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
 
         const Char * category_str = _message.category.c_str();
 
@@ -76,7 +55,8 @@ namespace Mengine
 
         jstring data_jstring = jenv->NewStringUTF( m_loggerMessage );
 
-        jenv->CallVoidMethod(m_jobjectMengineActivity, jmethodID_onMengineLogger, category_jstring, level, filter, color, data_jstring);
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->callVoidMengineActivityMethod( jenv, jmethodID_onMengineLogger, category_jstring, level, filter, color, data_jstring );
 
         jenv->DeleteLocalRef( category_jstring );
         jenv->DeleteLocalRef( data_jstring );

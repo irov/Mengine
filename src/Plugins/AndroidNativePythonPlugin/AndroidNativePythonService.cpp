@@ -107,9 +107,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AndroidNativePythonService::AndroidNativePythonService()
-        : m_jclass_MengineActivity( nullptr )
-        , m_jobject_MengineActivity( nullptr )
-        , m_jclass_Object( nullptr )
+        : m_jclass_Object( nullptr )
         , m_jclass_Boolean( nullptr )
         , m_jclass_Character( nullptr )
         , m_jclass_Integer( nullptr )
@@ -187,19 +185,13 @@ namespace Mengine
         m_jclass_ArrayList = ANDROID_ENVIRONMENT_SERVICE()
                 ->getJClassArrayList();
 
-        m_jclass_MengineActivity = ANDROID_ENVIRONMENT_SERVICE()
-                ->getJClassMengineActivity();
-
-        m_jobject_MengineActivity = ANDROID_ENVIRONMENT_SERVICE()
-                ->getJObjectMengineActivity();
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_initializePlugins = jenv->GetMethodID( m_jclass_MengineActivity, "pythonInitializePlugins", "()V" );
+        static jmethodID jmethodID_initializePlugins = ANDROID_ENVIRONMENT_SERVICE()
+            ->getMengineActivityMethodID( jenv, "pythonInitializePlugins", "()V" );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_initializePlugins != nullptr, "invalid get android method 'pythonInitializePlugins'" );
-
-        jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_initializePlugins );
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->callVoidMengineActivityMethod( jenv, jmethodID_initializePlugins );
 
         m_eventation->invoke();
 
@@ -216,11 +208,11 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_pythonFinalizePlugins = jenv->GetMethodID( m_jclass_MengineActivity, "pythonFinalizePlugins", "()V" );
+        static jmethodID jmethodID_pythonFinalizePlugins = ANDROID_ENVIRONMENT_SERVICE()
+            ->getMengineActivityMethodID( jenv, "pythonFinalizePlugins", "()V" );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_pythonFinalizePlugins != nullptr, "invalid get android method 'pythonFinalizePlugins'" );
-
-        jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_pythonFinalizePlugins );
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->callVoidMengineActivityMethod( jenv, jmethodID_pythonFinalizePlugins );
 
         s_androidNativePythonService = nullptr;
 
@@ -566,11 +558,11 @@ namespace Mengine
             return false;
         }
 
-        static jmethodID jmethodID_pythonCallResponse = _jenv->GetMethodID(m_jclass_MengineActivity, "pythonCallResponse", "(ILjava/lang/Object;)V" );
+        static jmethodID jmethodID_pythonCallResponse = ANDROID_ENVIRONMENT_SERVICE()
+            ->getMengineActivityMethodID(_jenv, "pythonCallResponse", "(ILjava/lang/Object;)V" );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_pythonCallResponse != 0, "android activity not found method 'Activity [pythonCallResponse] (ILjava/lang/Object;)V'" );
-
-        _jenv->CallVoidMethod(m_jobject_MengineActivity, jmethodID_pythonCallResponse, _id, jresult );
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->callVoidMengineActivityMethod(_jenv, jmethodID_pythonCallResponse, _id, jresult );
 
         _jenv->DeleteLocalRef( jresult );
 
@@ -997,15 +989,15 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_waitAndroidSemaphore = jenv->GetMethodID( m_jclass_MengineActivity, "waitAndroidSemaphore", "(Ljava/lang/String;)V" );
-
-        MENGINE_ASSERTION_FATAL( jmethodID_waitAndroidSemaphore != nullptr, "invalid get android method 'pythonInitializePlugins'" );
+        jmethodID jmethodID_waitAndroidSemaphore = ANDROID_ENVIRONMENT_SERVICE()
+            ->getMengineActivityMethodID( jenv, "waitAndroidSemaphore", "(Ljava/lang/String;)V" );
 
         const Char * name_str = _name.c_str();
 
         jstring name_jvalue = jenv->NewStringUTF( name_str );
 
-        jenv->CallVoidMethod( m_jobject_MengineActivity, jmethodID_waitAndroidSemaphore, name_jvalue );
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->callVoidMengineActivityMethod( jenv, jmethodID_waitAndroidSemaphore, name_jvalue );
 
         jenv->DeleteLocalRef( name_jvalue );
     }

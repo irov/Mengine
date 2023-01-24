@@ -9,7 +9,7 @@
 #endif
 
 #ifndef MENGINE_VA_LIST_START
-#define MENGINE_VA_LIST_START( Args, Format ) va_start( Args, Format )
+#define MENGINE_VA_LIST_START( Args, Base ) va_start( Args, Base )
 #endif
 
 #ifndef MENGINE_VA_LIST_END

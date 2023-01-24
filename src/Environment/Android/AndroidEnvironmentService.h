@@ -21,10 +21,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        jclass getJClassMengineActivity() const override;
-        jobject getJObjectMengineActivity() const override;
-
-    public:
         jclass getJClassObject() const override;
         jclass getJClassBoolean() const override;
         jclass getJClassCharacter() const override;
@@ -36,6 +32,11 @@ namespace Mengine
         jclass getJClassArrayList() const override;
         jclass getJClassMap() const override;
         jclass getJClassHashMap() const override;
+
+    public:
+        jmethodID getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const override;
+        void callVoidMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
+        jobject callObjectMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
 
     public:
         size_t getAndroidId( Char * _androidId, size_t _capacity ) const override;

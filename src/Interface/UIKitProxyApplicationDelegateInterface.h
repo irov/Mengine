@@ -1,5 +1,7 @@
 #import <UIKit/UIKit.h>
 
+#include "Config/Config.h"
+
 @protocol UIKitProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;

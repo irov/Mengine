@@ -39,7 +39,7 @@ namespace Mengine
             return false;
         }
         
-        bool AppleHelpshiftPlugin_Available = CONFIG_VALUE( "HelpshiftPlugin", "Available", true );
+        bool AppleHelpshiftPlugin_Available = CONFIG_VALUE( "AppleHelpshiftPlugin", "Available", true );
 
         if( AppleHelpshiftPlugin_Available == false )
         {

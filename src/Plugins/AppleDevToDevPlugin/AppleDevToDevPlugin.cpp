@@ -33,9 +33,9 @@ namespace Mengine
             return false;
         }
         
-        bool AppDevToDevPlugin_Available = CONFIG_VALUE( "AppDevToDevPlugin", "Available", true );
+        bool AppleDevToDevPlugin_Available = CONFIG_VALUE( "AppleDevToDevPlugin", "Available", true );
         
-        if( AppDevToDevPlugin_Available == false )
+        if( AppleDevToDevPlugin_Available == false )
         {
             return false;
         }

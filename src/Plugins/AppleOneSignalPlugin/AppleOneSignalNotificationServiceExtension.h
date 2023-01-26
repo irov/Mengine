@@ -2,6 +2,8 @@
 
 #import <UserNotifications/UserNotifications.h>
 
+#include "Config/Config.h"
+
 @interface AppleOneSignalNotificationServiceExtension : UNNotificationServiceExtension
 
 @property (nonatomic, strong) void (^contentHandler)(UNNotificationContent *contentToDeliver);

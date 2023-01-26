@@ -1,7 +1,5 @@
 #import "AppleOneSignalNotificationServiceExtension.h"
 
-#include "Config/Config.h"
-
 @implementation AppleOneSignalNotificationServiceExtension
 
 - (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {

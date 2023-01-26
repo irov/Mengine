@@ -1,62 +1,44 @@
-#include "AppleAdjustScriptEmbedding.h"
+#import "AppleOneSignalNotificationServiceExtension.h"
 
-#include "AppleAdjustInterface.h"
+#include "Config/Config.h"
 
-#include "Interface/ScriptServiceInterface.h"
+@implementation AppleOneSignalNotificationServiceExtension
 
-#include "Environment/Python/PythonDocumentTraceback.h"
-
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/Factory.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/DocumentHelper.h"
-#include "Kernel/Logger.h"
-
-#include "pybind/pybind.hpp"
-
-namespace Mengine
-{
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleAdjust_eventTraking( const ConstString & _token )
-        {
-            APPLE_ADJUST_SERVICE()
-                ->eventTraking( _token );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleAdjust_revenueTracking( const ConstString & _token, double _amount, const ConstString & _currency )
-        {
-            APPLE_ADJUST_SERVICE()
-                ->revenueTracking( _token, _amount, _currency );
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
-    AppleAdjustScriptEmbedding::AppleAdjustScriptEmbedding()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    AppleAdjustScriptEmbedding::~AppleAdjustScriptEmbedding()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AppleAdjustScriptEmbedding::embed( pybind::kernel_interface * _kernel )
-    {
-        SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleAdjust", true );
-
-        pybind::def_function( _kernel, "appleAdjustEventTraking", &Detail::s_AppleAdjust_eventTraking );
-        pybind::def_function( _kernel, "appleAdjustRevenueTracking", &Detail::s_AppleAdjust_revenueTracking );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleAdjustScriptEmbedding::eject( pybind::kernel_interface * _kernel )
-    {
-        _kernel->remove_from_module( "appleMARSDKSetProvider", nullptr );
-        _kernel->remove_from_module( "appleMARSDKLogin", nullptr );
-    }
-    //////////////////////////////////////////////////////////////////////////
+- (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
+    self.receivedRequest = request;
+    self.contentHandler = contentHandler;
+    self.bestAttemptContent = [request.content mutableCopy];
+    
+    //If your SDK version is < 3.5.0 uncomment and use this code:
+    /*
+    [OneSignal didReceiveNotificationExtensionRequest:self.receivedRequest
+                       withMutableNotificationContent:self.bestAttemptContent];
+    self.contentHandler(self.bestAttemptContent);
+    */
+    
+    /* DEBUGGING: Uncomment the 2 lines below and comment out the one above to ensure this extension is excuting
+                  Note, this extension only runs when mutable-content is set
+                  Setting an attachment or action buttons automatically adds this */
+    // NSLog(@"Running NotificationServiceExtension");
+    // self.bestAttemptContent.body = [@"[Modified] " stringByAppendingString:self.bestAttemptContent.body];
+    
+    // Uncomment this line to set the default log level of NSE to VERBOSE so we get all logs from NSE logic
+#ifdef MENGINE_DEBUG
+    [OneSignal setLogLevel:ONE_S_LL_VERBOSE visualLevel:ONE_S_LL_NONE];
+#endif
+    
+    [OneSignal didReceiveNotificationExtensionRequest:self.receivedRequest
+                       withMutableNotificationContent:self.bestAttemptContent
+                                   withContentHandler:self.contentHandler];
 }
 
+- (void)serviceExtensionTimeWillExpire {
+    // Called just before the extension will be terminated by the system.
+    // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
+    
+    [OneSignal serviceExtensionTimeWillExpireRequest:self.receivedRequest withMutableNotificationContent:self.bestAttemptContent];
+    
+    self.contentHandler(self.bestAttemptContent);
+}
+
+@end

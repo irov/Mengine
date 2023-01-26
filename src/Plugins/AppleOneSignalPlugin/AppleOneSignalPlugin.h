@@ -6,14 +6,14 @@
 
 namespace Mengine
 {    
-    class AppleAdjustPlugin
+    class AppleOneSignalPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AppleAdjust" )
+        PLUGIN_DECLARE( "AppleOneSignal" )
 
     public:
-        AppleAdjustPlugin();
-        ~AppleAdjustPlugin() override;
+        AppleOneSignalPlugin();
+        ~AppleOneSignalPlugin() override;
 
     protected:
         bool _availablePlugin() const override;

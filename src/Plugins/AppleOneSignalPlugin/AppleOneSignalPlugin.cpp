@@ -1,10 +1,4 @@
-#include "AppleAdjustPlugin.h"
-
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-#   include "Interface/ScriptServiceInterface.h"
-
-#   include "AppleAdjustScriptEmbedding.h"
-#endif
+#include "AppleOneSignalPlugin.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -12,36 +6,36 @@
 #include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleAdjustService );
+SERVICE_EXTERN( AppleOneSignalService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleAdjust, Mengine::AppleAdjustPlugin )
+PLUGIN_FACTORY( AppleOneSignal, Mengine::AppleOneSignalPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleAdjustPlugin::AppleAdjustPlugin()
+    AppleOneSignalPlugin::AppleOneSignalPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleAdjustPlugin::~AppleAdjustPlugin()
+    AppleOneSignalPlugin::~AppleOneSignalPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleAdjustPlugin::_availablePlugin() const
+    bool AppleOneSignalPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "appleadjust" ) == true )
+        if( HAS_OPTION( "appleonesignal" ) == true )
         {
             return true;
         }
 
-        if( HAS_OPTION( "noappleadjust" ) == true )
+        if( HAS_OPTION( "noappleonesignal" ) == true )
         {
             return false;
         }
         
-        bool AppleAdjustPlugin_Available = CONFIG_VALUE( "AdjustPlugin", "Available", true );
+        bool AppleOneSignalPlugin_Available = CONFIG_VALUE( "AppleOneSignalPlugin", "Available", true );
 
-        if( AppleAdjustPlugin_Available == false )
+        if( AppleOneSignalPlugin_Available == false )
         {
             return false;
         }
@@ -49,43 +43,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleAdjustPlugin::_initializePlugin()
+    bool AppleOneSignalPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleAdjustService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( AppleOneSignalService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
-
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
-        {
-            SCRIPT_SERVICE()
-                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAdjustScriptEmbedding" ), Helper::makeFactorableUnique<AppleAdjustScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-
-        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
-        {
-            SCRIPT_SERVICE()
-                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AppleAdjustScriptEmbedding" ) );
-        }, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleAdjustPlugin::_finalizePlugin()
+    void AppleOneSignalPlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
-#endif
-
-        SERVICE_FINALIZE( AppleAdjustService );
+        SERVICE_FINALIZE( AppleOneSignalService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleAdjustPlugin::_destroyPlugin()
+    void AppleOneSignalPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( AppleAdjustService );
+        SERVICE_DESTROY( AppleOneSignalService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

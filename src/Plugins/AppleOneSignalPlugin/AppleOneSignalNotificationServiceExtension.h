@@ -1,21 +1,11 @@
-#pragma once
+#import <OneSignal/OneSignal.h>
 
-#include "Interface/ScriptEmbeddingInterface.h"
+#import <UserNotifications/UserNotifications.h>
 
-#include "Kernel/Factorable.h"
+@interface AppleOneSignalNotificationServiceExtension : UNNotificationServiceExtension
 
-namespace Mengine
-{
-    class AppleAdjustScriptEmbedding
-        : public ScriptEmbeddingInterface
-        , public Factorable
-    {
-    public:
-        AppleAdjustScriptEmbedding();
-        ~AppleAdjustScriptEmbedding() override;
+@property (nonatomic, strong) void (^contentHandler)(UNNotificationContent *contentToDeliver);
+@property (nonatomic, strong) UNNotificationRequest *receivedRequest;
+@property (nonatomic, strong) UNMutableNotificationContent *bestAttemptContent;
 
-    public:
-        bool embed( pybind::kernel_interface * _kernel ) override;
-        void eject( pybind::kernel_interface * _kernel ) override;
-    };
-}
+@end

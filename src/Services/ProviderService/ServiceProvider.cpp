@@ -414,12 +414,21 @@ namespace Mengine
             {
                 continue;
             }
-
+            
+            const Char * name = desc.name.c_str();
+            
+            const bool * initialized = this->isInitializeServiceProvider( name );
+            
             LambdaLeaveService lambda = desc.lambda;
 
             desc.lambda = nullptr;
             desc.name.clear();
             desc.owner.clear();
+            
+            if( *initialized == false )
+            {
+                continue;
+            }
 
             lambda();
         }

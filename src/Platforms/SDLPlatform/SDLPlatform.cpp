@@ -1547,7 +1547,7 @@ namespace Mengine
             , win_height
         );
 
-#ifdef MENGINE_PLATFORM_DESKTOP
+#ifdef MENGINE_PLATFORM_WINDOWS
         int win_top;
         int win_left;
         int win_bottom;

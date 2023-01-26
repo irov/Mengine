@@ -15,3 +15,7 @@
 #ifndef MENGINE_VA_LIST_END
 #define MENGINE_VA_LIST_END( Args ) va_end( Args )
 #endif
+
+#ifndef MENGINE_VA_LIST_COPY
+#define MENGINE_VA_LIST_COPY( Dst, Src ) va_copy( Dst, Src )
+#endif

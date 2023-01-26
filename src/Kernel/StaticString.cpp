@@ -1,6 +1,7 @@
 #include "StaticString.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionVSNPRINTF.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -99,7 +100,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticStringFormat( Char * _buffer, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args )
         {
-            MENGINE_ASSERTION_FATAL( (size_t)MENGINE_VSNPRINTF( nullptr, 0, _format, _args ) < _capacity );
+            MENGINE_ASSERTION_VSNPRINTF( _capacity, _format, _args );
 
             MENGINE_VSNPRINTF( _buffer, _capacity, _format, _args );
         }

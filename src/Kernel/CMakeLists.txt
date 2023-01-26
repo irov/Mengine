@@ -473,6 +473,8 @@ Assertion
     AssertionCharacter.cpp
     AssertionCharacter.h
     AssertionReferenceCount.h
+    AssertionVSNPRINTF.cpp
+    AssertionVSNPRINTF.h
 )
 
 ADD_FILTER(

@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+
+android {
+    buildToolsVersion project.buildToolsVersion
+    compileSdkVersion project.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility project.javaVersion
+        targetCompatibility project.javaVersion
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['../../app/res']
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation project(':libraries:Mengine')
+    implementation project(':libraries:SDL2')
+
+    implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
+}

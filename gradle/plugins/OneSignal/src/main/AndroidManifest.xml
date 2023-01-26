@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.Mengine.Plugin.OneSignal">
+
+    <application>
+        <meta-data android:name="com.onesignal.NotificationServiceExtension"
+            android:value="org.Mengine.Plugin.OneSignal.MengineOneSignalNotificationServiceExtension" />
+    </application>
+
+</manifest>

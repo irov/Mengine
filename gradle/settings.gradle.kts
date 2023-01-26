@@ -79,33 +79,34 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_SENTRY [https://sentry.io]
 / * - MENGINE_APP_PLUGIN_FACEBOOK [https://developers.facebook.com]
 / * - MENGINE_APP_PLUGIN_DEVTODEV [https://www.devtodev.com]
-/ * - MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS
 / * - MENGINE_APP_PLUGIN_GOOGLE_SERVICE [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_GOOGLE_BILLING [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS [https://developers.google.com]
-/ * - MENGINE_APP_PLUGIN_MAR [http://doc.martianyun.com/en/]
+/ * - MENGINE_APP_PLUGIN_MAR [http://doc.martianyun.com/en]
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
+/ * - MENGINE_APP_PLUGIN_ONESIGNAL [https://onesignal.com]
 **/
 
-includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", false, ":libraries:SplashScreen")
-includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":libraries:LocalNotifications")
-includePlugin("MENGINE_APP_PLUGIN_ADVERTISING", false, ":libraries:Advertising")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false, ":libraries:GoogleService")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_BILLING", false, ":libraries:GoogleBilling")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false, ":libraries:GoogleGameSocial")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", false, ":libraries:GoogleInAppReviews")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", false, ":libraries:GoogleConsent")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", false,":libraries:FirebaseAnalytics")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false,":libraries:FirebaseCrashlytics")
-includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", false, ":libraries:AppLovin")
-includePlugin("MENGINE_APP_PLUGIN_SENTRY", false, ":libraries:Sentry")
-includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", false,":libraries:Facebook")
-includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", false, ":libraries:DevToDev")
-includePlugin("MENGINE_APP_PLUGIN_MAR", false, ":libraries:MAR")
-includePlugin("MENGINE_APP_PLUGIN_ADJUST", false, ":libraries:Adjust")
-includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", false, ":libraries:Helpshift")
-includePlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER", false, ":libraries:DevDebugger")
+includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", false, ":plugins:SplashScreen")
+includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":plugins:LocalNotifications")
+includePlugin("MENGINE_APP_PLUGIN_ADVERTISING", false, ":plugins:Advertising")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false, ":plugins:GoogleService")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_BILLING", false, ":plugins:GoogleBilling")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false, ":plugins:GoogleGameSocial")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", false, ":plugins:GoogleInAppReviews")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", false, ":plugins:GoogleConsent")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", false,":plugins:FirebaseAnalytics")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false,":plugins:FirebaseCrashlytics")
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", false, ":plugins:AppLovin")
+includePlugin("MENGINE_APP_PLUGIN_SENTRY", false, ":plugins:Sentry")
+includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", false,":plugins:Facebook")
+includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", false, ":plugins:DevToDev")
+includePlugin("MENGINE_APP_PLUGIN_MAR", false, ":plugins:MAR")
+includePlugin("MENGINE_APP_PLUGIN_ADJUST", false, ":plugins:Adjust")
+includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", false, ":plugins:Helpshift")
+includePlugin("MENGINE_APP_PLUGIN_ONESIGNAL", false, ":plugins:OneSignal")
+includePlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER", false, ":plugins:DevDebugger")
 
 println("Mengine complete settings")

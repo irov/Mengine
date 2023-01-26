@@ -12,8 +12,6 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 
-import org.Mengine.Plugin.GoogleGameSocial.R;
-
 public class MengineAdjustPlugin extends MenginePlugin {
     public static String PLUGIN_NAME = "Adjust";
     public static boolean PLUGIN_EMBEDDING = true;

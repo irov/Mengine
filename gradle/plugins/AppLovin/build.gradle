@@ -111,7 +111,7 @@ dependencies {
     implementation project(':libraries:SDL2')
 
     if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
-        implementation project(path: ':libraries:FirebaseAnalytics')
+        implementation project(path: ':plugins:FirebaseAnalytics')
 
         implementation 'com.google.firebase:firebase-analytics'
     }

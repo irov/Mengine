@@ -670,6 +670,60 @@ MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)
     endif()
 ENDMACRO()
 
+MACRO(ADD_MENGINE_PLUGIN_MODULE)
+    ADD_PRECOMPILED_HEADER()
+    
+    ADD_DEFINITIONS(-DMENGINE_LIBRARY_NAME="${PROJECT_NAME}")
+    
+    ADD_LIBRARY(${PROJECT_NAME} MODULE ${SRC_FILES})
+    
+    if(MSVC)
+        target_sources(${PROJECT_NAME} INTERFACE ${MENGINE_REPOSITORY}/contributing/codestyle/mengine.natvis)
+    endif()
+	
+	if(XCODE)
+		SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_SKIP_INSTALL YES)
+	endif()
+    
+    IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
+        ADD_DEPENDENCIES(${PROJECT_NAME} PrecompiledHeader)
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME} PrecompiledHeader)
+    ENDIF()
+    
+    set(extra_macro_args ${ARGN})
+    list(LENGTH extra_macro_args num_extra_args)
+    
+    set(USE_SUBFOLDER ON)
+    if(${num_extra_args} EQUAL 1)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+    elseif(${num_extra_args} EQUAL 2)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+        list(GET extra_macro_args 1 USE_SUBFOLDER)
+    endif()
+    
+    if(MENGINE_USE_SUBFOLDER AND ${USE_SUBFOLDER})
+        if(${num_extra_args} GREATER 0)
+            set_target_properties (${PROJECT_NAME} PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
+            )
+        else()
+            set_target_properties (${PROJECT_NAME} PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}/Plugins
+            )
+        endif()
+    else()
+        if(${num_extra_args} GREATER 0)
+            set_target_properties (${PROJECT_NAME} PROPERTIES
+                FOLDER ${FILTER_FOLDER}
+            )
+        else()
+            set_target_properties (${PROJECT_NAME} PROPERTIES
+                FOLDER Plugins
+            )
+        endif()
+    endif()
+ENDMACRO()
+
 MACRO(ADD_MENGINE_COCOAPOD COCOAPOD_NAME COCOAPOD_GIT COCOAPOD_TAG)
     LIST(APPEND APPLICATION_APPLE_COCOAPODS ${PROJECT_NAME} ${COCOAPOD_NAME} ${COCOAPOD_GIT} ${COCOAPOD_TAG})
     SET(APPLICATION_APPLE_COCOAPODS ${APPLICATION_APPLE_COCOAPODS} PARENT_SCOPE)

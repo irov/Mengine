@@ -28,7 +28,7 @@ src
     AppleOneSignalNotificationServiceExtension.mm
 )
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_ONESIGNAL)
+ADD_MENGINE_PLUGIN_MODULE()
 
 set_target_properties(AppleOneSignalNotificationServiceExtension PROPERTIES
     BUNDLE YES

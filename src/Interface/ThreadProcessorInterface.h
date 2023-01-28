@@ -5,6 +5,8 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/ThreadEnum.h"
 
+#include "Config/Thread.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -12,7 +14,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual uint64_t getThreadId() const = 0;
+        virtual ThreadId getThreadId() const = 0;
 
     public:
         virtual bool processTask( ThreadTaskInterface * _task ) = 0;

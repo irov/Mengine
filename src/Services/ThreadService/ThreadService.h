@@ -11,6 +11,8 @@
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
 
+#include "Config/Thread.h"
+
 namespace Mengine
 {
     class ThreadService
@@ -54,11 +56,11 @@ namespace Mengine
 
     public:
         bool isMainThread() const override;
-        uint64_t getMainThreadId() const override;
+        ThreadId getMainThreadId() const override;
 
     public:
         const ConstString & getCurrentThreadName() const override;
-        const ConstString & findThreadNameById( uint64_t _id ) const override;
+        const ConstString & findThreadNameById( ThreadId _id ) const override;
 
     protected:
         uint32_t m_threadCount;
@@ -103,7 +105,7 @@ namespace Mengine
         typedef Vector<ThreadIdentityInterfacePtr> VectorThreadIdentityDescs;
         VectorThreadIdentityDescs m_threadIdentities;
 
-        uint64_t m_mainThreadId;
+        ThreadId m_mainThreadId;
 
     protected:
         void tryFastProcessTask_( ThreadTaskDesc & _desc );

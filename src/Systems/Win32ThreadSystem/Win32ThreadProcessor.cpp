@@ -215,9 +215,9 @@ namespace Mengine
             ->stopThread();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t Win32ThreadProcessor::getThreadId() const
+    ThreadId Win32ThreadProcessor::getThreadId() const
     {
-        return (uint64_t)m_threadId;
+        return (ThreadId)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadProcessor::processTask( ThreadTaskInterface * _task )

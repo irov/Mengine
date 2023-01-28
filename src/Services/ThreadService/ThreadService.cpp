@@ -477,7 +477,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::isMainThread() const
     {
-        uint64_t id = THREAD_SYSTEM()
+        ThreadId id = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
         if( m_mainThreadId != id )
@@ -488,7 +488,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t ThreadService::getMainThreadId() const
+    ThreadId ThreadService::getMainThreadId() const
     {
         return m_mainThreadId;
     }
@@ -513,7 +513,7 @@ namespace Mengine
         return STRINGIZE_STRING_LOCAL( "MengineUnknownThread" );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ThreadService::findThreadNameById( uint64_t _id ) const
+    const ConstString & ThreadService::findThreadNameById( ThreadId _id ) const
     {
         if( m_mainThreadId == _id )
         {

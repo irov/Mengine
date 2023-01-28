@@ -103,6 +103,7 @@ src
     Numeric.h
     Iterator.h
     Time.h
+    Thread.h
     Utils.h
     ${CMAKE_BINARY_DIR}/Definitions.h
 )

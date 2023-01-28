@@ -32,7 +32,7 @@ namespace Mengine
         void sleep( uint32_t _ms ) override;
 
     public:
-        uint64_t getCurrentThreadId() const override;
+        ThreadId getCurrentThreadId() const override;
 
     protected:
         FactoryInterfacePtr m_factoryWin32ThreadIdentity;

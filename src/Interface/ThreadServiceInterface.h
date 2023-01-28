@@ -46,11 +46,11 @@ namespace Mengine
 
     public:
         virtual bool isMainThread() const = 0;
-        virtual uint64_t getMainThreadId() const = 0;
+        virtual ThreadId getMainThreadId() const = 0;
 
     public:
         virtual const ConstString & getCurrentThreadName() const = 0;
-        virtual const ConstString & findThreadNameById( uint64_t _id ) const = 0;
+        virtual const ConstString & findThreadNameById( ThreadId _id ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

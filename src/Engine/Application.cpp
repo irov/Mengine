@@ -1477,7 +1477,7 @@ namespace Mengine
         }
         else
         {
-            uint64_t tid = THREAD_SYSTEM()
+            ThreadId tid = THREAD_SYSTEM()
                 ->getCurrentThreadId();
 
             if( _streaming == false )

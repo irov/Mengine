@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Config/Thread.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace pybind
 {
@@ -19,7 +21,7 @@ namespace Mengine
         virtual pybind::kernel_interface * getKernel() const = 0;
 
     public:
-        virtual uint64_t getScriptThreadId() const = 0;
+        virtual ThreadId getScriptThreadId() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

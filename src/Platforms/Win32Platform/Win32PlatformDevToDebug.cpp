@@ -12,6 +12,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdIo.h"
+#include "Config/StdIntTypes.h"
 
 namespace Mengine
 {
@@ -70,7 +71,7 @@ namespace Mengine
         unknown_btn_change->setClickEvent( [unknown_text1_content]()
         {
             Char buffer[64];
-            MENGINE_SPRINTF( buffer, "Bye Bye! %llu"
+            MENGINE_SPRINTF( buffer, "Bye Bye! %" MENGINE_PRIu64 ""
                 , Helper::getTimeMilliseconds()
             );
 

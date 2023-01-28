@@ -112,11 +112,11 @@ namespace Mengine
         ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t Win32ThreadSystem::getCurrentThreadId() const
+    ThreadId Win32ThreadSystem::getCurrentThreadId() const
     {
         DWORD id = ::GetCurrentThreadId();
 
-        return (uint64_t)id;
+        return (ThreadId)id;
     }
     //////////////////////////////////////////////////////////////////////////
 }

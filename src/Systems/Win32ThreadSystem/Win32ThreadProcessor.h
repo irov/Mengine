@@ -34,7 +34,7 @@ namespace Mengine
         void main();
 
     public:
-        uint64_t getThreadId() const override;
+        ThreadId getThreadId() const override;
 
     public:
         bool processTask( ThreadTaskInterface * _task ) override;

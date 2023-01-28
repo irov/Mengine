@@ -11,7 +11,7 @@ namespace Mengine
         : m_lock( false )
         , m_lockThreadId( 0 )
     {
-        uint64_t id = THREAD_SYSTEM()
+        ThreadId id = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
         m_initThreadId = id;
@@ -21,7 +21,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t ThreadGuard::getLockThreadId() const
+    ThreadId ThreadGuard::getLockThreadId() const
     {
         return m_lockThreadId;
     }
@@ -38,7 +38,7 @@ namespace Mengine
             return;
         }
 
-        uint64_t id = THREAD_SYSTEM()
+        ThreadId id = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
         if( m_initThreadId == id )

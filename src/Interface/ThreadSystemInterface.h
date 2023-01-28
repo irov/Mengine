@@ -8,6 +8,8 @@
 
 #include "Kernel/ConstString.h"
 
+#include "Config/Thread.h"
+
 namespace Mengine
 {
     class ThreadSystemInterface
@@ -24,7 +26,7 @@ namespace Mengine
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual uint64_t getCurrentThreadId() const = 0;
+        virtual ThreadId getCurrentThreadId() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

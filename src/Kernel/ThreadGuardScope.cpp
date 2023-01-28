@@ -16,12 +16,12 @@ namespace Mengine
     {
         if( m_guard.lock( true ) == true )
         {
-            uint64_t lockThreadId = m_guard.getLockThreadId();
+            ThreadId lockThreadId = m_guard.getLockThreadId();
 
             const ConstString & lockThreadName = THREAD_SERVICE()
                 ->findThreadNameById( lockThreadId );
 
-            uint64_t currentThreadId = THREAD_SYSTEM()
+            ThreadId currentThreadId = THREAD_SYSTEM()
                 ->getCurrentThreadId();
 
             const ConstString & currentThreadName = THREAD_SERVICE()
@@ -41,12 +41,12 @@ namespace Mengine
     {
         if( m_guard.lock( false ) == false )
         {
-            uint64_t lockThreadId = m_guard.getLockThreadId();
+            ThreadId lockThreadId = m_guard.getLockThreadId();
 
             const ConstString & lockThreadName = THREAD_SERVICE()
                 ->findThreadNameById( lockThreadId );
 
-            uint64_t currentThreadId = THREAD_SYSTEM()
+            ThreadId currentThreadId = THREAD_SYSTEM()
                 ->getCurrentThreadId();
 
             const ConstString & currentThreadName = THREAD_SERVICE()

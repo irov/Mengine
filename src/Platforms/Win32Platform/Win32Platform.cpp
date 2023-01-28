@@ -4224,7 +4224,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( uint64_t _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
+    bool Win32Platform::getCallstack( ThreadId _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
     {
         HANDLE hProcess = ::GetCurrentProcess();
 
@@ -4289,7 +4289,7 @@ namespace Mengine
 
         if( hThread == NULL )
         {
-            LOGGER_ERROR( "invalid open thread [%llu] ShowWindow get error %ls"
+            LOGGER_ERROR( "invalid open thread [%" MENGINE_PRIu64 "] ShowWindow get error %ls"
                 , _threadId
                 , Helper::Win32GetLastErrorMessage()
             );
@@ -4316,7 +4316,7 @@ namespace Mengine
     }
 #else
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( uint64_t _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
+    bool Win32Platform::getCallstack( ThreadId _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
     {
         MENGINE_UNUSED( _threadId );
         MENGINE_UNUSED( _stack );

@@ -1126,10 +1126,10 @@ namespace Mengine
         MENGINE_UNUSED( _line );
         MENGINE_UNUSED( _message );
 
-        uint64_t scriptThreadId = SCRIPTPROVIDER_SERVICE()
+        ThreadId scriptThreadId = SCRIPTPROVIDER_SERVICE()
             ->getScriptThreadId();
 
-        uint64_t currentThreadId = THREAD_SYSTEM()
+        ThreadId currentThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
         if( scriptThreadId != currentThreadId )

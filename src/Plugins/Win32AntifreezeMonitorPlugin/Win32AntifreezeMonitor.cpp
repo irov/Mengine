@@ -163,7 +163,7 @@ namespace Mengine
         Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        uint64_t mainThreadId = THREAD_SERVICE()
+        ThreadId mainThreadId = THREAD_SERVICE()
             ->getMainThreadId();
 
         Char stack_msg[8096] = {'\0'};

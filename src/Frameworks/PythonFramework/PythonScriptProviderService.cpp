@@ -166,7 +166,7 @@ namespace Mengine
         return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t PythonScriptProviderService::getScriptThreadId() const
+    ThreadId PythonScriptProviderService::getScriptThreadId() const
     {
         return m_threadId;
     }

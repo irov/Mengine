@@ -117,11 +117,11 @@ namespace Mengine
         return mutex;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t SDLThreadSystem::getCurrentThreadId() const
+    ThreadId SDLThreadSystem::getCurrentThreadId() const
     {
         SDL_threadID threadId = SDL_ThreadID();
 
-        return static_cast<uint64_t>(threadId);
+        return static_cast<ThreadId>(threadId);
     }
     //////////////////////////////////////////////////////////////////////////
 }

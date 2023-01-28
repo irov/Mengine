@@ -36,7 +36,7 @@ namespace Mengine
         void main();
 
     public:
-        uint64_t getThreadId() const override;
+        ThreadId getThreadId() const override;
 
     public:
         void join() override;

@@ -256,9 +256,9 @@ namespace Mengine
             ->stopThread();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t SDLThreadProcessor::getThreadId() const
+    ThreadId SDLThreadProcessor::getThreadId() const
     {
-        return (uint64_t)m_threadId;
+        return (ThreadId)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadProcessor::processTask( ThreadTaskInterface * _task )

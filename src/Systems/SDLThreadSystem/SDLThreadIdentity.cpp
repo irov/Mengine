@@ -130,9 +130,9 @@ namespace Mengine
             ->stopThread();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t SDLThreadIdentity::getThreadId() const
+    ThreadId SDLThreadIdentity::getThreadId() const
     {
-        return (uint64_t)m_threadId;
+        return (ThreadId)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::join()

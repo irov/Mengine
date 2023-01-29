@@ -31,9 +31,9 @@ namespace Mengine
         AccountInterfacePtr createGlobalAccount( const DocumentPtr & _doc ) override;
 
     public:
-        bool hasAccount( const ConstString & _accountID ) const override;
-        void deleteAccount( const ConstString & _accountID ) override;
-        bool selectAccount( const ConstString & _accountID ) override;
+        bool hasAccount( const ConstString & _accountId ) const override;
+        void deleteAccount( const ConstString & _accountId ) override;
+        bool selectAccount( const ConstString & _accountId ) override;
 
     public:
         bool loadAccounts() override;
@@ -46,7 +46,7 @@ namespace Mengine
         void stopAccounts() override;
 
     public:
-        void setDefaultAccount( const ConstString & _accountID ) override;
+        void setDefaultAccount( const ConstString & _accountId ) override;
         const ConstString & getDefaultAccountID() const override;
 
         bool isCurrentDefaultAccount() const override;
@@ -56,7 +56,7 @@ namespace Mengine
         bool selectDefaultAccount() override;
 
     public:
-        void setGlobalAccount( const ConstString & _accountID ) override;
+        void setGlobalAccount( const ConstString & _accountId ) override;
         const ConstString & getGlobalAccountID() const override;
 
         bool hasGlobalAccount() const override;
@@ -66,18 +66,18 @@ namespace Mengine
         const ConstString & getCurrentAccountID() const override;
 
     public:
-        const AccountInterfacePtr & getAccount( const ConstString & _accountID ) const override;
+        const AccountInterfacePtr & getAccount( const ConstString & _accountId ) const override;
 
     public:
         void foreachAccounts( const LambdaAccounts & _lambda ) const override;
 
     protected:
         bool loadAccount_( const AccountInterfacePtr & _account );
-        AccountInterfacePtr createAccount_( const ConstString & _accountID, const DocumentPtr & _doc );
-        AccountInterfacePtr createGlobalAccount_( const ConstString & _accountID, const DocumentPtr & _doc );
+        AccountInterfacePtr createAccount_( const ConstString & _accountId, const DocumentPtr & _doc );
+        AccountInterfacePtr createGlobalAccount_( const ConstString & _accountId, const DocumentPtr & _doc );
 
     protected:
-        AccountInterfacePtr newAccount_( const ConstString & _accountID, const DocumentPtr & _doc );
+        AccountInterfacePtr newAccount_( const ConstString & _accountId, const DocumentPtr & _doc );
 
     protected:
         void unselectCurrentAccount_();

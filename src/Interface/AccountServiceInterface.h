@@ -23,9 +23,9 @@ namespace Mengine
         virtual AccountInterfacePtr createGlobalAccount( const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual bool hasAccount( const ConstString & _accountID ) const = 0;
-        virtual void deleteAccount( const ConstString & _accountID ) = 0;
-        virtual bool selectAccount( const ConstString & _accountID ) = 0;
+        virtual bool hasAccount( const ConstString & _accountId ) const = 0;
+        virtual void deleteAccount( const ConstString & _accountId ) = 0;
+        virtual bool selectAccount( const ConstString & _accountId ) = 0;
 
     public:
         virtual bool loadAccounts() = 0;
@@ -35,7 +35,7 @@ namespace Mengine
         virtual void stopAccounts() = 0;
 
     public:
-        virtual void setDefaultAccount( const ConstString & _accountID ) = 0;
+        virtual void setDefaultAccount( const ConstString & _accountId ) = 0;
         virtual const ConstString & getDefaultAccountID() const = 0;
         virtual bool isCurrentDefaultAccount() const = 0;
 
@@ -44,7 +44,7 @@ namespace Mengine
         virtual bool selectDefaultAccount() = 0;
 
     public:
-        virtual void setGlobalAccount( const ConstString & _accountID ) = 0;
+        virtual void setGlobalAccount( const ConstString & _accountId ) = 0;
         virtual const ConstString & getGlobalAccountID() const = 0;
 
         virtual bool hasGlobalAccount() const = 0;
@@ -54,7 +54,7 @@ namespace Mengine
         virtual const ConstString & getCurrentAccountID() const = 0;
 
     public:
-        virtual const AccountInterfacePtr & getAccount( const ConstString & _accountID ) const = 0;
+        virtual const AccountInterfacePtr & getAccount( const ConstString & _accountId ) const = 0;
 
     public:
         typedef Lambda<void( const AccountInterfacePtr & )> LambdaAccounts;

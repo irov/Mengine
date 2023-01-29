@@ -32,56 +32,61 @@ PLUGIN_FACTORY( Dazzle, Mengine::DazzlePlugin );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void * s_dz_malloc( dz_size_t _size, dz_userdata_t _ud )
+    namespace Detail
     {
-        DZ_UNUSED( _ud );
+        //////////////////////////////////////////////////////////////////////////
+        static void * s_dz_malloc( dz_size_t _size, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
 
-        void * p = Helper::allocateMemory( _size, "dazzle" );
+            void * p = Helper::allocateMemory( _size, "dazzle" );
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * s_dz_realloc( void * _ptr, dz_size_t _size, dz_userdata_t _ud )
-    {
-        DZ_UNUSED( _ud );
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * s_dz_realloc( void * _ptr, dz_size_t _size, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
 
-        void * p = Helper::reallocateMemory( _ptr, _size, "dazzle" );
+            void * p = Helper::reallocateMemory( _ptr, _size, "dazzle" );
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_dz_free( const void * _ptr, dz_userdata_t _ud )
-    {
-        DZ_UNUSED( _ud );
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_dz_free( const void * _ptr, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
 
-        Helper::deallocateMemory( (void *)_ptr, "dazzle" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static float s_dz_sqrtf( float _a, dz_userdata_t _ud )
-    {
-        DZ_UNUSED( _ud );
+            Helper::deallocateMemory( (void *)_ptr, "dazzle" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_dz_sqrtf( float _a, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
 
-        float value = MENGINE_SQRTF( _a );
+            float value = MENGINE_SQRTF( _a );
 
-        return value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static float s_dz_cosf( float _a, dz_userdata_t _ud )
-    {
-        DZ_UNUSED( _ud );
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_dz_cosf( float _a, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
 
-        float value = MENGINE_COSF( _a );
+            float value = MENGINE_COSF( _a );
 
-        return value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static float s_dz_sinf( float _a, dz_userdata_t _ud )
-    {
-        DZ_UNUSED( _ud );
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_dz_sinf( float _a, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
 
-        float value = MENGINE_SINF( _a );
+            float value = MENGINE_SINF( _a );
 
-        return value;
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     DazzlePlugin::DazzlePlugin()
@@ -98,12 +103,12 @@ namespace Mengine
         LOGGER_INFO( "dazzle", "Initializing Dazzle..." );
 
         dz_service_providers_t providers;
-        providers.f_malloc = &s_dz_malloc;
-        providers.f_realloc = &s_dz_realloc;
-        providers.f_free = &s_dz_free;
-        providers.f_sqrtf = &s_dz_sqrtf;
-        providers.f_cosf = &s_dz_cosf;
-        providers.f_sinf = &s_dz_sinf;
+        providers.f_malloc = &Detail::s_dz_malloc;
+        providers.f_realloc = &Detail::s_dz_realloc;
+        providers.f_free = &Detail::s_dz_free;
+        providers.f_sqrtf = &Detail::s_dz_sqrtf;
+        providers.f_cosf = &Detail::s_dz_cosf;
+        providers.f_sinf = &Detail::s_dz_sinf;
 
         dz_service_t * service;
         if( dz_service_create( &service, &providers, DZ_NULLPTR ) == DZ_FAILURE )

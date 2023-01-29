@@ -154,63 +154,63 @@ namespace Mengine
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountID, const DocumentPtr & _doc )
+    AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountId, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( m_accounts.find( _accountID ) == nullptr, "account with ID '%s' already exist. Account not created"
-            , _accountID.c_str()
+        MENGINE_ASSERTION_FATAL( m_accounts.find( _accountId ) == nullptr, "account with ID '%s' already exist. Account not created"
+            , _accountId.c_str()
         );
 
         this->unselectCurrentAccount_();
 
-        AccountInterfacePtr newAccount = this->newAccount_( _accountID, _doc );
+        AccountInterfacePtr newAccount = this->newAccount_( _accountId, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( newAccount, "account with ID '%s' invalid create. Account not created"
-            , _accountID.c_str()
+            , _accountId.c_str()
         );
 
         m_currentAccountID = newAccount->getID();
 
-        m_accounts.emplace( _accountID, newAccount );
+        m_accounts.emplace( _accountId, newAccount );
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onCreateAccount( _accountID, false );
+            m_accountProvider->onCreateAccount( _accountId, false );
         }
 
         newAccount->apply();
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onSelectAccount( _accountID );
+            m_accountProvider->onSelectAccount( _accountId );
         }
 
         return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountID, const DocumentPtr & _doc )
+    AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountId, const DocumentPtr & _doc )
     {
 #ifdef MENGINE_DEBUG
-        AccountInterfacePtr account = m_accounts.find( _accountID );
+        AccountInterfacePtr account = m_accounts.find( _accountId );
 
         if( account != nullptr )
         {
             LOGGER_ERROR( "Account with ID '%s' already exist. Account not created"
-                , _accountID.c_str()
+                , _accountId.c_str()
             );
 
             return nullptr;
         }
 #endif
 
-        AccountInterfacePtr newAccount = this->newAccount_( _accountID, _doc );
+        AccountInterfacePtr newAccount = this->newAccount_( _accountId, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( newAccount, "Account with ID '%s' invalid create. Account not created"
-            , _accountID.c_str()
+            , _accountId.c_str()
         );
 
         m_globalAccountID = newAccount->getID();
 
-        m_accounts.emplace( _accountID, newAccount );
+        m_accounts.emplace( _accountId, newAccount );
 
         newAccount->apply();
 
@@ -237,10 +237,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountID, const DocumentPtr & _doc )
+    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountId, const DocumentPtr & _doc )
     {
         PathString accountString;
-        accountString.append( _accountID );
+        accountString.append( _accountId );
         accountString.append( MENGINE_PATH_DELIM );
 
         FilePath accountPath = Helper::stringizeFilePath( accountString );
@@ -248,7 +248,7 @@ namespace Mengine
         if( m_fileGroup->createDirectory( accountPath ) == false )
         {
             LOGGER_ERROR( "Account '%s' failed create directory '%s'"
-                , _accountID.c_str()
+                , _accountId.c_str()
                 , accountPath.c_str()
             );
 
@@ -260,10 +260,10 @@ namespace Mengine
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
 
-        if( newAccount->initialize( _accountID, m_archivator, m_fileGroup, accountPath, projectVersion ) == false )
+        if( newAccount->initialize( _accountId, m_archivator, m_fileGroup, accountPath, projectVersion ) == false )
         {
             LOGGER_ERROR( "Account '%s' invalid initialize"
-                , _accountID.c_str()
+                , _accountId.c_str()
             );
 
             return nullptr;
@@ -274,24 +274,24 @@ namespace Mengine
         return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AccountService::hasAccount( const ConstString & _accountID ) const
+    bool AccountService::hasAccount( const ConstString & _accountId ) const
     {
-        bool exist = m_accounts.exist( _accountID );
+        bool exist = m_accounts.exist( _accountId );
 
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::deleteAccount( const ConstString & _accountID )
+    void AccountService::deleteAccount( const ConstString & _accountId )
     {
-        AccountPtr account = m_accounts.erase( _accountID );
+        AccountPtr account = m_accounts.erase( _accountId );
 
         MENGINE_ASSERTION_MEMORY_PANIC( account, "can't delete account '%s'. There is no account with such ID"
-            , _accountID.c_str()
+            , _accountId.c_str()
         );
 
         if( m_currentAccountID.empty() == false )
         {
-            if( m_currentAccountID == _accountID )
+            if( m_currentAccountID == _accountId )
             {
                 this->unselectCurrentAccount_();
             }
@@ -306,20 +306,20 @@ namespace Mengine
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onDeleteAccount( _accountID );
+            m_accountProvider->onDeleteAccount( _accountId );
         }
 
         m_invalidateAccounts = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AccountService::selectAccount( const ConstString & _accountID )
+    bool AccountService::selectAccount( const ConstString & _accountId )
     {
-        const AccountInterfacePtr & account = m_accounts.find( _accountID );
+        const AccountInterfacePtr & account = m_accounts.find( _accountId );
 
         if( account == nullptr )
         {
             LOGGER_ERROR( "can't select account '%s'. There is no account with such ID"
-                , _accountID.c_str()
+                , _accountId.c_str()
             );
 
             return false;
@@ -327,13 +327,13 @@ namespace Mengine
 
         if( m_currentAccountID.empty() == false )
         {
-            if( m_currentAccountID != _accountID )
+            if( m_currentAccountID != _accountId )
             {
                 this->unselectCurrentAccount_();
             }
         }
 
-        m_currentAccountID = _accountID;
+        m_currentAccountID = _accountId;
 
         LOGGER_MESSAGE( "select account '%s' UID '%.20s'"
             , account->getID().c_str()
@@ -344,7 +344,7 @@ namespace Mengine
 
         if( m_accountProvider != nullptr )
         {
-            m_accountProvider->onSelectAccount( _accountID );
+            m_accountProvider->onSelectAccount( _accountId );
         }
 
         m_invalidateAccounts = true;
@@ -362,12 +362,12 @@ namespace Mengine
         return m_currentAccountID;
     }
     //////////////////////////////////////////////////////////////////////////
-    const AccountInterfacePtr & AccountService::getAccount( const ConstString & _accountID ) const
+    const AccountInterfacePtr & AccountService::getAccount( const ConstString & _accountId ) const
     {
-        const AccountInterfacePtr & account = m_accounts.find( _accountID );
+        const AccountInterfacePtr & account = m_accounts.find( _accountId );
 
         MENGINE_ASSERTION_MEMORY_PANIC( account, "account with ID '%s' not found"
-            , _accountID.c_str()
+            , _accountId.c_str()
         );
 
         return account;
@@ -390,9 +390,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::setDefaultAccount( const ConstString & _accountID )
+    void AccountService::setDefaultAccount( const ConstString & _accountId )
     {
-        m_defaultAccountID = _accountID;
+        m_defaultAccountID = _accountId;
 
         m_invalidateAccounts = true;
     }
@@ -427,13 +427,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::setGlobalAccount( const ConstString & _accountID )
+    void AccountService::setGlobalAccount( const ConstString & _accountId )
     {
         LOGGER_INFO( "account", "set global account '%s'"
-            , _accountID.c_str()
+            , _accountId.c_str()
         );
 
-        m_globalAccountID = _accountID;
+        m_globalAccountID = _accountId;
 
         m_invalidateAccounts = true;
     }

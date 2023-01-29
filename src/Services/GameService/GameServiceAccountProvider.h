@@ -21,15 +21,15 @@ namespace Mengine
         const EventablePtr & getEventable() const;
 
     protected:
-        void onCreateAccount( const ConstString & _accountID, bool _global ) override;
-        void onDeleteAccount( const ConstString & _accountID ) override;
-        void onSelectAccount( const ConstString & _accountID ) override;
-        void onUnselectAccount( const ConstString & _accountID ) override;
+        void onCreateAccount( const ConstString & _accountId, bool _global ) override;
+        void onDeleteAccount( const ConstString & _accountId ) override;
+        void onSelectAccount( const ConstString & _accountId ) override;
+        void onUnselectAccount( const ConstString & _accountId ) override;
 
     protected:
         EventablePtr m_eventable;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<GameServiceAccountProvider> GameAccountProviderPtr;
+    typedef IntrusivePtr<GameServiceAccountProvider, AccountProviderInterface> GameAccountProviderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -23,6 +23,13 @@ namespace Mengine
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
         MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s", size, data );
 
+#ifdef MENGINE_DEBUG
+        if( ::IsDebuggerPresent() == TRUE )
+        {
+            ::DebugBreak();
+        }
+#endif
+
         ::MessageBoxA( NULL, message, "Mengine critical error", MB_OK );
     }
     //////////////////////////////////////////////////////////////////////////

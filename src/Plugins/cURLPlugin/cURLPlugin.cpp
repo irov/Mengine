@@ -1,6 +1,8 @@
 #include "cURLPlugin.h"
 
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( cURLService );
@@ -16,6 +18,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     cURLPlugin::~cURLPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool cURLPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "curl" ) == true )
+        {
+            return true;
+        }
+
+        if( HAS_OPTION( "nocurl" ) == true )
+        {
+            return false;
+        }
+
+        bool cURLPlugin_Available = CONFIG_VALUE( "cURLPlugin", "Available", true );
+
+        if( cURLPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool cURLPlugin::_initializePlugin()

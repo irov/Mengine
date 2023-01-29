@@ -144,8 +144,11 @@ namespace Mengine
             ss << "ThreadcURLService_" << index;
             ConstString threadName = Helper::stringizeString( ss.str() );
 
-            THREAD_SERVICE()
-                ->createThreadProcessor( threadName, ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+            if( THREAD_SERVICE()
+                ->createThreadProcessor( threadName, ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                return false;
+            }
 
             m_threads.emplace_back( threadName );
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/RenderVertex2D.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {

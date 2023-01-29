@@ -11,8 +11,7 @@
 #include "Kernel/AssertionType.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PixelFormatHelper.h"
-
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -127,7 +126,7 @@ namespace Mengine
 
             for( uint32_t j = 0; j != m_dataInfo.height; ++j )
             {
-                stdex::memorycopy( dest_buffer, 0, source_buffer, linesize );
+                Helper::memoryCopy( dest_buffer, 0, source_buffer, linesize );
 
                 source_buffer += linesize;
                 dest_buffer += dataPitch;

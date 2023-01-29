@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceImageSubstract::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceImageSubstract * resource = stdex::intrusive_get<ResourceImageSubstract *>( _loadable );
+        ResourceImageSubstract * resource = _loadable.getT<ResourceImageSubstract *>();
 
         const ConstString & groupName = resource->getGroupName();
 

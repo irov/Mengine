@@ -239,7 +239,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr MockupRenderSystem::createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
     {
-        MockupRenderTargetTexturePtr targetTexture = stdex::intrusive_static_cast<MockupRenderTargetTexturePtr>(_renderTarget);
+        MockupRenderTargetTexturePtr targetTexture = MockupRenderTargetTexturePtr::from( _renderTarget );
 
         MockupRenderImageTargetPtr imageTarget = m_factoryRenderImageTarget->createObject( _doc );
 

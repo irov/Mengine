@@ -23,7 +23,7 @@ namespace Mengine
     typedef IntrusiveSlugIterator<IntrusiveSlugListHierarchyChild> IntrusiveSlugIteratorHierarchyChild;
     //////////////////////////////////////////////////////////////////////////
     class Hierarchy
-        : public stdex::intrusive_slug_linked_ptr<Node, void, IntrusivePtr, IntrusivePtrBase>
+        : public IntrusiveSlugLinkedPtr<Node, void, IntrusivePtr, IntrusivePtrBase>
         , public Mixin
     {
     public:

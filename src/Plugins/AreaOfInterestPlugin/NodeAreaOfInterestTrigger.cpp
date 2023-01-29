@@ -80,7 +80,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeAreaOfInterestTrigger::onAreaOfInterestActorEnter( const AreaOfInterestActorProviderInterfacePtr & _enemy )
     {
-        NodeAreaOfInterestActorPtr enemy = stdex::intrusive_static_cast<NodeAreaOfInterestActorPtr>(_enemy);
+        NodeAreaOfInterestActorPtr enemy = NodeAreaOfInterestActorPtr::from( _enemy );
 
         uint32_t enemy_iff = enemy->getIFF();
 
@@ -90,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeAreaOfInterestTrigger::onAreaOfInterestActorLeave( const AreaOfInterestActorProviderInterfacePtr & _enemy )
     {
-        NodeAreaOfInterestActorPtr enemy = stdex::intrusive_static_cast<NodeAreaOfInterestActorPtr>(_enemy);
+        NodeAreaOfInterestActorPtr enemy = NodeAreaOfInterestActorPtr::from( _enemy );
 
         uint32_t enemy_iff = enemy->getIFF();
 

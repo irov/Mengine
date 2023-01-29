@@ -3,8 +3,7 @@
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/IntrusivePtrBase.h"
 #include "Kernel/IntrusiveSlug.h"
-
-#include "stdex/intrusive_slug_linked_ptr.h"
+#include "Kernel/IntrusiveSlugLinkedPtr.h"
 
 namespace Mengine
 {
@@ -16,7 +15,7 @@ namespace Mengine
         typedef typename list_type::value_type value_type;
         typedef typename list_type::derived_type derived_type;
         typedef IntrusivePtr<value_type, derived_type> value_type_ptr;
-        typedef stdex::intrusive_slug_linked_ptr<value_type, derived_type, IntrusivePtr, IntrusivePtrBase> linked_type;
+        typedef IntrusiveSlugLinkedPtr<value_type, derived_type, IntrusivePtr, IntrusivePtrBase> linked_type;
         typedef IntrusivePtr<linked_type, void> linked_type_ptr;
         typedef IntrusiveSlug<list_type> slug_type;
 

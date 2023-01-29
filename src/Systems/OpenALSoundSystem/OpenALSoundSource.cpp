@@ -316,7 +316,7 @@ namespace Mengine
     {
         this->unloadBuffer_();
 
-        m_soundBuffer = stdex::intrusive_static_cast<OpenALSoundBufferBasePtr>(_soundBuffer);
+        m_soundBuffer = OpenALSoundBufferBasePtr::from( _soundBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSource::unloadBuffer_()

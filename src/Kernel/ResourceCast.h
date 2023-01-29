@@ -102,13 +102,13 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( stdex::intrusive_dynamic_cast<T>(_resource) == nullptr )
+            if( T::dynamic_from( _resource ) == nullptr )
             {
                 throw std::runtime_error( "static resource cast" );
             }
 #endif
 
-            T t = stdex::intrusive_static_cast<T>(_resource);
+            T t = T::from( _resource );
 
             return t;
         }
@@ -144,7 +144,7 @@ namespace Mengine
             static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<typename T::value_type>>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 
-            T t = stdex::intrusive_dynamic_cast<T>(_resource);
+            T t = T::dynamic_from( _resource );
 
             return t;
         }

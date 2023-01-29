@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceImageSequence::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceImageSequence * resource = stdex::intrusive_get<ResourceImageSequence *>( _loadable );
+        ResourceImageSequence * resource = _loadable.getT<ResourceImageSequence *>();
 
         const ConstString & groupName = resource->getGroupName();
 

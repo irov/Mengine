@@ -11,8 +11,7 @@
 #include "Kernel/DocumentableHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -200,7 +199,7 @@ namespace Mengine
             return false;
         }
 
-        stdex::memorycopy( lock_memory, 0, _buffer, _count * m_vertexSize );
+        Helper::memoryCopy( lock_memory, 0, _buffer, _count * m_vertexSize );
 
         IF_DXCALL( m_pD3DVertexBuffer, Unlock, () )
         {

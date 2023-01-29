@@ -3,8 +3,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/Win32Helper.h"
-
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -89,7 +88,7 @@ namespace Mengine
             return 0;
         }
 
-        stdex::memorycopy( _buf, 0, m_pos, cnt );
+        Helper::memoryCopy( _buf, 0, m_pos, cnt );
 
         m_pos += cnt;
 

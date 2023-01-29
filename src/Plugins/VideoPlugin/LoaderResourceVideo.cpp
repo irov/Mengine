@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceVideo::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceVideo * resource = stdex::intrusive_get<ResourceVideo *>( _loadable );
+        ResourceVideo * resource = _loadable.getT<ResourceVideo *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceVideo * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceVideo *>(_meta);

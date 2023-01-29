@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceShape::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceShape * resource = stdex::intrusive_get<ResourceShape *>( _loadable );
+        ResourceShape * resource = _loadable.getT<ResourceShape *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceShape * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceShape *>(_meta);

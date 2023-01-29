@@ -62,7 +62,7 @@ namespace Mengine
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
-        FEData * data = stdex::intrusive_get<FEData *>( _data );
+        FEData * data = _data.getT<FEData *>();
 
         const void * memory_buffer = _memory->getBuffer();
         size_t memory_size = _memory->getSize();

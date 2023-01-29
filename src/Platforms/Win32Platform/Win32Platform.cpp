@@ -4780,7 +4780,7 @@ namespace Mengine
 
         if( result == FALSE )
         {
-            LOGGER_ERROR( "SHGetPathFromIDListW invalid get error %ls"
+            LOGGER_ERROR( "SHGetPathFromIDListW invalid get error: %ls"
                 , Helper::Win32GetLastErrorMessage()
             );
 
@@ -4789,7 +4789,7 @@ namespace Mengine
 
         ::CoTaskMemFree( itemIDList );
 
-        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
 
         if( MENGINE_STRLEN( Project_Company ) == 0 )
         {

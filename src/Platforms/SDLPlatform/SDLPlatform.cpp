@@ -56,7 +56,7 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
-#include "Config/Utils.h"
+#include "Config/Switch.h"
 
 #include <clocale>
 #include <ctime>
@@ -191,7 +191,7 @@ namespace Mengine
         }
 #endif
 
-        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
         const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
         Char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );

@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceSound::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceSound * resource = stdex::intrusive_get<ResourceSound *>( _loadable );
+        ResourceSound * resource = _loadable.getT<ResourceSound *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound *>(_meta);

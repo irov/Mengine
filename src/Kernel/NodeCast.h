@@ -105,13 +105,13 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( stdex::intrusive_dynamic_cast<T>(_node) == nullptr )
+            if( T::dynamic_from( _node ) == nullptr )
             {
                 throw std::runtime_error( "static node cast" );
             }
 #endif
 
-            T t = stdex::intrusive_static_cast<T>(_node);
+            T t = T::from( _node );
 
             return t;
         }
@@ -147,7 +147,7 @@ namespace Mengine
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<typename T::value_type>>, "dynamic node cast use on non 'Nodeable' type");
 #endif
 
-            T t = stdex::intrusive_dynamic_cast<T>(_node);
+            T t = T::dynamic_from( _node );
 
             return t;
         }

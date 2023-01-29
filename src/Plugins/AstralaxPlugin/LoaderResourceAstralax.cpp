@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceAstralax::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceAstralax * resource = stdex::intrusive_get<ResourceAstralax *>( _loadable );
+        ResourceAstralax * resource = _loadable.getT<ResourceAstralax *>();
 
         const ConstString & groupName = resource->getGroupName();
 

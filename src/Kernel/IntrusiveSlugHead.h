@@ -2,18 +2,17 @@
 
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/IntrusivePtrBase.h"
-
-#include "stdex/intrusive_slug_linked_ptr.h"
+#include "Kernel/IntrusiveSlugLinkedPtr.h"
 
 namespace Mengine
 {
     template<class T, class D = void>
     class IntrusiveSlugHead
-        : public stdex::intrusive_slug_linked_ptr<T, D, IntrusivePtr, IntrusivePtrBase>
+        : public IntrusiveSlugLinkedPtr<T, D, IntrusivePtr, IntrusivePtrBase>
     {
     public:
         IntrusiveSlugHead()
-            : stdex::intrusive_slug_linked_ptr<T, D, IntrusivePtr, IntrusivePtrBase>( stdex::EILT_END )
+            : IntrusiveSlugLinkedPtr<T, D, IntrusivePtr, IntrusivePtrBase>( stdex::EILT_END )
         {
         }
 

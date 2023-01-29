@@ -7,8 +7,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
 
-#include "stdex/memorycopy.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

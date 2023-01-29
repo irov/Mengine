@@ -25,7 +25,8 @@ namespace Mengine
         ~MemoryCacheInput() override;
 
     public:
-        void setMemoryManager( MemoryService * _memoryManager );
+        void setMemoryService( MemoryService * _memoryService );
+        MemoryService * getMemoryService() const;
 
     public:
         Pointer cacheBuffer( size_t _size ) override;
@@ -54,7 +55,7 @@ namespace Mengine
         void uncache_();
 
     protected:
-        MemoryService * m_memoryManager;
+        MemoryService * m_memoryService;
 
         UniqueId m_bufferId;
 

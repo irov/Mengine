@@ -8,8 +8,6 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/DocumentableHelper.h"
 
-#include "stdex/memorycopy.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -806,7 +806,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         ESoundSourceState state = identity->getState();
 
@@ -918,7 +918,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         ESoundSourceState state = identity->getState();
 
@@ -975,7 +975,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         ESoundSourceState state = identity->getState();
 
@@ -1046,7 +1046,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         ESoundSourceState state = identity->state;
 
@@ -1105,7 +1105,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         bool stopped = identity->state == ESS_STOP;
 
@@ -1121,7 +1121,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         bool played = identity->state == ESS_PLAY;
 
@@ -1137,7 +1137,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         bool paused = identity->state == ESS_PAUSE;
 
@@ -1146,7 +1146,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped )
     {
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         identity->looped = _looped;
 
@@ -1158,7 +1158,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::getLoop( const SoundIdentityInterfacePtr & _identity ) const
     {
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         bool looped = identity->getLoop();
 
@@ -1224,7 +1224,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         identity->volume.setValue( STRINGIZE_STRING_LOCAL( "General" ), _volume, _default, _force );
 
@@ -1242,7 +1242,7 @@ namespace Mengine
             return 0.f;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         float volume = identity->volume.mixValue();
 
@@ -1262,7 +1262,7 @@ namespace Mengine
             return false;
         }
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         identity->volume.setValue( _mixer, _volume, _default, true );
 
@@ -1277,7 +1277,7 @@ namespace Mengine
             , _mixer.c_str()
         );
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         float volume = identity->volume.getValue( _mixer );
 
@@ -1288,7 +1288,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr" );
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
@@ -1312,7 +1312,7 @@ namespace Mengine
             , _pos
         );
 
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
@@ -1537,7 +1537,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getPosMs( const SoundIdentityInterfacePtr & _identity )
     {
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
         const SoundSourceInterfacePtr & source = identity->getSoundSource();
 

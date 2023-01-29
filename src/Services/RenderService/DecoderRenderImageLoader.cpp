@@ -13,8 +13,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/DocumentableHelper.h"
 #include "Kernel/FileGroupHelper.h"
-
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -135,7 +134,7 @@ namespace Mengine
 
                 for( uint32_t j = 0; j != dataInfo->height; ++j )
                 {
-                    stdex::memorycopy( image_data, dataInfo->width * pixel_size, image_data + (dataInfo->width - 1) * pixel_size, pixel_size );
+                    Helper::memoryCopy( image_data, dataInfo->width * pixel_size, image_data + (dataInfo->width - 1) * pixel_size, pixel_size );
 
                     image_data += pitch;
                 }
@@ -145,7 +144,7 @@ namespace Mengine
             {
                 uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
 
-                stdex::memorycopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
+                Helper::memoryCopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
             }
         }
 

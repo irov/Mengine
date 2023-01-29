@@ -73,7 +73,7 @@ namespace Mengine
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
-        MovieFramePack * pack = stdex::intrusive_get<MovieFramePack *>( _data );
+        MovieFramePack * pack = _data.getT<MovieFramePack *>();
 
         void * binaryBuffer_memory = _memory->getBuffer();
         size_t binaryBuffer_size = _memory->getSize();

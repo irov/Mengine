@@ -3812,7 +3812,7 @@ namespace Mengine
 
                 InputHandlerInterfacePtr handler = globalHandleSystem->removeGlobalHandler( _id );
 
-                PyGlobalBaseHandlerPtr py_handler = stdex::intrusive_dynamic_cast<PyGlobalBaseHandlerPtr>(handler);
+                PyGlobalBaseHandlerPtr py_handler = PyGlobalBaseHandlerPtr::dynamic_from( handler );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( py_handler, "%u handler invalid"
                     , _id

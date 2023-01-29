@@ -141,7 +141,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMapped::openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
     {
-        Win32FileMappedInputStream * stream = stdex::intrusive_get<Win32FileMappedInputStream *>( _stream );
+        Win32FileMappedInputStream * stream = _stream.getT<Win32FileMappedInputStream *>();
 
         size_t size = _size == MENGINE_UNKNOWN_SIZE ? (size_t)m_liSize.QuadPart : _size;
 

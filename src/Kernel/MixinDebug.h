@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Config/Config.h"
 #include "Config/UniqueId.h"
 
 #if defined(MENGINE_DEBUG)

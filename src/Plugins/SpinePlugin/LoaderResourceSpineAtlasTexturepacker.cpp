@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceSpineAtlasTexturepacker::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceSpineAtlasTexturepacker * resource = stdex::intrusive_get<ResourceSpineAtlasTexturepacker *>( _loadable );
+        ResourceSpineAtlasTexturepacker * resource = _loadable.getT<ResourceSpineAtlasTexturepacker *>();
 
         const ConstString & groupName = resource->getGroupName();
 

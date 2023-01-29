@@ -16,8 +16,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "stdex/memorycopy.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceCursorICO::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceCursorICO * resource = stdex::intrusive_get<ResourceCursorICO *>( _loadable );
+        ResourceCursorICO * resource = _loadable.getT<ResourceCursorICO *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorICO * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorICO *>(_meta);

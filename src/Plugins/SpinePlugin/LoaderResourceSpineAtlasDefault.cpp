@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceSpineAtlasDefault::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceSpineAtlasDefault * resource = stdex::intrusive_get<ResourceSpineAtlasDefault *>( _loadable );
+        ResourceSpineAtlasDefault * resource = _loadable.getT<ResourceSpineAtlasDefault *>();
 
         const ConstString & groupName = resource->getGroupName();
 

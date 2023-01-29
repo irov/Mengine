@@ -4,8 +4,6 @@
 #include "Config/Char.h"
 #include "Config/StdString.h"
 
-#include "stdex/memorycopy.h"
-
 namespace Mengine
 {
     template<uint32_t Size>
@@ -55,7 +53,7 @@ namespace Mengine
                 return;
             }
 
-            stdex::memorycopy( m_buffer, (size_t)m_pos * sizeof( value_type ), _value, (size_t)_size * sizeof( value_type ) );
+            Helper::memoryCopy( m_buffer, (size_t)m_pos * sizeof( value_type ), _value, (size_t)_size * sizeof( value_type ) );
 
             m_pos += _size;
             m_buffer[m_pos] = '\0';
@@ -104,7 +102,7 @@ namespace Mengine
                 return;
             }
 
-            stdex::memorycopy( m_buffer, 0, _value, (size_t)_size * sizeof( value_type ) );
+            Helper::memoryCopy( m_buffer, 0, _value, (size_t)_size * sizeof( value_type ) );
 
             m_pos = _size;
             m_buffer[m_pos] = 0;
@@ -155,7 +153,7 @@ namespace Mengine
                 return;
             }
 
-            stdex::memorycopy( m_buffer, (size_t)(m_pos - size) * sizeof( value_type ), _value, size * sizeof( value_type ) );
+            Helper::memoryCopy( m_buffer, (size_t)(m_pos - size) * sizeof( value_type ), _value, size * sizeof( value_type ) );
         }
 
         void cut_before_last_of( value_type _ch )

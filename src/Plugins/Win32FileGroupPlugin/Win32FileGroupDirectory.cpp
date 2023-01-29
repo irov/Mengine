@@ -213,7 +213,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+        FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming, _share );
 
@@ -229,7 +229,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+        FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
         bool result = file->close();
 
@@ -270,7 +270,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+        FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, false, false );
 
@@ -286,7 +286,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+        FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
         bool result = file->close();
 
@@ -310,7 +310,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
+        FileOutputStreamInterface * file = _stream.getT<FileOutputStreamInterface *>();
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _withTemp );
 
@@ -326,7 +326,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
+        FileOutputStreamInterface * file = _stream.getT<FileOutputStreamInterface *>();
 
         bool result = file->close();
 
@@ -372,7 +372,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileMappedInterface * mapped = stdex::intrusive_get<FileMappedInterface *>( _stream );
+        FileMappedInterface * mapped = _stream.getT<FileMappedInterface *>();
 
         bool result = mapped->open( m_relationPath, m_folderPath, _filePath, _shared );
 
@@ -388,7 +388,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileMappedInterface * mapped = stdex::intrusive_get<FileMappedInterface *>( _stream );
+        FileMappedInterface * mapped = _stream.getT<FileMappedInterface *>();
 
         bool result = mapped->close();
 

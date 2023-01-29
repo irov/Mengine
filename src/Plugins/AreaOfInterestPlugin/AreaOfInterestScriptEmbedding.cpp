@@ -41,14 +41,14 @@ namespace Mengine
         public:
             void onAreaOfInterestTriggerEnter( const AreaOfInterestActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 ) override
             {
-                NodeAreaOfInterestActorPtr enemy = stdex::intrusive_static_cast<NodeAreaOfInterestActorPtr>(_enemy);
+                NodeAreaOfInterestActorPtr enemy = NodeAreaOfInterestActorPtr::from( _enemy );
 
                 m_cb.call( enemy, _iff1, _iff2 );
             }
 
             void onAreaOfInterestTriggerLeave( const AreaOfInterestActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 ) override
             {
-                NodeAreaOfInterestActorPtr enemy = stdex::intrusive_static_cast<NodeAreaOfInterestActorPtr>(_enemy);
+                NodeAreaOfInterestActorPtr enemy = NodeAreaOfInterestActorPtr::from( _enemy );
 
                 m_cb.call( enemy, _iff1, _iff2 );
             }

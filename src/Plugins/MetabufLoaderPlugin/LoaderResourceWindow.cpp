@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceWindow::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceWindow * resource = stdex::intrusive_get<ResourceWindow *>( _loadable );
+        ResourceWindow * resource = _loadable.getT<ResourceWindow *>();
 
         const ConstString & groupName = resource->getGroupName();
 

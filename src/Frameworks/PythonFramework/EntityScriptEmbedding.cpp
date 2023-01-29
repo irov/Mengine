@@ -203,8 +203,7 @@ namespace Mengine
                     , _prototype.c_str()
                 );
 
-                PythonEntityPrototypeGeneratorPtr entityGenerator =
-                    stdex::intrusive_static_cast<PythonEntityPrototypeGeneratorPtr>(generator);
+                PythonEntityPrototypeGeneratorPtr entityGenerator = PythonEntityPrototypeGeneratorPtr::from( generator );
 
                 const pybind::object & py_type = entityGenerator->getPythonType();
 
@@ -412,7 +411,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        EntityScriptMethodPtr entityScriptMethod = stdex::intrusive_static_cast<EntityScriptMethodPtr>(m_implement);
+        EntityScriptMethodPtr entityScriptMethod = EntityScriptMethodPtr::from( m_implement );
         entityScriptMethod->finalize();
 
         m_implement = nullptr;

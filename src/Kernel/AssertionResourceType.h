@@ -9,7 +9,7 @@
 #   include "Kernel/ResourceCast.h"
 #   include "Kernel/Assertion.h"
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_ASSERTION_RESOURCE_TYPE( Resource, ResourceType, ... ) MENGINE_ASSERTION_FATAL( (Resource == nullptr || stdex::intrusive_dynamic_cast<ResourceType>(Resource) != nullptr), __VA_ARGS__)
+#   define MENGINE_ASSERTION_RESOURCE_TYPE( Resource, ResourceType, ... ) MENGINE_ASSERTION_FATAL( (Resource == nullptr || ResourceType::dynamic_from(Resource) != nullptr), __VA_ARGS__)
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( ResourceName, ResourceType, Ret, ... )\
     if( RESOURCE_SERVICE()->hasResource(ConstString::none(), ResourceName, false, nullptr) == true )\

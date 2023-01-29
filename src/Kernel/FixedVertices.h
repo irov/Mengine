@@ -2,8 +2,6 @@
 
 #include "Kernel/RenderVertex2D.h"
 
-#include "stdex/memorycopy.h"
-
 namespace Mengine
 {
     template<uint32_t VerticesCount>
@@ -18,7 +16,7 @@ namespace Mengine
     public:
         void setVertices( const RenderVertex2D * _vertices )
         {
-            stdex::memorycopy( m_vertices, 0, _vertices, VerticesCount );
+            Helper::memoryCopy( m_vertices, 0, _vertices, VerticesCount );
         }
 
         MENGINE_INLINE const RenderVertex2D * getVertices() const

@@ -251,7 +251,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memoryBuffer );
 
-        memoryBuffer->setMemoryManager( this );
+        memoryBuffer->setMemoryService( this );
 
         return memoryBuffer;
     }
@@ -262,7 +262,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memoryCache );
 
-        memoryCache->setMemoryManager( this );
+        memoryCache->setMemoryService( this );
 
         return memoryCache;
     }

@@ -189,7 +189,9 @@ namespace Mengine
             return false;
         }
 
-        ThreadTaskPrefetchImageDecoderPtr prefetcherImageDecoder = stdex::intrusive_static_cast<ThreadTaskPrefetchImageDecoderPtr>(receiver->getPrefetcher());
+        const ThreadTaskPrefetchPtr & prefetcher = receiver->getPrefetcher();
+
+        ThreadTaskPrefetchImageDecoderPtr prefetcherImageDecoder = ThreadTaskPrefetchImageDecoderPtr::from( prefetcher );
 
         const ImageDecoderInterfacePtr & prefetch_decoder = prefetcherImageDecoder->getDecoder();
 
@@ -265,7 +267,9 @@ namespace Mengine
             return false;
         }
 
-        ThreadTaskPrefetchSoundDecoderPtr prefetcherSoundDecoder = stdex::intrusive_static_cast<ThreadTaskPrefetchSoundDecoderPtr>(receiver->getPrefetcher());
+        const ThreadTaskPrefetchPtr & prefetcher = receiver->getPrefetcher();
+
+        ThreadTaskPrefetchSoundDecoderPtr prefetcherSoundDecoder = ThreadTaskPrefetchSoundDecoderPtr::from( prefetcher );
 
         const SoundDecoderInterfacePtr & prefetch_decoder = prefetcherSoundDecoder->getDecoder();
 
@@ -347,7 +351,9 @@ namespace Mengine
             return false;
         }
 
-        ThreadTaskPrefetchDataflowPtr prefetcherDataflow = stdex::intrusive_static_cast<ThreadTaskPrefetchDataflowPtr>(receiver->getPrefetcher());
+        const ThreadTaskPrefetchPtr & prefetcher = receiver->getPrefetcher();
+
+        ThreadTaskPrefetchDataflowPtr prefetcherDataflow = ThreadTaskPrefetchDataflowPtr::from( prefetcher );
 
         const DataInterfacePtr & prefetch_data = prefetcherDataflow->getData();
 
@@ -374,7 +380,7 @@ namespace Mengine
             return false;
         }
 
-        ThreadTaskPrefetchDataflowPtr prefetcherDataflow = stdex::intrusive_static_cast<ThreadTaskPrefetchDataflowPtr>(prefetcher);
+        ThreadTaskPrefetchDataflowPtr prefetcherDataflow = ThreadTaskPrefetchDataflowPtr::from( prefetcher );
 
         const DataInterfacePtr & prefetch_data = prefetcherDataflow->getData();
 
@@ -453,7 +459,9 @@ namespace Mengine
             return false;
         }
 
-        ThreadTaskPrefetchStreamPtr prefetcherStream = stdex::intrusive_static_cast<ThreadTaskPrefetchStreamPtr>(receiver->getPrefetcher());
+        const ThreadTaskPrefetchPtr & prefetcher = receiver->getPrefetcher();
+
+        ThreadTaskPrefetchStreamPtr prefetcherStream = ThreadTaskPrefetchStreamPtr::from( prefetcher );
 
         const MemoryInterfacePtr & prefetch_memory = prefetcherStream->getMemory();
 

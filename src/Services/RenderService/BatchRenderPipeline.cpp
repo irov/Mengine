@@ -8,10 +8,9 @@
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/MemoryCopy.h"
 
 #include "Config/Algorithm.h"
-
-#include "stdex/memorycopy.h"
 
 namespace Mengine
 {
@@ -968,7 +967,7 @@ namespace Mengine
             return false;
         }
 
-        stdex::memorycopy( vertexBuffer, vertexBufferOffset, _renderObject->vertexData, vertexCountSize );
+        Helper::memoryCopy( vertexBuffer, vertexBufferOffset, _renderObject->vertexData, vertexCountSize );
 
         RenderIndex * offsetIndicesBuffer = indexBuffer + _ibPos;
 

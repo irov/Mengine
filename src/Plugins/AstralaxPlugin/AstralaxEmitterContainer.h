@@ -5,7 +5,6 @@
 
 #include "AstralaxInterface.h"
 #include "AstralaxIncluder.h"
-#include "AstralaxEmitter2.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/VectorResourceImages.h"

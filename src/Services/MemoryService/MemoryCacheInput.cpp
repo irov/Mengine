@@ -2,17 +2,16 @@
 
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/ThreadGuardScope.h"
-
 #include "MemoryService.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/ThreadGuardScope.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MemoryCacheInput::MemoryCacheInput()
-        : m_memoryManager( nullptr )
+        : m_memoryService( nullptr )
         , m_bufferId( 0 )
         , m_data( nullptr )
         , m_size( 0 )
@@ -30,13 +29,18 @@ namespace Mengine
     {
         if( m_bufferId != 0 )
         {
-            m_memoryManager->unlockBuffer( m_bufferId );
+            m_memoryService->unlockBuffer( m_bufferId );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryCacheInput::setMemoryManager( MemoryService * _memoryManager )
+    void MemoryCacheInput::setMemoryService( MemoryService * _memoryService )
     {
-        m_memoryManager = _memoryManager;
+        m_memoryService = _memoryService;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MemoryService * MemoryCacheInput::getMemoryService() const
+    {
+        return m_memoryService;
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer MemoryCacheInput::cacheBuffer( size_t _size )
@@ -44,7 +48,7 @@ namespace Mengine
         this->uncache_();
 
         void * memory;
-        UniqueId bufferId = m_memoryManager->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
+        UniqueId bufferId = m_memoryService->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
 
         if( bufferId == INVALID_UNIQUE_ID )
         {
@@ -88,7 +92,7 @@ namespace Mengine
             return 0;
         }
 
-        stdex::memorycopy( _buf, 0, m_pos, cnt );
+        Helper::memoryCopy( _buf, 0, m_pos, cnt );
 
         m_pos += cnt;
 

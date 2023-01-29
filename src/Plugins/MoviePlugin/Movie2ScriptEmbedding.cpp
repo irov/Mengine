@@ -71,7 +71,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _index );
 
-                HotSpotPolygonPtr hotspot = stdex::intrusive_static_cast<HotSpotPolygonPtr>(_node);
+                HotSpotPolygonPtr hotspot = HotSpotPolygonPtr::from( _node );
 
                 if( hotspot == nullptr )
                 {
@@ -94,7 +94,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _index );
 
-                Movie2SlotPtr hotspot = stdex::intrusive_static_cast<Movie2SlotPtr>(_node);
+                Movie2SlotPtr hotspot = Movie2SlotPtr::from( _node );
 
                 if( hotspot == nullptr )
                 {

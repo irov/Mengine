@@ -1,7 +1,5 @@
 #include "AstralaxEmitter2.h"
 
-#include "AstralaxEmitterContainer.h"
-
 #include "Kernel/Logger.h"
 
 #include "Config/StdMath.h"
@@ -31,10 +29,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::initialize( const AstralaxEmitterContainerInterfacePtr & _container )
     {
-        m_container = _container;
+        m_container = AstralaxEmitterContainerPtr::from( _container );
 
-        HM_EMITTER emitterId = stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(m_container)
-            ->createEmitterId();
+        HM_EMITTER emitterId = m_container->createEmitterId();
 
         if( emitterId == 0 )
         {
@@ -73,9 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter2::finalize()
     {
-        stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(m_container)
-            ->destroyEmitterId( m_emitterId );
-
+        m_container->destroyEmitterId( m_emitterId );
         m_emitterId = 0;
 
         m_container = nullptr;

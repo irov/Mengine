@@ -27,9 +27,6 @@
 
 #include "utf8.h"
 
-#include "stdex/memorycopy.h"
-
-
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FT_FLOOR(X) (((X) & -64) / 64)
 #define MENGINE_FT_CEIL(X)  MENGINE_FT_FLOOR((X) + 63)

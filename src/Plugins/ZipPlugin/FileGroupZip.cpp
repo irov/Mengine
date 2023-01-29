@@ -670,7 +670,7 @@ namespace Mengine
         {
             if( fi.file_size < m_mappedThreshold || fi.zip->mappedFile == nullptr )
             {
-                MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
+                MemoryInputInterface * memory = _stream.getT<MemoryInputInterface *>();
 
                 void * buffer = memory->newBuffer( fi.file_size );
 
@@ -695,7 +695,7 @@ namespace Mengine
         }
         else
         {
-            MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
+            MemoryInputInterface * memory = _stream.getT<MemoryInputInterface *>();
 
             void * buffer = memory->newBuffer( fi.unz_size );
 

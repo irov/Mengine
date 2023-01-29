@@ -460,7 +460,7 @@ namespace Mengine
 
         this->recompile( [this, &_resourceParticle]()
         {
-            m_resourceAstralax = stdex::intrusive_static_cast<ResourceAstralaxPtr>(_resourceParticle);
+            m_resourceAstralax = ResourceAstralaxPtr::from( _resourceParticle );
 
             if( m_resourceAstralax == nullptr )
             {

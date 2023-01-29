@@ -92,7 +92,7 @@ namespace Mengine
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
-        PythonScriptCodeData * data = stdex::intrusive_get<PythonScriptCodeData *>( _data );
+        PythonScriptCodeData * data = _data.getT<PythonScriptCodeData *>();
 
         const uint8_t * source_buffer = _memory->getBuffer();
         size_t source_size = _memory->getSize();

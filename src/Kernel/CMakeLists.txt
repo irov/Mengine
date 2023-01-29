@@ -579,6 +579,8 @@ Core
     
     MemoryAllocator.h
     
+    MemoryCopy.h
+    
     MemoryStreamHelper.h
     MemoryStreamHelper.cpp
 

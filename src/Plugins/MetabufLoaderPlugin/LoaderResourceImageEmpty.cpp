@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceImageEmpty::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceImageEmpty * resource = stdex::intrusive_get<ResourceImageEmpty *>( _loadable );
+        ResourceImageEmpty * resource = _loadable.getT<ResourceImageEmpty *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageEmpty * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageEmpty *>(_meta);

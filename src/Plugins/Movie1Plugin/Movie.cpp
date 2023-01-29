@@ -305,7 +305,7 @@ namespace Mengine
         if( _layer.isMesh2D() == true )
         {
 #ifdef MENGINE_DEBUG
-            if( stdex::intrusive_dynamic_cast<MovieMesh2DPtr>(_node) == nullptr )
+            if( MovieMesh2DPtr::dynamic_from( _node ) == nullptr )
             {
                 LOGGER_ERROR( "'%s' resource '%s' layer '%s' is Mesh2D but node is not Mesh2D name '%s' type '%s'"
                     , this->getName().c_str()
@@ -319,7 +319,7 @@ namespace Mengine
             }
 #endif
 
-            MovieMesh2DPtr mesh2D = stdex::intrusive_static_cast<MovieMesh2DPtr>(_node);
+            MovieMesh2DPtr mesh2D = MovieMesh2DPtr::from( _node );
 
             const MovieFrameShape * shape;
             if( framePack->getLayerShape( _layer.index, _frameId, &shape ) == false )
@@ -1793,7 +1793,7 @@ namespace Mengine
         }
 
 #ifdef MENGINE_DEBUG
-        if( stdex::intrusive_dynamic_cast<TextFieldPtr>(node) == nullptr )
+        if( TextFieldPtr::dynamic_from( node ) == nullptr )
         {
             LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' must be 'TextField' but node is '%s' type '%s'"
                 , this->getName().c_str()
@@ -1807,7 +1807,7 @@ namespace Mengine
         }
 #endif
 
-        TextFieldPtr layer_text = stdex::intrusive_static_cast<TextFieldPtr>(node);
+        TextFieldPtr layer_text = TextFieldPtr::from( node );
 
         const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
@@ -2002,7 +2002,7 @@ namespace Mengine
             const NodePtr & node = this->getLayerNode_( l );
 
 #ifdef MENGINE_DEBUG
-            if( stdex::intrusive_dynamic_cast<MovieSceneEffectPtr>(node) == nullptr )
+            if( MovieSceneEffectPtr::dynamic_from( node ) == nullptr )
             {
                 LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' must be 'MovieSceneEffect' but node is '%s' type '%s'"
                     , this->getName().c_str()
@@ -2016,7 +2016,7 @@ namespace Mengine
             }
 #endif
 
-            MovieSceneEffectPtr sceneEffect = stdex::intrusive_static_cast<MovieSceneEffectPtr>(node);
+            MovieSceneEffectPtr sceneEffect = MovieSceneEffectPtr::from( node );
 
             if( sceneEffect->setPropagateNode( parent ) == false )
             {
@@ -2048,7 +2048,7 @@ namespace Mengine
 
             const NodePtr & node = this->getLayerNode_( l );
 
-            MovieSceneEffectPtr sceneEffect = stdex::intrusive_static_cast<MovieSceneEffectPtr>(node);
+            MovieSceneEffectPtr sceneEffect = MovieSceneEffectPtr::from( node );
 
             sceneEffect->enablePropagate( _value );
         }
@@ -2491,7 +2491,7 @@ namespace Mengine
             else if( layer.isExtra() == true )
             {
 #ifdef MENGINE_DEBUG
-                if( stdex::intrusive_dynamic_cast<MovieNodeExtraPtr>(node) == nullptr )
+                if( MovieNodeExtraPtr::dynamic_from( node ) == nullptr )
                 {
                     LOGGER_ERROR( "'%s' layer '%s' must be 'MovieNodeExtra' but node is '%s' type '%s'"
                         , this->getName().c_str()
@@ -2504,7 +2504,7 @@ namespace Mengine
                 }
 #endif
 
-                MovieNodeExtraPtr extra = stdex::intrusive_static_cast<MovieNodeExtraPtr>(node);
+                MovieNodeExtraPtr extra = MovieNodeExtraPtr::from( node );
 
                 extra->movieForwardUpdate( _time, _beginFrame, _endFrame, layer );
             }

@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceSpineSkeleton::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceSpineSkeleton * resource = stdex::intrusive_get<ResourceSpineSkeleton *>( _loadable );
+        ResourceSpineSkeleton * resource = _loadable.getT<ResourceSpineSkeleton *>();
 
         const ConstString & groupName = resource->getGroupName();
 

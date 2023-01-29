@@ -1,6 +1,6 @@
 #include "TTFFontTextureGlyphProvider.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -55,7 +55,7 @@ namespace Mengine
         {
             for( uint32_t h = 0; h != m_height; ++h )
             {
-                stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, m_width * m_ttfchannel );
+                Helper::memoryCopyPod( it_texture_memory, 0, it_glyph_buffer, m_width * m_ttfchannel );
 
                 it_texture_memory += _pitch;
                 it_glyph_buffer += m_ttfpitch;

@@ -4,13 +4,13 @@
 
 #include "MemoryService.h"
 
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MemoryCacheBuffer::MemoryCacheBuffer()
-        : m_memoryManager( nullptr )
+        : m_memoryService( nullptr )
         , m_bufferId( 0 )
         , m_data( nullptr )
         , m_size( 0 )
@@ -22,16 +22,21 @@ namespace Mengine
         this->uncache_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryCacheBuffer::setMemoryManager( MemoryService * _memoryManager )
+    void MemoryCacheBuffer::setMemoryService( MemoryService * _memoryService )
     {
-        m_memoryManager = _memoryManager;
+        m_memoryService = _memoryService;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MemoryService * MemoryCacheBuffer::setMemoryService() const
+    {
+        return m_memoryService;
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryCacheBuffer::uncache_()
     {
         if( m_bufferId != 0 )
         {
-            m_memoryManager->unlockBuffer( m_bufferId );
+            m_memoryService->unlockBuffer( m_bufferId );
             m_bufferId = INVALID_UNIQUE_ID;
         }
     }
@@ -40,7 +45,7 @@ namespace Mengine
     {
         void * buffer = this->newBuffer( _size );
 
-        stdex::memorycopy( buffer, 0, _ptr, _size );
+        Helper::memoryCopy( buffer, 0, _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer MemoryCacheBuffer::newBuffer( size_t _size )
@@ -48,7 +53,7 @@ namespace Mengine
         this->uncache_();
 
         void * memory;
-        UniqueId bufferId = m_memoryManager->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
+        UniqueId bufferId = m_memoryService->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
 
         if( bufferId == INVALID_UNIQUE_ID )
         {

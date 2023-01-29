@@ -9,10 +9,9 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/MemoryCopy.h"
 
 #include "Config/Algorithm.h"
-
-#include "stdex/memorycopy.h"
 
 #ifndef MENGINE_SPINE_MAX_VERTICES
 #define MENGINE_SPINE_MAX_VERTICES 512
@@ -595,7 +594,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::fillIndices_( RenderIndex * _indices, const RenderIndex * _triangles, uint32_t _count ) const
     {
-        stdex::memorycopy_pod( _indices, 0, _triangles, _count );
+        Helper::memoryCopyPod( _indices, 0, _triangles, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::_afterActivate()

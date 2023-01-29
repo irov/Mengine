@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceTexturepacker::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceTexturepacker * resource = stdex::intrusive_get<ResourceTexturepacker *>( _loadable );
+        ResourceTexturepacker * resource = _loadable.getT<ResourceTexturepacker *>();
 
         const ConstString & groupName = resource->getGroupName();
 

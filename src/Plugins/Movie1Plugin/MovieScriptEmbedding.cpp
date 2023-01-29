@@ -220,7 +220,7 @@ namespace Mengine
                 return false;
             }
 
-            MovieEventPtr ev = stdex::intrusive_static_cast<MovieEventPtr>(node);
+            MovieEventPtr ev = MovieEventPtr::from( node );
 
             ev->setEvent( _cb, _args );
 
@@ -237,7 +237,7 @@ namespace Mengine
                 return false;
             }
 
-            MovieEventPtr ev = stdex::intrusive_static_cast<MovieEventPtr>(node);
+            MovieEventPtr ev = MovieEventPtr::from( node );
 
             ev->removeEvent();
 
@@ -259,7 +259,7 @@ namespace Mengine
 
             _movie->foreachMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), [_kernel, &py_list]( Movie * _movie, const NodePtr & _node )
             {
-                MovieSlotPtr slot = stdex::intrusive_static_cast<MovieSlotPtr>(_node);
+                MovieSlotPtr slot = MovieSlotPtr::from( _node );
 
                 if( slot == nullptr )
                 {
@@ -281,7 +281,7 @@ namespace Mengine
 
             auto lambda = [_kernel, &py_list]( Movie * _movie, const NodePtr & _node )
             {
-                HotSpotPtr hotspot = stdex::intrusive_static_cast<HotSpotPtr>(_node);
+                HotSpotPtr hotspot = HotSpotPtr::from( _node );
 
                 if( hotspot == nullptr )
                 {
@@ -305,7 +305,7 @@ namespace Mengine
 
             _movie->foreachMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), [_kernel, &py_list]( Movie * _movie, const NodePtr & _node )
             {
-                MoviePtr subMovie = stdex::intrusive_static_cast<MoviePtr>(_node);
+                MoviePtr subMovie = MoviePtr::from( _node );
 
                 if( subMovie == nullptr )
                 {
@@ -909,7 +909,7 @@ namespace Mengine
                 return false;
             }
 
-            HotSpotResourceShapePtr shape1 = stdex::intrusive_static_cast<HotSpotResourceShapePtr>(node1);
+            HotSpotResourceShapePtr shape1 = HotSpotResourceShapePtr::from( node1 );
 
             if( shape1->enable() == false )
             {
@@ -921,7 +921,7 @@ namespace Mengine
                 return false;
             }
 
-            HotSpotResourceShapePtr shape2 = stdex::intrusive_static_cast<HotSpotResourceShapePtr>(node2);
+            HotSpotResourceShapePtr shape2 = HotSpotResourceShapePtr::from( node2 );
 
             if( shape2->enable() == false )
             {
@@ -997,7 +997,7 @@ namespace Mengine
                 return false;
             }
 
-            HotSpotResourceShapePtr shape = stdex::intrusive_static_cast<HotSpotResourceShapePtr>(node);
+            HotSpotResourceShapePtr shape = HotSpotResourceShapePtr::from( node );
 
             if( shape->enable() == false )
             {

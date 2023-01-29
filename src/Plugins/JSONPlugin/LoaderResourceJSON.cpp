@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceJSON::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceJSON * resource = stdex::intrusive_get<ResourceJSON *>( _loadable );
+        ResourceJSON * resource = _loadable.getT<ResourceJSON *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceJSON * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceJSON *>(_meta);

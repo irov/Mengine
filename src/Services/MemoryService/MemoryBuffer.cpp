@@ -2,8 +2,7 @@
 
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/Documentable.h"
-
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -25,7 +24,7 @@ namespace Mengine
     {
         void * buffer = this->newBuffer( _size );
 
-        stdex::memorycopy( buffer, 0, _ptr, _size );
+        Helper::memoryCopy( buffer, 0, _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer MemoryBuffer::newBuffer( size_t _size )

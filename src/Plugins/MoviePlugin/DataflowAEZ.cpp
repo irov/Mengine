@@ -13,10 +13,9 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/MemoryCopy.h"
 
 #include "Config/StdString.h"
-
-#include "stdex/memorycopy.h"
 
 namespace Mengine
 {
@@ -25,7 +24,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static ae_size_t __movie_read_stream( ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size, ae_userdata_t _ud )
         {
-            stdex::memorycopy( _buff, 0U, (ae_uint8_t *)_ud + _carriage, _size );
+            Helper::memoryCopy( _buff, 0U, (ae_uint8_t *)_ud + _carriage, _size );
 
             return _size;
         }
@@ -34,7 +33,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _ud );
 
-            stdex::memorycopy( _dst, 0U, _src, _size );
+            Helper::memoryCopy( _dst, 0U, _src, _size );
         }
         //////////////////////////////////////////////////////////////////////////
         static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
@@ -279,7 +278,7 @@ namespace Mengine
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
-        Movie2Data * data = stdex::intrusive_get<Movie2Data *>( _data );
+        Movie2Data * data = _data.getT<Movie2Data *>();
 
         data->setGroupName( _context->groupName );
 

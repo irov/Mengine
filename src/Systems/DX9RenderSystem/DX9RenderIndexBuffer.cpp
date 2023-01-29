@@ -11,8 +11,7 @@
 #include "Kernel/Documentable.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/DocumentableHelper.h"
-
-#include "stdex/memorycopy.h"
+#include "Kernel/MemoryCopy.h"
 
 namespace Mengine
 {
@@ -205,7 +204,7 @@ namespace Mengine
             return false;
         }
 
-        stdex::memorycopy( lock_memory, 0, _buffer, _count * m_indexSize );
+        Helper::memoryCopy( lock_memory, 0, _buffer, _count * m_indexSize );
 
         IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {

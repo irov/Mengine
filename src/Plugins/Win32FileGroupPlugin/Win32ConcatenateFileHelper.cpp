@@ -4,10 +4,9 @@
 
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/MemoryCopy.h"
 
 #include "Config/StdString.h"
-
-#include "stdex/memorycopy.h"
 
 namespace Mengine
 {
@@ -35,9 +34,9 @@ namespace Mengine
                 return MENGINE_PATH_INVALID_LENGTH;
             }
 
-            stdex::memorycopy_safe( _concatenatePath, 0, _capacity, _relationPath.c_str(), relationSize );
-            stdex::memorycopy_safe( _concatenatePath, relationSize, _capacity, _folderPath.c_str(), folderSize );
-            stdex::memorycopy_safe( _concatenatePath, relationSize + folderSize, _capacity, _filePath.c_str(), fileSize );
+            Helper::memoryCopySafe( _concatenatePath, 0, _capacity, _relationPath.c_str(), relationSize );
+            Helper::memoryCopySafe( _concatenatePath, relationSize, _capacity, _folderPath.c_str(), folderSize );
+            Helper::memoryCopySafe( _concatenatePath, relationSize + folderSize, _capacity, _filePath.c_str(), fileSize );
 
             _concatenatePath[filePathSize] = '\0';
 
@@ -90,10 +89,10 @@ namespace Mengine
                 return MENGINE_PATH_INVALID_LENGTH;
             }
 
-            stdex::memorycopy_safe( _concatenatePath, 0, _capacity, _relationPath.c_str(), relationSize );
-            stdex::memorycopy_safe( _concatenatePath, relationSize, _capacity, _folderPath.c_str(), folderSize );
-            stdex::memorycopy_safe( _concatenatePath, relationSize + folderSize, _capacity, _filePath.c_str(), fileSize );
-            stdex::memorycopy_safe( _concatenatePath, relationSize + folderSize + fileSize, _capacity, ".~tmp", 5 );
+            Helper::memoryCopySafe( _concatenatePath, 0, _capacity, _relationPath.c_str(), relationSize );
+            Helper::memoryCopySafe( _concatenatePath, relationSize, _capacity, _folderPath.c_str(), folderSize );
+            Helper::memoryCopySafe( _concatenatePath, relationSize + folderSize, _capacity, _filePath.c_str(), fileSize );
+            Helper::memoryCopySafe( _concatenatePath, relationSize + folderSize + fileSize, _capacity, ".~tmp", 5 );
 
             _concatenatePath[filePathSize] = '\0';
 

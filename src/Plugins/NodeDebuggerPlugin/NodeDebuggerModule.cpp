@@ -1097,14 +1097,14 @@ namespace Mengine
             this->serializeAnimation( surface.get(), animation, xmlNode );
         }
 
-        SurfaceImagePtr surfaceImage = stdex::intrusive_dynamic_cast<SurfaceImagePtr>(surface);
+        SurfaceImagePtr surfaceImage = SurfaceImagePtr::dynamic_from( surface );
 
         if( surfaceImage != nullptr )
         {
             this->serializeSurfaceImage( surfaceImage, xmlNode );
         }
 
-        SurfaceImageSequencePtr surfaceImageSequence = stdex::intrusive_dynamic_cast<SurfaceImageSequencePtr>(surface);
+        SurfaceImageSequencePtr surfaceImageSequence = SurfaceImageSequencePtr::dynamic_from( surface );
 
         if( surfaceImageSequence != nullptr )
         {
@@ -1134,7 +1134,7 @@ namespace Mengine
             this->serializeContent( content, xmlNode );
         }
 
-        ResourceImageSubstractPtr resourceImageSubstract = stdex::intrusive_dynamic_cast<ResourceImageSubstractPtr>(resourceImage);
+        ResourceImageSubstractPtr resourceImageSubstract = ResourceImageSubstractPtr::dynamic_from( resourceImage );
 
         if( resourceImageSubstract != nullptr )
         {
@@ -1242,14 +1242,14 @@ namespace Mengine
             this->serializeAnimation( _node.get(), animation, _xmlNode );
         }
 
-        ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_node);
+        ShapePtr shape = ShapePtr::dynamic_from( _node );
 
         if( shape != nullptr )
         {
             this->serializeShape( shape, _xmlNode );
         }
 
-        TextFieldPtr textField = stdex::intrusive_dynamic_cast<TextFieldPtr>(_node);
+        TextFieldPtr textField = TextFieldPtr::dynamic_from( _node );
 
         if( textField != nullptr )
         {
@@ -1913,7 +1913,7 @@ namespace Mengine
 
             if( typeNodeTextField )
             {
-                TextFieldPtr textField = stdex::intrusive_static_cast<TextFieldPtr>(node);
+                TextFieldPtr textField = TextFieldPtr::from( node );
 
                 this->deserializeNodeProp<float>( "MaxLength", typeNodeTextField, [textField]( float _value )
                 {
@@ -2280,7 +2280,7 @@ namespace Mengine
                 return true;
             }
 
-            ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
+            ShapePtr shape = ShapePtr::dynamic_from( _child );
 
             if( shape != nullptr )
             {

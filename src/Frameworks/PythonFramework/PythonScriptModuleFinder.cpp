@@ -12,9 +12,10 @@
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
-
+#include "Kernel/MemoryCopy.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/MemoryCopy.h"
 
 #include "Config/Algorithm.h"
 
@@ -184,7 +185,7 @@ namespace Mengine
         size_t module_size = 0;
         const Char * module_str = _kernel->string_to_char_and_size( _module, &module_size );
 
-        if( stdex::memorycopy_safe( _cache, 0, _cacheSize, module_str, module_size ) == false )
+        if( Helper::memoryCopySafe( _cache, 0, _cacheSize, module_str, module_size ) == false )
         {
             return false;
         }
@@ -232,7 +233,7 @@ namespace Mengine
             return false;
         }
 
-        if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MENGINE_MAX_PATH, _ext, _extN ) == false )
+        if( Helper::memoryCopySafe( modulePathCache, modulePathCacheLen, MENGINE_MAX_PATH, _ext, _extN ) == false )
         {
             return false;
         }
@@ -240,7 +241,7 @@ namespace Mengine
         if( this->findModule_( modulePathCache, modulePathCacheLen + _extN, _loader ) == false )
         {
             modulePathCache[modulePathCacheLen] = MENGINE_PATH_DELIM;
-            if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH, _init, _extI ) == false )
+            if( Helper::memoryCopySafe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH, _init, _extI ) == false )
             {
                 return false;
             }

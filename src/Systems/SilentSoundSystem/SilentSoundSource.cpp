@@ -239,7 +239,7 @@ namespace Mengine
     {
         this->unloadBuffer_();
 
-        m_soundBuffer = stdex::intrusive_static_cast<SilentSoundBufferPtr>(_soundBuffer);
+        m_soundBuffer = SilentSoundBufferPtr::from( _soundBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundSource::unloadBuffer_()

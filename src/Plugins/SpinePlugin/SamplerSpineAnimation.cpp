@@ -9,8 +9,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
 
-#include "stdex/memorycopy.h"
-
 #include "Config/Algorithm.h"
 
 #ifndef MENGINE_SPINE_MAX_VERTICES

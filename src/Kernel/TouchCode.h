@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Config/Config.h"
 #include "Config/Typedef.h"
 
 #define MENGINE_INPUT_MAX_TOUCH 16

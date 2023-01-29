@@ -11,10 +11,9 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/MemoryCopy.h"
 
 #include "dazzle/dazzle_read.hpp"
-
-#include "stdex/memorycopy.h"
 
 namespace Mengine
 {
@@ -28,7 +27,7 @@ namespace Mengine
     {
         dz_stream_t * stream = reinterpret_cast<dz_stream_t *>(_ud);
 
-        stdex::memorycopy( _data, 0U, stream->data, _size );
+        Helper::memoryCopy( _data, 0U, stream->data, _size );
 
         stream->data = (const dz_uint8_t *)stream->data + _size;
 
@@ -108,7 +107,7 @@ namespace Mengine
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
-        DazzleData * data = stdex::intrusive_get<DazzleData *>( _data );
+        DazzleData * data = _data.getT<DazzleData *>();
 
         void * memory_buffer = _memory->getBuffer();
 

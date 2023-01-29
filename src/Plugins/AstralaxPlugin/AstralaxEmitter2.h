@@ -1,7 +1,8 @@
 #pragma once
 
 #include "AstralaxInterface.h"
-#include "AstralaxIncluder.h"
+
+#include "AstralaxEmitterContainer.h"
 
 #include "Kernel/Factorable.h"
 
@@ -80,7 +81,7 @@ namespace Mengine
         bool setupBasePosition_();
 
     protected:
-        AstralaxEmitterContainerInterfacePtr m_container;
+        AstralaxEmitterContainerPtr m_container;
 
         HM_EMITTER m_emitterId;
 

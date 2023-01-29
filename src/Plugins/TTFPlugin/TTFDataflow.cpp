@@ -102,7 +102,7 @@ namespace Mengine
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
-        TTFData * data = stdex::intrusive_get<TTFData *>( _data );
+        TTFData * data = _data.getT<TTFData *>();
 
         data->setTTFMemory( _memory );
 

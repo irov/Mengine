@@ -104,7 +104,7 @@ src
     Iterator.h
     Time.h
     Thread.h
-    Utils.h
+    Switch.h
     ${CMAKE_BINARY_DIR}/Definitions.h
 )
 

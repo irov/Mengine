@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceCursorSystem::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceCursorSystem * resource = stdex::intrusive_get<ResourceCursorSystem *>( _loadable );
+        ResourceCursorSystem * resource = _loadable.getT<ResourceCursorSystem *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem *>(_meta);

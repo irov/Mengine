@@ -119,19 +119,19 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
 
-    implementation 'com.applovin:applovin-sdk:11.6.1'
+    implementation 'com.applovin:applovin-sdk:11.7.0'
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADCOLONY == true) {
         implementation 'com.applovin.mediation:adcolony-adapter:4.8.0.3'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-        implementation 'com.applovin.mediation:amazon-tam-adapter:9.6.2.2'
+        implementation 'com.applovin.mediation:amazon-tam-adapter:9.6.2.3'
         implementation 'com.amazon.android:aps-sdk:9.6.2'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE == true) {
-        implementation 'com.applovin.mediation:bidmachine-adapter:2.1.5.1'
+        implementation 'com.applovin.mediation:bidmachine-adapter:2.1.7.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST == true) {
@@ -183,7 +183,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOBILEFUSE == true) {
-        implementation 'com.applovin.mediation:mobilefuse-adapter:1.3.2.0'
+        implementation 'com.applovin.mediation:mobilefuse-adapter:1.4.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET == true) {
@@ -207,7 +207,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY == true) {
-        implementation 'com.applovin.mediation:tapjoy-adapter:12.11.1.0'
+        implementation 'com.applovin.mediation:tapjoy-adapter:12.11.1.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {

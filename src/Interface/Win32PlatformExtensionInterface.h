@@ -8,6 +8,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
+#include "Config/Thread.h"
 
 namespace Mengine
 {

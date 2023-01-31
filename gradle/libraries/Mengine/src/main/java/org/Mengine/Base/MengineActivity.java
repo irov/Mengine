@@ -549,12 +549,12 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onDestroy() {
-        super.onDestroy();
-
         MengineLog.logInfo(TAG, "onDestroy");
 
         if (mBrokenLibraries == true) {
             Log.e(TAG, "onDestroy: broken libraries");
+
+            super.onDestroy();
 
             return;
         }
@@ -580,6 +580,8 @@ public class MengineActivity extends SDLActivity {
 
         m_analyticsPlugins = null;
         m_loggerPlugins = null;
+
+        super.onDestroy();
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
@@ -609,7 +611,9 @@ public class MengineActivity extends SDLActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        MengineLog.logInfo(TAG, "onConfigurationChanged");
+        MengineLog.logInfo(TAG, "onConfigurationChanged: %s"
+            , newConfig.toString()
+        );
 
         if (mBrokenLibraries == true) {
             Log.e(TAG, "onConfigurationChanged: broken libraries");
@@ -653,7 +657,7 @@ public class MengineActivity extends SDLActivity {
         if (mBrokenLibraries == true) {
             Log.e(TAG, "dispatchKeyEvent: broken libraries");
 
-            return false;
+            return super.dispatchKeyEvent(event);
         }
 
         ArrayList<MenginePlugin> plugins = this.getPlugins();

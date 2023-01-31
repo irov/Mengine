@@ -1,9 +1,9 @@
 #include "Win32DateTimeSystem.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Win32Helper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( DateTimeSystem, Mengine::Win32DateTimeSystem );

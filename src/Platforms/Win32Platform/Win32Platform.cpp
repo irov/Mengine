@@ -11,6 +11,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
@@ -38,7 +39,6 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
-#include "Kernel/Win32Helper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/Stringstream.h"

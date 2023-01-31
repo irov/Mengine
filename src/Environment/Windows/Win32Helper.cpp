@@ -1,14 +1,12 @@
 #include "Win32Helper.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
-#   include "Interface/PlatformInterface.h"
-#   include "Interface/Win32PlatformExtensionInterface.h"
-
-#   include "Environment/Windows/WindowsIncluder.h"
-#endif
+#include "Interface/PlatformInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 namespace Mengine
 {
@@ -21,7 +19,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _path );
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
+#if !defined(MENGINE_WINDOWS_UNIVERSAL)
                 HMODULE hm = NULL;
 
                 if( ::GetModuleHandleEx( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
@@ -83,20 +81,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ThreadId Win32GetCurrentThreadId()
         {
-#if defined(MENGINE_PLATFORM_WINDOWS)
             DWORD id = ::GetCurrentThreadId();
 
             return (ThreadId)id;
-#else
-            return 0;
-#endif
         }
         //////////////////////////////////////////////////////////////////////////
         const WChar * Win32GetErrorMessage( uint32_t _messageId )
         {
-            MENGINE_UNUSED( _messageId );
-
-#if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
             static MENGINE_THREAD_LOCAL WChar errorMessageBuffer[2048] = {L'\0'};
 
             if( ::FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS
@@ -113,14 +104,10 @@ namespace Mengine
             }
 
             return errorMessageBuffer;
-#else
-            return L"";
-#endif
         }
         //////////////////////////////////////////////////////////////////////////
         const WChar * Win32GetLastErrorMessage()
         {
-#if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
             DWORD error = ::GetLastError();
 
             const WChar * errorMessage = Helper::Win32GetErrorMessage( error );
@@ -133,9 +120,6 @@ namespace Mengine
             );
 
             return errorMessageBufferWithErrorCode;
-#else
-            return L"";
-#endif
         }
         //////////////////////////////////////////////////////////////////////////
     }

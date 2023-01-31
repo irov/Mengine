@@ -27,6 +27,10 @@
 #   include "Environment/Android/AndroidEnv.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_WINDOWS)
+#   include "Environment/Windows/Win32Helper.h"
+#endif
+
 #include "SDLDynamicLibrary.h"
 
 #include "Kernel/FilePath.h"

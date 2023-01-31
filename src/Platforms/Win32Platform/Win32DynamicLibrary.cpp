@@ -3,9 +3,10 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
+#include "Environment/Windows/Win32Helper.h"
+
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 

@@ -1,8 +1,9 @@
 #include "Win32FileMappedInputStream.h"
 
+#include "Environment/Windows/Win32Helper.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
-#include "Kernel/Win32Helper.h"
 #include "Kernel/MemoryCopy.h"
 
 namespace Mengine

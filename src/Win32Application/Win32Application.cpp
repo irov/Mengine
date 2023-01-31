@@ -11,6 +11,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
+#include "Environment/Windows/Win32Helper.h"
+
 #include "Win32MessageBoxLogger.h"
 #if defined(MENGINE_WINDOWS_DEBUG)
 #   include "Win32OutputDebugLogger.h"
@@ -21,7 +23,6 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/Win32Helper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Algorithm.h"

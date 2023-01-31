@@ -33,7 +33,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Char * Document::getModulePath() const
     {
-        return m_modulePath.c_str();
+        const Char * modulePath_str = m_modulePath.c_str();
+
+        return modulePath_str;
     }
     //////////////////////////////////////////////////////////////////////////
     void Document::setFile( const Char * _file )
@@ -73,16 +75,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Char * Document::getMessage() const
     {
-        const Char * str = m_message.c_str();
+        const Char * message_str = m_message.c_str();
 
-        return str;
+        return message_str;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Document::getMessageSize() const
     {
-        String::size_type size = m_message.size();
+        String::size_type message_size = m_message.size();
 
-        return (size_t)size;
+        return (size_t)message_size;
     }
     //////////////////////////////////////////////////////////////////////////
 }

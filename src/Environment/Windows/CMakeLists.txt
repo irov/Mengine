@@ -1,8 +1,11 @@
 MENGINE_PROJECT(Windows)
 
 ADD_FILTER(
-src     
+src
     WindowsIncluder.h
+    
+    Win32Helper.h
+    Win32Helper.cpp
     
     Win32FileHelper.h
     Win32FileHelper.cpp

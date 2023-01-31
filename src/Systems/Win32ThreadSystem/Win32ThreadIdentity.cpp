@@ -2,13 +2,14 @@
 
 #include "Interface/AllocatorSystemInterface.h"
 
+#include "Environment/Windows/Win32Helper.h"
+
 #include "Win32ThreadHelper.h"
 #include "Win32ThreadIdentityRunner.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
-#include "Kernel/Win32Helper.h"
 #include "Kernel/FactorableUnique.h"
 
 #include <process.h>

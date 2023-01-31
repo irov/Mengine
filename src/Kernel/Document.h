@@ -2,6 +2,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/String.h"
+#include "Kernel/PathString.h"
 
 namespace Mengine
 {
@@ -42,7 +43,7 @@ namespace Mengine
     protected:
         DocumentPtr m_parent;
 
-        String m_modulePath;
+        PathString m_modulePath;
 
         const Char * m_file;
         const Char * m_function;

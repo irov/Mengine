@@ -1,12 +1,12 @@
 #include "Win32ExtraFileLogger.h"
 
 #include "Environment/Windows/Win32FileHelper.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/OptionHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Win32Helper.h"
 
 #include "Config/StdIO.h"
 

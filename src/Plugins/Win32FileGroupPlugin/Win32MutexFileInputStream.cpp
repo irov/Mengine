@@ -4,9 +4,10 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
 
+#include "Environment/Windows/Win32Helper.h"
+
 #include "Win32ConcatenateFileHelper.h"
 
-#include "Kernel/Win32Helper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"

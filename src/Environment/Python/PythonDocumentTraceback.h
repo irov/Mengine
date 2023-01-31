@@ -5,8 +5,6 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
-#include "Kernel/Win32Helper.h"
-
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_PYBIND_TRACEBACK() \
 [](){ \
@@ -23,7 +21,7 @@
         Mengine::Char traceback[8192] = {'\0'}; \
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()->getKernel(); \
         kernel->get_traceback(traceback, 8192); \
-        Mengine::DocumentPtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, Mengine::Helper::Win32GetCurrentDllPath(), _file, _function, _line, "traceback: %s", traceback); \
+        Mengine::DocumentPtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, "", _file, _function, _line, "traceback: %s", traceback); \
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE)
 #else

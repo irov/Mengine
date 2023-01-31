@@ -4,10 +4,10 @@
 #include "Interface/PlatformInterface.h"
 
 #include "Environment/Windows/Win32FileHelper.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "Win32ConcatenateFileHelper.h"
 
-#include "Kernel/Win32Helper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 

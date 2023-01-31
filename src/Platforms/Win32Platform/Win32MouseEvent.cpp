@@ -1,7 +1,8 @@
 #include "Win32MouseEvent.h"
 
+#include "Environment/Windows/Win32Helper.h"
+
 #include "Kernel/Logger.h"
-#include "Kernel/Win32Helper.h"
 
 namespace Mengine
 {

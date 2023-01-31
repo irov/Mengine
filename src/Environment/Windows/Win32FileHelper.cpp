@@ -1,8 +1,9 @@
 #include "Win32FileHelper.h"
 
+#include "Win32Helper.h"
+
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 

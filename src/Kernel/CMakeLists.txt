@@ -946,12 +946,6 @@ Error
     ErrorLevel.h
 )
 
-ADD_FILTER(
-Win32
-    Win32Helper.h
-    Win32Helper.cpp
-)
-
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/boost)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)

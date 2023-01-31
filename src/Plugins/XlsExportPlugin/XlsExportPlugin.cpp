@@ -8,13 +8,13 @@
 
 #define MENGINE_WINDOWS_MIN_VERSION_WIN8
 #include "Environment/Windows/WindowsIncluder.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 

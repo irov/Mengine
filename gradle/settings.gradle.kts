@@ -73,8 +73,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 
 
 /**
-/ * - MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS [https://firebase.google.com]
-/ * - MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS [https://firebase.google.com]
+/ * - MENGINE_APP_PLUGIN_FIREBASE [https://firebase.google.com]
 / * - MENGINE_APP_PLUGIN_APPLOVIN [https://www.applovin.com]
 / * - MENGINE_APP_PLUGIN_SENTRY [https://sentry.io]
 / * - MENGINE_APP_PLUGIN_FACEBOOK [https://developers.facebook.com]
@@ -97,6 +96,7 @@ includePlugin("MENGINE_APP_PLUGIN_GOOGLE_BILLING", false, ":plugins:GoogleBillin
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false, ":plugins:GoogleGameSocial")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", false, ":plugins:GoogleInAppReviews")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", false, ":plugins:GoogleConsent")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE", false,":plugins:Firebase")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", false,":plugins:FirebaseAnalytics")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false,":plugins:FirebaseCrashlytics")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", false, ":plugins:AppLovin")

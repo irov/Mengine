@@ -16,6 +16,7 @@ def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.existAppPlugin(project, "MENGI
 def MENGINE_APP_PLUGIN_GOOGLE_BILLING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_BILLING");
 def MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS");
 def MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_CONSENT");
+def MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE");
 def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS");
 def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS");
 def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVTODEV");
@@ -394,9 +395,23 @@ if (MENGINE_APP_PLUGIN_GOOGLE_CONSENT == true) {
     }
 }
 
+println "MENGINE_APP_PLUGIN_FIREBASE: $MENGINE_APP_PLUGIN_FIREBASE"
+
+if (MENGINE_APP_PLUGIN_FIREBASE == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Firebase.MengineFirebasePlugin'
+
+    dependencies {
+        implementation project(':plugins:Firebase')
+    }
+}
+
 println "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS: $MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS"
 
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
+    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS required enable MENGINE_APP_PLUGIN_FIREBASE");
+    }
+    
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseCrashlytics.MengineFirebaseCrashlyticsPlugin'
 
     dependencies {
@@ -407,6 +422,10 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
 println "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS: $MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS"
 
 if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
+    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS required enable MENGINE_APP_PLUGIN_FIREBASE");
+    }
+    
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseAnalyticsPlugin'
 
     dependencies {

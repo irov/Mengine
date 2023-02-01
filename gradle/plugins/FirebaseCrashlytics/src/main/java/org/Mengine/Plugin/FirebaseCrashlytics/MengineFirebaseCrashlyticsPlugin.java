@@ -58,7 +58,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin {
         activity.removeLoggerPlugin(this);
     }
 
-
     public void recordException(Throwable throwable) {
         this.logInfo("recordException throwable: %s"
             , throwable.getLocalizedMessage()

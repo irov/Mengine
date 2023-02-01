@@ -361,7 +361,7 @@ println "MENGINE_APP_PLUGIN_GOOGLE_BILLING: $MENGINE_APP_PLUGIN_GOOGLE_BILLING"
 
 if (MENGINE_APP_PLUGIN_GOOGLE_BILLING == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_BILLING required enable MENGINE_APP_PLUGIN_GOOGLE_BILLING");
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_BILLING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
     }
 
     android.ext.plugins += 'org.Mengine.Plugin.GooglePlayBilling.MengineGooglePlayBillingPlugin'
@@ -375,7 +375,7 @@ println "MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS: $MENGINE_APP_PLUGIN_GOOGLE_INA
 
 if (MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_BILLING required enable MENGINE_APP_PLUGIN_GOOGLE_BILLING");
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
     }
 
     android.ext.plugins += 'org.Mengine.Plugin.GoogleInAppReviews.MengineGoogleInAppReviewsPlugin'
@@ -388,6 +388,10 @@ if (MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS == true) {
 println "MENGINE_APP_PLUGIN_GOOGLE_CONSENT: $MENGINE_APP_PLUGIN_GOOGLE_CONSENT"
 
 if (MENGINE_APP_PLUGIN_GOOGLE_CONSENT == true) {
+    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+    }
+
     android.ext.plugins += 'org.Mengine.Plugin.GoogleConsent.MengineGoogleConsentPlugin'
 
     dependencies {
@@ -398,6 +402,9 @@ if (MENGINE_APP_PLUGIN_GOOGLE_CONSENT == true) {
 println "MENGINE_APP_PLUGIN_FIREBASE: $MENGINE_APP_PLUGIN_FIREBASE"
 
 if (MENGINE_APP_PLUGIN_FIREBASE == true) {
+    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+    }
     android.ext.plugins += 'org.Mengine.Plugin.Firebase.MengineFirebasePlugin'
 
     dependencies {
@@ -423,7 +430,7 @@ println "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS: $MENGINE_APP_PLUGIN_FIREBASE_ANA
 
 if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
     if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS required enable MENGINE_APP_PLUGIN_FIREBASE");
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS required enable MENGINE_APP_PLUGIN_FIREBASE");
     }
     
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseAnalyticsPlugin'

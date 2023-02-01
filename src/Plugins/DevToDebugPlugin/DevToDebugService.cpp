@@ -812,21 +812,11 @@ namespace Mengine
             return;
         }
 
-        Char delete_url[1024] = {'\0'};
-        MENGINE_SNPRINTF( delete_url, 256, "%s/delete/"
-            , m_workerURL.c_str()
-        );
-
         cURLHeaders headers;
         headers.push_back( "Content-Type:application/json" );
 
-        jpp::object j = jpp::make_object();
-
-        String data;
-        Helper::writeJSONStringCompact( j, &data );
-
         CURL_SERVICE()
-            ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            ->deleteMessage( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
 }

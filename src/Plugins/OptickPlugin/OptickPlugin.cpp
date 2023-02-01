@@ -80,10 +80,6 @@ namespace Mengine
         SERVICE_DESTROY( ProfilerSystem );
 
         OPTICK_SHUTDOWN();
-
-#ifdef MENGINE_PLUGIN_DLL
-        MENGINE_ASSERTION_ALLOCATOR( "optick" );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

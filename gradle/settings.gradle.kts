@@ -72,8 +72,10 @@ includePlugin("MENGINE_APP_PLUGIN_OPENAL32", true, ":libraries:OpenAL32")
 includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 
 
-/**
+/*****************************************************************************
 / * - MENGINE_APP_PLUGIN_FIREBASE [https://firebase.google.com]
+/ * - MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS [https://firebase.google.com]
+/ * - MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS [https://firebase.google.com]
 / * - MENGINE_APP_PLUGIN_APPLOVIN [https://www.applovin.com]
 / * - MENGINE_APP_PLUGIN_SENTRY [https://sentry.io]
 / * - MENGINE_APP_PLUGIN_FACEBOOK [https://developers.facebook.com]
@@ -82,11 +84,12 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_GOOGLE_BILLING [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS [https://developers.google.com]
+/ * - MENGINE_APP_PLUGIN_GOOGLE_CONSENT [https://developers.google.com]
 / * - MENGINE_APP_PLUGIN_MAR [http://doc.martianyun.com/en]
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
 / * - MENGINE_APP_PLUGIN_ONESIGNAL [https://onesignal.com]
-**/
+*****************************************************************************/
 
 includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", false, ":plugins:SplashScreen")
 includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":plugins:LocalNotifications")

@@ -29,6 +29,9 @@ namespace Mengine
     protected:
         HttpRequestID getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
         HttpRequestID postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
+        HttpRequestID deleteMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
+
+    protected:
         HttpRequestID headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
 
     protected:
@@ -95,6 +98,7 @@ namespace Mengine
         FactoryInterfacePtr m_factoryResponse;
         FactoryInterfacePtr m_factoryTaskGetMessage;
         FactoryInterfacePtr m_factoryTaskPostMessage;
+        FactoryInterfacePtr m_factoryTaskDeleteMessage;
         FactoryInterfacePtr m_factoryTaskHeaderData;
         FactoryInterfacePtr m_factoryTaskDownloadAsset;
     };

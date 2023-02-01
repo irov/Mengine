@@ -14,6 +14,8 @@ Tasks
     TaskcURLHttpBase.h
     TaskcURLHttpGet.cpp
     TaskcURLHttpGet.h
+    TaskcURLHttpDelete.cpp
+    TaskcURLHttpDelete.h
     TaskcURLHttpHeaderData.cpp
     TaskcURLHttpHeaderData.h
     TaskcURLHttpPost.cpp

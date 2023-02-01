@@ -24,6 +24,8 @@ src
     cURLHeaderDataThreadTask.h
     cURLPostMessageThreadTask.cpp
     cURLPostMessageThreadTask.h
+    cURLDeleteMessageThreadTask.cpp
+    cURLDeleteMessageThreadTask.h
     
     cURLErrorHelper.cpp
     cURLErrorHelper.h

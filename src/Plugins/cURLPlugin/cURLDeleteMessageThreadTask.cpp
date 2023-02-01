@@ -1,4 +1,4 @@
-#include "cURLGetMessageThreadTask.h"
+#include "cURLDeleteMessageThreadTask.h"
 
 #include "cURLErrorHelper.h"
 
@@ -8,24 +8,24 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    cURLGetMessageThreadTask::cURLGetMessageThreadTask()
+    cURLDeleteMessageThreadTask::cURLDeleteMessageThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    cURLGetMessageThreadTask::~cURLGetMessageThreadTask()
+    cURLDeleteMessageThreadTask::~cURLDeleteMessageThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLGetMessageThreadTask::initialize()
+    bool cURLDeleteMessageThreadTask::initialize()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLGetMessageThreadTask::_onCURL( CURL * _curl )
+    void cURLDeleteMessageThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_CUSTOMREQUEST, "GET") );
+        CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "DELETE" ) );
 
         this->setupWriteResponse( _curl );
 

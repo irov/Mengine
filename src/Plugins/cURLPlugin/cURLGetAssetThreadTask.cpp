@@ -70,6 +70,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLGetAssetThreadTask::_onCURL( CURL * _curl )
     {
+        CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "GET" ) );
+
         if( m_login.empty() == false || m_password.empty() == false )
         {
             const Char * login_str = m_login.c_str();

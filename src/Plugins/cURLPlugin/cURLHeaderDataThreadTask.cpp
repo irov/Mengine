@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLHeaderDataThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POST, 1) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_CUSTOMREQUEST, "POST") );
 
         const String::value_type * data_buffer = m_data.c_str();
         String::size_type data_size = m_data.size();

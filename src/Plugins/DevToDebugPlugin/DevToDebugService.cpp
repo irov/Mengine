@@ -136,8 +136,7 @@ namespace Mengine
         , m_revision( 0 )
         , m_timerId( INVALID_UNIQUE_ID )
         , m_invalidateTabs( false )
-        , m_throttleDebug( 0 )
-        , m_throttleLog( 0 )
+        , m_throttle( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -253,10 +252,13 @@ namespace Mengine
 
         uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 1000 );
 
-        Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugProcess" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
+        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugProcess" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
         {
             this->process();
-        }, MENGINE_DOCUMENT_FACTORABLE );
+        }, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         float DevToDebug_PropertySyncTime = CONFIG_VALUE( "DevToDebugPlugin", "PropertySyncTime", 1000.f );
 
@@ -530,7 +532,7 @@ namespace Mengine
 
                 jpp::object j = Helper::loadJSONStreamFromString( responseData, MENGINE_DOCUMENT_FACTORABLE );
 
-                m_workerURL = j.get( "worker_url", "" );
+                m_workerURL = j.get( "url", "" );
 
                 if( m_workerURL.empty() == true )
                 {
@@ -545,18 +547,11 @@ namespace Mengine
                     break;
                 }
 
-                jpp::object j_throttle = j.get( "throttle" );
-
-                m_throttleDebug = j_throttle.get( "debug" );
-                m_throttleLog = j_throttle.get( "log" );
+                m_throttle = j.get( "throttle" );
 
                 if( m_logger != nullptr )
                 {
-                    String loggerURL = m_workerURL;
-                    loggerURL += "log";
-                    loggerURL += "/";
-
-                    m_logger->setLoggerURL( loggerURL );
+                    m_logger->setWorkerURL( m_workerURL );
                 }
 
                 LOGGER_INFO( "devtodebug", "Request Connect: %s [id %u]"
@@ -757,7 +752,9 @@ namespace Mengine
     {
         jpp::object j = jpp::make_object();
 
-        j.set( "confirmed_revision", m_revision );
+        jpp::object jworker = jpp::make_object();
+
+        jworker.set( "confirmed_revision", m_revision );
 
         jpp::object jstate = jpp::make_object();
 
@@ -770,11 +767,11 @@ namespace Mengine
 
             if( m_invalidateTabs == true || invalidateTabs == true )
             {
-                j.set( "new_state", jstate );
+                jworker.set( "new_state", jstate );
             }
             else
             {
-                j.set( "change_state", jstate );
+                jworker.set( "change_state", jstate );
             }
         }
 
@@ -797,6 +794,8 @@ namespace Mengine
             old_revision = m_revision;
         }
 #endif
+
+        j.set( "worker", jworker );
 
         return j;
     }

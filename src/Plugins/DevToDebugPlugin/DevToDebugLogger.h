@@ -25,8 +25,8 @@ namespace Mengine
         ~DevToDebugLogger() override;
 
     public:
-        void setLoggerURL( const String & _workerURL );
-        const String & getLoggerURL() const;
+        void setWorkerURL( const String & _workerURL );
+        const String & getWorkerURL() const;
 
     public:
         bool _initializeLogger() override;
@@ -48,7 +48,7 @@ namespace Mengine
         void onHttpRequestComplete( const cURLResponseInterfacePtr & _response ) override;
 
     protected:
-        String m_loggerURL;
+        String m_workerURL;
 
         ThreadMutexInterfacePtr m_mutex;
 

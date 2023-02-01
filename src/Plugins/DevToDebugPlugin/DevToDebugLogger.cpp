@@ -25,16 +25,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::setLoggerURL( const String & _workerURL )
+    void DevToDebugLogger::setWorkerURL( const String & _workerURL )
     {
         m_mutex->lock();
-        m_loggerURL = _workerURL;
+        m_workerURL = _workerURL;
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & DevToDebugLogger::getLoggerURL() const
+    const String & DevToDebugLogger::getWorkerURL() const
     {
-        return m_loggerURL;
+        return m_workerURL;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugLogger::_initializeLogger()
@@ -48,10 +48,13 @@ namespace Mengine
 
         uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 1000 );
 
-        Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugLogger" ), ETP_BELOW_NORMAL, DevToDebug_LoggerTime, nullptr, [this]()
+        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugLogger" ), ETP_BELOW_NORMAL, DevToDebug_LoggerTime, nullptr, [this]()
         {
             this->process();
-        }, MENGINE_DOCUMENT_FACTORABLE );
+        }, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -130,7 +133,7 @@ namespace Mengine
     void DevToDebugLogger::process()
     {
         m_mutex->lock();
-        bool wait = m_loggerURL.empty();
+        bool wait = m_workerURL.empty();
         m_mutex->unlock();
 
         if( wait == true )
@@ -144,7 +147,11 @@ namespace Mengine
         VectorMessages messages = Helper::exciseVector( m_messages, DevToDebug_LoggerBatchCount );
         m_mutex->unlock();
 
-        jpp::array j_log = jpp::make_array();
+        jpp::object j = jpp::make_object();
+
+        jpp::object jlogger = jpp::make_object();
+
+        jpp::array jlog = jpp::make_array();
 
         for( const MessageDesc & desc : messages )
         {
@@ -155,12 +162,12 @@ namespace Mengine
             j_desc.set( "data", desc.data );
             j_desc.set( "level", desc.level );
 
-            j_log.push_back( j_desc );
-        }
+            jlog.push_back( j_desc );
+        }        
 
-        jpp::object j = jpp::make_object();
+        jlogger.set( "log", jlog );
 
-        j.set( "log", j_log );
+        j.set( "logger", jlogger );
 
         cURLHeaders headers;
         headers.push_back( "Content-Type:application/json" );
@@ -169,7 +176,7 @@ namespace Mengine
         Helper::writeJSONStringCompact( j, &data );
 
         HttpRequestID id = CURL_SERVICE()
-            ->headerData( m_loggerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
     }

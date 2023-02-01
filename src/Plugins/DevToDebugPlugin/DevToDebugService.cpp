@@ -704,7 +704,7 @@ namespace Mengine
             }
         }
 
-        *_invalidateTabs = invalidateTabs | m_invalidateTabs;
+        *_invalidateTabs = invalidateTabs || m_invalidateTabs;
 
         m_invalidateTabs = false;
 
@@ -813,7 +813,6 @@ namespace Mengine
         }
 
         cURLHeaders headers;
-        headers.push_back( "Content-Type:application/json" );
 
         CURL_SERVICE()
             ->deleteMessage( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );

@@ -101,7 +101,7 @@ namespace Mengine
             _jwidget.set( "data", jdata );
         }
 
-        return invalidate_property | invalidate_data | _force;
+        return invalidate_property || invalidate_data || _force;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugWidget::fillTypeJson( jpp::object & _jdata )

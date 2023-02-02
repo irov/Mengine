@@ -32,6 +32,12 @@ namespace Mengine
                 case 'd': *_u8 = 13; break;
                 case 'e': *_u8 = 14; break;
                 case 'f': *_u8 = 15; break;
+                case 'A': *_u8 = 10; break;
+                case 'B': *_u8 = 11; break;
+                case 'C': *_u8 = 12; break;
+                case 'D': *_u8 = 13; break;
+                case 'E': *_u8 = 14; break;
+                case 'F': *_u8 = 15; break;
                 default:
                     return false;
                 }

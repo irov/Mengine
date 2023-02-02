@@ -63,5 +63,5 @@ ENDIF()
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 
 if(MENGINE_TARGET_APPLE)
-    ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "7.31.0")
+    ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "8.1.0")
 endif()

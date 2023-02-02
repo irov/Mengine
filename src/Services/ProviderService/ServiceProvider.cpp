@@ -131,9 +131,10 @@ namespace Mengine
                 return true;
             }
 
-            this->initializeService_( desc, _doc );
+            bool result = true;
+            this->initializeService_( desc, _doc, &result );
 
-            return true;
+            return result;
         }
 
         MENGINE_THROW_EXCEPTION( "invalid allocate service name '%s' max count [%u] (doc: %s)"
@@ -145,7 +146,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::initializeService_( ServiceDesc & _desc, const DocumentPtr & _doc )
+    void ServiceProvider::initializeService_( ServiceDesc & _desc, const DocumentPtr & _doc, bool * const _result )
     {
         const ServiceInterfacePtr & service = _desc.service;
 
@@ -169,6 +170,8 @@ namespace Mengine
             m_initializeServiceName = nullptr;
 #endif
 
+            *_result = false;
+
             MENGINE_ASSERTION_EXCEPTION( _desc.safe == true, "exception initialize service '%s' (doc: %s)\n%s"
                 , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -184,6 +187,8 @@ namespace Mengine
 
         if( successful == false )
         {
+            *_result = false;
+
             MENGINE_ASSERTION_EXCEPTION( _desc.safe == true, "invalid initialize service '%s' (doc: %s)"
                 , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -196,6 +201,8 @@ namespace Mengine
 
         if( this->checkWaits_( service ) == false )
         {
+            *_result = false;
+
             MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (waits) (doc: %s)"
                 , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -204,13 +211,15 @@ namespace Mengine
 
         if( service->runService() == false )
         {
+            *_result = false;
+
             MENGINE_THROW_EXCEPTION( "invalid run service '%s' (waits) (doc: %s)"
                 , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
         }
 
-        this->deferredRequiredInitialize_( _doc );
+        this->deferredRequiredInitialize_( _doc, _result );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::finalizeService( const Char * _name )
@@ -533,7 +542,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::deferredRequiredInitialize_( const DocumentPtr & _doc )
+    void ServiceProvider::deferredRequiredInitialize_( const DocumentPtr & _doc, bool * const _result )
     {
         for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
         {
@@ -551,7 +560,7 @@ namespace Mengine
 
             desc.requiring = false;
 
-            this->initializeService_( desc, _doc );
+            this->initializeService_( desc, _doc, _result );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -129,7 +129,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_MESSAGE_COUNT = data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
                 Object DATA_MESSAGE_COUNT_FROM_CACHE = data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
 
-                this.logInfo("onEventOccurred RECEIVED_UNREAD_MESSAGE_COUNT DATA_MESSAGE_COUNT:%s DATA_MESSAGE_COUNT_FROM_CACHE:%s"
+                this.logInfo("onEventOccurred RECEIVED_UNREAD_MESSAGE_COUNT DATA_MESSAGE_COUNT: %s DATA_MESSAGE_COUNT_FROM_CACHE: %s"
                     , DATA_MESSAGE_COUNT
                     , DATA_MESSAGE_COUNT_FROM_CACHE
                 );
@@ -141,7 +141,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_LATEST_ISSUE_PUBLISH_ID = data.get(HelpshiftEvent.DATA_LATEST_ISSUE_PUBLISH_ID);
                 Object DATA_IS_ISSUE_OPEN = data.get(HelpshiftEvent.DATA_IS_ISSUE_OPEN);
 
-                this.logInfo("onEventOccurred CONVERSATION_STATUS DATA_LATEST_ISSUE_ID:%s DATA_LATEST_ISSUE_PUBLISH_ID:%s DATA_IS_ISSUE_OPEN:%s"
+                this.logInfo("onEventOccurred CONVERSATION_STATUS DATA_LATEST_ISSUE_ID: %s DATA_LATEST_ISSUE_PUBLISH_ID: %s DATA_IS_ISSUE_OPEN: %s"
                     , DATA_LATEST_ISSUE_ID
                     , DATA_LATEST_ISSUE_PUBLISH_ID
                     , DATA_IS_ISSUE_OPEN
@@ -152,7 +152,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             case HelpshiftEvent.WIDGET_TOGGLE:
                 Object DATA_SDK_VISIBLE = data.get(HelpshiftEvent.DATA_SDK_VISIBLE);
 
-                this.logInfo("onEventOccurred WIDGET_TOGGLE DATA_SDK_VISIBLE:%s"
+                this.logInfo("onEventOccurred WIDGET_TOGGLE DATA_SDK_VISIBLE: %s"
                     , DATA_SDK_VISIBLE
                 );
 
@@ -161,7 +161,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             case HelpshiftEvent.CONVERSATION_START:
                 Object DATA_MESSAGE = data.get(HelpshiftEvent.DATA_MESSAGE);
 
-                this.logInfo("onEventOccurred CONVERSATION_START DATA_MESSAGE:%s"
+                this.logInfo("onEventOccurred CONVERSATION_START DATA_MESSAGE: %s"
                     , DATA_MESSAGE
                 );
 
@@ -173,7 +173,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_MESSAGE_TYPE_ATTACHMENT = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE_ATTACHMENT);
                 Object DATA_MESSAGE_TYPE_TEXT = data.get(HelpshiftEvent.DATA_MESSAGE_TYPE_TEXT);
 
-                this.logInfo("onEventOccurred MESSAGE_ADD DATA_MESSAGE_TYPE:%s DATA_MESSAGE_BODY:%s DATA_MESSAGE_TYPE_ATTACHMENT:%s DATA_MESSAGE_TYPE_TEXT:%s"
+                this.logInfo("onEventOccurred MESSAGE_ADD DATA_MESSAGE_TYPE: %s DATA_MESSAGE_BODY: %s DATA_MESSAGE_TYPE_ATTACHMENT: %s DATA_MESSAGE_TYPE_TEXT: %s"
                     , DATA_MESSAGE_TYPE
                     , DATA_MESSAGE_BODY
                     , DATA_MESSAGE_TYPE_ATTACHMENT
@@ -186,7 +186,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 Object DATA_CSAT_RATING = data.get(HelpshiftEvent.DATA_CSAT_RATING);
                 Object DATA_ADDITIONAL_FEEDBACK = data.get(HelpshiftEvent.DATA_ADDITIONAL_FEEDBACK);
 
-                this.logInfo("onEventOccurred CSAT_SUBMIT DATA_CSAT_RATING:%s DATA_ADDITIONAL_FEEDBACK:%s"
+                this.logInfo("onEventOccurred CSAT_SUBMIT DATA_CSAT_RATING: %s DATA_ADDITIONAL_FEEDBACK: %s"
                     , DATA_CSAT_RATING
                     , DATA_ADDITIONAL_FEEDBACK
                 );
@@ -214,7 +214,10 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 this.pythonCall("onHelpshiftConversationReopened");
                 break;
             default:
-                this.logInfo("onEventOccurred UNKNOWN:%s", eventName);
+                this.logInfo("onEventOccurred UNKNOWN: %s"
+                    , eventName
+                );
+
                 break;
         }
     }

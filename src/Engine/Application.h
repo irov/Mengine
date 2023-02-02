@@ -38,7 +38,8 @@ namespace Mengine
         void finalizeGame() override;
 
     public:
-        void changeWindowResolution( const Resolution & _resolution ) override;
+        void setWindowResolution( const Resolution & _resolution ) override;
+        const Resolution & getWindowResolution() const override;
 
     public:
         void setFullscreenMode( bool _fullscreen ) override;
@@ -200,7 +201,7 @@ namespace Mengine
         bool m_nopause;
 
         Resolution m_windowResolution;
-        Resolution m_fullscreenResolution;
+        
         uint32_t m_bits;
         bool m_fullscreen;
         bool m_alwaysfullscreen;

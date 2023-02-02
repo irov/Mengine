@@ -64,7 +64,8 @@ namespace Mengine
         virtual const ConstString & getLocale() const = 0;
 
     public:
-        virtual void changeWindowResolution( const Resolution & _resolution ) = 0;
+        virtual void setWindowResolution( const Resolution & _resolution ) = 0;
+        virtual const Resolution & getWindowResolution() const = 0;
 
     public:
         virtual const RenderPipelineInterfacePtr & getRenderPipeline() const = 0;

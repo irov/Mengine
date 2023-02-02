@@ -37,6 +37,12 @@ public class MenginePlugin {
         return m_application;
     }
 
+    public Context getApplicationContext() {
+        Context context = m_application.getApplicationContext();
+
+        return context;
+    }
+
     public MengineActivity getActivity() {
         return m_activity;
     }

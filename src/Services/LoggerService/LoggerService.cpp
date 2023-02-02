@@ -119,6 +119,10 @@ namespace Mengine
         {
             logLevel = LM_VERBOSE;
         }
+        else if( HAS_OPTION( "message" ) == true )
+        {
+            logLevel = LM_MESSAGE;
+        }
 
 #ifdef MENGINE_LOGGER_LEVEL_FORCE_VERBOSE_ENABLE
         logLevel = LM_VERBOSE;

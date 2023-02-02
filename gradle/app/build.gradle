@@ -19,6 +19,7 @@ def MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.existAppPlugin(project, "MENGINE_A
 def MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE");
 def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS");
 def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS");
+def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING");
 def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVTODEV");
 def MENGINE_APP_PLUGIN_FACEBOOK = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FACEBOOK");
 def MENGINE_APP_PLUGIN_SENTRY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SENTRY");
@@ -405,6 +406,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
         throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
     }
+    
     android.ext.plugins += 'org.Mengine.Plugin.Firebase.MengineFirebasePlugin'
 
     dependencies {
@@ -437,6 +439,20 @@ if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
 
     dependencies {
         implementation project(':plugins:FirebaseAnalytics')
+    }
+}
+
+println "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING: $MENGINE_APP_PLUGIN_FIREBASE_MESSAGING"
+
+if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
+    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING required enable MENGINE_APP_PLUGIN_FIREBASE");
+    }
+    
+    android.ext.plugins += 'org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseMessagingPlugin'
+
+    dependencies {
+        implementation project(':plugins:FirebaseMessaging')
     }
 }
 

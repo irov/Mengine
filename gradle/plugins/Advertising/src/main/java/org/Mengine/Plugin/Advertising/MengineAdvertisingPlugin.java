@@ -27,7 +27,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         executor.execute(() -> {
-            final Context context = activity.getApplicationContext();
+            final Context context = this.getApplicationContext();
 
             AdvertisingIdClient.Info adInfo = null;
 

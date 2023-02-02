@@ -1888,12 +1888,12 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE( "Max Client Resolution %u %u"
+        LOGGER_MESSAGE( "Max Client Resolution: %u %u"
             , dres.getWidth()
             , dres.getHeight()
         );
 
-        LOGGER_MESSAGE( "Window Resolution %u %u"
+        LOGGER_MESSAGE( "Window Resolution: %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
         );
@@ -2005,42 +2005,28 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::changeWindowResolution( const Resolution & _resolution )
+    void Application::setWindowResolution( const Resolution & _resolution )
     {
-        if( m_fullscreen == true )
+        if( m_windowResolution == _resolution )
         {
-            if( m_fullscreenResolution == _resolution )
-            {
-                return;
-            }
-
-            LOGGER_MESSAGE( "change fullscreen resolution size %u:%u -> %u:%u"
-                , m_fullscreenResolution.getWidth()
-                , m_fullscreenResolution.getHeight()
-                , _resolution.getWidth()
-                , _resolution.getHeight()
-            );
-
-            m_fullscreenResolution = _resolution;
+            return;
         }
-        else
-        {
-            if( m_windowResolution == _resolution )
-            {
-                return;
-            }
 
-            LOGGER_MESSAGE( "change window resolution size %u:%u -> %u:%u"
-                , m_windowResolution.getWidth()
-                , m_windowResolution.getHeight()
-                , _resolution.getWidth()
-                , _resolution.getHeight()
-            );
+        LOGGER_INFO( "system", "set change window resolution size %u:%u -> %u:%u"
+            , m_windowResolution.getWidth()
+            , m_windowResolution.getHeight()
+            , _resolution.getWidth()
+            , _resolution.getHeight()
+        );
 
-            m_windowResolution = _resolution;
-        }
+        m_windowResolution = _resolution;
 
         this->invalidateWindow_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Resolution & Application::getWindowResolution() const
+    {
+        return m_windowResolution;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::setFullscreenMode( bool _fullscreen )

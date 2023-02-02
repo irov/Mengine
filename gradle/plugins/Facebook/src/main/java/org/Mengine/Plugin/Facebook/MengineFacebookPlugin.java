@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.Facebook;
 
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
 
@@ -60,7 +61,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
                 // If this callback is called, a popup notification appears that says
                 // "Logged in as <User Name>"
 
-                MengineFacebookPlugin.this.logInfo("retrieve login [onCompleted] application:%s user:%s token:%s"
+                MengineFacebookPlugin.this.logInfo("retrieve login [onCompleted] application: %s user: %s token: %s"
                     , accessToken.getApplicationId()
                     , accessToken.getUserId()
                     , accessToken.getToken()
@@ -76,7 +77,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
             @Override
             public void onError(Exception e) {
-                MengineFacebookPlugin.this.logInfo("retrieve login [onError] exception:%s"
+                MengineFacebookPlugin.this.logInfo("retrieve login [onError] exception: %s"
                     , e.getLocalizedMessage()
                 );
             }
@@ -116,7 +117,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
                 String userId = accessToken.getUserId();
                 String token = accessToken.getToken();
 
-                MengineFacebookPlugin.this.logInfo("login [onSuccess] application:%s user:%s token:%s"
+                MengineFacebookPlugin.this.logInfo("login [onSuccess] application: %s user: %s token: %s"
                     , applicationId
                     , userId
                     , token
@@ -127,29 +128,35 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
             @Override
             public void onCancel() {
-                AccessToken.setCurrentAccessToken(null);
-
                 MengineFacebookPlugin.this.logInfo("login [onCancel]");
+
+                AccessToken.setCurrentAccessToken(null);
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookLoginCancel");
             }
 
             @Override
             public void onError(FacebookException e) {
-                AccessToken.setCurrentAccessToken(null);
-
                 String message = e.getLocalizedMessage();
 
-                MengineFacebookPlugin.this.logError("login [onError] exception:%s"
+                MengineFacebookPlugin.this.logError("login [onError] exception: %s"
                     , message
                 );
+
+                AccessToken.setCurrentAccessToken(null);
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookLoginError", message);
             }
         });
 
-        Application application = this.getApplication();
-        AppEventsLogger.activateApp(application);
+        try {
+            MengineApplication application = this.getApplication();
+            AppEventsLogger.activateApp(application);
+        } catch (Exception ex) {
+            MengineFacebookPlugin.this.logError("activateApp catch exception: %s"
+                , ex.getLocalizedMessage()
+            );
+        }
     }
 
     @Override

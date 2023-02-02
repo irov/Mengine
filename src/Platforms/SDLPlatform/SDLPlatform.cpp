@@ -342,11 +342,6 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE( "client resolution width %d height %d"
-            , rect.w
-            , rect.h
-        );
-
         *_resolution = Resolution( (uint32_t)rect.w, (uint32_t)rect.h );
 
         return true;
@@ -3527,10 +3522,11 @@ namespace Mengine
                         }break;
                     case SDL_WINDOWEVENT_RESIZED:
                         {
-                            Resolution windowResolution( sdlEvent.window.data1, sdlEvent.window.data2 );
+                            Sint32 width = sdlEvent.window.data1;
+                            Sint32 height = sdlEvent.window.data2;
 
-                            APPLICATION_SERVICE()
-                                ->changeWindowResolution( windowResolution );
+                            MENGINE_UNUSED( width );
+                            MENGINE_UNUSED( height );
                         }break;
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
                         {

@@ -28,7 +28,7 @@ namespace Mengine
             return true;
         }
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, &RenderCamera::notifyChangeWindowResolution, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, &RenderCamera::notifyChangeWindowResolution_, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateViewMatrix_();
         this->invalidateProjectionMatrix_();
@@ -60,7 +60,7 @@ namespace Mengine
         mt::inv_m4_m4( m_viewProjectionMatrixInv, m_viewProjectionMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCamera::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
+    void RenderCamera::notifyChangeWindowResolution_( bool _fullscreen, const Resolution & _resolution )
     {
         MENGINE_UNUSED( _fullscreen );
         MENGINE_UNUSED( _resolution );

@@ -332,8 +332,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::getMaxClientResolution( Resolution * const _resolution ) const
     {
+        int displayIndex = -1;
+        
+        if( m_sdlWindow == nullptr )
+        {
+            displayIndex = 0;
+        }
+        else
+        {
+            displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
+
+            if( displayIndex == -1 )
+            {
+                LOGGER_ERROR( "invalid get window display: %s"
+                    , SDL_GetError()
+                );
+
+                return false;
+            }
+        }
+
         SDL_Rect rect;
-        if( SDL_GetDisplayUsableBounds( 0, &rect ) != 0 )
+        if( SDL_GetDisplayUsableBounds( displayIndex, &rect ) != 0 )
         {
             LOGGER_ERROR( "invalid get max client resolution: %s"
                 , SDL_GetError()
@@ -1594,6 +1614,13 @@ namespace Mengine
                     , displayBounds.h
                 );
             }
+            else
+            {
+                LOGGER_ERROR( "SDL display [%d] bounds get error: %s"
+                    , displayIndex
+                    , SDL_GetError()
+                );
+            }
 
             SDL_Rect usableBounds;
             if( SDL_GetDisplayUsableBounds( displayIndex, &usableBounds ) == 0 )
@@ -1605,6 +1632,21 @@ namespace Mengine
                     , usableBounds.h
                 );
             }
+            else
+            {
+                LOGGER_ERROR( "SDL display [%d] usable bounds get error: %s"
+                    , displayIndex
+                    , SDL_GetError()
+                );
+            }
+        }
+        else
+        {
+            LOGGER_ERROR( "invalid get window display: %s"
+                , SDL_GetError()
+            );
+
+            return false;
         }
 
         return true;
@@ -1707,6 +1749,15 @@ namespace Mengine
         else
         {
             displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
+
+            if( displayIndex == -1 )
+            {
+                LOGGER_ERROR( "invalid get window display: %s"
+                    , SDL_GetError()
+                );
+
+                return false;
+            }
         }
 #endif
 
@@ -3251,6 +3302,8 @@ namespace Mengine
 
         SDL_Window * window;
 
+        const Char * projectTitle_str = m_projectTitle.c_str();
+
         if( _fullscreen == false )
         {
             int width = static_cast<int>(_windowResolution.getWidth());
@@ -3259,7 +3312,7 @@ namespace Mengine
             uint32_t window_x_mode = (mode.w > width) ? SDL_WINDOWPOS_CENTERED : 50;
             uint32_t window_y_mode = (mode.h > height) ? SDL_WINDOWPOS_CENTERED : 50;
 
-            window = SDL_CreateWindow( m_projectTitle.c_str()
+            window = SDL_CreateWindow( projectTitle_str
                 , window_x_mode
                 , window_y_mode
                 , width
@@ -3269,7 +3322,7 @@ namespace Mengine
         }
         else
         {
-            window = SDL_CreateWindow( m_projectTitle.c_str()
+            window = SDL_CreateWindow( projectTitle_str
                 , SDL_WINDOWPOS_UNDEFINED
                 , SDL_WINDOWPOS_UNDEFINED
                 , mode.w

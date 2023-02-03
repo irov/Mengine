@@ -56,7 +56,7 @@ namespace Mengine
         void updateViewProjectionMatrix_() const;
 
     protected:
-        void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
+        void notifyChangeWindowResolution_( bool _fullscreen, const Resolution & _resolution );
 
     protected:
         mutable mt::mat4f m_viewMatrix;

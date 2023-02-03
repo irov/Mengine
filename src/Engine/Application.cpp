@@ -1879,9 +1879,9 @@ namespace Mengine
             return true;
         }
 
-        Resolution dres;
+        Resolution maxClientResolution;
         if( PLATFORM_SERVICE()
-            ->getMaxClientResolution( &dres ) == false )
+            ->getMaxClientResolution( &maxClientResolution ) == false )
         {
             LOGGER_MESSAGE( "Invalid get max client resolution" );
 
@@ -1889,8 +1889,8 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "Max Client Resolution: %u %u"
-            , dres.getWidth()
-            , dres.getHeight()
+            , maxClientResolution.getWidth()
+            , maxClientResolution.getHeight()
         );
 
         LOGGER_MESSAGE( "Window Resolution: %u %u"
@@ -1900,35 +1900,35 @@ namespace Mengine
 
         float aspect = m_windowResolution.getAspectRatio();
 
-        uint32_t resHeight = m_windowResolution.getHeight();
-        uint32_t resWidth = m_windowResolution.getWidth();
+        uint32_t windowResolutionWidth = m_windowResolution.getWidth();
+        uint32_t windowResolutionHeight = m_windowResolution.getHeight();
 
-        uint32_t dresHeight = dres.getHeight();
-        uint32_t dresWidth = dres.getWidth();
+        uint32_t maxClientResolutionWidth = maxClientResolution.getWidth();
+        uint32_t maxClientResolutionHeight = maxClientResolution.getHeight();
 
-        if( resHeight > dresHeight )
+        if( windowResolutionHeight > maxClientResolutionHeight )
         {
-            uint32_t new_witdh = static_cast<uint32_t>(float( resHeight ) * aspect + 0.5f);
-            uint32_t new_height = dresHeight;
+            uint32_t new_witdh = static_cast<uint32_t>(float( windowResolutionHeight ) * aspect + 0.5f);
+            uint32_t new_height = maxClientResolutionHeight;
 
-            if( new_witdh > dresWidth )
+            if( new_witdh > maxClientResolutionWidth )
             {
-                new_witdh = dresWidth;
-                new_height = static_cast<uint32_t>(float( dresWidth ) / aspect + 0.5f);
+                new_witdh = maxClientResolutionWidth;
+                new_height = static_cast<uint32_t>(float( maxClientResolutionWidth ) / aspect + 0.5f);
             }
 
             _windowResolution->setWidth( new_witdh );
             _windowResolution->setHeight( new_height );
         }
-        else if( resWidth > dresWidth )
+        else if( windowResolutionWidth > maxClientResolutionWidth )
         {
-            uint32_t new_witdh = dresWidth;
-            uint32_t new_height = static_cast<uint32_t>(float( resWidth ) / aspect + 0.5f);
+            uint32_t new_witdh = maxClientResolutionWidth;
+            uint32_t new_height = static_cast<uint32_t>(float( windowResolutionWidth ) / aspect + 0.5f);
 
-            if( new_height > dresHeight )
+            if( new_height > maxClientResolutionHeight )
             {
-                new_witdh = static_cast<uint32_t>(float( dresHeight ) * aspect + 0.5f);
-                new_height = dresHeight;
+                new_witdh = static_cast<uint32_t>(float( maxClientResolutionHeight ) * aspect + 0.5f);
+                new_height = maxClientResolutionHeight;
             }
 
             _windowResolution->setWidth( new_witdh );
@@ -1951,16 +1951,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::calcRenderViewport_( const Resolution & _resolution, Viewport * const _viewport )
     {
-        uint32_t width = _resolution.getWidth();
-        uint32_t height = _resolution.getHeight();
-
-        LOGGER_INFO( "system", "resolution [%u %u]"
-            , width
-            , height
-        );
-
-        float rw = (float)width;
-        float rh = (float)height;
+        float width = _resolution.getWidthF();
+        float height = _resolution.getHeightF();
 
         float r_aspect = _resolution.getAspectRatio();
         
@@ -1976,23 +1968,23 @@ namespace Mengine
                 contentAspect = c_aspect;
             }
 
-            float one_div_width = 1.f / rw;
-            float one_div_height = 1.f / rh;
+            float one_div_width = 1.f / width;
+            float one_div_height = 1.f / height;
 
             float dw = 1.f;
-            float dh = rw / contentAspect * one_div_height;
+            float dh = width / contentAspect * one_div_height;
 
             if( dh > 1.f )
             {
                 dh = 1.f;
-                dw = rh * contentAspect * one_div_width;
+                dw = height * contentAspect * one_div_width;
             }
 
-            float areaWidth = MENGINE_CEILF( dw * rw );
-            float areaHeight = MENGINE_CEILF( dh * rh );
+            float areaWidth = MENGINE_CEILF( dw * width );
+            float areaHeight = MENGINE_CEILF( dh * height );
 
-            _viewport->begin.x = MENGINE_CEILF( (rw - areaWidth) * 0.5f );
-            _viewport->begin.y = MENGINE_CEILF( (rh - areaHeight) * 0.5f );
+            _viewport->begin.x = MENGINE_CEILF( (width - areaWidth) * 0.5f );
+            _viewport->begin.y = MENGINE_CEILF( (height - areaHeight) * 0.5f );
             _viewport->end.x = _viewport->begin.x + areaWidth;
             _viewport->end.y = _viewport->begin.y + areaHeight;
         }
@@ -2000,8 +1992,8 @@ namespace Mengine
         {
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;
-            _viewport->end.x = rw;
-            _viewport->end.y = rh;
+            _viewport->end.x = width;
+            _viewport->end.y = height;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2045,6 +2037,10 @@ namespace Mengine
         {
             return;
         }
+
+        LOGGER_MESSAGE( "Set fullscreen mode: %d"
+            , _fullscreen
+        );
 
         m_fullscreen = _fullscreen;
 
@@ -2215,7 +2211,7 @@ namespace Mengine
 
         m_locale = _locale;
 
-        LOGGER_MESSAGE( "new locale '%s' old '%s'"
+        LOGGER_MESSAGE( "set locale '%s' old '%s'"
             , m_locale.c_str()
             , prevLocale.c_str()
         );
@@ -2242,6 +2238,10 @@ namespace Mengine
             return;
         }
 
+        LOGGER_MESSAGE( "Set fixed content resolution: %d"
+            , _fixedContetResolution
+        );
+
         m_fixedContentResolution = _fixedContetResolution;
 
         this->invalidateWindow_();
@@ -2261,6 +2261,10 @@ namespace Mengine
         {
             return;
         }
+
+        LOGGER_MESSAGE( "Set fixed display resolution: %d"
+            , _fixedDisplayResolution
+        );
         
         m_fixedDisplayResolution = _fixedDisplayResolution;
 
@@ -2277,7 +2281,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::getGameViewport( float * const _aspect, Viewport * const _viewport ) const
     {
-        float aspect = m_currentResolution.getAspectRatio();
+        float aspect = m_contentResolution.getAspectRatio();
 
         float width = m_contentResolution.getWidthF();
         float height = m_contentResolution.getHeightF();

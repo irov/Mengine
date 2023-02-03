@@ -379,6 +379,8 @@ namespace Mengine
         }
 
         m_renderSystem->changeWindowMode( m_windowResolution, m_fullscreen );
+
+        this->restoreRenderSystemStates_();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::onWindowClose()

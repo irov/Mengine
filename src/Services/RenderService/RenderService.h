@@ -89,11 +89,11 @@ namespace Mengine
         void clearFrameBuffer_();
 
     protected:
-        void restoreTextureStage_( uint32_t _stage );
-
         void restoreRenderSystemStates_();
         void restoreRenderFrameStates_();
+        void restoreTextureStage_( uint32_t _stage );
 
+    protected:
         void renderPrimitive_( const RenderPrimitive * _renderObject );
 
     protected:

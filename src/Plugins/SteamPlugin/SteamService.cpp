@@ -238,7 +238,7 @@ namespace Mengine
 
         m_userStats->StoreStats();
 
-        LOGGER_MESSAGE( "Steam set achievement '%s'"
+        LOGGER_INFO( "steam", "Steam set achievement '%s'"
             , _name.c_str()
         );
 
@@ -291,7 +291,7 @@ namespace Mengine
 
         m_userStats->StoreStats();
 
-        LOGGER_MESSAGE( "Steam set state '%s' value '%u'"
+        LOGGER_INFO( "steam", "Steam set state '%s' value '%u'"
             , _name.c_str()
             , _value
         );
@@ -322,7 +322,7 @@ namespace Mengine
 
         m_userStats->StoreStats();
 
-        LOGGER_MESSAGE( "Steam set state '%s' value '%f'"
+        LOGGER_INFO( "steam", "Steam set state '%s' value '%f'"
             , _name.c_str()
             , _value
         );
@@ -355,7 +355,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "available game languages: %s"
+        LOGGER_INFO( "steam", "available game languages: %s"
             , AvailableGameLanguages
         );
 
@@ -368,7 +368,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "steam game language: %s"
+        LOGGER_INFO( "steam", "steam game language: %s"
             , CurrentGameLanguage
         );
 

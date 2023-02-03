@@ -97,7 +97,7 @@ namespace Mengine
 
         for( const String & frameworkPack : frameworkPacksSettings )
         {
-            LOGGER_MESSAGE( "Package '%s'"
+            LOGGER_MESSAGE( "package '%s'"
                 , frameworkPack.c_str()
             );
 
@@ -129,7 +129,7 @@ namespace Mengine
 
         for( const String & resourcePack : resourcePacksSettings )
         {
-            LOGGER_MESSAGE( "Package '%s'"
+            LOGGER_MESSAGE( "package '%s'"
                 , resourcePack.c_str()
             );
 
@@ -161,7 +161,7 @@ namespace Mengine
 
         for( const String & languagePack : languagePackSettings )
         {
-            LOGGER_MESSAGE( "Package '%s'"
+            LOGGER_MESSAGE( "package '%s'"
                 , languagePack.c_str()
             );
 

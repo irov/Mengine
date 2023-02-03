@@ -40,19 +40,19 @@ namespace Mengine
 
         if( device == nullptr )
         {
-            LOGGER_ERROR( "Failed to open 'generic software' sound device try default..." );
+            LOGGER_ERROR( "failed to open 'default' sound device" );
 
             device = alcOpenDevice( "Generic Software" );
 
             if( device == nullptr )
             {
-                LOGGER_ERROR( "Failed to open default sound device try hardware" );
+                LOGGER_ERROR( "failed to open 'Generic Software' sound device" );
 
                 device = alcOpenDevice( "Generic Hardware" );
 
                 if( device == nullptr )
                 {
-                    LOGGER_ERROR( "Failed to open hardware sound device.." );
+                    LOGGER_ERROR( "failed to open 'Generic Hardware' sound device" );
 
                     return false;
                 }
@@ -65,7 +65,7 @@ namespace Mengine
 
         if( context == nullptr )
         {
-            LOGGER_ERROR( "Failed to create context" );
+            LOGGER_ERROR( "failed to create context" );
 
             OPENAL_CALL( alcCloseDevice, (m_device) );
             m_device = nullptr;
@@ -79,7 +79,7 @@ namespace Mengine
 
         if( currentResult == ALC_FALSE )
         {
-            LOGGER_ERROR( "Failed to make context current" );
+            LOGGER_ERROR( "failed to make context current" );
 
             OPENAL_CALL( alcDestroyContext, (m_context) );
             m_context = nullptr;
@@ -103,23 +103,23 @@ namespace Mengine
 
         RET_OPENAL_CALL( const ALCchar *, defaultDeviceSpecifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
 
-        LOGGER_MESSAGE( "OpenAL device specifier: %s"
+        LOGGER_INFO( "openal", "OpenAL device specifier: %s"
             , defaultDeviceSpecifier
         );
 
-        LOGGER_MESSAGE( "OpenAL version: %s"
+        LOGGER_INFO( "openal", "OpenAL version: %s"
             , alGetString( AL_VERSION )
         );
 
-        LOGGER_MESSAGE( "OpenAL vendor: %s"
+        LOGGER_INFO( "openal", "OpenAL vendor: %s"
             , alGetString( AL_VENDOR )
         );
 
-        LOGGER_MESSAGE( "OpenAL renderer: %s"
+        LOGGER_INFO( "openal", "OpenAL renderer: %s"
             , alGetString( AL_RENDERER )
         );
 
-        LOGGER_MESSAGE( "OpenAL extensions: %s"
+        LOGGER_INFO( "openal", "OpenAL extensions: %s"
             , alGetString( AL_EXTENSIONS )
         );
 

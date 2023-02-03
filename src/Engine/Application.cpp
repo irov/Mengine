@@ -359,7 +359,7 @@ namespace Mengine
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
         }
 
-        LOGGER_MESSAGE( "Application company '%s' project '%s' version [%u] locale '%s'"
+        LOGGER_MESSAGE( "application company '%s' project '%s' version [%u] locale '%s'"
             , m_companyName.c_str()
             , m_projectName.c_str()
             , m_projectVersion
@@ -471,7 +471,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseTypes_()
     {
-        LOGGER_MESSAGE( "Register Base Generator..." );
+        LOGGER_MESSAGE( "register Base Generator..." );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<FileContent, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -502,7 +502,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseTypes_()
     {
-        LOGGER_MESSAGE( "Unregister Base Generator..." );
+        LOGGER_MESSAGE( "unregister Base Generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), nullptr );
@@ -519,7 +519,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
     {
-        LOGGER_MESSAGE( "Register Node Generator..." );
+        LOGGER_MESSAGE( "register Node Generator..." );
 
 #define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
@@ -584,7 +584,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseNodeTypes_()
     {
-        LOGGER_MESSAGE( "Unregister Node Generator..." );
+        LOGGER_MESSAGE( "unregister Node Generator..." );
 
 #define NODE_FACTORY( Type )\
         PROTOTYPE_SERVICE()\
@@ -777,30 +777,30 @@ namespace Mengine
         Resolution currentResolution;
         if( this->calcWindowResolution( fullscreen, &currentResolution ) == false )
         {
-            LOGGER_ERROR( "invalid calc window resolution" );
+            LOGGER_ERROR( "Invalid calc window resolution" );
 
             return false;
         }
 
-        m_currentResolution = currentResolution;
-
-        LOGGER_MESSAGE( "current resolution [%u:%u] %s"
+        LOGGER_MESSAGE( "set current resolution [%u:%u] %s"
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
         );
 
+        m_currentResolution = currentResolution;
+
         Viewport renderViewport;
         this->calcRenderViewport_( m_currentResolution, &renderViewport );
 
-        m_renderViewport = renderViewport;
-
-        LOGGER_MESSAGE( "render viewport %f %f - %f %f"
-            , m_renderViewport.begin.x
-            , m_renderViewport.begin.y
-            , m_renderViewport.getWidth()
-            , m_renderViewport.getHeight()
+        LOGGER_MESSAGE( "set render viewport [%f %f - %f %f]"
+            , renderViewport.begin.x
+            , renderViewport.begin.y
+            , renderViewport.getWidth()
+            , renderViewport.getHeight()
         );
+
+        m_renderViewport = renderViewport;
 
         bool result = RENDER_SERVICE()
             ->createRenderWindow( m_currentResolution
@@ -1883,17 +1883,17 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->getMaxClientResolution( &maxClientResolution ) == false )
         {
-            LOGGER_MESSAGE( "Invalid get max client resolution" );
+            LOGGER_MESSAGE( "invalid get max client resolution" );
 
             return false;
         }
 
-        LOGGER_MESSAGE( "Max Client Resolution: %u %u"
+        LOGGER_MESSAGE( "max client resolution: %u %u"
             , maxClientResolution.getWidth()
             , maxClientResolution.getHeight()
         );
 
-        LOGGER_MESSAGE( "Window Resolution: %u %u"
+        LOGGER_MESSAGE( "window resolution: %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
         );
@@ -2038,7 +2038,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "Set fullscreen mode: %d"
+        LOGGER_MESSAGE( "set fullscreen mode: %d"
             , _fullscreen
         );
 
@@ -2076,7 +2076,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "Current Resolution [%s] [%u %u]"
+        LOGGER_MESSAGE( "current resolution [%s] [%u %u]"
             , fullscreen == true ? "Fullscreen" : "Window"
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
@@ -2093,14 +2093,17 @@ namespace Mengine
             return;
         }
 
-        this->calcRenderViewport_( m_currentResolution, &m_renderViewport );
+        Viewport renderViewport;
+        this->calcRenderViewport_( m_currentResolution, &renderViewport );
 
-        LOGGER_MESSAGE( "Render Viewport [%f %f - %f %f]"
-            , m_renderViewport.begin.x
-            , m_renderViewport.begin.y
-            , m_renderViewport.getWidth()
-            , m_renderViewport.getHeight()
+        LOGGER_MESSAGE( "set render viewport [%f %f - %f %f]"
+            , renderViewport.begin.x
+            , renderViewport.begin.y
+            , renderViewport.getWidth()
+            , renderViewport.getHeight()
         );
+
+        m_renderViewport = renderViewport;
 
         RENDER_SERVICE()
             ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, fullscreen );
@@ -2121,7 +2124,7 @@ namespace Mengine
             GAME_SERVICE()
                 ->setGameViewport( gameViewport, gameViewportAspect );
 
-            LOGGER_MESSAGE( "Game Viewport [%f %f - %f %f] Aspect [%f]"
+            LOGGER_MESSAGE( "game viewport [%f %f - %f %f] aspect [%f]"
                 , gameViewport.begin.x
                 , gameViewport.begin.y
                 , gameViewport.end.x
@@ -2238,7 +2241,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "Set fixed content resolution: %d"
+        LOGGER_MESSAGE( "set fixed content resolution: %d"
             , _fixedContetResolution
         );
 
@@ -2262,7 +2265,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "Set fixed display resolution: %d"
+        LOGGER_MESSAGE( "set fixed display resolution: %d"
             , _fixedDisplayResolution
         );
         

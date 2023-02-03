@@ -27,7 +27,7 @@ namespace Mengine
                     return;
                 }
 
-                LOGGER_ERROR( "Vocabulary '%s' type '%s'"
+                LOGGER_ERROR( "vocabulary '%s' type '%s'"
                     , _category.c_str()
                     , _type.c_str()
                 );

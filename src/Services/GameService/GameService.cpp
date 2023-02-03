@@ -398,7 +398,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::run()
     {
-        LOGGER_MESSAGE( "Run game" );
+        LOGGER_MESSAGE( "run game" );
 
         EVENTABLE_METHOD( EVENT_GAME_RUN )
             ->onGameRun();
@@ -406,7 +406,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::interruption()
     {
-        LOGGER_MESSAGE( "Interruption game" );
+        LOGGER_MESSAGE( "interruption game" );
 
         EVENTABLE_METHOD( EVENT_GAME_INTERRUPTION )
             ->onGameInterruption();
@@ -414,7 +414,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::stop()
     {
-        LOGGER_MESSAGE( "Stop game" );
+        LOGGER_MESSAGE( "stop game" );
 
         EVENTABLE_METHOD( EVENT_GAME_STOP )
             ->onGameStop();

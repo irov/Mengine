@@ -225,7 +225,7 @@ namespace Mengine
         DWORD unicode_userNameLen = UNLEN + 1;
         if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
         {
-            LOGGER_ERROR( "GetUserName invalid %s"
+            LOGGER_ERROR( "invalid GetUserName %s"
                 , Helper::Win32GetLastErrorMessage()
             );
 
@@ -781,64 +781,64 @@ namespace Mengine
             , SDL_GetPlatform()
         );
 
-        LOGGER_MESSAGE( "CPU: %d Count %d CacheLineSize"
+        LOGGER_INFO( "platform", "CPU: %d Count %d CacheLineSize"
             , SDL_GetCPUCount()
             , SDL_GetCPUCacheLineSize()
         );
 
-        LOGGER_MESSAGE( "CPU RDTSC: %d"
+        LOGGER_INFO( "platform", "CPU RDTSC: %d"
             , SDL_HasRDTSC()
         );
 
-        LOGGER_MESSAGE( "CPU AltiVec: %d"
+        LOGGER_INFO( "platform", "CPU AltiVec: %d"
             , SDL_HasAltiVec()
         );
 
-        LOGGER_MESSAGE( "CPU MMX: %d"
+        LOGGER_INFO( "platform", "CPU MMX: %d"
             , SDL_HasMMX()
         );
 
-        LOGGER_MESSAGE( "CPU 3DNow: %d"
+        LOGGER_INFO( "platform", "CPU 3DNow: %d"
             , SDL_Has3DNow()
         );
 
-        LOGGER_MESSAGE( "CPU SSE: %d"
+        LOGGER_INFO( "platform", "CPU SSE: %d"
             , SDL_HasSSE()
         );
 
-        LOGGER_MESSAGE( "CPU SSE2: %d"
+        LOGGER_INFO( "platform", "CPU SSE2: %d"
             , SDL_HasSSE2()
         );
 
-        LOGGER_MESSAGE( "CPU SSE3: %d"
+        LOGGER_INFO( "platform", "CPU SSE3: %d"
             , SDL_HasSSE3()
         );
 
-        LOGGER_MESSAGE( "CPU SSE41: %d"
+        LOGGER_INFO( "platform", "CPU SSE41: %d"
             , SDL_HasSSE41()
         );
 
-        LOGGER_MESSAGE( "CPU SSE42: %d"
+        LOGGER_INFO( "platform", "CPU SSE42: %d"
             , SDL_HasSSE42()
         );
 
-        LOGGER_MESSAGE( "CPU AVX: %d"
+        LOGGER_INFO( "platform", "CPU AVX: %d"
             , SDL_HasAVX()
         );
 
-        LOGGER_MESSAGE( "CPU AVX2: %d"
+        LOGGER_INFO( "platform", "CPU AVX2: %d"
             , SDL_HasAVX2()
         );
 
-        LOGGER_MESSAGE( "CPU AVX512F: %d"
+        LOGGER_INFO( "platform", "CPU AVX512F: %d"
             , SDL_HasAVX512F()
         );
 
-        LOGGER_MESSAGE( "CPU NEON: %d"
+        LOGGER_INFO( "platform", "CPU NEON: %d"
             , SDL_HasNEON()
         );
 
-        LOGGER_MESSAGE( "RAM: %d MB"
+        LOGGER_INFO( "platform", "RAM: %d MB"
             , SDL_GetSystemRAM()
         );
 
@@ -869,7 +869,7 @@ namespace Mengine
 
             if( isAccelerometer == true )
             {
-                LOGGER_MESSAGE( "Accelerometer found: %s"
+                LOGGER_MESSAGE( "accelerometer found: %s"
                     , joystickName
                 );
 
@@ -881,7 +881,7 @@ namespace Mengine
 
         if( m_sdlAccelerometer == nullptr )
         {
-            LOGGER_MESSAGE( "Accelerometer not found" );
+            LOGGER_MESSAGE( "accelerometer not found" );
         }
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -889,7 +889,7 @@ namespace Mengine
         DWORD UserNameLen = UNLEN + 1;
         if( ::GetUserName( UserNameBuffer, &UserNameLen ) == FALSE )
         {
-            LOGGER_ERROR( "GetUserName invalid %s"
+            LOGGER_ERROR( "invalid GetUserName %s"
                 , Helper::Win32GetLastErrorMessage()
             );
         }
@@ -898,7 +898,7 @@ namespace Mengine
         DWORD ComputerNameLen = MAX_COMPUTERNAME_LENGTH + 1;
         if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == FALSE )
         {
-            LOGGER_ERROR( "GetComputerName invalid %s"
+            LOGGER_ERROR( "invalid GetComputerName %s"
                 , Helper::Win32GetLastErrorMessage()
             );
         }
@@ -1509,39 +1509,39 @@ namespace Mengine
             );
         }
 
-        LOGGER_MESSAGE( "SDL_GL_CONTEXT_PROFILE_MASK: %d"
+        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_PROFILE_MASK: %d"
             , attribute_GL_CONTEXT_PROFILE_MASK
         );
 
-        LOGGER_MESSAGE( "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
+        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
             , attribute_GL_CONTEXT_MAJOR_VERSION
         );
 
-        LOGGER_MESSAGE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
+        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_MINOR_VERSION: %d"
             , attribute_GL_CONTEXT_MINOR_VERSION
         );
 
-        LOGGER_MESSAGE( "SDL_GL_RED_SIZE: %d"
+        LOGGER_INFO( "platform", "SDL_GL_RED_SIZE: %d"
             , attribute_SDL_GL_RED_SIZE
         );
 
-        LOGGER_MESSAGE( "SDL_GL_GREEN_SIZE: %d"
+        LOGGER_INFO( "platform", "SDL_GL_GREEN_SIZE: %d"
             , attribute_SDL_GL_GREEN_SIZE
         );
 
-        LOGGER_MESSAGE( "SDL_GL_BLUE_SIZE: %d"
+        LOGGER_INFO( "platform", "SDL_GL_BLUE_SIZE: %d"
             , attribute_SDL_GL_BLUE_SIZE
         );
 
-        LOGGER_MESSAGE( "SDL_GL_ALPHA_SIZE: %d"
+        LOGGER_INFO( "platform", "SDL_GL_ALPHA_SIZE: %d"
             , attribute_SDL_GL_ALPHA_SIZE
         );
 
-        LOGGER_MESSAGE( "SDL_GL_DEPTH_SIZE: %d"
+        LOGGER_INFO( "platform", "SDL_GL_DEPTH_SIZE: %d"
             , attribute_SDL_GL_DEPTH_SIZE
         );
 
-        LOGGER_MESSAGE( "SDL_GL_DOUBLEBUFFER: %d"
+        LOGGER_INFO( "platform", "SDL_GL_DOUBLEBUFFER: %d"
             , attribute_SDL_GL_DOUBLEBUFFER
         );
 
@@ -1551,7 +1551,7 @@ namespace Mengine
         int drawable_height;
         SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
 
-        LOGGER_MESSAGE( "SDL drawable size [%d, %d]"
+        LOGGER_INFO( "platform", "SDL drawable size [%d, %d]"
             , drawable_width
             , drawable_height
         );
@@ -1561,7 +1561,7 @@ namespace Mengine
         int win_height;
         SDL_GetWindowSize( m_sdlWindow, &win_width, &win_height );
 
-        LOGGER_MESSAGE( "SDL window size [%d, %d]"
+        LOGGER_INFO( "platform", "SDL window size [%d, %d]"
             , win_width
             , win_height
         );
@@ -1586,7 +1586,7 @@ namespace Mengine
         int win_min_height;
         SDL_GetWindowMinimumSize( m_sdlWindow, &win_min_width, &win_min_height );
 
-        LOGGER_MESSAGE( "SDL window min size [%d, %d]"
+        LOGGER_INFO( "platform", "SDL window min size [%d, %d]"
             , win_min_width
             , win_min_height
         );
@@ -1595,58 +1595,63 @@ namespace Mengine
         int win_max_height;
         SDL_GetWindowMaximumSize( m_sdlWindow, &win_max_width, &win_max_height );
 
-        LOGGER_MESSAGE( "SDL window max size [%d, %d]"
+        LOGGER_INFO( "platform", "SDL window max size [%d, %d]"
             , win_max_width
             , win_max_height
         );
 
-        int displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
+        Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
 
-        if( displayIndex >= 0 )
+        if( (flags & SDL_WINDOW_FULLSCREEN) != SDL_WINDOW_FULLSCREEN )
         {
-            SDL_Rect displayBounds;
-            if( SDL_GetDisplayBounds( displayIndex, &displayBounds ) == 0 )
+            int displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
+
+            if( displayIndex >= 0 )
             {
-                LOGGER_MESSAGE( "SDL display bounds [%d, %d] size [%d, %d]"
-                    , displayBounds.x
-                    , displayBounds.y
-                    , displayBounds.w
-                    , displayBounds.h
-                );
+                SDL_Rect displayBounds;
+                if( SDL_GetDisplayBounds( displayIndex, &displayBounds ) == 0 )
+                {
+                    LOGGER_INFO( "platform", "SDL display bounds [%d, %d] size [%d, %d]"
+                        , displayBounds.x
+                        , displayBounds.y
+                        , displayBounds.w
+                        , displayBounds.h
+                    );
+                }
+                else
+                {
+                    LOGGER_ERROR( "SDL display [%d] bounds get error: %s"
+                        , displayIndex
+                        , SDL_GetError()
+                    );
+                }
+
+                SDL_Rect usableBounds;
+                if( SDL_GetDisplayUsableBounds( displayIndex, &usableBounds ) == 0 )
+                {
+                    LOGGER_INFO( "platform", "SDL display usable bounds [%d, %d] size [%d, %d]"
+                        , usableBounds.x
+                        , usableBounds.y
+                        , usableBounds.w
+                        , usableBounds.h
+                    );
+                }
+                else
+                {
+                    LOGGER_ERROR( "SDL display [%d] usable bounds get error: %s"
+                        , displayIndex
+                        , SDL_GetError()
+                    );
+                }
             }
             else
             {
-                LOGGER_ERROR( "SDL display [%d] bounds get error: %s"
-                    , displayIndex
+                LOGGER_ERROR( "invalid get window display: %s"
                     , SDL_GetError()
                 );
-            }
 
-            SDL_Rect usableBounds;
-            if( SDL_GetDisplayUsableBounds( displayIndex, &usableBounds ) == 0 )
-            {
-                LOGGER_MESSAGE( "SDL display usable bounds [%d, %d] size [%d, %d]"
-                    , usableBounds.x
-                    , usableBounds.y
-                    , usableBounds.w
-                    , usableBounds.h
-                );
+                return false;
             }
-            else
-            {
-                LOGGER_ERROR( "SDL display [%d] usable bounds get error: %s"
-                    , displayIndex
-                    , SDL_GetError()
-                );
-            }
-        }
-        else
-        {
-            LOGGER_ERROR( "invalid get window display: %s"
-                , SDL_GetError()
-            );
-
-            return false;
         }
 
         return true;
@@ -3269,7 +3274,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE( "num video displays: %d"
+        LOGGER_INFO( "platform", "num video displays: %d"
             , SDL_GetNumVideoDisplays()
         );
 
@@ -3343,9 +3348,9 @@ namespace Mengine
 
         m_sdlWindow = window;
 
-        LOGGER_MESSAGE( "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
-        LOGGER_MESSAGE( "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
-        LOGGER_MESSAGE( "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
+        LOGGER_INFO( "platform", "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
+        LOGGER_INFO( "platform", "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
+        LOGGER_INFO( "platform", "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
 
         return true;
     }

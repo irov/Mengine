@@ -32,14 +32,11 @@ namespace Mengine
         
         MENGINE_UNUSED( version );
 
-        LOGGER_MESSAGE( "WebP Version: %u.%u.%u"
+        LOGGER_MESSAGE( "WebP version: %u.%u.%u [0x%04x]"
             , (version >> 16) & 0xff
             , (version >> 8) & 0xff
             , (version >> 0) & 0xff
-        );
-
-        LOGGER_MESSAGE( "WebP ABI Version: %p"
-            , (void *)WEBP_DECODER_ABI_VERSION
+            , WEBP_DECODER_ABI_VERSION
         );
 
         Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ), MENGINE_DOCUMENT_FACTORABLE );

@@ -80,7 +80,7 @@ namespace Mengine
         FT_Int apatch;
         FT_Library_Version( ftlibrary, &amajor, &aminor, &apatch );
 
-        LOGGER_MESSAGE( "TTF Version: %d.%d.%d"
+        LOGGER_MESSAGE( "TTF version: %d.%d.%d"
             , amajor
             , aminor
             , apatch

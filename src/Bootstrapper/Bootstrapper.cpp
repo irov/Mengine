@@ -840,7 +840,7 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
-        LOGGER_MESSAGE( "Current Folder: %s"
+        LOGGER_MESSAGE( "current folder: %s"
             , currentPath
         );
 
@@ -983,7 +983,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createStaticPlugins_()
     {
-        LOGGER_MESSAGE( "Plugins..." );
+        LOGGER_MESSAGE( "create Plugins..." );
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
         MENGINE_ADD_PLUGIN( Sentry, "Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
@@ -1773,7 +1773,7 @@ namespace Mengine
 
         if( m_loggerFile != nullptr )
         {
-            LOGGER_MESSAGE( "Finish log successful" );
+            LOGGER_MESSAGE( "finish log successful" );
 
             LOGGER_SERVICE()
                 ->unregisterLogger( m_loggerFile );

@@ -56,7 +56,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::_initializeService()
     {
-        LOGGER_MESSAGE( "Initializing OpenGL RenderSystem..." );
+        LOGGER_MESSAGE( "initializing OpenGLRenderSystem..." );
 
 #ifndef MENGINE_RENDER_OPENGL_ES
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );
@@ -169,35 +169,42 @@ namespace Mengine
 #ifdef MENGINE_RENDER_OPENGL_NORMAL
         Mengine::initialize_GLEXT();
 #endif
+        const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
+        OPENGL_RENDER_CHECK_ERROR();
 
-        LOGGER_MESSAGE( "OpenGL driver properties:" );
+        LOGGER_MESSAGE( "OpenGL version: %s"
+            , versionStr 
+        );
 
         const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
         OPENGL_RENDER_CHECK_ERROR();
 
-        LOGGER_MESSAGE( "  Vendor: %s", vendorStr );        
+        LOGGER_INFO( "openal", "OpenGL vendor: %s"
+            , vendorStr 
+        );
 
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
         OPENGL_RENDER_CHECK_ERROR();
 
-        LOGGER_MESSAGE( "  Renderer: %s", rendererStr );        
-
-        const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
-        OPENGL_RENDER_CHECK_ERROR();
-
-        LOGGER_MESSAGE( "  Version: %s", versionStr );        
+        LOGGER_INFO( "openal", "OpenGL renderer: %s"
+            , rendererStr 
+        );      
 
 #ifdef MENGINE_RENDER_OPENGL_ES
         const Char * extensionsStr = reinterpret_cast<const Char *>(glGetString( GL_EXTENSIONS ));
         OPENGL_RENDER_CHECK_ERROR();
 
-        LOGGER_MESSAGE( "  Extensions: %s", extensionsStr );        
+        LOGGER_INFO( "openal", "OpenGL extensions: %s"
+            , extensionsStr 
+        );
 #endif
 
         const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
         OPENGL_RENDER_CHECK_ERROR();
 
-        LOGGER_MESSAGE( "  Shading Language Version: %s", shadingLanguageVersion );
+        LOGGER_INFO( "openal", "OpenGL shading language version: %s"
+            , shadingLanguageVersion 
+        );
 
         GLint maxCombinedTextureImageUnits;
         GLCALL( glGetIntegerv, (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits) );

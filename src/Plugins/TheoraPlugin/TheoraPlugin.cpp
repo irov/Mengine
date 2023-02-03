@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraPlugin::_initializePlugin()
     {
-        LOGGER_MESSAGE( "Video Theora Version: %s"
+        LOGGER_MESSAGE( "Video Theora version: %s"
             , theora_version_string()
         );
 

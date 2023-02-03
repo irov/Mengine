@@ -77,7 +77,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( pExceptionPointers );
 
-        LOGGER_ERROR( "Exception catch" );
+        LOGGER_ERROR( "exception catch" );
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()

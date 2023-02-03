@@ -505,7 +505,7 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "Connecting error: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
                         , responseError.c_str()
                         , responseCode
                         , requestId
@@ -518,7 +518,7 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "Connecting error: %s data: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
                         , responseError.c_str()
                         , responseData.c_str()
                         , responseCode
@@ -536,7 +536,7 @@ namespace Mengine
 
                 if( m_workerURL.empty() == true )
                 {
-                    LOGGER_ERROR( "Connecting response error: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "connecting response error: %s [code %u] [id %u]"
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -565,7 +565,7 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "Connect response error: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "connect response error: %s [code %u] [id %u]"
                         , responseError.c_str()
                         , responseCode
                         , requestId
@@ -578,7 +578,7 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "Connect response error: %s data: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "connect response error: %s data: %s [code %u] [id %u]"
                         , responseError.c_str()
                         , responseData.c_str()
                         , responseCode
@@ -597,7 +597,7 @@ namespace Mengine
 
                 if( m_revision != revision_from )
                 {
-                    LOGGER_ERROR( "Connect out of sync revision %u != from %u: %s [code %u] [id %u]"
+                    LOGGER_ERROR( "connect out of sync revision %u != from %u: %s [code %u] [id %u]"
                         , m_revision
                         , revision_from
                         , responseData.c_str()

@@ -35,7 +35,7 @@ namespace Mengine
 
             if( scriptWrapper == nullptr )
             {
-                LOGGER_WARNING( "Scriptable category '%s' prototype '%s' generator not found script wrapping"
+                LOGGER_WARNING( "scriptable category '%s' prototype '%s' generator not found script wrapping"
                     , this->getCategory().c_str()
                     , prototype.c_str()
                 );

@@ -418,7 +418,8 @@ namespace Mengine
 
         if( loader->load( RenderImageInterfacePtr( this ) ) == false )
         {
-            LOGGER_ERROR( "Invalid decode image"
+            LOGGER_ERROR( "invalid decode image [%u]"
+                , m_uid
             );
 
             return false;

@@ -45,6 +45,30 @@ public class MengineApplication extends Application {
         return plugin;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    @SuppressWarnings("unchecked")
+    public <T> T getPlugin(Class<T> cls) {
+        String name;
+
+        try {
+            Field PLUGIN_NAME = cls.getField("PLUGIN_NAME");
+
+            name = (String)PLUGIN_NAME.get(null);
+        } catch (NoSuchFieldException ex) {
+            Log.e(TAG, "plugin not found field PLUGIN_NAME: " + cls.getName());
+
+            return null;
+        } catch (IllegalAccessException ex) {
+            Log.e(TAG, "plugin invalid field PLUGIN_NAME: " + cls.getName());
+
+            return null;
+        }
+
+        MenginePlugin plugin = this.findPlugin(name);
+
+        return (T)plugin;
+    }
+
     protected boolean createPlugin(String type) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
 

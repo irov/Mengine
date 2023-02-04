@@ -17,7 +17,7 @@ public class MengineAppLovinFirebaseAnalytics implements MengineAppLovinAnalytic
 
     @Override
     public boolean initializeAnalytics(MenginePlugin plugin, MengineActivity activity) {
-        MengineFirebaseAnalyticsPlugin firebaseAnalyticsPlugin = activity.findPlugin(MengineFirebaseAnalyticsPlugin.class);
+        MengineFirebaseAnalyticsPlugin firebaseAnalyticsPlugin = activity.getPlugin(MengineFirebaseAnalyticsPlugin.class);
 
         if (firebaseAnalyticsPlugin == null) {
             return false;

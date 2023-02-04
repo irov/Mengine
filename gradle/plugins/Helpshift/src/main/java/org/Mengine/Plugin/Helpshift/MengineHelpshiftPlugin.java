@@ -58,6 +58,15 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
      */
 
     @Override
+    public void onEvent(MengineActivity activity, String id, Object ... args) {
+        if (id == "PushToken") {
+            String token = (String)args[0];
+
+            Helpshift.registerPushToken(token);
+        }
+    }
+
+    @Override
     public void onExtension(MengineActivity activity) {
         this.addExtension("org.Mengine.Plugin.Helpshift.MengineHelpshiftDevDebuggerExtension");
     }

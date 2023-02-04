@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.Adjust;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.adjust.sdk.Adjust;
@@ -22,6 +23,17 @@ public class MengineAdjustPlugin extends MenginePlugin {
      * событие о пукопку чего либо
      * void revenueTracking(String token, double amount, String currency)
      */
+
+    @Override
+    public void onEvent(MengineActivity activity, String id, Object ... args) {
+        if (id == "PushToken") {
+            String token = (String)args[0];
+
+            final Context context = activity.getApplicationContext();
+
+            Adjust.setPushToken(token, context);
+        }
+    }
 
     @Override
     public void onAppCreate(MengineApplication application) {

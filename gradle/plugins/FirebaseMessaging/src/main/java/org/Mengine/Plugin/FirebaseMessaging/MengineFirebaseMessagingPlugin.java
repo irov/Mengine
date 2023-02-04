@@ -5,8 +5,10 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 
 import android.content.Context;
@@ -45,5 +47,25 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin {
                         }
                     });
         }
+    }
+
+    public void onMessageReceived(final RemoteMessage remoteMessage) {
+        //ToDo
+    }
+
+    public void onDeletedMessages() {
+        //ToDo
+    }
+
+    public void onMessageSent(@NonNull String msgId) {
+        //ToDo
+    }
+
+    public void onSendError(@NonNull String msgId, @NonNull Exception exception) {
+        //ToDo
+    }
+
+    public void onNewToken(@NonNull String token) {
+        //ToDo
     }
 }

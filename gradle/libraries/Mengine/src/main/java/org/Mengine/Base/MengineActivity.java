@@ -148,32 +148,16 @@ public class MengineActivity extends SDLActivity {
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
-    public <T> T findPlugin(Class<T> cls) {
+    public <T> T getPlugin(Class<T> cls) {
         if (m_destroy == true) {
-            return null;
-        }
-
-        String name;
-
-        try {
-            Field PLUGIN_NAME = cls.getField("PLUGIN_NAME");
-
-            name = (String)PLUGIN_NAME.get(null);
-        } catch (NoSuchFieldException ex) {
-            Log.e(TAG, "MengineActivity plugin not found field PLUGIN_NAME: " + cls.getName());
-
-            return null;
-        } catch (IllegalAccessException ex) {
-            Log.e(TAG, "MengineActivity plugin invalid field PLUGIN_NAME: " + cls.getName());
-
             return null;
         }
 
         MengineApplication app = (MengineApplication)this.getApplication();
 
-        MenginePlugin plugin = app.findPlugin(name);
+        T plugin = app.getPlugin(cls);
 
-        return (T)plugin;
+        return plugin;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void addLoggerPlugin(MenginePlugin plugin) {

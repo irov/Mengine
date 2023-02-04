@@ -48,6 +48,15 @@ public class MengineFacebookPlugin extends MenginePlugin {
     private String m_facebookUserId;
 
     @Override
+    public void onEvent(MengineActivity activity, String id, Object ... args) {
+        if (id == "PushToken") {
+            String token = (String)args[0];
+
+            AppEventsLogger.setPushNotificationsRegistrationId(token);
+        }
+    }
+
+    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) {
             FacebookSdk.setIsDebugEnabled(true);

@@ -2284,27 +2284,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::getGameViewport( float * const _aspect, Viewport * const _viewport ) const
     {
-        float aspect = m_contentResolution.getAspectRatio();
-
-        float width = m_contentResolution.getWidthF();
-        float height = m_contentResolution.getHeightF();
+        float contentAspect = m_contentResolution.getAspectRatio();
+        float contentWidth = m_contentResolution.getWidthF();
+        float contentHeight = m_contentResolution.getHeightF();
 
         if( m_fixedContentResolution == false )
         {
-            *_aspect = aspect;
+            *_aspect = contentAspect;
 
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;
-            _viewport->end.x = width;
-            _viewport->end.y = height;
+            _viewport->end.x = contentWidth;
+            _viewport->end.y = contentHeight;
 
             return;
         }
 
+        float currentAspect = m_currentResolution.getAspectRatio();
+
         float bestAspect;
         Viewport aspectRatioViewport;
-
-        if( Helper::findBestAspectViewport( m_aspectRatioViewports, aspect, &bestAspect, &aspectRatioViewport ) == true )
+        if( Helper::findBestAspectViewport( m_aspectRatioViewports, currentAspect, &bestAspect, &aspectRatioViewport ) == true )
         {
             *_aspect = bestAspect;
 
@@ -2312,12 +2312,12 @@ namespace Mengine
         }
         else
         {
-            *_aspect = aspect;
+            *_aspect = contentAspect;
 
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;
-            _viewport->end.x = width;
-            _viewport->end.y = height;
+            _viewport->end.x = contentWidth;
+            _viewport->end.y = contentHeight;
         }
     }
     //////////////////////////////////////////////////////////////////////////

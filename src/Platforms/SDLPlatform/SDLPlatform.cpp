@@ -3583,8 +3583,10 @@ namespace Mengine
                             Sint32 width = sdlEvent.window.data1;
                             Sint32 height = sdlEvent.window.data2;
 
-                            MENGINE_UNUSED( width );
-                            MENGINE_UNUSED( height );
+                            Resolution windowResolution( width, height );
+
+                            APPLICATION_SERVICE()
+                                ->setWindowResolution( windowResolution );
                         }break;
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
                         {

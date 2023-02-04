@@ -10,11 +10,12 @@ import com.devtodev.analytics.external.analytics.DTDAnalyticsConfiguration;
 import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAnalyticsListener;
 import org.Mengine.Base.MenginePlugin;
 
 import java.util.Map;
 
-public class MengineDevToDevPlugin extends MenginePlugin {
+public class MengineDevToDevPlugin extends MenginePlugin implements MengineAnalyticsListener {
     public static String PLUGIN_NAME = "DevToDev";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -43,15 +44,11 @@ public class MengineDevToDevPlugin extends MenginePlugin {
         String appKey = activity.getString(R.string.dev_to_dev_app_id);
 
         DTDAnalytics.INSTANCE.initialize(appKey, configuration, activity);
-
-        activity.addAnalyticsPlugin(this);
     }
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        activity.removeAnalyticsPlugin(this);
     }
-
 
     public void tutorialEvent(int stateOrStep) {
         if (m_initializeSuccessful == false) {
@@ -166,7 +163,7 @@ public class MengineDevToDevPlugin extends MenginePlugin {
 
         DTDAnalytics.INSTANCE.customEvent(eventName, params);
     }
-    
+
     public void logEvent(@NonNull String eventName, @NonNull DTDCustomEventParameters params) {
         if (m_initializeSuccessful == false) {
             return;

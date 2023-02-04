@@ -16,9 +16,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-public class MengineFirebaseMessagingPlugin extends MenginePlugin {
+import java.util.ArrayList;
+
+public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MengineFirebaseMessagingListener {
     public static String PLUGIN_NAME = "FirebaseMessaging";
     public static boolean PLUGIN_EMBEDDING = true;
+
+    public ArrayList<MengineFirebaseMessagingListener> m_messagings;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
@@ -34,7 +38,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin {
                         public void onComplete(@NonNull Task<String> task) {
                             if (task.isSuccessful() == false) {
                                 MengineFirebaseMessagingPlugin.this.logInfo("Fetching FCM registration token failed: %s"
-                                        , task.getException()
+                                    , task.getException()
                                 );
 
                                 return;
@@ -49,23 +53,46 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin {
         }
     }
 
+    public void addMessaging(@NonNull MengineFirebaseMessagingListener listener) {
+        m_messagings.add(listener);
+    }
+
+    public void removeMessaging(@NonNull MengineFirebaseMessagingListener listener) {
+        m_messagings.remove(listener);
+    }
+
+    @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
-        //ToDo
+        for (MengineFirebaseMessagingListener listener : m_messagings) {
+            listener.onMessageReceived(remoteMessage);
+        }
     }
 
+    @Override
     public void onDeletedMessages() {
-        //ToDo
+        for (MengineFirebaseMessagingListener listener : m_messagings) {
+            listener.onDeletedMessages();
+        }
     }
 
+    @Override
     public void onMessageSent(@NonNull String msgId) {
-        //ToDo
+        for (MengineFirebaseMessagingListener listener : m_messagings) {
+            listener.onMessageSent(msgId);
+        }
     }
 
+    @Override
     public void onSendError(@NonNull String msgId, @NonNull Exception exception) {
-        //ToDo
+        for (MengineFirebaseMessagingListener listener : m_messagings) {
+            listener.onSendError(msgId, exception);
+        }
     }
 
+    @Override
     public void onNewToken(@NonNull String token) {
-        //ToDo
+        for (MengineFirebaseMessagingListener listener : m_messagings) {
+            listener.onNewToken(token);
+        }
     }
 }

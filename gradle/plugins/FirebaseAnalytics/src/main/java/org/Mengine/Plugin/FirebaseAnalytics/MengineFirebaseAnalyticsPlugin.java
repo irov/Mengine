@@ -8,12 +8,13 @@ import androidx.annotation.Nullable;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAnalyticsListener;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 
 import java.util.Map;
 
-public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
+public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MengineAnalyticsListener {
     public static String PLUGIN_NAME = "FirebaseAnalytics";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -26,16 +27,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin {
     @Override
     public void onAppCreate(MengineApplication application) {
         m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
-    }
-
-    @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        activity.addAnalyticsPlugin(this);
-    }
-
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        activity.removeAnalyticsPlugin(this);
     }
 
     @Override

@@ -11,10 +11,11 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineLoggerListener;
 import org.Mengine.Base.MenginePlugin;
 
 
-public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin {
+public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MengineLoggerListener {
     public static String PLUGIN_NAME = "FirebaseCrashlytics";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -48,16 +49,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin {
         });
     }
 
-    @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        activity.addLoggerPlugin(this);
-    }
-
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        activity.removeLoggerPlugin(this);
-    }
-
     public void recordException(Throwable throwable) {
         this.logInfo("recordException throwable: %s"
             , throwable.getLocalizedMessage()
@@ -82,7 +73,8 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin {
         throw new RuntimeException("Firebase Crashlytics Test Crash");
     }
 
-    public void onMengineLogger(String category, int level, int filter, int color, String msg) {
+    @Override
+    public void onMengineLogger(MengineActivity activity, String category, int level, int filter, int color, String msg) {
         if (level > LM_ERROR) {
             return;
         }

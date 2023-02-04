@@ -16,13 +16,21 @@ public class MengineApplication extends Application {
     public ArrayList<MenginePlugin> m_plugins;
     public Map<String, MenginePlugin> m_dictionaryPlugins;
 
+    public ArrayList<MengineLoggerListener> m_loggerListeners;
+    public ArrayList<MengineAnalyticsListener> m_analyticsListeners;
+    public ArrayList<MengineActivityLifecycleListener> m_activityLifecycleListeners;
+    public ArrayList<MengineKeyListener> m_keyListeners;
+
     public MengineActivityLifecycle m_activityLifecycle;
 
-    public MengineComponentCallbacks m_componentCallbacks;
-
     public MengineApplication() {
-        m_plugins = new ArrayList<MenginePlugin>();
+        m_plugins = new ArrayList<>();
         m_dictionaryPlugins = new HashMap<>();
+
+        m_loggerListeners = new ArrayList<>();
+        m_analyticsListeners = new ArrayList<>();
+        m_activityLifecycleListeners = new ArrayList<>();
+        m_keyListeners = new ArrayList<>();
 
         for (String n : this.getGradleAndroidPlugins()) {
             this.createPlugin(n);
@@ -37,6 +45,22 @@ public class MengineApplication extends Application {
 
     public ArrayList<MenginePlugin> getPlugins() {
         return m_plugins;
+    }
+
+    public ArrayList<MengineLoggerListener> getLoggerListeners() {
+        return m_loggerListeners;
+    }
+
+    public ArrayList<MengineAnalyticsListener> getAnalyticsListeners() {
+        return m_analyticsListeners;
+    }
+
+    public ArrayList<MengineActivityLifecycleListener> getActivityLifecycleListeners() {
+        return m_activityLifecycleListeners;
+    }
+
+    public ArrayList<MengineKeyListener> getKeyListeners() {
+        return m_keyListeners;
     }
 
     public MenginePlugin findPlugin(String name) {
@@ -105,6 +129,30 @@ public class MengineApplication extends Application {
         m_plugins.add(plugin);
         m_dictionaryPlugins.put(name, plugin);
 
+        if (plugin instanceof MengineAnalyticsListener) {
+            MengineAnalyticsListener listener = (MengineAnalyticsListener)plugin;
+
+            m_analyticsListeners.add(listener);
+        }
+
+        if (plugin instanceof MengineLoggerListener) {
+            MengineLoggerListener listener = (MengineLoggerListener)plugin;
+
+            m_loggerListeners.add(listener);
+        }
+
+        if (plugin instanceof MengineActivityLifecycleListener) {
+            MengineActivityLifecycleListener listener = (MengineActivityLifecycleListener)plugin;
+
+            m_activityLifecycleListeners.add(listener);
+        }
+
+        if (plugin instanceof MengineKeyListener) {
+            MengineKeyListener listener = (MengineKeyListener)plugin;
+
+            m_keyListeners.add(listener);
+        }
+
         Log.i(TAG, "MengineApplication add plugin: " + type + " [" + name + "]");
 
         return true;
@@ -113,9 +161,6 @@ public class MengineApplication extends Application {
     public void onMengineInitializeBaseServices(MengineActivity activity) {
         m_activityLifecycle = new MengineActivityLifecycle(this, activity);
         this.registerActivityLifecycleCallbacks(m_activityLifecycle);
-
-        m_componentCallbacks = new MengineComponentCallbacks(this, activity);
-        this.registerComponentCallbacks(m_componentCallbacks);
     }
 
     public void onMengineCreateApplication(MengineActivity activity) {
@@ -147,11 +192,6 @@ public class MengineApplication extends Application {
             this.unregisterActivityLifecycleCallbacks(m_activityLifecycle);
             m_activityLifecycle = null;
         }
-
-        if (m_componentCallbacks != null) {
-            this.unregisterComponentCallbacks(m_componentCallbacks);
-            m_componentCallbacks = null;
-        }
     }
 
     @Override
@@ -176,6 +216,12 @@ public class MengineApplication extends Application {
         }
 
         m_plugins = null;
+        m_dictionaryPlugins = null;
+
+        m_loggerListeners = null;
+        m_analyticsListeners = null;
+        m_activityLifecycleListeners = null;
+        m_keyListeners = null;
     }
 
     @Override

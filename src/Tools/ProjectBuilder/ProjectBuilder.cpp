@@ -90,6 +90,7 @@ SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( ThreadSystem );
+SERVICE_EXTERN( DateTimeSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( TimelineService );
@@ -171,10 +172,16 @@ namespace Mengine
         SERVICE_CREATE( AllocatorSystem, nullptr );
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
+        
+        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
+        
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
+        
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
@@ -186,12 +193,9 @@ namespace Mengine
 
         LOGGER_WARNING( "Inititalizing Config Manager..." );
 
-        SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
@@ -202,8 +206,10 @@ namespace Mengine
         SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );        
+
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
 
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );

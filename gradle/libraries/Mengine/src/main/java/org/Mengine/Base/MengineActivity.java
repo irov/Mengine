@@ -46,9 +46,6 @@ public class MengineActivity extends SDLActivity {
     private ArrayList<CallbackResponse> m_callbackResponses;
     private int m_callbackResponseEnumerator;
 
-    public ArrayList<MenginePlugin> m_loggerPlugins;
-    public ArrayList<MenginePlugin> m_analyticsPlugins;
-
     private static native void AndroidEnvironmentService_setMengineAndroidActivityJNI(Object Activity);
     private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     private static native String AndroidEnvironmentService_getCompanyName();
@@ -82,9 +79,6 @@ public class MengineActivity extends SDLActivity {
 
         m_callbackResponses = new ArrayList<>();
         m_callbackResponseEnumerator = 0;
-
-        m_loggerPlugins = new ArrayList<>();
-        m_analyticsPlugins = new ArrayList<>();
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
@@ -147,6 +141,38 @@ public class MengineActivity extends SDLActivity {
         return plugins;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    protected ArrayList<MengineLoggerListener> getLoggerListeners() {
+        MengineApplication app = (MengineApplication)this.getApplication();
+
+        ArrayList<MengineLoggerListener> listeners = app.getLoggerListeners();
+
+        return listeners;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    protected ArrayList<MengineAnalyticsListener> getAnalyticsListeners() {
+        MengineApplication app = (MengineApplication)this.getApplication();
+
+        ArrayList<MengineAnalyticsListener> listeners = app.getAnalyticsListeners();
+
+        return listeners;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    protected ArrayList<MengineActivityLifecycleListener> getActivityLifecycleListeners() {
+        MengineApplication app = (MengineApplication)this.getApplication();
+
+        ArrayList<MengineActivityLifecycleListener> listeners = app.getActivityLifecycleListeners();
+
+        return listeners;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    protected ArrayList<MengineKeyListener> getKeyListeners() {
+        MengineApplication app = (MengineApplication)this.getApplication();
+
+        ArrayList<MengineKeyListener> listeners = app.getKeyListeners();
+
+        return listeners;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
     public <T> T getPlugin(Class<T> cls) {
         if (m_destroy == true) {
@@ -158,34 +184,6 @@ public class MengineActivity extends SDLActivity {
         T plugin = app.getPlugin(cls);
 
         return plugin;
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void addLoggerPlugin(MenginePlugin plugin) {
-        if (m_destroy == true) {
-            return;
-        }
-
-        m_loggerPlugins.add(plugin);
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void removeLoggerPlugin(MenginePlugin plugin) {
-        if (m_destroy == true) {
-            return;
-        }
-
-        m_loggerPlugins.remove(plugin);
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void addAnalyticsPlugin(MenginePlugin plugin) {
-        if (m_destroy == true) {
-            return;
-        }
-
-        m_analyticsPlugins.add(plugin);
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void removeAnalyticsPlugin(MenginePlugin plugin) {
-        m_analyticsPlugins.remove(plugin);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void sendEvent(String id, Object ... args) {
@@ -396,8 +394,10 @@ public class MengineActivity extends SDLActivity {
             , parameters
         );
 
-        for (MenginePlugin p : m_analyticsPlugins) {
-            p.onMengineAnalyticsEvent(this, eventName, timestamp, parameters);
+        ArrayList<MengineAnalyticsListener> listeners = this.getAnalyticsListeners();
+
+        for (MengineAnalyticsListener l : listeners) {
+            l.onMengineAnalyticsEvent(this, eventName, timestamp, parameters);
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -562,9 +562,6 @@ public class MengineActivity extends SDLActivity {
         m_requestCodes = null;
         m_callbackResponses = null;
 
-        m_analyticsPlugins = null;
-        m_loggerPlugins = null;
-
         super.onDestroy();
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -644,10 +641,10 @@ public class MengineActivity extends SDLActivity {
             return super.dispatchKeyEvent(event);
         }
 
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+        ArrayList<MengineKeyListener> listeners = this.getKeyListeners();
 
-        for (MenginePlugin p : plugins) {
-            if (p.dispatchKeyEvent(this, event) == true) {
+        for (MengineKeyListener l : listeners) {
+            if (l.dispatchKeyEvent(this, event) == true) {
                 return true;
             }
         }
@@ -693,8 +690,10 @@ public class MengineActivity extends SDLActivity {
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public void onMengineLogger(String category, int level, int filter, int color, String msg) {
-        for(MenginePlugin plugin : m_loggerPlugins) {
-            plugin.onMengineLogger(category, level, filter, color, msg);
+        ArrayList<MengineLoggerListener> listeners = this.getLoggerListeners();
+
+        for(MengineLoggerListener l : listeners) {
+            l.onMengineLogger(this, category, level, filter, color, msg);
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

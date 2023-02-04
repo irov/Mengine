@@ -787,17 +787,17 @@ namespace Mengine
         MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         MENGINE_ADD_SERVICE( AndroidEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         MENGINE_ADD_SERVICE( Platform, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
 
         LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );

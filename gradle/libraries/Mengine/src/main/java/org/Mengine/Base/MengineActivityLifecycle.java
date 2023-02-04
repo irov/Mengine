@@ -22,10 +22,10 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityResumed(Activity activity) {
         Log.d(TAG, "onActivityResumed");
 
-        ArrayList<MenginePlugin> plugins = m_application.getPlugins();
+        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MenginePlugin p : plugins) {
-            p.onActivityLifecycleResumed(activity);
+        for (MengineActivityLifecycleListener l : listeners) {
+            l.onMengineActivityLifecycleResumed(activity);
         }
 
         m_activity.pythonCall(TAG, "onActivityLifecycleResumed");
@@ -35,10 +35,10 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityPaused(Activity activity) {
         Log.d(TAG, "onActivityPaused");
 
-        ArrayList<MenginePlugin> plugins = m_application.getPlugins();
+        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MenginePlugin p : plugins) {
-            p.onActivityLifecyclePaused(activity);
+        for (MengineActivityLifecycleListener l : listeners) {
+            l.onMengineActivityLifecyclePaused(activity);
         }
 
         m_activity.pythonCall(TAG, "onActivityLifecyclePaused");
@@ -48,10 +48,10 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityStarted(Activity activity) {
         Log.d(TAG, "onActivityStarted");
 
-        ArrayList<MenginePlugin> plugins = m_application.getPlugins();
+        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MenginePlugin p : plugins) {
-            p.onActivityLifecycleStarted(activity);
+        for (MengineActivityLifecycleListener l : listeners) {
+            l.onMengineActivityLifecycleStarted(activity);
         }
 
         m_activity.pythonCall(TAG, "onActivityLifecycleStarted");
@@ -61,10 +61,10 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityStopped(Activity activity) {
         Log.d(TAG, "onActivityStopped");
 
-        ArrayList<MenginePlugin> plugins = m_application.getPlugins();
+        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MenginePlugin p : plugins) {
-            p.onActivityLifecycleStopped(activity);
+        for (MengineActivityLifecycleListener l : listeners) {
+            l.onMengineActivityLifecycleStopped(activity);
         }
 
         m_activity.pythonCall(TAG, "onActivityLifecycleStopped");
@@ -74,10 +74,10 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityDestroyed(Activity activity) {
         Log.d(TAG, "onActivityDestroyed");
 
-        ArrayList<MenginePlugin> plugins = m_application.getPlugins();
+        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MenginePlugin p : plugins) {
-            p.onActivityLifecycleDestroyed(activity);
+        for (MengineActivityLifecycleListener l : listeners) {
+            l.onMengineActivityLifecycleDestroyed(activity);
         }
 
         m_activity.pythonCall(TAG, "onActivityLifecycleDestroyed");
@@ -87,22 +87,23 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityCreated(Activity activity, Bundle bundle) {
         Log.d(TAG, "onActivityCreated");
 
-        ArrayList<MenginePlugin> plugins = m_application.getPlugins();
+        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MenginePlugin p : plugins) {
-            p.onActivityLifecycleCreated(activity, bundle);
+        for (MengineActivityLifecycleListener l : listeners) {
+            l.onMengineActivityLifecycleCreated(activity, bundle);
         }
 
         m_activity.pythonCall(TAG, "onActivityLifecycleCreated");
     }
+
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
         Log.d(TAG, "onActivitySaveInstanceState");
 
-        ArrayList<MenginePlugin> plugins = m_application.getPlugins();
+        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MenginePlugin p : plugins) {
-            p.onActivityLifecycleSaveInstanceState(activity, bundle);
+        for (MengineActivityLifecycleListener l : listeners) {
+            l.onMengineActivityLifecycleSaveInstanceState(activity, bundle);
         }
 
         m_activity.pythonCall(TAG, "onActivityLifecycleSaveInstanceState");

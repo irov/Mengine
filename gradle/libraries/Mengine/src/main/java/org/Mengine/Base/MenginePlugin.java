@@ -195,10 +195,6 @@ public class MenginePlugin {
         //Empty
     }
 
-    public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, Map<String, Object> parameters) {
-        //Empty
-    }
-
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }
@@ -236,56 +232,6 @@ public class MenginePlugin {
     }
 
     public void onRequestPermissionsResult(MengineActivity activity, int requestCode, String[] permissions, int[] grantResults) {
-        //Empty
-    }
-
-    public boolean dispatchKeyEvent(MengineActivity activity, KeyEvent event) {
-        //Empty
-
-        return false;
-    }
-
-    public void onActivityLifecycleResumed(Activity activity) {
-        //Empty
-    }
-
-    public void onActivityLifecyclePaused(Activity activity) {
-        //Empty
-    }
-
-    public void onActivityLifecycleStarted(Activity activity) {
-        //Empty
-    }
-
-    public void onActivityLifecycleStopped(Activity activity) {
-        //Empty
-    }
-
-    public void onActivityLifecycleDestroyed(Activity activity) {
-        //Empty
-    }
-
-    public void onActivityLifecycleCreated(Activity activity, Bundle bundle) {
-        //Empty
-    }
-
-    public void onActivityLifecycleSaveInstanceState(Activity activity, Bundle bundle) {
-        //Empty
-    }
-
-    public void onTrimMemory(MengineApplication application, int level) {
-        //Empty
-    }
-
-    public void onConfigurationChanged(MengineApplication application, @NonNull Configuration newConfig) {
-        //Empty
-    }
-
-    public void onLowMemory(MengineApplication application) {
-        //Empty
-    }
-
-    public void onMengineLogger(String category, int level, int filter, int color, String msg) {
         //Empty
     }
 }

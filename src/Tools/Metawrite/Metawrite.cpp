@@ -195,7 +195,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
         if( fileGroup == nullptr )
         {
-            LOGGER_ERROR( "LoaderEngine::makeBin_ invalid get file group" );
+            LOGGER_ERROR( "invalid get file group" );
 
             return EXIT_FAILURE;
         }

@@ -562,8 +562,15 @@ namespace Mengine
     public:
         void write( const char * _msg, size_t _size )
         {
+            LoggerMessage message;
+            message.level = LM_ERROR;
+            message.filter = 0;
+            message.color = LCOLOR_NONE;
+            message.data = _msg;
+            message.size = _size;
+
             LOGGER_SERVICE()
-                ->logMessage( LM_ERROR, 0, LCOLOR_NONE, _msg, _size );
+                ->logMessage( message );
         }
 
     public:

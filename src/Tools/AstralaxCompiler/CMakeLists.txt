@@ -11,13 +11,13 @@ add_definitions(-D_UNICODE)
 add_definitions(-DMAGIC_3D)
 
 INCLUDE_DIRECTORIES( 
-			         ${THIRDPARTY_DIR}/astralax
-                     ${THIRDPARTY_DIR}/lz4/lib
-                     ${THIRDPARTY_DIR}/libmath/include
-                    )
+    ${THIRDPARTY_DIR}/astralax
+    ${THIRDPARTY_DIR}/lz4/lib
+    ${THIRDPARTY_DIR}/libmath/include
+    )
 
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
-ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${SRC_FILES} )
+ADD_MENGINE_EXECUTABLE_WIN32()
 
 if(MENGINE_TOOLCHAIN_MINGW)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)

@@ -6,13 +6,13 @@ src
 )
 
 INCLUDE_DIRECTORIES( 
-			         ${THIRDPARTY_DIR}/astralax
-                     ${THIRDPARTY_DIR}/libmovie/include
-                     ${THIRDPARTY_DIR}/pugixml/src
-                    )
+    ${THIRDPARTY_DIR}/astralax
+    ${THIRDPARTY_DIR}/libmovie/include
+    ${THIRDPARTY_DIR}/pugixml/src
+    )
 
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
-ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${SRC_FILES} )
+ADD_MENGINE_EXECUTABLE_WIN32()
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX}    

@@ -23,7 +23,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PythonScriptModuleFinder::PythonScriptModuleFinder()
-        : m_availableSourceCode( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -53,19 +52,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::initialize()
     {
-        bool OPTION_pythonavailablesourcecode = HAS_OPTION( "pythonavailablesourcecode" );
-        
-        if( OPTION_pythonavailablesourcecode == true )
-        {
-            m_availableSourceCode = true;
-        }
-        else
-        {
-            bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", MENGINE_MASTER_RELEASE_VALUE( false, true ) );
-
-            m_availableSourceCode = PythonScript_AvailableSourceCode;
-        }
-
         m_factoryScriptModuleLoader = Helper::makeFactoryPool<PythonScriptModuleLoader, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -122,23 +108,6 @@ namespace Mengine
 
         MENGINE_THREAD_GUARD_SCOPE( PythonScriptModuleFinder, this, "PythonScriptModuleFinder::find_module" );
 
-        if( m_availableSourceCode == true )
-        {
-            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-            loader->setDataflow( m_dataflowPY );
-            loader->setModule( _kernel, _module );
-
-            if( this->find_module_source_( _kernel, _module, loader ) == true )
-            {
-                m_loaders.emplace_back( loader );
-
-                return m_embed.ret();
-            }
-
-            loader->finalize();
-        }
-
         static bool PythonScript_AvailableCompileZCode = CONFIG_VALUE( "PythonScript", "AvailableCompileZCode", true );
 
         if( PythonScript_AvailableCompileZCode == true )
@@ -149,6 +118,25 @@ namespace Mengine
             loader->setModule( _kernel, _module );
 
             if( this->find_module_code_( _kernel, _module, loader ) == true )
+            {
+                m_loaders.emplace_back( loader );
+
+                return m_embed.ret();
+            }
+
+            loader->finalize();
+        }
+
+        static bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", true );
+
+        if( PythonScript_AvailableSourceCode == true )
+        {
+            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+            loader->setDataflow( m_dataflowPY );
+            loader->setModule( _kernel, _module );
+
+            if( this->find_module_source_( _kernel, _module, loader ) == true )
             {
                 m_loaders.emplace_back( loader );
 

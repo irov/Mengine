@@ -4,9 +4,6 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 
 import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdWaterfallInfo;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.MaxNetworkResponseInfo;
 
 import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
@@ -76,7 +73,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
-        if (id == "AdvertisingId") {
+        if (id.equals("AdvertisingId") == true) {
             final Context context = activity.getBaseContext();
 
             String advertisingId = (String)args[0];
@@ -109,7 +106,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             }
         }
 
-        m_analytics = new ArrayList<MengineAppLovinAnalyticsInterface>();
+        m_analytics = new ArrayList<>();
 
         MengineAppLovinAnalyticsInterface firebaseAnalytics = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinFirebaseAnalytics", false);
 

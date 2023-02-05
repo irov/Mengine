@@ -14,7 +14,7 @@ namespace Mengine
             switch( _level )
             {
             case LM_SILENT:
-                return '#';
+                return 'S';
             case LM_FATAL:
                 return 'F';
             case LM_CRITICAL:
@@ -23,10 +23,6 @@ namespace Mengine
                 return 'M';
             case LM_ERROR:
                 return 'E';
-            case LM_PERFOMANCE:
-                return 'P';
-            case LM_STATISTIC:
-                return 'S';
             case LM_WARNING:
                 return 'W';
             case LM_MESSAGE:

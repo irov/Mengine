@@ -49,7 +49,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
-        if (id == "PushToken") {
+        if (id.equals("PushToken") == true) {
             String token = (String)args[0];
 
             AppEventsLogger.setPushNotificationsRegistrationId(token);

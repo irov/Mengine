@@ -26,7 +26,7 @@ public class MengineAdjustPlugin extends MenginePlugin {
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
-        if (id == "PushToken") {
+        if (id.equals("PushToken") == true) {
             String token = (String)args[0];
 
             final Context context = activity.getApplicationContext();

@@ -14,8 +14,6 @@ namespace Mengine
         LM_CRITICAL,
         LM_MESSAGE_RELEASE,
         LM_ERROR,
-        LM_PERFOMANCE,
-        LM_STATISTIC,
         LM_WARNING,
         LM_MESSAGE,
         LM_INFO,

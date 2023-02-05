@@ -94,8 +94,6 @@ namespace Mengine
         case LM_ERROR:
             desc.level = 'E';
             break;
-        case LM_PERFOMANCE:
-        case LM_STATISTIC:
         case LM_WARNING:
             desc.level = 'W';
             break;

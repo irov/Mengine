@@ -29,16 +29,14 @@ namespace Mengine
         case LM_CRITICAL:
             prio = ANDROID_LOG_FATAL;
             break;
+        case LM_MESSAGE_RELEASE:
         case LM_ERROR:
             prio = ANDROID_LOG_ERROR;
             break;
-        case LM_MESSAGE_RELEASE:
-        case LM_PERFOMANCE:
-        case LM_STATISTIC:
         case LM_WARNING:
-        case LM_MESSAGE:
             prio = ANDROID_LOG_WARN;
             break;
+        case LM_MESSAGE:
         case LM_INFO:
             prio = ANDROID_LOG_INFO;
             break;

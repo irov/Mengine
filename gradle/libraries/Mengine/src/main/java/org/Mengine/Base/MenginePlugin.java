@@ -25,13 +25,11 @@ public class MenginePlugin {
     public static int LM_CRITICAL = 2;
     public static int LM_MESSAGE_RELEASE = 3;
     public static int LM_ERROR = 4;
-    public static int LM_PERFOMANCE = 5;
-    public static int LM_STATISTIC = 6;
-    public static int LM_WARNING = 7;
-    public static int LM_MESSAGE = 8;
-    public static int LM_INFO = 9;
-    public static int LM_DEBUG = 10;
-    public static int LM_VERBOSE = 11;
+    public static int LM_WARNING = 5;
+    public static int LM_MESSAGE = 6;
+    public static int LM_INFO = 7;
+    public static int LM_DEBUG = 8;
+    public static int LM_VERBOSE = 9;
 
     public MengineApplication getApplication() {
         return m_application;

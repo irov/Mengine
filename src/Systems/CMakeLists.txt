@@ -41,10 +41,6 @@ if(MENGINE_PLATFORM_SDL)
     else()
         ADD_SUBDIRECTORY(DummyPersistentSystem)
     endif()
-    
-    if(MENGINE_PLATFORM_IOS)
-        ADD_SUBDIRECTORY(MockupSocketSystem)
-    endif()
 endif()
 
 MENGINE_SUBFOLDER()

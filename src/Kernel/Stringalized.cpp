@@ -14,8 +14,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, bool * const _value )
         {
-            uint32_t tmp_value;
-            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu32, &tmp_value ) != 1 )
+            uint8_t tmp_value;
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu8, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -27,26 +27,40 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int8_t * const _value )
         {
-            int32_t tmp_value;
-            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNd32, &tmp_value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNd8, _value ) != 1 )
             {
                 return false;
             }
-
-            *_value = (int8_t)tmp_value;
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint8_t * const _value )
         {
-            uint32_t tmp_value;
-            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu32, &tmp_value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu8, _value ) != 1 )
             {
                 return false;
             }
 
-            *_value = (uint8_t)tmp_value;
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _string, int16_t * const _value )
+        {
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNd16, _value ) != 1 )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _string, uint16_t * const _value )
+        {
+            if( MENGINE_SSCANF( _string, "%" MENGINE_SCNu16, _value ) != 1 )
+            {
+                return false;
+            }
 
             return true;
         }
@@ -298,6 +312,26 @@ namespace Mengine
         bool stringalized( uint8_t _value, Char * const _string, size_t _capacity )
         {
             if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu8, _value ) > (int32_t)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( int16_t _value, Char * const _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRId16, _value ) > (int32_t)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( uint16_t _value, Char * const _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu16, _value ) > (int32_t)_capacity )
             {
                 return false;
             }

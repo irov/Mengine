@@ -3,15 +3,16 @@
 #include "Interface/SocketSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
 {
-    class MockupSocketSystem
+    class SDLSocketSystem
         : public ServiceBase<SocketSystemInterface>
     {
     public:
-        MockupSocketSystem();
-        ~MockupSocketSystem() override;
+        SDLSocketSystem();
+        ~SDLSocketSystem();
 
     public:
         bool _initializeService() override;
@@ -19,5 +20,8 @@ namespace Mengine
 
     protected:
         SocketInterfacePtr createSocket( const DocumentPtr & _doc ) override;
+
+    protected:
+        FactoryPtr m_factorySocket;
     };
 }

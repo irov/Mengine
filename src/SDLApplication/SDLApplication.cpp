@@ -185,7 +185,7 @@ namespace Mengine
 #if defined(MENGINE_WINDOWS_DEBUG)
         SDLOutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<SDLOutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
 
-        loggerOutputDebug->setVerboseLevel( LM_ERROR );
+        loggerOutputDebug->setVerboseLevel( LM_MESSAGE );
 
         LOGGER_SERVICE()
             ->registerLogger( loggerOutputDebug );

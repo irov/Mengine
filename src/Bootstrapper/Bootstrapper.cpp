@@ -237,6 +237,10 @@ PLUGIN_EXPORT( FE );
 PLUGIN_EXPORT( Win32Socket );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_SDL_SOCKET_STATIC
+PLUGIN_EXPORT( SDLSocket );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
 PLUGIN_EXPORT( NodeDebugger );
 #endif
@@ -859,7 +863,7 @@ namespace Mengine
         bool Assertion_NoDebugBreak = OPTION_assertion == false && Engine_AssertionDebugBreak == false;
 
         Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
-        
+
         LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
 
         if( this->mountUserFileGroup_() == false )
@@ -1137,6 +1141,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Win32Socket, "Plugin Win32Socket...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#ifdef MENGINE_PLUGIN_SDL_SOCKET_STATIC
+        MENGINE_ADD_PLUGIN( SDLSocket, "Plugin SDLSocket...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
 #ifdef MENGINE_PLUGIN_GOAP_STATIC
         MENGINE_ADD_PLUGIN( GOAP, "Plugin GOAP...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1220,7 +1228,7 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_APPLE_ADJUST_STATIC
         MENGINE_ADD_PLUGIN( AppleAdjust, "Plugin Apple Adjust...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_APPLE_DEVTODEV_STATIC
         MENGINE_ADD_PLUGIN( AppleDevToDev, "Plugin Apple DevToDev...", MENGINE_DOCUMENT_FACTORABLE );
 #endif

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/OutputStreamInterface.h"
 #include "Interface/InputStreamInterface.h"
 
@@ -16,7 +16,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SocketInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual bool connect( const SocketConnectInfo & _data ) = 0;
@@ -26,8 +26,9 @@ namespace Mengine
         virtual int32_t checkForClientConnection() = 0;
         virtual bool waitForData( uint32_t _timeoutMs ) = 0;
 
-        virtual int32_t send( const void * _buffer, size_t _size ) = 0;
-        virtual int32_t receive( void * const _buffer, size_t _size ) = 0;
+    public:
+        virtual bool send( const void * _data, size_t _size, size_t * const _sent ) = 0;
+        virtual bool receive( void * const _buffer, size_t _capacity, size_t * const _received ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr getSendStream() const = 0;

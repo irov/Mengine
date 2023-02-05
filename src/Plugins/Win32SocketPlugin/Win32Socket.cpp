@@ -1,7 +1,7 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "Win32Socket.h"
 
-#include "Kernel/FactorableUnique.h"
+#include "Kernel/Stringalized.h"
 
 namespace Mengine
 {
@@ -20,7 +20,7 @@ namespace Mengine
     bool Win32Socket::connect( const SocketConnectInfo & _info )
     {
         addrinfo hints;
-        ZeroMemory( &hints, sizeof( hints ) );
+        ::ZeroMemory( &hints, sizeof( hints ) );
 
         hints.ai_family = AF_UNSPEC;
         hints.ai_socktype = SOCK_STREAM;
@@ -43,12 +43,12 @@ namespace Mengine
 
         int32_t connect_result = ::connect( socket, addrinfo->ai_addr, (int32_t)addrinfo->ai_addrlen );
 
-        freeaddrinfo( addrinfo );
+        ::freeaddrinfo( addrinfo );
 
         if( connect_result != 0 )
         {
             ::closesocket( socket );
-            
+
             return false;
         }
 
@@ -69,7 +69,8 @@ namespace Mengine
         SOCKADDR_IN addr;
         ZeroMemory( &addr, sizeof( addr ) );
 
-        const uint16_t port = static_cast<uint16_t>(std::stoi( _info.port ));
+        uint16_t port;
+        Helper::stringalized( _info.port, &port );
 
         addr.sin_family = AF_INET;
         addr.sin_port = ::htons( port );
@@ -88,6 +89,15 @@ namespace Mengine
         ::ioctlsocket( m_socket, FIONBIO, &arg );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Socket::disconnect()
+    {
+        if( m_socket != INVALID_SOCKET )
+        {
+            ::closesocket( m_socket );
+            m_socket = INVALID_SOCKET;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t Win32Socket::checkForClientConnection()
@@ -132,7 +142,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::waitForData( uint32_t timeoutMs )
+    bool Win32Socket::waitForData( uint32_t _timeoutMs )
     {
         if( m_socket == INVALID_SOCKET )
         {
@@ -143,46 +153,68 @@ namespace Mengine
         socketsSet.fd_count = 1;
         socketsSet.fd_array[0] = m_socket;
 
-        timeval tv;
-        tv.tv_sec = static_cast<long>(timeoutMs / 1000);
-        tv.tv_usec = static_cast<long>((timeoutMs - static_cast<size_t>(tv.tv_sec * 1000)) * 1000);
+        if( _timeoutMs != 0 )
+        {
+            timeval tv;
+            tv.tv_sec = static_cast<long>(_timeoutMs / 1000);
+            tv.tv_usec = static_cast<long>((_timeoutMs - static_cast<size_t>(tv.tv_sec * 1000)) * 1000);
 
-        int32_t result = ::select( 0, &socketsSet, nullptr, nullptr, (timeoutMs == 0) ? nullptr : &tv );
+            int32_t result = ::select( 0, &socketsSet, nullptr, nullptr, &tv );
 
-        return (1 == result);
+            if( result != 1 )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            int32_t result = ::select( 0, &socketsSet, nullptr, nullptr, nullptr );
+
+            if( result != 1 )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t Win32Socket::send( const void * _data, size_t _numBytes )
+    bool Win32Socket::send( const void * _data, size_t _size, size_t * const _sent )
     {
         if( m_socket == INVALID_SOCKET )
         {
-            return 0;
+            return false;
         }
 
-        int32_t numBytesSent = ::send( m_socket, reinterpret_cast<const char *>(_data), (int32_t)_numBytes, 0 );
+        int32_t numBytesSent = ::send( m_socket, reinterpret_cast<const char *>(_data), static_cast<int32_t>(_size), 0 );
 
-        return numBytesSent;
+        if( numBytesSent < 0 )
+        {
+            return false;
+        }
+
+        *_sent = static_cast<size_t>(numBytesSent);
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t Win32Socket::receive( void * const _data, size_t _maxBytes )
+    bool Win32Socket::receive( void * const _data, size_t _capacity, size_t * const _received )
     {
         if( m_socket == INVALID_SOCKET )
         {
-            return 0;
+            return false;
         }
 
-        const int32_t numBytesReceived = ::recv( m_socket, reinterpret_cast<char *>(_data), static_cast<int32_t>(_maxBytes), 0 );
+        int32_t numBytesReceived = ::recv( m_socket, reinterpret_cast<char *>(_data), static_cast<int32_t>(_capacity), 0 );
 
-        return numBytesReceived;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32Socket::disconnect()
-    {
-        if( m_socket != INVALID_SOCKET )
+        if( numBytesReceived < 0 )
         {
-            ::closesocket( m_socket );
-            m_socket = INVALID_SOCKET;
+            return false;
         }
+
+        *_received = static_cast<size_t>(numBytesReceived);
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr Win32Socket::getSendStream() const

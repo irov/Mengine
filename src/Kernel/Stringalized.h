@@ -23,6 +23,8 @@ namespace Mengine
         bool stringalized( const Char * _string, bool * const _value );
         bool stringalized( const Char * _string, int8_t * const _value );
         bool stringalized( const Char * _string, uint8_t * const _value );
+        bool stringalized( const Char * _string, int16_t * const _value );
+        bool stringalized( const Char * _string, uint16_t * const _value );
         bool stringalized( const Char * _string, int32_t * const _value );
         bool stringalized( const Char * _string, uint32_t * const _value );
         bool stringalized( const Char * _string, int64_t * const _value );
@@ -44,6 +46,8 @@ namespace Mengine
         bool stringalized( bool _value, Char * const _string, size_t _capacity );
         bool stringalized( int8_t _value, Char * const _string, size_t _capacity );
         bool stringalized( uint8_t _value, Char * const _string, size_t _capacity );
+        bool stringalized( int16_t _value, Char * const _string, size_t _capacity );
+        bool stringalized( uint16_t _value, Char * const _string, size_t _capacity );
         bool stringalized( int32_t _value, Char * const _string, size_t _capacity );
         bool stringalized( uint32_t _value, Char * const _string, size_t _capacity );
         bool stringalized( int64_t _value, Char * const _string, size_t _capacity );

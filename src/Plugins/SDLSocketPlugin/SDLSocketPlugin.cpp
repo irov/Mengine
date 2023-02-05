@@ -1,35 +1,43 @@
-#include "MockupSocketSystem.h"
+#include "SDLSocketPlugin.h"
+
+#include "Interface/SocketSystemInterface.h"
+
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( SocketSystem, Mengine::MockupSocketSystem );
+SERVICE_EXTERN( SocketSystem );
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( SDLSocket, Mengine::SDLSocketPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	MockupSocketSystem::MockupSocketSystem()
+    SDLSocketPlugin::SDLSocketPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	MockupSocketSystem::~MockupSocketSystem()
+    SDLSocketPlugin::~SDLSocketPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupSocketSystem::_initializeService()
+    bool SDLSocketPlugin::_initializePlugin()
     {
-        //Empty
+        if( SERVICE_CREATE( SocketSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupSocketSystem::_finalizeService()
+    void SDLSocketPlugin::_finalizePlugin()
     {
+        SERVICE_FINALIZE( SocketSystem );
     }
     //////////////////////////////////////////////////////////////////////////
-    SocketInterfacePtr MockupSocketSystem::createSocket( const DocumentPtr & _doc )
+    void SDLSocketPlugin::_destroyPlugin()
     {
-        MENGINE_UNUSED( _doc );
-
-        return nullptr;
+        SERVICE_DESTROY( SocketSystem );
     }
     //////////////////////////////////////////////////////////////////////////
 }

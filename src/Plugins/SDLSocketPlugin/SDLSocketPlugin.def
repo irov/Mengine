@@ -1,0 +1,3 @@
+LIBRARY "SDLSocketPlugin"
+EXPORTS
+    dllCreatePlugin @1

@@ -35,6 +35,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
     endif()
 endif()
 
+set(CMAKE_C_VISIBILITY_PRESET hidden)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+
 if(COMMAND CMAKE_POLICY)
     cmake_policy(SET CMP0003 NEW)
     cmake_policy(SET CMP0005 NEW)
@@ -47,6 +50,12 @@ if(COMMAND CMAKE_POLICY)
     if(POLICY CMP0054)
         cmake_policy(SET CMP0054 NEW)
     endif(POLICY CMP0054)
+    if(POLICY CMP0058)
+        cmake_policy(SET CMP0058 NEW)
+    endif(POLICY CMP0058)
+    if(POLICY CMP0063)
+        cmake_policy(SET CMP0063 NEW)
+    endif(POLICY CMP0063)
     if(POLICY CMP0075)
         cmake_policy(SET CMP0075 NEW)
     endif(POLICY CMP0075)
@@ -170,8 +179,8 @@ ELSE()
 ENDIF()
 
 set(LIB_MAJOR_VERSION "1")
-set(LIB_MINOR_VERSION "22")
-set(LIB_REVISION "2")
+set(LIB_MINOR_VERSION "23")
+set(LIB_REVISION "0")
 set(LIB_VERSION "${LIB_MAJOR_VERSION}.${LIB_MINOR_VERSION}.${LIB_REVISION}")
 set(LIB_VERSION_NUM ${LIB_MAJOR_VERSION},${LIB_MINOR_VERSION},${LIB_REVISION},0)
 
@@ -239,7 +248,7 @@ if(MSVC)
     if(HAVE_PERMISSIVE_SWITCH)
         set(C_FLAGS ${C_FLAGS} $<$<COMPILE_LANGUAGE:CXX>:/permissive->)
     endif()
-    set(C_FLAGS ${C_FLAGS} /W4 /w14640 /wd4065 /wd4127 /wd4268 /wd4324 /wd5030)
+    set(C_FLAGS ${C_FLAGS} /W4 /w14640 /wd4065 /wd4127 /wd4268 /wd4324 /wd5030 /wd5051)
 
     if(NOT DXSDK_DIR)
         string(REGEX REPLACE "\\\\" "/" DXSDK_DIR "$ENV{DXSDK_DIR}")
@@ -266,6 +275,16 @@ else()
     set(C_FLAGS ${C_FLAGS} -Winline -Wunused -Wall -Wextra -Wshadow -Wconversion -Wcast-align
         -Wpedantic
         $<$<COMPILE_LANGUAGE:CXX>:-Wold-style-cast -Wnon-virtual-dtor -Woverloaded-virtual>)
+
+    check_cxx_compiler_flag(-Wno-c++20-attribute-extensions HAVE_WNO_CXX20_ATTR_EXT)
+    if(HAVE_WNO_CXX20_ATTR_EXT)
+        set(C_FLAGS ${C_FLAGS} $<$<COMPILE_LANGUAGE:CXX>:-Wno-c++20-attribute-extensions>)
+    else()
+        check_cxx_compiler_flag(-Wno-c++20-extensions HAVE_WNO_CXX20_EXT)
+        if(HAVE_WNO_CXX20_EXT)
+            set(C_FLAGS ${C_FLAGS} $<$<COMPILE_LANGUAGE:CXX>:-Wno-c++20-extensions>)
+        endif()
+    endif()
 
     if(ALSOFT_WERROR)
         set(C_FLAGS ${C_FLAGS} -Werror)
@@ -352,13 +371,6 @@ else()
             if(NOT LIBTYPE STREQUAL "STATIC")
                 set(EXPORT_DECL "__attribute__((visibility(\"default\")))")
             endif()
-        endif()
-    endif()
-
-    if(HAVE_GCC_PROTECTED_VISIBILITY OR HAVE_GCC_DEFAULT_VISIBILITY)
-        check_c_compiler_flag(-fvisibility=hidden HAVE_VISIBILITY_HIDDEN_SWITCH)
-        if(HAVE_VISIBILITY_HIDDEN_SWITCH)
-            set(C_FLAGS ${C_FLAGS} -fvisibility=hidden)
         endif()
     endif()
 
@@ -481,7 +493,7 @@ if(CMAKE_SIZEOF_VOID_P MATCHES "4" AND HAVE_SSE2)
             # assumes the stack is suitably aligned. Older Linux code or other
             # OSs don't guarantee this on 32-bit, so externally-callable
             # functions need to ensure an aligned stack.
-            set(EXPORT_DECL "${EXPORT_DECL} __attribute__((force_align_arg_pointer))")
+            set(EXPORT_DECL "${EXPORT_DECL}__attribute__((force_align_arg_pointer))")
         endif()
     endif()
 endif()
@@ -1060,8 +1072,8 @@ if(PULSEAUDIO_FOUND)
         set(HAVE_PULSEAUDIO 1)
         set(BACKENDS  "${BACKENDS} PulseAudio${IS_LINKED},")
         set(ALC_OBJS  ${ALC_OBJS} alc/backends/pulseaudio.cpp alc/backends/pulseaudio.h)
-        add_backend_libs(${PULSEAUDIO_LIBRARIES})
-        set(INC_PATHS ${INC_PATHS} ${PULSEAUDIO_INCLUDE_DIRS})
+        add_backend_libs(${PULSEAUDIO_LIBRARY})
+        set(INC_PATHS ${INC_PATHS} ${PULSEAUDIO_INCLUDE_DIR})
     endif()
 endif()
 if(ALSOFT_REQUIRE_PULSEAUDIO AND NOT HAVE_PULSEAUDIO)
@@ -1095,19 +1107,22 @@ if(COREAUDIO_FRAMEWORK AND AUDIOUNIT_INCLUDE_DIR)
         set(HAVE_COREAUDIO 1)
         set(ALC_OBJS  ${ALC_OBJS} alc/backends/coreaudio.cpp alc/backends/coreaudio.h)
         set(BACKENDS  "${BACKENDS} CoreAudio,")
-        if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+
+        set(EXTRA_LIBS -Wl,-framework,CoreAudio ${EXTRA_LIBS})
+        if(CMAKE_SYSTEM_NAME MATCHES "^(iOS|tvOS)$")
             find_library(COREFOUNDATION_FRAMEWORK NAMES CoreFoundation)
-            set(EXTRA_LIBS ${COREAUDIO_FRAMEWORK} ${COREFOUNDATION_FRAMEWORK} ${EXTRA_LIBS})
+            if(COREFOUNDATION_FRAMEWORK)
+                set(EXTRA_LIBS -Wl,-framework,CoreFoundation ${EXTRA_LIBS})
+            endif()
         else()
-            set(EXTRA_LIBS ${COREAUDIO_FRAMEWORK} /System/Library/Frameworks/AudioUnit.framework
-                /System/Library/Frameworks/ApplicationServices.framework ${EXTRA_LIBS})
+            set(EXTRA_LIBS -Wl,-framework,AudioUnit,-framework,ApplicationServices ${EXTRA_LIBS})
         endif()
 
         # Some versions of OSX may need the AudioToolbox framework. Add it if
         # it's found.
         find_library(AUDIOTOOLBOX_LIBRARY NAMES AudioToolbox)
         if(AUDIOTOOLBOX_LIBRARY)
-            set(EXTRA_LIBS ${AUDIOTOOLBOX_LIBRARY} ${EXTRA_LIBS})
+            set(EXTRA_LIBS -Wl,-framework,AudioToolbox ${EXTRA_LIBS})
         endif()
 
         set(INC_PATHS ${INC_PATHS} ${AUDIOUNIT_INCLUDE_DIR})
@@ -1138,17 +1153,7 @@ set(OBOE_TARGET )
 if(ANDROID)
     set(OBOE_SOURCE "" CACHE STRING "Source directory for Oboe.")
     if(OBOE_SOURCE)
-        # Force Oboe to build with hidden symbols. Don't want to be exporting
-        # them from OpenAL.
-        set(OLD_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-        check_cxx_compiler_flag(-fvisibility=hidden HAVE_VISIBILITY_HIDDEN_SWITCH)
-        if(HAVE_VISIBILITY_HIDDEN_SWITCH)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
-        endif()
         add_subdirectory(${OBOE_SOURCE} ./oboe)
-        set(CMAKE_CXX_FLAGS ${OLD_CXX_FLAGS})
-        unset(OLD_CXX_FLAGS)
-
         set(OBOE_TARGET oboe)
     else()
         find_package(oboe CONFIG)
@@ -1177,7 +1182,7 @@ endif()
 
 # Check for SDL2 backend
 option(ALSOFT_REQUIRE_SDL2 "Require SDL2 backend" OFF)
-find_package(SDL2)
+find_package(SDL2 QUIET)
 if(SDL2_FOUND)
     # Off by default, since it adds a runtime dependency
     option(ALSOFT_BACKEND_SDL2 "Enable SDL2 backend" OFF)
@@ -1185,9 +1190,10 @@ if(SDL2_FOUND)
         set(HAVE_SDL2 1)
         set(ALC_OBJS  ${ALC_OBJS} alc/backends/sdl2.cpp alc/backends/sdl2.h)
         set(BACKENDS  "${BACKENDS} SDL2,")
-        set(EXTRA_LIBS ${SDL2_LIBRARY} ${EXTRA_LIBS})
-        set(INC_PATHS ${INC_PATHS} ${SDL2_INCLUDE_DIR})
+        set(EXTRA_LIBS ${EXTRA_LIBS} SDL2::SDL2)
     endif()
+else()
+    message(STATUS "Could NOT find SDL2")
 endif()
 if(ALSOFT_REQUIRE_SDL2 AND NOT SDL2_FOUND)
     message(FATAL_ERROR "Failed to enabled required SDL2 backend")
@@ -1208,13 +1214,19 @@ set(BACKENDS  "${BACKENDS} Null")
 find_package(Git)
 if(ALSOFT_UPDATE_BUILD_VERSION AND GIT_FOUND AND EXISTS "${OpenAL_SOURCE_DIR}/.git")
     # Get the current working branch and its latest abbreviated commit hash
-    add_custom_target(build_version
-        ${CMAKE_COMMAND} -D GIT_EXECUTABLE=${GIT_EXECUTABLE} -D LIB_VERSION=${LIB_VERSION}
+    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/openal-soft/version_witness.txt"
+        BYPRODUCTS "${THIRDPARTY_CONFIG_DIR}/openal-soft/version.h"
+        COMMAND ${CMAKE_COMMAND} -D GIT_EXECUTABLE=${GIT_EXECUTABLE} -D LIB_VERSION=${LIB_VERSION}
             -D LIB_VERSION_NUM=${LIB_VERSION_NUM} -D SRC=${OpenAL_SOURCE_DIR}/version.h.in
             -D DST=${THIRDPARTY_CONFIG_DIR}/openal-soft/version.h -P ${OpenAL_SOURCE_DIR}/version.cmake
+        COMMAND ${CMAKE_COMMAND} -E touch "${THIRDPARTY_CONFIG_DIR}/openal-soft/version_witness.txt"
         WORKING_DIRECTORY "${OpenAL_SOURCE_DIR}"
+        MAIN_DEPENDENCY "${OpenAL_SOURCE_DIR}/version.h.in"
+        DEPENDS "${OpenAL_SOURCE_DIR}/.git/index" "${OpenAL_SOURCE_DIR}/version.cmake"
         VERBATIM
     )
+
+    add_custom_target(build_version DEPENDS "${THIRDPARTY_CONFIG_DIR}/openal-soft/version_witness.txt")
 else()
     set(GIT_BRANCH "UNKNOWN")
     set(GIT_COMMIT_HASH "unknown")
@@ -1232,7 +1244,7 @@ if(ALSOFT_EMBED_HRTF_DATA)
 
         add_custom_command(OUTPUT "${outfile}"
             COMMAND ${CMAKE_COMMAND} -D "INPUT_FILE=${infile}" -D "OUTPUT_FILE=${outfile}"
-                -D "VARIABLE_NAME=${VARNAME}" -P "${CMAKE_MODULE_PATH}/bin2h.script.cmake"
+                -P "${CMAKE_MODULE_PATH}/bin2h.script.cmake"
             WORKING_DIRECTORY "${OpenAL_SOURCE_DIR}"
             DEPENDS "${infile}" "${CMAKE_MODULE_PATH}/bin2h.script.cmake"
             VERBATIM
@@ -1240,7 +1252,7 @@ if(ALSOFT_EMBED_HRTF_DATA)
         set(ALC_OBJS  ${ALC_OBJS} "${outfile}")
     endmacro()
 
-    make_hrtf_header("Default HRTF.mhr" "hrtf_default")
+    make_hrtf_header("Default HRTF.mhr" "default_hrtf")
 endif()
 
 
@@ -1255,7 +1267,6 @@ if(ALSOFT_UTILS)
 endif()
 if(ALSOFT_UTILS OR ALSOFT_EXAMPLES)
     find_package(SndFile)
-    find_package(SDL2)
     if(SDL2_FOUND)
         find_package(FFmpeg COMPONENTS AVFORMAT AVCODEC AVUTIL SWSCALE SWRESAMPLE)
     endif()
@@ -1280,9 +1291,12 @@ if(LIBTYPE STREQUAL "STATIC")
     set(PKG_CONFIG_CFLAGS -DAL_LIBTYPE_STATIC)
     foreach(FLAG  ${LINKER_FLAGS} ${EXTRA_LIBS} ${MATH_LIB})
         # If this is already a linker flag, or is a full path+file, add it
-        # as-is. Otherwise, it's a name intended to be dressed as -lname.
+        # as-is. If it's an SDL2 target, add the link flag for it. Otherwise,
+        # it's a name intended to be dressed as -lname.
         if(FLAG MATCHES "^-.*" OR EXISTS "${FLAG}")
             set(PKG_CONFIG_PRIVATE_LIBS "${PKG_CONFIG_PRIVATE_LIBS} ${FLAG}")
+        elseif(FLAG MATCHES "^SDL2::SDL2")
+            set(PKG_CONFIG_PRIVATE_LIBS "${PKG_CONFIG_PRIVATE_LIBS} -lSDL2")
         else()
             set(PKG_CONFIG_PRIVATE_LIBS "${PKG_CONFIG_PRIVATE_LIBS} -l${FLAG}")
         endif()
@@ -1361,7 +1375,8 @@ else()
 
     # !important: for osx framework public header works, the headers must be in
     # the project
-    set(TARGET_PUBLIC_HEADERS include/AL/al.h include/AL/alc.h include/AL/alext.h include/AL/efx.h)
+    set(TARGET_PUBLIC_HEADERS include/AL/al.h include/AL/alc.h include/AL/alext.h include/AL/efx.h
+        include/AL/efx-presets.h)
     add_library(${IMPL_TARGET} SHARED ${OPENAL_OBJS} ${ALC_OBJS} ${CORE_OBJS} ${RC_CONFIG}
         ${TARGET_PUBLIC_HEADERS})
     if(WIN32)
@@ -1373,7 +1388,7 @@ else()
         # Sets framework name to soft_oal to avoid ambiguity with the system OpenAL.framework
         set(LIBNAME "soft_oal")
         if(GIT_FOUND)
-            EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} rev-list --count head
+            EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} rev-list --count HEAD
                 TIMEOUT 5
                 OUTPUT_VARIABLE BUNDLE_VERSION
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -1394,8 +1409,8 @@ else()
             FRAMEWORK_VERSION C
             MACOSX_FRAMEWORK_NAME "${IMPL_TARGET}"
             MACOSX_FRAMEWORK_IDENTIFIER "org.openal-soft.openal"
-            MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${LIB_VERSION}
-            MACOSX_FRAMEWORK_BUNDLE_VERSION ${BUNDLE_VERSION}
+            MACOSX_FRAMEWORK_SHORT_VERSION_STRING "${LIB_VERSION}"
+            MACOSX_FRAMEWORK_BUNDLE_VERSION "${BUNDLE_VERSION}"
             XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ""
             XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
             XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
@@ -1447,6 +1462,11 @@ if(WIN32 AND MINGW AND ALSOFT_BUILD_IMPORT_LIB AND NOT LIBTYPE STREQUAL "STATIC"
         add_custom_command(TARGET OpenAL POST_BUILD
             COMMAND "${SED_EXECUTABLE}" -i -e "s/ @[^ ]*//" OpenAL32.def
             COMMAND "${CMAKE_DLLTOOL}" -d OpenAL32.def -l OpenAL32.lib -D OpenAL32.dll
+            # Technically OpenAL32.def was created by the build, but cmake
+            # doesn't recognize it due to -Wl,--output-def,OpenAL32.def being
+            # manually specified. But declaring the file here allows it to be
+            # properly cleaned, e.g. during make clean.
+            BYPRODUCTS OpenAL32.def OpenAL32.lib
             COMMENT "Stripping ordinals from OpenAL32.def and generating OpenAL32.lib..."
             VERBATIM
         )
@@ -1677,9 +1697,8 @@ if(ALSOFT_EXAMPLES)
 
     if(SDL2_FOUND)
         add_executable(alloopback examples/alloopback.c)
-        target_include_directories(alloopback PRIVATE ${SDL2_INCLUDE_DIR})
         target_link_libraries(alloopback
-            PRIVATE ${LINKER_FLAGS} ${SDL2_LIBRARY} ex-common ${MATH_LIB})
+            PRIVATE ${LINKER_FLAGS} SDL2::SDL2 ex-common ${MATH_LIB})
 
         if(ALSOFT_INSTALL_EXAMPLES)
             set(EXTRA_INSTALLS ${EXTRA_INSTALLS} alloopback)
@@ -1690,33 +1709,32 @@ if(ALSOFT_EXAMPLES)
         set(FFVER_OK FALSE)
         if(FFMPEG_FOUND)
             set(FFVER_OK TRUE)
-            if(AVFORMAT_VERSION VERSION_LESS "57.56.101")
-                message(STATUS "libavformat is too old! (${AVFORMAT_VERSION}, wanted 57.56.101)")
+            if(AVFORMAT_VERSION VERSION_LESS "59.27.100")
+                message(STATUS "libavformat is too old! (${AVFORMAT_VERSION}, wanted 59.27.100)")
                 set(FFVER_OK FALSE)
             endif()
-            if(AVCODEC_VERSION VERSION_LESS "57.64.101")
-                message(STATUS "libavcodec is too old! (${AVCODEC_VERSION}, wanted 57.64.101)")
+            if(AVCODEC_VERSION VERSION_LESS "59.37.100")
+                message(STATUS "libavcodec is too old! (${AVCODEC_VERSION}, wanted 59.37.100)")
                 set(FFVER_OK FALSE)
             endif()
-            if(AVUTIL_VERSION VERSION_LESS "55.34.101")
-                message(STATUS "libavutil is too old! (${AVUTIL_VERSION}, wanted 55.34.101)")
+            if(AVUTIL_VERSION VERSION_LESS "57.28.100")
+                message(STATUS "libavutil is too old! (${AVUTIL_VERSION}, wanted 57.28.100)")
                 set(FFVER_OK FALSE)
             endif()
-            if(SWSCALE_VERSION VERSION_LESS "4.2.100")
-                message(STATUS "libswscale is too old! (${SWSCALE_VERSION}, wanted 4.2.100)")
+            if(SWSCALE_VERSION VERSION_LESS "6.7.100")
+                message(STATUS "libswscale is too old! (${SWSCALE_VERSION}, wanted 6.7.100)")
                 set(FFVER_OK FALSE)
             endif()
-            if(SWRESAMPLE_VERSION VERSION_LESS "2.3.100")
-                message(STATUS "libswresample is too old! (${SWRESAMPLE_VERSION}, wanted 2.3.100)")
+            if(SWRESAMPLE_VERSION VERSION_LESS "4.7.100")
+                message(STATUS "libswresample is too old! (${SWRESAMPLE_VERSION}, wanted 4.7.100)")
                 set(FFVER_OK FALSE)
             endif()
         endif()
         if(FFVER_OK)
             add_executable(alffplay examples/alffplay.cpp)
-            target_include_directories(alffplay
-                PRIVATE ${SDL2_INCLUDE_DIR} ${FFMPEG_INCLUDE_DIRS})
+            target_include_directories(alffplay PRIVATE ${FFMPEG_INCLUDE_DIRS})
             target_link_libraries(alffplay
-                PRIVATE ${LINKER_FLAGS} ${SDL2_LIBRARY} ${FFMPEG_LIBRARIES} ex-common)
+                PRIVATE ${LINKER_FLAGS} SDL2::SDL2 ${FFMPEG_LIBRARIES} ex-common)
 
             if(ALSOFT_INSTALL_EXAMPLES)
                 set(EXTRA_INSTALLS ${EXTRA_INSTALLS} alffplay)

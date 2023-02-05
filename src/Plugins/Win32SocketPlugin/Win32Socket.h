@@ -14,7 +14,6 @@ namespace Mengine
         : public SocketInterface
         , public Win32SocketInputStream
         , public Win32SocketOutputStream
-        , public Factorable
     {
         DECLARE_FACTORABLE( Win32Socket );
 
@@ -30,8 +29,9 @@ namespace Mengine
         int32_t checkForClientConnection() override;
         bool waitForData( uint32_t _timeoutMs ) override;
 
-        int32_t send( const void * _data, size_t _numBytes ) override;
-        int32_t receive( void * const _data, size_t _maxBytes ) override;
+    public:
+        bool send( const void * _data, size_t _size, size_t * const _sent ) override;
+        bool receive( void * const _data, size_t _capacity, size_t * const _received ) override;
 
     public:
         OutputStreamInterfacePtr getSendStream() const override;

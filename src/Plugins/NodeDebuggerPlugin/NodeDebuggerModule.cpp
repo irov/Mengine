@@ -250,14 +250,17 @@ namespace Mengine
                 if( m_socket == nullptr )
                 {
                     m_serverState = ENodeDebuggerServerState::Invalid;
+                    
                     return false;
                 }
 
                 int32_t check = m_socket->checkForClientConnection();
+                
                 if( check < 0 )
                 {
                     // failed
                     m_serverState = ENodeDebuggerServerState::Invalid;
+                    
                     return false;
                 }
                 else if( check > 0 )
@@ -282,7 +285,8 @@ namespace Mengine
                 {
                     for( const NodeDebuggerPacket & p : outgoingPacketsAux )
                     {
-                        m_socket->send( p.payload.data(), p.payload.size() );
+                        size_t sent;
+                        m_socket->send( p.payload.data(), p.payload.size(), &sent );
                     }
                 }
 
@@ -293,13 +297,11 @@ namespace Mengine
                     static constexpr size_t BUFFER_SIZE = 4096;
                     uint8_t buffer[BUFFER_SIZE];
 
-                    int32_t bytesReceived = 0;
+                    size_t bytesReceived = 0;
                     bool clientDisconnected = false;
                     do
                     {
-                        bytesReceived = m_socket->receive( buffer, BUFFER_SIZE );
-
-                        if( bytesReceived > 0 )
+                        if( m_socket->receive( buffer, BUFFER_SIZE, &bytesReceived ) == true )
                         {
                             m_receivedData.insert( m_receivedData.end(), buffer + 0, buffer + bytesReceived );
                         }
@@ -309,10 +311,11 @@ namespace Mengine
                         }
                     } while( !clientDisconnected && bytesReceived == static_cast<int32_t>(BUFFER_SIZE) );
 
-                    if( clientDisconnected )
+                    if( clientDisconnected == true )
                     {
                         m_shouldRecreateServer = true;
                         m_serverState = ENodeDebuggerServerState::Invalid;
+                        
                         return true;
                     }
                 }
@@ -329,10 +332,11 @@ namespace Mengine
                         {
                             m_shouldRecreateServer = true;
                             m_serverState = ENodeDebuggerServerState::Invalid;
+                            
                             return true;
                         }
 
-                        const size_t dataSizeWithHeader = hdr->compressedSize + sizeof( PacketHeader );
+                        size_t dataSizeWithHeader = hdr->compressedSize + sizeof( PacketHeader );
 
                         NodeDebuggerPacket packet;
                         this->uncompressPacket( packet, *hdr, m_receivedData.data() + sizeof( PacketHeader ) );
@@ -342,8 +346,9 @@ namespace Mengine
                         m_dataMutex->unlock();
 
                         // now remove this packet data from the buffer
-                        const size_t newSize = m_receivedData.size() - dataSizeWithHeader;
-                        if( newSize )
+                        size_t newSize = m_receivedData.size() - dataSizeWithHeader;
+                        
+                        if( newSize != 0 )
                         {
                             MENGINE_MEMMOVE( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
                             m_receivedData.resize( newSize );

@@ -73,8 +73,28 @@
 #   endif
 #endif
 
+#ifndef MENGINE_SCNu8
+#define MENGINE_SCNu8 SCNu8
+#endif
+
+#ifndef MENGINE_SCNu16
+#define MENGINE_SCNu16 SCNu16
+#endif
+
 #ifndef MENGINE_SCNu32
 #define MENGINE_SCNu32 SCNu32
+#endif
+
+#ifndef MENGINE_SCNu64
+#define MENGINE_SCNu64 SCNu64
+#endif
+
+#ifndef MENGINE_SCNd8
+#define MENGINE_SCNd8 SCNd8
+#endif
+
+#ifndef MENGINE_SCNd16
+#define MENGINE_SCNd16 SCNd16
 #endif
 
 #ifndef MENGINE_SCNd32
@@ -83,8 +103,4 @@
 
 #ifndef MENGINE_SCNd64
 #define MENGINE_SCNd64 SCNd64
-#endif
-
-#ifndef MENGINE_SCNu64
-#define MENGINE_SCNu64 SCNu64
 #endif

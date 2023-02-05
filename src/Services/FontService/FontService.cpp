@@ -72,7 +72,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TextFontInterfacePtr FontService::createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( m_fonts.find( _fontName ) == nullptr, "alredy exist font '%s'"
+        MENGINE_ASSERTION_FATAL( m_fonts.find( _fontName ) == nullptr, "already exist font '%s'"
             , _fontName.c_str()
         );
 

@@ -1940,9 +1940,9 @@ namespace Mengine
 
         Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
 
-        bool alredyFullscreen = (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
+        bool alreadyFullscreen = (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
 
-        if( _fullscreen != alredyFullscreen )
+        if( _fullscreen != alreadyFullscreen )
         {
             if( this->changeWindow_( _resolution, _fullscreen ) == false )
             {
@@ -2028,7 +2028,7 @@ namespace Mengine
 
             if( status != 0 )
             {
-                LOGGER_WARNING( "'%s' alredy exists"
+                LOGGER_WARNING( "'%s' already exists"
                     , _fullpath
                 );
 
@@ -2040,7 +2040,7 @@ namespace Mengine
 
             if( status != 0 )
             {
-                LOGGER_WARNING( "'%s' alredy exists"
+                LOGGER_WARNING( "'%s' already exists"
                     , _fullpath
                 );
 
@@ -2052,7 +2052,7 @@ namespace Mengine
 
             if( status != 0 )
             {
-                LOGGER_WARNING( "'%s' alredy exists"
+                LOGGER_WARNING( "'%s' already exists"
                     , _fullpath
                 );
 
@@ -2064,7 +2064,7 @@ namespace Mengine
 
             if( status != 0 )
             {
-                LOGGER_WARNING( "'%s' alredy exists"
+                LOGGER_WARNING( "'%s' already exists"
                     , _fullpath
                 );
 

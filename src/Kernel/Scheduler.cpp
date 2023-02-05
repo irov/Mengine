@@ -223,7 +223,7 @@ namespace Mengine
 
         if( this->removeScheduler_( desc, true ) == false )
         {
-            LOGGER_ERROR( "not alredy remove or complete [%u]"
+            LOGGER_ERROR( "not already remove or complete [%u]"
                 , _id
             );
 
@@ -271,7 +271,7 @@ namespace Mengine
 
         if( this->removeScheduler_( desc, false ) == false )
         {
-            LOGGER_ERROR( "not alredy remove or complete [%u]"
+            LOGGER_ERROR( "not already remove or complete [%u]"
                 , _id
             );
 

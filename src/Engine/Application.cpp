@@ -2203,7 +2203,7 @@ namespace Mengine
     {
         if( m_locale == _locale )
         {
-            LOGGER_WARNING( "alredy set locale '%s'"
+            LOGGER_WARNING( "already set locale '%s'"
                 , _locale.c_str()
             );
 

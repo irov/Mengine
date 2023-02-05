@@ -474,7 +474,7 @@ namespace Mengine
     {
         if( this->existGlyphCode( _code ) == true )
         {
-            LOGGER_ERROR( "code '%u' alredy exist!"
+            LOGGER_ERROR( "code '%u' already exist!"
                 , _code
             );
 

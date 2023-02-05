@@ -81,7 +81,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( m_generators.exist( _category, _prototype ) == false, "category '%s' prototype '%s' alredy exist"
+        MENGINE_ASSERTION_FATAL( m_generators.exist( _category, _prototype ) == false, "category '%s' prototype '%s' already exist"
             , _category.c_str()
             , _prototype.c_str()
         );

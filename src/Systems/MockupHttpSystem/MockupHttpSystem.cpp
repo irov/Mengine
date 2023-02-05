@@ -109,7 +109,7 @@ namespace Mengine
 
 		if( _category->existFile( _path ) == true )
 		{
-			LOGGER_ERROR("MockupHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
+			LOGGER_ERROR("MockupHttpSystem::downloadAsset url '%s' category '%s' file already exist '%s'"
 				, _url.c_str()
 				, _category->getName().c_str()
 				, _path.c_str()

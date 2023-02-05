@@ -92,16 +92,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CodecService::registerCodecExt( const ConstString & _ext, const ConstString & _codecType )
     {
-        MapCodecExts::iterator it_found = m_codecExts.find( _ext );
+        MapCodecExts::const_iterator it_found = m_codecExts.find( _ext );
 
         if( it_found != m_codecExts.end() )
         {
-            const ConstString & alredyCodec = it_found->second;
+            const ConstString & alreadyCodec = it_found->second;
 
-            LOGGER_ERROR( "ext '%s' codec type '%s' alredy registry in '%s'"
+            LOGGER_ERROR( "ext '%s' codec type '%s' already registry in '%s'"
                 , _ext.c_str()
                 , _codecType.c_str()
-                , alredyCodec.c_str()
+                , alreadyCodec.c_str()
             );
 
             return false;

@@ -254,7 +254,7 @@ namespace Mengine
 
         if( test != nullptr )
         {
-            MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( test->c_str(), _str ) == 0, "stringize unique '%s' alredy exist"
+            MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( test->c_str(), _str ) == 0, "stringize unique '%s' already exist"
                 , _str
             );
 

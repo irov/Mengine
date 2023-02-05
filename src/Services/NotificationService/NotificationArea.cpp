@@ -139,7 +139,7 @@ namespace Mengine
                 return;
             }
 
-            MENGINE_ASSERTION( false, "alredy remove observer for notificator %u"
+            MENGINE_ASSERTION( false, "already remove observer for notificator %u"
                 , m_id
             );
 
@@ -282,7 +282,7 @@ namespace Mengine
             return;
         }
 
-        MENGINE_ASSERTION( false, "alredy remove observer for notificator %u"
+        MENGINE_ASSERTION( false, "already remove observer for notificator %u"
             , m_id
         );
     }

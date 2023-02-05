@@ -188,7 +188,7 @@ namespace Mengine
 
         if( this->hasPlugin( name ) == true )
         {
-            LOGGER_ERROR( "alredy exist plugin '%s'"
+            LOGGER_ERROR( "already exist plugin '%s'"
                 , _plugin->getPluginName()
             );
 

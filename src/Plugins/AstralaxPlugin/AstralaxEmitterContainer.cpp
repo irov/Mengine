@@ -179,7 +179,7 @@ namespace Mengine
 
         if( mf == MAGIC_ERROR )
         {
-            LOGGER_ERROR( "invalid open file in memory (alredy open)" );
+            LOGGER_ERROR( "invalid open file in memory (already open)" );
 
             return false;
         }

@@ -13,7 +13,7 @@ public class MengineLog {
     private static native void AndroidEnvironmentService_logError(String msg);
 
     private static boolean m_initializeBaseServices = false;
-    private static Object m_lock = new Object();
+    private static final Object m_lock = new Object();
 
     public static void onMengineInitializeBaseServices(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = true;
@@ -89,7 +89,7 @@ public class MengineLog {
                 AndroidEnvironmentService_logMessageRelease(totalMsg);
             }
         } else {
-            Log.w(tag, totalMsg);
+            Log.e(tag, totalMsg);
         }
     }
 

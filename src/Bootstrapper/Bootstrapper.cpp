@@ -656,7 +656,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE_PROTECTED( "User Folder: %s", cs_userPath.c_str() );
+            LOGGER_MESSAGE( "User Folder: %s", cs_userPath.c_str() );
         }
 
         // mount user directory

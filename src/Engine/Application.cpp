@@ -326,10 +326,10 @@ namespace Mengine
                 );
         }
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine URL: %s", engineGitURL );
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Commit: %s", engineGitSHA1 );
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Branch: %s", engineGitBranch );
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Engine Date: %s", engineGitDate );
+        LOGGER_MESSAGE( "Engine URL: %s", engineGitURL );
+        LOGGER_MESSAGE( "Engine Commit: %s", engineGitSHA1 );
+        LOGGER_MESSAGE( "Engine Branch: %s", engineGitBranch );
+        LOGGER_MESSAGE( "Engine Date: %s", engineGitDate );
 
         const Char * contentCommit = Helper::getContentCommit();
 
@@ -339,7 +339,7 @@ namespace Mengine
                 ->messageBox( "Mengine", "Content Commit: %s", contentCommit );
         }
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Content Commit: %s", contentCommit );
+        LOGGER_MESSAGE( "Content Commit: %s", contentCommit );
 
         const Char * buildVersion = Helper::getBuildVersion();
         const Char * buildUserName = Helper::getBuildUsername();
@@ -352,7 +352,7 @@ namespace Mengine
                 ->messageBox( "Mengine", "build info: %s %s %s %s", buildVersion, buildUserName, buildTimestamp, buildProjectName );
         }
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "Build Info: %s %s %s [%s]", buildVersion, buildUserName, buildTimestamp, buildProjectName );
+        LOGGER_MESSAGE( "Build Info: %s %s %s [%s]", buildVersion, buildUserName, buildTimestamp, buildProjectName );
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {

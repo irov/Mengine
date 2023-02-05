@@ -1,18 +1,11 @@
 package org.Mengine.Base;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class MenginePlugin {
     private MengineApplication m_application;
@@ -67,7 +60,7 @@ public class MenginePlugin {
         return m_pluginName;
     }
 
-    public <T> T newInstance( String name, boolean exist ) {
+    public <T> T newInstance(String name, boolean exist) {
         T instance = MengineUtils.newInstance(m_pluginName, name, exist);
 
         return instance;
@@ -225,7 +218,7 @@ public class MenginePlugin {
         //Empty
     }
 
-    public void onConfigurationChanged(MengineActivity activity,Configuration newConfig) {
+    public void onConfigurationChanged(MengineActivity activity, Configuration newConfig) {
         //Empty
     }
 

@@ -357,7 +357,7 @@ namespace Mengine
             }
         }
 
-        LOGGER_MESSAGE_RELEASE( "%s"
+        LOGGER_MESSAGE( "%s"
             , ss.str().c_str()
         );
 

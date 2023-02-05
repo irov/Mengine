@@ -221,7 +221,9 @@ public class MengineActivity extends SDLActivity {
 
             return bundle;
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Unable to load meta-data: " + e.getMessage());
+            MengineLog.logError(TAG, "Unable to load meta-data: %s"
+                , e.getLocalizedMessage()
+            );
         }
 
         return null;
@@ -279,10 +281,10 @@ public class MengineActivity extends SDLActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i(TAG, "onCreate");
+        MengineLog.logInfo(TAG, "onCreate");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onCreate: broken libraries");
+            MengineLog.logError(TAG, "onCreate: broken libraries");
 
             return;
         }
@@ -408,7 +410,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onActivityResult");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onStart: broken libraries");
+            MengineLog.logError(TAG, "onStart: broken libraries");
 
             return;
         }
@@ -427,7 +429,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onStart");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onStart: broken libraries");
+            MengineLog.logError(TAG, "onStart: broken libraries");
 
             return;
         }
@@ -450,7 +452,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onStop");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onStop: broken libraries");
+            MengineLog.logError(TAG, "onStop: broken libraries");
 
             return;
         }
@@ -473,7 +475,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onPause");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onPause: broken libraries");
+            MengineLog.logError(TAG, "onPause: broken libraries");
 
             return;
         }
@@ -496,7 +498,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onResume");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onResume: broken libraries");
+            MengineLog.logError(TAG, "onResume: broken libraries");
 
             return;
         }
@@ -519,7 +521,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onNewIntent");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onNewIntent: broken libraries");
+            MengineLog.logError(TAG, "onNewIntent: broken libraries");
 
             return;
         }
@@ -536,7 +538,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onDestroy");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onDestroy: broken libraries");
+            MengineLog.logError(TAG, "onDestroy: broken libraries");
 
             super.onDestroy();
 
@@ -572,7 +574,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onRestart");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onRestart: broken libraries");
+            MengineLog.logError(TAG, "onRestart: broken libraries");
 
             return;
         }
@@ -597,7 +599,7 @@ public class MengineActivity extends SDLActivity {
         );
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onConfigurationChanged: broken libraries");
+            MengineLog.logError(TAG, "onConfigurationChanged: broken libraries");
 
             return;
         }
@@ -616,7 +618,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onRequestPermissionsResult");
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "onRequestPermissionsResult: broken libraries");
+            MengineLog.logError(TAG, "onRequestPermissionsResult: broken libraries");
 
             return;
         }
@@ -636,7 +638,7 @@ public class MengineActivity extends SDLActivity {
         );
 
         if (mBrokenLibraries == true) {
-            Log.e(TAG, "dispatchKeyEvent: broken libraries");
+            MengineLog.logError(TAG, "dispatchKeyEvent: broken libraries");
 
             return super.dispatchKeyEvent(event);
         }

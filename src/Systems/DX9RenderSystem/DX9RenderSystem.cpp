@@ -450,7 +450,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_MESSAGE_RELEASE( "force set D3DCREATE_SOFTWARE_VERTEXPROCESSING" );
+                LOGGER_ERROR( "force set D3DCREATE_SOFTWARE_VERTEXPROCESSING" );
 
                 device_flags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
             }

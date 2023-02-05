@@ -35,8 +35,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32DynamicLibrary::load()
     {
+        LOGGER_INFO( "load dll: %s"
+            , this->getName()
+        );
+
+        const Char * name = this->getName();
+
         WChar unicode_name[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( m_name.c_str(), unicode_name, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( name, unicode_name, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -46,7 +52,7 @@ namespace Mengine
         if( hInstance == NULL )
         {
             LOGGER_ERROR( "invalid load '%s' %ls"
-                , m_name.c_str()
+                , name
                 , Helper::Win32GetLastErrorMessage()
             );
 
@@ -56,10 +62,6 @@ namespace Mengine
         WCHAR dllFilename[MENGINE_MAX_PATH] = {L'\0'};
         ::GetModuleFileName( hInstance, dllFilename, MENGINE_MAX_PATH );
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "load dll: %ls"
-            , dllFilename
-        );
-
         m_hInstance = hInstance;
 
         return true;
@@ -67,6 +69,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32DynamicLibrary::unload()
     {
+        LOGGER_INFO( "unload dll: %s"
+            , this->getName()
+        );
+
         if( m_hInstance != NULL )
         {
             ::FreeLibrary( m_hInstance );

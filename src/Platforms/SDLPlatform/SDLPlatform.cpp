@@ -685,7 +685,7 @@ namespace Mengine
             m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
 
-        LOGGER_MESSAGE_RELEASE( "Platform Tags: %s"
+        LOGGER_MESSAGE( "Platform Tags: %s"
             , [this]()
         {
             static Char cache_value[1024] = {'\0'};

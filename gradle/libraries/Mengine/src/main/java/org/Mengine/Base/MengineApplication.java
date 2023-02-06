@@ -2,7 +2,10 @@ package org.Mengine.Base;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.os.Bundle;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -15,10 +18,11 @@ public class MengineApplication extends Application {
     public ArrayList<MenginePlugin> m_plugins;
     public Map<String, MenginePlugin> m_dictionaryPlugins;
 
-    public ArrayList<MengineLoggerListener> m_loggerListeners;
-    public ArrayList<MengineAnalyticsListener> m_analyticsListeners;
-    public ArrayList<MengineActivityLifecycleListener> m_activityLifecycleListeners;
-    public ArrayList<MengineKeyListener> m_keyListeners;
+    public ArrayList<MenginePluginLoggerListener> m_loggerListeners;
+    public ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners;
+    public ArrayList<MenginePluginActivityLifecycleListener> m_activityLifecycleListeners;
+    public ArrayList<MenginePluginKeyListener> m_keyListeners;
+    public ArrayList<MenginePluginApplicationListener> m_applicationListeners;
 
     public MengineActivityLifecycle m_activityLifecycle;
 
@@ -30,6 +34,7 @@ public class MengineApplication extends Application {
         m_analyticsListeners = new ArrayList<>();
         m_activityLifecycleListeners = new ArrayList<>();
         m_keyListeners = new ArrayList<>();
+        m_applicationListeners = new ArrayList<>();
 
         for (String n : this.getGradleAndroidPlugins()) {
             this.createPlugin(n);
@@ -42,24 +47,96 @@ public class MengineApplication extends Application {
         return empty;
     }
 
+    @SuppressWarnings("deprecation")
+    private ApplicationInfo getPackageApplicationInfo(PackageManager packageManager, String packageName) throws PackageManager.NameNotFoundException {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            PackageManager.ApplicationInfoFlags flags = PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA);
+
+            return packageManager.getApplicationInfo(packageName, flags);
+        } else {
+            return packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+        }
+    }
+
+    public Bundle getMetaDataBundle() {
+        Context context = this.getApplicationContext();
+        String packageName = context.getPackageName();
+        PackageManager packageManager = context.getPackageManager();
+
+        try {
+            ApplicationInfo ai = this.getPackageApplicationInfo(packageManager, packageName);
+
+            Bundle bundle = ai.metaData;
+
+            return bundle;
+        } catch (PackageManager.NameNotFoundException e) {
+            MengineLog.logError(TAG, "Unable to load meta-data: %s"
+                    , e.getLocalizedMessage()
+            );
+        }
+
+        return null;
+    }
+
+    public String getMetaDataString(String name) {
+        Bundle bundle = this.getMetaDataBundle();
+
+        if (bundle == null) {
+            return null;
+        }
+
+        String value = bundle.getString(name);
+
+        return value;
+    }
+
+    public boolean getMetaDataBoolean(String name, boolean d) {
+        Bundle bundle = this.getMetaDataBundle();
+
+        if (bundle == null) {
+            return d;
+        }
+
+        boolean value = bundle.getBoolean(name, d);
+
+        return value;
+    }
+
+    public int getMetaDataInteger(String name, int d) {
+        Bundle bundle = this.getMetaDataBundle();
+
+        if (bundle == null) {
+            return d;
+        }
+
+        int value = bundle.getInt(name, d);
+
+        return value;
+    }
+
     public ArrayList<MenginePlugin> getPlugins() {
         return m_plugins;
     }
 
-    public ArrayList<MengineLoggerListener> getLoggerListeners() {
+    public ArrayList<MenginePluginLoggerListener> getLoggerListeners() {
         return m_loggerListeners;
     }
 
-    public ArrayList<MengineAnalyticsListener> getAnalyticsListeners() {
+    public ArrayList<MenginePluginAnalyticsListener> getAnalyticsListeners() {
         return m_analyticsListeners;
     }
 
-    public ArrayList<MengineActivityLifecycleListener> getActivityLifecycleListeners() {
+    public ArrayList<MenginePluginActivityLifecycleListener> getActivityLifecycleListeners() {
         return m_activityLifecycleListeners;
     }
 
-    public ArrayList<MengineKeyListener> getKeyListeners() {
+    public ArrayList<MenginePluginKeyListener> getKeyListeners() {
         return m_keyListeners;
+    }
+
+    public ArrayList<MenginePluginApplicationListener> getApplicationListeners()
+    {
+        return m_applicationListeners;
     }
 
     public MenginePlugin findPlugin(String name) {
@@ -138,28 +215,34 @@ public class MengineApplication extends Application {
         m_plugins.add(plugin);
         m_dictionaryPlugins.put(name, plugin);
 
-        if (plugin instanceof MengineAnalyticsListener) {
-            MengineAnalyticsListener listener = (MengineAnalyticsListener)plugin;
+        if (plugin instanceof MenginePluginAnalyticsListener) {
+            MenginePluginAnalyticsListener listener = (MenginePluginAnalyticsListener)plugin;
 
             m_analyticsListeners.add(listener);
         }
 
-        if (plugin instanceof MengineLoggerListener) {
-            MengineLoggerListener listener = (MengineLoggerListener)plugin;
+        if (plugin instanceof MenginePluginLoggerListener) {
+            MenginePluginLoggerListener listener = (MenginePluginLoggerListener)plugin;
 
             m_loggerListeners.add(listener);
         }
 
-        if (plugin instanceof MengineActivityLifecycleListener) {
-            MengineActivityLifecycleListener listener = (MengineActivityLifecycleListener)plugin;
+        if (plugin instanceof MenginePluginActivityLifecycleListener) {
+            MenginePluginActivityLifecycleListener listener = (MenginePluginActivityLifecycleListener)plugin;
 
             m_activityLifecycleListeners.add(listener);
         }
 
-        if (plugin instanceof MengineKeyListener) {
-            MengineKeyListener listener = (MengineKeyListener)plugin;
+        if (plugin instanceof MenginePluginKeyListener) {
+            MenginePluginKeyListener listener = (MenginePluginKeyListener)plugin;
 
             m_keyListeners.add(listener);
+        }
+
+        if (plugin instanceof MenginePluginApplicationListener) {
+            MenginePluginApplicationListener listener = (MenginePluginApplicationListener)plugin;
+
+            m_applicationListeners.add(listener);
         }
 
         MengineLog.logInfo(TAG, "add plugin: %s [%s]"
@@ -213,8 +296,8 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onCreate");
 
-        for (MenginePlugin p : m_plugins) {
-            p.onAppCreate(this);
+        for (MenginePluginApplicationListener l : m_applicationListeners) {
+            l.onAppCreate(this);
         }
     }
 
@@ -224,8 +307,8 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onTerminate");
 
-        for (MenginePlugin p : m_plugins) {
-            p.onAppTerminate(this);
+        for (MenginePluginApplicationListener l : m_applicationListeners) {
+            l.onAppTerminate(this);
         }
 
         m_plugins = null;
@@ -235,6 +318,7 @@ public class MengineApplication extends Application {
         m_analyticsListeners = null;
         m_activityLifecycleListeners = null;
         m_keyListeners = null;
+        m_applicationListeners = null;
     }
 
     @Override
@@ -243,8 +327,8 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "attachBaseContext");
 
-        for (MenginePlugin p : m_plugins) {
-            p.onAppAttachBaseContext(this, base);
+        for (MenginePluginApplicationListener l : m_applicationListeners) {
+            l.onAppAttachBaseContext(this, base);
         }
     }
 
@@ -254,8 +338,8 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onConfigurationChanged");
 
-        for (MenginePlugin p : m_plugins) {
-            p.onAppConfigurationChanged(this, newConfig);
+        for (MenginePluginApplicationListener l : m_applicationListeners) {
+            l.onAppConfigurationChanged(this, newConfig);
         }
     }
 }

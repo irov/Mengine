@@ -110,22 +110,6 @@ public class MenginePlugin {
         m_activity.waitSemaphore(name, cb);
     }
 
-    public void onAppCreate(MengineApplication application) {
-        //Empty
-    }
-
-    public void onAppTerminate(MengineApplication application) {
-        //Empty
-    }
-
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-        //Empty
-    }
-
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-        //Empty
-    }
-
     public void onEvent(MengineActivity activity, String id, Object ... args) {
         //Empty
     }

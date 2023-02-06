@@ -1,5 +1,7 @@
 package org.Mengine.Plugin.FirebaseAnalytics;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,13 +10,14 @@ import androidx.annotation.Nullable;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineAnalyticsListener;
+import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginApplicationListener;
 
 import java.util.Map;
 
-public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MengineAnalyticsListener {
+public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener {
     public static String PLUGIN_NAME = "FirebaseAnalytics";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -27,6 +30,18 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     @Override
     public void onAppCreate(MengineApplication application) {
         m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
+    }
+
+    @Override
+    public void onAppTerminate(MengineApplication application) {
+    }
+
+    @Override
+    public void onAppAttachBaseContext(MengineApplication application, Context base) {
+    }
+
+    @Override
+    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
     }
 
     @Override

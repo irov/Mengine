@@ -3,6 +3,8 @@ package org.Mengine.Plugin.MAR;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginKeyListener;
 import org.Mengine.Base.MengineUtils;
 
 import android.app.Activity;
@@ -43,7 +45,7 @@ import android.view.KeyEvent;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class MengineMARPlugin extends MenginePlugin implements MARInitListener {
+public class MengineMARPlugin extends MenginePlugin implements MARInitListener, MenginePluginApplicationListener, MenginePluginKeyListener {
     public static String PLUGIN_NAME = "MarSDK";
     public static boolean PLUGIN_EMBEDDING = true;
 

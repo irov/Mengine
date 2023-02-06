@@ -10,12 +10,12 @@ import com.devtodev.analytics.external.analytics.DTDAnalyticsConfiguration;
 import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineAnalyticsListener;
+import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePlugin;
 
 import java.util.Map;
 
-public class MengineDevToDevPlugin extends MenginePlugin implements MengineAnalyticsListener {
+public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener {
     public static String PLUGIN_NAME = "DevToDev";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -41,9 +41,9 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MengineAnaly
             configuration.setLogLevel(DTDLogLevel.Error);
         }
 
-        String appKey = activity.getString(R.string.dev_to_dev_app_id);
+        String devtodev_app_id = activity.getMetaDataString("mengine.devtodev.app_id");
 
-        DTDAnalytics.INSTANCE.initialize(appKey, configuration, activity);
+        DTDAnalytics.INSTANCE.initialize(devtodev_app_id, configuration, activity);
     }
 
     @Override

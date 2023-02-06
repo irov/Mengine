@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.Adjust;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.adjust.sdk.Adjust;
@@ -12,8 +13,9 @@ import com.adjust.sdk.LogLevel;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginApplicationListener;
 
-public class MengineAdjustPlugin extends MenginePlugin {
+public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static String PLUGIN_NAME = "Adjust";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -43,7 +45,7 @@ public class MengineAdjustPlugin extends MenginePlugin {
             environment = AdjustConfig.ENVIRONMENT_SANDBOX;
         }
 
-        String adjust_app_token = application.getString(R.string.adjust_app_token);
+        String adjust_app_token = application.getMetaDataString("mengine.adjust.app_token");
 
         AdjustConfig config = new AdjustConfig(application, adjust_app_token, environment);
 
@@ -57,6 +59,18 @@ public class MengineAdjustPlugin extends MenginePlugin {
         this.logInfo("Adjust Adid: %s"
             , Adjust.getAdid()
         );
+    }
+
+    @Override
+    public void onAppTerminate(MengineApplication application) {
+    }
+
+    @Override
+    public void onAppAttachBaseContext(MengineApplication application, Context base) {
+    }
+
+    @Override
+    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
     }
 
     @Override

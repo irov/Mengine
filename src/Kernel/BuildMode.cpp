@@ -14,7 +14,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool isDebugMode()
         {
-            return MENGINE_DEBUG_VALUE( true, false );
+            bool debugMode = MENGINE_DEBUG_VALUE( true, false );
+            
+            return debugMode;
         }
         //////////////////////////////////////////////////////////////////////////
         bool isDevelopmentMode()
@@ -54,17 +56,23 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool isBuildPublish()
         {
-            return MENGINE_BUILD_PUBLISH_VALUE( true, false );
+            bool buildPublish = MENGINE_BUILD_PUBLISH_VALUE( true, false );
+
+            return buildPublish;
         }
         //////////////////////////////////////////////////////////////////////////
         bool isMasterRelease()
         {
-            return MENGINE_MASTER_RELEASE_VALUE( true, false );
+            bool masterRelease = MENGINE_MASTER_RELEASE_VALUE( true, false );
+
+            return masterRelease;
         }
         //////////////////////////////////////////////////////////////////////////
         bool isWindowsDebug()
         {
-            return MENGINE_WINDOWS_DEBUG_VALUE( true, false );
+            bool windowDebug = MENGINE_WINDOWS_DEBUG_VALUE( true, false );
+
+            return windowDebug;
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * getEngineGITSHA1()

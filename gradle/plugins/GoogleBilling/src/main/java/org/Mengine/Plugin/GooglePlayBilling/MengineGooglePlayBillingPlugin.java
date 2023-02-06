@@ -60,8 +60,11 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     private BillingClient m_billingClient = null;
     private Boolean m_connectionSucces = false;
 
-    private final Boolean m_mutex = true;
-    private Boolean m_responseEnd = true;
+    private final Object m_responseEndProductsMutex = true;
+    private Boolean m_responseEndProducts = true;
+
+    private final Object m_responseEndPurchasesMutex = true;
+    private Boolean m_responseEndPurchases = true;
 
     public void onBillingResponseSkuResponse(List<ProductDetails> priceOffers) {
         this.logInfo("Billing response skuResponse");
@@ -234,12 +237,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             return;
         }
 
-        synchronized (m_mutex) {
-            if (m_responseEnd == false) {
+        synchronized (m_responseEndProductsMutex) {
+            if (m_responseEndProducts == false) {
                 return;
             }
 
-            m_responseEnd = false;
+            m_responseEndProducts = false;
 
             List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
             for (String productId : m_idsNames) {
@@ -257,7 +260,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             m_billingClient.queryProductDetailsAsync(params.build(), new ProductDetailsResponseListener() {
                 @Override
                 public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> productDetailList) {
-                    m_responseEnd = true;
+                    m_responseEndProducts = true;
 
                     int responseCode = billingResult.getResponseCode();
 
@@ -290,33 +293,43 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             return;
         }
 
-        QueryPurchasesParams purchasesParams = QueryPurchasesParams.newBuilder()
-            .setProductType(BillingClient.ProductType.INAPP)
-            .build();
+        synchronized (m_responseEndPurchasesMutex) {
+            if (m_responseEndPurchases == false) {
+                return;
+            }
 
-        m_billingClient.queryPurchasesAsync(purchasesParams, new PurchasesResponseListener() {
-            @Override
-            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchasesList) {
-                int responseCode = billingResult.getResponseCode();
+            m_responseEndPurchases = false;
 
-                if (responseCode != BillingClient.BillingResponseCode.OK) {
-                    MengineGooglePlayBillingPlugin.this.logError("Billing invalid query purchases [%d] %s"
-                        , responseCode
-                        , billingResult.getDebugMessage()
+            QueryPurchasesParams purchasesParams = QueryPurchasesParams.newBuilder()
+                    .setProductType(BillingClient.ProductType.INAPP)
+                    .build();
+
+            m_billingClient.queryPurchasesAsync(purchasesParams, new PurchasesResponseListener() {
+                @Override
+                public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchasesList) {
+                    m_responseEndPurchases = true;
+
+                    int responseCode = billingResult.getResponseCode();
+
+                    if (responseCode != BillingClient.BillingResponseCode.OK) {
+                        MengineGooglePlayBillingPlugin.this.logError("Billing invalid query purchases [%d] %s"
+                                , responseCode
+                                , billingResult.getDebugMessage()
+                        );
+
+                        return;
+                    }
+
+                    MengineGooglePlayBillingPlugin.this.logInfo("Billing successful query purchases: %s"
+                            , billingResult.getDebugMessage()
                     );
 
-                    return;
+                    for (Purchase purchase : purchasesList) {
+                        handlePurchase(purchase);
+                    }
                 }
-
-                MengineGooglePlayBillingPlugin.this.logInfo("Billing successful query purchases: %s"
-                    , billingResult.getDebugMessage()
-                );
-
-                for (Purchase purchase : purchasesList) {
-                    handlePurchase(purchase);
-                }
-            }
-        });
+            });
+        }
     }
 
     boolean buyInApp(String productId) {

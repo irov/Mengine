@@ -22,9 +22,9 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityResumed(Activity activity) {
         Log.d(TAG, "onActivityResumed");
 
-        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
+        ArrayList<MenginePluginActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MengineActivityLifecycleListener l : listeners) {
+        for (MenginePluginActivityLifecycleListener l : listeners) {
             l.onMengineActivityLifecycleResumed(activity);
         }
 
@@ -35,9 +35,9 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityPaused(Activity activity) {
         Log.d(TAG, "onActivityPaused");
 
-        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
+        ArrayList<MenginePluginActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MengineActivityLifecycleListener l : listeners) {
+        for (MenginePluginActivityLifecycleListener l : listeners) {
             l.onMengineActivityLifecyclePaused(activity);
         }
 
@@ -48,9 +48,9 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityStarted(Activity activity) {
         Log.d(TAG, "onActivityStarted");
 
-        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
+        ArrayList<MenginePluginActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MengineActivityLifecycleListener l : listeners) {
+        for (MenginePluginActivityLifecycleListener l : listeners) {
             l.onMengineActivityLifecycleStarted(activity);
         }
 
@@ -61,9 +61,9 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityStopped(Activity activity) {
         Log.d(TAG, "onActivityStopped");
 
-        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
+        ArrayList<MenginePluginActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MengineActivityLifecycleListener l : listeners) {
+        for (MenginePluginActivityLifecycleListener l : listeners) {
             l.onMengineActivityLifecycleStopped(activity);
         }
 
@@ -74,9 +74,9 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityDestroyed(Activity activity) {
         Log.d(TAG, "onActivityDestroyed");
 
-        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
+        ArrayList<MenginePluginActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MengineActivityLifecycleListener l : listeners) {
+        for (MenginePluginActivityLifecycleListener l : listeners) {
             l.onMengineActivityLifecycleDestroyed(activity);
         }
 
@@ -87,9 +87,9 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivityCreated(Activity activity, Bundle bundle) {
         Log.d(TAG, "onActivityCreated");
 
-        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
+        ArrayList<MenginePluginActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MengineActivityLifecycleListener l : listeners) {
+        for (MenginePluginActivityLifecycleListener l : listeners) {
             l.onMengineActivityLifecycleCreated(activity, bundle);
         }
 
@@ -100,9 +100,9 @@ public class MengineActivityLifecycle implements Application.ActivityLifecycleCa
     public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
         Log.d(TAG, "onActivitySaveInstanceState");
 
-        ArrayList<MengineActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
+        ArrayList<MenginePluginActivityLifecycleListener> listeners = m_application.getActivityLifecycleListeners();
 
-        for (MengineActivityLifecycleListener l : listeners) {
+        for (MenginePluginActivityLifecycleListener l : listeners) {
             l.onMengineActivityLifecycleSaveInstanceState(activity, bundle);
         }
 

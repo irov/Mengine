@@ -3,7 +3,7 @@ package org.Mengine.Base;
 import android.app.Activity;
 import android.os.Bundle;
 
-public interface MengineActivityLifecycleListener {
+public interface MenginePluginActivityLifecycleListener {
     public void onMengineActivityLifecycleResumed(Activity activity);
     public void onMengineActivityLifecyclePaused(Activity activity);
     public void onMengineActivityLifecycleStarted(Activity activity);

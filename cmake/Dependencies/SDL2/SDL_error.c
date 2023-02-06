@@ -25,8 +25,6 @@
 #include "SDL_error.h"
 #include "SDL_error_c.h"
 
-#define SDL_ERRBUFIZE   1024
-
 static SDL_bool suppressError = SDL_FALSE;
 
 void

@@ -2,6 +2,7 @@
     package="org.Mengine.Plugin.DevToDev">
 
     <application>
+        <meta-data android:name="mengine.devtodev.app_id" android:value="@string/mengine_devtodev_app_id" />
 
     </application>
 </manifest>

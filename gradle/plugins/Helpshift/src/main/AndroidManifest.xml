@@ -2,5 +2,8 @@
     package="org.Mengine.Plugin.Helpshift">
 
     <application>
+        <meta-data android:name="mengine.helpshift.platform_id" android:value="@string/mengine_helpshift_platform_id" />
+        <meta-data android:name="mengine.helpshift.domain" android:value="@string/mengine_helpshift_domain" />
+
     </application>
 </manifest>

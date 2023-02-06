@@ -16,7 +16,6 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/StdIO.h"
-
 #include "Config/Algorithm.h"
 
 #ifndef MENGINE_LOGGER_LEVEL_FORCE_VERBOSE

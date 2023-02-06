@@ -20,7 +20,7 @@ namespace Mengine
             case LM_CRITICAL:
                 return 'C';
             case LM_MESSAGE_RELEASE:
-                return 'M';
+                return 'R';
             case LM_ERROR:
                 return 'E';
             case LM_WARNING:

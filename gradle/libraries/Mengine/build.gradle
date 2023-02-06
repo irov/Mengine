@@ -40,6 +40,7 @@ android {
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                             "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
+                            "-DMENGINE_BUILD_MENGINE_LOGGER_LEVEL_FORCE_VERBOSE=" + (Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false) ? "ON" : "OFF"),
                             "-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=OFF",
                             "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON",
                             "-DCMAKE_BUILD_TYPE:STRING=Debug"
@@ -59,6 +60,7 @@ android {
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                             "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
+                            "-DMENGINE_BUILD_MENGINE_LOGGER_LEVEL_FORCE_VERBOSE=" + (Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false) ? "ON" : "OFF"),
                             "-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=ON",
                             "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF",
                             "-DCMAKE_BUILD_TYPE:STRING=Release"

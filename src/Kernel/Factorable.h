@@ -9,9 +9,9 @@
 #ifndef MENGINE_FACTORABLE_DEBUG
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_FACTORABLE_DEBUG 1
+#   else
+#       define MENGINE_FACTORABLE_DEBUG 0
 #   endif
-#else
-#   define MENGINE_FACTORABLE_DEBUG 0
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if MENGINE_FACTORABLE_DEBUG == 1

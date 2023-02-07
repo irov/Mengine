@@ -9,7 +9,7 @@ import org.Mengine.Base.MengineApplication;
 
 public class MengineFirebaseMessagingService extends FirebaseMessagingService {
     @Override
-    public void onMessageReceived(final RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
         MengineApplication application = (MengineApplication)this.getApplication();

@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MengineFirebaseMessagingListener {
+public class MengineFirebaseMessagingPlugin extends MenginePlugin {
     public static String PLUGIN_NAME = "FirebaseMessaging";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -61,35 +61,32 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
         m_messagings.remove(listener);
     }
 
-    @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         for (MengineFirebaseMessagingListener listener : m_messagings) {
-            listener.onMessageReceived(remoteMessage);
+            if (listener.onMessageReceived(remoteMessage) == true) {
+                break;
+            }
         }
     }
 
-    @Override
     public void onDeletedMessages() {
         for (MengineFirebaseMessagingListener listener : m_messagings) {
             listener.onDeletedMessages();
         }
     }
 
-    @Override
     public void onMessageSent(@NonNull String msgId) {
         for (MengineFirebaseMessagingListener listener : m_messagings) {
             listener.onMessageSent(msgId);
         }
     }
 
-    @Override
     public void onSendError(@NonNull String msgId, @NonNull Exception exception) {
         for (MengineFirebaseMessagingListener listener : m_messagings) {
             listener.onSendError(msgId, exception);
         }
     }
 
-    @Override
     public void onNewToken(@NonNull String token) {
         for (MengineFirebaseMessagingListener listener : m_messagings) {
             listener.onNewToken(token);

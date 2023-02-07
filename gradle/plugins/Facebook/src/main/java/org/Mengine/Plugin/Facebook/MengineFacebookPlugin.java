@@ -31,6 +31,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,7 +67,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
         LoginManager.getInstance().retrieveLoginStatus(activity, new LoginStatusCallback() {
             @Override
-            public void onCompleted(AccessToken accessToken) {
+            public void onCompleted(@NonNull AccessToken accessToken) {
                 // User was previously logged in, can log them in directly here.
                 // If this callback is called, a popup notification appears that says
                 // "Logged in as <User Name>"
@@ -85,7 +87,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(@NonNull Exception e) {
                 MengineFacebookPlugin.this.logInfo("retrieve login [onError] exception: %s"
                     , e.getLocalizedMessage()
                 );
@@ -115,7 +117,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
 
         m_profileTracker.startTracking();
 
-        LoginManager.getInstance().registerCallback(m_facebookCallbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(m_facebookCallbackManager, new FacebookCallback<>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Profile.fetchProfileForCurrentAccessToken();
@@ -145,7 +147,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
             }
 
             @Override
-            public void onError(FacebookException e) {
+            public void onError(@NonNull FacebookException e) {
                 String message = e.getLocalizedMessage();
 
                 MengineFacebookPlugin.this.logError("login [onError] exception: %s"
@@ -205,6 +207,10 @@ public class MengineFacebookPlugin extends MenginePlugin {
         }
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
+        if (accessToken == null) {
+            return "";
+        }
         
         String token = accessToken.getToken();
         
@@ -322,7 +328,7 @@ public class MengineFacebookPlugin extends MenginePlugin {
             }
 
             @Override
-            public void onError(FacebookException exception) {
+            public void onError(@NonNull FacebookException exception) {
                 String message = exception.getMessage();
 
                 MengineFacebookPlugin.this.logInfo("facebook error: %s"
@@ -379,10 +385,11 @@ public class MengineFacebookPlugin extends MenginePlugin {
         
         GraphRequest request = GraphRequest.newGraphPathRequest(accessToken, graphPath, new GraphRequest.Callback() {
             @Override
-            public void onCompleted(GraphResponse response) {
-                if (response == null) {
-                    MengineFacebookPlugin.this.logError("profile user picture link [%s] null response"
+            public void onCompleted(@NonNull GraphResponse response) {
+                if (response.getError() != null) {
+                    MengineFacebookPlugin.this.logError("profile user picture link [%s] get error: %s"
                         , graphPath
+                        , response.getError().getErrorMessage()
                     );
 
                     MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");

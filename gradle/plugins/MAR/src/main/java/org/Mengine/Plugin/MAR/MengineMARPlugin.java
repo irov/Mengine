@@ -5,9 +5,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginKeyListener;
-import org.Mengine.Base.MengineUtils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.ClipData;
@@ -16,15 +14,9 @@ import android.content.Context;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.mar.sdk.MARCallBack;
-import com.mar.sdk.SDKParams;
-import com.mar.sdk.IAction;
 import com.mar.sdk.MARCode;
 import com.mar.sdk.MARSDK;
 import com.mar.sdk.PayParams;
@@ -34,8 +26,6 @@ import com.mar.sdk.gg.control.MggControl;
 import com.mar.sdk.platform.MARExitListener;
 import com.mar.sdk.platform.MARInitListener;
 import com.mar.sdk.platform.MARPlatform;
-import com.mar.sdk.plugin.MARUser;
-import com.mar.sdk.utils.ResourceHelper;
 import com.mar.sdk.verify.UToken;
 
 import org.json.JSONObject;
@@ -409,7 +399,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     public void setPropDeliveredComplete(String orderID) {
         this.logInfo("marsdk.setPropDeliveredComplete orderID: %s", orderID);
 
-		MARPlatform.getInstance().setPropDeliveredComplete(orderID);
+        MARPlatform.getInstance().setPropDeliveredComplete(orderID);
 	}
 
 	public void pasteCode() {
@@ -447,11 +437,10 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     public String getCurrentTime() {
         TimeZone tz = TimeZone.getTimeZone("Asia/Beijing");
         Calendar calendar = Calendar.getInstance(tz);
-        String time = String.valueOf(
-                calendar.get(Calendar.DATE)) + "/" +
-                String.valueOf(calendar.get(Calendar.MONTH)) + "/" +
-                String.valueOf(calendar.get(Calendar.YEAR));
-
+        int DATE = calendar.get(Calendar.DATE);
+        int MONTH = calendar.get(Calendar.MONTH);
+        int YEAR = calendar.get(Calendar.YEAR);
+        String time = "" + DATE + "/" + MONTH + "/" + YEAR;
         this.logInfo("China (Beijing) time: %s", time);
 
         return time;

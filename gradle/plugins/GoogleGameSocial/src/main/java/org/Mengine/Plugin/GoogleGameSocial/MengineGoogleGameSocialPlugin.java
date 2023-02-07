@@ -75,7 +75,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     private int RC_SIGN_IN;
     private int RC_UNUSED;
 
-    private @NonNull GoogleSignInClient m_signInClient;
+    private GoogleSignInClient m_signInClient;
     private AchievementsClient m_achievementsClient;
 
     @Override
@@ -153,7 +153,11 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
         GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
-        if (result != null && result.isSuccess() == true) {
+        if (result == null) {
+            return;
+        }
+
+        if (result.isSuccess() == true) {
             this.logInfo("resign");
 
             GoogleSignInAccount account = result.getSignInAccount();

@@ -174,8 +174,6 @@ public class MengineApplication extends Application {
     }
 
     protected boolean createPlugin(String type) {
-        ClassLoader cl = MengineActivity.class.getClassLoader();
-
         MenginePlugin plugin = MengineUtils.newInstance(TAG, type, true);
 
         if (plugin == null) {

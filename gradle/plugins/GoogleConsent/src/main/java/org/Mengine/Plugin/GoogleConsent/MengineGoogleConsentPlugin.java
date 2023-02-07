@@ -57,7 +57,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
             }
             , new ConsentInformation.OnConsentInfoUpdateFailureListener() {
                 @Override
-                public void onConsentInfoUpdateFailure (FormError formError) {
+                public void onConsentInfoUpdateFailure(FormError formError) {
                     MengineGoogleConsentPlugin.this.logError("consent info update failure: %s [%d]"
                         , formError.getMessage()
                         , formError.getErrorCode()

@@ -24,7 +24,8 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
         ImageView image = new ImageView(activity);
         image.setBackgroundResource(R.drawable.splashscreen);
         image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        image.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        image.setLayoutParams(params);
 
         ViewGroup view = (ViewGroup)activity.getContentView();
         view.addView(image);

@@ -40,10 +40,16 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
 
                 MengineGoogleInAppReviewsPlugin.this.activateSemaphore("onGoogleInAppReviewsGettingReviewObject");
             } else {
-                MengineGoogleInAppReviewsPlugin.this.logError("requestReviewFlow error %s -> %s"
-                    , task.getException().getMessage()
-                    , task.getException().fillInStackTrace()
-                );
+                Exception exception = task.getException();
+
+                if (exception != null) {
+                    MengineGoogleInAppReviewsPlugin.this.logError("requestReviewFlow error %s -> %s"
+                        , task.getException().getMessage()
+                        , task.getException().fillInStackTrace()
+                    );
+                } else {
+                    MengineGoogleInAppReviewsPlugin.this.logError("requestReviewFlow unknown error");
+                }
             }
         });
     }

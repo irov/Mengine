@@ -60,7 +60,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             } else if (parameter instanceof String) {
                 params.putString(name, (String)parameter);
             } else {
-                this.logError("onMengineAnalyticsEvent: unsupported parameter [%s] %s"
+                this.logError("unsupported parameter [%s] %s"
                     , parameter.getClass()
                     , parameter
                 );

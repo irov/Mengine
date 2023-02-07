@@ -1,3 +1,3 @@
 #! /bin/bash
 
-sh ./build_depends_xcode_macos_universal_sdl.sh Debug
+sh ./build_depends_xcode_macos_sdl.sh Debug

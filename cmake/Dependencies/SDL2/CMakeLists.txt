@@ -91,7 +91,7 @@ endif()
 # See docs/release_checklist.md
 set(SDL_MAJOR_VERSION 2)
 set(SDL_MINOR_VERSION 26)
-set(SDL_MICRO_VERSION 2)
+set(SDL_MICRO_VERSION 3)
 set(SDL_VERSION "${SDL_MAJOR_VERSION}.${SDL_MINOR_VERSION}.${SDL_MICRO_VERSION}")
 
 # Set defaults preventing destination file conflicts
@@ -341,6 +341,8 @@ if(WINDOWS)
   set(CMAKE_SHARED_LIBRARY_PREFIX "")
 endif()
 
+set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -D_GNU_SOURCE=1")
+
 # Emscripten toolchain has a nonempty default value for this, and the checks
 # in this file need to change that, so remember the original value, and
 # restore back to that afterwards. For check_function_exists() to work in
@@ -531,26 +533,6 @@ dep_option(SDL_TESTS           "Build the test directory" OFF SDL_TEST OFF)
 set_option(SDL_INSTALL_TESTS   "Install test-cases" OFF)
 
 set(HAVE_STATIC_PIC "${SDL_STATIC_PIC}")
-
-if(SDL_WERROR)
-  if(MSVC)
-    cmake_push_check_state(RESET)
-    check_c_compiler_flag(/WX HAVE_WX)
-    if(HAVE_WX)
-      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
-    endif()
-  elseif(USE_GCC OR USE_CLANG)
-    cmake_push_check_state(RESET)
-    check_c_compiler_flag(-Werror HAVE_WERROR)
-    if(HAVE_WERROR)
-      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-      set(CMAKE_OBJC_FLAGS "${CMAKE_OBJC_FLAGS} -Werror")
-    endif()
-    cmake_pop_check_state()
-  endif()
-endif()
 
 if(SDL_HIDAPI)
   if(HIDAPI_ONLY_LIBUSB)
@@ -1072,7 +1054,8 @@ if(SDL_LIBC)
     check_library_exists(m pow "" HAVE_LIBM)
     if(HAVE_LIBM)
       set(CMAKE_REQUIRED_LIBRARIES m)
-      foreach(_FN
+    endif()
+    foreach(_FN
               atan atan2 atanf atan2f ceil ceilf copysign copysignf cos cosf
               exp expf fabs fabsf floor floorf fmod fmodf log logf log10 log10f
               lround lroundf pow powf round roundf scalbn scalbnf sin sinf sqrt
@@ -1080,7 +1063,8 @@ if(SDL_LIBC)
         string(TOUPPER ${_FN} _UPPER)
         set(_HAVEVAR "HAVE_${_UPPER}")
         check_symbol_exists("${_FN}" "math.h" ${_HAVEVAR})
-      endforeach()
+    endforeach()
+    if(HAVE_LIBM)
       set(CMAKE_REQUIRED_LIBRARIES)
       if(NOT VITA)
         list(APPEND EXTRA_LIBS m)
@@ -2929,6 +2913,26 @@ endif()
 
 if(NOT SDLMAIN_SOURCES)
   file(GLOB SDLMAIN_SOURCES ${SDL2_SOURCE_DIR}/src/main/dummy/*.c)
+endif()
+
+if(SDL_WERROR)
+  if(MSVC)
+    cmake_push_check_state(RESET)
+    check_c_compiler_flag(/WX HAVE_WX)
+    if(HAVE_WX)
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+    endif()
+  elseif(USE_GCC OR USE_CLANG)
+    cmake_push_check_state(RESET)
+    check_c_compiler_flag(-Werror HAVE_WERROR)
+    if(HAVE_WERROR)
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+      set(CMAKE_OBJC_FLAGS "${CMAKE_OBJC_FLAGS} -Werror")
+    endif()
+    cmake_pop_check_state()
+  endif()
 endif()
 
 # Append the -MMD -MT flags

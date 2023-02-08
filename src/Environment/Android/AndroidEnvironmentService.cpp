@@ -624,6 +624,15 @@ namespace Mengine
 
                        parameter_jobject = this->makeJObjectString( jenv, parameter_value_str );
                    }break;
+               case EAEPT_CONSTSTRING:
+                   {
+                       AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
+                       const ConstString & parameter_value = parameter_string->resolveValue();
+
+                       const Char * parameter_value_str = parameter_value.c_str();
+
+                       parameter_jobject = this->makeJObjectString( jenv, parameter_value_str );
+                   }break;
                }
 
                static jmethodID Map_put = jenv->GetMethodID( m_jclass_Map, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;" );

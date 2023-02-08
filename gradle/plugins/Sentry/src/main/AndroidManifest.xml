@@ -2,7 +2,7 @@
     package="org.Mengine.Plugin.Sentry">
 
     <application>
-        <meta-data android:name="mengine.sentry.dsn" android:value="@string/mengine_sentry_sdn" />
+        <meta-data android:name="mengine.sentry.dsn" android:value="@string/mengine_sentry_dsn" />
 
         <meta-data
             android:name="io.sentry.auto-init"

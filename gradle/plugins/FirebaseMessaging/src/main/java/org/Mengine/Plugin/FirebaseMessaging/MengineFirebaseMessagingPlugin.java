@@ -28,7 +28,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin {
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 
-        Context context = this.getApplicationContext();
+        Context context = activity.getApplicationContext();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
 
         if (resultCode == ConnectionResult.SUCCESS) {

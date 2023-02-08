@@ -32,9 +32,13 @@ public class NotificationJobService extends JobService {
         String content = bundle.getString(KEY_CONTENT);
         int id = bundle.getInt(KEY_ID);
 
-        Notification notification = MengineLocalNotificationsPlugin.getNotification(getApplicationContext(), id, title, content);
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(id, notification);
+        Context context = this.getApplicationContext();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            Notification notification = MengineLocalNotificationsPlugin.getNotification(context, id, title, content);
+            NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(id, notification);
+        }
 
         return false;
     }

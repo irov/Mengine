@@ -330,8 +330,9 @@ public class MengineActivity extends SDLActivity {
         m_initializeBaseServices = false;
     }
 
-    public void onMengineAnalyticsEvent(String eventName, long timestamp, Map<String, Object> parameters) {
-        MengineLog.logInfo(TAG, "onMengineAnalyticsEvent %s %d [%s]"
+    public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
+        MengineLog.logInfo(TAG, "onMengineAnalyticsEvent [%d] %s %d [%s]"
+            , eventType
             , eventName
             , timestamp
             , parameters
@@ -340,7 +341,7 @@ public class MengineActivity extends SDLActivity {
         ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
-            l.onMengineAnalyticsEvent(this, eventName, timestamp, parameters);
+            l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, parameters);
         }
     }
 

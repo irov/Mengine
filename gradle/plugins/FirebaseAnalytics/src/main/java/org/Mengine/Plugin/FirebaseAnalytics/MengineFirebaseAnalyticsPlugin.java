@@ -45,31 +45,83 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineActivity activity, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
         Bundle params = new Bundle();
 
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             String name = entry.getKey();
-            Object parameter = entry.getValue();
-            if (parameter instanceof Boolean) {
-                params.putBoolean(name, (Boolean)parameter);
-            } else if (parameter instanceof Long) {
-                params.putLong(name, (Long)parameter);
-            } else if (parameter instanceof Double) {
-                params.putDouble(name, (Double)parameter);
-            } else if (parameter instanceof String) {
-                params.putString(name, (String)parameter);
+
+            if (name.contains("@INTERNAL_") == true) {
+                if (eventType == EAET_CUSTOM) {
+                    this.logError("incorrect custom event: %s parameter: %s [INTERNAL]"
+                        , eventName
+                        , name
+                    );
+
+                    return;
+                }
+
+                continue;
+            }
+
+            Object value = entry.getValue();
+
+            if (value instanceof Boolean) {
+                params.putBoolean(name, (Boolean)value);
+            } else if (value instanceof Long) {
+                params.putLong(name, (Long)value);
+            } else if (value instanceof Double) {
+                params.putDouble(name, (Double)value);
+            } else if (value instanceof String) {
+                params.putString(name, (String)value);
             } else {
                 this.logError("unsupported parameter [%s] %s"
-                    , parameter.getClass()
-                    , parameter
+                    , value.getClass()
+                    , value
                 );
 
                 return;
             }
         }
 
-        m_firebaseAnalytics.logEvent(eventName, params);
+        switch (eventType) {
+            case EAET_CUSTOM: {
+                m_firebaseAnalytics.logEvent(eventName, params);
+            } break;
+            case EAET_EARN_VIRTUAL_CURRENCY: {
+                String virtualCurrencyName = (String)parameters.get("@INTERNAL_VIRTUAL_CURRENCY_NAME");
+                Double value = (Double)parameters.get("@INTERNAL_VALUE");
+
+                params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
+                params.putDouble(FirebaseAnalytics.Param.VALUE, value);
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.EARN_VIRTUAL_CURRENCY, params);
+            } break;
+            case EAET_SPEND_VIRTUAL_CURRENCY: {
+                String itemName = (String)parameters.get("@INTERNAL_ITEM_NAME");
+                String virtualCurrencyName = (String)parameters.get("@INTERNAL_VIRTUAL_CURRENCY_NAME");
+                Double value = (Double)parameters.get("@INTERNAL_VALUE");
+
+                params.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName);
+                params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
+                params.putDouble(FirebaseAnalytics.Param.VALUE, value);
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY, params);
+            } break;
+            case EAET_UNLOCK_ACHIEVEMENT: {
+                String achievementId = (String)parameters.get("@INTERNAL_ACHIEVEMENT_ID");
+
+                params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, achievementId);
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.UNLOCK_ACHIEVEMENT, params);
+            } break;
+            default: {
+                this.logError("Unknown event type: %d name: %s"
+                    , eventType
+                    , eventName
+                );
+            } break;
+        }
     }
 
     public void logEvent(@NonNull String eventName, @Nullable Bundle params) {

@@ -133,8 +133,12 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineActivity activity, String eventName, long timestamp, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineActivity activity, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
         if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        if (eventType != EAET_CUSTOM) {
             return;
         }
 

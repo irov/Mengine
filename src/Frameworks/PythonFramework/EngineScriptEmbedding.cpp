@@ -1672,7 +1672,7 @@ namespace Mengine
                 return camera;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_analyticsEvent( const ConstString & _eventName, const pybind::dict & _parameters )
+            void s_analyticsCustomEvent( const ConstString & _eventName, const pybind::dict & _parameters )
             {
                 AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
                     ->buildEvent( _eventName );
@@ -1706,9 +1706,9 @@ namespace Mengine
                     }
                     else if( v.is_string() == true )
                     {
-                        String value = v.extract();
+                        ConstString value = v.extract();
 
-                        builder->addParameterString( k, value );
+                        builder->addParameterConstString( k, value );
                     }
                     else
                     {
@@ -1723,6 +1723,24 @@ namespace Mengine
                 }
 
                 builder->log();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsEarnVirtualCurrencyEvent( const ConstString & _currencyName, double _value )
+            {
+                ANALYTICS_SERVICE()
+                    ->logEarnVirtualCurrency( _currencyName, _value );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsSpendVirtualCurrencyEvent( const ConstString & _itemName, const ConstString & _currencyName, double _value )
+            {
+                ANALYTICS_SERVICE()
+                    ->logSpendVirtualCurrency( _itemName, _currencyName, _value );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsUnlockAchievementEvent( const ConstString & _achievementId )
+            {
+                ANALYTICS_SERVICE()
+                    ->logUnlockAchievement( _achievementId );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_mountResourcePackage( const ConstString & _fileGroupName
@@ -2152,7 +2170,7 @@ namespace Mengine
             bool s_updateUserWallpaper( const String & _filePath )
             {
                 Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
-                
+
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -2180,7 +2198,7 @@ namespace Mengine
                 }
 
                 Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
-                
+
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -4394,7 +4412,12 @@ namespace Mengine
         pybind::def_functor( _kernel, "getDefaultRenderViewport2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultRenderViewport2D );
         pybind::def_functor( _kernel, "getDefaultArrowRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultArrowRenderCamera2D );
 
-        pybind::def_functor( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent );
+        pybind::def_functor_deprecated( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent, "use 'analyticsCustomEvent'" );
+        pybind::def_functor( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent );
+        pybind::def_functor( _kernel, "analyticsEarnVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEarnVirtualCurrencyEvent );
+        pybind::def_functor( _kernel, "analyticsSpendVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsSpendVirtualCurrencyEvent );
+        pybind::def_functor( _kernel, "analyticsUnlockAchievementEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsUnlockAchievementEvent );
+
 
         pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
         pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );

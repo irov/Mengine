@@ -77,12 +77,55 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logEarnVirtualCurrency( const ConstString & _currencyName, double _value )
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_EARN_VIRTUAL_CURRENCY );
+        
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@INTERNAL_VIRTUAL_CURRENCY_NAME" ), _currencyName );
+        builder->addParameterDouble( STRINGIZE_STRING_LOCAL( "@INTERNAL_VALUE" ), _value );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value )
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_SPEND_VIRTUAL_CURRENCY );
+        
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@INTERNAL_ITEM_NAME" ), _itemName );
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@INTERNAL_VIRTUAL_CURRENCY_NAME" ), _currencyName );
+        builder->addParameterDouble( STRINGIZE_STRING_LOCAL( "@INTERNAL_VALUE" ), _value );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logUnlockAchievement( const ConstString & _achievementId )
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_UNLOCK_ACHIEVEMENT );
+
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@INTERNAL_ACHIEVEMENT_ID" ), _achievementId );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilderInterfacePtr AnalyticsService::buildEvent( const ConstString & _eventName )
     {
         AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_CUSTOM );
         builder->setEventName( _eventName );
 
         return builder;

@@ -6,6 +6,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilder::AnalyticsEventBuilder()
+        : m_eventType( EAET_CUSTOM )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,6 +34,16 @@ namespace Mengine
         return m_globalContext;
     }
     //////////////////////////////////////////////////////////////////////////
+    void AnalyticsEventBuilder::setEventType( EAnalyticsEventType _eventType )
+    {
+        m_eventType = _eventType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EAnalyticsEventType AnalyticsEventBuilder::getEventType() const
+    {
+        return m_eventType;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AnalyticsEventBuilder::setEventName( const ConstString & _eventName )
     {
         m_eventName = _eventName;
@@ -55,6 +66,15 @@ namespace Mengine
     AnalyticsEventBuilderInterface * AnalyticsEventBuilder::addParameterBoolean( const ConstString & _name, bool _value )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterBoolean( _value );
+
+        this->addParameter( _name, parameter );
+
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AnalyticsEventBuilderInterface * AnalyticsEventBuilder::addParameterConstString( const ConstString & _name, const ConstString & _value )
+    {
+        AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterConstString( _value );
 
         this->addParameter( _name, parameter );
 
@@ -90,7 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AnalyticsEventBuilder::log()
     {
-        AnalyticsEventInterfacePtr event = m_analyticsFactory->makeAnalyticsEvent( m_eventName );
+        AnalyticsEventInterfacePtr event = m_analyticsFactory->makeAnalyticsEvent( m_eventType, m_eventName );
 
         for( const AnalyticsEventParameterDesc & desc : m_parameters )
         {

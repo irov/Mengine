@@ -26,13 +26,19 @@ namespace Mengine
         const AnalyticsContextInterfacePtr & getGlobalContext() const;
 
     public:
+        void setEventType( EAnalyticsEventType _eventType );
+        EAnalyticsEventType getEventType() const;
+
+    public:
         void setEventName( const ConstString & _eventName );
         const ConstString & getEventName() const;
 
+    public:
         void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter );
 
     public:
         AnalyticsEventBuilderInterface * addParameterBoolean( const ConstString & _name, bool _value ) override;
+        AnalyticsEventBuilderInterface * addParameterConstString( const ConstString & _name, const ConstString & _value ) override;
         AnalyticsEventBuilderInterface * addParameterString( const ConstString & _name, const String & _value ) override;
         AnalyticsEventBuilderInterface * addParameterInteger( const ConstString & _name, int64_t _value ) override;
         AnalyticsEventBuilderInterface * addParameterDouble( const ConstString & _name, double _value ) override;
@@ -44,6 +50,7 @@ namespace Mengine
         AnalyticsFactoryInterfacePtr m_analyticsFactory;
         AnalyticsContextInterfacePtr m_globalContext;
 
+        EAnalyticsEventType m_eventType;
         ConstString m_eventName;
 
         struct AnalyticsEventParameterDesc

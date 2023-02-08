@@ -17,6 +17,7 @@ namespace Mengine
         EAEPT_BOOLEAN,
         EAEPT_INTEGER,
         EAEPT_DOUBLE,
+        EAEPT_CONSTSTRING,
         EAEPT_STRING
     };
     //////////////////////////////////////////////////////////////////////////
@@ -42,6 +43,15 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AnalyticsEventParameterBooleanInterface, AnalyticsEventParameterInterface> AnalyticsEventParameterBooleanInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class AnalyticsEventParameterConstStringInterface
+        : public AnalyticsEventParameterInterface
+    {
+    public:
+        virtual const ConstString & resolveValue() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<AnalyticsEventParameterConstStringInterface, AnalyticsEventParameterInterface> AnalyticsEventParameterConstStringInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AnalyticsEventParameterStringInterface
         : public AnalyticsEventParameterInterface
@@ -73,6 +83,7 @@ namespace Mengine
     typedef IntrusivePtr<class AnalyticsContextInterface> AnalyticsContextInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef Lambda<bool()> LambdaAnalyticsParameterGetterBoolean;
+    typedef Lambda<ConstString()> LambdaAnalyticsParameterGetterConstString;
     typedef Lambda<void( String * const )> LambdaAnalyticsParameterGetterString;
     typedef Lambda<int64_t()> LambdaAnalyticsParameterGetterInteger;
     typedef Lambda<double()> LambdaAnalyticsParameterGetterDouble;
@@ -102,10 +113,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AnalyticsContextInterface> AnalyticsContextInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+    enum EAnalyticsEventType
+    {
+        EAET_CUSTOM = 0,
+        EAET_EARN_VIRTUAL_CURRENCY = 1,
+        EAET_SPEND_VIRTUAL_CURRENCY = 2,
+        EAET_UNLOCK_ACHIEVEMENT = 3,
+    };
+    //////////////////////////////////////////////////////////////////////////
     class AnalyticsEventInterface
         : public ServantInterface
     {
     public:
+        virtual EAnalyticsEventType getType() const = 0;
         virtual const ConstString & getName() const = 0;
 
     public:
@@ -141,6 +161,7 @@ namespace Mengine
     {
     public:
         virtual AnalyticsEventBuilderInterface * addParameterBoolean( const ConstString & _name, bool _value ) = 0;
+        virtual AnalyticsEventBuilderInterface * addParameterConstString( const ConstString & _name, const ConstString & _value ) = 0;
         virtual AnalyticsEventBuilderInterface * addParameterString( const ConstString & _name, const String & _value ) = 0;
         virtual AnalyticsEventBuilderInterface * addParameterInteger( const ConstString & __namekey, int64_t _value ) = 0;
         virtual AnalyticsEventBuilderInterface * addParameterDouble( const ConstString & _name, double _value ) = 0;
@@ -162,6 +183,11 @@ namespace Mengine
 
     public:
         virtual void logEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
+
+    public:
+        virtual void logEarnVirtualCurrency( const ConstString & _currencyName, double _value ) = 0;
+        virtual void logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value ) = 0;
+        virtual void logUnlockAchievement( const ConstString & _achievementId ) = 0;
 
     public:
         virtual AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName ) = 0;

@@ -29,6 +29,11 @@ namespace Mengine
         void logEvent( const AnalyticsEventInterfacePtr & _event ) override;
 
     public:
+        void logEarnVirtualCurrency( const ConstString & _currencyName, double _value ) override;
+        void logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value ) override;
+        void logUnlockAchievement( const ConstString & _achievementId ) override;
+
+    public:
         AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName ) override;
 
     public:

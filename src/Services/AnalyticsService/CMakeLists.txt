@@ -19,6 +19,8 @@ src
     
     AnalyticsEventConstParameterBoolean.h
     AnalyticsEventConstParameterBoolean.cpp
+    AnalyticsEventConstParameterConstString.h
+    AnalyticsEventConstParameterConstString.cpp
     AnalyticsEventConstParameterString.h
     AnalyticsEventConstParameterString.cpp
     AnalyticsEventConstParameterInteger.h
@@ -28,6 +30,8 @@ src
     
     AnalyticsEventGetterParameterBoolean.h
     AnalyticsEventGetterParameterBoolean.cpp
+    AnalyticsEventGetterParameterConstString.h
+    AnalyticsEventGetterParameterConstString.cpp
     AnalyticsEventGetterParameterString.h
     AnalyticsEventGetterParameterString.cpp
     AnalyticsEventGetterParameterInteger.h

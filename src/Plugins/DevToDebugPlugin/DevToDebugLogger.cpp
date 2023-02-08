@@ -163,7 +163,7 @@ namespace Mengine
             j_desc.set( "level", desc.level );
 
             jlog.push_back( j_desc );
-        }        
+        }
 
         jlogger.set( "log", jlog );
 

@@ -569,6 +569,8 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
+        EAnalyticsEventType eventType = _event->getType();
+
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
 
@@ -633,9 +635,9 @@ namespace Mengine
                jenv->DeleteLocalRef( parameter_jobject );
            });
 
-        static jmethodID jmethodID_onMengineAnalyticsEvent = this->getMengineActivityMethodID( jenv, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;)V" );
+        static jmethodID jmethodID_onMengineAnalyticsEvent = this->getMengineActivityMethodID( jenv, "onMengineAnalyticsEvent", "(ILjava/lang/String;JLjava/util/Map;)V" );
 
-        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineAnalyticsEvent, eventName_jobject, (jlong)eventTimestamp, parameters_jobject );
+        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineAnalyticsEvent, (jint)eventType, eventName_jobject, (jlong)eventTimestamp, parameters_jobject );
 
         jenv->DeleteLocalRef( eventName_jobject );
         jenv->DeleteLocalRef( parameters_jobject );

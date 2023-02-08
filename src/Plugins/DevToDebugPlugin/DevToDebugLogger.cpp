@@ -101,6 +101,8 @@ namespace Mengine
             desc.level = 'M';
             break;
         case LM_INFO:
+            desc.level = 'I';
+            break;
         case LM_DEBUG:
             desc.level = 'D';
             break;

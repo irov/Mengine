@@ -569,6 +569,10 @@ namespace Mengine
 
         if( applicationConfig == nullptr )
         {
+            LOGGER_INFO( "bootstrapper", "not exist application config '%s'"
+                , applicationJsonPath.c_str()
+            );
+
             applicationConfig = Detail::loadApplicationConfig( defaultFileGroup, applicationIniPath, MENGINE_DOCUMENT_FACTORABLE );
         }
 

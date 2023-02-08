@@ -37,26 +37,18 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
             try {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
             } catch (IOException e) {
-                e.printStackTrace();
-
                 MengineAdvertisingPlugin.this.logError("invalid get advertising id info IOException: %s"
                     , e.getLocalizedMessage()
                 );
             } catch (IllegalStateException e) {
-                e.printStackTrace();
-
                 MengineAdvertisingPlugin.this.logError("invalid get advertising id info IllegalStateException: %s"
                     , e.getLocalizedMessage()
                 );
             } catch (GooglePlayServicesNotAvailableException e) {
-                e.printStackTrace();
-
                 MengineAdvertisingPlugin.this.logError("invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
                     , e.getLocalizedMessage()
                 );
             } catch (GooglePlayServicesRepairableException e) {
-                e.printStackTrace();
-
                 MengineAdvertisingPlugin.this.logError("invalid get advertising id info GooglePlayServicesRepairableException: %s"
                     , e.getLocalizedMessage()
                 );

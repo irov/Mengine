@@ -3,7 +3,6 @@ package org.Mengine.Plugin.AppLovin;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 
-import org.Mengine.Plugin.AppLovin.MengineAppLovinAnalyticsInterface;
 import org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseAnalyticsPlugin;
 
 import com.google.firebase.analytics.FirebaseAnalytics;

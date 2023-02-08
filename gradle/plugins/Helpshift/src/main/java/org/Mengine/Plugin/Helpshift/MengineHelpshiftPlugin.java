@@ -14,7 +14,9 @@ import com.helpshift.HelpshiftEventsListener;
 import com.helpshift.UnsupportedOSVersionException;
 import com.helpshift.HelpshiftInstallException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
@@ -56,6 +58,8 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
      * -onHelpshiftAuthenticationFailureTokenNotProvided
      * -onHelpshiftAuthenticationFailureUnknown
      */
+
+    private List<MengineHelpshiftMessagingInterface> m_messagings;
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
@@ -119,6 +123,27 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         }
 
         Helpshift.setHelpshiftEventsListener(this);
+
+        m_messagings = new ArrayList<>();
+
+        MengineHelpshiftMessagingInterface firebaseMessaging = this.newInstance("org.Mengine.Plugin.Helpshift.MengineHelpshiftFirebaseMessaging", false);
+
+        if (firebaseMessaging != null) {
+            if (firebaseMessaging.initializeMessaging(this, activity) == true) {
+                m_messagings.add(firebaseMessaging);
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        if( m_messagings != null ) {
+            for (MengineHelpshiftMessagingInterface analytic : m_messagings) {
+                analytic.finalizeMessaging(this);
+            }
+
+            m_messagings = null;
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 import com.Mengine.Utils
 
-def MENGINE_APP_PLUGIN_DEVDEBUGGER = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVDEBUGGER")
+def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
 
 apply plugin: 'com.android.library'
 
@@ -25,10 +25,12 @@ android {
 
     sourceSets {
         main {
-            if (MENGINE_APP_PLUGIN_DEVDEBUGGER == true) {
-                java.srcDirs += ['DevDebugger']
+            if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
+                println "Plugin [Helpshift] add extension 'firebaseMessaging'"
+                
+                java.srcDirs += ['firebaseMessaging']
             }
-        
+            
             if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
@@ -41,9 +43,11 @@ android {
 dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
+    
+    if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
+        implementation project(path: ':plugins:FirebaseMessaging')
 
-    if (MENGINE_APP_PLUGIN_DEVDEBUGGER == true) {
-        implementation project(':plugins:DevDebugger')
+        implementation 'com.google.firebase:firebase-messaging'
     }
 
     implementation 'com.android.support:appcompat-v7:28.0.0'

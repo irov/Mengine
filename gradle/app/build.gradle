@@ -146,19 +146,15 @@ android {
 
         multiDexEnabled true
 
-        println "ANDROID_APP_SPLIT_ENABLE: $ANDROID_APP_SPLIT_ENABLE"
-
         if (ANDROID_APP_SPLIT_ENABLE == false) {
             ndk {
                 if (ANDROID_APP_ARCH_86_64_ENABLE == true) {
-                    abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                    abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
                 } else {
                     abiFilters "arm64-v8a", "armeabi-v7a"
                 }
             }
         }
-
-        println "ANDROID_APP_ARCH_86_64_ENABLE: $ANDROID_APP_ARCH_86_64_ENABLE"
     }
 
     buildTypes {
@@ -262,8 +258,6 @@ android {
         }
     }
 
-// test c++ debug -> preBuild.dependsOn ":libraries:Mengine:build", ":libraries:SDL2:build", ":libraries:OpenAL32:build"
-
     if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && ANDROID_APP_UPLOAD_CRASHLYTICS == true) {
         buildTypes {
             debug {
@@ -301,15 +295,17 @@ android {
     }
 }
 
-ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86_64": 4]
+if (ANDROID_APP_SPLIT_ENABLE == true) {
+    ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86_64": 4]
 
-android.applicationVariants.all { variant ->
-    variant.outputs.each { output ->
-        def baseAbiVersionCode = project.ext.abiCodes.get(output.getFilter("ABI"))
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def baseAbiVersionCode = project.ext.abiCodes.get(output.getFilter("ABI"))
 
-        if (baseAbiVersionCode != null) {
-            output.versionCodeOverride =
-                    baseAbiVersionCode * 1000000 + variant.versionCode
+            if (baseAbiVersionCode != null) {
+                output.versionCodeOverride =
+                        baseAbiVersionCode * 1000000 + variant.versionCode
+            }
         }
     }
 }

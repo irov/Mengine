@@ -70,6 +70,8 @@ endif()
 if(MENGINE_TARGET_ANDROID)
     ADD_FILTER(
     android
+        stack_chk_fail_local.c
+        
         AndroidLogger.cpp
         AndroidLogger.h
     )

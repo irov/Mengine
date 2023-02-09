@@ -1,7 +1,6 @@
 import com.Mengine.Utils
 
 def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false)
-def ANDROID_APP_ARCH_86_64_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true)
 
 apply plugin: 'com.android.library'
 
@@ -23,30 +22,18 @@ android {
 
         if (ANDROID_APP_SPLIT_ENABLE == false) {
             ndk {
-                if (ANDROID_APP_ARCH_86_64_ENABLE == true) {
-                    abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
-                } else {
-                    abiFilters "arm64-v8a", "armeabi-v7a"
-                }
+                abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
             }
         }
     }
 
     splits {
         abi {
-            if (ANDROID_APP_SPLIT_ENABLE == true) {
-                enable true
-            } else {
-                enable false
-            }
+            enable ANDROID_APP_SPLIT_ENABLE
 
             reset() //reset the list of ABIs to be included to an empty string
 
-            if (ANDROID_APP_ARCH_86_64_ENABLE == true) {
-                include "arm64-v8a", "armeabi-v7a", "x86_64"
-            } else {
-                include "arm64-v8a", "armeabi-v7a"
-            }
+            include "arm64-v8a", "armeabi-v7a", "x86_64"
 
             universalApk false
         }

@@ -6,7 +6,6 @@ def ANDROID_APP_UPLOAD_CRASHLYTICS = Utils.getBooleanProperty(project, "ANDROID_
 def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false)
 def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)
 def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false)
-def ANDROID_APP_ARCH_86_64_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true)
 def ANDROID_APP_ENABLE_DELIVERY_PACKAGE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false)
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
 
@@ -36,7 +35,6 @@ println "ANDROID_APP_UPLOAD_CRASHLYTICS:$ANDROID_APP_UPLOAD_CRASHLYTICS"
 println "ANDROID_APP_BUILD_PUBLISH: $ANDROID_APP_BUILD_PUBLISH"
 println "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE: $ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE"
 println "ANDROID_APP_SPLIT_ENABLE: $ANDROID_APP_SPLIT_ENABLE"
-println "ANDROID_APP_ARCH_86_64_ENABLE: $ANDROID_APP_ARCH_86_64_ENABLE"
 println "ANDROID_APP_ENABLE_DELIVERY_PACKAGE: $ANDROID_APP_ENABLE_DELIVERY_PACKAGE"
 println "ANDROID_APP_BUILD_NUMBER: $ANDROID_APP_BUILD_NUMBER"
 
@@ -70,6 +68,12 @@ android {
                 println "ANDROID_APP_DEBUG_STORE_FILE: $ANDROID_APP_DEBUG_STORE_FILE"
                 println "ANDROID_APP_DEBUG_KEY_ALIAS: $ANDROID_APP_DEBUG_KEY_ALIAS"
 
+                def f = new File(ANDROID_APP_DEBUG_STORE_FILE)
+
+                if (f.exists() == false) {
+                    throw new GradleException("ANDROID_APP_DEBUG_STORE_FILE not found folder: $ANDROID_APP_DEBUG_STORE_FILE");
+                }
+
                 storeFile file(ANDROID_APP_DEBUG_STORE_FILE)
                 storePassword ANDROID_APP_DEBUG_STORE_PASSWORD
                 keyAlias ANDROID_APP_DEBUG_KEY_ALIAS
@@ -81,6 +85,12 @@ android {
             release {
                 println "ANDROID_APP_RELEASE_STORE_FILE: $ANDROID_APP_RELEASE_STORE_FILE"
                 println "ANDROID_APP_RELEASE_KEY_ALIAS: $ANDROID_APP_RELEASE_KEY_ALIAS"
+
+                def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
+
+                if (f.exists() == false) {
+                    throw new GradleException("ANDROID_APP_DEBUG_STORE_FILE not found folder: $ANDROID_APP_RELEASE_STORE_FILE");
+                }
 
                 storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
                 storePassword ANDROID_APP_RELEASE_STORE_PASSWORD
@@ -146,11 +156,7 @@ android {
 
         if (ANDROID_APP_SPLIT_ENABLE == false) {
             ndk {
-                if (ANDROID_APP_ARCH_86_64_ENABLE == true) {
-                    abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
-                } else {
-                    abiFilters "arm64-v8a", "armeabi-v7a"
-                }
+                abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
             }
         }
     }
@@ -171,19 +177,11 @@ android {
 
     splits {
         abi {
-            if (ANDROID_APP_SPLIT_ENABLE == true) {
-                enable true
-            } else {
-                enable false
-            }
+            enable ANDROID_APP_SPLIT_ENABLE
 
             reset()
 
-            if (ANDROID_APP_ARCH_86_64_ENABLE == true) {
-                include "arm64-v8a", "armeabi-v7a", "x86_64"
-            } else {
-                include "arm64-v8a", "armeabi-v7a"
-            }
+            include "arm64-v8a", "armeabi-v7a", "x86_64"
 
             universalApk false
         }

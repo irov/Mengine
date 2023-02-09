@@ -1,7 +1,6 @@
 import com.Mengine.Utils
 
 def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false)
-def ANDROID_APP_ARCH_86_64_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_ARCH_86_64_ENABLE", true)
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
 def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false)
 def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)
@@ -26,12 +25,20 @@ android {
 
         if (ANDROID_APP_SPLIT_ENABLE == false) {
             ndk {
-                if (ANDROID_APP_ARCH_86_64_ENABLE == true) {
-                    abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
-                } else {
-                    abiFilters "arm64-v8a", "armeabi-v7a"
-                }
+                abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
             }
+        }
+    }
+
+    splits {
+        abi {
+            enable ANDROID_APP_SPLIT_ENABLE
+
+            reset()
+
+            include "arm64-v8a", "armeabi-v7a", "x86_64"
+
+            universalApk false
         }
     }
 

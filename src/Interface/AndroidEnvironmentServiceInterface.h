@@ -15,17 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "AndroidEnvironmentService" )
 
     public:
-        virtual jclass getJClassObject() const = 0;
-        virtual jclass getJClassBoolean() const = 0;
-        virtual jclass getJClassCharacter() const = 0;
-        virtual jclass getJClassInteger() const = 0;
-        virtual jclass getJClassLong() const = 0;
-        virtual jclass getJClassFloat() const = 0;
-        virtual jclass getJClassDouble() const = 0;
-        virtual jclass getJClassString() const = 0;
-        virtual jclass getJClassArrayList() const = 0;
-        virtual jclass getJClassMap() const = 0;
-        virtual jclass getJClassHashMap() const = 0;
+        virtual jclass getJClass( JNIEnv * _jenv, const Char * _signature ) const = 0;
 
     public:
         virtual jmethodID getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const = 0;

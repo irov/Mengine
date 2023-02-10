@@ -3,6 +3,8 @@ import com.Mengine.Utils
 apply plugin: 'com.android.library'
 
 android {
+    ext.extensions = []
+
     buildToolsVersion project.buildToolsVersion
     compileSdkVersion project.compileSdkVersion
 
@@ -37,4 +39,12 @@ dependencies {
     implementation project(':libraries:SDL2')
 
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
+            "\"${it}\""
+        }.join(",") + '}'
+    }
 }

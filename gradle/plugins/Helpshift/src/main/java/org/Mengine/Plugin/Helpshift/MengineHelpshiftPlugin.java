@@ -59,8 +59,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
      * -onHelpshiftAuthenticationFailureUnknown
      */
 
-    private List<MengineHelpshiftMessagingInterface> m_messagings;
-
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
         if (id.equals("PushToken") == true) {
@@ -68,11 +66,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
             Helpshift.registerPushToken(token);
         }
-    }
-
-    @Override
-    public void onExtension(MengineActivity activity) {
-        this.addExtension("org.Mengine.Plugin.Helpshift.MengineHelpshiftDevDebuggerExtension");
     }
 
     @Override
@@ -123,27 +116,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         }
 
         Helpshift.setHelpshiftEventsListener(this);
-
-        m_messagings = new ArrayList<>();
-
-        MengineHelpshiftMessagingInterface firebaseMessaging = this.newInstance("org.Mengine.Plugin.Helpshift.MengineHelpshiftFirebaseMessaging", false);
-
-        if (firebaseMessaging != null) {
-            if (firebaseMessaging.initializeMessaging(this, activity) == true) {
-                m_messagings.add(firebaseMessaging);
-            }
-        }
-    }
-
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        if( m_messagings != null ) {
-            for (MengineHelpshiftMessagingInterface analytic : m_messagings) {
-                analytic.finalizeMessaging(this);
-            }
-
-            m_messagings = null;
-        }
     }
 
     @Override

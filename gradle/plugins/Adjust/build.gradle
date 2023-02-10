@@ -1,6 +1,12 @@
+import com.Mengine.Utils
+
+def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
+
 apply plugin: 'com.android.library'
 
 android {
+    ext.extensions = []
+
     buildToolsVersion project.buildToolsVersion
     compileSdkVersion project.compileSdkVersion
 
@@ -21,6 +27,12 @@ android {
 
     sourceSets {
         main {
+            if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
+                println "Plugin [Adjust] add extension 'firebaseMessaging'"
+                
+                java.srcDirs += ['firebaseMessaging']
+            }
+            
             if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
@@ -30,11 +42,29 @@ android {
     }
 }
 
+if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
+    android.ext.extensions += 'org.Mengine.Plugin.Adjust.MengineAdjustFirebaseMessaging'
+
+    dependencies {
+        implementation project(path: ':plugins:FirebaseMessaging')
+
+        implementation 'com.google.firebase:firebase-messaging'
+    }
+}
+
 dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
 
-    implementation 'com.adjust.sdk:adjust-android:4.30.0'
+    implementation 'com.adjust.sdk:adjust-android:4.31.1'
     implementation 'com.android.installreferrer:installreferrer:2.2'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
+            "\"${it}\""
+        }.join(",") + '}'
+    }
 }

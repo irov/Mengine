@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
+    ext.extensions = []
+
     buildToolsVersion project.buildToolsVersion
     compileSdkVersion project.compileSdkVersion
 
@@ -35,4 +37,12 @@ dependencies {
     implementation project(':libraries:SDL2')
 
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
+            "\"${it}\""
+        }.join(",") + '}'
+    }
 }

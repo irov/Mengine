@@ -5,6 +5,8 @@ def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGI
 apply plugin: 'com.android.library'
 
 android {
+    ext.extensions = []
+
     buildToolsVersion project.buildToolsVersion
     compileSdkVersion project.compileSdkVersion
 
@@ -40,6 +42,16 @@ android {
     }
 }
 
+if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
+    android.ext.extensions += 'org.Mengine.Plugin.Facebook.MengineFacebookFirebaseMessaging'
+
+    dependencies {
+        implementation project(path: ':plugins:FirebaseMessaging')
+
+        implementation 'com.google.firebase:firebase-messaging'
+    }
+}
+
 dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
@@ -49,7 +61,15 @@ dependencies {
 
         implementation 'com.google.firebase:firebase-messaging'
     }
-
+    
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.helpshift:helpshift-sdkx:10.1.0'
+    implementation 'com.helpshift:helpshift-sdkx:10.2.0'
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
+            "\"${it}\""
+        }.join(",") + '}'
+    }
 }

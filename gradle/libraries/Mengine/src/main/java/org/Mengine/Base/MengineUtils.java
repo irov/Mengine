@@ -8,20 +8,48 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class MengineUtils {
-    @SuppressWarnings("unchecked")
-    public static <T> T newInstance(String TAG, String name, boolean required) {
+    public static Class<?> getClazz(String TAG, String name, boolean required) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
 
         try {
             Class<?> clazz = cl.loadClass(name);
-            Constructor<?> ctr = clazz.getConstructor();
-            T ob = (T)ctr.newInstance();
 
-            return ob;
+            return clazz;
         } catch (ClassNotFoundException e) {
             if (required == true) {
                 Log.e(TAG, "invalid create new instance: " + name + " ClassNotFoundException: " + e.getLocalizedMessage());
             }
+        }
+
+        return null;
+    }
+
+    public static Class<?> getPackageBuildConfig(String TAG, Package p) {
+        ClassLoader cl = MengineActivity.class.getClassLoader();
+
+        String packageName = p.getName();
+        String buildConfigName = packageName + ".BuildConfig";
+
+        Class<?> clazz = MengineUtils.getClazz(TAG, buildConfigName, true);
+
+        return clazz;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(String TAG, String name, boolean required) {
+        ClassLoader cl = MengineActivity.class.getClassLoader();
+
+        Class<?> clazz = MengineUtils.getClazz(TAG, name, required);
+
+        if (clazz == null) {
+            return null;
+        }
+
+        try {
+            Constructor<?> ctr = clazz.getConstructor();
+            T ob = (T)ctr.newInstance();
+
+            return ob;
         } catch (NoSuchMethodException e) {
             Log.e(TAG, "invalid create mediation extension: " + name + " NoSuchMethodException: " + e.getLocalizedMessage());
         } catch (IllegalAccessException e) {

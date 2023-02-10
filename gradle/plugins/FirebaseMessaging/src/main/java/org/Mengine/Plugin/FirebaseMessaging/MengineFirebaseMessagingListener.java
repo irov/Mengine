@@ -1,8 +1,8 @@
 package org.Mengine.Plugin.FirebaseMessaging;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.messaging.RemoteMessage;
+
+import androidx.annotation.NonNull;
 
 public interface MengineFirebaseMessagingListener {
     public boolean onMessageReceived(final RemoteMessage remoteMessage);

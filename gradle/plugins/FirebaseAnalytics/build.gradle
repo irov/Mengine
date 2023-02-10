@@ -3,6 +3,8 @@ import com.Mengine.Utils
 apply plugin: 'com.android.library'
 
 android {
+    ext.extensions = []
+
     buildToolsVersion project.buildToolsVersion
     compileSdkVersion project.compileSdkVersion
 
@@ -38,4 +40,12 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:31.2.0')
     implementation 'com.google.firebase:firebase-analytics'
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
+            "\"${it}\""
+        }.join(",") + '}'
+    }
 }

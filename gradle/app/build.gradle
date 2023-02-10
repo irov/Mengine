@@ -21,6 +21,7 @@ def MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin(project, "MENGINE_APP_PLU
 def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS")
 def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS")
 def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
+def MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG")
 def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVTODEV")
 def MENGINE_APP_PLUGIN_FACEBOOK = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FACEBOOK")
 def MENGINE_APP_PLUGIN_SENTRY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SENTRY")
@@ -467,10 +468,24 @@ if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
         throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING required enable MENGINE_APP_PLUGIN_FIREBASE");
     }
     
-    android.ext.plugins += 'org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseMessagingPlugin'
+    android.ext.plugins += 'org.Mengine.Plugin.FirebaseMessaging.MengineFirebaseMessagingPlugin'
 
     dependencies {
         implementation project(':plugins:FirebaseMessaging')
+    }
+}
+
+println "MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG: $MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG"
+
+if (MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG == true) {
+    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG required enable MENGINE_APP_PLUGIN_FIREBASE");
+    }
+    
+    android.ext.plugins += 'org.Mengine.Plugin.FirebaseRemoteConfig.MengineFirebaseRemoteConfigPlugin'
+
+    dependencies {
+        implementation project(':plugins:FirebaseRemoteConfig')
     }
 }
 
@@ -568,30 +583,16 @@ if (project.hasProperty("MENGINE_APP_OPTIONS")) {
     println "MENGINE_APP_OPTIONS: $MENGINE_APP_OPTIONS"
 
     android {
-        buildTypes {
-            debug {
-                buildConfigField "String", "MENGINE_APP_OPTIONS", "\"${MENGINE_APP_OPTIONS}\""
-            }
-
-            release {
-                buildConfigField "String", "MENGINE_APP_OPTIONS", "\"${MENGINE_APP_OPTIONS}\""
-            }
+        defaultConfig {
+            buildConfigField "String", "MENGINE_APP_OPTIONS", "\"${MENGINE_APP_OPTIONS}\""
         }
     }
 }
 
 android {
-    buildTypes {
-        debug {
-            buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {
-                "\"${it}\""
-            }.join(",") + '}'
-        }
-
-        release {
-            buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {
-                "\"${it}\""
-            }.join(",") + '}'
-        }
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {
+            "\"${it}\""
+        }.join(",") + '}'
     }
 }

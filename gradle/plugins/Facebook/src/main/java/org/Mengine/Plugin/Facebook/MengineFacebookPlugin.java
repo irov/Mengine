@@ -17,6 +17,7 @@ import com.facebook.LoggingBehavior;
 import com.facebook.LoginStatusCallback;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.appevents.AppEventsConstants;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
@@ -33,19 +34,22 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-public class MengineFacebookPlugin extends MenginePlugin {
+public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener {
     public static String PLUGIN_NAME = "Facebook";
     public static boolean PLUGIN_EMBEDDING = true;
 
     private CallbackManager m_facebookCallbackManager;
     private AccessTokenTracker m_accessTokenTracker;
     private ProfileTracker m_profileTracker;
+    private AppEventsLogger m_logger;
 
     private String m_facebookUserId;
 
@@ -168,6 +172,8 @@ public class MengineFacebookPlugin extends MenginePlugin {
                 , ex.getLocalizedMessage()
             );
         }
+
+        m_logger = AppEventsLogger.newLogger(activity);
     }
 
     @Override
@@ -185,6 +191,60 @@ public class MengineFacebookPlugin extends MenginePlugin {
     @Override
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onMengineAnalyticsEvent(MengineActivity activity, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
+        switch (eventType) {
+            case EAET_CUSTOM: {
+                Bundle params = new Bundle();
+
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    String name = entry.getKey();
+                    Object value = entry.getValue();
+
+                    if (value instanceof Boolean) {
+                        params.putBoolean(name, (Boolean)value);
+                    } else if (value instanceof Long) {
+                        params.putLong(name, (Long)value);
+                    } else if (value instanceof Double) {
+                        params.putDouble(name, (Double)value);
+                    } else if (value instanceof String) {
+                        params.putString(name, (String)value);
+                    } else {
+                        this.logError("unsupported parameter [%s] %s"
+                        	, value.getClass()
+                            , value
+                        );
+
+                        return;
+                    }
+                }
+
+                m_logger.logEvent(eventName, params);
+            } break;
+            case EAET_EARN_VIRTUAL_CURRENCY: {
+                //ToDo EAET_EARN_VIRTUAL_CURRENCY
+            } break;
+            case EAET_SPEND_VIRTUAL_CURRENCY: {
+                //ToDo EAET_SPEND_VIRTUAL_CURRENCY
+            } break;
+            case EAET_UNLOCK_ACHIEVEMENT: {
+                Bundle params = new Bundle();
+
+                String achievementId = (String)parameters.get("@INTERNAL_ACHIEVEMENT_ID");
+
+                params.putString(AppEventsConstants.EVENT_PARAM_DESCRIPTION, achievementId);
+
+                m_logger.logEvent(AppEventsConstants.EVENT_NAME_UNLOCKED_ACHIEVEMENT, params);
+            } break;
+            default: {
+                this.logError("Unknown event type: %d name: %s"
+                	, eventType
+                    , eventName
+                );
+            } break;
+        }
     }
 
     public boolean isLoggedIn() {

@@ -49,28 +49,23 @@ namespace Mengine
     public:
         void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb ) override;
         bool androidResponse( JNIEnv * _jenv, int32_t _id, const pybind::object & _result ) const override;
+
+    public:
         void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         bool androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         int32_t androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         int64_t androidInteger64Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         float androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         String androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
+        PyObject * androidConfigMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
+
+    public:
         void waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args ) override;
 
     protected:
         bool getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
 
     protected:
-        jclass m_jclass_Object;
-        jclass m_jclass_Boolean;
-        jclass m_jclass_Character;
-        jclass m_jclass_Integer;
-        jclass m_jclass_Long;
-        jclass m_jclass_Float;
-        jclass m_jclass_Double;
-        jclass m_jclass_String;
-        jclass m_jclass_ArrayList;
-
         pybind::kernel_interface * m_kernel;
 
         typedef Map<Pair<ConstString, ConstString>, pybind::object> MapAndroidCallbacks;

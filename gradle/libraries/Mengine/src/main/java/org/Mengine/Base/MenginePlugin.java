@@ -1,10 +1,10 @@
 package org.Mengine.Base;
 
 import android.content.Intent;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class MenginePlugin {
@@ -60,6 +60,8 @@ public class MenginePlugin {
         return instance;
     }
 
+
+
     public void logInfo(String format, Object ... args) {
         MengineLog.logInfo(m_pluginName, format, args);
     }
@@ -112,22 +114,47 @@ public class MenginePlugin {
         //Empty
     }
 
-    public void addExtension(String type) {
-        MenginePluginExtension extension = this.newInstance(type, false);
+    public void addExtension(MengineActivity activity, String type) {
+        this.logInfo("Plugin [%s] add extension: %s"
+            , m_pluginName
+            , type
+        );
 
-        if (extension == null) {
-            return;
-        }
-
-        if( extension.onInitialize(m_activity, this) == false) {
-            return;
-        }
+        MenginePluginExtension extension = m_application.createPluginExtension(activity, this, type);
 
         m_extensions.add(extension);
     }
 
-    public void onExtension(MengineActivity activity) {
-        //Empty
+    public void onExtensionInitialize(MengineActivity activity) {
+        Class<?> c = this.getClass();
+        Package p = c.getPackage();
+        Class<?> buildConfig = MengineUtils.getPackageBuildConfig(m_pluginName, p);
+
+        Field f;
+
+        try {
+            f = buildConfig.getField("MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS");
+        } catch (NoSuchFieldException e) {
+            return;
+        } catch (NullPointerException e) {
+            return;
+        } catch (SecurityException e) {
+            return;
+        }
+
+        Object MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS;
+
+        try {
+            MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS = f.get(this);
+        } catch (IllegalArgumentException e) {
+            return;
+        } catch (IllegalAccessException e) {
+            return;
+        }
+
+        for (String extension : (String[])MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS) {
+            this.addExtension(activity, extension);
+        }
     }
 
     public void onExtensionRun(MengineActivity activity) {

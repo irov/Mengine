@@ -3,6 +3,8 @@ import com.Mengine.Utils
 apply plugin: 'com.android.library'
 
 android {
+    ext.extensions = []
+
     buildToolsVersion project.buildToolsVersion
     compileSdkVersion project.compileSdkVersion
 
@@ -38,4 +40,12 @@ dependencies {
 
     implementation 'androidx.annotation:annotation:1.5.0'
     implementation 'com.android.billingclient:billing:5.1.0'
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
+            "\"${it}\""
+        }.join(",") + '}'
+    }
 }

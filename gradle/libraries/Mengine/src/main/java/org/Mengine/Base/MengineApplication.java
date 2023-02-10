@@ -23,6 +23,7 @@ public class MengineApplication extends Application {
     public ArrayList<MenginePluginActivityLifecycleListener> m_activityLifecycleListeners;
     public ArrayList<MenginePluginKeyListener> m_keyListeners;
     public ArrayList<MenginePluginApplicationListener> m_applicationListeners;
+    public ArrayList<MenginePluginExtensionListener> m_extensionListeners;
 
     public MengineActivityLifecycle m_activityLifecycle;
 
@@ -35,10 +36,7 @@ public class MengineApplication extends Application {
         m_activityLifecycleListeners = new ArrayList<>();
         m_keyListeners = new ArrayList<>();
         m_applicationListeners = new ArrayList<>();
-
-        for (String n : this.getGradleAndroidPlugins()) {
-            this.createPlugin(n);
-        }
+        m_extensionListeners = new ArrayList<>();
     }
 
     public String[] getGradleAndroidPlugins() {
@@ -134,9 +132,12 @@ public class MengineApplication extends Application {
         return m_keyListeners;
     }
 
-    public ArrayList<MenginePluginApplicationListener> getApplicationListeners()
-    {
+    public ArrayList<MenginePluginApplicationListener> getApplicationListeners() {
         return m_applicationListeners;
+    }
+
+    public ArrayList<MenginePluginExtensionListener> getExtensionListeners() {
+        return m_extensionListeners;
     }
 
     public MenginePlugin findPlugin(String name) {
@@ -191,15 +192,15 @@ public class MengineApplication extends Application {
         try {
             Field PLUGIN_NAME = cls.getField("PLUGIN_NAME");
 
-            name = (String)PLUGIN_NAME.get(null);
+            name = (String)PLUGIN_NAME.get(plugin);
         } catch (NoSuchFieldException ex) {
-            MengineLog.logError(TAG, "plugin not found field PLUGIN_NAME: %s"
+            MengineLog.logError(TAG, "plugin [%s] not found field PLUGIN_NAME"
                 , type
             );
 
             return false;
         } catch (IllegalAccessException ex) {
-            MengineLog.logError(TAG, "plugin invalid field PLUGIN_NAME: %s"
+            MengineLog.logError(TAG, "plugin [%s] invalid field PLUGIN_NAME"
                 , type
             );
 
@@ -207,6 +208,10 @@ public class MengineApplication extends Application {
         }
 
         if (plugin.onInitialize(this, name) == false) {
+            MengineLog.logError(TAG, "plugin [%s] invalid initialize"
+                , type
+            );
+
             return false;
         }
 
@@ -243,12 +248,40 @@ public class MengineApplication extends Application {
             m_applicationListeners.add(listener);
         }
 
-        MengineLog.logInfo(TAG, "add plugin: %s [%s]"
+        if (plugin instanceof MenginePluginExtensionListener) {
+            MenginePluginExtensionListener listener = (MenginePluginExtensionListener)plugin;
+
+            m_extensionListeners.add(listener);
+        }
+
+        MengineLog.logInfo(TAG, "create plugin: %s [%s]"
             , type
             , name
         );
 
         return true;
+    }
+
+    public MenginePluginExtension createPluginExtension(MengineActivity activity, MenginePlugin plugin, String type) {
+        String pluginName = plugin.getPluginName();
+
+        MenginePluginExtension extension = MengineUtils.newInstance(pluginName, type, false);
+
+        if (extension == null) {
+            return null;
+        }
+
+        if( extension.onInitialize(activity, plugin) == false) {
+            return null;
+        }
+
+        ArrayList<MenginePluginExtensionListener> extensionListeners = this.getExtensionListeners();
+
+        for (MenginePluginExtensionListener l : extensionListeners) {
+            l.onMenginePluginExtension(this, activity, plugin, extension);
+        }
+
+        return extension;
     }
 
     public void onMengineInitializeBaseServices(MengineActivity activity) {
@@ -294,7 +327,17 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onCreate");
 
-        for (MenginePluginApplicationListener l : m_applicationListeners) {
+        String[] plugins = this.getGradleAndroidPlugins();
+
+        for (String n : plugins) {
+            if (this.createPlugin(n) == false) {
+                throw new RuntimeException(n);
+            }
+        }
+
+        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+
+        for (MenginePluginApplicationListener l : applicationListeners) {
             l.onAppCreate(this);
         }
     }
@@ -305,7 +348,9 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onTerminate");
 
-        for (MenginePluginApplicationListener l : m_applicationListeners) {
+        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+
+        for (MenginePluginApplicationListener l : applicationListeners) {
             l.onAppTerminate(this);
         }
 
@@ -317,6 +362,7 @@ public class MengineApplication extends Application {
         m_activityLifecycleListeners = null;
         m_keyListeners = null;
         m_applicationListeners = null;
+        m_extensionListeners = null;
     }
 
     @Override
@@ -325,7 +371,9 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "attachBaseContext");
 
-        for (MenginePluginApplicationListener l : m_applicationListeners) {
+        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+
+        for (MenginePluginApplicationListener l : applicationListeners) {
             l.onAppAttachBaseContext(this, base);
         }
     }
@@ -336,7 +384,9 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onConfigurationChanged");
 
-        for (MenginePluginApplicationListener l : m_applicationListeners) {
+        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+
+        for (MenginePluginApplicationListener l : applicationListeners) {
             l.onAppConfigurationChanged(this, newConfig);
         }
     }

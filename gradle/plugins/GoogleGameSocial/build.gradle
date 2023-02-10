@@ -3,6 +3,8 @@ import com.Mengine.Utils
 apply plugin: 'com.android.library'
 
 android {
+    ext.extensions = []
+
     buildToolsVersion project.buildToolsVersion
     compileSdkVersion project.compileSdkVersion
 
@@ -38,4 +40,12 @@ dependencies {
 
     implementation "com.google.android.gms:play-services-games:23.1.0"
     implementation "com.google.android.gms:play-services-auth:20.4.1"
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
+            "\"${it}\""
+        }.join(",") + '}'
+    }
 }

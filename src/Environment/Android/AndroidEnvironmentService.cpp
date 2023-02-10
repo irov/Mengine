@@ -8,6 +8,7 @@
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidAssetFile.h"
+#include "Environment/Android/AndroidHelper.h"
 #include "Environment/Android/AndroidUtils.h"
 
 #include "AndroidProxyLogger.h"
@@ -232,17 +233,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AndroidEnvironmentService::AndroidEnvironmentService()
-        : m_jclass_Object( nullptr )
-        , m_jclass_Boolean( nullptr )
-        , m_jclass_Character( nullptr )
-        , m_jclass_Integer( nullptr )
-        , m_jclass_Long( nullptr )
-        , m_jclass_Float( nullptr )
-        , m_jclass_Double( nullptr )
-        , m_jclass_String( nullptr )
-        , m_jclass_ArrayList( nullptr )
-        , m_jclass_Map( nullptr )
-        , m_jclass_HashMap( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -254,17 +244,20 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        m_jclass_Object = jenv->FindClass( "java/lang/Object" );
-        m_jclass_Boolean = jenv->FindClass( "java/lang/Boolean" );
-        m_jclass_Character = jenv->FindClass( "java/lang/Character" );
-        m_jclass_Integer = jenv->FindClass( "java/lang/Integer" );
-        m_jclass_Long = jenv->FindClass( "java/lang/Long" );
-        m_jclass_Float = jenv->FindClass( "java/lang/Float" );
-        m_jclass_Double = jenv->FindClass( "java/lang/Double" );
-        m_jclass_String = jenv->FindClass( "java/lang/String" );
-        m_jclass_ArrayList = jenv->FindClass( "java/util/ArrayList" );
-        m_jclass_Map = jenv->FindClass( "java/util/Map" );
-        m_jclass_HashMap = jenv->FindClass( "java/util/HashMap" );
+        Helper::JClassDefinition::OBJECT = this->getJClass( jenv, "java/lang/Object" );
+        Helper::JClassDefinition::BOOLEAN = this->getJClass( jenv, "java/lang/Boolean" );
+        Helper::JClassDefinition::CHARACTER = this->getJClass( jenv, "java/lang/Character" );
+        Helper::JClassDefinition::INTEGER = this->getJClass( jenv, "java/lang/Integer" );
+        Helper::JClassDefinition::LONG = this->getJClass( jenv, "java/lang/Long" );
+        Helper::JClassDefinition::FLOAT = this->getJClass( jenv, "java/lang/Float" );
+        Helper::JClassDefinition::DOUBLE = this->getJClass( jenv, "java/lang/Double" );
+        Helper::JClassDefinition::STRING = this->getJClass( jenv, "java/lang/String" );
+        Helper::JClassDefinition::ARRAY_LIST = this->getJClass( jenv, "java/util/ArrayList" );
+        Helper::JClassDefinition::MAP = this->getJClass( jenv, "java/util/Map" );
+        Helper::JClassDefinition::HASH_MAP = this->getJClass( jenv, "java/util/HashMap" );
+        Helper::JClassDefinition::SET = this->getJClass( jenv, "java/util/Set" );
+        Helper::JClassDefinition::ITERATOR = this->getJClass( jenv, "java/util/Iterator" );
+        Helper::JClassDefinition::MAP_ENTRY = this->getJClass( jenv, "java/util/Map$Entry" );
 
         AndroidEventationHubPtr androidEventationHub = Helper::makeFactorableUnique<AndroidEventationHub>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -332,59 +325,11 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassObject() const
+    jclass AndroidEnvironmentService::getJClass( JNIEnv * _jenv, const Char * _signature ) const
     {
-        return  m_jclass_Object;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassBoolean() const
-    {
-        return  m_jclass_Boolean;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassCharacter() const
-    {
-        return  m_jclass_Character;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassInteger() const
-    {
-        return  m_jclass_Integer;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassLong() const
-    {
-        return  m_jclass_Long;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassFloat() const
-    {
-        return  m_jclass_Float;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassDouble() const
-    {
-        return  m_jclass_Double;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassString() const
-    {
-        return  m_jclass_String;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassArrayList() const
-    {
-        return  m_jclass_ArrayList;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassMap() const
-    {
-        return  m_jclass_Map;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClassHashMap() const
-    {
-        return  m_jclass_HashMap;
+        jclass clazz = _jenv->FindClass( _signature );
+
+        return clazz;
     }
     //////////////////////////////////////////////////////////////////////////
     jmethodID AndroidEnvironmentService::getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
@@ -635,7 +580,7 @@ namespace Mengine
                    }break;
                }
 
-               static jmethodID Map_put = jenv->GetMethodID( m_jclass_Map, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;" );
+               static jmethodID Map_put = jenv->GetMethodID( Helper::JClassDefinition::MAP, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;" );
 
                jobject result_jobject = jenv->CallObjectMethod( parameters_jobject, Map_put, name_jvalue, parameter_jobject );
 
@@ -711,11 +656,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::makeJObjectBoolean( JNIEnv * _jenv, bool _value )
     {
-        static jmethodID Boolean_constructor = _jenv->GetMethodID( m_jclass_Boolean, "<init>", "(Z)V" );
+        static jmethodID Boolean_constructor = _jenv->GetMethodID( Helper::JClassDefinition::BOOLEAN, "<init>", "(Z)V" );
 
         MENGINE_ASSERTION( Boolean_constructor != nullptr, "invalid get android method 'Boolean <init> (Z)V'" );
 
-        jobject value_jobject = _jenv->NewObject( m_jclass_Boolean, Boolean_constructor, _value );
+        jobject value_jobject = _jenv->NewObject( Helper::JClassDefinition::BOOLEAN, Boolean_constructor, _value );
 
         MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Boolean '%s'"
             , _value == true ? "true" : "false"
@@ -726,11 +671,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::makeJObjectInteger( JNIEnv * _jenv, int32_t _value )
     {
-        static jmethodID Integer_constructor = _jenv->GetMethodID( m_jclass_Integer, "<init>", "(I)V" );
+        static jmethodID Integer_constructor = _jenv->GetMethodID( Helper::JClassDefinition::INTEGER, "<init>", "(I)V" );
 
         MENGINE_ASSERTION( Integer_constructor != nullptr, "invalid get android method 'Integer <init> (I)V'" );
 
-        jobject value_jobject = _jenv->NewObject( m_jclass_Integer, Integer_constructor, _value );
+        jobject value_jobject = _jenv->NewObject( Helper::JClassDefinition::INTEGER, Integer_constructor, _value );
 
         MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Integer '%d'"
             , _value
@@ -741,11 +686,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::makeJObjectLong( JNIEnv * _jenv, int64_t _value )
     {
-        static jmethodID Long_constructor = _jenv->GetMethodID( m_jclass_Long, "<init>", "(J)V" );
+        static jmethodID Long_constructor = _jenv->GetMethodID( Helper::JClassDefinition::LONG, "<init>", "(J)V" );
 
         MENGINE_ASSERTION( Long_constructor != nullptr, "invalid get android method 'Long <init> (J)V'" );
 
-        jobject value_jobject = _jenv->NewObject( m_jclass_Long, Long_constructor, _value );
+        jobject value_jobject = _jenv->NewObject( Helper::JClassDefinition::LONG, Long_constructor, _value );
 
         MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Long '%" MENGINE_PRId64 "'"
             , _value
@@ -756,11 +701,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::makeJObjectFloat( JNIEnv * _jenv, float _value )
     {
-        static jmethodID Float_constructor = _jenv->GetMethodID( m_jclass_Float, "<init>", "(F)V" );
+        static jmethodID Float_constructor = _jenv->GetMethodID( Helper::JClassDefinition::FLOAT, "<init>", "(F)V" );
 
         MENGINE_ASSERTION( Float_constructor != nullptr, "invalid get android method 'Float <init> (F)V'" );
 
-        jobject value_jobject = _jenv->NewObject( m_jclass_Float, Float_constructor, _value );
+        jobject value_jobject = _jenv->NewObject( Helper::JClassDefinition::FLOAT, Float_constructor, _value );
 
         MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Float '%f'"
             , _value
@@ -771,11 +716,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::makeJObjectDouble( JNIEnv * _jenv, double _value )
     {
-        static jmethodID Double_constructor = _jenv->GetMethodID( m_jclass_Double, "<init>", "(D)V" );
+        static jmethodID Double_constructor = _jenv->GetMethodID( Helper::JClassDefinition::DOUBLE, "<init>", "(D)V" );
 
         MENGINE_ASSERTION( Double_constructor != nullptr, "invalid get android method 'Double <init> (D)V'" );
 
-        jobject value_jobject = _jenv->NewObject( m_jclass_Double, Double_constructor, _value );
+        jobject value_jobject = _jenv->NewObject( Helper::JClassDefinition::DOUBLE, Double_constructor, _value );
 
         MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Double '%lf'"
             , _value
@@ -786,13 +731,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::makeJObjectString( JNIEnv * _jenv, const Char * _value )
     {
-        static jmethodID String_constructor = _jenv->GetMethodID( m_jclass_String, "<init>", "(Ljava/lang/String;)V" );
+        static jmethodID String_constructor = _jenv->GetMethodID( Helper::JClassDefinition::STRING, "<init>", "(Ljava/lang/String;)V" );
 
         MENGINE_ASSERTION( String_constructor != nullptr, "invalid get android method 'String <init> (Ljava/lang/String;)V'" );
 
         jstring value_jstring = _jenv->NewStringUTF( _value );
 
-        jobject value_jobject = _jenv->NewObject( m_jclass_String, String_constructor, value_jstring );
+        jobject value_jobject = _jenv->NewObject( Helper::JClassDefinition::STRING, String_constructor, value_jstring );
 
         _jenv->DeleteLocalRef( value_jstring );
 
@@ -805,11 +750,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::makeJObjectHashMap( JNIEnv * _jenv, int32_t _count )
     {
-        static jmethodID HashMap_constructor = _jenv->GetMethodID( m_jclass_HashMap, "<init>", "(I)V" );
+        static jmethodID HashMap_constructor = _jenv->GetMethodID( Helper::JClassDefinition::HASH_MAP, "<init>", "(I)V" );
 
         MENGINE_ASSERTION( HashMap_constructor != nullptr, "invalid get android method 'HashMap <init> (I)V'" );
 
-        jobject value_jobject = _jenv->NewObject( m_jclass_HashMap, HashMap_constructor, _count );
+        jobject value_jobject = _jenv->NewObject( Helper::JClassDefinition::HASH_MAP, HashMap_constructor, _count );
 
         MENGINE_ASSERTION( value_jobject != nullptr, "invalid create HashMap '%d'"
             , _count

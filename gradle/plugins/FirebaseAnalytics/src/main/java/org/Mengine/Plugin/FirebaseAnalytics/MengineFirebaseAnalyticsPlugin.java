@@ -46,49 +46,37 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
 
     @Override
     public void onMengineAnalyticsEvent(MengineActivity activity, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
-        Bundle params = new Bundle();
-
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            String name = entry.getKey();
-
-            if (name.contains("@INTERNAL_") == true) {
-                if (eventType == EAET_CUSTOM) {
-                    this.logError("incorrect custom event: %s parameter: %s [INTERNAL]"
-                        , eventName
-                        , name
-                    );
-
-                    return;
-                }
-
-                continue;
-            }
-
-            Object value = entry.getValue();
-
-            if (value instanceof Boolean) {
-                params.putBoolean(name, (Boolean)value);
-            } else if (value instanceof Long) {
-                params.putLong(name, (Long)value);
-            } else if (value instanceof Double) {
-                params.putDouble(name, (Double)value);
-            } else if (value instanceof String) {
-                params.putString(name, (String)value);
-            } else {
-                this.logError("unsupported parameter [%s] %s"
-                    , value.getClass()
-                    , value
-                );
-
-                return;
-            }
-        }
-
         switch (eventType) {
             case EAET_CUSTOM: {
+                Bundle params = new Bundle();
+
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    String name = entry.getKey();
+                    Object value = entry.getValue();
+
+                    if (value instanceof Boolean) {
+                        params.putBoolean(name, (Boolean)value);
+                    } else if (value instanceof Long) {
+                        params.putLong(name, (Long)value);
+                    } else if (value instanceof Double) {
+                        params.putDouble(name, (Double)value);
+                    } else if (value instanceof String) {
+                        params.putString(name, (String)value);
+                    } else {
+                        this.logError("unsupported parameter [%s] %s"
+                            , value.getClass()
+                            , value
+                        );
+
+                        return;
+                    }
+                }
+
                 m_firebaseAnalytics.logEvent(eventName, params);
             } break;
             case EAET_EARN_VIRTUAL_CURRENCY: {
+                Bundle params = new Bundle();
+
                 String virtualCurrencyName = (String)parameters.get("@INTERNAL_VIRTUAL_CURRENCY_NAME");
                 Double value = (Double)parameters.get("@INTERNAL_VALUE");
 
@@ -98,6 +86,8 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.EARN_VIRTUAL_CURRENCY, params);
             } break;
             case EAET_SPEND_VIRTUAL_CURRENCY: {
+                Bundle params = new Bundle();
+
                 String itemName = (String)parameters.get("@INTERNAL_ITEM_NAME");
                 String virtualCurrencyName = (String)parameters.get("@INTERNAL_VIRTUAL_CURRENCY_NAME");
                 Double value = (Double)parameters.get("@INTERNAL_VALUE");
@@ -109,6 +99,8 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY, params);
             } break;
             case EAET_UNLOCK_ACHIEVEMENT: {
+                Bundle params = new Bundle();
+
                 String achievementId = (String)parameters.get("@INTERNAL_ACHIEVEMENT_ID");
 
                 params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, achievementId);

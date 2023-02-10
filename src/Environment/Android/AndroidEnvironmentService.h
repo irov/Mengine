@@ -21,17 +21,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        jclass getJClassObject() const override;
-        jclass getJClassBoolean() const override;
-        jclass getJClassCharacter() const override;
-        jclass getJClassInteger() const override;
-        jclass getJClassLong() const override;
-        jclass getJClassFloat() const override;
-        jclass getJClassDouble() const override;
-        jclass getJClassString() const override;
-        jclass getJClassArrayList() const override;
-        jclass getJClassMap() const override;
-        jclass getJClassHashMap() const override;
+        jclass getJClass( JNIEnv * _jenv, const Char * _signature ) const override;
 
     public:
         jmethodID getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const override;
@@ -80,18 +70,6 @@ namespace Mengine
         jobject makeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
 
     protected:
-        jclass m_jclass_Object;
-        jclass m_jclass_Boolean;
-        jclass m_jclass_Character;
-        jclass m_jclass_Integer;
-        jclass m_jclass_Long;
-        jclass m_jclass_Float;
-        jclass m_jclass_Double;
-        jclass m_jclass_String;
-        jclass m_jclass_ArrayList;
-        jclass m_jclass_Map;
-        jclass m_jclass_HashMap;
-
         AndroidEventationHubPtr m_androidEventationHub;
 
         LoggerInterfacePtr m_proxyLogger;

@@ -1,50 +1,43 @@
-package org.Mengine.Plugin.Helpshift;
+package org.Mengine.Plugin.Adjust;
+
+import android.content.Context;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 
-import org.Mengine.Plugin.FirebaseMessaging.MengineFirebaseMessagingPlugin;
 import org.Mengine.Plugin.FirebaseMessaging.MengineFirebaseMessagingListener;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.helpshift.Helpshift;
+
+import com.adjust.sdk.Adjust;
 
 import androidx.annotation.NonNull;
 
-import java.util.Map;
-
-public class MengineHelpshiftFirebaseMessaging extends MenginePluginExtension implements MengineFirebaseMessagingListener {
+public class MengineAdjustFirebaseMessaging extends MenginePluginExtension implements MengineFirebaseMessagingListener {
     @Override
     public boolean onMessageReceived(final RemoteMessage remoteMessage) {
-        Map<String, String> data = remoteMessage.getData();
-        String origin = data.get("origin");
-        if (origin != null && origin.equals("helpshift")) {
-            Helpshift.handlePush(data);
-
-            return true;
-        }
 
         return false;
     }
 
     @Override
     public void onDeletedMessages() {
-
     }
 
     @Override
     public void onMessageSent(@NonNull String msgId) {
-
     }
 
     @Override
     public void onSendError(@NonNull String msgId, @NonNull Exception exception) {
-
     }
 
     @Override
     public void onNewToken(@NonNull String token) {
-        Helpshift.registerPushToken(token);
+        MengineActivity activity = this.getActivity();
+
+        final Context context = activity.getApplicationContext();
+
+        Adjust.setPushToken(token, context);
     }
 }

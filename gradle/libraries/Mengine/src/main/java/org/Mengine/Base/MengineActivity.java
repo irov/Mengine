@@ -245,7 +245,7 @@ public class MengineActivity extends SDLActivity {
         }
 
         for (MenginePlugin p : plugins) {
-            p.onExtension(this);
+            p.onExtensionInitialize(this);
         }
     }
 

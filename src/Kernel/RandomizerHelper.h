@@ -6,6 +6,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        void randomizerShuffle( const RandomizerInterfacePtr & _randomizer, uint32_t * const _indices, uint32_t _capacity, uint32_t _count );
+        void randomizerShuffle( const RandomizerInterfacePtr & _randomizer, uint32_t * const _indices, uint32_t _count );
     }
 }

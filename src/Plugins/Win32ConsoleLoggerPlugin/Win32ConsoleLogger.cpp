@@ -3,6 +3,7 @@
 #include "Interface/PlatformInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -17,6 +18,52 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        BOOL WINAPI ConsoleHandlerRoutine( DWORD dwCtrlType )
+        {
+            switch( dwCtrlType )
+            {
+            case CTRL_C_EVENT:
+                {
+                    LOGGER_MESSAGE( "Console close [Ctrl+C]" );
+
+                    return TRUE;
+                }break;
+            case CTRL_BREAK_EVENT:
+                {
+                    LOGGER_MESSAGE( "Console close [Ctrl+Break]" );
+
+                    return TRUE;
+                }break;
+            case CTRL_CLOSE_EVENT:
+                {
+                    LOGGER_MESSAGE( "Console close [Ctrl+Close]" );
+
+                    return TRUE;
+                }break;
+            case CTRL_LOGOFF_EVENT:
+                {
+                    LOGGER_MESSAGE( "Console close [Ctrl+Logoff]" );
+
+                    return TRUE;
+                }break;
+            case CTRL_SHUTDOWN_EVENT:
+                {
+                    LOGGER_MESSAGE( "Console close [Ctrl+Shutdown]" );
+
+                    return TRUE;
+                }break;
+            default:
+                break;
+            }
+
+            return FALSE;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     Win32ConsoleLogger::Win32ConsoleLogger()
         : m_createConsole( false )
@@ -51,6 +98,13 @@ namespace Mengine
         if( ::AllocConsole() == FALSE )
         {
             return false;
+        }
+
+        if( ::SetConsoleCtrlHandler( &Detail::ConsoleHandlerRoutine, TRUE ) == FALSE )
+        {
+            LOGGER_ERROR( "invalid set console ctrl handler: %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
         }
 
         m_createConsole = true;

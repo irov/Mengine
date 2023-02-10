@@ -2,9 +2,7 @@
 
 #include "Config/Typedef.h"
 
-#ifndef MENGINE_INPUT_MAX_WHEEL_CODE
-#define MENGINE_INPUT_MAX_WHEEL_CODE (1)
-#endif
+#define MENGINE_INPUT_MAX_WHEEL_CODE 1
 
 namespace Mengine
 {

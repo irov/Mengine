@@ -2,6 +2,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/DebugBreak.h"
+
 #include "Config/StdIO.h"
 
 namespace Mengine
@@ -23,12 +25,7 @@ namespace Mengine
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
         MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s", size, data );
 
-#ifdef MENGINE_DEBUG
-        if( ::IsDebuggerPresent() == TRUE )
-        {
-            ::DebugBreak();
-        }
-#endif
+        Helper::debugBreak();
 
         ::MessageBoxA( NULL, message, "Mengine critical error", MB_OK );
     }

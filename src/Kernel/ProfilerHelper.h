@@ -1,10 +1,10 @@
 #pragma once
 
-#ifdef MENGINE_PROFILER_ENABLE
-#   include "Interface/ProfilerSystemInterface.h"
-#endif
+#include "Config/Config.h"
 
 #ifdef MENGINE_PROFILER_ENABLE
+#include "Interface/ProfilerSystemInterface.h"
+
 namespace Mengine
 {
     namespace Detail

@@ -365,6 +365,12 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             , message
         );
 
+        if (ShareDialog.canShow(ShareLinkContent.class) == false) {
+            this.logWarning("shareLink can't show");
+
+            return;
+        }
+
         MengineActivity activity = this.getActivity();
 
         ShareDialog shareDialog = new ShareDialog(activity);
@@ -399,14 +405,15 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             }
         });
         
-        if (ShareDialog.canShow(ShareLinkContent.class)) {
-            ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse(link))
-                .setQuote(message)
-                .build();
 
-            shareDialog.show(linkContent);
-        }
+        Uri url = Uri.parse(link);
+
+        ShareLinkContent linkContent = new ShareLinkContent.Builder()
+            .setContentUrl(url)
+            .setQuote(message)
+            .build();
+
+        shareDialog.show(linkContent);
     }
     
     public void getProfilePictureLink(final String typeParameter) {

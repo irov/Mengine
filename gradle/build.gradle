@@ -29,8 +29,8 @@ buildscript {
 allprojects {
     project.ext {
         ndkVersion = '25.1.8937393'
-        buildToolsVersion = '33.0.1'
-        cmakeVersion = "3.22.1"
+        buildToolsVersion = '33.0.2'
+        cmakeVersion = '3.22.1'
         minSdkVersion = 21
         targetSdkVersion = 33
         compileSdkVersion = 33

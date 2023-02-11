@@ -1559,8 +1559,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::sendObjectsLeak()
     {
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
         uint32_t generation = FACTORY_SERVICE()
-            ->getFactoryGeneration();
+            ->debugFactoryGetGeneration();
 
         if( generation < 2 )
         {
@@ -1576,34 +1577,34 @@ namespace Mengine
 
         payloadNode.append_attribute( "Generation" ).set_value( generation - 1 );
 
-        uint32_t leakcount = 0;
-
         typedef Vector<DocumentPtr> VectorDocuments;
-        typedef Map<String, VectorDocuments> MapObjectLeaks;
+        typedef Map<const FactoryInterface *, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
         FACTORY_SERVICE()
-            ->foreachFactoryLeakObjects( generation - 1, [&leakcount, &objectLeaks]( const FactoryInterface * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+            ->debugFactoryForeachLeakObjects( generation - 1, [&objectLeaks]( const FactoryInterface * _factory, const Factorable * _factorable )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
 
-            if( _doc == nullptr )
+            const DocumentPtr & doc = _factorable->getDocument();
+
+            if( doc == nullptr )
             {
                 return;
             }
 
-            objectLeaks[_type].emplace_back( _doc );
-
-            ++leakcount;
+            objectLeaks[_factory].emplace_back( doc );
         } );
 
         pugi::xml_node xml_leaks = payloadNode.append_child( "Leaks" );
 
         for( auto && [factory, objects] : objectLeaks )
         {
+            const ConstString & factoryType = factory->getType();
+
             pugi::xml_node xml_objects = xml_leaks.append_child( "Objects" );
 
-            xml_objects.append_attribute( "Factory" ).set_value( factory.c_str() );
+            xml_objects.append_attribute( "Factory" ).set_value( factoryType.c_str() );
 
             for( const DocumentPtr & doc : objects )
             {
@@ -1642,6 +1643,7 @@ namespace Mengine
         xml_doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
 
         this->sendPacket( packet );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::sendNetwork()

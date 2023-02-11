@@ -273,8 +273,8 @@ PLUGIN_EXPORT( Texturepacker );
 PLUGIN_EXPORT( Graphics );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_SENTRY_STATIC
-PLUGIN_EXPORT( Sentry );
+#ifdef MENGINE_PLUGIN_WIN32_SENTRY_STATIC
+PLUGIN_EXPORT( Win32Sentry );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_STEAM_STATIC
@@ -345,6 +345,10 @@ PLUGIN_EXPORT( AppleFirebaseAnalytics );
 PLUGIN_EXPORT( AppleFirebaseCrashlytics );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_MESSAGING_STATIC
+PLUGIN_EXPORT( AppleFirebaseMessaging );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AppleFacebook );
 #endif
@@ -367,6 +371,10 @@ PLUGIN_EXPORT( AppleAdjust );
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_DEVTODEV_STATIC
 PLUGIN_EXPORT( AppleDevToDev );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_SENTRY_STATIC
+PLUGIN_EXPORT( AppleSentry );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_XMLTOBIN_STATIC
@@ -993,9 +1001,13 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "create Plugins..." );
 
-#ifdef MENGINE_PLUGIN_SENTRY_STATIC
-        MENGINE_ADD_PLUGIN( Sentry, "Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+#ifdef MENGINE_PLUGIN_WIN32_SENTRY_STATIC
+        MENGINE_ADD_PLUGIN( Win32Sentry, "Plugin Win32 Sentry...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
+
+#ifdef MENGINE_PLUGIN_APPLE_SENTRY_STATIC
+        MENGINE_ADD_PLUGIN( AppleSentry, "Plugin Apple Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+#endif        
 
 #ifdef MENGINE_EXTERNAL_SOURCE
         MENGINE_ADD_PLUGIN( ExternalBootstrapper, "initialize external Bootstrapper...", MENGINE_DOCUMENT_FACTORABLE );
@@ -1212,6 +1224,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS_STATIC
         MENGINE_ADD_PLUGIN( AppleFirebaseCrashlytics, "Plugin Apple Firebase Crashlytics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
+
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_MESSAGING_STATIC
+        MENGINE_ADD_PLUGIN( AppleFirebaseMessaging, "Plugin Apple Firebase Messaging...", MENGINE_DOCUMENT_FACTORABLE );
+#endif        
 
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
         MENGINE_ADD_PLUGIN( AppleFacebook, "Plugin Apple Facebook...", MENGINE_DOCUMENT_FACTORABLE );

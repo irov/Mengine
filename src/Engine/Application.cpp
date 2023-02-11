@@ -1071,11 +1071,13 @@ namespace Mengine
                     ->restartCurrentScene( false, nullptr );
             }
 
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
             if( _event.code == KC_G && _event.isDown == true && controlDown == true )
             {
                 FACTORY_SERVICE()
-                    ->increfFactoryGeneration();
+                    ->debugFactoryIncrefGeneration();
             }
+#endif
 
             if( _event.code == KC_OEM_MINUS && _event.isDown == true )
             {

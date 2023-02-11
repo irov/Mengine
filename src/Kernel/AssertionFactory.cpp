@@ -42,7 +42,7 @@ namespace Mengine
 
                 msg_offset += msg_size;
 
-                if( msg_offset > 4000 )
+                if( msg_offset > 3500 )
                 {
                     return false;
                 }

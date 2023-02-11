@@ -1,44 +1,41 @@
-#include "SentryPlugin.h"
+#include "AppleFirebaseMessagingPlugin.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( SentryService );
+SERVICE_EXTERN( AppleFirebaseMessagingService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
+PLUGIN_FACTORY( AppleFirebaseMessaging, Mengine::AppleFirebaseMessagingPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SentryPlugin::SentryPlugin()
+    AppleFirebaseMessagingPlugin::AppleFirebaseMessagingPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SentryPlugin::~SentryPlugin()
+    AppleFirebaseMessagingPlugin::~AppleFirebaseMessagingPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SentryPlugin::_unimportantPlugin() const
+    bool AppleFirebaseMessagingPlugin::_availablePlugin() const
     {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SentryPlugin::_availablePlugin() const
-    {
-        if( HAS_OPTION( "sentry" ) == true )
+        if( HAS_OPTION( "applefirebasemessaging" ) == true )
         {
             return true;
         }
 
-        if( HAS_OPTION( "nosentry" ) == true )
+        if( HAS_OPTION( "noapplefirebasemessaging" ) == true )
         {
             return false;
         }
         
-        bool SentryPlugin_Available = CONFIG_VALUE( "SentryPlugin", "Available", true );
+        bool AppleFirebaseMessagingPlugin_Available = CONFIG_VALUE( "AppleFirebaseMessagingPlugin", "Available", true );
 
-        if( SentryPlugin_Available == false )
+        if( AppleFirebaseMessagingPlugin_Available == false )
         {
             return false;
         }
@@ -46,9 +43,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SentryPlugin::_initializePlugin()
+    bool AppleFirebaseMessagingPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( SentryService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( AppleFirebaseMessagingService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -56,14 +53,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SentryPlugin::_finalizePlugin()
+    void AppleFirebaseMessagingPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( SentryService );
+        SERVICE_FINALIZE( AppleFirebaseMessagingService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SentryPlugin::_destroyPlugin()
+    void AppleFirebaseMessagingPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( SentryService );
+        SERVICE_DESTROY( AppleFirebaseMessagingService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

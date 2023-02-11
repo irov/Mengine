@@ -300,15 +300,46 @@ namespace Mengine
             m_desktop = true;
         }
 
+        if( HAS_OPTION( "table" ) == true )
+        {
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
+        }
+        else if( HAS_OPTION( "phone" ) == true )
+        {
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
+        }
+
+        LOGGER_MESSAGE( "Platform Tags: %s"
+            , [this]() 
+        {
+            static Char cache_value[1024] = {'\0'};
+
+            for( const ConstString & tag : m_platformTags.getValues() )
+            {
+                MENGINE_STRCAT( cache_value, tag.c_str() );
+                MENGINE_STRCAT( cache_value, "-" );
+            }
+
+            return cache_value;
+        }() );
+
         if( HAS_OPTION( "touchpad" ) == true )
         {
             m_touchpad = true;
         }
 
+        LOGGER_MESSAGE( "Touchpad: %u"
+            , m_touchpad
+        );
+
         if( HAS_OPTION( "desktop" ) == true )
         {
             m_desktop = true;
         }
+
+        LOGGER_MESSAGE( "Desktop: %u"
+            , m_desktop
+        );
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -362,7 +393,7 @@ namespace Mengine
 
             if( ::SetDllDirectoryW( currentPathW ) == FALSE )
             {
-                LOGGER_ERROR( "SetDllDirectoryA [%ls] invalid %ls"
+                LOGGER_ERROR( "SetDllDirectoryW [%ls] invalid %ls"
                     , currentPathW
                     , Helper::Win32GetLastErrorMessage()
                 );
@@ -374,7 +405,7 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_MESSAGE( "Device Seed: %u"
+        LOGGER_INFO( "platform", "Device Seed: %u"
             , deviceSeed
         );
 

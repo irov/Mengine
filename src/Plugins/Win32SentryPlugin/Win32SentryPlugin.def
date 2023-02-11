@@ -1,0 +1,2 @@
+LIBRARY "Win32SentryPlugin"
+EXPORTS dllCreatePlugin @1

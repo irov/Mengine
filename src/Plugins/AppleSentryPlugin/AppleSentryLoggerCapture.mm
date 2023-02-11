@@ -49,7 +49,7 @@ namespace Mengine
         m_message.append( data_str, data_size );
         m_message.append( "\n", 1 );
 
-        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "SentryPlugin", "MaxLogSize", 9240 );
+        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "AppleSentryPlugin", "MaxLogSize", 9240 );
 
         String::size_type message_size = m_message.size();
 

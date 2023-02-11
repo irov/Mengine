@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SentryInterface.h"
+#include "Win32SentryInterface.h"
 
 #include "Win32SentryLoggerCapture.h"
 
@@ -10,7 +10,7 @@
 namespace Mengine
 {
     class Win32SentryService
-        : public ServiceBase<SentryServiceInterface>
+        : public ServiceBase<Win32SentryServiceInterface>
     {
     public:
         Win32SentryService();

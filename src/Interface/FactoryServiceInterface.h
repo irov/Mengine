@@ -6,6 +6,20 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FactoryInterface.h"
 
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_DEBUG_FACTORY
+#   ifdef MENGINE_DEBUG
+#       define MENGINE_DEBUG_FACTORY 1
+#   else
+#       define MENGINE_DEBUG_FACTORY 0
+#   endif
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if MENGINE_DEBUG_FACTORY == 1
+#   define MENGINE_DEBUG_FACTORY_ENABLE
+#endif
+//////////////////////////////////////////////////////////////////////////
+
 namespace Mengine
 {    
     class FactoryServiceInterface
@@ -21,16 +35,19 @@ namespace Mengine
         typedef Lambda<void( const FactoryInterface * )> LambdaFactory;
         virtual void foreachFactories( const LambdaFactory & _lambda ) = 0;
 
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
     public:
-        virtual void increfFactoryGeneration() = 0;
-        virtual uint32_t getFactoryGeneration() const = 0;
-
-        typedef Lambda<void( const FactoryInterface * _factory, const Factorable *, const Char * _type, const DocumentPtr & _doc )> LambdaFactoryLeaks;
-        virtual void foreachFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const = 0;
+        virtual void debugFactoryIncrefGeneration() = 0;
+        virtual uint32_t debugFactoryGetGeneration() const = 0;
 
     public:
-        virtual void debugFactoryCreateObject( const FactoryInterface * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) = 0;
+        virtual void debugFactoryCreateObject( const FactoryInterface * _factory, const Factorable * _factorable ) = 0;
         virtual void debugFactoryDestroyObject( const FactoryInterface * _factory, const Factorable * _factorable ) = 0;
+
+    public:
+        typedef Lambda<void( const FactoryInterface * _factory, const Factorable * )> LambdaFactoryLeaks;
+        virtual void debugFactoryForeachLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const = 0;
+#endif
     };
 }
 //////////////////////////////////////////////////////////////////////////

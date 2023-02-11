@@ -66,7 +66,7 @@ namespace Mengine
             }break;
         }
 
-        Helper::debugBreak();
+        Helper::debuggerBreak();
     }
     //////////////////////////////////////////////////////////////////////////
 }

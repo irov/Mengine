@@ -191,56 +191,53 @@ namespace Mengine
 
         this->_destroyPlugin();
 
-        //#if defined(MENGINE_WINDOWS_DEBUG)
-        //        bool dynamicLoad = m_dynamicLoad;
-        //#endif
-        //
-        //#if defined(MENGINE_WINDOWS_DEBUG)
-        //        if( dynamicLoad == true )
-        //        {
-        //            const Char * plugin_modulePath = Helper::Win32GetCurrentDllPath();
-        //
-        //            typedef Vector<DocumentPtr> VectorDocuments;
-        //            VectorDocuments leakObjects;
-        //
-        //            FACTORY_SERVICE()
-        //                ->visitFactoryLeakObjects( ~0U, [plugin_modulePath, &leakObjects]( const FactoryInterface * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
-        //            {
-        //                MENGINE_UNUSED( _factory );
-        //                MENGINE_UNUSED( _factorable );
-        //                MENGINE_UNUSED( _type );
-        //
-        //                if( _doc == nullptr )
-        //                {
-        //                    return;
-        //                }
-        //
-        //                const Char * object_modulePath = _doc->getModulePath();
-        //
-        //                if( MENGINE_STRCMP( plugin_modulePath, object_modulePath ) != 0 )
-        //                {
-        //                    return;
-        //                }
-        //
-        //                leakObjects.emplace_back( _doc );
-        //            } );
-        //
-        //            if( leakObjects.empty() == false )
-        //            {
-        //                LOGGER_MESSAGE( "Plugin[%s] leak %u objects"
-        //                    , pluginName
-        //                    , leakObjects.size()
-        //                );
-        //
-        //                for( const DocumentPtr & doc : leakObjects )
-        //                {
-        //                    LOGGER_MESSAGE( "-- %s"
-        //                        , MENGINE_DOCUMENT_STR( doc )
-        //                    );
-        //                }
-        //            }
-        //        }
-        //#endif
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
+        bool dynamicLoad = m_dynamicLoad;
+
+        if( dynamicLoad == true )
+        {
+            typedef Vector<DocumentPtr> VectorDocuments;
+            VectorDocuments leakObjects;
+
+            FACTORY_SERVICE()
+                ->debugFactoryForeachLeakObjects( ~0U, [&leakObjects]( const FactoryInterface * _factory, const Factorable * _factorable )
+            {
+                MENGINE_UNUSED( _factory );
+                MENGINE_UNUSED( _factorable );
+
+                const DocumentPtr & doc = _factorable->getDocument();
+
+                if( doc == nullptr )
+                {
+                    return;
+                }
+
+                const Char * object_modulePath = doc->getModulePath();
+
+                if( MENGINE_STRCMP( MENGINE_LIBRARY_NAME, object_modulePath ) != 0 )
+                {
+                    return;
+                }
+
+                leakObjects.emplace_back( doc );
+            } );
+
+            if( leakObjects.empty() == false )
+            {
+                LOGGER_MESSAGE( "Plugin[%s] leak %u objects"
+                    , pluginName
+                    , leakObjects.size()
+                );
+
+                for( const DocumentPtr & doc : leakObjects )
+                {
+                    LOGGER_MESSAGE( "-- %s"
+                        , MENGINE_DOCUMENT_STR( doc )
+                    );
+                }
+            }
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::_initializePlugin()

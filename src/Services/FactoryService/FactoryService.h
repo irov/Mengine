@@ -7,8 +7,10 @@
 #include "Kernel/Vector.h"
 #include "Kernel/String.h"
 
-#ifndef MENGINE_NODELEAKDETECTOR_HASHSIZE
-#define MENGINE_NODELEAKDETECTOR_HASHSIZE 16
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
+    #ifndef MENGINE_NODELEAKDETECTOR_HASHSIZE
+    #define MENGINE_NODELEAKDETECTOR_HASHSIZE 16
+    #endif
 #endif
 
 namespace Mengine
@@ -31,29 +33,31 @@ namespace Mengine
     public:
         void foreachFactories( const LambdaFactory & _lambda ) override;
 
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
     protected:
-        void debugFactoryCreateObject( const FactoryInterface * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) override;
+        void debugFactoryIncrefGeneration() override;
+        uint32_t debugFactoryGetGeneration() const override;
+
+    protected:
+        void debugFactoryCreateObject( const FactoryInterface * _factory, const Factorable * _factorable ) override;
         void debugFactoryDestroyObject( const FactoryInterface * _factory, const Factorable * _factorable ) override;
 
     protected:
-        void increfFactoryGeneration() override;
-        uint32_t getFactoryGeneration() const override;
-        void foreachFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const override;
+        void debugFactoryForeachLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const override;
+#endif
 
     protected:
         struct FactoryDesc
         {
             const FactoryInterface * factory;
 
-#ifdef MENGINE_DEBUG
-            String factory_name;
-#endif
+            //ToDo
         };
 
         typedef Vector<FactoryDesc> VectorFactories;
         VectorFactories m_factories;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
         ThreadMutexInterfacePtr m_mutex;
 
         uint32_t m_generation;
@@ -65,8 +69,6 @@ namespace Mengine
             uint32_t generation;
             const FactoryInterface * factory;
             const Factorable * factorable;
-            String factory_name;
-            DocumentPtr factorable_doc;
         };
 
         typedef Vector<ObjectLeakDesc> VectorObjectLeakDesc;

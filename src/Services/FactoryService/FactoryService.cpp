@@ -23,7 +23,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     FactoryService::FactoryService()
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
         : m_generation( 0 )
         , m_memleakDetection( false )
 #endif
@@ -36,7 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FactoryService::_initializeService()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
         m_memleakDetection = HAS_OPTION( "memleak" );
 
         if( m_memleakDetection == true )
@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::_finalizeService()
     {
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
         if( m_memleakDetection == false )
         {
             return;
@@ -76,19 +76,21 @@ namespace Mengine
         uint32_t leakcount = 0;
 
         typedef Vector<DocumentPtr> VectorDocuments;
-        typedef Map<String, VectorDocuments> MapObjectLeaks;
+        typedef Map<const FactoryInterface *, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
-        this->foreachFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const FactoryInterface * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+        this->debugFactoryForeachLeakObjects( 0, [&leakcount, &objectLeaks]( const FactoryInterface * _factory, const Factorable * _factorable )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
 
-            if( _doc == nullptr )
+            const DocumentPtr & doc = _factorable->getDocument();
+
+            if( doc == nullptr )
             {
                 return;
             }
 
-            objectLeaks[_type].emplace_back( _doc );
+            objectLeaks[_factory].emplace_back( doc );
 
             ++leakcount;
         } );
@@ -96,7 +98,7 @@ namespace Mengine
 #ifdef MENGINE_PLATFORM_WINDOWS
         if( m_memleakLogFileName.empty() == false )
         {
-            FILE * f = fopen( m_memleakLogFileName.c_str(), "wb" );
+            FILE * f = ::fopen( m_memleakLogFileName.c_str(), "wb" );
 
             if( f != NULL )
             {
@@ -108,38 +110,40 @@ namespace Mengine
                     , leakcount
                 );
 
-                fwrite( objectleakmsg, objectleakmsg_length, 1, f );
+                ::fwrite( objectleakmsg, objectleakmsg_length, 1, f );
 
-                for( auto && [name, objects] : objectLeaks )
+                for( auto && [factory, objects] : objectLeaks )
                 {
                     const Char * factory_delimiter = "##########################################################\n";
-                    fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
+                    ::fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
+
+                    const ConstString & factoryType = factory->getType();
 
                     Char factorymsg[2048] = {'\0'};
                     int32_t factorymsg_length = MENGINE_SNPRINTF( factorymsg, 2047, "Factory '%s' [%zu]:\n"
-                        , name.c_str()
+                        , factoryType.c_str()
                         , objects.size()
                     );
 
-                    fwrite( factorymsg, factorymsg_length, 1, f );
+                    ::fwrite( factorymsg, factorymsg_length, 1, f );
 
-                    fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
+                    ::fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
 
                     for( const DocumentPtr & obj : objects )
                     {
                         const Char * obj_delimiter = "**********************************************************\n";
-                        fwrite( obj_delimiter, MENGINE_STRLEN( obj_delimiter ), 1, f );
+                        ::fwrite( obj_delimiter, MENGINE_STRLEN( obj_delimiter ), 1, f );
 
                         Char objmsg[16384] = {'\0'};
                         int32_t objmsg_length = MENGINE_SNPRINTF( objmsg, 16383, "    doc: %s\n"
                             , MENGINE_DOCUMENT_STR( obj )
                         );
 
-                        fwrite( objmsg, objmsg_length, 1, f );
+                        ::fwrite( objmsg, objmsg_length, 1, f );
                     }
                 }
 
-                fclose( f );
+                ::fclose( f );
             }
         }
 
@@ -170,12 +174,6 @@ namespace Mengine
         FactoryDesc desc;
         desc.factory = _factory;
 
-#ifdef MENGINE_DEBUG
-        const ConstString & type = _factory->getType();
-
-        desc.factory_name = type.c_str();
-#endif
-
         m_factories.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -204,30 +202,27 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::increfFactoryGeneration()
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)    
+    //////////////////////////////////////////////////////////////////////////
+    void FactoryService::debugFactoryIncrefGeneration()
     {
-#ifdef MENGINE_DEBUG
         ++m_generation;
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_INCREF_FACTORY_GENERATION, m_generation );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t FactoryService::getFactoryGeneration() const
+    uint32_t FactoryService::debugFactoryGetGeneration() const
     {
-#ifdef MENGINE_DEBUG
         return m_generation;
-#else
-        return 0;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::foreachFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const
+    void FactoryService::debugFactoryForeachLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const
     {
-        MENGINE_UNUSED( _generation );
-        MENGINE_UNUSED( _leaks );
+        if( m_memleakDetection == false )
+        {
+            return;
+        }
 
-#ifdef MENGINE_DEBUG
         for( uint32_t index = 0; index != MENGINE_NODELEAKDETECTOR_HASHSIZE; ++index )
         {
             const VectorObjectLeakDesc & nodeLeakDescs = m_objectLeakDescs[index];
@@ -239,19 +234,13 @@ namespace Mengine
                     continue;
                 }
 
-                _leaks( desc.factory, desc.factorable, desc.factory_name.c_str(), desc.factorable_doc );
+                _leaks( desc.factory, desc.factorable );
             }
         }
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::debugFactoryCreateObject( const FactoryInterface * _factory, const Factorable * _factorable, const DocumentPtr & _doc )
+    void FactoryService::debugFactoryCreateObject( const FactoryInterface * _factory, const Factorable * _factorable )
     {
-        MENGINE_UNUSED( _factory );
-        MENGINE_UNUSED( _factorable );
-        MENGINE_UNUSED( _doc );
-
-#ifdef MENGINE_DEBUG
         if( m_memleakDetection == false )
         {
             return;
@@ -270,21 +259,14 @@ namespace Mengine
         desc.generation = m_generation;
         desc.factory = _factory;
         desc.factorable = _factorable;
-        desc.factory_name = _factory->getType().c_str();
-        desc.factorable_doc = _doc;
 
         VectorObjectLeakDesc & descs = m_objectLeakDescs[hash];
 
         descs.emplace_back( desc );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::debugFactoryDestroyObject( const FactoryInterface * _factory, const Factorable * _factorable )
     {
-        MENGINE_UNUSED( _factory );
-        MENGINE_UNUSED( _factorable );
-
-#ifdef MENGINE_DEBUG
         if( m_memleakDetection == false )
         {
             return;
@@ -314,16 +296,13 @@ namespace Mengine
                 continue;
             }
 
-            DocumentPtr shallow_doc = desc.factorable_doc;
-
             *it = nodeLeakDescs.back();
             nodeLeakDescs.pop_back();
 
-            shallow_doc = nullptr;
-
             break;
         }
-#endif
     }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

@@ -27,7 +27,7 @@
 #import <Sentry/Sentry.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( SentryService, Mengine::AppleSentryService );
+SERVICE_FACTORY( AppleSentryService, Mengine::AppleSentryService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -42,9 +42,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleSentryService::_initializeService()
     {
-        const Char * Sentry_DSN = CONFIG_VALUE( "SentryPlugin", "DSN", "" );
+        const Char * AppleSentryPlugin_DSN = CONFIG_VALUE( "AppleSentryPlugin", "DSN", "" );
 
-        if( MENGINE_STRCMP( Sentry_DSN, "" ) == 0 )
+        if( MENGINE_STRCMP( AppleSentryPlugin_DSN, "" ) == 0 )
         {
             LOGGER_WARNING( "Sentry don't setup DSN" );
 
@@ -52,16 +52,16 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "Sentry DSN: %s"
-            , Sentry_DSN
+            , AppleSentryPlugin_DSN
         );
         
-        bool Sentry_Debug = CONFIG_VALUE( "SentryPlugin", "Debug", false );
+        bool AppleSentryPlugin_Debug = CONFIG_VALUE( "AppleSentryPlugin", "Debug", false );
         
         const Char * BUILD_VERSION = Helper::getBuildVersion();
         
         [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
-            options.dsn = @(Sentry_DSN);
-            options.debug = Sentry_Debug; // Enabled debug when first installing is always helpful
+            options.dsn = @(AppleSentryPlugin_DSN);
+            options.debug = AppleSentryPlugin_Debug; // Enabled debug when first installing is always helpful
             options.releaseName = @(BUILD_VERSION);
             options.attachStacktrace = true;
         }];
@@ -108,13 +108,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleSentryService::notifyCreateApplication_()
     {
-        const Char * Sentry_Application = CONFIG_VALUE( "SentryPlugin", "Application", "Mengine" );
+        const Char * AppleSentryPlugin_Application = CONFIG_VALUE( "AppleSentryPlugin", "Application", "Mengine" );
 
         LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
-            , Sentry_Application
+            , AppleSentryPlugin_Application
         );
 
-        Helper::appleSentrySetExtraString( "Application", Sentry_Application );
+        Helper::appleSentrySetExtraString( "Application", AppleSentryPlugin_Application );
 
         Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()

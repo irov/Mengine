@@ -29,7 +29,7 @@
 #define MENGINE_SENTRY_DATABASE_PATH "sentry-native"
 #endif
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( SentryService, Mengine::Win32SentryService );
+SERVICE_FACTORY( Win32SentryService, Mengine::Win32SentryService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -105,7 +105,7 @@ namespace Mengine
             , SENTRY_SDK_USER_AGENT
         );
 
-        const Char * SentryPlugin_DSN = CONFIG_VALUE( "SentryPlugin", "DSN", "" );
+        const Char * SentryPlugin_DSN = CONFIG_VALUE( "Win32SentryPlugin", "DSN", "" );
 
         if( MENGINE_STRCMP( SentryPlugin_DSN, "" ) == 0 )
         {
@@ -166,9 +166,9 @@ namespace Mengine
         sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-        const Char * SentryPlugin_Handler = CONFIG_VALUE( "SentryPlugin", "Handler", "crashpad_handler.exe" );
+        const Char * SentryPlugin_Handler = CONFIG_VALUE( "Win32SentryPlugin", "Handler", "crashpad_handler.exe" );
 #else
-        const Char * SentryPlugin_Handler = CONFIG_VALUE( "SentryPlugin", "Handler", "crashpad_handler" );
+        const Char * SentryPlugin_Handler = CONFIG_VALUE( "Win32SentryPlugin", "Handler", "crashpad_handler" );
 #endif
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
@@ -287,7 +287,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32SentryService::notifyBootstrapperCreateApplication_()
     {
-        const Char * SentryPlugin_Application = CONFIG_VALUE( "SentryPlugin", "Application", "Mengine" );
+        const Char * SentryPlugin_Application = CONFIG_VALUE( "Win32SentryPlugin", "Application", "Mengine" );
 
         LOGGER_INFO( "sentry", "Sentry set extra [Application: %s]"
             , SentryPlugin_Application

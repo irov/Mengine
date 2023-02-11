@@ -8,7 +8,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        void debugBreak()
+        void debuggerBreak()
         {
 #ifdef MENGINE_PLATFORM_WINDOWS
             if( ::IsDebuggerPresent() == TRUE )

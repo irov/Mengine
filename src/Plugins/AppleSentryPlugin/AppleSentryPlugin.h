@@ -4,14 +4,14 @@
 
 namespace Mengine
 {    
-    class SentryPlugin
+    class AppleSentryPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Sentry" )
+        PLUGIN_DECLARE( "AppleSentry" )
 
     public:
-        SentryPlugin();
-        ~SentryPlugin() override;
+        AppleSentryPlugin();
+        ~AppleSentryPlugin() override;
 
     protected:
         bool _unimportantPlugin() const override;

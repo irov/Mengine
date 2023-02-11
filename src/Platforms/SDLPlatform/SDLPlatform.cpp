@@ -490,10 +490,16 @@ namespace Mengine
         SDL_version ver;
         SDL_GetVersion( &ver );
 
-        LOGGER_MESSAGE( "SDL version %u.%u.%u"
+        LOGGER_MESSAGE( "SDL version: %u.%u.%u"
             , ver.major
             , ver.minor
             , ver.patch
+        );
+
+        const char * revision = SDL_GetRevision();
+
+        LOGGER_MESSAGE( "SDL revision: %s"
+            , revision
         );
 
         SDL_bool isTablet = SDL_IsTablet();
@@ -503,7 +509,7 @@ namespace Mengine
         );
 
 #ifdef MENGINE_DEBUG
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_DEBUG );
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_VERBOSE );
 #else
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
 #endif
@@ -521,97 +527,26 @@ namespace Mengine
 
         m_platformTags.clear();
 
-        const Char * sdlPlatform = SDL_GetPlatform();
-
-        if( MENGINE_STRCMP( sdlPlatform, "Windows" ) == 0 )
+        const Char * option_platforms[MENGINE_OPTIONS_VALUES_MAX];
+        uint32_t option_platforms_count;
+        if( OPTIONS_SERVICE()
+            ->getOptionValues( "platform", option_platforms, &option_platforms_count ) == true )
         {
-            m_desktop = true;
-            m_touchpad = false;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-
-#ifdef MENGINE_PLATFORM_WINDOWS32
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#endif
-
-#ifdef MENGINE_PLATFORM_WINDOWS64
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-#endif
-        }
-        else if( MENGINE_STRCMP( sdlPlatform, "WinRT" ) == 0 )
-        {
-            m_desktop = true;
-            m_touchpad = false;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WinRT" ) );
-
-
-            SDL_SetEventFilter( &Detail::SDL_EventFilter_EnterBackground, nullptr );
-        }
-        else if( MENGINE_STRCMP( sdlPlatform, "Mac OS X" ) == 0 )
-        {
-            m_desktop = true;
-            m_touchpad = false;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
-        }
-        else if( MENGINE_STRCMP( sdlPlatform, "Android" ) == 0 )
-        {
-            m_desktop = false;
-            m_touchpad = true;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-
-            if( isTablet == SDL_TRUE )
+            for( uint32_t index = 0; index != option_platforms_count; ++index )
             {
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
+                const Char * option_platform = option_platforms[index];
+
+                Char uppercase_option_platform[256] = {'\0'};;
+                Helper::toupper( option_platform, uppercase_option_platform, 255 );
+
+                m_platformTags.addTag( Helper::stringizeString( option_platform ) );
             }
-            else
-            {
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
-            }
-
-            SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
         }
-        else if( MENGINE_STRCMP( sdlPlatform, "iOS" ) == 0 )
-        {
-            m_desktop = false;
-            m_touchpad = true;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
-
-            if( isTablet == SDL_TRUE )
-            {
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
-            }
-            else
-            {
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
-            }
-
-            SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
-        }
-        else if( MENGINE_STRCMP( sdlPlatform, "Linux" ) == 0 )
-        {
-            m_desktop = true;
-            m_touchpad = false;
-
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "LINUX" ) );
-        }
-        else
-        {
-            LOGGER_ERROR( "platform '%s' unspecified"
-                , sdlPlatform
-            );
-        }
-
-        if( HAS_OPTION( "win32" ) )
+        else if( HAS_OPTION( "win32" ) )
         {
             m_touchpad = false;
             m_desktop = true;
 
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
         }
@@ -620,7 +555,6 @@ namespace Mengine
             m_touchpad = false;
             m_desktop = true;
 
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
         }
@@ -629,7 +563,6 @@ namespace Mengine
             m_touchpad = false;
             m_desktop = true;
 
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
         }
         else if( HAS_OPTION( "ios" ) )
@@ -637,7 +570,6 @@ namespace Mengine
             m_touchpad = true;
             m_desktop = false;
 
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
         }
         else if( HAS_OPTION( "android" ) )
@@ -645,7 +577,6 @@ namespace Mengine
             m_touchpad = true;
             m_desktop = false;
 
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
         }
         else if( HAS_OPTION( "linux" ) )
@@ -653,7 +584,6 @@ namespace Mengine
             m_touchpad = false;
             m_desktop = true;
 
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "LINUX" ) );
         }
         else if( HAS_OPTION( "wp" ) )
@@ -661,8 +591,93 @@ namespace Mengine
             m_touchpad = true;
             m_desktop = false;
 
-            m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
+        }
+        else
+        {
+            const Char * sdlPlatform = SDL_GetPlatform();
+
+            if( MENGINE_STRCMP( sdlPlatform, "Windows" ) == 0 )
+            {
+                m_desktop = true;
+                m_touchpad = false;
+
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS32
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
+            }
+            else if( MENGINE_STRCMP( sdlPlatform, "WinRT" ) == 0 )
+            {
+                m_desktop = true;
+                m_touchpad = false;
+
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WinRT" ) );
+
+                SDL_SetEventFilter( &Detail::SDL_EventFilter_EnterBackground, nullptr );
+            }
+            else if( MENGINE_STRCMP( sdlPlatform, "Mac OS X" ) == 0 )
+            {
+                m_desktop = true;
+                m_touchpad = false;
+
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
+            }
+            else if( MENGINE_STRCMP( sdlPlatform, "Android" ) == 0 )
+            {
+                m_desktop = false;
+                m_touchpad = true;
+
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+
+                if( isTablet == SDL_TRUE )
+                {
+                    m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
+                }
+                else
+                {
+                    m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
+                }
+
+                SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
+            }
+            else if( MENGINE_STRCMP( sdlPlatform, "iOS" ) == 0 )
+            {
+                m_desktop = false;
+                m_touchpad = true;
+
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+
+                if( isTablet == SDL_TRUE )
+                {
+                    m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "TABLET" ) );
+                }
+                else
+                {
+                    m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
+                }
+
+                SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
+            }
+            else if( MENGINE_STRCMP( sdlPlatform, "Linux" ) == 0 )
+            {
+                m_desktop = true;
+                m_touchpad = false;
+
+                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "LINUX" ) );
+            }
+            else
+            {
+                LOGGER_ERROR( "platform '%s' unspecified"
+                    , sdlPlatform
+                );
+            }
         }
 
         if( HAS_OPTION( "table" ) == true )
@@ -672,17 +687,6 @@ namespace Mengine
         else if( HAS_OPTION( "phone" ) == true )
         {
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
-        }
-
-        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
-
-        if( option_platform != nullptr )
-        {
-            Char uppercase_option_platform[256] = {'\0'};
-            Helper::toupper( option_platform, uppercase_option_platform, 255 );
-
-            m_platformTags.clear();
-            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
 
         LOGGER_MESSAGE( "Platform Tags: %s"
@@ -753,7 +757,7 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_MESSAGE( "Device Seed: %u"
+        LOGGER_INFO( "plarform", "Device Seed: %u"
             , deviceSeed
         );
 

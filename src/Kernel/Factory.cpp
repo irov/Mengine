@@ -75,16 +75,11 @@ namespace Mengine
         m_factorables.push_back( object );
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
         if( SERVICE_EXIST( FactoryServiceInterface ) == true )
         {
             FACTORY_SERVICE()
-                ->debugFactoryCreateObject( this, object, _doc );
-        }
-
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, this, object, _doc );
+                ->debugFactoryCreateObject( this, object );
         }
 #endif
 
@@ -93,16 +88,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factory::destroyObject( Factorable * _object )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
         if( SERVICE_EXIST( FactoryServiceInterface ) == true )
         {
             FACTORY_SERVICE()
                 ->debugFactoryDestroyObject( this, _object );
-        }
-
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
-        {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, this, _object );
         }
 #endif
 

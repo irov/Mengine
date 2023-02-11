@@ -4,15 +4,15 @@
 
 namespace Mengine
 {
-    class SentryServiceInterface
+    class AppleSentryServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "SentryService" )
+        SERVICE_DECLARE( "AppleSentryService" )
 
     public:
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define SENTRY_SERVICE()\
-    ((Mengine::SentryServiceInterface *)SERVICE_GET(Mengine::SentryServiceInterface))
+#define APPLE_SENTRY_SERVICE()\
+    ((Mengine::AppleSentryServiceInterface *)SERVICE_GET(Mengine::AppleSentryServiceInterface))
 //////////////////////////////////////////////////////////////////////////

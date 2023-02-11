@@ -6,6 +6,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        void debugBreak();
+        void debuggerBreak();
     }
 }

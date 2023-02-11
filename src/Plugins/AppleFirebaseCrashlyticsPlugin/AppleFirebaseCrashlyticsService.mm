@@ -28,6 +28,10 @@ namespace Mengine
         [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:true];
 #endif
 
+        LOGGER_MESSAGE("Firebase Crashlytics version: %s"
+            , [[FIRCrashlytics crashlytics] version]
+        );
+
         return true;
     }
     ////////////////////////////////////////////////////////////////////////

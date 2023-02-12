@@ -317,6 +317,10 @@ PLUGIN_EXPORT( Optick );
 PLUGIN_EXPORT( GameAnalytics );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_USERNOTIFICATIONCENTER_STATIC
+PLUGIN_EXPORT( AppleUserNotificationCenter );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
 PLUGIN_EXPORT( AppleGameCenter );
 #endif
@@ -1200,6 +1204,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
         MENGINE_ADD_PLUGIN( GameAnalytics, "Plugin Game Analytics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
+
+#ifdef MENGINE_PLUGIN_APPLE_USERNOTIFICATIONCENTER_STATIC
+        MENGINE_ADD_PLUGIN( AppleUserNotificationCenter, "Plugin Apple User Notification Center...", MENGINE_DOCUMENT_FACTORABLE );
+#endif      
 
 #ifdef MENGINE_PLUGIN_APPLE_GAMECENTER_STATIC
         MENGINE_ADD_PLUGIN( AppleGameCenter, "Plugin Apple GameCenter...", MENGINE_DOCUMENT_FACTORABLE );

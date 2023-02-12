@@ -349,6 +349,10 @@ PLUGIN_EXPORT( AppleFirebaseCrashlytics );
 PLUGIN_EXPORT( AppleFirebaseMessaging );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_REMOTECONFIG_STATIC
+PLUGIN_EXPORT( AppleFirebaseRemoteConfig );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AppleFacebook );
 #endif
@@ -1227,7 +1231,11 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_APPLE_FIREBASE_MESSAGING_STATIC
         MENGINE_ADD_PLUGIN( AppleFirebaseMessaging, "Plugin Apple Firebase Messaging...", MENGINE_DOCUMENT_FACTORABLE );
-#endif        
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_REMOTECONFIG_STATIC
+        MENGINE_ADD_PLUGIN( AppleFirebaseRemoteConfig, "Plugin Apple Firebase Remote Config...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
         MENGINE_ADD_PLUGIN( AppleFacebook, "Plugin Apple Facebook...", MENGINE_DOCUMENT_FACTORABLE );

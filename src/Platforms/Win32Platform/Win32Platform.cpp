@@ -149,7 +149,7 @@ namespace Mengine
         if( hm_ntdll != NULL )
         {
             LONG( WINAPI * RtlGetVersion )(LPOSVERSIONINFOEXW);
-            *(FARPROC *)&RtlGetVersion = GetProcAddress( hm_ntdll, "RtlGetVersion" );
+            *(FARPROC *)&RtlGetVersion = ::GetProcAddress( hm_ntdll, "RtlGetVersion" );
 
             if( RtlGetVersion != NULL )
             {
@@ -666,6 +666,7 @@ namespace Mengine
         MENGINE_WCSCAT( fingerprintGarbage, ComputerNameBuffer );
 
         Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
+
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
 
         return true;
@@ -769,11 +770,11 @@ namespace Mengine
             return false;
         }
 
-        MINIDUMP_EXCEPTION_INFORMATION exinfo;
+        MINIDUMP_EXCEPTION_INFORMATION exInfo;
 
-        exinfo.ThreadId = ::GetCurrentThreadId();
-        exinfo.ExceptionPointers = (PEXCEPTION_POINTERS)_pExceptionPointers;
-        exinfo.ClientPointers = TRUE;
+        exInfo.ThreadId = ::GetCurrentThreadId();
+        exInfo.ExceptionPointers = (PEXCEPTION_POINTERS)_pExceptionPointers;
+        exInfo.ClientPointers = TRUE;
 
         HANDLE hProcess = ::GetCurrentProcess();
         DWORD dwProcessId = ::GetCurrentProcessId();
@@ -789,7 +790,7 @@ namespace Mengine
             dumptype = MINIDUMP_TYPE( MiniDumpWithFullMemory | MiniDumpWithFullMemoryInfo | MiniDumpWithHandleData | MiniDumpWithUnloadedModules | MiniDumpWithThreadInfo );
         }
 
-        BOOL successful = (*MiniDumpWriteDump)(hProcess, dwProcessId, hFile, dumptype, (_pExceptionPointers == nullptr ? nullptr : &exinfo), NULL, NULL);
+        BOOL successful = (*MiniDumpWriteDump)(hProcess, dwProcessId, hFile, dumptype, (_pExceptionPointers == nullptr ? nullptr : &exInfo), NULL, NULL);
 
         ::FreeLibrary( dbghelp_dll );
         ::CloseHandle( hFile );
@@ -911,7 +912,7 @@ namespace Mengine
         MENGINE_PROFILER_CATEGORY();
 
         MSG msg;
-        while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
+        while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) == TRUE )
         {
             ::TranslateMessage( &msg );
             ::DispatchMessage( &msg );

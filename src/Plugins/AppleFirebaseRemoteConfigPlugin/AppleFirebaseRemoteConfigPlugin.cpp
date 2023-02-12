@@ -1,4 +1,4 @@
-#include "AppleFirebaseMessagingPlugin.h"
+#include "AppleFirebaseRemoteConfigPlugin.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -6,36 +6,36 @@
 #include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AppleFirebaseMessagingService );
+SERVICE_EXTERN( AppleFirebaseRemoteConfigService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleFirebaseMessaging, Mengine::AppleFirebaseMessagingPlugin )
+PLUGIN_FACTORY( AppleFirebaseRemoteConfig, Mengine::AppleFirebaseRemoteConfigPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleFirebaseMessagingPlugin::AppleFirebaseMessagingPlugin()
+    AppleFirebaseRemoteConfigPlugin::AppleFirebaseRemoteConfigPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleFirebaseMessagingPlugin::~AppleFirebaseMessagingPlugin()
+    AppleFirebaseRemoteConfigPlugin::~AppleFirebaseRemoteConfigPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseMessagingPlugin::_availablePlugin() const
+    bool AppleFirebaseRemoteConfigPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "applefirebasemessaging" ) == true )
+        if( HAS_OPTION( "applefirebaseremoteconfig" ) == true )
         {
             return true;
         }
 
-        if( HAS_OPTION( "noapplefirebasemessaging" ) == true )
+        if( HAS_OPTION( "noapplefirebaseremoteconfig" ) == true )
         {
             return false;
         }
         
-        bool AppleFirebaseMessagingPlugin_Available = CONFIG_VALUE( "AppleFirebaseMessagingPlugin", "Available", true );
+        bool AppleFirebaseRemoteConfigPlugin_Available = CONFIG_VALUE( "AppleFirebaseRemoteConfigPlugin", "Available", true );
 
-        if( AppleFirebaseMessagingPlugin_Available == false )
+        if( AppleFirebaseRemoteConfigPlugin_Available == false )
         {
             return false;
         }
@@ -43,9 +43,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseMessagingPlugin::_initializePlugin()
+    bool AppleFirebaseRemoteConfigPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( AppleFirebaseMessagingService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( AppleFirebaseRemoteConfigService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -53,14 +53,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseMessagingPlugin::_finalizePlugin()
+    void AppleFirebaseRemoteConfigPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( AppleFirebaseMessagingService );
+        SERVICE_FINALIZE( AppleFirebaseRemoteConfigService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseMessagingPlugin::_destroyPlugin()
+    void AppleFirebaseRemoteConfigPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( AppleFirebaseMessagingService );
+        SERVICE_DESTROY( AppleFirebaseRemoteConfigService );
     }
     //////////////////////////////////////////////////////////////////////////
 }

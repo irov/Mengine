@@ -3,7 +3,6 @@
 #include "AppleFirebaseMessagingInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/VectorConstString.h"
 
 namespace Mengine
 {

@@ -62,8 +62,6 @@ if(MENGINE_TARGET_IOS)
     ios
         MengineAppleApplicationDelegates.mm
         MengineAppleApplicationDelegates.h
-        MengineUNUserNotificationCenterDelegate.mm
-        MengineUNUserNotificationCenterDelegate.h
         MengineUIKitDelegate.mm
         MengineUIKitDelegate.h
     )

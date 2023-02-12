@@ -1,40 +1,43 @@
-#include "AppleFirebaseMessagingService.h"
+#include "AppleFirebaseRemoteConfigService.h"
 
 #import <Firebase/Firebase.h>
+#import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AppleFirebaseMessagingService, Mengine::AppleFirebaseMessagingService );
+SERVICE_FACTORY( AppleFirebaseRemoteConfigService, Mengine::AppleFirebaseRemoteConfigService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleFirebaseMessagingService::AppleFirebaseMessagingService()
-        : m_pushToken( nil )
+    AppleFirebaseRemoteConfigService::AppleFirebaseRemoteConfigService()
+        : m_remoteConfig( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleFirebaseMessagingService::~AppleFirebaseMessagingService()
+    AppleFirebaseRemoteConfigService::~AppleFirebaseRemoteConfigService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFirebaseMessagingService::_initializeService()
+    bool AppleFirebaseRemoteConfigService::_initializeService()
     {
-
+        //Empty
+        
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseMessagingService::_finalizeService()
+    void AppleFirebaseRemoteConfigService::_finalizeService()
     {
+        m_remoteConfig = nil;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseMessagingService::setPushToken( NSString * _pushToken )
+    void AppleFirebaseRemoteConfigService::setRemoteConfig( NSMutableDictionary * _remoteConfig )
     {
-        m_pushToken = _pushToken;
+        m_remoteConfig = _remoteConfig;
     }
     //////////////////////////////////////////////////////////////////////////
-    NSString * AppleFirebaseMessagingService::getPushToken() const
+    NSMutableDictionary * AppleFirebaseRemoteConfigService::getRemoteConfig() const
     {
-        return m_pushToken;
+        return m_remoteConfig;
     }
     //////////////////////////////////////////////////////////////////////////
 }

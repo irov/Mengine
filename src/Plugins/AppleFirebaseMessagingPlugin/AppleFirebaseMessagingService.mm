@@ -19,12 +19,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseMessagingService::_initializeService()
     {
+        //Empty
 
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
     void AppleFirebaseMessagingService::_finalizeService()
     {
+        m_pushToken = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseMessagingService::setPushToken( NSString * _pushToken )

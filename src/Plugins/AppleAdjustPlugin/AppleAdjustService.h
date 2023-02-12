@@ -4,8 +4,6 @@
 
 #include "Kernel/ServiceBase.h"
 
-#import "Adjust.h"
-
 namespace Mengine
 {
     class AppleAdjustService

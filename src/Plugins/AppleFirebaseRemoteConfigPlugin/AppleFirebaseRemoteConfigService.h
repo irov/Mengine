@@ -1,28 +1,27 @@
 #pragma once
 
-#include "AppleFirebaseMessagingInterface.h"
+#include "AppleFirebaseRemoteConfigInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/VectorConstString.h"
 
 namespace Mengine
 {
-    class AppleFirebaseMessagingService
-        : public ServiceBase<AppleFirebaseMessagingServiceInterface>
+    class AppleFirebaseRemoteConfigService
+        : public ServiceBase<AppleFirebaseRemoteConfigServiceInterface>
     {
     public:
-        AppleFirebaseMessagingService();
-        ~AppleFirebaseMessagingService() override;
+        AppleFirebaseRemoteConfigService();
+        ~AppleFirebaseRemoteConfigService() override;
 
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
 
     public:
-        void setPushToken( NSString * _pushToken ) override;
-        NSString * getPushToken() const override;
+        void setRemoteConfig( NSMutableDictionary * _remoteConfig ) override;
+        NSMutableDictionary * getRemoteConfig() const override;
         
     protected:
-        NSString * m_pushToken;
+        NSMutableDictionary * m_remoteConfig;
     };
 }

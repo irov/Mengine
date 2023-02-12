@@ -9,7 +9,7 @@ namespace Mengine
     class AppleFirebaseMessagingServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AppleFirebaseCrashlyticsService" )
+        SERVICE_DECLARE( "AppleFirebaseMessagingService" )
 
     public:
         virtual void setPushToken( NSString * _pushToken ) = 0;

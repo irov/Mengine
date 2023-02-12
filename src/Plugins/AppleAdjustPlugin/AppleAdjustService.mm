@@ -3,6 +3,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 
+#import <Adjust/Adjust.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleAdjustService, Mengine::AppleAdjustService );

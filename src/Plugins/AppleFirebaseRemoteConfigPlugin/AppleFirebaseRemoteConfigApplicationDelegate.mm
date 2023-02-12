@@ -1,78 +1,73 @@
-#import "AppleFirebaseMessagingApplicationDelegate.h"
+#import "AppleFirebaseRemoteConfigApplicationDelegate.h"
 
-#include "AppleFirebaseMessagingInterface.h"
+#include "AppleFirebaseRemoteConfigInterface.h"
+
+#include "Kernel/Logger.h"
 
 #import <Firebase/Firebase.h>
+#import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
 
-@implementation AppleFirebaseMessagingApplicationDelegate
+@implementation AppleFirebaseRemoteConfigApplicationDelegate
 
 #pragma mark - UIKitProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [[FIRMessaging messaging] setDelegate:self];
-}
-
-- (void)messaging:(FIRMessaging *)messaging didReceiveRegistrationToken:(NSString *)fcmToken {
-    NSDictionary *dataDict = [NSDictionary dictionaryWithObject:fcmToken forKey:@"token"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FCMToken" object:nil userInfo:dataDict];
+    FIRRemoteConfigSettings *remoteConfigSettings = [[FIRRemoteConfigSettings alloc] init];
+    remoteConfigSettings.minimumFetchInterval = 3600;
+    [[FIRRemoteConfig remoteConfig] setConfigSettings:remoteConfigSettings];
     
-    APPLE_FIREBASE_MESSAGING_SERVICE()
-        ->setPushToken( fcmToken );
-}
-
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    [FIRMessaging messaging].APNSToken = deviceToken;
-}
-
-// iOS 7+
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler {
-
-    [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
-
-    completionHandler(UIBackgroundFetchResultNoData);
-}
-
-- (void)applicationWillResignActive:(UIApplication *)application {
-    //Empty
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    //Empty
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    //Empty
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    //Empty
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    //Empty
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    //Empty
-}
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation handled:(BOOL *)handler {
-    //Empty
+    [[FIRRemoteConfig remoteConfig] setDefaultsFromPlistFileName:@"RemoteConfigDefaults"];
     
-    return NO;
-}
-    
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary *)options handled:(BOOL *)handler {
-    //Empty
-    
-    return NO;
-}
+    [[FIRRemoteConfig remoteConfig] fetchWithCompletionHandler:^(FIRRemoteConfigFetchStatus status, NSError *error) {
+        switch (status) {
+            case FIRRemoteConfigFetchStatusNoFetchYet:
+                LOGGER_ERROR("FIRRemoteConfigFetchStatusNoFetchYet: %s"
+                    , [[error localizedDescription] UTF8String]
+                );
+                break;
+            case FIRRemoteConfigFetchStatusSuccess:
+                LOGGER_MESSAGE("FIRRemoteConfigFetchStatusSuccess");
+                
+                [[FIRRemoteConfig remoteConfig] activateWithCompletion:^(BOOL changed, NSError * _Nullable error) {
+                    if (error != nil)
+                    {
+                        LOGGER_ERROR("FIRRemoteConfigFetchStatusSuccess activate error: %s"
+                            , [[error localizedDescription] UTF8String]
+                        );
+                        
+                        return;
+                    }
 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url handled:(BOOL *)handler {
-    //Empty
-    
-    return NO;
-}
+                    NSArray<NSString*> * keys = [[FIRRemoteConfig remoteConfig] allKeysFromSource:FIRRemoteConfigSourceRemote];
 
+                    NSMutableDictionary * remoteConfig = [[NSMutableDictionary alloc] init];
+                    for (id key in keys)
+                    {
+                        NSString* strValue = [[[FIRRemoteConfig remoteConfig] configValueForKey:key] stringValue];
+                        
+                        [remoteConfig setValue:strValue forKey:key];
+                    }
+                        
+                    APPLE_FIREBASE_REMOTECONFIG_SERVICE()
+                        ->setRemoteConfig( remoteConfig );
+                }];
+                break;
+            case FIRRemoteConfigFetchStatusFailure:
+                LOGGER_ERROR("FIRRemoteConfigFetchStatusFailure: %s"
+                    , [[error localizedDescription] UTF8String]
+                );
+                
+                break;
+            case FIRRemoteConfigFetchStatusThrottled:
+                LOGGER_ERROR("FIRRemoteConfigFetchStatusThrottled: %s"
+                    , [[error localizedDescription] UTF8String]
+                );
+                
+                break;
+            default:
+                break;
+        }
+    }];
+}
 
 @end

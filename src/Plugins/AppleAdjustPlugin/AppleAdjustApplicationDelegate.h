@@ -1,7 +1,6 @@
 #import "Interface/UIKitProxyApplicationDelegateInterface.h"
 
-#import <Foundation/Foundation.h>
-#import <Adjust.h>
+#import <Adjust/Adjust.h>
 
 @interface AppleAdjustApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface, AdjustDelegate>
 

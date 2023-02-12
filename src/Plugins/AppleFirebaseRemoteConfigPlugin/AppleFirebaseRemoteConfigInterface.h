@@ -6,17 +6,17 @@
 
 namespace Mengine
 {
-    class AppleFirebaseMessagingServiceInterface
+    class AppleFirebaseRemoteConfigServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AppleFirebaseCrashlyticsService" )
+        SERVICE_DECLARE( "AppleFirebaseRemoteConfigService" )
 
     public:
-        virtual void setPushToken( NSString * _pushToken ) = 0;
-        virtual NSString * getPushToken() const = 0;
+        virtual void setRemoteConfig( NSMutableDictionary * _remoteConfig ) = 0;
+        virtual NSMutableDictionary * getRemoteConfig() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define APPLE_FIREBASE_MESSAGING_SERVICE()\
-    ((Mengine::AppleFirebaseMessagingServiceInterface *)SERVICE_GET(Mengine::AppleFirebaseMessagingServiceInterface))
+#define APPLE_FIREBASE_REMOTECONFIG_SERVICE()\
+    ((Mengine::AppleFirebaseRemoteConfigServiceInterface *)SERVICE_GET(Mengine::AppleFirebaseRemoteConfigServiceInterface))
 //////////////////////////////////////////////////////////////////////////

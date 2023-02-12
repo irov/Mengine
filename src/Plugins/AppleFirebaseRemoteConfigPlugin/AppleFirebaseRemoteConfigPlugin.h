@@ -6,14 +6,14 @@
 
 namespace Mengine
 {
-    class AppleFirebaseMessagingPlugin
+    class AppleFirebaseRemoteConfigPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AppleFirebaseMessaging" )
+        PLUGIN_DECLARE( "AppleFirebaseRemoteConfig" )
 
     public:
-        AppleFirebaseMessagingPlugin();
-        ~AppleFirebaseMessagingPlugin() override;
+        AppleFirebaseRemoteConfigPlugin();
+        ~AppleFirebaseRemoteConfigPlugin() override;
 
     protected:
         bool _availablePlugin() const override;

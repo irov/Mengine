@@ -1,0 +1,19 @@
+MENGINE_PROJECT(AppleSKAdNetworkPlugin)
+
+ADD_FILTER(
+src
+    AppleSKAdNetworkInterface.h
+    
+    AppleSKAdNetworkPlugin.h
+    AppleSKAdNetworkPlugin.cpp
+    
+    AppleSKAdNetworkApplicationDelegate.h
+    AppleSKAdNetworkApplicationDelegate.mm
+    
+    AppleSKAdNetworkService.h
+    AppleSKAdNetworkService.mm
+)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_SKADNETWORK)
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppleSKAdNetworkApplicationDelegate")

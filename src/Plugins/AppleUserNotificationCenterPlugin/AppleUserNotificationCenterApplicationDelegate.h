@@ -1,0 +1,5 @@
+#import "Environment/iOS/UIKitProxyApplicationDelegateBase.h"
+
+@interface AppleUserNotificationCenterApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface, UNUserNotificationCenterDelegate>
+
+@end

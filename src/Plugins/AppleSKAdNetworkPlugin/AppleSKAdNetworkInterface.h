@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
     class AppleSKAdNetworkServiceInterface
@@ -10,6 +12,8 @@ namespace Mengine
         SERVICE_DECLARE( "AppleSKAdNetworkService" )
 
     public:
+        typedef Lambda<void(bool _successful)> LambdaConversionValue;
+        virtual void updateConversionValue( int64_t _value, const LambdaConversionValue & _lambda ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

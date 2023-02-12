@@ -63,12 +63,6 @@
     }
 }
 //////////////////////////////////////////////////////////////////////////
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification API_DEPRECATED("Use UserNotifications Framework's -[UNUserNotificationCenterDelegate willPresentNotification:withCompletionHandler:] or -[UNUserNotificationCenterDelegate didReceiveNotificationResponse:withCompletionHandler:]", ios(4.0, 10.0)) API_UNAVAILABLE(tvos) {
-    for(id delegate in self.m_applicationDelegates) {
-        [delegate application:application didReceiveLocalNotification:notification];
-    }
-}
-//////////////////////////////////////////////////////////////////////////
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     for (id delegate in self.m_applicationDelegates) {
         [delegate applicationDidBecomeActive:application];

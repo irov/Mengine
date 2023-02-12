@@ -19,5 +19,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        void setPushToken( NSString * _pushToken ) override;
+        NSString * getPushToken() const override;
+        
+    protected:
+        NSString * m_pushToken;
     };
 }

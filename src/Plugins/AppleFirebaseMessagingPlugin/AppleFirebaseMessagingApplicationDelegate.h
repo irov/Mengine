@@ -1,5 +1,7 @@
 #import "Environment/iOS/UIKitProxyApplicationDelegateBase.h"
 
-@interface AppleFirebaseMessagingApplicationDelegate : UIKitProxyApplicationDelegateBase
+#import <FirebaseMessaging/FirebaseMessaging.h>
+
+@interface AppleFirebaseMessagingApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface, FIRMessagingDelegate>
 
 @end

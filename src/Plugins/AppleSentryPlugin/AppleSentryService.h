@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SentryInterface.h"
+#include "AppleSentryInterface.h"
 
 #include "AppleSentryLoggerCapture.h"
 
@@ -11,7 +11,7 @@
 namespace Mengine
 {
     class AppleSentryService
-        : public ServiceBase<SentryServiceInterface>
+        : public ServiceBase<AppleSentryServiceInterface>
     {
     public:
         AppleSentryService();

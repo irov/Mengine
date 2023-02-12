@@ -133,6 +133,15 @@ namespace Mengine
 
                     [firebase_parameters setValue:@(parameter_value_str) forKey:@(name_str)];
                 }break;
+            case EAEPT_CONSTSTRING:
+                {
+                    AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
+                    const ConstString & parameter_value = parameter_string->resolveValue();
+                    
+                    const Char * parameter_value_str = parameter_value.c_str();
+
+                    [firebase_parameters setValue:@(parameter_value_str) forKey:@(name_str)];
+                }break;
             }
         } );
         

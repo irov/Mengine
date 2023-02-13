@@ -358,11 +358,11 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         request.executeAsync();
     }
     
-    public void shareLink(String link, String picture, String message) {
-        this.logInfo("shareLink link: %s picture: %s message: %s"
+    public void shareLink(String link, String picture, String quote) {
+        this.logInfo("shareLink link: %s picture: %s quote: %s"
             , link
             , picture
-            , message
+            , quote
         );
 
         if (ShareDialog.canShow(ShareLinkContent.class) == false) {
@@ -370,6 +370,12 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
             return;
         }
+
+        this.buildEvent("fb_share_link")
+            .addParameterString("url", link)
+            .addParameterString("picture", picture)
+            .addParameterString("quote", quote)
+            .log();
 
         MengineActivity activity = this.getActivity();
 
@@ -379,38 +385,57 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             public void onSuccess(Sharer.Result result) {
                 String postId = result.getPostId() != null ? result.getPostId() : "";
 
-                MengineFacebookPlugin.this.logInfo("facebook success [%s]"
+                MengineFacebookPlugin.this.logInfo("shareLink success [%s]"
                     , postId
                 );
+
+                MengineFacebookPlugin.this.buildEvent("fb_share_link_success")
+                    .addParameterString("url", link)
+                    .addParameterString("picture", picture)
+                    .addParameterString("quote", quote)
+                    .addParameterString( "postId", postId)
+                    .log();
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookShareSuccess", postId);
             }
 
             @Override
             public void onCancel() {
-                MengineFacebookPlugin.this.logInfo("facebook cancel");
+                MengineFacebookPlugin.this.logInfo("shareLink cancel");
+
+                MengineFacebookPlugin.this.buildEvent("fb_share_link_cancel")
+                    .addParameterString("url", link)
+                    .addParameterString("picture", picture)
+                    .addParameterString("quote", quote)
+                    .log();
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookShareCancel");
             }
 
             @Override
             public void onError(@NonNull FacebookException exception) {
-                String message = exception.getMessage();
+                String error_message = exception.getMessage();
 
-                MengineFacebookPlugin.this.logInfo("facebook error: %s"
-                    , message
+                MengineFacebookPlugin.this.logInfo("shareLink error: %s"
+                    , error_message
                 );
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookShareError", message);
+                MengineFacebookPlugin.this.buildEvent("fb_share_link_error")
+                    .addParameterString("url", link)
+                    .addParameterString("picture", picture)
+                    .addParameterString("quote", quote)
+                    .addParameterString("error", error_message)
+                    .log();
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookShareError", error_message);
             }
         });
-        
 
         Uri url = Uri.parse(link);
 
         ShareLinkContent linkContent = new ShareLinkContent.Builder()
             .setContentUrl(url)
-            .setQuote(message)
+            .setQuote(quote)
             .build();
 
         shareDialog.show(linkContent);

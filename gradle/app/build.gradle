@@ -147,7 +147,7 @@ android {
         if (project.hasProperty("ANDROID_APP_VERSION_NAME")) {
             versionName ANDROID_APP_VERSION_NAME
         } else {
-            versionName versionCode as String
+            versionName "v." + buildNumber as String
         }
 
         println "versionCode: $versionCode"

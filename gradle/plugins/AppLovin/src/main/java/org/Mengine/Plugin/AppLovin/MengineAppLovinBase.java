@@ -87,9 +87,7 @@ public class MengineAppLovinBase {
     }
 
     public MengineAnalyticsEventBuilder buildEvent(String name) {
-        MengineActivity activity = m_plugin.getActivity();
-
-        MengineAnalyticsEventBuilder eventBuilder = activity.buildEvent(name);
+        MengineAnalyticsEventBuilder eventBuilder = m_plugin.buildEvent(name);
 
         return eventBuilder;
     }

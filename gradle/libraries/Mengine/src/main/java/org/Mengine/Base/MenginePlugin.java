@@ -60,8 +60,6 @@ public class MenginePlugin {
         return instance;
     }
 
-
-
     public void logInfo(String format, Object ... args) {
         MengineLog.logInfo(m_pluginName, format, args);
     }
@@ -72,6 +70,12 @@ public class MenginePlugin {
 
     public void logError(String format, Object ... args) {
         MengineLog.logError(m_pluginName, format, args);
+    }
+
+    public MengineAnalyticsEventBuilder buildEvent(String name) {
+        MengineAnalyticsEventBuilder eventBuilder = m_activity.buildEvent(name);
+
+        return eventBuilder;
     }
 
     public void pythonCall(String method, Object ... args) {

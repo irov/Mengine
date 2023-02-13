@@ -63,12 +63,18 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
 
         this.logInfo("launchTheInAppReview");
 
+        this.buildEvent("inapp_review")
+            .log();
+
         MengineActivity activity = this.getActivity();
 
         Task<Void> flow = m_manager.launchReviewFlow(activity, m_reviewInfo);
 
         flow.addOnCompleteListener(task -> {
             MengineGoogleInAppReviewsPlugin.this.logInfo("Launching the review completed");
+
+            this.buildEvent("inapp_review_completed")
+                .log();
 
             MengineGoogleInAppReviewsPlugin.this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewCompleted");
         });

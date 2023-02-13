@@ -68,11 +68,15 @@ namespace Mengine
             {
                 _jenv->ExceptionClear();
 
+                _jenv->DeleteLocalRef( jclass_BuildConfig );
+
                 return false;
             }
 
             if( jfield_MENGINE_APP_OPTIONS == nullptr )
             {
+                _jenv->DeleteLocalRef( jclass_BuildConfig );
+
                 return false;
             }
 
@@ -80,6 +84,8 @@ namespace Mengine
 
             if( j_MENGINE_APP_OPTIONS == nullptr )
             {
+                _jenv->DeleteLocalRef( jclass_BuildConfig );
+
                 return false;
             }
 
@@ -89,6 +95,7 @@ namespace Mengine
 
             _jenv->ReleaseStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, MENGINE_APP_OPTIONS_str );
             _jenv->DeleteLocalRef( j_MENGINE_APP_OPTIONS );
+            _jenv->DeleteLocalRef( jclass_BuildConfig );
 
             return true;
         }

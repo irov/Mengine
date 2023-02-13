@@ -18,10 +18,15 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     private int m_retryAttemptRewarded;
 
+    private int m_enumeratorRequest;
+    private int m_requestId;
+
     public MengineAppLovinRewarded(MengineAppLovinPlugin plugin, String adUnitId) throws Exception {
         super(plugin);
 
         m_retryAttemptRewarded = 0;
+        m_enumeratorRequest = 0;
+        m_requestId = 0;
 
         MengineActivity activity = m_plugin.getActivity();
 
@@ -57,9 +62,20 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             } catch (Exception e) {
             }
         } else {
-            m_rewardedAd.loadAd();
+            this.loadAd();
         }
     }
+
+    public void loadAd() {
+        m_requestId = m_enumeratorRequest++;
+
+        this.buildEvent("ad_rewarded_load")
+            .addParameterInteger("request_id", m_requestId)
+            .log();
+
+        m_rewardedAd.loadAd();
+    }
+
 
     public void showRewarded() {
         boolean ready = m_rewardedAd.isReady();
@@ -69,7 +85,15 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         );
 
         if (ready == true) {
+            this.buildEvent("ad_rewarded_show")
+                .addParameterInteger("request_id", m_requestId)
+                .log();
+
             m_rewardedAd.showAd();
+        } else {
+            this.buildEvent("ad_rewarded_show_unready")
+                .addParameterInteger("request_id", m_requestId)
+                .log();
         }
     }
 
@@ -79,6 +103,11 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
                 , adUnitId
         );
 
+        this.buildEvent("ad_rewarded_request_started")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("unit_ad", adUnitId)
+            .log();
+
         m_plugin.pythonCall("onApplovinRewardedOnAdRequestStarted");
     }
 
@@ -86,12 +115,22 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onRewardedVideoStarted(MaxAd ad) {
         this.logMaxAd("Rewarded", "onRewardedVideoStarted", ad);
 
+        this.buildEvent("ad_rewarded_video_started")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .log();
+
         m_plugin.pythonCall("onApplovinRewardedOnRewardedVideoStarted");
     }
 
     @Override @Deprecated
     public void onRewardedVideoCompleted(MaxAd ad) {
         this.logMaxAd("Rewarded", "onRewardedVideoCompleted", ad);
+
+        this.buildEvent("ad_rewarded_video_completed")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .log();
 
         m_plugin.pythonCall("onApplovinRewardedOnRewardedVideoCompleted");
     }
@@ -108,12 +147,24 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             , amount
         );
 
+        this.buildEvent("ad_rewarded_user_rewarded")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterString("label", label)
+            .addParameterInteger("amount", amount)
+            .log();
+
         m_plugin.pythonCall("onApplovinRewardedOnUserRewarded", label, amount);
     }
 
     @Override
     public void onAdLoaded(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdLoaded", ad);
+
+        this.buildEvent("ad_rewarded_loaded")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .log();
 
         m_retryAttemptRewarded = 0;
 
@@ -124,6 +175,11 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdDisplayed(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdDisplayed", ad);
 
+        this.buildEvent("ad_rewarded_displayed")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .log();
+
         m_plugin.pythonCall("onApplovinRewardedOnAdDisplayed");
     }
 
@@ -131,7 +187,12 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdHidden(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdHidden", ad);
 
-        m_rewardedAd.loadAd();
+        this.buildEvent("ad_rewarded_hidden")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .log();
+
+        this.loadAd();
 
         m_plugin.pythonCall("onApplovinRewardedOnAdHidden");
     }
@@ -140,6 +201,11 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdClicked(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdClicked", ad);
 
+        this.buildEvent("ad_rewarded_clicked")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .log();
+
         m_plugin.pythonCall("onApplovinRewardedOnAdClicked");
     }
 
@@ -147,13 +213,19 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdLoadFailed(String adUnitId, MaxError error) {
         this.logMaxError("Rewarded", "onAdLoadFailed", error);
 
+        this.buildEvent("ad_rewarded_load_failed")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("unit_id", adUnitId)
+            .addParameterString("error", this.getMaxErrorParams(error))
+            .log();
+
         m_retryAttemptRewarded++;
 
         long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptRewarded)));
 
         MengineUtils.performOnMainThread(() -> {
             if (m_rewardedAd != null) {
-                m_rewardedAd.loadAd();
+                this.loadAd();
             }
         }, delayMillis);
 
@@ -164,7 +236,13 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
         this.logMaxError("Rewarded", "onAdDisplayFailed", error);
 
-        m_rewardedAd.loadAd();
+        this.buildEvent("ad_rewarded_display_failed")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterString("error", this.getMaxErrorParams(error))
+            .log();
+
+        this.loadAd();
 
         m_plugin.pythonCall("onApplovinRewardedOnAdDisplayFailed");
     }
@@ -172,6 +250,11 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     @Override
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdRevenuePaid", ad);
+
+        this.buildEvent("ad_rewarded_revenue_paid")
+            .addParameterInteger("request_id", m_requestId)
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .log();
 
         m_plugin.pythonCall("onApplovinRewardedOnAdRevenuePaid");
 

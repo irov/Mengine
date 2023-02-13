@@ -2,27 +2,26 @@
 
 #include "Environment/Android/AndroidIncluder.h"
 
+#include "Kernel/ConstString.h"
+#include "Kernel/String.h"
+
 namespace Mengine
 {
     namespace Helper
     {
-        class JClassDefinition
-        {
-        public:
-            static jclass OBJECT;
-            static jclass BOOLEAN;
-            static jclass CHARACTER;
-            static jclass INTEGER;
-            static jclass LONG;
-            static jclass FLOAT;
-            static jclass DOUBLE;
-            static jclass STRING;
-            static jclass ARRAY_LIST;
-            static jclass MAP;
-            static jclass HASH_MAP;
-            static jclass SET;
-            static jclass ITERATOR;
-            static jclass MAP_ENTRY;
-        };
+        //////////////////////////////////////////////////////////////////////////
+        jobject makeJObjectBoolean( JNIEnv * _jenv, bool _value );
+        jobject makeJObjectInteger( JNIEnv * _jenv, int32_t _value );
+        jobject makeJObjectLong( JNIEnv * _jenv, int64_t _value );
+        jobject makeJObjectFloat( JNIEnv * _jenv, float _value );
+        jobject makeJObjectDouble( JNIEnv * _jenv, double _value );
+        jobject makeJObjectString( JNIEnv * _jenv, const Char * _value );
+        jobject makeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
+        //////////////////////////////////////////////////////////////////////////
+        Mengine::ConstString makeConstStringFromJString( JNIEnv * _jenv, jstring _value );
+        Mengine::String makeStringFromJString( JNIEnv * _jenv, jstring _value );
+        //////////////////////////////////////////////////////////////////////////
+        void jEnvExceptionCheck( JNIEnv * _jenv );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

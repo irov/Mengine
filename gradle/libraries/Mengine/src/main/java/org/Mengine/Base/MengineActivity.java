@@ -43,7 +43,7 @@ public class MengineActivity extends SDLActivity {
     private ArrayList<CallbackResponse> m_callbackResponses;
     private int m_callbackResponseEnumerator;
 
-    private static native void AndroidEnvironmentService_setMengineAndroidActivityJNI(Object Activity);
+    private static native void AndroidEnvironmentService_setMengineAndroidActivityJNI(Object activity);
     private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     private static native String AndroidEnvironmentService_getCompanyName();
     private static native String AndroidEnvironmentService_getProjectName();
@@ -600,6 +600,7 @@ public class MengineActivity extends SDLActivity {
     protected SDLSurface createSDLSurface(Context context) {
         return new MengineSurface(context);
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Kernel Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -642,9 +643,19 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Python Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /***********************************************************************************************
+     * Analytics Methods
+     **********************************************************************************************/
+
+    public MengineAnalyticsEventBuilder buildEvent(String name) {
+        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(name);
+
+        return eventBuilder;
+    }
+
+    /***********************************************************************************************
+     * Python Methods
+     **********************************************************************************************/
 
     public void pythonInitializePlugins() {
         MengineLog.logInfo(TAG, "Python initialize");
@@ -797,9 +808,9 @@ public class MengineActivity extends SDLActivity {
         AndroidNativePython_addPlugin(name, plugin);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Semaphore Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /***********************************************************************************************
+     * Semaphore Methods
+     **********************************************************************************************/
 
     public void activateSemaphore(String name) {
         if (m_destroy == true) {
@@ -851,9 +862,9 @@ public class MengineActivity extends SDLActivity {
         this.waitSemaphore(name, cb);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Linking Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /***********************************************************************************************
+     * Linking Methods
+     **********************************************************************************************/
 
     public boolean linkingOpenURL(String url) {
         MengineLog.logInfo(TAG, "linking open url [%s]"
@@ -882,9 +893,9 @@ public class MengineActivity extends SDLActivity {
         return true;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Asset Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /***********************************************************************************************
+     * Asset Methods
+     **********************************************************************************************/
 
     public int openAssetFile(String path) {
         MengineLog.logInfo(TAG, "openAssetFile path [%s]"

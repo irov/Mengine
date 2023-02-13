@@ -36,7 +36,7 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        static jmethodID jmethodID_onMengineLogger = ANDROID_ENVIRONMENT_SERVICE()
+        jmethodID jmethodID_onMengineLogger = ANDROID_ENVIRONMENT_SERVICE()
             ->getMengineActivityMethodID( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
 
         const Char * category_str = _message.category.c_str();

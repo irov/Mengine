@@ -163,7 +163,7 @@ namespace Mengine
         virtual AnalyticsEventBuilderInterface * addParameterBoolean( const ConstString & _name, bool _value ) = 0;
         virtual AnalyticsEventBuilderInterface * addParameterConstString( const ConstString & _name, const ConstString & _value ) = 0;
         virtual AnalyticsEventBuilderInterface * addParameterString( const ConstString & _name, const String & _value ) = 0;
-        virtual AnalyticsEventBuilderInterface * addParameterInteger( const ConstString & __namekey, int64_t _value ) = 0;
+        virtual AnalyticsEventBuilderInterface * addParameterInteger( const ConstString & _name, int64_t _value ) = 0;
         virtual AnalyticsEventBuilderInterface * addParameterDouble( const ConstString & _name, double _value ) = 0;
 
     public:

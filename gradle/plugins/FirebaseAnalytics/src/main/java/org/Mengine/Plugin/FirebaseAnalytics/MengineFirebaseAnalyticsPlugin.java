@@ -72,6 +72,11 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                     }
                 }
 
+                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
                 m_firebaseAnalytics.logEvent(eventName, params);
             } break;
             case EAET_EARN_VIRTUAL_CURRENCY: {
@@ -82,6 +87,11 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
 
                 params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
                 params.putDouble(FirebaseAnalytics.Param.VALUE, value);
+
+                this.logInfo("logEvent [EARN_VIRTUAL_CURRENCY] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
 
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.EARN_VIRTUAL_CURRENCY, params);
             } break;
@@ -96,6 +106,11 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
                 params.putDouble(FirebaseAnalytics.Param.VALUE, value);
 
+                this.logInfo("logEvent [SPEND_VIRTUAL_CURRENCY] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY, params);
             } break;
             case EAET_UNLOCK_ACHIEVEMENT: {
@@ -105,12 +120,17 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
 
                 params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, achievementId);
 
+                this.logInfo("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.UNLOCK_ACHIEVEMENT, params);
             } break;
             default: {
-                this.logError("Unknown event type: %d name: %s"
-                    , eventType
+                this.logError("event: %s unknown type: %d"
                     , eventName
+                    , eventType
                 );
             } break;
         }

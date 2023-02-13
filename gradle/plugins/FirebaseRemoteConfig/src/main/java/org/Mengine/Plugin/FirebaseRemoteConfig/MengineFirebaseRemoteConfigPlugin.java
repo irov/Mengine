@@ -68,8 +68,11 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
                         MengineFirebaseRemoteConfigPlugin.this.logInfo("Remote config successful fetch and activate params: %d"
                             , updated
                         );
+
+                        MengineFirebaseRemoteConfigPlugin.this.activateSemaphore("FirebaseRemoteConfigFetchSuccessful");
                     } else {
                         Exception e = task.getException();
+
                         MengineFirebaseRemoteConfigPlugin.this.logError("Remote config invalid fetch and activate params: %s"
                             , e == null ? "No Exception" : e.getLocalizedMessage()
                         );

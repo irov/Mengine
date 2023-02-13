@@ -18,5 +18,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        void updateConversionValue( int64_t _value, const LambdaConversionValue & _lambda ) override;
     };
 }

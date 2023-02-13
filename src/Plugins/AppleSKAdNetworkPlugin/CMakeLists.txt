@@ -6,7 +6,7 @@ src
     
     AppleSKAdNetworkPlugin.h
     AppleSKAdNetworkPlugin.cpp
-    
+
     AppleSKAdNetworkApplicationDelegate.h
     AppleSKAdNetworkApplicationDelegate.mm
     
@@ -16,4 +16,6 @@ src
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_SKADNETWORK)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppleSKAdNetworkApplicationDelegate")
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleSKAdNetworkApplicationDelegate")
+
+ADD_MENGINE_APPLE_FRAMEWORK(StoreKit)

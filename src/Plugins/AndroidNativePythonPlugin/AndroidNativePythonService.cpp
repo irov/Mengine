@@ -128,6 +128,7 @@ namespace Mengine
         pybind::def_functor_args( kernel, "androidInteger64Method", this, &AndroidNativePythonService::androidInteger64Method );
         pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonService::androidFloatMethod );
         pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonService::androidStringMethod );
+        pybind::def_functor_args( kernel, "androidConfigMethod", this, &AndroidNativePythonService::androidConfigMethod );
 
         pybind::def_functor_args( kernel, "waitAndroidSemaphore", this, &AndroidNativePythonService::waitAndroidSemaphore );
 

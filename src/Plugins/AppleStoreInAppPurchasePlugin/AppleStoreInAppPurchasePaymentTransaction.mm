@@ -39,7 +39,7 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchasePaymentTransaction::finish()
     {
-        LOGGER_INFO( "inapppurchase", "payment transaction '%s' finish"
+        LOGGER_MESSAGE( "payment transaction finish product: %s"
             , m_productIdentifier.c_str()
         );
         

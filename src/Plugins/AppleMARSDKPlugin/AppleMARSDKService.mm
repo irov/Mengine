@@ -65,7 +65,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////
     bool AppleMARSDKService::login()
     {
-        LOGGER_INFO( "marsdk", "login" );
+        LOGGER_MESSAGE( "login" );
         
         [[MARSDK sharedInstance] login];
         
@@ -74,7 +74,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMARSDKService::logout()
     {
-        LOGGER_INFO( "marsdk", "logout" );
+        LOGGER_MESSAGE( "logout" );
         
         [[MARSDK sharedInstance] logout];
         
@@ -83,7 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleMARSDKService::switchAccount()
     {
-        LOGGER_INFO( "marsdk", "switchAccount" );
+        LOGGER_MESSAGE( "switchAccount" );
         
         [[MARSDK sharedInstance] switchAccount];
         
@@ -94,7 +94,7 @@ namespace Mengine
     {
         MARUserExtraData* extraData = [MARUserExtraData dataFromJsonString:@(_data)];
         
-        LOGGER_INFO( "marsdk", "submit extended data: %s"
+        LOGGER_MESSAGE( "submit extended data: %s"
             , [[extraData toJsonString] UTF8String]
         );
         
@@ -105,7 +105,7 @@ namespace Mengine
     {
         MARProductInfo* productInfo = [MARProductInfo productFromJsonString:@(_data)];
 
-        LOGGER_INFO( "marsdk", "submit payment data: %s"
+        LOGGER_MESSAGE( "submit payment data: %s"
             , [[productInfo toJsonString] UTF8String]
         );
         
@@ -114,7 +114,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
     {
-        LOGGER_INFO( "marsdk", "show reward video ad: item '%s' num [%u]"
+        LOGGER_MESSAGE( "show reward video ad: item '%s' num [%u]"
             , _itemName.c_str()
             , _itemNum
         );
@@ -128,7 +128,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogin( const MARSDKResultParams & _params )
     {
-        LOGGER_INFO( "marsdk", "event user login" );
+        LOGGER_MESSAGE( "event user login" );
         
         if( m_provider == nullptr )
         {
@@ -140,7 +140,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogout( const MARSDKResultParams & _params )
     {
-        LOGGER_INFO( "marsdk", "event user logout" );
+        LOGGER_MESSAGE( "event user logout" );
         
         if( m_provider == nullptr )
         {
@@ -152,7 +152,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onPayPaid( const MARSDKResultParams & _params )
     {
-        LOGGER_INFO( "marsdk", "event pay paid" );
+        LOGGER_MESSAGE( "event pay paid" );
         
         if( m_provider == nullptr )
         {

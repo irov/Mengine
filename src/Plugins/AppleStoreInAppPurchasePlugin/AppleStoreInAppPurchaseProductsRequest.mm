@@ -28,7 +28,7 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseProductsRequest::cancel()
     {
-        LOGGER_INFO( "inapppurchase", "products request cancel" );
+        LOGGER_MESSAGE( "products request cancel" );
         
         [m_skProductsRequest cancel];
     }

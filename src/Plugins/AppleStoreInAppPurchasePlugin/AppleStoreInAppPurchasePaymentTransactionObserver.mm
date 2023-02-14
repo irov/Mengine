@@ -24,7 +24,7 @@
 //////////////////////////////////////////////////////////////////////////
 // Sent when the transaction array has changed (additions or state changes).  Client should check state of transactions and finish as appropriate.
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
-    LOGGER_INFO( "inapppurchase", "SKPaymentTransactionObserver updatedTransactions" );
+    LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue updatedTransactions" );
     
     const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & provider = m_service->getPaymentTransactionProvider();
     

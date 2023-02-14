@@ -34,7 +34,7 @@
 }
 
 - (void) OnPlatformInit: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnPlatformInit params: %s"
+    LOGGER_MESSAGE( "OnPlatformInit params: %s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
@@ -47,7 +47,7 @@
 }
 
 - (void) OnRealName:(NSDictionary*)params {
-    LOGGER_INFO( "marsdk", "OnRealName params: %s"
+    LOGGER_MESSAGE( "OnRealName params: %s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
@@ -60,7 +60,7 @@
 }
 
 - (void) OnEventWithCode: (int)code msg: (NSString*)msg {
-    LOGGER_INFO( "marsdk", "OnEventWithCode code:%d msg:%s"
+    LOGGER_MESSAGE( "OnEventWithCode code:%d msg:%s"
         , code
         , [msg UTF8String]
     );
@@ -73,7 +73,7 @@
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
-    LOGGER_INFO( "marsdk", "OnEventCustom event:%s params:%s"
+    LOGGER_MESSAGE( "OnEventCustom event:%s params:%s"
         , [eventName UTF8String]
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
@@ -89,7 +89,7 @@
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnUserLogin params:%s"
+    LOGGER_MESSAGE( "OnUserLogin params:%s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
@@ -102,7 +102,7 @@
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnUserLogout params:%s"
+    LOGGER_MESSAGE( "OnUserLogout params:%s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
@@ -115,7 +115,7 @@
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
-    LOGGER_INFO( "marsdk", "OnPayPaid params:%s"
+    LOGGER_MESSAGE( "OnPayPaid params:%s"
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     

@@ -26,7 +26,11 @@ namespace Mengine
     bool AppleDevToDevService::_initializeService()
     {
         [DTDAnalytics trackingAvailabilityHandler:^(BOOL value) {
-            LOGGER_INFO("devtodev", "Initialized has been finished [%s]", (value == TRUE ? "SUCCESSFUL" : "FAILED"));
+            LOGGER_MESSAGE( "initialized has been finished [%s]"
+                , (value == TRUE ? "SUCCESSFUL" : "FAILED")
+            );
+            
+            //Empty
         }];
         
         ANALYTICS_SERVICE()
@@ -43,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleDevToDevService::sendEvent( NSString * _eventName, NSDictionary<NSString *, id> * _parameters )
     {
-        LOGGER_INFO( "devtodev", "sendEvent %s %s"
+        LOGGER_MESSAGE( "sendEvent name: %s parameters: %s"
             , [ _eventName UTF8String]
             , [[NSString stringWithFormat:@"%@", _parameters] UTF8String]
         );

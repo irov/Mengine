@@ -76,8 +76,6 @@ namespace Mengine
     {
         m_frames = 0;
 
-        LOGGER_INFO( "render", "Initializing MockupRenderSystem..." );
-
         m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
 
         m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "Mockup" ) );

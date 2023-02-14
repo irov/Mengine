@@ -22,14 +22,14 @@
 #pragma mark - SKProductsRequestDelegate
 //////////////////////////////////////////////////////////////////////////
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-    LOGGER_INFO( "inapppurchase", "productsRequest didReceiveResponse:" );
+    LOGGER_MESSAGE( "productsRequest didReceiveResponse:" );
     
     NSArray<SKProduct *> * skProducts = response.products;
     
     Mengine::VectorAppleStoreInAppPurchaseProducts products;
     for( SKProduct * skProduct in skProducts )
     {
-        LOGGER_INFO( "inapppurchase", "skProduct: %s"
+        LOGGER_MESSAGE( "skProduct: %s"
             , [skProduct.productIdentifier UTF8String]
         );
         
@@ -42,14 +42,14 @@
 }
 //////////////////////////////////////////////////////////////////////////
 - (void)requestDidFinish:(SKRequest *)request {
-    LOGGER_INFO( "inapppurchase", "requestDidFinish" );
+    LOGGER_MESSAGE( "requestDidFinish" );
                  
     m_cb->onProductFinish();
     m_cb = nullptr;
 }
 //////////////////////////////////////////////////////////////////////////
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
-    LOGGER_ERROR( "request didFailWithError: %s"
+    LOGGER_MESSAGE( "request didFailWithError: %s"
         , [error.localizedDescription UTF8String]
     );
     

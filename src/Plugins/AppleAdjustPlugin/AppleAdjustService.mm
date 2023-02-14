@@ -51,6 +51,10 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     void AppleAdjustService::eventTraking( const ConstString & _token )
     {
+        LOGGER_MESSAGE( "eventTraking token: %s"
+            , _token.c_str()
+        );
+        
         ADJEvent *event = [ADJEvent eventWithEventToken: [NSString stringWithUTF8String:_token.c_str()]];
         
         [Adjust trackEvent:event];
@@ -58,6 +62,12 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     void AppleAdjustService::revenueTracking( const ConstString & _token, double _amount, const ConstString & _currency )
     {
+        LOGGER_MESSAGE( "revenueTracking token: %s anount: %lf currency: %s"
+            , _token.c_str()
+            , _amount
+            , _currency.c_str()
+        );
+        
         ADJEvent *event = [ADJEvent eventWithEventToken: [NSString stringWithUTF8String:_token.c_str()]];
         
         [event setRevenue:_amount currency:[NSString stringWithUTF8String:_currency.c_str()]];

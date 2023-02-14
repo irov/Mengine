@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreReviewService::launchTheInAppReview()
     {
-        LOGGER_INFO("storereview", "launch the InAppReview");
+        LOGGER_MESSAGE( "launch the InAppReview" );
         
         if (@available(iOS 14.0, *)) {
             UIWindowScene * foregroundScene = nil;

@@ -34,8 +34,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSystem::_initializeService()
     {
-        LOGGER_INFO( "sound", "Starting OpenAL Sound System..." );
-
         ALCdevice * device = alcOpenDevice( nullptr );
 
         if( device == nullptr )

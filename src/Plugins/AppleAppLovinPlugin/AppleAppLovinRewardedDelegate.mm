@@ -59,14 +59,14 @@
 #pragma mark - MAAdDelegate Protocol
 
 - (void) didLoadAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Rewarded didLoadAd");
+    LOGGER_INFO( "applovin", "Rewarded didLoadAd" );
     
     // Reset retry attempt
     self.m_retryAttempt = 0;
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
-    LOGGER_INFO("applovin", "Rewarded didFailToLoadAdForAdUnitIdentifier");
+    LOGGER_INFO( "applovin", "Rewarded didFailToLoadAdForAdUnitIdentifier" );
     
     self.m_retryAttempt++;
 
@@ -78,22 +78,22 @@
 }
 
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Rewarded didDisplayAd");
+    LOGGER_INFO( "applovin", "Rewarded didDisplayAd" );
 }
 
 - (void) didClickAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Rewarded didClickAd");
+    LOGGER_INFO( "applovin", "Rewarded didClickAd" );
 }
 
 - (void) didHideAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Rewarded didHideAd");
+    LOGGER_INFO( "applovin", "Rewarded didHideAd" );
     
     // Rewarded ad is hidden. Pre-load the next ad
     [self.m_rewardedAd loadAd];
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    LOGGER_INFO("applovin", "Rewarded didFailToDisplayAd");
+    LOGGER_INFO( "applovin", "Rewarded didFailToDisplayAd" );
         
     [self.m_rewardedAd loadAd];
 }
@@ -101,21 +101,21 @@
 #pragma mark - MARewardedAdDelegate Protocol
 
 - (void) didStartRewardedVideoForAd:(MAAd *)ad {
-    LOGGER_INFO("applovin", "Rewarded didStartRewardedVideoForAd");
+    LOGGER_INFO( "applovin", "Rewarded didStartRewardedVideoForAd" );
 }
 
 - (void) didCompleteRewardedVideoForAd:(MAAd *)ad {
-    LOGGER_INFO("applovin", "Rewarded didCompleteRewardedVideoForAd");
+    LOGGER_INFO( "applovin", "Rewarded didCompleteRewardedVideoForAd" );
 }
 
 - (void) didRewardUserForAd:(MAAd *) ad withReward:(MAReward *) reward {
-    LOGGER_INFO("applovin", "Rewarded didRewardUserForAd");
+    LOGGER_INFO( "applovin", "Rewarded didRewardUserForAd" );
 }
 
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
-    LOGGER_INFO("applovin", "Banner didPayRevenueForAd" );
+    LOGGER_INFO( "applovin", "Banner didPayRevenueForAd" );
         
     [self.m_analytics eventRevenuePaid:ad];
 }

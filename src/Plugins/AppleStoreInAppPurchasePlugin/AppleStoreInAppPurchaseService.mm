@@ -81,7 +81,7 @@ namespace Mengine
             return nullptr;
         }
         
-        LOGGER_INFO( "inapppurchase", "requestProducts" );
+        LOGGER_MESSAGE( "requestProducts:" );
         
         NSMutableSet<NSString *> * products = [[NSMutableSet<NSString *> alloc] init];
         
@@ -89,7 +89,7 @@ namespace Mengine
         {
             const Char * productIdentifier_str = productIdentifier.c_str();
             
-            LOGGER_INFO( "inapppurchase", "productIdentitier: %s"
+            LOGGER_MESSAGE( "productIdentitier: %s"
                 , productIdentifier_str
             );
             
@@ -115,7 +115,7 @@ namespace Mengine
             return false;
         }
         
-        LOGGER_INFO( "inapppurchase", "purchaseProduct" );
+        LOGGER_MESSAGE( "purchaseProduct" );
         
         AppleStoreInAppPurchaseProductPtr product = AppleStoreInAppPurchaseProductPtr::from( _product );
         
@@ -130,7 +130,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseService::restoreCompletedTransactions()
     {
-        LOGGER_INFO( "inapppurchase", "restoreCompletedTransactions" );
+        LOGGER_MESSAGE( "restoreCompletedTransactions" );
         
         [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
     }

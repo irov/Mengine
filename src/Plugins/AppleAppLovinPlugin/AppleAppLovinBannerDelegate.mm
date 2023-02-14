@@ -77,48 +77,48 @@
     CGFloat widthDp = adViewSize.width;
     CGFloat heightDp = adViewSize.height;
 
-    LOGGER_INFO("applovin", "Banner didLoadAd");
+    LOGGER_INFO( "applovin", "Banner didLoadAd" );
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
-    LOGGER_INFO("applovin", "Banner didFailToLoadAdForAdUnitIdentifier" );
+    LOGGER_INFO( "applovin", "Banner didFailToLoadAdForAdUnitIdentifier" );
 }
 
 - (void) didClickAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Banner didClickAd" );
+    LOGGER_INFO( "applovin", "Banner didClickAd" );
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    LOGGER_INFO("applovin", "Banner didFailToDisplayAd" );
+    LOGGER_INFO( "applovin", "Banner didFailToDisplayAd" );
 }
 
 
 #pragma mark - MAAdViewAdDelegate Protocol
 
 - (void) didExpandAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Banner didExpandAd" );
+    LOGGER_INFO( "applovin", "Banner didExpandAd" );
 }
 
 - (void) didCollapseAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Banner didCollapseAd" );
+    LOGGER_INFO( "applovin", "Banner didCollapseAd" );
 }
 
 #pragma mark - Deprecated Callbacks
 
 /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Banner didDisplayAd" );
+    LOGGER_INFO( "applovin", "Banner didDisplayAd" );
 }
 
 - (void) didHideAd:(MAAd *) ad {
-    LOGGER_INFO("applovin", "Banner didHideAd" );
+    LOGGER_INFO( "applovin", "Banner didHideAd" );
 }
 /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
     
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
-    LOGGER_INFO("applovin", "Banner didPayRevenueForAd" );
+    LOGGER_INFO( "applovin", "Banner didPayRevenueForAd" );
 }
 
 @end

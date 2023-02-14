@@ -129,7 +129,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_BannerAdUnit, "" ) == 0 );
 
-        LOGGER_INFO("applovin", "Banner AdUnit '%s'"
+        LOGGER_INFO( "applovin", "Banner AdUnit '%s'"
             , AppLovinPlugin_BannerAdUnit
         );
 
@@ -159,7 +159,7 @@ namespace Mengine
         
         MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_InterstitialAdUnit, "" ) == 0 );
         
-        LOGGER_INFO("applovin", "Interstitial AdUnit '%s'"
+        LOGGER_INFO( "applovin", "Interstitial AdUnit '%s'"
             , AppLovinPlugin_InterstitialAdUnit
         );
         
@@ -182,7 +182,7 @@ namespace Mengine
         
         MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_RewardedAdUnit, "" ) == 0 );
 
-        LOGGER_INFO("applovin", "Rewarded AdUnit '%s'"
+        LOGGER_INFO( "applovin", "Rewarded AdUnit '%s'"
             , AppLovinPlugin_RewardedAdUnit
         );
 

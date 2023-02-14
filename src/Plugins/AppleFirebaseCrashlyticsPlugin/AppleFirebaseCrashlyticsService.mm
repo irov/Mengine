@@ -1,5 +1,7 @@
 #include "AppleFirebaseCrashlyticsService.h"
 
+#include "Environment/Apple/AppleErrorHelper.h"
+
 #include "Kernel/Logger.h"
 
 #include "Config/Algorithm.h"
@@ -37,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsService::sendValue( const ConstString & _value )
     {
-        LOGGER_INFO( "firebasecrashlytics", "send value: '%s'"
+        LOGGER_MESSAGE( "send value: %s"
             , _value.c_str() 
         );
 
@@ -48,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsService::sendKeyAndValue( const ConstString & _key, const ConstString & _value )
     {
-        LOGGER_INFO( "firebasecrashlytics", "send key and value: '%s' = '%s'"
+        LOGGER_MESSAGE( "send key: %s value: %s"
             , _key.c_str()
             , _value.c_str() 
         );
@@ -64,13 +66,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsService::sendKeyAndValues( const FirebaseCrashlyticsParams & _params )
     {
-        LOGGER_INFO( "firebasecrashlytics", "send key and values" );
+        LOGGER_MESSAGE( "send key and values:" );
 
         NSMutableDictionary *keysAndValues = [[NSMutableDictionary alloc] init];
 
         for( auto && [key, value] : _params )
         {
-            LOGGER_INFO("firebasecrashlytics", "param [%s : %s]"
+            LOGGER_MESSAGE("param key: %s value: %s"
                 , key.c_str()
                 , value.c_str()
             );
@@ -86,7 +88,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsService::recordError( const ConstString & _name, uint32_t _code, const FirebaseCrashlyticsParams & _params )
     {
-        LOGGER_INFO( "firebasecrashlytics", "record error '%s' code [%u]"
+        LOGGER_MESSAGE( "record error name: %s code: %u"
             , _name.c_str()
             , _code
         );
@@ -95,7 +97,7 @@ namespace Mengine
 
         for( auto && [key, value] : _params )
         {
-            LOGGER_INFO("firebasecrashlytics", "param [%s : %s]"
+            LOGGER_MESSAGE("param key: %s value: %s"
                 , key.c_str()
                 , value.c_str()
             );
@@ -117,7 +119,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsService::recordError( NSError * _error )
     {
-        LOGGER_INFO( "firebasecrashlytics", "record error" );
+        LOGGER_MESSAGE( "record error: %s"
+           , Helper::AppleGetMessageFromNSError( _error ).c_str()
+        );
 
         [[FIRCrashlytics crashlytics] recordError:_error];
     }

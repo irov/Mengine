@@ -625,7 +625,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_WARNING( "account", "invalid set any accounts" );
+            LOGGER_WARNING( "invalid set any accounts" );
         }
 
         m_invalidateAccounts = true;

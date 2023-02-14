@@ -35,7 +35,7 @@ namespace Mengine
             }
 
         protected:
-            void onPaymentUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            void onPaymentUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
                 pybind::object cb = m_cbs["onPaymentUpdatedTransactionPurchasing"];
                 
@@ -47,7 +47,7 @@ namespace Mengine
                 cb.call_args( _transaction, m_args );
             }
             
-            void onPaymentUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            void onPaymentUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
                 pybind::object cb = m_cbs["onPaymentUpdatedTransactionPurchased"];
                 
@@ -59,7 +59,7 @@ namespace Mengine
                 cb.call_args( _transaction, m_args );
             }
             
-            void onPaymentUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            void onPaymentUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
                 pybind::object cb = m_cbs["onPaymentUpdatedTransactionFailed"];
                 
@@ -71,7 +71,7 @@ namespace Mengine
                 cb.call_args( _transaction, m_args );
             }
             
-            void onPaymentUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            void onPaymentUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
                 pybind::object cb = m_cbs["onPaymentUpdatedTransactionRestored"];
                 
@@ -83,7 +83,7 @@ namespace Mengine
                 cb.call_args( _transaction, m_args );
             }
             
-            void onPaymentUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction )
+            void onPaymentUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
                 pybind::object cb = m_cbs["onPaymentUpdatedTransactionDeferred"];
                 

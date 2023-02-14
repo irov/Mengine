@@ -22,18 +22,18 @@
     const Mengine::AppleHelpshiftProviderInterfacePtr & provider = self.m_service->getProvider();
     
     if([eventName isEqualToString:HelpshiftEventNameSessionStarted]) {
-        LOGGER_MESSAGE("Helpshift session started.");
+        LOGGER_MESSAGE("session started.");
         
         provider->sessionStarted();
     } else if([eventName isEqualToString:HelpshiftEventNameSessionEnded]) {
-        LOGGER_MESSAGE("Helpshift session ended.");
+        LOGGER_MESSAGE("session ended.");
         
         provider->sessionEnded();
     } else if([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount]) {
         int count = [data[HelpshiftEventDataUnreadMessageCount] intValue];
         int countInCache = [data[HelpshiftEventDataUnreadMessageCountIsFromCache] intValue];
         
-        LOGGER_MESSAGE("Unread count: %i\nunreadCount from cache %i", count, countInCache);
+        LOGGER_MESSAGE("unread count: %i\nunreadCount from cache %i", count, countInCache);
         
         provider->receivedUnreadMessage( count, countInCache );
     } else if([eventName isEqualToString:HelpshiftEventNameConversationStatus]) {
@@ -41,25 +41,25 @@
         const char * publishId = [self convertToChar:[data objectForKey:HelpshiftEventDataLatestIssuePublishId]];
         bool issueOpen = [data[HelpshiftEventDataIsIssueOpen] boolValue];
                 
-        LOGGER_MESSAGE("Issue ID: %s, Publish ID: %s, Is issue open: %d", issueId, publishId, issueOpen );
+        LOGGER_MESSAGE("issue id: %s, publish id: %s, is issue open: %d", issueId, publishId, issueOpen );
         
         provider->conversationStatus( issueId, publishId, issueOpen );
     } else if([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
         bool visible = [data[HelpshiftEventDataVisible] boolValue];
         
-        LOGGER_MESSAGE("Is chat screen visible: %d", visible);
+        LOGGER_MESSAGE("is chat screen visible: %d", visible);
         
         provider->eventWidgetToggle( visible );
     } else if([eventName isEqualToString:HelpshiftEventNameMessageAdd]) {
         const char * body = [self convertToChar:[data objectForKey:HelpshiftEventDataMessageBody]];
         const char * type = [self convertToChar:[data objectForKey:HelpshiftEventDataMessageType]];
         
-        LOGGER_MESSAGE("New message added with body: %s, with type: %s", body, type );
+        LOGGER_MESSAGE("new message added with body: %s, with type: %s", body, type );
         
         provider->eventMessageAdd( body, type );
     } else if([eventName isEqualToString:HelpshiftEventNameConversationStart]) {
         const char * text = [self convertToChar:[data objectForKey:HelpshiftEventDataMessage]];
-        LOGGER_MESSAGE("Conversation started with text: %s", text);
+        LOGGER_MESSAGE("conversation started with text: %s", text);
         
         provider->converstationStart( text );
     } else if([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
@@ -70,19 +70,19 @@
         
         provider->eventCSATSubmit( rating, feedback );
     } else if([eventName isEqualToString:HelpshiftEventNameConversationEnd]) {
-        LOGGER_MESSAGE("Conversation ended.");
+        LOGGER_MESSAGE("conversation ended.");
         
         provider->converstationEnded();
     } else if([eventName isEqualToString:HelpshiftEventNameConversationRejected]) {
-        LOGGER_MESSAGE("Conversation rejected.");
+        LOGGER_MESSAGE("conversation rejected.");
         
         provider->converstationRejected();
     } else if([eventName isEqualToString:HelpshiftEventNameConversationResolved]) {
-        LOGGER_MESSAGE("Conversation resolved.");
+        LOGGER_MESSAGE("conversation resolved.");
         
         provider->converstationResolved();
     } else if([eventName isEqualToString:HelpshiftEventNameConversationReopened]) {
-        LOGGER_MESSAGE("Conversation reopened.");
+        LOGGER_MESSAGE("conversation reopened.");
         
         provider->converstationReopen();
     }
@@ -96,19 +96,19 @@
     {
     case HelpshiftAuthenticationFailureReasonInvalidAuthToken:
         {
-            LOGGER_MESSAGE("Helpshift authentication Failed - InvalidAuthToken");
+            LOGGER_MESSAGE("authentication Failed - InvalidAuthToken");
             
             provider->authenticationInvalidAuthToken();
         }break;
     case HelpshiftAuthenticationFailureReasonAuthTokenNotProvided:
         {
-            LOGGER_MESSAGE("Helpshift authentication Failed - AuthTokenNotProvided");
+            LOGGER_MESSAGE("authentication Failed - AuthTokenNotProvided");
             
             provider->authenticationTokenNotProvided();
         }break;
     default:
         {
-            LOGGER_MESSAGE("Helpshift authentication Failed - UNKNOWN");
+            LOGGER_MESSAGE("authentication Failed - UNKNOWN");
             
             provider->authenticationUnknownError();
         }break;

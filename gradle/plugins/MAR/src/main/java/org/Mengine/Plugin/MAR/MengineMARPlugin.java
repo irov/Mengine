@@ -45,7 +45,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     public void login() {
-        this.logInfo("login");
+        this.logMessage("login");
 
         MengineActivity activity = this.getActivity();
 
@@ -53,7 +53,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     public void loginCustom(final String loginType) {
-        this.logInfo("login custom loginType: %s", loginType);
+        this.logMessage("login custom loginType: %s", loginType);
 
         MengineActivity activity = this.getActivity();
 
@@ -61,7 +61,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     public void pay(int coinNum, String productID, String productName, String productDesc, int price) {
-        this.logInfo("pay coinNum: %d productID: %s productName: %s productDesc: %s price: %d", coinNum, productID, productName, productDesc, price);
+        this.logMessage("pay coinNum: %d productID: %s productName: %s productDesc: %s price: %d", coinNum, productID, productName, productDesc, price);
 
         MengineActivity activity = this.getActivity();
 
@@ -84,18 +84,21 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         params.setVip("1");			//角色VIP等级
 
         // params.setPayNotifyUrl("http://www.game.com/pay/callback");
+        this.logMessage("pay params: %s"
+            , params.toString()
+        );
 
         MARPlatform.getInstance().pay(activity, params);
     }
 
     public void redeemCode(String code) {
-        this.logInfo("try redeem code %s", code);
+        this.logMessage("try redeem code %s", code);
 
         MARPlatform.getInstance().exchangeGift(code);
     }
 
     public void showAd() {
-        this.logInfo("show ad");
+        this.logMessage("show ad");
 
         if (MARGgPlatform.getInstance().getVideoFlag() == true) {
             MARGgPlatform.getInstance().showVideo();
@@ -103,18 +106,18 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     public void updateData(String json_str) {
-        this.logInfo("update data: %s", json_str);
+        this.logMessage("update data: %s", json_str);
 
         MARPlatform.getInstance().updateGameArchive(json_str,1);
     }
 
     public void marSDKGetData(int serialNumber) {
-        this.logInfo("get data [%d]", serialNumber);
+        this.logMessage("get data [%d]", serialNumber);
 
         MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
             @Override
             public void onCallBack(String var1) {
-                MengineMARPlugin.this.logInfo("get data from server, start...");
+                MengineMARPlugin.this.logMessage("get data from server, start...");
 
                 MengineMARPlugin.this.pythonCall("onMarSDKGetData", var1);
             }
@@ -239,11 +242,11 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
     @Override
     public void onInitResult(int code, String msg) {
-        this.logInfo("marsdk.onInitResult code: %d msg: %s", code, msg);
+        this.logMessage("marsdk.onInitResult code: %d msg: %s", code, msg);
 
         switch(code) {
             case MARCode.CODE_INIT_SUCCESS:
-                this.logInfo("marsdk init success");
+                this.logMessage("marsdk init success");
 
                 this.activateSemaphore("onMarSDKInitSuccess");
                 break;
@@ -257,14 +260,14 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
     @Override
     public void onLoginResult(int code, UToken uToken) {
-        this.logInfo("marsdk.onLoginResult code: %d uToken: %s"
+        this.logMessage("marsdk.onLoginResult code: %d uToken: %s"
             , code
             , uToken
         );
 
         switch(code) {
             case MARCode.CODE_LOGIN_SUCCESS: {
-                this.logInfo("marsdk login success, game type [%d]", MARSDK.getInstance().getGameType());
+                this.logMessage("marsdk login success, game type [%d]", MARSDK.getInstance().getGameType());
 
                 int gameType = MARSDK.getInstance().getGameType();
 
@@ -290,7 +293,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     
     @Override
     public void onSwitchAccount(UToken uToken) {
-        this.logInfo("marsdk.onSwitchAccount uToken: %s"
+        this.logMessage("marsdk.onSwitchAccount uToken: %s"
             , uToken
         );
 
@@ -301,14 +304,14 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     
     @Override
     public void onLogout() {
-        this.logInfo("marsdk.onLogout");
+        this.logMessage("marsdk.onLogout");
 
         this.pythonCall("onMarSDKLogout");
     }    
     
     @Override
     public void onPayResult(int code, String msg) {
-        this.logInfo("marsdk.onPayResult code: %d msg: %s", code, msg);
+        this.logMessage("marsdk.onPayResult code: %d msg: %s", code, msg);
         
         try {
             JSONObject json = new JSONObject(msg);
@@ -318,13 +321,13 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             if (json.getInt("payResult") == 0) {
                 String orderId = json.getString("orderId");
 
-                this.logInfo("pay complete orderId: %s", orderId);
+                this.logMessage("pay complete orderId: %s", orderId);
 
                 this.setPropDeliveredComplete(orderId);
 
                 this.pythonCall("onMarSDKPaySuccess", productId);
             } else {
-                this.logInfo("pay fail");
+                this.logError("pay fail");
 
                 this.pythonCall("onMarSDKPayFail", productId);
             }
@@ -337,7 +340,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
     @Override
     public void onRedeemResult(String msg) {
-        this.logInfo("marsdk.onRedeemResult msg: %s", msg);
+        this.logMessage("marsdk.onRedeemResult msg: %s", msg);
 
         int result;
         try {
@@ -365,11 +368,11 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
     @Override
     public void onResult(int code, String msg) {
-        this.logInfo("marsdk.onResult code: %d msg: %s", code, msg);
+        this.logMessage("marsdk.onResult code: %d msg: %s", code, msg);
         
         if (MARCode.CODE_AD_VIDEO_CALLBACK == code) {
             //play video callback msg : 1 suc 0 fail
-            this.logInfo("Video callback: %s", msg);
+            this.logMessage("Video callback: %s", msg);
 
             String watchAdTime = getCurrentTime();
 
@@ -380,7 +383,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
 	private void submitExtraData(final int dataType) {
-        this.logInfo("marsdk.submitExtraData dataType: %d", dataType);
+        this.logMessage("marsdk.submitExtraData dataType: %d", dataType);
 
 		UserExtraData data = new UserExtraData();
 		data.setDataType(dataType);
@@ -393,17 +396,21 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 		data.setServerID(10);
 		data.setServerName("server_10");
 
+        this.logMessage("marsdk.submitExtraData data: %s"
+            , data.toString()
+        );
+
 		MARPlatform.getInstance().submitExtraData(data);
 	}
     
     public void setPropDeliveredComplete(String orderID) {
-        this.logInfo("marsdk.setPropDeliveredComplete orderID: %s", orderID);
+        this.logMessage("marsdk.setPropDeliveredComplete orderID: %s", orderID);
 
         MARPlatform.getInstance().setPropDeliveredComplete(orderID);
 	}
 
 	public void pasteCode() {
-        this.logInfo("marsdk.pasteCode");
+        this.logMessage("marsdk.pasteCode");
 
         try {
             String code = "";
@@ -424,7 +431,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
                 }
             }
 
-            this.logInfo("try to paste code: \"%s\"", code);
+            this.logMessage("try to paste code: %s", code);
 
             this.pythonCall("onMarSDKSaveClipboard", code);
         } catch (Exception e) {

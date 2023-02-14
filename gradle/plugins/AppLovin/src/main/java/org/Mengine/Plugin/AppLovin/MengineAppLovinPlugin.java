@@ -80,11 +80,11 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             boolean advertisingLimitTrackingEnabled = (boolean)args[1];
 
             if (advertisingLimitTrackingEnabled == true) {
-                this.logInfo("setHasUserConsent: false");
+                this.logMessage("setHasUserConsent: false");
 
                 AppLovinPrivacySettings.setHasUserConsent(false, context);
             } else {
-                this.logInfo("setHasUserConsent: true");
+                this.logMessage("setHasUserConsent: true");
 
                 AppLovinPrivacySettings.setHasUserConsent(true, context);
             }
@@ -147,7 +147,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineAppLovinPlugin.this.logInfo("AppLovinSdk initialized: country [%s]"
+                MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized: country [%s]"
                     , configuration.getCountryCode()
                 );
 

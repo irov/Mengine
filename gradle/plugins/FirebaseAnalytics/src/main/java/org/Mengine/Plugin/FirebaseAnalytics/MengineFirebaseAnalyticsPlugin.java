@@ -72,7 +72,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                     }
                 }
 
-                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
+                this.logMessage("logEvent [CUSTOM] eventName: %s params: %s"
                     , eventName
                     , params
                 );
@@ -88,7 +88,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
                 params.putDouble(FirebaseAnalytics.Param.VALUE, value);
 
-                this.logInfo("logEvent [EARN_VIRTUAL_CURRENCY] eventName: %s params: %s"
+                this.logMessage("logEvent [EARN_VIRTUAL_CURRENCY] eventName: %s params: %s"
                     , eventName
                     , params
                 );
@@ -106,7 +106,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
                 params.putDouble(FirebaseAnalytics.Param.VALUE, value);
 
-                this.logInfo("logEvent [SPEND_VIRTUAL_CURRENCY] eventName: %s params: %s"
+                this.logMessage("logEvent [SPEND_VIRTUAL_CURRENCY] eventName: %s params: %s"
                     , eventName
                     , params
                 );
@@ -120,7 +120,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
 
                 params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, achievementId);
 
-                this.logInfo("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
+                this.logMessage("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
                     , eventName
                     , params
                 );
@@ -128,7 +128,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.UNLOCK_ACHIEVEMENT, params);
             } break;
             default: {
-                this.logError("event: %s unknown type: %d"
+                this.logWarning("event: %s unknown type: %d"
                     , eventName
                     , eventType
                 );
@@ -137,7 +137,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     }
 
     public void logEvent(@NonNull String eventName, @Nullable Bundle params) {
-        this.logInfo("logEvent eventName: %s params: %s"
+        this.logMessage("logEvent eventName: %s params: %s"
             , eventName
             , params
         );

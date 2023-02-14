@@ -47,7 +47,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void scheduleJobServiceNotification(int id, String title, String content, int delay) {
-        this.logInfo("scheduleJobServiceNotification id: %d title: %s content: %s delay: %d"
+        this.logMessage("scheduleJobServiceNotification id: %d title: %s content: %s delay: %d"
             , id
             , title
             , content
@@ -60,7 +60,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     }
 
     public void scheduleNotification(Notification notification, int id, int delay) {
-        this.logInfo("scheduleNotification id: %d delay: %d"
+        this.logMessage("scheduleNotification id: %d delay: %d"
             , id
             , delay
         );
@@ -86,7 +86,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     }
 
     public void instantlyPresentNotification(Notification notification, int id) {
-        this.logInfo("instantlyPresentNotification id: %d"
+        this.logMessage("instantlyPresentNotification id: %d"
             , id
         );
 
@@ -97,6 +97,8 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     }
     
     public void run() {
+        this.logMessage("run");
+
         MengineActivity activity = this.getActivity();
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -115,13 +117,17 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
         
         if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
             int id = intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
+
+            this.logMessage("run has notification: %d"
+                , id
+            );
         
             this.pythonCall("onLocalNotificationsPress", id);
         }
     }
     
     public void cancelAll() {
-        this.logInfo("cancelAll");
+        this.logMessage("cancelAll");
 
         MengineActivity activity = this.getActivity();
         
@@ -161,7 +167,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleJobNotification(int delayMillis, PersistableBundle bundle){
-        this.logInfo("Schedule notification with delay: %d", delayMillis);
+        this.logMessage("schedule notification with delay: %d", delayMillis);
         
         MengineActivity activity = this.getActivity();
 
@@ -170,10 +176,10 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
 
         JobInfo.Builder builder = new JobInfo.Builder(jobId, jobService);
         JobInfo jobInfo = builder
-                .setMinimumLatency(delayMillis)
-                .setOverrideDeadline(delayMillis + 10000)
-                .setExtras(bundle)
-                .build();
+            .setMinimumLatency(delayMillis)
+            .setOverrideDeadline(delayMillis + 10000)
+            .setExtras(bundle)
+            .build();
 
         JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(jobInfo);

@@ -65,7 +65,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
                     if (task.isSuccessful() == true) {
                         boolean updated = task.getResult();
 
-                        MengineFirebaseRemoteConfigPlugin.this.logInfo("Remote config successful fetch and activate params: %d"
+                        MengineFirebaseRemoteConfigPlugin.this.logMessage("Remote config successful fetch and activate params: %d"
                             , updated
                         );
 

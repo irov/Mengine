@@ -97,7 +97,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     void startSignInIntent() {
-        this.logInfo("startSignInIntent");
+        this.logMessage("startSignInIntent");
 
         MengineActivity activity = this.getActivity();
 
@@ -107,7 +107,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     void signOut() {
-        this.logInfo("signOut");
+        this.logMessage("signOut");
 
         MengineActivity activity = this.getActivity();
 
@@ -115,14 +115,14 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnCompleteListener(activity, new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    MengineGoogleGameSocialPlugin.this.logInfo("google game social log OUT complete");
+                    MengineGoogleGameSocialPlugin.this.logMessage("google game social log OUT complete");
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialSignOutComplete");
                 }
             }).addOnFailureListener(activity, new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception ex) {
-                    MengineGoogleGameSocialPlugin.this.logInfo("google game social log OUT failure: %s"
+                    MengineGoogleGameSocialPlugin.this.logMessage("google game social log OUT failure: %s"
                         , ex.getLocalizedMessage()
                     );
 
@@ -131,14 +131,14 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             }).addOnCanceledListener(activity, new OnCanceledListener() {
                 @Override
                 public void onCanceled() {
-                    MengineGoogleGameSocialPlugin.this.logInfo("google game social log OUT canceled");
+                    MengineGoogleGameSocialPlugin.this.logMessage("google game social log OUT canceled");
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialSignOutCanceled");
                 }
             }).addOnSuccessListener(activity, new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
-                    MengineGoogleGameSocialPlugin.this.logInfo("google game social log OUT success");
+                    MengineGoogleGameSocialPlugin.this.logMessage("google game social log OUT success");
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialSignOutSuccess");
                 }
@@ -158,13 +158,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         }
 
         if (result.isSuccess() == true) {
-            this.logInfo("resign");
+            this.logMessage("resign");
 
             GoogleSignInAccount account = result.getSignInAccount();
 
             this.signInCallback(account);
         } else {
-            this.logInfo("login");
+            this.logMessage("login");
 
             Status status = result.getStatus();
 
@@ -201,7 +201,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     private void signInCallback(@Nullable GoogleSignInAccount account) {
-        this.logInfo("Account sign in");
+        this.logMessage("account sign in");
 
         if (account == null) {
             this.logError("account == null");
@@ -236,7 +236,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public void signInSilently() {
-        this.logInfo("signInSilently");
+        this.logMessage("signInSilently");
 
         MengineActivity activity = this.getActivity();
 
@@ -261,13 +261,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                 @Override
                 public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
                     if (task.isSuccessful() == true) {
-                        MengineGoogleGameSocialPlugin.this.logInfo("successful silently login");
+                        MengineGoogleGameSocialPlugin.this.logMessage("successful silently login");
 
                         GoogleSignInAccount account = task.getResult();
 
                         MengineGoogleGameSocialPlugin.this.signInCallback(account);
                     } else {
-                        MengineGoogleGameSocialPlugin.this.logInfo("failed silently login try intent");
+                        MengineGoogleGameSocialPlugin.this.logWarning("failed silently login try intent");
 
 
                         // Player will need to sign-in explicitly using via UI.
@@ -287,7 +287,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean showAchievements() {
-        this.logInfo("showAchievements");
+        this.logMessage("showAchievements");
 
         if (m_achievementsClient == null) {
             return false;
@@ -297,6 +297,8 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnSuccessListener(new OnSuccessListener<Intent>() {
                 @Override
                 public void onSuccess(Intent intent) {
+                    MengineGoogleGameSocialPlugin.this.logMessage("get achievements successful");
+
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
 
                     MengineGoogleGameSocialPlugin.this.getActivity().startActivityForResult(intent, RC_UNUSED);
@@ -305,7 +307,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    MengineGoogleGameSocialPlugin.this.logError("achievements error '%s'"
+                    MengineGoogleGameSocialPlugin.this.logError("get achievements error '%s'"
                         , e.getLocalizedMessage()
                     );
 
@@ -317,7 +319,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean unlockAchievement(String achievementId) {
-        this.logInfo("unlockAchievement '%s'"
+        this.logMessage("unlockAchievement '%s'"
             , achievementId
         );
 
@@ -329,7 +331,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
-                    MengineGoogleGameSocialPlugin.this.logInfo("unlockAchievement '%s' complete"
+                    MengineGoogleGameSocialPlugin.this.logMessage("unlockAchievement '%s' complete"
                         , achievementId
                     );
 
@@ -352,7 +354,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
-        this.logInfo("incrementAchievement '%s' [%d]"
+        this.logMessage("incrementAchievement '%s' [%d]"
             , achievementId
             , numSteps
         );
@@ -365,7 +367,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnSuccessListener(new OnSuccessListener<Boolean>() {
                 @Override
                 public void onSuccess(Boolean aBoolean) {
-                    MengineGoogleGameSocialPlugin.this.logInfo("incrementImmediate '%s' complete"
+                    MengineGoogleGameSocialPlugin.this.logMessage("incrementImmediate '%s' complete"
                         , achievementId
                     );
 

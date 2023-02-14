@@ -89,7 +89,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     void eventTraking(String token) {
-        this.logInfo("eventTraking token: %s"
+        this.logMessage("eventTraking token: %s"
             , token
         );
 
@@ -98,7 +98,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     void revenueTracking(String token, double amount, String currency) {
-        this.logInfo("revenueTracking token: %s amount: %f currency: %s"
+        this.logMessage("revenueTracking token: %s amount: %f currency: %s"
             , token
             , amount
             , currency

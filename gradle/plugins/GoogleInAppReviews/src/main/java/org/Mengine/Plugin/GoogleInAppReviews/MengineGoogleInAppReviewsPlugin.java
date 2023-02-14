@@ -34,7 +34,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
         Task<ReviewInfo> request = m_manager.requestReviewFlow();
         request.addOnCompleteListener(task -> {
             if (task.isSuccessful() == true) {
-                MengineGoogleInAppReviewsPlugin.this.logInfo("requestReviewFlow successful");
+                MengineGoogleInAppReviewsPlugin.this.logMessage("requestReviewFlow successful");
 
                 m_reviewInfo = task.getResult();
 
@@ -56,12 +56,12 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
 
     public void launchTheInAppReview() {
         if (m_reviewInfo == null) {
-            this.logInfo("reviewInfo == null");
+            this.logError("reviewInfo == null");
 
             return;
         }
 
-        this.logInfo("launchTheInAppReview");
+        this.logMessage("launchTheInAppReview");
 
         this.buildEvent("inapp_review")
             .log();
@@ -71,7 +71,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
         Task<Void> flow = m_manager.launchReviewFlow(activity, m_reviewInfo);
 
         flow.addOnCompleteListener(task -> {
-            MengineGoogleInAppReviewsPlugin.this.logInfo("Launching the review completed");
+            MengineGoogleInAppReviewsPlugin.this.logMessage("Launching the review completed");
 
             this.buildEvent("inapp_review_completed")
                 .log();

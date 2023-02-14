@@ -49,7 +49,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     public void loadInterstitial() {
-        m_plugin.logInfo("[Interstitial] load");
+        m_plugin.logMessage("[Interstitial] load");
 
         MengineActivity activity = m_plugin.getActivity();
 
@@ -78,7 +78,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     public void showInterstitial() {
         boolean ready = m_interstitialAd.isReady();
 
-        m_plugin.logInfo("[Interstitial] showInterstitial [%d]"
+        m_plugin.logMessage("[Interstitial] showInterstitial [%d]"
             , ready
         );
 
@@ -97,7 +97,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logInfo("[Interstitial] onAdRequestStarted %s"
+        m_plugin.logMessage("[Interstitial] onAdRequestStarted %s"
             , adUnitId
         );
 

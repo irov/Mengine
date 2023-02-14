@@ -64,6 +64,10 @@ public class MenginePlugin {
         MengineLog.logInfo(m_pluginName, format, args);
     }
 
+    public void logMessage(String format, Object ... args) {
+        MengineLog.logMessage(m_pluginName, format, args);
+    }
+
     public void logWarning(String format, Object ... args) {
         MengineLog.logWarning(m_pluginName, format, args);
     }

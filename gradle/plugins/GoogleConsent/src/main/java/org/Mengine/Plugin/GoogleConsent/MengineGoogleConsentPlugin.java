@@ -45,7 +45,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
                     int consentStatus = consentInformation.getConsentStatus();
                     boolean formAvailable = consentInformation.isConsentFormAvailable();
 
-                    MengineGoogleConsentPlugin.this.logInfo("updated consent info update successful status: %d formAvailable: %b"
+                    MengineGoogleConsentPlugin.this.logMessage("updated consent info update successful status: %d formAvailable: %b"
                         , consentStatus
                         , formAvailable
                     );

@@ -86,7 +86,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     public void recordException(Throwable throwable) {
-        this.logInfo("recordException throwable: %s"
+        this.logMessage("recordException throwable: %s"
             , throwable.getLocalizedMessage()
         );
 
@@ -94,7 +94,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     public void setCustomKey(String key, Object value) {
-        this.logInfo("setCustomKey key: %s value: %s"
+        this.logMessage("setCustomKey key: %s value: %s"
             , key
             , value
         );
@@ -121,7 +121,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     public void recordLog(String msg) {
-        this.logInfo("recordLog msg: %s"
+        this.logMessage("recordLog msg: %s"
             , msg
         );
 
@@ -129,7 +129,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     public void testCrash() {
-        this.logError("testCrash");
+        this.logMessage("testCrash");
 
         FirebaseCrashlytics.getInstance().setCustomKey("TestCrash", true);
 

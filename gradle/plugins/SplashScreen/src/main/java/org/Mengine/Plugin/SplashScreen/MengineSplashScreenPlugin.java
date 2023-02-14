@@ -41,7 +41,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     public void showSplash() {
-        this.logInfo("showSplash");
+        this.logMessage("showSplash");
 
         m_image.clearAnimation();
 
@@ -69,7 +69,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     public void hideSplash() {
-        this.logInfo("hideSplash");
+        this.logMessage("hideSplash");
 
         m_image.clearAnimation();
 
@@ -99,7 +99,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     public void removeSpash() {
-        this.logInfo("removeSpash");
+        this.logMessage("removeSpash");
 
         MengineActivity activity = this.getActivity();
 

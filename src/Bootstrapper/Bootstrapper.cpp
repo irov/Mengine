@@ -913,10 +913,10 @@ namespace Mengine
         }
 
 #define BOOTSTRAPPER_SERVICE_CREATE( Name, Doc )\
-        LOGGER_INFO("bootstrapper", "bootstrapper create service: " #Name);\
-        if( SERVICE_CREATE(Name, Doc) == false)\
+        LOGGER_INFO( "bootstrapper", "bootstrapper create service: " #Name );\
+        if( SERVICE_CREATE( Name, Doc ) == false)\
         {\
-            LOGGER_ERROR( "invalid initialize service: " #Name);\
+            LOGGER_ERROR( "invalid initialize service: " #Name );\
             return false;\
         }
 

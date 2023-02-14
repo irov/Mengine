@@ -24,7 +24,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         DTDAnalytics.INSTANCE.setInitializationCompleteCallback(() -> {
-            MengineDevToDevPlugin.this.logInfo("Initialized has been finished");
+            MengineDevToDevPlugin.this.logMessage("Initialized has been finished");
 
             m_initializeSuccessful = true;
 
@@ -55,7 +55,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("tutorialEvent stateOrStep: %d"
+        this.logMessage("tutorialEvent stateOrStep: %d"
             , stateOrStep
         );
 
@@ -67,7 +67,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("setCurrentLevelEvent level: %d"
+        this.logMessage("setCurrentLevelEvent level: %d"
             , level
         );
 
@@ -79,7 +79,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("levelUpEvent level: %d"
+        this.logMessage("levelUpEvent level: %d"
             , level
         );
 
@@ -91,7 +91,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("levelUpEvent currencyName: %s currencyAmount: %d sourceName: %s accrualType: %d"
+        this.logMessage("levelUpEvent currencyName: %s currencyAmount: %d sourceName: %s accrualType: %d"
             , currencyName
             , currencyAmount
             , sourceName
@@ -106,7 +106,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("realCurrencyPaymentEvent paymentId: %s inAppPrice: %f inAppName: %s inAppCurrencyISOCode: %s"
+        this.logMessage("realCurrencyPaymentEvent paymentId: %s inAppPrice: %f inAppName: %s inAppCurrencyISOCode: %s"
             , paymentId
             , inAppPrice
             , inAppName
@@ -121,7 +121,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("virtualCurrencyPaymentEvent purchaseId: %s purchaseType: %s purchaseAmount: %d purchasePrice: %d purchaseCurrency: %s"
+        this.logMessage("virtualCurrencyPaymentEvent purchaseId: %s purchaseType: %s purchaseAmount: %d purchasePrice: %d purchaseCurrency: %s"
             , purchaseId
             , purchaseType
             , purchaseAmount
@@ -165,6 +165,10 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             }
         }
 
+        this.logMessage("customEvent params: %s"
+            , params
+        );
+
         DTDAnalytics.INSTANCE.customEvent(eventName, params);
     }
 
@@ -173,7 +177,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("logEvent eventName: %s params: %s"
+        this.logMessage("logEvent eventName: %s params: %s"
             , eventName
             , params
         );

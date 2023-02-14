@@ -101,9 +101,9 @@ public class MengineAppLovinBase {
     }
 
     public void logMaxError(String type, String callback, MaxError error) {
-        m_plugin.logInfo( "AppLovin: type: " + type + " callback: " + callback );
-        m_plugin.logInfo( "MaxError: code: " + error.getCode() + " message: " + error.getMessage() );
-        m_plugin.logInfo( "MediatedNetwork: code" + error.getMediatedNetworkErrorCode() + " message: " + error.getMediatedNetworkErrorMessage() );
+        m_plugin.logError( "AppLovin: type: " + type + " callback: " + callback );
+        m_plugin.logError( "MaxError: code: " + error.getCode() + " message: " + error.getMessage() );
+        m_plugin.logError( "MediatedNetwork: code" + error.getMediatedNetworkErrorCode() + " message: " + error.getMediatedNetworkErrorMessage() );
 
         MaxAdWaterfallInfo waterfall = error.getWaterfall();
 

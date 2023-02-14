@@ -102,7 +102,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logInfo("[Banner] onAdRequestStarted %s"
+        m_plugin.logMessage("[Banner] onAdRequestStarted %s"
             , adUnitId
         );
 

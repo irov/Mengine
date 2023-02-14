@@ -39,7 +39,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (task.isSuccessful() == false) {
-                            MengineFirebaseMessagingPlugin.this.logInfo("Fetching FCM registration token failed: %s"
+                            MengineFirebaseMessagingPlugin.this.logError("fetching FCM registration token failed: %s"
                                 , task.getException()
                             );
 

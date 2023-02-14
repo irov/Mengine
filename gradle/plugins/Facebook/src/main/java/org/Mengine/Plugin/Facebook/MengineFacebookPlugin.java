@@ -76,7 +76,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 // If this callback is called, a popup notification appears that says
                 // "Logged in as <User Name>"
 
-                MengineFacebookPlugin.this.logInfo("retrieve login [onCompleted] application: %s user: %s token: %s"
+                MengineFacebookPlugin.this.logMessage("retrieve login [onCompleted] application: %s user: %s token: %s"
                     , accessToken.getApplicationId()
                     , accessToken.getUserId()
                     , accessToken.getToken()
@@ -87,12 +87,12 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
             @Override
             public void onFailure() {
-                MengineFacebookPlugin.this.logInfo("retrieve login [onFailure]");
+                MengineFacebookPlugin.this.logWarning("retrieve login [onFailure]");
             }
 
             @Override
             public void onError(@NonNull Exception e) {
-                MengineFacebookPlugin.this.logInfo("retrieve login [onError] exception: %s"
+                MengineFacebookPlugin.this.logError("retrieve login [onError] exception: %s"
                     , e.getLocalizedMessage()
                 );
             }
@@ -103,6 +103,15 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         m_accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
+                MengineFacebookPlugin.this.logMessage("onCurrentAccessTokenChanged old token: %s new token: %s"
+                    , oldToken
+                    , newToken
+                );
+
+                if (newToken != null) {
+                    m_facebookUserId = newToken.getUserId();
+                }
+
                 String oldTokenString = oldToken != null ? oldToken.getToken() : "";
                 String newTokenString = newToken != null ? newToken.getToken() : "";
 
@@ -115,6 +124,17 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         m_profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                MengineFacebookPlugin.this.logMessage("onCurrentProfileChanged old profile: %s new profile: %s"
+                    , oldProfile
+                    , newProfile
+                );
+
+                AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
+                if (accessToken != null) {
+                    m_facebookUserId = accessToken.getUserId();
+                }
+
                 MengineFacebookPlugin.this.pythonCall("onFacebookCurrentProfileChanged");
             }
         };
@@ -128,11 +148,19 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
                 AccessToken accessToken = loginResult.getAccessToken();
 
+                if (accessToken == null) {
+                    MengineFacebookPlugin.this.pythonCall("onFacebookLoginFailed");
+
+                    return;
+                }
+
+                m_facebookUserId = accessToken.getUserId();
+
                 String applicationId = accessToken.getApplicationId();
                 String userId = accessToken.getUserId();
                 String token = accessToken.getToken();
 
-                MengineFacebookPlugin.this.logInfo("login [onSuccess] application: %s user: %s token: %s"
+                MengineFacebookPlugin.this.logMessage("login [onSuccess] application: %s user: %s token: %s"
                     , applicationId
                     , userId
                     , token
@@ -143,7 +171,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
             @Override
             public void onCancel() {
-                MengineFacebookPlugin.this.logInfo("login [onCancel]");
+                MengineFacebookPlugin.this.logMessage("login [onCancel]");
 
                 AccessToken.setCurrentAccessToken(null);
 
@@ -174,6 +202,11 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         }
 
         m_logger = AppEventsLogger.newLogger(activity);
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null) {
+            m_facebookUserId = accessToken.getUserId();
+        }
     }
 
     @Override
@@ -278,7 +311,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
     
     public void performLogin(List<String> permissions) {
-        this.logInfo("performLogin permissions: %s"
+        this.logMessage("performLogin permissions: %s"
             , permissions
         );
 
@@ -288,13 +321,13 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
     
     public void logout() {
-        this.logInfo("logout");
+        this.logMessage("logout");
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         
         // user already logged out
         if (accessToken == null) {
-            this.logInfo("user already logged out");
+            this.logMessage("user already logged out");
 
             this.pythonCall("onFacebookLogoutCancel");
             
@@ -306,7 +339,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         new GraphRequest(accessToken, "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
-                MengineFacebookPlugin.this.logInfo("GraphRequest DELETE onCompleted");
+                MengineFacebookPlugin.this.logMessage("GraphRequest DELETE onCompleted");
 
                 LoginManager.getInstance().logOut();
 
@@ -316,7 +349,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
     
     public void getUser() {
-        this.logInfo("getUser");
+        this.logMessage("getUser");
 
         if (this.isLoggedIn() == false) {
             this.logError("is not logged in");
@@ -331,22 +364,13 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
-                    MengineFacebookPlugin.this.logInfo("GraphRequest new Me request completed");
+                    MengineFacebookPlugin.this.logMessage("GraphRequest new Me request completed object: %s response: %s"
+                        , object
+                        , response
+                    );
 
                     String objectString = object != null ? object.toString() : "";
                     String responseString = response != null ? response.toString() : "";
-
-                    try {
-                        if (object != null) {
-                            m_facebookUserId = object.getString("id");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-
-                        MengineFacebookPlugin.this.logError("GraphRequest new Me request exception: %s"
-                            , e.getLocalizedMessage()
-                        );
-                    }
 
                     MengineFacebookPlugin.this.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);
                 }
@@ -359,7 +383,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
     
     public void shareLink(String link, String picture, String quote) {
-        this.logInfo("shareLink link: %s picture: %s quote: %s"
+        this.logMessage("shareLink link: %s picture: %s quote: %s"
             , link
             , picture
             , quote
@@ -385,7 +409,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             public void onSuccess(Sharer.Result result) {
                 String postId = result.getPostId() != null ? result.getPostId() : "";
 
-                MengineFacebookPlugin.this.logInfo("shareLink success [%s]"
+                MengineFacebookPlugin.this.logMessage("shareLink success [%s]"
                     , postId
                 );
 
@@ -401,7 +425,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
             @Override
             public void onCancel() {
-                MengineFacebookPlugin.this.logInfo("shareLink cancel");
+                MengineFacebookPlugin.this.logMessage("shareLink cancel");
 
                 MengineFacebookPlugin.this.buildEvent("fb_share_link_cancel")
                     .addParameterString("url", link)
@@ -416,7 +440,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             public void onError(@NonNull FacebookException exception) {
                 String error_message = exception.getMessage();
 
-                MengineFacebookPlugin.this.logInfo("shareLink error: %s"
+                MengineFacebookPlugin.this.logError("shareLink error: %s"
                     , error_message
                 );
 
@@ -442,7 +466,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
     
     public void getProfilePictureLink(final String typeParameter) {
-        this.logInfo("getProfilePictureLink typeParameter: %s"
+        this.logMessage("getProfilePictureLink typeParameter: %s"
             , typeParameter
         );
 
@@ -458,7 +482,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
     
     public void getProfileUserPictureLink(final String user_id, final String typeParameter) {
-        this.logInfo("getProfileUserPictureLink user_id: %s typeParameter: %s"
+        this.logMessage("getProfileUserPictureLink user_id: %s typeParameter: %s"
             , user_id
             , typeParameter
         );
@@ -518,7 +542,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     return;
                 }
 
-                MengineFacebookPlugin.this.logInfo("request profile user [%s] picture link completed: %s"
+                MengineFacebookPlugin.this.logMessage("request profile user [%s] picture link completed: %s"
                     , user_id
                     , pictureURL
                 );

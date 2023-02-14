@@ -50,7 +50,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     public void loadRewarded() {
-        m_plugin.logInfo("[Rewarded] load");
+        m_plugin.logMessage("[Rewarded] load");
 
         MengineActivity activity = m_plugin.getActivity();
 
@@ -80,7 +80,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void showRewarded() {
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logInfo("[Rewarded] showInterstitial [%d]"
+        m_plugin.logMessage("[Rewarded] showInterstitial [%d]"
             , ready
         );
 
@@ -100,7 +100,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     @Override
     public void onAdRequestStarted(String adUnitId) {
         m_plugin.logInfo("[Rewarded] onAdRequestStarted %s"
-                , adUnitId
+            , adUnitId
         );
 
         this.buildEvent("ad_rewarded_request_started")

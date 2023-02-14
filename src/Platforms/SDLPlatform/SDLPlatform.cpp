@@ -446,7 +446,7 @@ namespace Mengine
             case SDL_LOG_PRIORITY_VERBOSE:
                 return LM_VERBOSE;
             case SDL_LOG_PRIORITY_DEBUG:
-                return LM_WARNING;
+                return LM_DEBUG;
             case SDL_LOG_PRIORITY_INFO:
                 return LM_INFO;
             case SDL_LOG_PRIORITY_WARN:
@@ -465,8 +465,6 @@ namespace Mengine
         static void SDL_LogOutputFunction( void * userdata, int category, SDL_LogPriority priority, const char * message )
         {
             MENGINE_UNUSED( userdata );
-            MENGINE_UNUSED( category );
-            MENGINE_UNUSED( priority );
 
             ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
             const Char * category_str = Detail::SDL_GetLoggerCategoryString( category );

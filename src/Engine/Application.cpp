@@ -773,8 +773,8 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "set current resolution [%u:%u] %s"
-            , m_currentResolution.getWidth()
-            , m_currentResolution.getHeight()
+            , currentResolution.getWidth()
+            , currentResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
         );
 

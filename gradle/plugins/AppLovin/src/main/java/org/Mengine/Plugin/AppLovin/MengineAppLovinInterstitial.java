@@ -49,14 +49,14 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     public void loadInterstitial() {
-        m_plugin.logMessage("[Interstitial] load");
-
-        MengineActivity activity = m_plugin.getActivity();
+        m_plugin.logMessage("[Interstitial] loadInterstitial");
 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
             try {
+                MengineActivity activity = m_plugin.getActivity();
+
                 mediationAmazon.loadMediatorInterstitial(activity, m_interstitialAd);
             } catch (Exception e) {
             }
@@ -66,6 +66,12 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     public void loadAd() {
+        if (m_interstitialAd == null) {
+            return;
+        }
+
+        m_plugin.logInfo("[Interstitial] loadAd");
+
         m_requestId = m_enumeratorRequest++;
 
         this.buildEvent("ad_interstitial_load")
@@ -82,22 +88,24 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             , ready
         );
 
-        if (ready == true) {
-            this.buildEvent("ad_interstitial_show")
-                .addParameterInteger("request_id", m_requestId)
-                .log();
-
-            m_interstitialAd.showAd();
-        } else {
+        if (ready == false) {
             this.buildEvent("ad_interstitial_show_unready")
                 .addParameterInteger("request_id", m_requestId)
                 .log();
+
+            return;
         }
+
+        this.buildEvent("ad_interstitial_show")
+            .addParameterInteger("request_id", m_requestId)
+            .log();
+
+        m_interstitialAd.showAd();
     }
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logMessage("[Interstitial] onAdRequestStarted %s"
+        m_plugin.logInfo("[Interstitial] onAdRequestStarted %s"
             , adUnitId
         );
 
@@ -144,7 +152,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString( "ad", this.getMAAdParams(ad))
             .log();
 
-        this.loadAd();
+        MengineUtils.performOnMainThread(() -> {
+            this.loadAd();
+        });
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdHidden");
     }
@@ -175,10 +185,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptInterstitial)));
 
-        MengineUtils.performOnMainThread(() -> {
-            if (m_interstitialAd != null) {
-                m_interstitialAd.loadAd();
-            }
+        MengineUtils.performOnMainThreadWithDelay(() -> {
+            this.loadAd();
         }, delayMillis);
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdLoadFailed");
@@ -194,7 +202,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString( "error", this.getMaxErrorParams(error))
             .log();
 
-        this.loadAd();
+        MengineUtils.performOnMainThread(() -> {
+            this.loadAd();
+        });
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdDisplayFailed");
     }
@@ -208,8 +218,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString( "ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.pythonCall("onApplovinInterstitialOnAdRevenuePaid");
-
         m_plugin.onEventRevenuePaid(ad);
+
+        m_plugin.pythonCall("onApplovinInterstitialOnAdRevenuePaid");
     }
 }

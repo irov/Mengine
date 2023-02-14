@@ -69,7 +69,7 @@ public class MengineUtils {
         new Handler(Looper.getMainLooper()).post(runnable);
     }
 
-    public static void performOnMainThread(Runnable runnable, long delayMillis) {
+    public static void performOnMainThreadWithDelay(Runnable runnable, long delayMillis) {
         new Handler(Looper.getMainLooper()).postDelayed(runnable, delayMillis);
     }
 }

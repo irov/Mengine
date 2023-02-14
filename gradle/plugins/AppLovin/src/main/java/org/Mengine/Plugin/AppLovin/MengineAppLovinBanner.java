@@ -81,6 +81,12 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     public void loadAd() {
+        if (m_adView == null) {
+            return;
+        }
+
+        m_plugin.logInfo("[Banner] loadAd");
+
         m_requestId = m_enumeratorRequest++;
 
         this.buildEvent("ad_banner_load")
@@ -91,7 +97,11 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     public void bannerVisible(boolean show) {
-        if (show) {
+        m_plugin.logMessage("[Rewarded] bannerVisible %s"
+            , show == true ? "SHOW" : "HIDE"
+        );
+
+        if (show == true) {
             m_adView.startAutoRefresh();
             m_adView.setVisibility(View.VISIBLE);
         } else {
@@ -102,7 +112,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logMessage("[Banner] onAdRequestStarted %s"
+        m_plugin.logInfo("[Banner] onAdRequestStarted %s"
             , adUnitId
         );
 
@@ -216,13 +226,13 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("Banner", "onAdRevenuePaid", ad);
 
-        this.buildEvent("ad_revenue_paid")
+        this.buildEvent("ad_banner_revenue_paid")
             .addParameterInteger("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.pythonCall("onApplovinBannerOnAdRevenuePaid");
-
         m_plugin.onEventRevenuePaid(ad);
+
+        m_plugin.pythonCall("onApplovinBannerOnAdRevenuePaid");
     }
 }

@@ -56,8 +56,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::_initializeService()
     {
-        LOGGER_MESSAGE( "initializing OpenGLRenderSystem..." );
-
 #ifndef MENGINE_RENDER_OPENGL_ES
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );
 #else
@@ -172,7 +170,7 @@ namespace Mengine
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
         OPENGL_RENDER_CHECK_ERROR();
 
-        LOGGER_MESSAGE( "OpenGL version: %s"
+        LOGGER_INFO( "openal", "OpenGL version: %s"
             , versionStr 
         );
 

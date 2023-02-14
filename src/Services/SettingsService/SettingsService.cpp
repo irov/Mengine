@@ -90,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SettingsService::loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "settings", "Settings load... '%s'"
+        LOGGER_INFO( "settings", "load settings... '%s'"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 

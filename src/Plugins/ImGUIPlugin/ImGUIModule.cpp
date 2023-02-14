@@ -86,8 +86,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImGUIModule::_initializeModule()
     {
-        LOGGER_INFO( "imgui", "Initializing ImGUI Module ..." );
-
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), Helper::makeFactorableUnique<NodePrototypeGenerator<ImGUIRender, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {

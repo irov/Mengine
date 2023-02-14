@@ -63,13 +63,13 @@
     // Reset retry attempt
     self.m_retryAttempt = 0;
     
-    LOGGER_INFO( "applovin", "Interstitial didLoadAd" );
+    LOGGER_INFO( "applovin", "interstitial didLoadAd" );
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
     // Interstitial ad failed to load
     // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-    LOGGER_INFO("applovin", "Interstitial didFailToLoadAdForAdUnitIdentifier");
+    LOGGER_INFO( "applovin", "interstitial didFailToLoadAdForAdUnitIdentifier" );
     
     self.m_retryAttempt++;
     NSInteger delaySec = pow(2, MIN(6, self.m_retryAttempt));
@@ -80,22 +80,22 @@
 }
 
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "Interstitial didDisplayAd" );
+    LOGGER_INFO( "applovin", "interstitial didDisplayAd" );
 }
 
 - (void) didClickAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "Interstitial didClickAd" );
+    LOGGER_INFO( "applovin", "interstitial didClickAd" );
 }
 
 - (void) didHideAd:(MAAd *) ad {
     // Interstitial ad is hidden. Pre-load the next ad
-    LOGGER_INFO( "applovin", "Interstitial didHideAd" );
+    LOGGER_INFO( "applovin", "interstitial didHideAd" );
     
     [self.m_interstitialAd loadAd];
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    LOGGER_INFO( "applovin", "Interstitial didFailToDisplayAd" );
+    LOGGER_INFO( "applovin", "interstitial didFailToDisplayAd" );
     
     // Interstitial ad failed to display. We recommend loading the next ad
     [self.m_interstitialAd loadAd];
@@ -104,7 +104,7 @@
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
-    LOGGER_INFO( "applovin", "Banner didPayRevenueForAd" );
+    LOGGER_INFO( "applovin", "interstitial didPayRevenueForAd" );
 }
 
 @end

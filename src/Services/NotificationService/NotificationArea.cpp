@@ -54,7 +54,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_MESSAGE( "notification '%s' not clear"
+            LOGGER_MESSAGE_RELEASE( "notification '%s' not clear"
                 , MENGINE_DOCUMENT_STR( observer.doc )
             );
         }

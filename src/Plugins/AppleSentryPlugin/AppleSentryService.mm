@@ -51,7 +51,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_MESSAGE( "Sentry DSN: %s"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry DSN: %s"
             , AppleSentryPlugin_DSN
         );
         
@@ -110,7 +110,7 @@ namespace Mengine
     {
         const Char * AppleSentryPlugin_Application = CONFIG_VALUE( "AppleSentryPlugin", "Application", "Mengine" );
 
-        LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Application: %s]"
             , AppleSentryPlugin_Application
         );
 
@@ -120,7 +120,7 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
 
-        LOGGER_MESSAGE( "Sentry set extra [Company: %s]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Company: %s]"
             , companyName
         );
 
@@ -130,7 +130,7 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
-        LOGGER_MESSAGE( "Sentry set extra [Project: %s]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Project: %s]"
             , projectName
         );
 
@@ -141,7 +141,7 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getUserName( userName );
 
-        LOGGER_MESSAGE( "Sentry set extra [User: %s]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [User: %s]"
             , userName
         );
 
@@ -154,7 +154,7 @@ namespace Mengine
         Char projectVersionString[32] = {'\0'};
         if( Helper::stringalized( projectVersion, projectVersionString, 31 ) == false )
         {
-            LOGGER_MESSAGE( "Sentry set extra [Version: %s]"
+            LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Version: %s]"
                 , "Error"
             );
 
@@ -162,7 +162,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE( "Sentry set extra [Version: %s]"
+            LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Version: %s]"
                 , projectVersionString
             );
 
@@ -171,7 +171,7 @@ namespace Mengine
 
         bool debugMode = Helper::isDebugMode();
 
-        LOGGER_MESSAGE( "Sentry set extra [Debug: %u]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Debug: %u]"
             , debugMode
         );
 
@@ -179,7 +179,7 @@ namespace Mengine
 
         bool developmentMode = Helper::isDevelopmentMode();
 
-        LOGGER_MESSAGE( "Sentry set extra [Development: %u]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Development: %u]"
             , developmentMode
         );
 
@@ -187,7 +187,7 @@ namespace Mengine
 
         bool masterMode = Helper::isMasterRelease();
 
-        LOGGER_MESSAGE( "Sentry set extra [Master: %u]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Master: %u]"
             , masterMode
         );
 
@@ -195,7 +195,7 @@ namespace Mengine
 
         bool publishMode = Helper::isBuildPublish();
 
-        LOGGER_MESSAGE( "Sentry set extra [Publish: %u]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Publish: %u]"
             , publishMode
         );
 
@@ -203,7 +203,7 @@ namespace Mengine
 
         const Char * ENGINE_GIT_SHA1 = Helper::getEngineGITSHA1();
 
-        LOGGER_MESSAGE( "Sentry set extra [Engine Commit: %s]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Engine Commit: %s]"
             , ENGINE_GIT_SHA1
         );
 
@@ -211,7 +211,7 @@ namespace Mengine
 
         const Char * BUILD_TIMESTAMP = Helper::getBuildTimestamp();
 
-        LOGGER_MESSAGE( "Sentry set extra [Build Timestamp: %s]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Build Timestamp: %s]"
             , BUILD_TIMESTAMP
         );
 
@@ -219,7 +219,7 @@ namespace Mengine
 
         const Char * BUILD_USERNAME = Helper::getBuildUsername();
 
-        LOGGER_MESSAGE( "Sentry set extra [Build Username: %s]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Build Username: %s]"
             , BUILD_USERNAME
         );
 
@@ -227,7 +227,7 @@ namespace Mengine
 
         const Char * contentCommit = Helper::getContentCommit();
 
-        LOGGER_MESSAGE( "Sentry set extra [Content Commit: %s]"
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Content Commit: %s]"
             , contentCommit
         );
 

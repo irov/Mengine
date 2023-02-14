@@ -76,7 +76,7 @@ namespace Mengine
 
         if( m_availablePlugin == false )
         {
-            LOGGER_MESSAGE( "plugin '%s' not available"
+            LOGGER_INFO( "plugin", "plugin not available '%s'"
                 , this->getPluginName()
             );
 
@@ -121,7 +121,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_INITIALIZE, pluginName );
 
-        LOGGER_INFO( "plugin", "plugin '%s' initialize"
+        LOGGER_INFO( "plugin", "plugin initialize '%s'"
             , this->getPluginName()
         );
 
@@ -155,7 +155,7 @@ namespace Mengine
 
         m_moduleFactories.clear();
 
-        LOGGER_INFO( "plugin", "plugin '%s' finalize"
+        LOGGER_INFO( "plugin", "plugin finalize '%s'"
             , this->getPluginName()
         );
     }
@@ -224,14 +224,14 @@ namespace Mengine
 
             if( leakObjects.empty() == false )
             {
-                LOGGER_MESSAGE( "Plugin[%s] leak %u objects"
+                LOGGER_MESSAGE_RELEASE( "plugin [%s] leak %u objects"
                     , pluginName
                     , leakObjects.size()
                 );
 
                 for( const DocumentPtr & doc : leakObjects )
                 {
-                    LOGGER_MESSAGE( "-- %s"
+                    LOGGER_MESSAGE_RELEASE( "-- %s"
                         , MENGINE_DOCUMENT_STR( doc )
                     );
                 }

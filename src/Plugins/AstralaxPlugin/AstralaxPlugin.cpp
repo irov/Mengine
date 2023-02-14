@@ -53,8 +53,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxPlugin::_initializePlugin()
     {
-        LOGGER_INFO( "astralax", "Initializing Astralax System..." );
-
         const char * version = Magic_GetVersion();
 
         //MING64 use 3.55 version...
@@ -70,7 +68,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE( "Astralax version: %s"
+        LOGGER_INFO( "astralax", "Astralax version: %s"
             , version
         );
 

@@ -32,7 +32,7 @@ namespace Mengine
         
         MENGINE_UNUSED( version );
 
-        LOGGER_MESSAGE( "WebP version: %u.%u.%u [0x%04x]"
+        LOGGER_INFO( "webp", "WebP version: %u.%u.%u [0x%04x]"
             , (version >> 16) & 0xff
             , (version >> 8) & 0xff
             , (version >> 0) & 0xff

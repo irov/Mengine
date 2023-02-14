@@ -167,7 +167,7 @@ namespace Mengine
 
         m_dsn = DevToDebug_DSN;
 
-        LOGGER_MESSAGE( "DevToDebug DSN: %s"
+        LOGGER_INFO( "devtodebug", "DevToDebug DSN: %s"
             , m_dsn.c_str()
         );
 
@@ -277,6 +277,9 @@ namespace Mengine
         DevToDebugLoggerPtr logger = Helper::makeFactorableUnique<DevToDebugLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( logger );
+
+        uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
+        logger->setVerboseFilter( loggerFilter );
 
         logger->setVerboseLevel( LM_VERBOSE );
         logger->setWriteHistory( true );
@@ -554,7 +557,7 @@ namespace Mengine
                     m_logger->setWorkerURL( m_workerURL );
                 }
 
-                LOGGER_INFO( "devtodebug", "Request Connect: %s [id %u]"
+                LOGGER_INFO( "devtodebug", "request connect: %s [id %u]"
                     , m_workerURL.c_str()
                     , requestId
                 );
@@ -619,7 +622,7 @@ namespace Mengine
                 String json_data;
                 Helper::writeJSONStringCompact( j, &json_data );
 
-                LOGGER_INFO( "devtodebug", "Request Process: %s [id %u]"
+                LOGGER_INFO( "devtodebug", "request process: %s [id %u]"
                     , json_data.c_str()
                     , requestId
                 );
@@ -729,7 +732,7 @@ namespace Mengine
 
         j.set( "name", userName );
 
-        LOGGER_INFO( "devtodebug", "Device did '%s' name '%s'"
+        LOGGER_INFO( "devtodebug", "device did '%s' name '%s'"
             , fingerprint
             , userName
         );

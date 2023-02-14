@@ -158,17 +158,17 @@ namespace Mengine
 
                 RtlGetVersion( &osInfo );
 
-                LOGGER_MESSAGE( "Windows version: %lu.%lu (build %lu)"
+                LOGGER_INFO( "platform", "windows version: %lu.%lu (build %lu)"
                     , osInfo.dwMajorVersion
                     , osInfo.dwMinorVersion
                     , osInfo.dwBuildNumber
                 );
 
-                LOGGER_MESSAGE( "Windows platform: %lu"
+                LOGGER_INFO( "platform", "windows platform: %lu"
                     , osInfo.dwPlatformId
                 );
 
-                LOGGER_MESSAGE( "Windows service pack: %lu.%lu"
+                LOGGER_INFO( "platform", "windows service pack: %lu.%lu"
                     , (DWORD)osInfo.wServicePackMajor
                     , (DWORD)osInfo.wServicePackMinor
                 );
@@ -309,7 +309,7 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
         }
 
-        LOGGER_MESSAGE( "Platform Tags: %s"
+        LOGGER_INFO( "platform", "platform tags: %s"
             , [this]() 
         {
             static Char cache_value[1024] = {'\0'};
@@ -328,7 +328,7 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        LOGGER_MESSAGE( "Touchpad: %u"
+        LOGGER_INFO( "platform", "touchpad: %u"
             , m_touchpad
         );
 
@@ -337,7 +337,7 @@ namespace Mengine
             m_desktop = true;
         }
 
-        LOGGER_MESSAGE( "Desktop: %u"
+        LOGGER_INFO( "platform", "desktop: %u"
             , m_desktop
         );
 
@@ -405,7 +405,7 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_INFO( "platform", "Device Seed: %u"
+        LOGGER_INFO_PROTECTED( "platform", "device seed: %u"
             , deviceSeed
         );
 
@@ -530,7 +530,7 @@ namespace Mengine
         DATETIME_SYSTEM()
             ->getLocalDateTime(&dateTime);
 
-        LOGGER_MESSAGE( "Start Date: %02u.%02u.%u, %02u:%02u:%02u"
+        LOGGER_INFO( "platform", "start date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
             , dateTime.month
             , dateTime.year
@@ -542,33 +542,33 @@ namespace Mengine
         SYSTEM_INFO sysInfo;
         ::GetSystemInfo( &sysInfo );
 
-        LOGGER_MESSAGE( "Hardware information:" );
-        LOGGER_MESSAGE( "  OEM ID: %lu", sysInfo.dwOemId );
-        LOGGER_MESSAGE( "  Number of processors: %lu", sysInfo.dwNumberOfProcessors );
-        LOGGER_MESSAGE( "  Page size: %lu", sysInfo.dwPageSize );
-        LOGGER_MESSAGE( "  Processor type: %lu", sysInfo.dwProcessorType );
-        LOGGER_MESSAGE( "  Minimum application address: %p", sysInfo.lpMinimumApplicationAddress );
-        LOGGER_MESSAGE( "  Maximum application address: %p", sysInfo.lpMaximumApplicationAddress );
-        LOGGER_MESSAGE( "  Active processor mask: %" MENGINE_PRDWORD_PTR, sysInfo.dwActiveProcessorMask );
+        LOGGER_INFO( "platform", "[Hardware information]" );
+        LOGGER_INFO( "platform", "  OEM ID: %lu", sysInfo.dwOemId );
+        LOGGER_INFO( "platform", "  Number of processors: %lu", sysInfo.dwNumberOfProcessors );
+        LOGGER_INFO( "platform", "  Page size: %lu", sysInfo.dwPageSize );
+        LOGGER_INFO( "platform", "  Processor type: %lu", sysInfo.dwProcessorType );
+        LOGGER_INFO( "platform", "  Minimum application address: %p", sysInfo.lpMinimumApplicationAddress );
+        LOGGER_INFO( "platform", "  Maximum application address: %p", sysInfo.lpMaximumApplicationAddress );
+        LOGGER_INFO( "platform", "  Active processor mask: %" MENGINE_PRDWORD_PTR, sysInfo.dwActiveProcessorMask );
 
-        LOGGER_MESSAGE( "CPU information:" );
+        LOGGER_INFO( "platform", "CPU information:" );
 
         Win32CPUInfo cpuinfo;
 
-        LOGGER_MESSAGE( "  Vendor: %s", cpuinfo.Vendor().c_str() );
-        LOGGER_MESSAGE( "  Brand: %s", cpuinfo.Brand().c_str() );
+        LOGGER_INFO( "platform", "  Vendor: %s", cpuinfo.Vendor().c_str() );
+        LOGGER_INFO( "platform", "  Brand: %s", cpuinfo.Brand().c_str() );
 
         auto support_message = []( const Char * isa_feature, bool is_supported )
         {
             uint32_t color = (is_supported == true ? LCOLOR_GREEN | LCOLOR_BLUE : LCOLOR_RED);
 
-            LOGGER_CATEGORY_VERBOSE_LEVEL( LM_MESSAGE, LFILTER_NONE, color, nullptr, 0, ELF_FLAG_NONE )("%s: %s"
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "platform" ), LM_INFO, LFILTER_NONE, color, nullptr, 0, ELF_FLAG_NONE )("%s: %s"
                 , isa_feature
                 , is_supported == true ? "+" : "-"
                 );
         };
 
-        LOGGER_MESSAGE( "CPU instruction:" );
+        LOGGER_INFO( "platform", "CPU instruction:" );
         support_message( "  3DNOW", cpuinfo._3DNOW() );
         support_message( "  3DNOWEXT", cpuinfo._3DNOWEXT() );
         support_message( "  ABM", cpuinfo.ABM() );
@@ -626,7 +626,7 @@ namespace Mengine
 
         if( ::GlobalMemoryStatusEx( &mem_st ) == TRUE )
         {
-            LOGGER_MESSAGE( "Start Memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
+            LOGGER_INFO( "platform", "start memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
                 , (uint32_t)(mem_st.ullTotalPhys / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullTotalPhys / (1000UL * 1000UL) % 1000UL)
                 , (uint32_t)(mem_st.ullAvailPhys / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullAvailPhys / (1000UL * 1000UL) % 1000UL)
                 , (uint32_t)(mem_st.ullTotalPageFile / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullTotalPageFile / (1000UL * 1000UL) % 1000UL)
@@ -636,7 +636,7 @@ namespace Mengine
 
         if( this->setProcessDPIAware() == false )
         {
-            LOGGER_MESSAGE( "Application not setup Process DPI Aware" );
+            LOGGER_INFO( "platform", "application not setup Process DPI Aware" );
         }
 
         WChar UserNameBuffer[UNLEN + 1] = {L'\0'};
@@ -657,7 +657,7 @@ namespace Mengine
             );
         }
 
-        LOGGER_MESSAGE( "ComputerName: %ls"
+        LOGGER_INFO_PROTECTED( "platform", "computer name: %ls"
             , ComputerNameBuffer
         );
 
@@ -670,6 +670,35 @@ namespace Mengine
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::_stopService()
+    {
+        PlatformDateTime dateTime;
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
+
+        LOGGER_INFO( "platform", "stop date: %02u.%02u.%u, %02u:%02u:%02u"
+            , dateTime.day
+            , dateTime.month
+            , dateTime.year
+            , dateTime.hour
+            , dateTime.minute
+            , dateTime.second
+        );
+
+        MEMORYSTATUSEX mem_st;
+        mem_st.dwLength = sizeof( mem_st );
+
+        if( ::GlobalMemoryStatusEx( &mem_st ) == TRUE )
+        {
+            LOGGER_INFO( "platform", "stop memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
+                , (uint32_t)(mem_st.ullTotalPhys / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullTotalPhys / (1000UL * 1000UL) % 1000UL)
+                , (uint32_t)(mem_st.ullAvailPhys / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullAvailPhys / (1000UL * 1000UL) % 1000UL)
+                , (uint32_t)(mem_st.ullTotalPageFile / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullTotalPageFile / (1000UL * 1000UL) % 1000UL)
+                , (uint32_t)(mem_st.ullAvailPageFile / (1000UL * 1000UL) / 1000UL), (uint32_t)(mem_st.ullAvailPageFile / (1000UL * 1000UL) % 1000UL)
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::setProcessDPIAware()
@@ -900,7 +929,7 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
-        LOGGER_MESSAGE( "run platform" );
+        LOGGER_INFO( "platform", "run platform" );
 
         MENGINE_PROFILER_BEGIN_APPLICATION();
 
@@ -1082,7 +1111,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::stopPlatform()
     {
-        LOGGER_MESSAGE( "stop platform" );
+        LOGGER_INFO( "platform", "stop platform" );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
@@ -1735,7 +1764,7 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                LOGGER_MESSAGE( "Quit application" );
+                LOGGER_MESSAGE( "quit application" );
 
                 m_close = true;
 
@@ -2484,7 +2513,7 @@ namespace Mengine
 
         if( Platform_WithoutWindow == true || HAS_OPTION( "norender" ) == true )
         {
-            LOGGER_MESSAGE( "platform without window" );
+            LOGGER_INFO( "platform", "platform without window" );
 
             return true;
         }
@@ -2564,7 +2593,7 @@ namespace Mengine
 
         if( hWndFgnd != m_hWnd )
         {
-            LOGGER_MESSAGE( "Setup Foreground Window..." );
+            LOGGER_INFO( "platform", "setup foreground window..." );
 
             ::ShowWindow( m_hWnd, SW_MINIMIZE );
             ::ShowWindow( m_hWnd, SW_RESTORE );
@@ -2622,7 +2651,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-        LOGGER_MESSAGE( "resolution %u:%u fullscreen [%u]"
+        LOGGER_INFO( "platform", "window mode changed resolution %u:%u fullscreen [%u]"
             , _resolution.getWidth()
             , _resolution.getHeight()
             , _fullscreen
@@ -5319,7 +5348,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::initializeFileService_()
     {
-        LOGGER_MESSAGE( "Plugin Win32FileGroup..." );
+        LOGGER_INFO( "platform", "plugin Win32FileGroup..." );
+
         if( PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "Plugin Win32FileGroup... [invalid initialize]" );
@@ -5338,7 +5368,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE( "Current Path: %s"
+        LOGGER_INFO_PROTECTED( "platform", "current path: %s"
             , currentPath
         );
 

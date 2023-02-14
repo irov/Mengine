@@ -148,7 +148,7 @@ namespace Mengine
 
         const Char * json_str = json.c_str();
 
-        LOGGER_INFO( "gameanalytics", "Design Event: %s %s"
+        LOGGER_INFO( "gameanalytics", "design event: %s %s"
             , eventName_str
             , json_str
         );

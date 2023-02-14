@@ -116,7 +116,7 @@ namespace Mengine
 
         if( d3d9Library == nullptr )
         {
-            LOGGER_ERROR( "Failed to load d3d9 dll '%s'"
+            LOGGER_ERROR( "failed to load d3d9 dll '%s'"
                 , Render_D3D9_DLL
             );
 
@@ -129,18 +129,16 @@ namespace Mengine
 
         if( pDirect3DCreate9 == nullptr )
         {
-            LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address" );
+            LOGGER_ERROR( "failed to get 'Direct3DCreate9' proc address" );
 
             return false;
         }
-
-        LOGGER_INFO( "render", "Initializing DX9RenderSystem..." );
 
         IDirect3D9 * pD3D = (*pDirect3DCreate9)(D3D_SDK_VERSION);
 
         if( pD3D == nullptr )
         {
-            LOGGER_ERROR( "Can't create D3D interface" );
+            LOGGER_ERROR( "can't create D3D interface" );
 
             return false;
         }
@@ -171,7 +169,7 @@ namespace Mengine
         D3DDISPLAYMODE Mode;
         IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
         {
-            LOGGER_ERROR( "Can't determine desktop video mode" );
+            LOGGER_ERROR( "can't determine desktop video mode" );
 
             return false;
         }
@@ -182,26 +180,26 @@ namespace Mengine
         D3DADAPTER_IDENTIFIER9 AdID;
         IF_DXCALL( m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdID) )
         {
-            LOGGER_ERROR( "Can't determine adapter identifier" );
+            LOGGER_ERROR( "can't determine adapter identifier" );
 
             return false;
         }
 
-        LOGGER_MESSAGE( "D3D Adapter Driver: %s", AdID.Driver );
-        LOGGER_MESSAGE( "D3D Adapter Description: %s", AdID.Description );
-        LOGGER_MESSAGE( "D3D Adapter DeviceName: %s", AdID.DeviceName );
+        LOGGER_INFO( "render", "D3D Adapter Driver: %s", AdID.Driver );
+        LOGGER_INFO( "render", "D3D Adapter Description: %s", AdID.Description );
+        LOGGER_INFO( "render", "D3D Adapter DeviceName: %s", AdID.DeviceName );
 
-        LOGGER_MESSAGE( "D3D Adapter Version: %hu.%hu.%hu.%hu"
+        LOGGER_INFO( "render", "D3D Adapter Version: %hu.%hu.%hu.%hu"
             , HIWORD( AdID.DriverVersion.HighPart )
             , LOWORD( AdID.DriverVersion.HighPart )
             , HIWORD( AdID.DriverVersion.LowPart )
             , LOWORD( AdID.DriverVersion.LowPart )
         );
 
-        LOGGER_MESSAGE( "D3D Adapter VendorId: %lu", AdID.VendorId );
-        LOGGER_MESSAGE( "D3D Adapter DeviceId: %lu", AdID.DeviceId );
-        LOGGER_MESSAGE( "D3D Adapter SubSysId: %lu", AdID.SubSysId );
-        LOGGER_MESSAGE( "D3D Adapter Revision: %lu", AdID.Revision );
+        LOGGER_INFO( "render", "D3D Adapter VendorId: %lu", AdID.VendorId );
+        LOGGER_INFO( "render", "D3D Adapter DeviceId: %lu", AdID.DeviceId );
+        LOGGER_INFO( "render", "D3D Adapter SubSysId: %lu", AdID.SubSysId );
+        LOGGER_INFO( "render", "D3D Adapter Revision: %lu", AdID.Revision );
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
 
@@ -281,7 +279,7 @@ namespace Mengine
 
             if( FAILED( hr_checkDeviceMultiSampleType ) )
             {
-                LOGGER_ERROR( "Can't support multi sample count '%u' error [%ld]"
+                LOGGER_ERROR( "can't support multi sample count '%u' error [%ld]"
                     , testMultiSampleType
                     , hr_checkDeviceMultiSampleType
                 );
@@ -409,7 +407,7 @@ namespace Mengine
 
         m_d3dppFS.FullScreen_RefreshRateInHz = m_displayMode.RefreshRate;
 
-        LOGGER_MESSAGE( "Fullscreen RefreshRate [%u]"
+        LOGGER_INFO( "render", "fullscreen refresh rate [%u]"
             , m_d3dppFS.FullScreen_RefreshRateInHz
         );
 
@@ -419,12 +417,12 @@ namespace Mengine
 
         // Create D3D Device
 
-        LOGGER_MESSAGE( "Vertex Shader Version [%lu] [%s]"
+        LOGGER_INFO( "render", "vertex shader version [%lu] [%s]"
             , d3dCaps.VertexShaderVersion
             , d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
         );
 
-        LOGGER_MESSAGE( "Pixel Shader Version [%lu] [%s] [%s]"
+        LOGGER_INFO( "render", "pixel shader version [%lu] [%s] [%s]"
             , d3dCaps.PixelShaderVersion
             , d3dCaps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
             , d3dCaps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
@@ -434,7 +432,7 @@ namespace Mengine
 
         if( (d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 || d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
         {
-            LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE" );
+            LOGGER_ERROR( "can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE" );
 
             hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                 , D3DCREATE_SOFTWARE_VERTEXPROCESSING
@@ -463,7 +461,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                LOGGER_ERROR( "can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -479,7 +477,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                LOGGER_ERROR( "can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -495,7 +493,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                LOGGER_ERROR( "can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -511,7 +509,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                LOGGER_ERROR( "can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -527,7 +525,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                LOGGER_ERROR( "can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -543,7 +541,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                LOGGER_ERROR( "can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -560,7 +558,7 @@ namespace Mengine
         {
             const Char * message = Helper::getDX9ErrorMessage( hr );
 
-            LOGGER_ERROR( "Can't create D3D device error: %s (hr:%x, hwnd:%p) BackBuffer Size %u:%u Format %u"
+            LOGGER_ERROR( "can't create D3D device error: %s (hr:%x, hwnd:%p) BackBuffer Size %u:%u Format %u"
                 , message
                 , (uint32_t)hr
                 , (void *)windowHandle
@@ -575,7 +573,7 @@ namespace Mengine
         //Get Devivce Caps after create device
         DXCALL( m_pD3DDevice, GetDeviceCaps, (&m_d3dCaps) );
 
-        LOGGER_INFO( "render", "Mode: resolution [%ux%u] format '%s'"
+        LOGGER_INFO( "render", "window resolution [%ux%u] format '%s'"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , Helper::getD3DFormatName( m_displayMode.Format )
@@ -595,8 +593,6 @@ namespace Mengine
         m_supportL8 = this->supportTextureFormat( PF_L8 );
         m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
         m_supportNonPow2 = this->supportTextureNonPow2( m_d3dCaps );
-
-        LOGGER_MESSAGE( "DirectX9 create render window successfully!" );
 
         return true;
     }
@@ -866,7 +862,7 @@ namespace Mengine
 
             if( Mode.Format == D3DFMT_UNKNOWN )
             {
-                LOGGER_ERROR( "Can't determine desktop video mode D3DFMT_UNKNOWN" );
+                LOGGER_ERROR( "can't determine desktop video mode D3DFMT_UNKNOWN" );
 
                 return false;
             }

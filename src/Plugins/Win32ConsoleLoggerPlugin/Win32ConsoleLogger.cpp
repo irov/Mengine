@@ -28,31 +28,31 @@ namespace Mengine
             {
             case CTRL_C_EVENT:
                 {
-                    LOGGER_MESSAGE( "Console close [Ctrl+C]" );
+                    LOGGER_MESSAGE_RELEASE( "console close [Ctrl+C]" );
 
                     return TRUE;
                 }break;
             case CTRL_BREAK_EVENT:
                 {
-                    LOGGER_MESSAGE( "Console close [Ctrl+Break]" );
+                    LOGGER_MESSAGE_RELEASE( "console close [Ctrl+Break]" );
 
                     return TRUE;
                 }break;
             case CTRL_CLOSE_EVENT:
                 {
-                    LOGGER_MESSAGE( "Console close [Ctrl+Close]" );
+                    LOGGER_MESSAGE_RELEASE( "console close [Ctrl+Close]" );
 
                     return TRUE;
                 }break;
             case CTRL_LOGOFF_EVENT:
                 {
-                    LOGGER_MESSAGE( "Console close [Ctrl+Logoff]" );
+                    LOGGER_MESSAGE_RELEASE( "console close [Ctrl+Logoff]" );
 
                     return TRUE;
                 }break;
             case CTRL_SHUTDOWN_EVENT:
                 {
-                    LOGGER_MESSAGE( "Console close [Ctrl+Shutdown]" );
+                    LOGGER_MESSAGE_RELEASE( "console close [Ctrl+Shutdown]" );
 
                     return TRUE;
                 }break;

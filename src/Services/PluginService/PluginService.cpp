@@ -47,10 +47,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::loadPlugin( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
-        LOGGER_MESSAGE( "load plugin '%s'"
-            , _dynamicLibraryName
-        );
-
         DynamicLibraryInterfacePtr dynamicLibrary = PLATFORM_SERVICE()
             ->loadDynamicLibrary( _dynamicLibraryName, _doc );
 

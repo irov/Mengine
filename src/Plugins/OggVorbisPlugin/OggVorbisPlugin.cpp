@@ -55,7 +55,7 @@ namespace Mengine
         
         MENGINE_UNUSED( vorbis_version );
 
-        LOGGER_MESSAGE( "Vorbis version: %s"
+        LOGGER_INFO( "vorbis", "Vorbis version: %s"
             , vorbis_version
         );
 

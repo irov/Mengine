@@ -220,7 +220,7 @@ namespace Mengine
     {
         if( m_steamInitialize == false )
         {
-            LOGGER_MESSAGE( "Steam not initialize" );
+            LOGGER_ERROR( "Steam not initialize" );
 
             return false;
         }
@@ -249,7 +249,7 @@ namespace Mengine
     {
         if( m_steamInitialize == false )
         {
-            LOGGER_MESSAGE( "Steam not initialize" );
+            LOGGER_ERROR( "Steam not initialize" );
 
             return false;
         }
@@ -272,7 +272,7 @@ namespace Mengine
     {
         if( m_steamInitialize == false )
         {
-            LOGGER_MESSAGE( "Steam not initialize" );
+            LOGGER_ERROR( "Steam not initialize" );
 
             return false;
         }
@@ -303,7 +303,7 @@ namespace Mengine
     {
         if( m_steamInitialize == false )
         {
-            LOGGER_MESSAGE( "Steam not initialize" );
+            LOGGER_ERROR( "Steam not initialize" );
 
             return false;
         }
@@ -355,7 +355,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_INFO( "steam", "available game languages: %s"
+        LOGGER_INFO( "steam", "Steam available game languages: %s"
             , AvailableGameLanguages
         );
 
@@ -368,7 +368,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_INFO( "steam", "steam game language: %s"
+        LOGGER_INFO( "steam", "Steam game language: %s"
             , CurrentGameLanguage
         );
 
@@ -379,7 +379,7 @@ namespace Mengine
             const ConstString & locale = APPLICATION_SERVICE()
                 ->getLocale();
 
-            LOGGER_MESSAGE( "not found game localization for language '%s' stay current localization '%s'"
+            LOGGER_WARNING( "not found game localization for language '%s' stay current localization '%s'"
                 , CurrentGameLanguage
                 , locale.c_str()
             );
@@ -389,7 +389,7 @@ namespace Mengine
 
         const ConstString & steam_locale = it_locale_found->second;
 
-        LOGGER_WARNING( "found locale '%s' for language '%s'"
+        LOGGER_INFO( "steam", "Steam found locale '%s' for language '%s'"
             , steam_locale.c_str()
             , CurrentGameLanguage
         );
@@ -397,7 +397,7 @@ namespace Mengine
         if( PACKAGE_SERVICE()
             ->existLocalePackage( steam_locale, {} ) == false )
         {
-            LOGGER_MESSAGE( "not found game localization for language '%s'"
+            LOGGER_WARNING( "not found game localization for language '%s'"
                 , CurrentGameLanguage
             );
 

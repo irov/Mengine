@@ -52,7 +52,7 @@ namespace Mengine
 
         m_protocolPath = CONFIG_VALUE( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
 
-        LOGGER_MESSAGE( "metacode: version %u protocol %u"
+        LOGGER_INFO( "loader", "Metacode version: %u protocol: %u"
             , Metacode::get_metacode_version()
             , Metacode::get_metacode_protocol_version()
         );
@@ -85,7 +85,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist ) const
     {
-        LOGGER_INFO( "load", "load bin '%s'"
+        LOGGER_INFO( "loader", "load bin '%s'"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 

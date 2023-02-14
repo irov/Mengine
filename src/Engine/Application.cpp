@@ -256,7 +256,7 @@ namespace Mengine
             m_locale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_STRING_LOCAL( "en" ) );
         }
 
-        LOGGER_MESSAGE( "setup locale '%s'"
+        LOGGER_INFO( "system", "setup locale '%s'"
             , m_locale.c_str()
         );
 
@@ -316,10 +316,10 @@ namespace Mengine
                 );
         }
 
-        LOGGER_MESSAGE( "Engine URL: %s", engineGitURL );
-        LOGGER_MESSAGE( "Engine Commit: %s", engineGitSHA1 );
-        LOGGER_MESSAGE( "Engine Branch: %s", engineGitBranch );
-        LOGGER_MESSAGE( "Engine Date: %s", engineGitDate );
+        LOGGER_INFO( "system", "Mengine URL: %s", engineGitURL );
+        LOGGER_INFO( "system", "Mengine Commit: %s", engineGitSHA1 );
+        LOGGER_INFO( "system", "Mengine Branch: %s", engineGitBranch );
+        LOGGER_INFO( "system", "Mengine Date: %s", engineGitDate );
 
         const Char * contentCommit = Helper::getContentCommit();
 
@@ -329,7 +329,7 @@ namespace Mengine
                 ->messageBox( "Mengine", "Content Commit: %s", contentCommit );
         }
 
-        LOGGER_MESSAGE( "Content Commit: %s", contentCommit );
+        LOGGER_INFO( "system", "content commit: %s", contentCommit );
 
         const Char * buildVersion = Helper::getBuildVersion();
         const Char * buildUserName = Helper::getBuildUsername();
@@ -342,14 +342,14 @@ namespace Mengine
                 ->messageBox( "Mengine", "build info: %s %s %s %s", buildVersion, buildUserName, buildTimestamp, buildProjectName );
         }
 
-        LOGGER_MESSAGE( "Build Info: %s %s %s [%s]", buildVersion, buildUserName, buildTimestamp, buildProjectName );
+        LOGGER_INFO( "system", "build Info: %s %s %s [%s]", buildVersion, buildUserName, buildTimestamp, buildProjectName );
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
         }
 
-        LOGGER_MESSAGE( "application company '%s' project '%s' version [%u] locale '%s'"
+        LOGGER_INFO( "system", "application company '%s' project '%s' version [%u] locale '%s'"
             , m_companyName.c_str()
             , m_projectName.c_str()
             , m_projectVersion
@@ -461,7 +461,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseTypes_()
     {
-        LOGGER_MESSAGE( "register Base Generator..." );
+        LOGGER_INFO( "system", "register base generator..." );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<FileContent, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -492,7 +492,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseTypes_()
     {
-        LOGGER_MESSAGE( "unregister Base Generator..." );
+        LOGGER_INFO( "system", "unregister base generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), nullptr );
@@ -509,7 +509,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
     {
-        LOGGER_MESSAGE( "register Node Generator..." );
+        LOGGER_INFO( "system", "register node generator..." );
 
 #define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
@@ -574,7 +574,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseNodeTypes_()
     {
-        LOGGER_MESSAGE( "unregister Node Generator..." );
+        LOGGER_INFO( "system", "unregister node generator..." );
 
 #define NODE_FACTORY( Type )\
         PROTOTYPE_SERVICE()\
@@ -631,7 +631,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerEntityGenerator_()
     {
-        LOGGER_INFO( "system", "Register Entity Generator..." );
+        LOGGER_INFO( "system", "register entity generator..." );
 
         EntityPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<EntityPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -646,7 +646,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerSceneGenerator_()
     {
-        LOGGER_INFO( "system", "Register Scene Generator..." );
+        LOGGER_INFO( "system", "register scene generator..." );
 
         PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ScenePrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -661,7 +661,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterEntityGenerator_()
     {
-        LOGGER_INFO( "system", "Unregister Entity Generator..." );
+        LOGGER_INFO( "system", "unregister entity generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), nullptr );
@@ -669,7 +669,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterSceneGenerator_()
     {
-        LOGGER_INFO( "system", "Unregister Scene Generator..." );
+        LOGGER_INFO( "system", "unregister scene generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), nullptr );
@@ -677,7 +677,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerArrowGenerator_()
     {
-        LOGGER_INFO( "system", "Register Arrow Generator..." );
+        LOGGER_INFO( "system", "register arrow generator..." );
 
         PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ArrowPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -692,7 +692,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterArrowGenerator_()
     {
-        LOGGER_INFO( "system", "Unregister Arrow Generator..." );
+        LOGGER_INFO( "system", "unregister arrow generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), nullptr );
@@ -700,7 +700,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()
     {
-        LOGGER_INFO( "system", "Register Resource Type..." );
+        LOGGER_INFO( "system", "register resource type..." );
 
 #define ADD_PROTOTYPE( Type )\
         if( PROTOTYPE_SERVICE()\
@@ -733,7 +733,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseResourceTypes_()
     {
-        LOGGER_INFO( "system", "Initializing Resource Type..." );
+        LOGGER_INFO( "system", "initializing resource type..." );
 
 #define REMOVE_PROTOTYPE( Type )\
         PROTOTYPE_SERVICE()\
@@ -772,7 +772,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE( "set current resolution [%u:%u] %s"
+        LOGGER_INFO( "system", "set current resolution [%u:%u] %s"
             , currentResolution.getWidth()
             , currentResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
@@ -783,7 +783,7 @@ namespace Mengine
         Viewport renderViewport;
         this->calcRenderViewport_( m_currentResolution, &renderViewport );
 
-        LOGGER_MESSAGE( "set render viewport [%f %f - %f %f]"
+        LOGGER_INFO( "system", "set render viewport [%f %f - %f %f]"
             , renderViewport.begin.x
             , renderViewport.begin.y
             , renderViewport.getWidth()
@@ -1134,7 +1134,7 @@ namespace Mengine
                     float timeFactor = TIMELINE_SERVICE()
                         ->calcTimeFactor();
 
-                    LOGGER_MESSAGE( "time factor: %f"
+                    LOGGER_MESSAGE_RELEASE( "time factor: %f"
                         , timeFactor
                     );
                 }
@@ -1160,7 +1160,7 @@ namespace Mengine
                 float timeFactor = TIMELINE_SERVICE()
                     ->calcTimeFactor();
 
-                LOGGER_MESSAGE( "time factor: %f"
+                LOGGER_MESSAGE_RELEASE( "time factor: %f"
                     , timeFactor
                 );
             }
@@ -1185,7 +1185,7 @@ namespace Mengine
                 float timeFactor = TIMELINE_SERVICE()
                     ->calcTimeFactor();
 
-                LOGGER_MESSAGE( "time factor: %f"
+                LOGGER_MESSAGE_RELEASE( "time factor: %f"
                     , timeFactor
                 );
             }
@@ -1222,7 +1222,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->setParticleEnable( s_particle_enable );
 
-                LOGGER_MESSAGE_RELEASE( "Particle [%s]"
+                LOGGER_MESSAGE_RELEASE( "particle [%s]"
                     , s_particle_enable == true ? "enable" : "disable"
                 );
             }
@@ -1236,7 +1236,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->setTextEnable( s_text_enable );
 
-                LOGGER_MESSAGE_RELEASE( "Text [%s]"
+                LOGGER_MESSAGE_RELEASE( "text [%s]"
                     , s_text_enable == true ? "enable" : "disable"
                 );
             }
@@ -1250,7 +1250,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->setVideoEnable( s_video_enable );
 
-                LOGGER_MESSAGE_RELEASE( "Video [%s]"
+                LOGGER_MESSAGE_RELEASE( "video [%s]"
                     , s_video_enable == true ? "enable" : "disable"
                 );
             }
@@ -1269,7 +1269,7 @@ namespace Mengine
                 const ConstString & locale = APPLICATION_SERVICE()
                     ->getLocale();
 
-                LOGGER_MESSAGE_RELEASE( "Reload locale [%s]"
+                LOGGER_MESSAGE_RELEASE( "reload locale [%s]"
                     , locale.c_str()
                 );
 
@@ -1875,17 +1875,17 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->getMaxClientResolution( &maxClientResolution ) == false )
         {
-            LOGGER_MESSAGE( "invalid get max client resolution" );
+            LOGGER_ERROR( "invalid get max client resolution" );
 
             return false;
         }
 
-        LOGGER_MESSAGE( "max client resolution: %u %u"
+        LOGGER_INFO( "system", "max client resolution: %u %u"
             , maxClientResolution.getWidth()
             , maxClientResolution.getHeight()
         );
 
-        LOGGER_MESSAGE( "window resolution: %u %u"
+        LOGGER_INFO( "system", "window resolution: %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
         );
@@ -2030,7 +2030,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "set fullscreen mode: %d"
+        LOGGER_INFO( "system", "set fullscreen mode: %d"
             , _fullscreen
         );
 
@@ -2068,7 +2068,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "current resolution [%s] [%u %u]"
+        LOGGER_INFO( "system", "current resolution [%s] [%u %u]"
             , fullscreen == true ? "Fullscreen" : "Window"
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
@@ -2088,7 +2088,7 @@ namespace Mengine
         Viewport renderViewport;
         this->calcRenderViewport_( m_currentResolution, &renderViewport );
 
-        LOGGER_MESSAGE( "set render viewport [%f %f - %f %f]"
+        LOGGER_INFO( "system", "set render viewport [%f %f - %f %f]"
             , renderViewport.begin.x
             , renderViewport.begin.y
             , renderViewport.getWidth()
@@ -2116,7 +2116,7 @@ namespace Mengine
             GAME_SERVICE()
                 ->setGameViewport( gameViewport, gameViewportAspect );
 
-            LOGGER_MESSAGE( "game viewport [%f %f - %f %f] aspect [%f]"
+            LOGGER_INFO( "system", "game viewport [%f %f - %f %f] aspect [%f]"
                 , gameViewport.begin.x
                 , gameViewport.begin.y
                 , gameViewport.end.x
@@ -2206,7 +2206,7 @@ namespace Mengine
 
         m_locale = _locale;
 
-        LOGGER_MESSAGE( "set locale '%s' old '%s'"
+        LOGGER_INFO( "system", "set locale '%s' old '%s'"
             , m_locale.c_str()
             , prevLocale.c_str()
         );
@@ -2233,7 +2233,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "set fixed content resolution: %d"
+        LOGGER_INFO( "system", "set fixed content resolution: %d"
             , _fixedContetResolution
         );
 
@@ -2257,7 +2257,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "set fixed display resolution: %d"
+        LOGGER_INFO( "system", "set fixed display resolution: %d"
             , _fixedDisplayResolution
         );
         

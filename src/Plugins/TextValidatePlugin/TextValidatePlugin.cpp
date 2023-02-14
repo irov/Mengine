@@ -56,7 +56,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( false, true, "Validate Texts... " );
+        LOGGER_MESSAGE_RELEASE( "Validate Texts... " );
 
         bool successful = true;
 
@@ -87,7 +87,7 @@ namespace Mengine
 
         if( successful == false )
         {
-            LOGGER_MESSAGE( "validate texts [FAILURE]" );
+            LOGGER_MESSAGE_RELEASE( "validate texts [FAILURE]" );
 
             bool OPTION_notextcheckcritical = HAS_OPTION( "notextcheckcritical" );
 
@@ -100,7 +100,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE( "validate texts [OK]" );
+            LOGGER_MESSAGE_RELEASE( "validate texts [OK]" );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -33,6 +33,7 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
         bool _runService() override;
+        void _stopService() override;
 
     public:
         UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;

@@ -29,7 +29,7 @@ namespace Mengine
             switch( type )
             {
             case CURLINFO_TEXT:
-                LOGGER_MESSAGE( "== Info: %s", data );
+                LOGGER_MESSAGE_RELEASE( "== Info: %s", data );
             case CURLINFO_HEADER_OUT:
                 text = "=> Send header";
                 break;
@@ -52,11 +52,11 @@ namespace Mengine
                 return 0;
             }
 
-            LOGGER_MESSAGE( "%s, %10.10zu bytes (0x%8.8zu)"
+            LOGGER_MESSAGE_RELEASE( "%s, %10.10zu bytes (0x%8.8zu)"
                 , text, size, size
             );
 
-            LOGGER_MESSAGE( "%.*s"
+            LOGGER_MESSAGE_RELEASE( "%.*s"
                 , (int32_t)size
                 , data 
             );

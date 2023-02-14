@@ -88,7 +88,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "validate resources... " );
+        LOGGER_MESSAGE_RELEASE( "validate resources... " );
         
         bool successful = true;
 
@@ -105,7 +105,7 @@ namespace Mengine
 
         if( successful == false )
         {
-            LOGGER_MESSAGE( "[FAILURE]" );
+            LOGGER_MESSAGE_RELEASE( "[FAILURE]" );
 
             bool OPTION_resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
 
@@ -118,7 +118,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE( "[OK]" );
+            LOGGER_MESSAGE_RELEASE( "[OK]" );
         }        
     }
     //////////////////////////////////////////////////////////////////////////

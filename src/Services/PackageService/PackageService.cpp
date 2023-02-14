@@ -81,7 +81,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "package", "Packages load... %s"
+        LOGGER_INFO( "package", "load packages... %s"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )
         );
 
@@ -97,7 +97,7 @@ namespace Mengine
 
         for( const String & frameworkPack : frameworkPacksSettings )
         {
-            LOGGER_MESSAGE( "package '%s'"
+            LOGGER_INFO( "package", "package: %s"
                 , frameworkPack.c_str()
             );
 
@@ -129,7 +129,7 @@ namespace Mengine
 
         for( const String & resourcePack : resourcePacksSettings )
         {
-            LOGGER_MESSAGE( "package '%s'"
+            LOGGER_INFO( "package", "package: %s"
                 , resourcePack.c_str()
             );
 
@@ -161,7 +161,7 @@ namespace Mengine
 
         for( const String & languagePack : languagePackSettings )
         {
-            LOGGER_MESSAGE( "package '%s'"
+            LOGGER_INFO( "package", "package: %s"
                 , languagePack.c_str()
             );
 
@@ -401,7 +401,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::enablePackages( const ConstString & _locale, const Tags & _platformTags )
     {
-        LOGGER_INFO( "package", "Packages enable..." );
+        LOGGER_INFO( "package", "enable packages..." );
 
         VectorPackages packages;
 

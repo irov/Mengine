@@ -684,7 +684,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE( "User Folder: %s", cs_userPath.c_str() );
+            LOGGER_INFO_PROTECTED( "bootstrapper", "user folder: %s", cs_userPath.c_str() );
         }
 
         // mount user directory
@@ -767,7 +767,7 @@ namespace Mengine
             Char fullLogFilename[MENGINE_MAX_PATH] = {'\0'};
             userFileGroup->getFullPath( logFilename, fullLogFilename );
 
-            LOGGER_MESSAGE( "write file log to: %s"
+            LOGGER_INFO_PROTECTED( "bootstrapper", "write file log to: %s"
                 , fullLogFilename
             );
         }
@@ -777,16 +777,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
         {\
-            LOGGER_MESSAGE( "%s", Info );\
+            if(SERVICE_EXIST(LoggerServiceInterface) == true)\
+            {\
+                LOGGER_INFO( "bootstrapper", "%s", Info );\
+            }\
             if( PLUGIN_CREATE(Name, Doc) == false )\
             {\
-                LOGGER_ERROR( "%s [invalid initialize]", Info );\
+                if(SERVICE_EXIST(LoggerServiceInterface) == true)\
+                {\
+                    LOGGER_ERROR( "%s [invalid initialize]", Info );\
+                }\
                 return false;\
             }\
         }
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_SERVICE( Name, Doc )\
         {\
+            if(SERVICE_EXIST(LoggerServiceInterface) == true)\
+            {\
+                LOGGER_INFO( "bootstrapper", "create service: " #Name);\
+            }\
             if( SERVICE_CREATE(Name, Doc) == false )\
             {\
                 if(SERVICE_EXIST(LoggerServiceInterface) == true)\
@@ -827,33 +837,33 @@ namespace Mengine
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
 
-        LOGGER_MESSAGE( "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
-        LOGGER_MESSAGE( "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
-        LOGGER_MESSAGE( "build publish [%s]", Helper::isBuildPublish() == true ? "ON" : "OFF" );
-        LOGGER_MESSAGE( "master release [%s]", Helper::isMasterRelease() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "build publish [%s]", Helper::isBuildPublish() == true ? "ON" : "OFF" );
+        LOGGER_INFO( "bootstrapper", "master release [%s]", Helper::isMasterRelease() == true ? "ON" : "OFF" );
 
 #ifdef MENGINE_ASSERTION_DEBUG_ENABLE
-        LOGGER_MESSAGE( "enable assertion debug [ON]" );
+        LOGGER_INFO( "bootstrapper", "enable assertion debug [ON]" );
 #else
-        LOGGER_MESSAGE( "enable assertion debug [OFF]" );
+        LOGGER_INFO( "bootstrapper", "enable assertion debug [OFF]" );
 #endif
 
 #ifdef MENGINE_LOGGER_ANALYZE_ENABLE
-        LOGGER_MESSAGE( "enable logger analyze [ON]" );
+        LOGGER_INFO( "bootstrapper", "enable logger analyze [ON]" );
 #else
-        LOGGER_MESSAGE( "enable logger analyze [OFF]" );
+        LOGGER_INFO( "bootstrapper", "enable logger analyze [OFF]" );
 #endif
 
 #ifdef MENGINE_ALLOCATOR_DEBUG_ENABLE
-        LOGGER_MESSAGE( "enable allocator debug [ON]" );
+        LOGGER_INFO( "bootstrapper", "enable allocator debug [ON]" );
 #else
-        LOGGER_MESSAGE( "enable allocator debug [OFF]" );
+        LOGGER_INFO( "bootstrapper", "enable allocator debug [OFF]" );
 #endif
 
 #ifdef MENGINE_DOCUMENT_ENABLE
-        LOGGER_MESSAGE( "enable document debug [ON]" );
+        LOGGER_INFO( "bootstrapper", "enable document debug [ON]" );
 #else
-        LOGGER_MESSAGE( "enable document debug [OFF]" );
+        LOGGER_INFO( "bootstrapper", "enable document debug [OFF]" );
 #endif
 
 #ifdef MENGINE_PLUGIN_INI_STATIC
@@ -868,7 +878,7 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
-        LOGGER_MESSAGE( "current folder: %s"
+        LOGGER_INFO_PROTECTED( "bootstrapper", "current folder: %s"
             , currentPath
         );
 
@@ -1011,7 +1021,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createStaticPlugins_()
     {
-        LOGGER_MESSAGE( "create Plugins..." );
+        LOGGER_INFO( "bootstrapper", "create plugins..." );
 
 #ifdef MENGINE_PLUGIN_WIN32_SENTRY_STATIC
         MENGINE_ADD_PLUGIN( Win32Sentry, "Plugin Win32 Sentry...", MENGINE_DOCUMENT_FACTORABLE );
@@ -1293,10 +1303,14 @@ namespace Mengine
 
         for( const String & pluginName : plugins )
         {
+            LOGGER_INFO( "bootstrapper", "create dynamic plugin: %s"
+                , pluginName.c_str()
+            );
+
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "failed to load plugin '%s'"
+                LOGGER_CRITICAL( "failed to load dynamic plugin '%s'"
                     , pluginName.c_str()
                 );
 
@@ -1328,10 +1342,14 @@ namespace Mengine
 
             for( const String & pluginName : devPlugins )
             {
+                LOGGER_INFO( "bootstrapper", "create dynamic dev plugin: %s"
+                    , pluginName.c_str()
+                );
+
                 if( PLUGIN_SERVICE()
                     ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
-                    LOGGER_WARNING( "failed to load dev plugin '%s'"
+                    LOGGER_WARNING( "failed to load dynamic dev plugin '%s'"
                         , pluginName.c_str()
                     );
                 }
@@ -1348,10 +1366,14 @@ namespace Mengine
 
         for( const String & pluginName : plugins )
         {
+            LOGGER_INFO( "bootstrapper", "create dynamic system plugin: %s"
+                , pluginName.c_str()
+            );
+
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_ERROR( "failed to load system plugin '%s'"
+                LOGGER_ERROR( "failed to load dynamic system plugin '%s'"
                     , pluginName.c_str()
                 );
 
@@ -1383,10 +1405,14 @@ namespace Mengine
 
             for( const String & pluginName : devPlugins )
             {
+                LOGGER_INFO( "bootstrapper", "create dynamic system dev plugin: %s"
+                    , pluginName.c_str()
+                );
+
                 if( PLUGIN_SERVICE()
                     ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
-                    LOGGER_WARNING( "failed to load system dev plugin '%s'"
+                    LOGGER_WARNING( "failed to load dynamic system dev plugin '%s'"
                         , pluginName.c_str()
                     );
                 }
@@ -1403,6 +1429,10 @@ namespace Mengine
 
         for( const String & pluginName : plugins )
         {
+            LOGGER_INFO( "bootstrapper", "create dynamic priority plugin: %s"
+                , pluginName.c_str()
+            );
+
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
@@ -1438,10 +1468,14 @@ namespace Mengine
 
             for( const String & pluginName : devPlugins )
             {
+                LOGGER_INFO( "bootstrapper", "create dynamic priority dev plugin: %s"
+                    , pluginName.c_str()
+                );
+
                 if( PLUGIN_SERVICE()
                     ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
-                    LOGGER_WARNING( "failed to load dev plugin '%s'"
+                    LOGGER_WARNING( "failed to load priority dev plugin '%s'"
                         , pluginName.c_str()
                     );
                 }
@@ -1453,7 +1487,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createApplication_()
     {
-        LOGGER_MESSAGE( "create Application..." );
+        LOGGER_INFO( "bootstrapper", "create application..." );
 
         if( SERVICE_CREATE_SAFE( Application, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
@@ -1467,18 +1501,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createFrameworks_()
     {
-        LOGGER_MESSAGE( "create Frameworks..." );
+        LOGGER_INFO( "bootstrapper", "create frameworks..." );
 
         VectorConstString frameworks;
         CONFIG_VALUES( "Frameworks", "Name", &frameworks );
 
-        for( const ConstString & name : frameworks )
+        for( const ConstString & frameworkName : frameworks )
         {
+            LOGGER_INFO( "bootstrapper", "create framework: %s"
+                , frameworkName.c_str()
+            );
+
             if( FRAMEWORK_SERVICE()
-                ->initializeFramework( name, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->initializeFramework( frameworkName, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_ERROR( "failed to run framework '%s'"
-                    , name.c_str()
+                LOGGER_ERROR( "failed initialize framework '%s'"
+                    , frameworkName.c_str()
                 );
 
                 return false;
@@ -1490,18 +1528,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::runModules_()
     {
-        LOGGER_MESSAGE( "create Modules..." );
+        LOGGER_INFO( "bootstrapper", "create modules..." );
 
         VectorConstString modules;
         CONFIG_VALUES( "Modules", "Name", &modules );
 
-        for( const ConstString & name : modules )
+        for( const ConstString & moduleName : modules )
         {
+            LOGGER_INFO( "bootstrapper", "run module: %s"
+                , moduleName.c_str()
+            );
+
             if( MODULE_SERVICE()
-                ->runModule( name, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->runModule( moduleName, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "failed to run module '%s'"
-                    , name.c_str()
+                    , moduleName.c_str()
                 );
 
                 return false;
@@ -1536,23 +1578,27 @@ namespace Mengine
             VectorConstString devModules;
             CONFIG_VALUES( "DevModules", "Name", &devModules );
 
-            for( const ConstString & name : devModules )
+            for( const ConstString & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
-                    ->hasModule( name ) == false )
+                    ->hasModule( moduleName ) == false )
                 {
                     LOGGER_ERROR( "not exist dev module '%s'"
-                        , name.c_str()
+                        , moduleName.c_str()
                     );
 
                     continue;
                 }
 
+                LOGGER_INFO( "bootstrapper", "run dev module: %s"
+                    , moduleName.c_str()
+                );
+
                 if( MODULE_SERVICE()
-                    ->runModule( name, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                    ->runModule( moduleName, MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     LOGGER_ERROR( "failed to run dev module '%s'"
-                        , name.c_str()
+                        , moduleName.c_str()
                     );
                 }
             }
@@ -1577,33 +1623,37 @@ namespace Mengine
         VectorConstString modules;
         CONFIG_VALUES( "Modules", "Name", &modules );
 
-        for( const ConstString & name : modules )
+        for( const ConstString & moduleName : modules )
         {
             if( MODULE_SERVICE()
-                ->hasModule( name ) == false )
+                ->hasModule( moduleName ) == false )
             {
                 LOGGER_ERROR( "not exist module '%s'"
-                    , name.c_str()
+                    , moduleName.c_str()
                 );
 
                 continue;
             }
 
             if( MODULE_SERVICE()
-                ->isRunModule( name ) == false )
+                ->isRunModule( moduleName ) == false )
             {
                 LOGGER_ERROR( "not run module '%s'"
-                    , name.c_str()
+                    , moduleName.c_str()
                 );
 
                 continue;
             }
 
+            LOGGER_INFO( "bootstrapper", "stop module: %s"
+                , moduleName.c_str()
+            );
+
             if( MODULE_SERVICE()
-                ->stopModule( name ) == false )
+                ->stopModule( moduleName ) == false )
             {
                 LOGGER_ERROR( "failed to stop module '%s'"
-                    , name.c_str()
+                    , moduleName.c_str()
                 );
             }
         }
@@ -1634,33 +1684,37 @@ namespace Mengine
             VectorConstString devModules;
             CONFIG_VALUES( "DevModules", "Name", &devModules );
 
-            for( const ConstString & name : devModules )
+            for( const ConstString & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
-                    ->hasModule( name ) == false )
+                    ->hasModule( moduleName ) == false )
                 {
                     LOGGER_ERROR( "not exist dev module '%s'"
-                        , name.c_str()
+                        , moduleName.c_str()
                     );
 
                     continue;
                 }
 
                 if( MODULE_SERVICE()
-                    ->isRunModule( name ) == false )
+                    ->isRunModule( moduleName ) == false )
                 {
                     LOGGER_ERROR( "not run dev module '%s'"
-                        , name.c_str()
+                        , moduleName.c_str()
                     );
 
                     continue;
                 }
 
+                LOGGER_INFO( "bootstrapper", "stop dev module: %s"
+                    , moduleName.c_str()
+                );
+
                 if( MODULE_SERVICE()
-                    ->stopModule( name ) == false )
+                    ->stopModule( moduleName ) == false )
                 {
                     LOGGER_ERROR( "failed to stop dev module '%s'"
-                        , name.c_str()
+                        , moduleName.c_str()
                     );
                 }
             }
@@ -1672,19 +1726,23 @@ namespace Mengine
         VectorConstString frameworks;
         CONFIG_VALUES( "Frameworks", "Name", &frameworks );
 
-        for( const ConstString & name : frameworks )
+        for( const ConstString & frameworkName : frameworks )
         {
             if( FRAMEWORK_SERVICE()
-                ->isInitializeFramework( name ) == false )
+                ->isInitializeFramework( frameworkName ) == false )
             {
                 continue;
             }
 
+            LOGGER_INFO( "bootstrapper", "finalize framework: %s"
+                , frameworkName.c_str()
+            );
+
             if( FRAMEWORK_SERVICE()
-                ->finalizeFramework( name ) == false )
+                ->finalizeFramework( frameworkName ) == false )
             {
                 LOGGER_ERROR( "failed to stop framework '%s'"
-                    , name.c_str()
+                    , frameworkName.c_str()
                 );
             }
         }

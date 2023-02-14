@@ -53,8 +53,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::_initializeService()
     {
-        LOGGER_INFO( "account", "Initializing Account manager..." );
-
         m_factoryAccounts = Helper::makeFactoryPool<Account, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         FileGroupInterfacePtr fileGroup = FILE_SERVICE()
@@ -124,7 +122,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 
-        LOGGER_MESSAGE( "create account '%s' UID '%.20s'"
+        LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
             , account->getID().c_str()
             , account->getUID().data
         );
@@ -146,7 +144,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 
-        LOGGER_MESSAGE( "create account '%s' UID '%.20s'"
+        LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
             , account->getID().c_str()
             , account->getUID().data
         );
@@ -297,7 +295,7 @@ namespace Mengine
             }
         }
 
-        LOGGER_MESSAGE( "delete account '%s' UID '%.20s'"
+        LOGGER_INFO( "account", "delete account '%s' UID '%.20s'"
             , account->getID().c_str()
             , account->getUID().data
         );
@@ -335,7 +333,7 @@ namespace Mengine
 
         m_currentAccountID = _accountId;
 
-        LOGGER_MESSAGE( "select account '%s' UID '%.20s'"
+        LOGGER_INFO( "account", "select account '%s' UID '%.20s'"
             , account->getID().c_str()
             , account->getUID().data
         );
@@ -612,7 +610,7 @@ namespace Mengine
         {
             const ConstString & accountID = validAccount->getID();
 
-            LOGGER_MESSAGE( "set valid account '%s'"
+            LOGGER_INFO( "account", "set valid account '%s'"
                 , accountID.c_str()
             );
 
@@ -627,7 +625,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_INFO( "account", "invalid set any accounts" );
+            LOGGER_WARNING( "account", "invalid set any accounts" );
         }
 
         m_invalidateAccounts = true;
@@ -687,7 +685,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::saveAccounts()
     {
-        LOGGER_MESSAGE( "save accounts" );
+        LOGGER_INFO( "account", "save accounts" );
 
         if( m_invalidateAccounts == false )
         {

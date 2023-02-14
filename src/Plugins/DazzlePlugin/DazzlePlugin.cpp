@@ -100,8 +100,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DazzlePlugin::_initializePlugin()
     {
-        LOGGER_INFO( "dazzle", "Initializing Dazzle..." );
-
         dz_service_providers_t providers;
         providers.f_malloc = &Detail::s_dz_malloc;
         providers.f_realloc = &Detail::s_dz_realloc;

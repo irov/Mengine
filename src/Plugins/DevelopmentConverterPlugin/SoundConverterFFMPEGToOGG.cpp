@@ -67,7 +67,7 @@ namespace Mengine
 
         String buffer = "-loglevel error -y -threads 8 -i \"" + full_input + "\" -map_metadata -1" + ac + ar + aq + " -acodec libvorbis -max_muxing_queue_size 1024 \"" + full_output + "\"";
 
-        LOGGER_MESSAGE( "converting file '%s' to '%s'"
+        LOGGER_MESSAGE_RELEASE( "converting file '%s' to '%s'"
             , full_input.c_str()
             , full_output.c_str()
         );

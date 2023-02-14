@@ -94,7 +94,7 @@ namespace Mengine
         ALCint minorVersion;
         OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MINOR_VERSION, 1, &minorVersion) );
 
-        LOGGER_MESSAGE( "OpenAL version: %d.%d"
+        LOGGER_INFO( "openal", "OpenAL version: %d.%d"
             , majorVersion
             , minorVersion
         );

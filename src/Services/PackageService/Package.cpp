@@ -316,7 +316,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::enable()
     {
-        LOGGER_MESSAGE( "package enable... '%s'"
+        LOGGER_INFO( "package", "package enable... '%s'"
             , m_desc.name.c_str()
         );
 
@@ -473,6 +473,10 @@ namespace Mengine
 
             return false;
         }
+
+        LOGGER_INFO( "package", "package disable... '%s'"
+            , m_desc.name.c_str()
+        );
 
         m_enable = false;
 

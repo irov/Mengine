@@ -281,7 +281,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE( "creating render window..." );
+        LOGGER_INFO( "application", "creating render window..." );
 
         const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;

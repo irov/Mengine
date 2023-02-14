@@ -112,7 +112,7 @@ namespace Mengine
 
         PlatformDateTime dateTime;
         DATETIME_SYSTEM()
-            ->getLocalDateTime(&dateTime);
+            ->getLocalDateTime( &dateTime );
 
         m_dumpPath.format( "%sDump_%u_%u_%u_%u_%u_%u.dmp"
             , userPath
@@ -131,7 +131,7 @@ namespace Mengine
 
         LOGGER_INFO( "system", "start critical errors monitor plugin" );
         LOGGER_INFO( "system", "dump path: '%s'"
-            , m_dumpPath 
+            , m_dumpPath
         );
 
         return true;

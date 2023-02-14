@@ -325,7 +325,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE( "Creating Render Window..." );
+        LOGGER_INFO( "system", "creating render window..." );
 
         ConstString Window_ApplicationTitleTextId = CONFIG_VALUE( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
 
@@ -399,7 +399,7 @@ namespace Mengine
 
         TimeMilliseconds runPlatformTimeSeconds = runPlatformTimeMilliseconds / 1000;
 
-        LOGGER_MESSAGE( "run platform time: %" MENGINE_PRIu64 " seconds"
+        LOGGER_INFO( "system", "run platform time: %" MENGINE_PRIu64 " seconds"
             , runPlatformTimeSeconds
         );
 

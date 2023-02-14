@@ -139,7 +139,7 @@ namespace Mengine
 
         const XmlDecoderData * decoderData = static_cast<const XmlDecoderData *>(_decoderData);
 
-        LOGGER_MESSAGE( "xml to bin:\nxml - %s\nbin - %s"
+        LOGGER_MESSAGE_RELEASE( "xml to bin:\nxml - %s\nbin - %s"
             , decoderData->pathXml.c_str()
             , decoderData->pathBin.c_str()
         );

@@ -40,7 +40,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "image", "name '%s' load texture '%s'"
+        LOGGER_INFO( "image", "load texture name '%s' file '%s'"
             , this->getName().c_str()
             , this->getContent()->getFilePath().c_str()
         );

@@ -292,7 +292,7 @@ namespace Mengine
         Char utf8_msg[2048] = {'\0'};
         Helper::unicodeToUtf8( _msg, utf8_msg, 2047 );
 
-        LOGGER_MESSAGE( "XlsExport[Warning]: %s"
+        LOGGER_MESSAGE_RELEASE( "XlsExport[Warning]: %s"
             , utf8_msg
         );
     }

@@ -488,7 +488,7 @@ namespace Mengine
         SDL_version ver;
         SDL_GetVersion( &ver );
 
-        LOGGER_MESSAGE( "SDL version: %u.%u.%u"
+        LOGGER_INFO( "platform", "SDL version: %u.%u.%u"
             , ver.major
             , ver.minor
             , ver.patch
@@ -496,13 +496,13 @@ namespace Mengine
 
         const char * revision = SDL_GetRevision();
 
-        LOGGER_MESSAGE( "SDL revision: %s"
+        LOGGER_INFO( "platform", "SDL revision: %s"
             , revision
         );
 
         SDL_bool isTablet = SDL_IsTablet();
 
-        LOGGER_MESSAGE( "SDL Tablet: %s"
+        LOGGER_INFO( "platform", "SDL Tablet: %s"
             , isTablet == SDL_TRUE ? "true" : "false"
         );
 
@@ -687,7 +687,7 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
         }
 
-        LOGGER_MESSAGE( "Platform Tags: %s"
+        LOGGER_INFO( "platform", "platform tags: %s"
             , [this]()
         {
             static Char cache_value[1024] = {'\0'};
@@ -706,7 +706,7 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        LOGGER_MESSAGE( "Touchpad: %u"
+        LOGGER_INFO( "platform", "touchpad: %u"
             , m_touchpad
         );
 
@@ -715,7 +715,7 @@ namespace Mengine
             m_desktop = true;
         }
 
-        LOGGER_MESSAGE( "Desktop: %u"
+        LOGGER_INFO( "platform", "desktop: %u"
             , m_desktop
         );
 
@@ -734,8 +734,8 @@ namespace Mengine
         int AndroidSDKVersion = SDL_GetAndroidSDKVersion();
         SDL_bool AndroidTV = SDL_IsAndroidTV();
 
-        LOGGER_MESSAGE( "Android SDK version: %d", AndroidSDKVersion );
-        LOGGER_MESSAGE( "Android TV: %d", AndroidTV );
+        LOGGER_INFO( "platform", "Android SDK version: %d", AndroidSDKVersion );
+        LOGGER_INFO( "platform", "Android TV: %d", AndroidTV );
 #endif
 
         SERVICE_WAIT( FileServiceInterface, [this]()
@@ -755,7 +755,7 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
-        LOGGER_INFO( "plarform", "Device Seed: %u"
+        LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %u"
             , deviceSeed
         );
 
@@ -768,7 +768,7 @@ namespace Mengine
         DATETIME_SYSTEM()
             ->getLocalDateTime( &dateTime );
 
-        LOGGER_MESSAGE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
+        LOGGER_INFO( "platform", "start date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
             , dateTime.month
             , dateTime.year
@@ -777,70 +777,70 @@ namespace Mengine
             , dateTime.second
         );
 
-        LOGGER_MESSAGE( "[Device Info]" );
+        LOGGER_INFO( "platform", "[Device info]" );
 
-        LOGGER_MESSAGE( "Platform: %s"
+        LOGGER_INFO( "platform", "  Platform: %s"
             , SDL_GetPlatform()
         );
 
-        LOGGER_INFO( "platform", "CPU: %d Count %d CacheLineSize"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU: %d Count %d CacheLineSize"
             , SDL_GetCPUCount()
             , SDL_GetCPUCacheLineSize()
         );
 
-        LOGGER_INFO( "platform", "CPU RDTSC: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU RDTSC: %d"
             , SDL_HasRDTSC()
         );
 
-        LOGGER_INFO( "platform", "CPU AltiVec: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU AltiVec: %d"
             , SDL_HasAltiVec()
         );
 
-        LOGGER_INFO( "platform", "CPU MMX: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU MMX: %d"
             , SDL_HasMMX()
         );
 
-        LOGGER_INFO( "platform", "CPU 3DNow: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU 3DNow: %d"
             , SDL_Has3DNow()
         );
 
-        LOGGER_INFO( "platform", "CPU SSE: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE: %d"
             , SDL_HasSSE()
         );
 
-        LOGGER_INFO( "platform", "CPU SSE2: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE2: %d"
             , SDL_HasSSE2()
         );
 
-        LOGGER_INFO( "platform", "CPU SSE3: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE3: %d"
             , SDL_HasSSE3()
         );
 
-        LOGGER_INFO( "platform", "CPU SSE41: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE41: %d"
             , SDL_HasSSE41()
         );
 
-        LOGGER_INFO( "platform", "CPU SSE42: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU SSE42: %d"
             , SDL_HasSSE42()
         );
 
-        LOGGER_INFO( "platform", "CPU AVX: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU AVX: %d"
             , SDL_HasAVX()
         );
 
-        LOGGER_INFO( "platform", "CPU AVX2: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU AVX2: %d"
             , SDL_HasAVX2()
         );
 
-        LOGGER_INFO( "platform", "CPU AVX512F: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU AVX512F: %d"
             , SDL_HasAVX512F()
         );
 
-        LOGGER_INFO( "platform", "CPU NEON: %d"
+        LOGGER_INFO_PROTECTED( "platform", "  CPU NEON: %d"
             , SDL_HasNEON()
         );
 
-        LOGGER_INFO( "platform", "RAM: %d MB"
+        LOGGER_INFO_PROTECTED( "platform", "  RAM: %dMB"
             , SDL_GetSystemRAM()
         );
 
@@ -871,7 +871,7 @@ namespace Mengine
 
             if( isAccelerometer == true )
             {
-                LOGGER_MESSAGE( "accelerometer found: %s"
+                LOGGER_INFO( "platform", "accelerometer found: %s"
                     , joystickName
                 );
 
@@ -883,7 +883,7 @@ namespace Mengine
 
         if( m_sdlAccelerometer == nullptr )
         {
-            LOGGER_MESSAGE( "accelerometer not found" );
+            LOGGER_INFO( "platform", "accelerometer not found" );
         }
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -905,7 +905,7 @@ namespace Mengine
             );
         }
 
-        LOGGER_MESSAGE_RELEASE_PROTECTED( "ComputerName: %ls"
+        LOGGER_INFO_PROTECTED( "platform", "ComputerName: %ls"
             , ComputerNameBuffer
         );
 
@@ -948,6 +948,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_stopService()
     {
+        PlatformDateTime dateTime;
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
+
+        LOGGER_INFO( "platform", "stop date: %02u.%02u.%u, %02u:%02u:%02u"
+            , dateTime.day
+            , dateTime.month
+            , dateTime.year
+            , dateTime.hour
+            , dateTime.minute
+            , dateTime.second
+        );
+
         if( m_sdlAccelerometer != nullptr )
         {
             if( SDL_JoystickGetAttached( m_sdlAccelerometer ) == SDL_TRUE )
@@ -1400,7 +1413,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _windowResolution, bool _fullscreen )
     {
-        LOGGER_MESSAGE( "create window size %u:%u fullscreen %d"
+        LOGGER_INFO( "platform", "create window size %u:%u fullscreen %d"
             , _windowResolution.getWidth()
             , _windowResolution.getHeight()
             , _fullscreen
@@ -1575,7 +1588,7 @@ namespace Mengine
         int win_right;
         if( SDL_GetWindowBordersSize( m_sdlWindow, &win_top, &win_left, &win_bottom, &win_right ) == 0 )
         {
-            LOGGER_MESSAGE( "SDL window borders [%d, %d] - [%d, %d]"
+            LOGGER_INFO( "platform", "SDL window borders [%d, %d] - [%d, %d]"
                 , win_left
                 , win_top
                 , win_right
@@ -3789,7 +3802,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::initializeFileService_()
     {
-        LOGGER_INFO( "platform", "Initialize SDL file group..." );
+        LOGGER_INFO( "platform", "create plugin SDLFileGroup..." );
 
         PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 

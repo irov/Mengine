@@ -47,6 +47,7 @@ namespace Mengine
             m_mutex->unlock();
         }
 
+    protected:
         void invoke() override
         {
             VectorEventHandlerCommand commands;

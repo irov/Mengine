@@ -26,10 +26,6 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
 
-    protected:
-        void notifyApplicationBeginUpdate_();
-        void notifyApplicationEndUpdate_();
-
     public:
         typedef AndroidEventation<AndroidNativePythonEventHandlerInterface> PythonEventation;
         typedef IntrusivePtr<PythonEventation> PythonEventationPtr;

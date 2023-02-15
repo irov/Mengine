@@ -25,6 +25,8 @@ namespace Mengine
 
     public:
         jmethodID getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const override;
+
+    public:
         void callVoidMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
         jobject callObjectMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
 
@@ -49,6 +51,7 @@ namespace Mengine
     protected:
         void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
         void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
+        void invokeAndroidEventations() override;
 
     protected:
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
@@ -57,6 +60,8 @@ namespace Mengine
         void notifyApplicationRun_();
         void notifyApplicationReady_();
         void notifyApplicationStop_();
+        void notifyApplicationBeginUpdate_();
+        void notifyApplicationEndUpdate_();
         void notifyBootstrapperInitializeBaseServices_();
         void notifyBootstrapperCreateApplication_();
 

@@ -8,7 +8,9 @@ namespace Mengine
     class AndroidEventationInterface
         : public ServantInterface
     {
-    public:
+        friend class AndroidEventationHub;
+
+    protected:
         virtual void invoke() = 0;
     };
     ///////////////////////////////////////////////////////////////////////

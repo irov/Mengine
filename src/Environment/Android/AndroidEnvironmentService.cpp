@@ -366,6 +366,8 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_APPLICATION_STOP, &AndroidEnvironmentService::notifyApplicationStop_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidEnvironmentService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidEnvironmentService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE, &AndroidEnvironmentService::notifyApplicationBeginUpdate_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_END_UPDATE, &AndroidEnvironmentService::notifyApplicationEndUpdate_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -377,6 +379,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_STOP );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_END_UPDATE );
 
         LOGGER_SERVICE()
             ->unregisterLogger( m_proxyLogger );
@@ -469,8 +473,6 @@ namespace Mengine
         jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
         jenv->DeleteLocalRef( jReturnValue );
 
-        m_androidEventationHub->invoke();
-
         return jStringLen;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -489,8 +491,6 @@ namespace Mengine
 
         jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
         jenv->DeleteLocalRef( jReturnValue );
-
-        m_androidEventationHub->invoke();
 
         return jStringLen;
     }
@@ -511,8 +511,6 @@ namespace Mengine
         jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
         jenv->DeleteLocalRef( jReturnValue );
 
-        m_androidEventationHub->invoke();
-
         return jStringLen;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -531,8 +529,6 @@ namespace Mengine
 
         jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
         jenv->DeleteLocalRef( jReturnValue );
-
-        m_androidEventationHub->invoke();
 
         return jStringLen;
     }
@@ -595,6 +591,11 @@ namespace Mengine
     void AndroidEnvironmentService::removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation )
     {
         m_androidEventationHub->removeAndroidEventation( _eventation );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::invokeAndroidEventations()
+    {
+        m_androidEventationHub->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
@@ -686,8 +687,6 @@ namespace Mengine
 
         jenv->DeleteLocalRef( eventName_jobject );
         jenv->DeleteLocalRef( parameters_jobject );
-
-        m_androidEventationHub->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyApplicationRun_()
@@ -720,6 +719,16 @@ namespace Mengine
 
         this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineApplicationStop );
 
+        m_androidEventationHub->invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::notifyApplicationBeginUpdate_()
+    {
+        m_androidEventationHub->invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::notifyApplicationEndUpdate_()
+    {
         m_androidEventationHub->invoke();
     }
     //////////////////////////////////////////////////////////////////////////

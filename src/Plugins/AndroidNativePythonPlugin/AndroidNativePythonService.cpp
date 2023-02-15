@@ -25,14 +25,8 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jobjectArray _args)
     {
-        const Mengine::Char * plugin_str = env->GetStringUTFChars( _plugin, nullptr );
-        const Mengine::Char * method_str = env->GetStringUTFChars( _method, nullptr );
-
-        Mengine::String plugin = plugin_str;
-        Mengine::String method = method_str;
-
-        env->ReleaseStringUTFChars( _plugin, plugin_str );
-        env->ReleaseStringUTFChars( _method, method_str );
+        Mengine::String plugin = Mengine::Helper::makeStringFromJString( env, _plugin );
+        Mengine::String method = Mengine::Helper::makeStringFromJString( env, _method );
 
         if( s_androidNativePythonService == nullptr )
         {
@@ -54,11 +48,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
     {
-        const Mengine::Char * name_str = env->GetStringUTFChars( _name, nullptr );
-
-        Mengine::String name = name_str;
-
-        env->ReleaseStringUTFChars( _name, name_str );
+        Mengine::String name = Mengine::Helper::makeStringFromJString( env, _name );
 
         if( s_androidNativePythonService == nullptr )
         {
@@ -79,13 +69,9 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
     {
-        const Mengine::Char * name_str = env->GetStringUTFChars( _name, nullptr );
+        Mengine::String name = Mengine::Helper::makeStringFromJString( env, _name );
 
-        Mengine::String name = name_str;
-
-        env->ReleaseStringUTFChars( _name, name_str );
-
-        if(s_androidNativePythonService == nullptr )
+        if( s_androidNativePythonService == nullptr )
         {
             __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android activate semaphore '%s'"
                 , name.c_str()
@@ -159,19 +145,14 @@ namespace Mengine
         ANDROID_ENVIRONMENT_SERVICE()
             ->callVoidMengineActivityMethod( jenv, jmethodID_initializePlugins );
 
-        m_eventation->invoke();
-
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE, &AndroidNativePythonService::notifyApplicationBeginUpdate_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_END_UPDATE, &AndroidNativePythonService::notifyApplicationEndUpdate_, MENGINE_DOCUMENT_FACTORABLE );
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_END_UPDATE );
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jmethodID jmethodID_pythonFinalizePlugins = ANDROID_ENVIRONMENT_SERVICE()
@@ -179,6 +160,9 @@ namespace Mengine
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->callVoidMengineActivityMethod( jenv, jmethodID_pythonFinalizePlugins );
+
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         s_androidNativePythonService = nullptr;
 
@@ -202,16 +186,6 @@ namespace Mengine
     void AndroidNativePythonService::addCommand( const LambdaPythonEventHandler & _command )
     {
         m_eventation->addCommand( _command );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::notifyApplicationBeginUpdate_()
-    {
-        m_eventation->invoke();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::notifyApplicationEndUpdate_()
-    {
-        m_eventation->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
     PyObject * AndroidNativePythonService::getPythonAttribute( JNIEnv * _jenv, jobject _obj )
@@ -391,8 +365,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args )
     {
-        m_eventation->invoke();
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         ConstString plugin_c = Helper::stringizeString( _plugin );
@@ -490,8 +462,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::androidResponse( JNIEnv * _jenv, int32_t _id, const pybind::object & _result ) const
     {
-        m_eventation->invoke();
-
         jobject jresult;
 
         if( _result.is_none() == true )
@@ -554,7 +524,8 @@ namespace Mengine
 
         _jenv->DeleteLocalRef( jresult );
 
-        m_eventation->invoke();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         return true;
     }
@@ -566,8 +537,6 @@ namespace Mengine
             , _method.c_str()
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
-
-        m_eventation->invoke();
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -593,7 +562,8 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        m_eventation->invoke();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
@@ -603,8 +573,6 @@ namespace Mengine
             , _method.c_str()
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
-
-        m_eventation->invoke();
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -630,7 +598,8 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        m_eventation->invoke();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         return (bool)jresult;
     }
@@ -642,8 +611,6 @@ namespace Mengine
             , _method.c_str()
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
-
-        m_eventation->invoke();
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -669,7 +636,8 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        m_eventation->invoke();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         return (int32_t)jresult;
     }
@@ -681,8 +649,6 @@ namespace Mengine
             , _method.c_str()
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
-
-        m_eventation->invoke();
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -708,7 +674,8 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        m_eventation->invoke();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         return (int64_t)jresult;
     }
@@ -720,8 +687,6 @@ namespace Mengine
             , _method.c_str()
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
-
-        m_eventation->invoke();
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -747,7 +712,8 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        m_eventation->invoke();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         return (float)jresult;
     }
@@ -759,8 +725,6 @@ namespace Mengine
             , _method.c_str()
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
-
-        m_eventation->invoke();
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -786,14 +750,12 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        const Mengine::Char * result_str = jenv->GetStringUTFChars( jresult, nullptr );
+        Mengine::String result = Helper::makeStringFromJString( jenv, jresult );
 
-        Mengine::String result = result_str;
-
-        jenv->ReleaseStringUTFChars( jresult, result_str );
         jenv->DeleteLocalRef( jresult );
 
-        m_eventation->invoke();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         return result;
     }
@@ -805,8 +767,6 @@ namespace Mengine
             , _method.c_str()
             , m_kernel->object_repr( _args.ptr() ).c_str()
         );
-
-        m_eventation->invoke();
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -858,18 +818,21 @@ namespace Mengine
             jstring jkey = (jstring)jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getKey );
             jstring jvalue = (jstring)jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getValue );
 
-            const Char * key_str = jenv->GetStringUTFChars(jkey, 0);
-            const Char * value_str = jenv->GetStringUTFChars(jvalue, 0);
+            const Char * key_str = jenv->GetStringUTFChars( jkey, 0 );
+            const Char * value_str = jenv->GetStringUTFChars( jvalue, 0 );
 
-            PyObject * value_pystr = m_kernel->string_from_char( value_str );
-            m_kernel->dict_setstring( pyresult, key_str, value_pystr );
+            PyObject * pyvalue_str = m_kernel->string_from_char( value_str );
+            m_kernel->dict_setstring( pyresult, key_str, pyvalue_str );
+            m_kernel->decref( pyvalue_str );
 
             jenv->ReleaseStringUTFChars( jkey, key_str );
             jenv->ReleaseStringUTFChars( jvalue, value_str );
 
+            jenv->DeleteLocalRef( jkey );
+            jenv->DeleteLocalRef( jvalue );
             jenv->DeleteLocalRef( jentry );
 
-            hasNext = jenv->CallBooleanMethod(jset_iterator, jmethodID_Iterator_hasNext );
+            hasNext = jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
         }
 
         jenv->DeleteLocalRef( jset_iterator );
@@ -883,7 +846,8 @@ namespace Mengine
 
         Helper::jEnvExceptionCheck( jenv );
 
-        m_eventation->invoke();
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
 
         return pyresult;
     }
@@ -1090,6 +1054,9 @@ namespace Mengine
             ->callVoidMengineActivityMethod( jenv, jmethodID_waitAndroidSemaphore, name_jvalue );
 
         jenv->DeleteLocalRef( name_jvalue );
+
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::activateSemaphore( const String & _name )

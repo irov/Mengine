@@ -43,6 +43,7 @@ namespace Mengine
     public:
         virtual void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) = 0;
         virtual void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) = 0;
+        virtual void invokeAndroidEventations() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

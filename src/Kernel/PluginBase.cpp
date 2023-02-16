@@ -224,7 +224,7 @@ namespace Mengine
 
             if( leakObjects.empty() == false )
             {
-                LOGGER_MESSAGE_RELEASE( "plugin [%s] leak %u objects"
+                LOGGER_MESSAGE_RELEASE( "plugin [%s] leak %zu objects"
                     , pluginName
                     , leakObjects.size()
                 );

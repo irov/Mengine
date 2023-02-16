@@ -47,7 +47,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
     apply plugin: 'com.google.firebase.crashlytics'
 }
 
-if (MENGINE_APP_PLUGIN_APPLOVIN == true) {
+if (MENGINE_APP_PLUGIN_APPLOVIN == true && project.hasProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY") == true) {
     apply plugin: 'applovin-quality-service'
 
     applovin {

@@ -51,9 +51,6 @@ static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 #include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( Zip );
-PLUGIN_EXPORT( LZ4 );
-//////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( EnumeratorService );
@@ -101,11 +98,12 @@ namespace Mengine
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
-        SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
         LOGGER_SERVICE()
@@ -126,12 +124,9 @@ namespace Mengine
         SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
-        
+
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
-
-        PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
 
         return true;
     }
@@ -196,7 +191,7 @@ int main( int argc, char * argv[] )
     if( fileGroup->existFile( fp_in, false ) == false )
     {
         message_error( "not found 'in' file: %s"
-            , fp_in.c_str() 
+            , fp_in.c_str()
         );
 
         return EXIT_FAILURE;

@@ -42,12 +42,10 @@ static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 #include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( Zip );
-PLUGIN_EXPORT( LZ4 );
-//////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AllocatorSystem );
+SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
@@ -65,6 +63,8 @@ SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( PluginService );
+SERVICE_EXTERN( NotificationService );
+SERVICE_EXTERN( VocabularyService );
 SERVICE_EXTERN( Platform );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -85,9 +85,12 @@ namespace Mengine
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
 
+        SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
         LOGGER_SERVICE()
@@ -107,9 +110,6 @@ namespace Mengine
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
-
         return true;
     }
 }
@@ -121,93 +121,91 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
+    try
     {
-        PWSTR pwCmdLine = ::GetCommandLineW();
-
-        Mengine::WString protocol = parse_kwds( pwCmdLine, L"--protocol", Mengine::WString() );
-        Mengine::WString in = parse_kwds( pwCmdLine, L"--in", Mengine::WString() );
-        Mengine::WString out = parse_kwds( pwCmdLine, L"--out", Mengine::WString() );
-
-        if( in.empty() == true )
+        if( Mengine::initializeEngine() == false )
         {
-            message_error( "not found 'in' param" );
+            message_error( "ImageTrimmer invalid initialize" );
 
             return EXIT_FAILURE;
         }
+    }
+    catch( const std::exception & se )
+    {
+        message_error( "Mengine exception %s"
+            , se.what()
+        );
 
-        try
-        {
-            if( Mengine::initializeEngine() == false )
-            {
-                message_error( "ImageTrimmer invalid initialize" );
+        return EXIT_FAILURE;
+    }
 
-                return EXIT_FAILURE;
-            }
-        }
-        catch( const std::exception & se )
-        {
-            message_error( "Mengine exception %s"
-                , se.what()
-            );
+    PWSTR pwCmdLine = ::GetCommandLineW();
 
-            return EXIT_FAILURE;
-        }
+    Mengine::WString protocol = parse_kwds( pwCmdLine, L"--protocol", Mengine::WString() );
+    Mengine::WString in = parse_kwds( pwCmdLine, L"--in", Mengine::WString() );
+    Mengine::WString out = parse_kwds( pwCmdLine, L"--out", Mengine::WString() );
 
-        Mengine::FilePath fp_protocol = Mengine::Helper::unicodeToFilePath( protocol );
-        Mengine::FilePath fp_in = Mengine::Helper::unicodeToFilePath( in );
-        Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
+    if( in.empty() == true )
+    {
+        message_error( "not found 'in' param" );
 
-        if( PLUGIN_SERVICE()
-            ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return EXIT_FAILURE;
-        }
+        return EXIT_FAILURE;
+    }
 
-        using namespace Mengine::Literals;
+    Mengine::FilePath fp_protocol = Mengine::Helper::unicodeToFilePath( protocol );
+    Mengine::FilePath fp_in = Mengine::Helper::unicodeToFilePath( in );
+    Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
 
-        Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
+    if( PLUGIN_SERVICE()
+        ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+    {
+        return EXIT_FAILURE;
+    }
 
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "invalid create decoder xml2bin for %s"
-                , fp_in.c_str()
-            );
+    using namespace Mengine::Literals;
 
-            return EXIT_FAILURE;
-        }
+    Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
+        ->createDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder->prepareData( nullptr ) == false )
-        {
-            LOGGER_ERROR( "invalid initialize decoder xml2bin for %s"
-                , fp_in.c_str()
-            );
+    if( decoder == nullptr )
+    {
+        LOGGER_ERROR( "invalid create decoder xml2bin for %s"
+            , fp_in.c_str()
+        );
 
-            return EXIT_FAILURE;
-        }
+        return EXIT_FAILURE;
+    }
 
-        Mengine::XmlDecoderData data;
-        data.pathProtocol = fp_protocol;
+    if( decoder->prepareData( nullptr ) == false )
+    {
+        LOGGER_ERROR( "invalid initialize decoder xml2bin for %s"
+            , fp_in.c_str()
+        );
 
-        Mengine::FileGroupInterfacePtr fileGroup = FILE_SERVICE()
-            ->getFileGroup( Mengine::ConstString::none() );
+        return EXIT_FAILURE;
+    }
 
-        if( fileGroup == nullptr )
-        {
-            LOGGER_ERROR( "invalid get file group" );
+    Mengine::XmlDecoderData data;
+    data.pathProtocol = fp_protocol;
 
-            return EXIT_FAILURE;
-        }
+    Mengine::FileGroupInterfacePtr fileGroup = FILE_SERVICE()
+        ->getFileGroup( Mengine::ConstString::none() );
 
-        const Mengine::FilePath & path = fileGroup->getRelationPath();
+    if( fileGroup == nullptr )
+    {
+        LOGGER_ERROR( "invalid get file group" );
 
-        data.pathXml = Mengine::Helper::concatenationFilePath( path, fp_in );
-        data.pathBin = Mengine::Helper::concatenationFilePath( path, fp_out );
+        return EXIT_FAILURE;
+    }
 
-        if( decoder->decode( &data ) == 0 )
-        {
-            return EXIT_FAILURE;
-        }
+    const Mengine::FilePath & path = fileGroup->getRelationPath();
+
+    data.pathXml = Mengine::Helper::concatenationFilePath( path, fp_in );
+    data.pathBin = Mengine::Helper::concatenationFilePath( path, fp_out );
+
+    if( decoder->decode( &data ) == 0 )
+    {
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;

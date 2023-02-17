@@ -135,9 +135,7 @@ namespace Mengine
     size_t ImageEncoderJPEG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
-        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData * );
-
-        const ImageEncoderData * encoderData = static_cast<const ImageEncoderData *>(_encoderData);
+        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData * );        
 
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
@@ -182,6 +180,8 @@ namespace Mengine
         jpeg_set_quality( &cinfo, dataInfo->quality, TRUE );
 
         jpeg_start_compress( &cinfo, TRUE );
+
+        const ImageEncoderData * encoderData = static_cast<const ImageEncoderData *>(_encoderData);
 
         JSAMPROW jpeg_buffer = (JSAMPROW)encoderData->buffer;
 

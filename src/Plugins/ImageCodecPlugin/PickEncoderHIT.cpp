@@ -36,8 +36,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
         MENGINE_ASSERTION_TYPE( _encoderData, const PickEncoderData * );
 
-        const PickEncoderData * encoderData = static_cast<const PickEncoderData *>(_encoderData);
-
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const PickCodecDataInfo * );
 
@@ -54,6 +52,8 @@ namespace Mengine
         m_stream->write( &dataInfo->height, sizeof( dataInfo->height ) );
         m_stream->write( &dataInfo->mipmaplevel, sizeof( dataInfo->mipmaplevel ) );
         m_stream->write( &dataInfo->mipmapsize, sizeof( dataInfo->mipmapsize ) );
+
+        const PickEncoderData * encoderData = static_cast<const PickEncoderData *>(_encoderData);
 
         const void * write_buffer = encoderData->buffer;
         size_t write_size = (size_t)dataInfo->mipmapsize;

@@ -36,16 +36,20 @@ static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
+PLUGIN_EXPORT( PNG );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AllocatorSystem );
+SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
+SERVICE_EXTERN( EnumeratorService );
+SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( UnicodeSystem );
-SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( ArchiveService );
+SERVICE_EXTERN( VocabularyService );
 SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
@@ -80,9 +84,12 @@ namespace Mengine
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
         LOGGER_SERVICE()
@@ -102,6 +109,7 @@ namespace Mengine
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
 
+        PLUGIN_CREATE( PNG, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( ImageCodec, MENGINE_DOCUMENT_FUNCTION );
@@ -613,82 +621,80 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
+    try
     {
-        PWSTR pwCmdLine = ::GetCommandLineW();
-
-        Mengine::WString in_path = parse_kwds( pwCmdLine, L"--in_path", Mengine::WString() );
-        Mengine::WString out_path = parse_kwds( pwCmdLine, L"--out_path", Mengine::WString() );
-        Mengine::WString result_path = parse_kwds( pwCmdLine, L"--result_path", Mengine::WString() );
-        Mengine::WString border = parse_kwds( pwCmdLine, L"--border", Mengine::WString() );
-        Mengine::WString trim = parse_kwds( pwCmdLine, L"--trim", Mengine::WString() );
-        Mengine::WString premultiplied = parse_kwds( pwCmdLine, L"--premultiplied", Mengine::WString() );
-
-        if( in_path.empty() == true )
+        if( Mengine::initializeEngine() == false )
         {
-            message_error( "not found 'in' param" );
+            message_error( "ImageTrimmer invalid initialize" );
 
             return EXIT_FAILURE;
         }
+    }
+    catch( const std::exception & se )
+    {
+        message_error( "Mengine exception %s"
+            , se.what()
+        );
 
-        if( in_path.front() == L'\"' && in_path.back() == L'\"' )
-        {
-            in_path = in_path.substr( 1, in_path.size() - 2 );
-        }
+        return EXIT_FAILURE;
+    }
 
-        if( out_path.empty() == false && out_path.front() == L'\"' && out_path.back() == L'\"' )
-        {
-            out_path = out_path.substr( 1, out_path.size() - 2 );
-        }
+    PWSTR pwCmdLine = ::GetCommandLineW();
 
-        if( result_path.empty() == false && result_path.front() == L'\"' && result_path.back() == L'\"' )
-        {
-            result_path = result_path.substr( 1, result_path.size() - 2 );
-        }
+    Mengine::WString in_path = parse_kwds( pwCmdLine, L"--in_path", Mengine::WString() );
+    Mengine::WString out_path = parse_kwds( pwCmdLine, L"--out_path", Mengine::WString() );
+    Mengine::WString result_path = parse_kwds( pwCmdLine, L"--result_path", Mengine::WString() );
+    Mengine::WString border = parse_kwds( pwCmdLine, L"--border", Mengine::WString() );
+    Mengine::WString trim = parse_kwds( pwCmdLine, L"--trim", Mengine::WString() );
+    Mengine::WString premultiplied = parse_kwds( pwCmdLine, L"--premultiplied", Mengine::WString() );
 
-        bool flag_border = false;
-        if( border == L"1" )
-        {
-            flag_border = true;
-        }
+    if( in_path.empty() == true )
+    {
+        message_error( "not found 'in' param" );
 
-        bool flag_trim = false;
-        if( trim == L"1" )
-        {
-            flag_trim = true;
-        }
+        return EXIT_FAILURE;
+    }
 
-        bool flag_premultiplied = false;
-        if( premultiplied == L"1" )
-        {
-            flag_premultiplied = true;
-        }
+    if( in_path.front() == L'\"' && in_path.back() == L'\"' )
+    {
+        in_path = in_path.substr( 1, in_path.size() - 2 );
+    }
 
-        try
-        {
-            if( Mengine::initializeEngine() == false )
-            {
-                message_error( "ImageTrimmer invalid initialize" );
+    if( out_path.empty() == false && out_path.front() == L'\"' && out_path.back() == L'\"' )
+    {
+        out_path = out_path.substr( 1, out_path.size() - 2 );
+    }
 
-                return EXIT_FAILURE;
-            }
-        }
-        catch( const std::exception & se )
-        {
-            message_error( "Mengine exception %s"
-                , se.what()
-            );
+    if( result_path.empty() == false && result_path.front() == L'\"' && result_path.back() == L'\"' )
+    {
+        result_path = result_path.substr( 1, result_path.size() - 2 );
+    }
 
-            return EXIT_FAILURE;
-        }
+    bool flag_border = false;
+    if( border == L"1" )
+    {
+        flag_border = true;
+    }
 
-        if( Mengine::trimImage( in_path, out_path, result_path, flag_border, flag_trim, flag_premultiplied ) == false )
-        {
-            message_error( "ImageTrimmer invalid trim %ls"
-                , in_path.c_str()
-            );
+    bool flag_trim = false;
+    if( trim == L"1" )
+    {
+        flag_trim = true;
+    }
 
-            return EXIT_FAILURE;
-        }
+    bool flag_premultiplied = false;
+    if( premultiplied == L"1" )
+    {
+        flag_premultiplied = true;
+    }
+
+    if( Mengine::trimImage( in_path, out_path, result_path, flag_border, flag_trim, flag_premultiplied ) == false )
+    {
+        message_error( "ImageTrimmer invalid trim %ls"
+            , in_path.c_str()
+        );
+
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;

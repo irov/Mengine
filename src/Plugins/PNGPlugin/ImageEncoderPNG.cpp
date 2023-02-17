@@ -117,9 +117,7 @@ namespace Mengine
     size_t ImageEncoderPNG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
-        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageEncoderData * );
-
-        const ImageEncoderData * encoderData = static_cast<const ImageEncoderData *>(_encoderData);
+        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData * );
 
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
@@ -161,6 +159,8 @@ namespace Mengine
         png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
         png_set_bgr( m_png_ptr );
         png_write_info( m_png_ptr, m_info_ptr );
+
+        const ImageEncoderData * encoderData = static_cast<const ImageEncoderData *>(_encoderData);
 
         size_t pitch = encoderData->pitch;
 

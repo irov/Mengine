@@ -52,6 +52,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderHTF::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
+        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData * );
+
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 

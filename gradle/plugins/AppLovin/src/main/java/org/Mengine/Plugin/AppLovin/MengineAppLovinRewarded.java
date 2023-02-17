@@ -21,7 +21,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     private int m_enumeratorRequest;
     private int m_requestId;
 
-    public MengineAppLovinRewarded(MengineAppLovinPlugin plugin, String adUnitId) throws Exception {
+    public MengineAppLovinRewarded(MengineAppLovinPlugin plugin, String adUnitId) {
         super(plugin);
 
         m_retryAttemptRewarded = 0;
@@ -37,6 +37,17 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         rewardedAd.setRevenueListener(this);
 
         m_rewardedAd = rewardedAd;
+
+        MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
+
+        if (mediationAmazon != null) {
+            try {
+                mediationAmazon.loadMediatorRewarded(activity, m_rewardedAd);
+            } catch (Exception e) {
+            }
+        } else {
+            this.loadAd();
+        }
     }
 
     @Override
@@ -46,23 +57,6 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         if (m_rewardedAd != null) {
             m_rewardedAd.destroy();
             m_rewardedAd = null;
-        }
-    }
-
-    public void loadRewarded() {
-        m_plugin.logMessage("[Rewarded] loadRewarded");
-
-        MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
-
-        if (mediationAmazon != null) {
-            try {
-                MengineActivity activity = m_plugin.getActivity();
-
-                mediationAmazon.loadMediatorRewarded(activity, m_rewardedAd);
-            } catch (Exception e) {
-            }
-        } else {
-            this.loadAd();
         }
     }
 
@@ -82,8 +76,47 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         m_rewardedAd.loadAd();
     }
 
+    public boolean canOfferRewarded() {
+        boolean ready = m_rewardedAd.isReady();
 
-    public void showRewarded() {
+        m_plugin.logMessage("[Rewarded] canOfferRewarded [%d]"
+            , ready
+        );
+
+        if (ready == false) {
+            this.buildEvent("ad_rewarded_offer_unready")
+                .addParameterInteger("request_id", m_requestId)
+                .log();
+
+            return false;
+        }
+
+        this.buildEvent("ad_rewarded_offer")
+            .addParameterInteger("request_id", m_requestId)
+            .log();
+
+        return true;
+    }
+
+    public boolean canYouShowRewarded() {
+        boolean ready = m_rewardedAd.isReady();
+
+        m_plugin.logMessage("[Rewarded] canYouShowRewarded [%d]"
+            , ready
+        );
+
+        if (ready == false) {
+            this.buildEvent("ad_rewarded_show_unready")
+                .addParameterInteger("request_id", m_requestId)
+                .log();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean showRewarded() {
         boolean ready = m_rewardedAd.isReady();
 
         m_plugin.logMessage("[Rewarded] showInterstitial [%d]"
@@ -95,7 +128,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
                 .addParameterInteger("request_id", m_requestId)
                 .log();
 
-            return;
+            return false;
         }
 
         this.buildEvent("ad_rewarded_show")
@@ -103,6 +136,8 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             .log();
 
         m_rewardedAd.showAd();
+
+        return true;
     }
 
     @Override

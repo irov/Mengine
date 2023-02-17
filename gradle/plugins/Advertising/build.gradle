@@ -1,5 +1,8 @@
 import com.Mengine.Utils
 
+def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
+def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
+
 apply plugin: 'com.android.library'
 
 android {
@@ -30,6 +33,20 @@ android {
             } else {
                 res.srcDirs += ['../../app/res']
             }
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
+
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
+
+            consumerProguardFiles 'proguard-rules.pro'
         }
     }
 }

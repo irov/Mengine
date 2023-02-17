@@ -55,7 +55,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
      **/
 
     private List<String> m_idsNames = null;
-    private final List<ProductDetails> m_productsDetails = new ArrayList<>();
+    private ArrayList<ProductDetails> m_productsDetails = new ArrayList<>();
 
     private BillingClient m_billingClient = null;
     private Boolean m_connectionSucces = false;

@@ -1,10 +1,7 @@
 package org.Mengine.Plugin.Helpshift;
 
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 
-import org.Mengine.Plugin.FirebaseMessaging.MengineFirebaseMessagingPlugin;
 import org.Mengine.Plugin.FirebaseMessaging.MengineFirebaseMessagingListener;
 
 import com.google.firebase.messaging.RemoteMessage;
@@ -14,7 +11,7 @@ import androidx.annotation.NonNull;
 
 import java.util.Map;
 
-public class MengineHelpshiftFirebaseMessaging extends MenginePluginExtension implements MengineFirebaseMessagingListener {
+public class MengineHelpshiftExtensionFirebaseMessaging extends MenginePluginExtension implements MengineFirebaseMessagingListener {
     @Override
     public boolean onMessageReceived(final RemoteMessage remoteMessage) {
         Map<String, String> data = remoteMessage.getData();

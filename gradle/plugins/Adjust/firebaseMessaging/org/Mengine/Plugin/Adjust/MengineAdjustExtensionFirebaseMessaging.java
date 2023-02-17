@@ -13,7 +13,7 @@ import com.adjust.sdk.Adjust;
 
 import androidx.annotation.NonNull;
 
-public class MengineAdjustFirebaseMessaging extends MenginePluginExtension implements MengineFirebaseMessagingListener {
+public class MengineAdjustExtensionFirebaseMessaging extends MenginePluginExtension implements MengineFirebaseMessagingListener {
     @Override
     public boolean onMessageReceived(final RemoteMessage remoteMessage) {
 

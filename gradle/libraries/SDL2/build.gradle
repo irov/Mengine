@@ -1,5 +1,7 @@
 import com.Mengine.Utils
 
+def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
+def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
 def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false)
 
 apply plugin: 'com.android.library'
@@ -42,6 +44,8 @@ android {
     externalNativeBuild {
         cmake {
             version project.cmakeVersion
+
+            path "../../../dependencies/SDL2/CMakeLists.txt"
         }
     }
 
@@ -91,9 +95,17 @@ android {
         }
     }
 
-    externalNativeBuild {
-        cmake {
-            path "../../../dependencies/SDL2/CMakeLists.txt"
+    buildTypes {
+        debug {
+            minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
+
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
+
+            consumerProguardFiles 'proguard-rules.pro'
         }
     }
 
@@ -112,7 +124,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

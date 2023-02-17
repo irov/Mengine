@@ -1,0 +1,1 @@
+-keep public class org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationsPlugin

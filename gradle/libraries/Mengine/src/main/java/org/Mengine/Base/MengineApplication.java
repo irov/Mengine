@@ -7,37 +7,27 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.multidex.MultiDex;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MengineApplication extends Application {
-    public static final String TAG = "MengineApplication";
+    private static final String TAG = "MengineApplication";
 
-    public ArrayList<MenginePlugin> m_plugins;
-    public Map<String, MenginePlugin> m_dictionaryPlugins;
+    private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
+    private Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
 
-    public ArrayList<MenginePluginLoggerListener> m_loggerListeners;
-    public ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners;
-    public ArrayList<MenginePluginActivityLifecycleListener> m_activityLifecycleListeners;
-    public ArrayList<MenginePluginKeyListener> m_keyListeners;
-    public ArrayList<MenginePluginApplicationListener> m_applicationListeners;
-    public ArrayList<MenginePluginExtensionListener> m_extensionListeners;
+    private ArrayList<MenginePluginLoggerListener> m_loggerListeners = new ArrayList<>();
+    private ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners = new ArrayList<>();
+    private ArrayList<MenginePluginActivityLifecycleListener> m_activityLifecycleListeners = new ArrayList<>();
+    private ArrayList<MenginePluginKeyListener> m_keyListeners = new ArrayList<>();
+    private ArrayList<MenginePluginApplicationListener> m_applicationListeners = new ArrayList<>();
+    private ArrayList<MenginePluginExtensionListener> m_extensionListeners = new ArrayList<>();
 
-    public MengineActivityLifecycle m_activityLifecycle;
-
-    public MengineApplication() {
-        m_plugins = new ArrayList<>();
-        m_dictionaryPlugins = new HashMap<>();
-
-        m_loggerListeners = new ArrayList<>();
-        m_analyticsListeners = new ArrayList<>();
-        m_activityLifecycleListeners = new ArrayList<>();
-        m_keyListeners = new ArrayList<>();
-        m_applicationListeners = new ArrayList<>();
-        m_extensionListeners = new ArrayList<>();
-    }
+    private MengineActivityLifecycle m_activityLifecycle;
 
     public String[] getGradleAndroidPlugins() {
         String[] empty = {};
@@ -69,7 +59,7 @@ public class MengineApplication extends Application {
             return bundle;
         } catch (PackageManager.NameNotFoundException e) {
             MengineLog.logError(TAG, "Unable to load meta-data: %s"
-                    , e.getLocalizedMessage()
+                , e.getLocalizedMessage()
             );
         }
 
@@ -271,7 +261,7 @@ public class MengineApplication extends Application {
             return null;
         }
 
-        if( extension.onInitialize(activity, plugin) == false) {
+        if( extension.onPluginExtensionInitialize(activity, plugin) == false) {
             return null;
         }
 
@@ -329,9 +319,9 @@ public class MengineApplication extends Application {
 
         String[] plugins = this.getGradleAndroidPlugins();
 
-        for (String n : plugins) {
-            if (this.createPlugin(n) == false) {
-                throw new RuntimeException(n);
+        for (String namePlugin : plugins) {
+            if (this.createPlugin(namePlugin) == false) {
+                throw new RuntimeException(namePlugin);
             }
         }
 
@@ -368,6 +358,8 @@ public class MengineApplication extends Application {
     @Override
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+
+        MultiDex.install(this);
 
         MengineLog.logInfo(TAG, "attachBaseContext");
 

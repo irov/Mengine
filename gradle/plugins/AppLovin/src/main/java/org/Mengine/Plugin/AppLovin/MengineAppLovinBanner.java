@@ -23,7 +23,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     private int m_enumeratorRequest;
     private int m_requestId;
 
-    public MengineAppLovinBanner(MengineAppLovinPlugin plugin, String adUnitId) throws Exception {
+    public MengineAppLovinBanner(MengineAppLovinPlugin plugin, String adUnitId) {
         super(plugin);
 
         m_enumeratorRequest = 0;

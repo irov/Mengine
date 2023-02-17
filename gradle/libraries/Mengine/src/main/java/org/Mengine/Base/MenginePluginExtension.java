@@ -15,19 +15,19 @@ public class MenginePluginExtension {
         return m_plugin;
     }
 
-    public boolean onInitialize(MengineActivity activity, MenginePlugin plugin) {
+    public boolean onPluginExtensionInitialize(MengineActivity activity, MenginePlugin plugin) {
         m_activity = activity;
         m_plugin = plugin;
 
         return true;
     }
 
-    public void onFinalize(MengineActivity activity, MenginePlugin plugin) {
+    public void onPluginExtensionFinalize(MengineActivity activity, MenginePlugin plugin) {
         m_activity = null;
         m_plugin = null;
     }
 
-    public void onRun(MengineActivity activity, MenginePlugin plugin) {
+    public void onPluginExtensionRun(MengineActivity activity, MenginePlugin plugin) {
         //Empty
     }
 }

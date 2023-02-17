@@ -12,9 +12,9 @@ import androidx.annotation.RequiresApi;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class NotificationJobService extends JobService {
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_CONTENT = "content";
-    public static final String KEY_ID = "id";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_CONTENT = "content";
+    private static final String KEY_ID = "id";
 
     public static PersistableBundle notificationBundle(int id, String title, String content){
         PersistableBundle bundle = new PersistableBundle();

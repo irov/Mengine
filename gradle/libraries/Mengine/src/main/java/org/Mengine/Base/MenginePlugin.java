@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class MenginePlugin {
     private MengineApplication m_application;
     private MengineActivity m_activity;
-    private ArrayList<MenginePluginExtension> m_extensions;
+    private ArrayList<MenginePluginExtension> m_extensions = new ArrayList<>();
     private String m_pluginName;
 
     public static int LM_SILENT = 0;
@@ -34,10 +34,7 @@ public class MenginePlugin {
 
     public boolean onInitialize(MengineApplication application, String pluginName) {
         m_application = application;
-
         m_pluginName = pluginName;
-
-        m_extensions = new ArrayList<>();
 
         return true;
     }
@@ -122,7 +119,7 @@ public class MenginePlugin {
         //Empty
     }
 
-    public void addExtension(MengineActivity activity, String type) {
+    public boolean createExtension(MengineActivity activity, String type) {
         this.logInfo("Plugin [%s] add extension: %s"
             , m_pluginName
             , type
@@ -130,7 +127,18 @@ public class MenginePlugin {
 
         MenginePluginExtension extension = m_application.createPluginExtension(activity, this, type);
 
+        if (extension == null) {
+            this.logError("Plugin [%s] invalid create extension: %s"
+                , m_pluginName
+                , type
+            );
+
+            return false;
+        }
+
         m_extensions.add(extension);
+
+        return true;
     }
 
     public void onExtensionInitialize(MengineActivity activity) {
@@ -160,20 +168,22 @@ public class MenginePlugin {
             return;
         }
 
-        for (String extension : (String[])MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS) {
-            this.addExtension(activity, extension);
+        for (String extensionName : (String[])MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS) {
+            if (this.createExtension(activity, extensionName) == false) {
+                new RuntimeException(extensionName);
+            }
         }
     }
 
     public void onExtensionRun(MengineActivity activity) {
         for( MenginePluginExtension extension : m_extensions ) {
-            extension.onRun(activity, this);
+            extension.onPluginExtensionRun(activity, this);
         }
     }
 
     public void onExtensionFinalize(MengineActivity activity) {
         for( MenginePluginExtension extension : m_extensions ) {
-            extension.onFinalize(activity, this);
+            extension.onPluginExtensionFinalize(activity, this);
         }
 
         m_extensions = null;

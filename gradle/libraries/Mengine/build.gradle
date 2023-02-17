@@ -42,9 +42,16 @@ android {
         }
     }
 
+    externalNativeBuild {
+        cmake {
+            version project.cmakeVersion
+
+            path "../../../cmake/Android_SDL/CMakeLists.txt"
+        }
+    }
+
     buildTypes {
         debug {
-
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_PLATFORM=android-" + project.minSdkVersion,
@@ -63,9 +70,6 @@ android {
         }
 
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_PLATFORM=android-" + project.minSdkVersion,
@@ -84,21 +88,13 @@ android {
         }
     }
 
-    externalNativeBuild {
-        cmake {
-            path "../../../cmake/Android_SDL/CMakeLists.txt"
-
-            version project.cmakeVersion
-        }
-    }
-
     preBuild.dependsOn ":libraries:SDL2:build", ":libraries:OpenAL32:build"
 }
 
 dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.preference:preference:1.2.0"
 

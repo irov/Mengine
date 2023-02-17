@@ -19,7 +19,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     public static String PLUGIN_NAME = "DevToDev";
     public static boolean PLUGIN_EMBEDDING = true;
 
-    public boolean m_initializeSuccessful = false;
+    private boolean m_initializeSuccessful = false;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

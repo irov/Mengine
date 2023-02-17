@@ -411,14 +411,8 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	std::vector<AtlasImageDesc>::size_type atlasCount = atlas_images.size();
     fprintf_s( f_result, "%zu\n", atlasCount );
 
-    for( std::vector<AtlasImageDesc>::const_iterator
-        it = atlas_images.begin(),
-        it_end = atlas_images.end();
-        it != it_end;
-        ++it )
+    for( const AtlasImageDesc & image : atlas_images )
     {
-        const AtlasImageDesc & image = *it;
-
         fprintf_s( f_result, "%s;%s;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%lld;%d\n"
             , image.name.c_str()
             , image.atlas.c_str()

@@ -1,5 +1,8 @@
 import com.Mengine.Utils
 
+def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
+def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
+
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADCOLONY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADCOLONY")
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON")
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE")
@@ -108,17 +111,35 @@ android {
             }
         }
     }
+
+    buildTypes {
+        debug {
+            minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
+
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
+
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+}
+
+if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
+    android.ext.extensions += 'org.Mengine.Plugin.AppLovin.MengineAppLovinFirebaseAnalytics'
+
+    dependencies {
+        implementation project(path: ':plugins:FirebaseAnalytics')
+
+        implementation 'com.google.firebase:firebase-analytics'
+    }
 }
 
 dependencies {
     implementation project(':libraries:Mengine')
     implementation project(':libraries:SDL2')
-
-    if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
-        implementation project(path: ':plugins:FirebaseAnalytics')
-
-        implementation 'com.google.firebase:firebase-analytics'
-    }
 
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'

@@ -10,7 +10,7 @@ import com.facebook.appevents.AppEventsLogger;
 
 import androidx.annotation.NonNull;
 
-public class MengineFacebookFirebaseMessaging extends MenginePluginExtension implements MengineFirebaseMessagingListener {
+public class MengineFacebookExtensionFirebaseMessaging extends MenginePluginExtension implements MengineFirebaseMessagingListener {
     @Override
     public boolean onMessageReceived(final RemoteMessage remoteMessage) {
 

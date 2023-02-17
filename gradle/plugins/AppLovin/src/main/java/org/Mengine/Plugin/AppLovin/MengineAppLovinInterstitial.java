@@ -20,12 +20,15 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     private int m_enumeratorRequest;
     private int m_requestId;
 
-    public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) throws Exception {
+    private boolean m_processLoadAd;
+
+    public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) {
         super(plugin);
 
         m_retryAttemptInterstitial = 0;
         m_enumeratorRequest = 0;
         m_requestId = 0;
+        m_processLoadAd = false;
 
         MengineActivity activity = m_plugin.getActivity();
 
@@ -36,6 +39,17 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         interstitialAd.setRevenueListener(this);
 
         m_interstitialAd = interstitialAd;
+
+        MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
+
+        if (mediationAmazon != null) {
+            try {
+                mediationAmazon.loadMediatorInterstitial(activity, m_interstitialAd);
+            } catch (Exception e) {
+            }
+        } else {
+            this.loadAd();
+        }
     }
 
     @Override
@@ -45,23 +59,6 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         if (m_interstitialAd != null) {
             m_interstitialAd.destroy();
             m_interstitialAd = null;
-        }
-    }
-
-    public void loadInterstitial() {
-        m_plugin.logMessage("[Interstitial] loadInterstitial");
-
-        MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
-
-        if (mediationAmazon != null) {
-            try {
-                MengineActivity activity = m_plugin.getActivity();
-
-                mediationAmazon.loadMediatorInterstitial(activity, m_interstitialAd);
-            } catch (Exception e) {
-            }
-        } else {
-            this.loadAd();
         }
     }
 
@@ -78,10 +75,30 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterInteger("request_id", m_requestId)
             .log();
 
+        m_processLoadAd = true;
+
         m_interstitialAd.loadAd();
     }
 
-    public void showInterstitial() {
+    public boolean canYouShowInterstitial() {
+        boolean ready = m_interstitialAd.isReady();
+
+        m_plugin.logMessage("[Interstitial] canYouShowInterstitial [%d]"
+            , ready
+        );
+
+        if (ready == false) {
+            this.buildEvent("ad_interstitial_show_unready")
+                .addParameterInteger("request_id", m_requestId)
+                .log();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean showInterstitial() {
         boolean ready = m_interstitialAd.isReady();
 
         m_plugin.logMessage("[Interstitial] showInterstitial [%d]"
@@ -93,7 +110,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
                 .addParameterInteger("request_id", m_requestId)
                 .log();
 
-            return;
+            return false;
         }
 
         this.buildEvent("ad_interstitial_show")
@@ -101,6 +118,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .log();
 
         m_interstitialAd.showAd();
+
+        return true;
     }
 
     @Override

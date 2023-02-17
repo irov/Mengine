@@ -24,7 +24,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
     public static String PLUGIN_NAME = "FirebaseMessaging";
     public static boolean PLUGIN_EMBEDDING = true;
 
-    public ArrayList<MengineFirebaseMessagingListener> m_messagings;
+    private ArrayList<MengineFirebaseMessagingListener> m_messagings = new ArrayList<>();
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

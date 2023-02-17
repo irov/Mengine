@@ -83,7 +83,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_FACEBOOK [https://developers.facebook.com]
 / * - MENGINE_APP_PLUGIN_DEVTODEV [https://www.devtodev.com]
 / * - MENGINE_APP_PLUGIN_GOOGLE_SERVICE [https://developers.google.com]
-/ * - MENGINE_APP_PLUGIN_GOOGLE_BILLING [https://developer.android.com/google/play/billing]
+/ * - MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING [https://developer.android.com/google/play/billing]
 / * - MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL [https://developers.google.com/games/services]
 / * - MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS [https://developer.android.com/guide/playcore/in-app-review]
 / * - MENGINE_APP_PLUGIN_GOOGLE_CONSENT [https://developers.google.com]
@@ -97,7 +97,7 @@ includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", false, ":plugins:SplashScreen")
 includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":plugins:LocalNotifications")
 includePlugin("MENGINE_APP_PLUGIN_ADVERTISING", false, ":plugins:Advertising")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false, ":plugins:GoogleService")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_BILLING", false, ":plugins:GoogleBilling")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", false, ":plugins:GooglePlayBilling")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false, ":plugins:GoogleGameSocial")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", false, ":plugins:GoogleInAppReviews")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", false, ":plugins:GoogleConsent")

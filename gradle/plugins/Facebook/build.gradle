@@ -1,5 +1,8 @@
 import com.Mengine.Utils
 
+def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
+def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
+
 def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
 
 apply plugin: 'com.android.library'
@@ -40,10 +43,24 @@ android {
             }
         }
     }
+
+    buildTypes {
+        debug {
+            minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
+
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
+
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
 }
 
 if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
-    android.ext.extensions += 'org.Mengine.Plugin.Facebook.MengineFacebookFirebaseMessaging'
+    android.ext.extensions += 'org.Mengine.Plugin.Facebook.MengineFacebookExtensionFirebaseMessaging'
 
     dependencies {
         implementation project(path: ':plugins:FirebaseMessaging')

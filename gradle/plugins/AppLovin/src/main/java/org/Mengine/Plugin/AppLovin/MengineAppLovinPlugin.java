@@ -1,7 +1,10 @@
 package org.Mengine.Plugin.AppLovin;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginExtension;
+import org.Mengine.Base.MenginePluginExtensionListener;
 
 import com.applovin.mediation.MaxAd;
 
@@ -15,7 +18,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MengineAppLovinPlugin extends MenginePlugin {
+public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginExtensionListener {
     public static String PLUGIN_NAME = "AppLovin";
     public static boolean PLUGIN_EMBEDDING = true;
 
@@ -26,7 +29,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
      * <p>
      * установка Interstitial
      * void initInterstitial()
-     * void loadInterstitial()
+     * boolean canYouShowInterstitial()
      * void showInterstitial()
      * - onApplovinInterstitialOnAdLoaded
      * - onApplovinInterstitialOnAdDisplayed
@@ -37,7 +40,8 @@ public class MengineAppLovinPlugin extends MenginePlugin {
      * <p>
      * установка Rewarded
      * void initRewarded()
-     * void loadRewarded()
+     * boolean canOfferRewarded()
+     * boolean canYouShowRewarded()
      * void showRewarded()
      * - onApplovinRewardedOnRewardedVideoStarted
      * - onApplovinRewardedOnRewardedVideoCompleted
@@ -69,7 +73,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
 
-    private List<MengineAppLovinAnalyticsInterface> m_analytics;
+    private ArrayList<MengineAppLovinAnalyticsListener> m_analytics = new ArrayList<>();;
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
@@ -92,6 +96,15 @@ public class MengineAppLovinPlugin extends MenginePlugin {
     }
 
     @Override
+    public void onMenginePluginExtension(MengineApplication application, MengineActivity activity, MenginePlugin plugin, MenginePluginExtension extension) {
+        if (extension instanceof MengineAppLovinAnalyticsListener) {
+            MengineAppLovinAnalyticsListener listener = (MengineAppLovinAnalyticsListener)extension;
+
+            m_analytics.add(listener);
+        }
+    }
+
+    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         final Context context = activity.getBaseContext();
 
@@ -103,16 +116,6 @@ public class MengineAppLovinPlugin extends MenginePlugin {
 
                 m_mediationAmazon = mediationAmazon;
             } catch (Exception e) {
-            }
-        }
-
-        m_analytics = new ArrayList<>();
-
-        MengineAppLovinAnalyticsInterface firebaseAnalytics = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinFirebaseAnalytics", false);
-
-        if (firebaseAnalytics != null) {
-            if (firebaseAnalytics.initializeAnalytics(this, activity) == true) {
-                m_analytics.add(firebaseAnalytics);
             }
         }
 
@@ -166,13 +169,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
             m_mediationAmazon = null;
         }
 
-        if( m_analytics != null ) {
-            for (MengineAppLovinAnalyticsInterface analytic : m_analytics) {
-                analytic.finalizeAnalytics(this);
-            }
-
-            m_analytics = null;
-        }
+        m_analytics = null;
 
         if (m_interstitial != null) {
             m_interstitial.destroy();
@@ -194,7 +191,7 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         return m_mediationAmazon;
     }
 
-    public void initBanner(String adUnitId) throws Exception {
+    public void initBanner(String adUnitId) {
         m_banner = new MengineAppLovinBanner(this, adUnitId);
     }
 
@@ -202,32 +199,36 @@ public class MengineAppLovinPlugin extends MenginePlugin {
         m_banner.bannerVisible(show);
     }
 
-    public void initInterstitial(String adUnitId) throws Exception {
+    public void initInterstitial(String adUnitId) {
         m_interstitial = new MengineAppLovinInterstitial(this, adUnitId);
     }
 
-    public void loadInterstitial() {
-        m_interstitial.loadInterstitial();
+    public boolean canYouShowInterstitial() {
+        return m_interstitial.canYouShowInterstitial();
     }
 
-    public void showInterstitial() {
-        m_interstitial.showInterstitial();
+    public boolean showInterstitial() {
+        return m_interstitial.showInterstitial();
     }
 
-    public void initRewarded(String adUnitId) throws Exception {
+    public void initRewarded(String adUnitId) {
         m_rewarded = new MengineAppLovinRewarded(this, adUnitId);
     }
 
-    public void loadRewarded() {
-        m_rewarded.loadRewarded();
+    public boolean canOfferRewarded() {
+        return m_rewarded.canOfferRewarded();
     }
 
-    public void showRewarded() {
-        m_rewarded.showRewarded();
+    public boolean canYouShowRewarded() {
+        return m_rewarded.canYouShowRewarded();
+    }
+
+    public boolean showRewarded() {
+        return m_rewarded.showRewarded();
     }
 
     public void onEventRevenuePaid(MaxAd ad) {
-        for (MengineAppLovinAnalyticsInterface analytic : m_analytics) {
+        for (MengineAppLovinAnalyticsListener analytic : m_analytics) {
             analytic.onEventRevenuePaid(this, ad);
         }
     }

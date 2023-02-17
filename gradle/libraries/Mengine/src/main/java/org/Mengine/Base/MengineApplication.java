@@ -244,7 +244,7 @@ public class MengineApplication extends Application {
             m_extensionListeners.add(listener);
         }
 
-        MengineLog.logInfo(TAG, "create plugin: %s [%s]"
+        MengineLog.logMessage(TAG, "create plugin: %s [%s]"
             , type
             , name
         );

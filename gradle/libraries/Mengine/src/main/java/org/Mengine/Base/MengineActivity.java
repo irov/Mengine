@@ -800,7 +800,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        MengineLog.logInfo(TAG, "addPythonPlugin [%s] plugin: %s"
+        MengineLog.logMessage(TAG, "addPythonPlugin [%s] plugin: %s"
             , name
             , plugin
         );
@@ -817,7 +817,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        MengineLog.logInfo(TAG, "activate semaphore [%s]"
+        MengineLog.logMessage(TAG, "activate semaphore [%s]"
             , name
         );
 
@@ -851,7 +851,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void waitAndroidSemaphore(String name) {
-        MengineLog.logInfo(TAG, "wait android semaphore [%s]"
+        MengineLog.logMessage(TAG, "wait android semaphore [%s]"
             , name
         );
 
@@ -867,7 +867,7 @@ public class MengineActivity extends SDLActivity {
      **********************************************************************************************/
 
     public boolean linkingOpenURL(String url) {
-        MengineLog.logInfo(TAG, "linking open url [%s]"
+        MengineLog.logMessage(TAG, "linking open url [%s]"
             , url
         );
 
@@ -878,7 +878,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public boolean linkingOpenMail(String email, String subject, String body) {
-        MengineLog.logInfo(TAG, "linking open mail [%s] subject [%s] body: %s"
+        MengineLog.logMessage(TAG, "linking open mail [%s] subject [%s] body: %s"
             , email
             , subject
             , body
@@ -898,9 +898,11 @@ public class MengineActivity extends SDLActivity {
      **********************************************************************************************/
 
     public int openAssetFile(String path) {
-        MengineLog.logInfo(TAG, "openAssetFile path [%s]"
-            , path
-        );
+        if (BuildConfig.DEBUG == true) {
+            MengineLog.logMessage(TAG, "openAssetFile path [%s]"
+                , path
+            );
+        }
 
         try {
             InputStream stream = getAssets().open(path);
@@ -922,9 +924,11 @@ public class MengineActivity extends SDLActivity {
     }
 
     public int availableAssetFile(int id) {
-        MengineLog.logInfo(TAG, "availableAssetFile id [%d]"
-            , id
-        );
+        if (BuildConfig.DEBUG == true) {
+            MengineLog.logMessage(TAG, "availableAssetFile id [%d]"
+                , id
+            );
+        }
 
         InputStream stream = m_openFiles.get(id);
 
@@ -945,11 +949,13 @@ public class MengineActivity extends SDLActivity {
     }
 
     public byte[] readAssetFile(int id, int offset, int size) {
-        MengineLog.logInfo(TAG, "readAssetFile id [%d] offset [%d] size [%d]"
-            , id
-            , offset
-            , size
-        );
+        if (BuildConfig.DEBUG == true) {
+            MengineLog.logMessage(TAG, "readAssetFile id [%d] offset [%d] size [%d]"
+                , id
+                , offset
+                , size
+            );
+        }
 
         InputStream stream = m_openFiles.get(id);
 
@@ -974,10 +980,12 @@ public class MengineActivity extends SDLActivity {
     }
 
     public long skipAssetFile(int id, long offset) {
-        MengineLog.logInfo(TAG, "skipAssetFile id [%d] offset [%d]"
-            , id
-            , offset
-        );
+        if (BuildConfig.DEBUG == true) {
+            MengineLog.logMessage(TAG, "skipAssetFile id [%d] offset [%d]"
+                , id
+                , offset
+            );
+        }
 
         InputStream stream = m_openFiles.get(id);
 
@@ -999,9 +1007,11 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void resetAssetFile(int id) {
-        MengineLog.logInfo(TAG, "resetAssetFile id [%d]"
-            , id
-        );
+        if (BuildConfig.DEBUG == true) {
+            MengineLog.logMessage(TAG, "resetAssetFile id [%d]"
+                , id
+            );
+        }
 
         InputStream stream = m_openFiles.get(id);
 
@@ -1016,9 +1026,11 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void closeAssetFile(int id) {
-        MengineLog.logInfo(TAG, "closeAssetFile id [%d]"
-            , id
-        );
+        if (BuildConfig.DEBUG == true) {
+            MengineLog.logMessage(TAG, "closeAssetFile id [%d]"
+                , id
+            );
+        }
 
         InputStream stream = m_openFiles.get(id);
 

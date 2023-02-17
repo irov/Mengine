@@ -77,7 +77,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
                 MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = false;
             }
 
-            MengineAdvertisingPlugin.this.logInfo("AdvertisingId: %s [%s]"
+            MengineAdvertisingPlugin.this.logMessage("AdvertisingId: %s [%s]"
                 , MengineAdvertisingPlugin.this.m_advertisingId
                 , MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled == true ? "true" : "false"
             );

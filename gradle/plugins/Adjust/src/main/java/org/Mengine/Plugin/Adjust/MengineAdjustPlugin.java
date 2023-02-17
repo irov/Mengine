@@ -56,7 +56,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
         config.setPreinstallTrackingEnabled(true);
         Adjust.onCreate(config);
 
-        this.logInfo("Adjust Adid: %s"
+        this.logMessage("Adjust Adid: %s"
             , Adjust.getAdid()
         );
     }
@@ -88,7 +88,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
         Adjust.onPause();
     }
 
-    void eventTraking(String token) {
+    public void eventTraking(String token) {
         this.logMessage("eventTraking token: %s"
             , token
         );
@@ -97,7 +97,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
         Adjust.trackEvent(adjustEvent);
     }
 
-    void revenueTracking(String token, double amount, String currency) {
+    public void revenueTracking(String token, double amount, String currency) {
         this.logMessage("revenueTracking token: %s amount: %f currency: %s"
             , token
             , amount

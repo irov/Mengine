@@ -327,7 +327,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         
         // user already logged out
         if (accessToken == null) {
-            this.logMessage("user already logged out");
+            this.logWarning("user already logged out");
 
             this.pythonCall("onFacebookLogoutCancel");
             

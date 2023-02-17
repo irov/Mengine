@@ -96,7 +96,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         //this.signInSilently();
     }
 
-    void startSignInIntent() {
+    public void startSignInIntent() {
         this.logMessage("startSignInIntent");
 
         MengineActivity activity = this.getActivity();
@@ -106,7 +106,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         activity.startActivityForResult(intent, RC_SIGN_IN);
     }
 
-    void signOut() {
+    public void signOut() {
         this.logMessage("signOut");
 
         MengineActivity activity = this.getActivity();
@@ -200,7 +200,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         }
     }
 
-    private void signInCallback(@Nullable GoogleSignInAccount account) {
+    private void signInCallback(@NonNull GoogleSignInAccount account) {
         this.logMessage("account sign in");
 
         if (account == null) {
@@ -268,7 +268,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                         MengineGoogleGameSocialPlugin.this.signInCallback(account);
                     } else {
                         MengineGoogleGameSocialPlugin.this.logWarning("failed silently login try intent");
-
 
                         // Player will need to sign-in explicitly using via UI.
                         // See [sign-in best practices](http://developers.google.com/games/services/checklist) for guidance on how and when to implement Interactive Sign-in,

@@ -126,14 +126,14 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         boolean MengineAppLovinPlugin_VerboseLogging = activity.getMetaDataBoolean("mengine.applovin.verbose_logging", false);
 
         if (MengineAppLovinPlugin_VerboseLogging == true) {
-            this.logInfo("setVerboseLogging: true");
+            this.logMessage("setVerboseLogging: true");
 
             appLovinSdk.getSettings().setVerboseLogging(true);
         }
 
         boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean("mengine.applovin.is_age_restricted_user", true);
 
-        this.logInfo("setIsAgeRestrictedUser: %b"
+        this.logMessage("setIsAgeRestrictedUser: %b"
             , MengineAppLovinPlugin_IsAgeRestrictedUser
         );
 
@@ -141,7 +141,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean("mengine.applovin.CCPA", true);
 
-        this.logInfo("CCPA: %b"
+        this.logMessage("CCPA: %b"
             , MengineAppLovinPlugin_CCPA
         );
 

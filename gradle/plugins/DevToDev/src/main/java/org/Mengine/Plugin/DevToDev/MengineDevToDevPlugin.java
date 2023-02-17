@@ -24,7 +24,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         DTDAnalytics.INSTANCE.setInitializationCompleteCallback(() -> {
-            MengineDevToDevPlugin.this.logMessage("Initialized has been finished");
+            MengineDevToDevPlugin.this.logMessage("Initialized DevToDev has been finished");
 
             m_initializeSuccessful = true;
 
@@ -156,7 +156,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             } else if (parameter instanceof String) {
                 params.add(name, (String)parameter);
             } else {
-                this.logError("onMengineAnalyticsEvent: unsupported parameter [%s] %s"
+                this.logError("customEvent unsupported parameter [%s] %s"
                     , parameter.getClass()
                     , parameter
                 );
@@ -165,7 +165,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             }
         }
 
-        this.logMessage("customEvent params: %s"
+        this.logInfo("customEvent params: %s"
             , params
         );
 
@@ -177,7 +177,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logMessage("logEvent eventName: %s params: %s"
+        this.logInfo("logEvent eventName: %s params: %s"
             , eventName
             , params
         );

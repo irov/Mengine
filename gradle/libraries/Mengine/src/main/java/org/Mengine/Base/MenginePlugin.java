@@ -120,7 +120,7 @@ public class MenginePlugin {
     }
 
     public boolean createExtension(MengineActivity activity, String type) {
-        this.logInfo("Plugin [%s] add extension: %s"
+        this.logMessage("Plugin [%s] add extension: %s"
             , m_pluginName
             , type
         );

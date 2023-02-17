@@ -72,7 +72,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                     }
                 }
 
-                this.logMessage("logEvent [CUSTOM] eventName: %s params: %s"
+                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
                     , eventName
                     , params
                 );
@@ -88,7 +88,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
                 params.putDouble(FirebaseAnalytics.Param.VALUE, value);
 
-                this.logMessage("logEvent [EARN_VIRTUAL_CURRENCY] eventName: %s params: %s"
+                this.logInfo("logEvent [EARN_VIRTUAL_CURRENCY] eventName: %s params: %s"
                     , eventName
                     , params
                 );
@@ -106,7 +106,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
                 params.putDouble(FirebaseAnalytics.Param.VALUE, value);
 
-                this.logMessage("logEvent [SPEND_VIRTUAL_CURRENCY] eventName: %s params: %s"
+                this.logInfo("logEvent [SPEND_VIRTUAL_CURRENCY] eventName: %s params: %s"
                     , eventName
                     , params
                 );
@@ -120,7 +120,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
 
                 params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, achievementId);
 
-                this.logMessage("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
+                this.logInfo("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
                     , eventName
                     , params
                 );

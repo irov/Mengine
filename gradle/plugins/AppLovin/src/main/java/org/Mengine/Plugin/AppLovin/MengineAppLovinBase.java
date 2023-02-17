@@ -19,7 +19,7 @@ public class MengineAppLovinBase {
         m_plugin = null;
     }
 
-    public String getMAAdParams(MaxAd ad) {
+    protected String getMAAdParams(MaxAd ad) {
         StringBuilder sb = new StringBuilder(512);
 
         sb.append("{");
@@ -66,7 +66,7 @@ public class MengineAppLovinBase {
         return sb.toString();
     }
 
-    public String getMaxErrorParams(MaxError error) {
+    protected String getMaxErrorParams(MaxError error) {
         StringBuilder sb = new StringBuilder(512);
 
         int code = error.getCode();
@@ -86,13 +86,13 @@ public class MengineAppLovinBase {
         return sb.toString();
     }
 
-    public MengineAnalyticsEventBuilder buildEvent(String name) {
+    protected MengineAnalyticsEventBuilder buildEvent(String name) {
         MengineAnalyticsEventBuilder eventBuilder = m_plugin.buildEvent(name);
 
         return eventBuilder;
     }
 
-    public void logMaxAd(String type, String callback, MaxAd ad) {
+    protected void logMaxAd(String type, String callback, MaxAd ad) {
         m_plugin.logInfo( "AppLovin: type: " + type + " callback: " + callback );
 
         MaxAdWaterfallInfo waterfall = ad.getWaterfall();
@@ -100,17 +100,17 @@ public class MengineAppLovinBase {
         this.logMaxAdWaterfallInfo(waterfall);
     }
 
-    public void logMaxError(String type, String callback, MaxError error) {
-        m_plugin.logInfo( "AppLovin: type: " + type + " callback: " + callback );
-        m_plugin.logInfo( "MaxError: code: " + error.getCode() + " message: " + error.getMessage() );
-        m_plugin.logInfo( "MediatedNetwork: code: " + error.getMediatedNetworkErrorCode() + " message: " + error.getMediatedNetworkErrorMessage() );
+    protected void logMaxError(String type, String callback, MaxError error) {
+        m_plugin.logMessage( "AppLovin: type: " + type + " callback: " + callback );
+        m_plugin.logMessage( "MaxError: code: " + error.getCode() + " message: " + error.getMessage() );
+        m_plugin.logMessage( "MediatedNetwork: code: " + error.getMediatedNetworkErrorCode() + " message: " + error.getMediatedNetworkErrorMessage() );
 
         MaxAdWaterfallInfo waterfall = error.getWaterfall();
 
         this.logMaxAdWaterfallInfo(waterfall);
     }
 
-    public void logMaxAdWaterfallInfo(MaxAdWaterfallInfo waterfall) {
+    protected void logMaxAdWaterfallInfo(MaxAdWaterfallInfo waterfall) {
         if (waterfall == null) {
             return;
         }
@@ -123,7 +123,7 @@ public class MengineAppLovinBase {
         }
     }
 
-    public void logMaxNetworkResponseInfo(MaxNetworkResponseInfo networkResponse) {
+    protected void logMaxNetworkResponseInfo(MaxNetworkResponseInfo networkResponse) {
         String waterfallInfoStr = "Network -> " + networkResponse.getMediatedNetwork() +
             "\n...adLoadState: " + networkResponse.getAdLoadState() +
             "\n...latency: " + networkResponse.getLatencyMillis() + " milliseconds" +

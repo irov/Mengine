@@ -66,34 +66,34 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
             });
     }
 
-    void loadForm(MengineActivity activity, Context context) {
+    public void loadForm(MengineActivity activity, Context context) {
         UserMessagingPlatform.loadConsentForm(context
-                , new UserMessagingPlatform.OnConsentFormLoadSuccessListener() {
-                    @Override
-                    public void onConsentFormLoadSuccess(ConsentForm consentForm) {
-                        consentForm.show(activity
-                            , new ConsentForm.OnConsentFormDismissedListener() {
-                                @Override
-                                public void onConsentFormDismissed(FormError formError) {
-                                    MengineGoogleConsentPlugin.this.logError("consent form dismissed: %s [%d]"
-                                            , formError.getMessage()
-                                            , formError.getErrorCode()
-                                    );
+            , new UserMessagingPlatform.OnConsentFormLoadSuccessListener() {
+                @Override
+                public void onConsentFormLoadSuccess(ConsentForm consentForm) {
+                    consentForm.show(activity
+                        , new ConsentForm.OnConsentFormDismissedListener() {
+                            @Override
+                            public void onConsentFormDismissed(FormError formError) {
+                                MengineGoogleConsentPlugin.this.logError("consent form dismissed: %s [%d]"
+                                        , formError.getMessage()
+                                        , formError.getErrorCode()
+                                );
 
-                                    MengineGoogleConsentPlugin.this.loadForm(activity, context);
-                                }
-                            });
-                    }
+                                MengineGoogleConsentPlugin.this.loadForm(activity, context);
+                            }
+                        });
                 }
-                , new UserMessagingPlatform.OnConsentFormLoadFailureListener() {
-                    @Override
-                    public void onConsentFormLoadFailure(FormError formError) {
-                        MengineGoogleConsentPlugin.this.logError("consent form load failure: %s [%d]"
-                                , formError.getMessage()
-                                , formError.getErrorCode()
-                        );
-                    }
-                });
+            }
+            , new UserMessagingPlatform.OnConsentFormLoadFailureListener() {
+                @Override
+                public void onConsentFormLoadFailure(FormError formError) {
+                    MengineGoogleConsentPlugin.this.logError("consent form load failure: %s [%d]"
+                            , formError.getMessage()
+                            , formError.getErrorCode()
+                    );
+                }
+            });
     }
 
     public void resetConsentInformation() {

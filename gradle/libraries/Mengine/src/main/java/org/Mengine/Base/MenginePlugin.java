@@ -13,17 +13,6 @@ public class MenginePlugin {
     private ArrayList<MenginePluginExtension> m_extensions = new ArrayList<>();
     private String m_pluginName;
 
-    public static int LM_SILENT = 0;
-    public static int LM_FATAL = 1;
-    public static int LM_CRITICAL = 2;
-    public static int LM_MESSAGE_RELEASE = 3;
-    public static int LM_ERROR = 4;
-    public static int LM_WARNING = 5;
-    public static int LM_MESSAGE = 6;
-    public static int LM_INFO = 7;
-    public static int LM_DEBUG = 8;
-    public static int LM_VERBOSE = 9;
-
     public MengineApplication getApplication() {
         return m_application;
     }
@@ -74,7 +63,7 @@ public class MenginePlugin {
     }
 
     public MengineAnalyticsEventBuilder buildEvent(String name) {
-        MengineAnalyticsEventBuilder eventBuilder = m_activity.buildEvent(name);
+        MengineAnalyticsEventBuilder eventBuilder = MengineAnalytics.buildEvent(name);
 
         return eventBuilder;
     }

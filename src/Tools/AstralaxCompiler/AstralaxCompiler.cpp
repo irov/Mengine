@@ -292,14 +292,8 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
         fprintf_s( f_result, "%d\n", atlasCount );
 
-        for( TVectorAtlas::const_iterator
-            it = atlas.begin(),
-            it_end = atlas.end();
-            it != it_end;
-            ++it )
+        for( const AtlasDesc & desc : atlas )
         {
-            const AtlasDesc & desc = *it;
-
             fprintf_s( f_result, "%s\n", desc.path.c_str() );
             fprintf_s( f_result, "%d\n", 0 );
             fprintf_s( f_result, "%d\n", 0 );

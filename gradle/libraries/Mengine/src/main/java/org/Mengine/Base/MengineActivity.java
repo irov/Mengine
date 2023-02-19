@@ -11,8 +11,11 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import android.content.*;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,28 +25,8 @@ import android.view.KeyEvent;
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
 
-    private boolean m_initializeBaseServices;
-    private boolean m_initializePython;
-    private boolean m_destroy;
-
-    private String m_androidId;
-
-    private Map<Integer, InputStream> m_openFiles;
-    private int m_fileEnumerator;
-
-    private Map<String, MengineSemaphore> m_semaphores;
-
-    private Map<String, Integer> m_requestCodes;
-
-    class CallbackResponse {
-        public Integer id;
-        public MengineCallbackInterface cb;
-    };
-
-    private ArrayList<CallbackResponse> m_callbackResponses;
-    private int m_callbackResponseEnumerator;
-
     private static native void AndroidEnvironmentService_setMengineAndroidActivityJNI(Object activity);
+    private static native void AndroidEnvironmentService_removeMengineAndroidActivityJNI();
     private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     private static native String AndroidEnvironmentService_getCompanyName();
     private static native String AndroidEnvironmentService_getProjectName();
@@ -60,6 +43,25 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, int responseId, Object args[]);
     private static native void AndroidNativePython_activateSemaphore(String name);
+
+    private boolean m_initializeBaseServices;
+    private boolean m_initializePython;
+    private boolean m_destroy;
+
+    private Map<Integer, InputStream> m_openFiles;
+    private int m_fileEnumerator;
+
+    private Map<String, MengineSemaphore> m_semaphores;
+
+    private Map<String, Integer> m_requestCodes;
+
+    class CallbackResponse {
+        public Integer id;
+        public MengineCallbackInterface cb;
+    };
+
+    private ArrayList<CallbackResponse> m_callbackResponses;
+    private int m_callbackResponseEnumerator;
 
     public MengineActivity() {
         m_initializeBaseServices = false;
@@ -80,9 +82,15 @@ public class MengineActivity extends SDLActivity {
     @Override
     protected String[] getLibraries() {
         return new String[]{
-            "SDL2",
-            "SDLApplication"
+            "SDL2"
         };
+    }
+
+    @Override
+    protected String getMainSharedObject() {
+        String mainSharedObject = getContext().getApplicationInfo().nativeLibraryDir + "/" + "libSDLApplication.so";
+
+        return mainSharedObject;
     }
 
     public String getCompanyName() {
@@ -135,30 +143,6 @@ public class MengineActivity extends SDLActivity {
         ArrayList<MenginePlugin> plugins = app.getPlugins();
 
         return plugins;
-    }
-
-    protected ArrayList<MenginePluginLoggerListener> getLoggerListeners() {
-        MengineApplication app = (MengineApplication)this.getApplication();
-
-        ArrayList<MenginePluginLoggerListener> listeners = app.getLoggerListeners();
-
-        return listeners;
-    }
-
-    protected ArrayList<MenginePluginAnalyticsListener> getAnalyticsListeners() {
-        MengineApplication app = (MengineApplication)this.getApplication();
-
-        ArrayList<MenginePluginAnalyticsListener> listeners = app.getAnalyticsListeners();
-
-        return listeners;
-    }
-
-    protected ArrayList<MenginePluginActivityLifecycleListener> getActivityLifecycleListeners() {
-        MengineApplication app = (MengineApplication)this.getApplication();
-
-        ArrayList<MenginePluginActivityLifecycleListener> listeners = app.getActivityLifecycleListeners();
-
-        return listeners;
     }
 
     protected ArrayList<MenginePluginKeyListener> getKeyListeners() {
@@ -231,10 +215,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         AndroidEnvironmentService_setMengineAndroidActivityJNI(this);
-
-        Context context = this.getContext();
-        ContentResolver resolver = context.getContentResolver();
-        m_androidId = Secure.getString(resolver, Secure.ANDROID_ID);
 
         ArrayList<MenginePlugin> plugins = this.getPlugins();
 
@@ -328,21 +308,6 @@ public class MengineActivity extends SDLActivity {
         MengineLog.onMengineApplicationStop(this);
 
         m_initializeBaseServices = false;
-    }
-
-    public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
-        MengineLog.logInfo(TAG, "onMengineAnalyticsEvent [%d] %s %d [%s]"
-            , eventType
-            , eventName
-            , timestamp
-            , parameters
-        );
-
-        ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
-
-        for (MenginePluginAnalyticsListener l : listeners) {
-            l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, parameters);
-        }
     }
 
     @Override
@@ -506,6 +471,8 @@ public class MengineActivity extends SDLActivity {
         m_requestCodes = null;
         m_callbackResponses = null;
 
+        AndroidEnvironmentService_removeMengineAndroidActivityJNI();
+
         super.onDestroy();
     }
 
@@ -601,25 +568,9 @@ public class MengineActivity extends SDLActivity {
         return new MengineSurface(context);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Kernel Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public String getAndroidId() {
-        return m_androidId;
-    }
-
-    public String getDeviceLanguage() {
-        String language = Locale.getDefault().getLanguage();
-
-        return language;
-    }
-
-    public String getDeviceName() {
-        String deviceName = android.os.Build.MODEL;
-
-        return deviceName;
-    }
+    /***********************************************************************************************
+     * Kernel Methods
+     **********************************************************************************************/
 
     public int genRequestCode(String name) {
         if (m_requestCodes.containsKey(name) == false) {
@@ -633,24 +584,6 @@ public class MengineActivity extends SDLActivity {
         int code = m_requestCodes.get(name);
 
         return code;
-    }
-
-    public void onMengineLogger(String category, int level, int filter, int color, String msg) {
-        ArrayList<MenginePluginLoggerListener> listeners = this.getLoggerListeners();
-
-        for(MenginePluginLoggerListener l : listeners) {
-            l.onMengineLogger(this, category, level, filter, color, msg);
-        }
-    }
-
-    /***********************************************************************************************
-     * Analytics Methods
-     **********************************************************************************************/
-
-    public MengineAnalyticsEventBuilder buildEvent(String name) {
-        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(name);
-
-        return eventBuilder;
     }
 
     /***********************************************************************************************
@@ -757,7 +690,7 @@ public class MengineActivity extends SDLActivity {
 
         CallbackResponse response;
 
-        while(itr.hasNext())
+        while(itr.hasNext() == true)
         {
             response = (CallbackResponse)itr.next();
 

@@ -23,6 +23,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AnalyticsContext::addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
     {
+        MENGINE_ASSERTION_FATAL( m_parameters.exist( _name ) == false, "Analytics context already exist parameter '%s'"
+            , _name.c_str()
+        );
+
         m_parameters.emplace( _name, _parameter );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,56 +37,56 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsContext::setParameterBoolean( const ConstString & _name, bool _value )
+    void AnalyticsContext::addParameterBoolean( const ConstString & _name, bool _value )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterBoolean( _value );
 
         this->addParameter( _name, parameter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsContext::setParameterString( const ConstString & _name, const String & _value )
+    void AnalyticsContext::addParameterString( const ConstString & _name, const String & _value )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterString( _value );
 
         this->addParameter( _name, parameter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsContext::setParameterInteger( const ConstString & _name, int64_t _value )
+    void AnalyticsContext::addParameterInteger( const ConstString & _name, int64_t _value )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterInteger( _value );
 
         this->addParameter( _name, parameter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsContext::setParameterDouble( const ConstString & _name, double _value )
+    void AnalyticsContext::addParameterDouble( const ConstString & _name, double _value )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterDouble( _value );
 
         this->addParameter( _name, parameter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsContext::setParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda )
+    void AnalyticsContext::addParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventGetterParameterBoolean( _lambda );
         
         this->addParameter( _name, parameter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsContext::setParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda )
+    void AnalyticsContext::addParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventGetterParameterString( _lambda );
 
         this->addParameter( _name, parameter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsContext::setParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda )
+    void AnalyticsContext::addParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventGetterParameterInteger( _lambda );
 
         this->addParameter( _name, parameter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsContext::setParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda )
+    void AnalyticsContext::addParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda )
     {
         AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventGetterParameterDouble( _lambda );
 

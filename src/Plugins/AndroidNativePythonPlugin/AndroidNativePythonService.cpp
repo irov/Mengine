@@ -140,10 +140,10 @@ namespace Mengine
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jmethodID jmethodID_initializePlugins = ANDROID_ENVIRONMENT_SERVICE()
-            ->getMengineActivityMethodID( jenv, "pythonInitializePlugins", "()V" );
+                ->getActivityMethodID(jenv, "pythonInitializePlugins", "()V");
 
         ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidMengineActivityMethod( jenv, jmethodID_initializePlugins );
+                ->callVoidActivityMethod(jenv, jmethodID_initializePlugins);
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->invokeAndroidEventations();
@@ -156,10 +156,10 @@ namespace Mengine
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jmethodID jmethodID_pythonFinalizePlugins = ANDROID_ENVIRONMENT_SERVICE()
-            ->getMengineActivityMethodID( jenv, "pythonFinalizePlugins", "()V" );
+                ->getActivityMethodID(jenv, "pythonFinalizePlugins", "()V");
 
         ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidMengineActivityMethod( jenv, jmethodID_pythonFinalizePlugins );
+                ->callVoidActivityMethod(jenv, jmethodID_pythonFinalizePlugins);
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->invokeAndroidEventations();
@@ -517,10 +517,10 @@ namespace Mengine
         }
 
         jmethodID jmethodID_pythonCallResponse = ANDROID_ENVIRONMENT_SERVICE()
-            ->getMengineActivityMethodID(_jenv, "pythonCallResponse", "(ILjava/lang/Object;)V" );
+                ->getActivityMethodID(_jenv, "pythonCallResponse", "(ILjava/lang/Object;)V");
 
         ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidMengineActivityMethod(_jenv, jmethodID_pythonCallResponse, _id, jresult );
+                ->callVoidActivityMethod(_jenv, jmethodID_pythonCallResponse, _id, jresult);
 
         _jenv->DeleteLocalRef( jresult );
 
@@ -1044,14 +1044,14 @@ namespace Mengine
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jmethodID jmethodID_waitAndroidSemaphore = ANDROID_ENVIRONMENT_SERVICE()
-            ->getMengineActivityMethodID( jenv, "waitAndroidSemaphore", "(Ljava/lang/String;)V" );
+                ->getActivityMethodID(jenv, "waitAndroidSemaphore", "(Ljava/lang/String;)V");
 
         const Char * name_str = _name.c_str();
 
         jstring name_jvalue = jenv->NewStringUTF( name_str );
 
         ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidMengineActivityMethod( jenv, jmethodID_waitAndroidSemaphore, name_jvalue );
+                ->callVoidActivityMethod(jenv, jmethodID_waitAndroidSemaphore, name_jvalue);
 
         jenv->DeleteLocalRef( name_jvalue );
 

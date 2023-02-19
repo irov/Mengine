@@ -10,6 +10,7 @@ import com.devtodev.analytics.external.analytics.DTDAnalyticsConfiguration;
 import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePlugin;
 
@@ -133,7 +134,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineActivity activity, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
         if (m_initializeSuccessful == false) {
             return;
         }

@@ -184,7 +184,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         this.buildEvent("ad_interstitial_clicked")
             .addParameterInteger("request_id", m_requestId)
-            .addParameterString( "ad", this.getMAAdParams(ad))
+            .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdClicked");
@@ -196,9 +196,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         this.buildEvent("ad_interstitial_load_failed")
             .addParameterInteger("request_id", m_requestId)
-            .addParameterString( "unit_id", adUnitId)
-            .addParameterString( "error", this.getMaxErrorParams(error))
-            .addParameterInteger( "error_code", error.getCode())
+            .addParameterString("unit_id", adUnitId)
+            .addParameterString("error", this.getMaxErrorParams(error))
+            .addParameterInteger("error_code", error.getCode())
             .log();
 
         m_retryAttemptInterstitial++;
@@ -218,9 +218,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         this.buildEvent("ad_interstitial_display_failed")
             .addParameterInteger("request_id", m_requestId)
-            .addParameterString( "ad", this.getMAAdParams(ad))
-            .addParameterString( "error", this.getMaxErrorParams(error))
-            .addParameterInteger( "error_code", error.getCode())
+            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterString("error", this.getMaxErrorParams(error))
+            .addParameterInteger("error_code", error.getCode())
             .log();
 
         MengineUtils.performOnMainThread(() -> {
@@ -236,7 +236,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         this.buildEvent("ad_interstitial_revenue_paid")
             .addParameterInteger("request_id", m_requestId)
-            .addParameterString( "ad", this.getMAAdParams(ad))
+            .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.onEventRevenuePaid(ad);

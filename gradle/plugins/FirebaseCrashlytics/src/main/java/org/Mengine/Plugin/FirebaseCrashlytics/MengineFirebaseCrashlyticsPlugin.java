@@ -13,6 +13,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginLoggerListener;
 import org.Mengine.Base.MenginePlugin;
@@ -137,8 +138,8 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onMengineLogger(MengineActivity activity, String category, int level, int filter, int color, String msg) {
-        if (level > LM_ERROR) {
+    public void onMengineLogger(MengineApplication application, String category, int level, int filter, int color, String msg) {
+        if (level > MengineLog.LM_ERROR) {
             return;
         }
 

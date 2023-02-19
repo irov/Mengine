@@ -24,11 +24,18 @@ namespace Mengine
         jclass getJClass( JNIEnv * _jenv, const Char * _signature ) const override;
 
     public:
-        jmethodID getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const override;
+        jmethodID getActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const override;
 
     public:
-        void callVoidMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
-        jobject callObjectMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
+        void callVoidActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
+        jobject callObjectActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
+
+    public:
+        jmethodID getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const override;
+
+    public:
+        void callVoidApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
+        jobject callObjectApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
 
     public:
         size_t getAndroidId( Char * _androidId, size_t _capacity ) const override;

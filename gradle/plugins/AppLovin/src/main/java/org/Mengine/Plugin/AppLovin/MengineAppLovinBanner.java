@@ -180,7 +180,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             .addParameterInteger("request_id", m_requestId)
             .addParameterString("unit_id", adUnitId)
             .addParameterString("error", this.getMaxErrorParams(error))
-            .addParameterInteger( "error_code", error.getCode())
+            .addParameterInteger("error_code", error.getCode())
             .log();
 
         m_plugin.pythonCall("onApplovinBannerOnAdLoadFailed");
@@ -194,7 +194,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             .addParameterInteger("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .addParameterString("error", this.getMaxErrorParams(error))
-            .addParameterInteger( "error_code", error.getCode())
+            .addParameterInteger("error_code", error.getCode())
             .log();
 
         m_plugin.pythonCall("onApplovinBannerOnAdDisplayFailed");

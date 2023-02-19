@@ -1,21 +1,38 @@
 package org.Mengine.Base;
 
 import android.app.Application;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import androidx.multidex.MultiDex;
+
+import org.libsdl.app.SDL;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
+
+    private static native void AndroidEnvironmentService_setMengineAndroidApplicationJNI(Object activity);
+    private static native void AndroidEnvironmentService_removeMengineAndroidApplicationJNI();
+
+    private String m_androidId;
+    private String m_installKey;
+    private long m_installKeyTimestamp = -1;
+    private long m_installRND = -1;
+    private long m_sessionIndex = -1;
 
     private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
     private Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
@@ -102,6 +119,53 @@ public class MengineApplication extends Application {
         return value;
     }
 
+    public String getAndroidId() {
+        return m_androidId;
+    }
+
+    public String getInstallKey() {
+        return m_installKey;
+    }
+
+    public long getInstallKeyTimestamp() {
+        return m_installKeyTimestamp;
+    }
+
+    public long getInstallRND() {
+        return m_installRND;
+    }
+
+    public long getSessionIndex() {
+        return m_sessionIndex;
+    }
+
+    public String getDeviceLanguage() {
+        String language = Locale.getDefault().getLanguage();
+
+        return language;
+    }
+
+    public String getDeviceName() {
+        String deviceName = android.os.Build.MODEL;
+
+        return deviceName;
+    }
+
+    public int getAndroidVersionCode() {
+        Context context = this.getApplicationContext();
+        PackageManager manager = context.getPackageManager();
+        String packageName = context.getPackageName();
+        int versionCode = 0;
+        try {
+            PackageInfo pInfo = manager.getPackageInfo(packageName, 0);
+            versionCode = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            //FixMe?
+        }
+
+        return versionCode;
+    }
+
     public ArrayList<MenginePlugin> getPlugins() {
         return m_plugins;
     }
@@ -136,7 +200,6 @@ public class MengineApplication extends Application {
         return plugin;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
     public <T> T getPlugin(Class<T> cls) {
         String name;
@@ -261,7 +324,7 @@ public class MengineApplication extends Application {
             return null;
         }
 
-        if( extension.onPluginExtensionInitialize(activity, plugin) == false) {
+        if (extension.onPluginExtensionInitialize(activity, plugin) == false) {
             return null;
         }
 
@@ -315,13 +378,79 @@ public class MengineApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        try {
+            SDL.loadLibrary("SDLApplication");
+        } catch (UnsatisfiedLinkError e) {
+            MengineLog.logError(TAG, "load library SDLApplication catch UnsatisfiedLinkError: %s"
+                , e.getLocalizedMessage()
+            );
+
+            throw new RuntimeException("invalid load library SDLApplication catch UnsatisfiedLinkError: " + e.getLocalizedMessage());
+        } catch (Exception e) {
+            MengineLog.logError(TAG, "load library SDLApplication catch Exception: %s"
+                , e.getLocalizedMessage()
+            );
+
+            throw new RuntimeException("invalid load library SDLApplication catch Exception: " + e.getLocalizedMessage());
+        }
+
+        AndroidEnvironmentService_setMengineAndroidApplicationJNI(this);
+
+        MengineLog.setMengineApplication(this);
+
         MengineLog.logInfo(TAG, "onCreate");
+
+        Context applicationContext = this.getApplicationContext();
+
+        ContentResolver resolver = applicationContext.getContentResolver();
+        m_androidId = Settings.Secure.getString(resolver, Settings.Secure.ANDROID_ID);
+
+        String packageName = applicationContext.getPackageName();
+
+        SharedPreferences settings = applicationContext.getSharedPreferences(packageName + ".Activity", MODE_PRIVATE);
+
+        String installKey = settings.getString("install_key", null);
+        long installKeyTimestamp = settings.getLong("install_key_timestamp", 0);
+
+        SharedPreferences.Editor editor = settings.edit();
+
+        if (installKey == null) {
+            installKey = UUID.randomUUID().toString();
+            installKeyTimestamp = System.currentTimeMillis();
+            editor.putString("install_key", installKey);
+            editor.putLong("install_key_timestamp", installKeyTimestamp);
+        }
+
+        long installRND = settings.getLong("install_rnd", -1);
+
+        if (installRND == -1) {
+            installRND = java.util.concurrent.ThreadLocalRandom.current().nextLong();
+            if (installRND < 0) {
+                installRND = -installRND;
+            }
+
+            editor.putLong("install_rnd", installRND);
+        }
+
+        long sessionIndex = settings.getLong("session_index", 0);
+
+        editor.putLong("session_index", sessionIndex + 1);
+        editor.apply();
+
+        m_installKey = installKey;
+        m_installKeyTimestamp = installKeyTimestamp;
+        m_installRND = installRND;
+        m_sessionIndex = sessionIndex;
 
         String[] plugins = this.getGradleAndroidPlugins();
 
         for (String namePlugin : plugins) {
             if (this.createPlugin(namePlugin) == false) {
-                throw new RuntimeException(namePlugin);
+                MengineLog.logError(TAG, "invalid create plugin: %s"
+                    , namePlugin
+                );
+
+                throw new RuntimeException("invalid create plugin: " + namePlugin);
             }
         }
 
@@ -334,8 +463,6 @@ public class MengineApplication extends Application {
 
     @Override
     public void onTerminate() {
-        super.onTerminate();
-
         MengineLog.logInfo(TAG, "onTerminate");
 
         ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
@@ -353,6 +480,10 @@ public class MengineApplication extends Application {
         m_keyListeners = null;
         m_applicationListeners = null;
         m_extensionListeners = null;
+
+        AndroidEnvironmentService_removeMengineAndroidApplicationJNI();
+
+        super.onTerminate();
     }
 
     @Override
@@ -380,6 +511,29 @@ public class MengineApplication extends Application {
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             l.onAppConfigurationChanged(this, newConfig);
+        }
+    }
+
+    public void onMengineLogger(String category, int level, int filter, int color, String msg) {
+        ArrayList<MenginePluginLoggerListener> listeners = this.getLoggerListeners();
+
+        for(MenginePluginLoggerListener l : listeners) {
+            l.onMengineLogger(this, category, level, filter, color, msg);
+        }
+    }
+
+    public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
+        MengineLog.logInfo(TAG, "onMengineAnalyticsEvent [%d] %s %d [%s]"
+            , eventType
+            , eventName
+            , timestamp
+            , parameters
+        );
+
+        ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
+
+        for (MenginePluginAnalyticsListener l : listeners) {
+            l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, parameters);
         }
     }
 }

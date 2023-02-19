@@ -23,16 +23,43 @@
 #include "Config/StdIntTypes.h"
 
 //////////////////////////////////////////////////////////////////////////
+static jclass g_jclass_MengineApplication;
+static jobject g_jobject_MengineApplication;
+//////////////////////////////////////////////////////////////////////////
 static jclass g_jclass_MengineActivity;
 static jobject g_jobject_MengineActivity;
 //////////////////////////////////////////////////////////////////////////
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnvironmentService_1setMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls, jobject obj)
+    {
+        g_jclass_MengineApplication = (jclass)env->NewGlobalRef( cls );
+        g_jobject_MengineApplication = (jclass)env->NewGlobalRef( obj );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnvironmentService_1removeMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls)
+    {
+        env->DeleteGlobalRef( g_jclass_MengineApplication );
+        g_jclass_MengineApplication = nullptr;
+
+        env->DeleteGlobalRef( g_jobject_MengineApplication );
+        g_jobject_MengineApplication = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
     {
         g_jclass_MengineActivity = (jclass)env->NewGlobalRef( cls );
         g_jobject_MengineActivity = (jclass)env->NewGlobalRef( obj );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1removeMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
+    {
+        env->DeleteGlobalRef( g_jclass_MengineActivity );
+        g_jclass_MengineActivity = nullptr;
+
+        env->DeleteGlobalRef( g_jobject_MengineActivity );
+        g_jobject_MengineActivity = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1quitMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
@@ -225,23 +252,68 @@ extern "C"
         env->ReleaseStringUTFChars( _msg, msg_str );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1factorableIncref )(JNIEnv * env, jclass cls, jobject _jptr)
+    JNIEXPORT void JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1addContextParameterBoolean )(JNIEnv * env, jclass cls, jstring _name, jboolean _value)
     {
-        void * ptr = env->GetDirectBufferAddress( _jptr );
-        Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
+        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
+        {
+            return;
+        }
 
-        Mengine::Factorable::intrusive_ptr_add_ref( factorable );
+        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
+
+        const Mengine::AnalyticsContextInterfacePtr & context = ANALYTICS_SERVICE()
+                ->getGlobalContext();
+
+        context->addParameterBoolean( name_cstr, (bool)_value );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1factorableDecref )(JNIEnv * env, jclass cls, jobject _jptr)
+    JNIEXPORT void JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1addContextParameterString )(JNIEnv * env, jclass cls, jstring _name, jstring _value)
     {
-        void * ptr = env->GetDirectBufferAddress( _jptr );
-        Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
+        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
+        {
+            return;
+        }
 
-        Mengine::Factorable::intrusive_ptr_dec_ref( factorable );
+        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
+        Mengine::String value_string = Mengine::Helper::makeStringFromJString( env, _value );
+
+        const Mengine::AnalyticsContextInterfacePtr & context = ANALYTICS_SERVICE()
+            ->getGlobalContext();
+
+        context->addParameterString( name_cstr, value_string );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jobject JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1buildEvent )(JNIEnv * env, jclass cls, jstring _name)
+    JNIEXPORT void JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1addContextParameterInteger )(JNIEnv * env, jclass cls, jstring _name, jlong _value)
+    {
+        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
+        {
+            return;
+        }
+
+        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
+
+        const Mengine::AnalyticsContextInterfacePtr & context = ANALYTICS_SERVICE()
+                ->getGlobalContext();
+
+        context->addParameterInteger( name_cstr, (int64_t)_value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1addContextParameterDouble )(JNIEnv * env, jclass cls, jstring _name, jdouble _value)
+    {
+        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
+        {
+            return;
+        }
+
+        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
+
+        const Mengine::AnalyticsContextInterfacePtr & context = ANALYTICS_SERVICE()
+                ->getGlobalContext();
+
+        context->addParameterDouble( name_cstr, (double)_value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jobject JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1buildEvent )(JNIEnv * env, jclass cls, jstring _name)
     {
         if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
         {
@@ -262,7 +334,7 @@ extern "C"
         return jptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addParameterBoolean )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jboolean _value)
+    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addEventBuilderParameterBoolean )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jboolean _value)
     {
         void * ptr = env->GetDirectBufferAddress( _jptr );
         Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
@@ -274,7 +346,7 @@ extern "C"
         eventBuilder->addParameterBoolean( name_cstr, (bool)_value );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addParameterString )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jstring _value)
+    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addEventBuilderParameterString )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jstring _value)
     {
         void * ptr = env->GetDirectBufferAddress( _jptr );
         Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
@@ -287,7 +359,7 @@ extern "C"
         eventBuilder->addParameterString( name_cstr, value_string );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addParameterInteger )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jlong _value)
+    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addEventBuilderParameterInteger )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jlong _value)
     {
         void * ptr = env->GetDirectBufferAddress( _jptr );
         Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
@@ -299,7 +371,7 @@ extern "C"
         eventBuilder->addParameterInteger( name_cstr, (int64_t)_value );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addParameterDouble )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jdouble _value)
+    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addEventBuilderParameterDouble )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jdouble _value)
     {
         void * ptr = env->GetDirectBufferAddress( _jptr );
         Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
@@ -311,7 +383,7 @@ extern "C"
         eventBuilder->addParameterDouble( name_cstr, (double)_value );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1log )(JNIEnv * env, jclass cls, jobject _jptr)
+    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1logEventBuilder )(JNIEnv * env, jclass cls, jobject _jptr)
     {
         void * ptr = env->GetDirectBufferAddress( _jptr );
         Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
@@ -419,11 +491,13 @@ namespace Mengine
         return clazz;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID AndroidEnvironmentService::getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
+    jmethodID AndroidEnvironmentService::getActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
     {
         jmethodID jmethodID_function = _jenv->GetMethodID( g_jclass_MengineActivity, _name, _signature );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android method '%s' with signature '%s'"
+        Helper::jEnvExceptionCheck( _jenv );
+
+        MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android activity method '%s' with signature '%s'"
             , _name
             , _signature
         );
@@ -431,7 +505,7 @@ namespace Mengine
         return jmethodID_function;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::callVoidMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const
+    void AndroidEnvironmentService::callVoidActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _method );
@@ -443,7 +517,7 @@ namespace Mengine
         Helper::jEnvExceptionCheck( _jenv );
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::callObjectMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const
+    jobject AndroidEnvironmentService::callObjectActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _method );
@@ -457,13 +531,53 @@ namespace Mengine
         return result_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
+    jmethodID AndroidEnvironmentService::getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
+    {
+        jmethodID jmethodID_function = _jenv->GetMethodID( g_jclass_MengineApplication, _name, _signature );
+
+        Helper::jEnvExceptionCheck( _jenv );
+
+        MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android application method '%s' with signature '%s'"
+            , _name
+            , _signature
+        );
+
+        return jmethodID_function;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::callVoidApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const
+    {
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _method );
+
+        _jenv->CallVoidMethodV( g_jobject_MengineApplication, _method, args );
+
+        MENGINE_VA_LIST_END( args );
+
+        Helper::jEnvExceptionCheck( _jenv );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jobject AndroidEnvironmentService::callObjectApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const
+    {
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _method );
+
+        jobject result_jobject = _jenv->CallObjectMethodV( g_jobject_MengineApplication, _method, args );
+
+        MENGINE_VA_LIST_END( args );
+
+        Helper::jEnvExceptionCheck( _jenv );
+
+        return result_jobject;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getAndroidId( Char * _androidId, size_t _capacity ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_getAndroidId = this->getMengineActivityMethodID( jenv, "getAndroidId", "()Ljava/lang/String;" );
+        jmethodID jmethodID_getAndroidId = this->getApplicationMethodID( jenv, "getAndroidId", "()Ljava/lang/String;" );
 
-        jstring jReturnValue = (jstring)this->callObjectMengineActivityMethod( jenv, jmethodID_getAndroidId );
+        jstring jReturnValue = (jstring)this->callObjectApplicationMethod( jenv, jmethodID_getAndroidId );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -480,9 +594,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_getDeviceName = this->getMengineActivityMethodID( jenv, "getDeviceName", "()Ljava/lang/String;" );
+        jmethodID jmethodID_getDeviceName = this->getApplicationMethodID( jenv, "getDeviceName", "()Ljava/lang/String;" );
 
-        jstring jReturnValue = (jstring)this->callObjectMengineActivityMethod( jenv, jmethodID_getDeviceName );
+        jstring jReturnValue = (jstring)this->callObjectApplicationMethod( jenv, jmethodID_getDeviceName );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -499,9 +613,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_getDeviceLanguage = this->getMengineActivityMethodID( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
+        jmethodID jmethodID_getDeviceLanguage = this->getApplicationMethodID( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
 
-        jstring jReturnValue = (jstring) this->callObjectMengineActivityMethod(jenv, jmethodID_getDeviceLanguage );
+        jstring jReturnValue = (jstring) this->callObjectApplicationMethod(jenv, jmethodID_getDeviceLanguage );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -518,9 +632,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_getPackageName = this->getMengineActivityMethodID( jenv, "getPackageName", "()Ljava/lang/String;" );
+        jmethodID jmethodID_getPackageName = this->getApplicationMethodID( jenv, "getPackageName", "()Ljava/lang/String;" );
 
-        jstring jReturnValue = (jstring) this->callObjectMengineActivityMethod( jenv, jmethodID_getPackageName );
+        jstring jReturnValue = (jstring) this->callObjectApplicationMethod( jenv, jmethodID_getPackageName );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -681,9 +795,9 @@ namespace Mengine
                jenv->DeleteLocalRef( jclass_Map );
            });
 
-        jmethodID jmethodID_onMengineAnalyticsEvent = this->getMengineActivityMethodID( jenv, "onMengineAnalyticsEvent", "(ILjava/lang/String;JLjava/util/Map;)V" );
+        jmethodID jmethodID_onMengineAnalyticsEvent = this->getApplicationMethodID( jenv, "onMengineAnalyticsEvent", "(ILjava/lang/String;JLjava/util/Map;)V" );
 
-        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineAnalyticsEvent, (jint)eventType, eventName_jobject, (jlong)eventTimestamp, parameters_jobject );
+        this->callVoidApplicationMethod( jenv, jmethodID_onMengineAnalyticsEvent, (jint)eventType, eventName_jobject, (jlong)eventTimestamp, parameters_jobject );
 
         jenv->DeleteLocalRef( eventName_jobject );
         jenv->DeleteLocalRef( parameters_jobject );
@@ -693,9 +807,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_onMengineApplicationRun = this->getMengineActivityMethodID( jenv, "onMengineApplicationRun", "()V" );
+        jmethodID jmethodID_onMengineApplicationRun = this->getActivityMethodID( jenv, "onMengineApplicationRun", "()V" );
 
-        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineApplicationRun );
+        this->callVoidActivityMethod( jenv, jmethodID_onMengineApplicationRun );
 
         m_androidEventationHub->invoke();
     }
@@ -704,9 +818,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_onMengineApplicationReady = this->getMengineActivityMethodID( jenv, "onMengineApplicationReady", "()V" );
+        jmethodID jmethodID_onMengineApplicationReady = this->getActivityMethodID( jenv, "onMengineApplicationReady", "()V" );
 
-        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineApplicationReady );
+        this->callVoidActivityMethod( jenv, jmethodID_onMengineApplicationReady );
 
         m_androidEventationHub->invoke();
     }
@@ -715,9 +829,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_onMengineApplicationStop = this->getMengineActivityMethodID( jenv, "onMengineApplicationStop", "()V" );
+        jmethodID jmethodID_onMengineApplicationStop = this->getActivityMethodID( jenv, "onMengineApplicationStop", "()V" );
 
-        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineApplicationStop );
+        this->callVoidActivityMethod( jenv, jmethodID_onMengineApplicationStop );
 
         m_androidEventationHub->invoke();
     }
@@ -736,9 +850,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_onMengineInitializeBaseServices = this->getMengineActivityMethodID( jenv, "onMengineInitializeBaseServices", "()V" );
+        jmethodID jmethodID_onMengineInitializeBaseServices = this->getActivityMethodID( jenv, "onMengineInitializeBaseServices", "()V" );
 
-        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineInitializeBaseServices );
+        this->callVoidActivityMethod( jenv, jmethodID_onMengineInitializeBaseServices );
 
         m_androidEventationHub->invoke();
     }
@@ -747,9 +861,9 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        jmethodID jmethodID_onMengineCreateApplication = this->getMengineActivityMethodID( jenv, "onMengineCreateApplication", "()V" );
+        jmethodID jmethodID_onMengineCreateApplication = this->getActivityMethodID( jenv, "onMengineCreateApplication", "()V" );
 
-        this->callVoidMengineActivityMethod( jenv, jmethodID_onMengineCreateApplication );
+        this->callVoidActivityMethod( jenv, jmethodID_onMengineCreateApplication );
 
         m_androidEventationHub->invoke();
     }

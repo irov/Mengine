@@ -37,7 +37,7 @@ namespace Mengine
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         jmethodID jmethodID_onMengineLogger = ANDROID_ENVIRONMENT_SERVICE()
-            ->getMengineActivityMethodID( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
+            ->getApplicationMethodID( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
 
         const Char * category_str = _message.category.c_str();
 
@@ -56,7 +56,7 @@ namespace Mengine
         jstring data_jstring = jenv->NewStringUTF( m_loggerMessage );
 
         ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidMengineActivityMethod( jenv, jmethodID_onMengineLogger, category_jstring, level, filter, color, data_jstring );
+                ->callVoidApplicationMethod(jenv, jmethodID_onMengineLogger, category_jstring, level, filter, color, data_jstring);
 
         jenv->DeleteLocalRef( category_jstring );
         jenv->DeleteLocalRef( data_jstring );

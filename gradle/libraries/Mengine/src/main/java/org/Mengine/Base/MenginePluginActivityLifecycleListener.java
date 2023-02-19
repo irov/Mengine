@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 
 public interface MenginePluginActivityLifecycleListener {
-    public void onMengineActivityLifecycleResumed(Activity activity);
-    public void onMengineActivityLifecyclePaused(Activity activity);
-    public void onMengineActivityLifecycleStarted(Activity activity);
-    public void onMengineActivityLifecycleStopped(Activity activity);
-    public void onMengineActivityLifecycleDestroyed(Activity activity);
-    public void onMengineActivityLifecycleCreated(Activity activity, Bundle bundle);
-    public void onMengineActivityLifecycleSaveInstanceState(Activity activity, Bundle bundle);
+    void onMengineActivityLifecycleResumed(Activity activity);
+    void onMengineActivityLifecyclePaused(Activity activity);
+    void onMengineActivityLifecycleStarted(Activity activity);
+    void onMengineActivityLifecycleStopped(Activity activity);
+    void onMengineActivityLifecycleDestroyed(Activity activity);
+    void onMengineActivityLifecycleCreated(Activity activity, Bundle bundle);
+    void onMengineActivityLifecycleSaveInstanceState(Activity activity, Bundle bundle);
 }

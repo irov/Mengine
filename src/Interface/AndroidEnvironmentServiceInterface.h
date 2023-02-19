@@ -18,9 +18,14 @@ namespace Mengine
         virtual jclass getJClass( JNIEnv * _jenv, const Char * _signature ) const = 0;
 
     public:
-        virtual jmethodID getMengineActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const = 0;
-        virtual void callVoidMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
-        virtual jobject callObjectMengineActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
+        virtual jmethodID getActivityMethodID(JNIEnv * _jenv, const Char * _name, const Char * _signature ) const = 0;
+        virtual void callVoidActivityMethod(JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
+        virtual jobject callObjectActivityMethod(JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
+
+    public:
+        virtual jmethodID getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const = 0;
+        virtual void callVoidApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
+        virtual jobject callObjectApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
 
     public:
         virtual size_t getAndroidId( Char * _androidId, size_t _capacity ) const = 0;

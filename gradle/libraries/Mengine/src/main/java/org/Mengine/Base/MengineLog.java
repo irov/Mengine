@@ -12,8 +12,24 @@ public class MengineLog {
     private static native void AndroidEnvironmentService_logMessageRelease(String msg);
     private static native void AndroidEnvironmentService_logError(String msg);
 
+    public static int LM_SILENT = 0;
+    public static int LM_FATAL = 1;
+    public static int LM_CRITICAL = 2;
+    public static int LM_MESSAGE_RELEASE = 3;
+    public static int LM_ERROR = 4;
+    public static int LM_WARNING = 5;
+    public static int LM_MESSAGE = 6;
+    public static int LM_INFO = 7;
+    public static int LM_DEBUG = 8;
+    public static int LM_VERBOSE = 9;
+
+    private static MengineApplication m_application;
     private static boolean m_initializeBaseServices = false;
     private static final Object m_lock = new Object();
+
+    public static void setMengineApplication(MengineApplication application) {
+        MengineLog.m_application = application;
+    }
 
     public static void onMengineInitializeBaseServices(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = true;
@@ -54,18 +70,10 @@ public class MengineLog {
             }
         } else {
             Log.i(tag, totalMsg);
-        }
-    }
 
-    public static void logWarning(String tag, String format, Object ... args) {
-        String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
-
-        if( MengineLog.m_initializeBaseServices == true ) {
-            synchronized (MengineLog.m_lock) {
-                AndroidEnvironmentService_logWarning(totalMsg);
+            if (MengineLog.m_application != null) {
+                MengineLog.m_application.onMengineLogger(tag, LM_INFO, 0, 0, totalMsg);
             }
-        } else {
-            Log.w(tag, totalMsg);
         }
     }
 
@@ -78,6 +86,26 @@ public class MengineLog {
             }
         } else {
             Log.w(tag, totalMsg);
+
+            if (MengineLog.m_application != null) {
+                MengineLog.m_application.onMengineLogger(tag, LM_MESSAGE, 0, 0, totalMsg);
+            }
+        }
+    }
+
+    public static void logWarning(String tag, String format, Object ... args) {
+        String totalMsg = MengineLog.logBuildTotalMsg(tag, format, args);
+
+        if( MengineLog.m_initializeBaseServices == true ) {
+            synchronized (MengineLog.m_lock) {
+                AndroidEnvironmentService_logWarning(totalMsg);
+            }
+        } else {
+            Log.w(tag, totalMsg);
+
+            if (MengineLog.m_application != null) {
+                MengineLog.m_application.onMengineLogger(tag, LM_WARNING, 0, 0, totalMsg);
+            }
         }
     }
 
@@ -90,6 +118,10 @@ public class MengineLog {
             }
         } else {
             Log.e(tag, totalMsg);
+
+            if (MengineLog.m_application != null) {
+                MengineLog.m_application.onMengineLogger(tag, LM_MESSAGE_RELEASE, 0, 0, totalMsg);
+            }
         }
     }
 
@@ -102,6 +134,10 @@ public class MengineLog {
             }
         } else {
             Log.e(tag, totalMsg);
+
+            if (MengineLog.m_application != null) {
+                MengineLog.m_application.onMengineLogger(tag, LM_ERROR, 0, 0, totalMsg);
+            }
         }
     }
 }

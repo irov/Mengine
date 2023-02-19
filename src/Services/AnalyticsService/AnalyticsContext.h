@@ -27,16 +27,16 @@ namespace Mengine
         const AnalyticsEventParameterInterfacePtr & getParameter( const ConstString & _name ) const override;
 
     public:
-        void setParameterBoolean( const ConstString & _name, bool _value ) override;
-        void setParameterString( const ConstString & _name, const String & _value ) override;
-        void setParameterInteger( const ConstString & _name, int64_t _value ) override;
-        void setParameterDouble( const ConstString & _name, double _value ) override;
+        void addParameterBoolean( const ConstString & _name, bool _value ) override;
+        void addParameterString( const ConstString & _name, const String & _value ) override;
+        void addParameterInteger( const ConstString & _name, int64_t _value ) override;
+        void addParameterDouble( const ConstString & _name, double _value ) override;
 
     public:
-        void setParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda ) override;
-        void setParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda ) override;
-        void setParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda ) override;
-        void setParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda ) override;
+        void addParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda ) override;
+        void addParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda ) override;
+        void addParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda ) override;
+        void addParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda ) override;
 
     public:
         AnalyticsContextInterfacePtr resolveContext() const override;

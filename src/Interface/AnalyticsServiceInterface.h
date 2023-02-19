@@ -96,16 +96,16 @@ namespace Mengine
         virtual const AnalyticsEventParameterInterfacePtr & getParameter( const ConstString & _name ) const = 0;
 
     public:
-        virtual void setParameterBoolean( const ConstString & _name, bool _value ) = 0;
-        virtual void setParameterString( const ConstString & _name, const String & _value ) = 0;
-        virtual void setParameterInteger( const ConstString & _name, int64_t _value ) = 0;
-        virtual void setParameterDouble( const ConstString & _name, double _value ) = 0;
+        virtual void addParameterBoolean( const ConstString & _name, bool _value ) = 0;
+        virtual void addParameterString( const ConstString & _name, const String & _value ) = 0;
+        virtual void addParameterInteger( const ConstString & _name, int64_t _value ) = 0;
+        virtual void addParameterDouble( const ConstString & _name, double _value ) = 0;
 
     public:
-        virtual void setParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda ) = 0;
-        virtual void setParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda ) = 0;
-        virtual void setParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda ) = 0;
-        virtual void setParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda ) = 0;
+        virtual void addParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda ) = 0;
+        virtual void addParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda ) = 0;
+        virtual void addParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda ) = 0;
+        virtual void addParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda ) = 0;
 
     public:
         virtual AnalyticsContextInterfacePtr resolveContext() const = 0;

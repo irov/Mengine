@@ -36,6 +36,13 @@ namespace Mengine
     public:
         HANDLE getHandleFile() const;
 
+#ifdef MENGINE_DEBUG
+    protected:
+        const FilePath & getRelationPath() const override;
+        const FilePath & getFolderPath() const override;
+        const FilePath & getFilePath() const override;
+#endif
+
     protected:
         HANDLE m_hFile;
 

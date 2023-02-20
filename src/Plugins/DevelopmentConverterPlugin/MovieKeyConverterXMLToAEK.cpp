@@ -818,6 +818,15 @@ namespace Mengine
             return false;
         }
 
+        if( Helper::closeOutputStreamFile( m_options.fileGroup, output_stream ) == false )
+        {
+            LOGGER_ERROR( "invalid close file '%s'"
+                , Helper::getFileGroupFullPath( m_options.fileGroup, m_options.outputFilePath )
+            );
+
+            return false;
+        }
+
         return true;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////

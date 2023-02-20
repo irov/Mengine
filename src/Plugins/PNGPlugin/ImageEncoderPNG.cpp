@@ -112,6 +112,9 @@ namespace Mengine
     void ImageEncoderPNG::_finalize()
     {
         png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
+
+        m_png_ptr = nullptr;
+        m_info_ptr = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderPNG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )

@@ -32,6 +32,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ImageEncoderACF::_finalize()
+    {
+        m_archivator = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderACF::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );

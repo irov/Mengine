@@ -13,110 +13,115 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct DestinationManager
+    namespace Detail
     {
-        struct jpeg_destination_mgr pub;
+        //////////////////////////////////////////////////////////////////////////
+        struct DestinationManager
+        {
+            struct jpeg_destination_mgr pub;
 
-        OutputStreamInterface * m_stream;
-        JOCTET * buffer;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef DestinationManager * mengine_dst_ptr;
-    //////////////////////////////////////////////////////////////////////////
-    struct EncoderJPEGErrorManager
-    {
-        jpeg_error_mgr pub;
+            OutputStreamInterface * m_stream;
+            JOCTET * buffer;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        typedef DestinationManager * mengine_dst_ptr;
+        //////////////////////////////////////////////////////////////////////////
+        struct EncoderJPEGErrorManager
+        {
+            jpeg_error_mgr pub;
 #if !defined(MENGINE_SETJMP_UNSUPPORTED)
-        jmp_buf setjmp_buffer;
+            jmp_buf setjmp_buffer;
 #endif
-    };
-    //////////////////////////////////////////////////////////////////////////
-    static void s_jpegErrorExit( j_common_ptr _cinfo )
-    {
-        EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
-
-        Char buffer[JMSG_LENGTH_MAX] = {'\0'};
-
-        (*mErr->pub.format_message)(_cinfo, buffer);
-
-        LOGGER_ERROR( "%s"
-            , buffer
-        );
-
-        if( mErr->pub.msg_parm.i[0] != 13 )
+        };
+        //////////////////////////////////////////////////////////////////////////
+        METHODDEF( void ) s_jpegErrorExit( j_common_ptr _cinfo )
         {
-            jpeg_destroy( _cinfo );
+            EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
+
+            Char buffer[JMSG_LENGTH_MAX] = {'\0'};
+
+            (*mErr->pub.format_message)(_cinfo, buffer);
+
+            LOGGER_ERROR( "%s"
+                , buffer
+            );
+
+            if( mErr->pub.msg_parm.i[0] != 13 )
+            {
+                jpeg_destroy( _cinfo );
 
 #if !defined(MENGINE_SETJMP_UNSUPPORTED)
-            longjmp( mErr->setjmp_buffer, 1 );
+                longjmp( mErr->setjmp_buffer, 1 );
 #endif
+            }
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_jpegOutputMessage( j_common_ptr _cinfo )
-    {
-        EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
-
-        Char buffer[JMSG_LENGTH_MAX] = {'\0'};
-
-        (*mErr->pub.format_message)(_cinfo, buffer);
-
-        LOGGER_ERROR( "%s"
-            , buffer
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    METHODDEF( void ) init_destination( j_compress_ptr _cinfo )
-    {
-        mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
-
-        dest->buffer = (JOCTET *)
-            (*_cinfo->mem->alloc_small) ((j_common_ptr)_cinfo, JPOOL_IMAGE,
-                MENGINE_JPEG_OUTPUT_BUF_SIZE * sizeof( uint8_t ));
-
-        dest->pub.next_output_byte = dest->buffer;
-        dest->pub.free_in_buffer = MENGINE_JPEG_OUTPUT_BUF_SIZE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    METHODDEF( boolean ) empty_output_buffer( j_compress_ptr _cinfo )
-    {
-        mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
-
-        dest->m_stream->write( dest->buffer, MENGINE_JPEG_OUTPUT_BUF_SIZE );
-
-        dest->pub.next_output_byte = dest->buffer;
-        dest->pub.free_in_buffer = MENGINE_JPEG_OUTPUT_BUF_SIZE;
-
-        return TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    METHODDEF( void ) term_destination( j_compress_ptr _cinfo )
-    {
-        mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
-
-        size_t datacount = MENGINE_JPEG_OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
-
-        if( datacount > 0 )
+        //////////////////////////////////////////////////////////////////////////
+        METHODDEF( void ) s_jpegOutputMessage( j_common_ptr _cinfo )
         {
-            dest->m_stream->write( dest->buffer, datacount );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static GLOBAL( void ) jpeg_mengine_dst( j_compress_ptr _cinfo, OutputStreamInterface * _stream )
-    {
-        mengine_dst_ptr dest;
+            EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
 
-        if( _cinfo->dest == nullptr )
+            Char buffer[JMSG_LENGTH_MAX] = {'\0'};
+
+            (*mErr->pub.format_message)(_cinfo, buffer);
+
+            LOGGER_ERROR( "%s"
+                , buffer
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        METHODDEF( void ) init_destination( j_compress_ptr _cinfo )
         {
-            _cinfo->dest = (struct jpeg_destination_mgr *)(*_cinfo->mem->alloc_small)
-                ((j_common_ptr)_cinfo, JPOOL_PERMANENT, sizeof( DestinationManager ));
-        }
+            mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
 
-        dest = (mengine_dst_ptr)_cinfo->dest;
-        dest->pub.init_destination = init_destination;
-        dest->pub.empty_output_buffer = empty_output_buffer;
-        dest->pub.term_destination = term_destination;
-        dest->m_stream = _stream;
+            dest->buffer = (JOCTET *)
+                (*_cinfo->mem->alloc_small) ((j_common_ptr)_cinfo, JPOOL_IMAGE,
+                    MENGINE_JPEG_OUTPUT_BUF_SIZE * sizeof( uint8_t ));
+
+            dest->pub.next_output_byte = dest->buffer;
+            dest->pub.free_in_buffer = MENGINE_JPEG_OUTPUT_BUF_SIZE;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        METHODDEF( boolean ) empty_output_buffer( j_compress_ptr _cinfo )
+        {
+            mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
+
+            dest->m_stream->write( dest->buffer, MENGINE_JPEG_OUTPUT_BUF_SIZE );
+
+            dest->pub.next_output_byte = dest->buffer;
+            dest->pub.free_in_buffer = MENGINE_JPEG_OUTPUT_BUF_SIZE;
+
+            return TRUE;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        METHODDEF( void ) term_destination( j_compress_ptr _cinfo )
+        {
+            mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
+
+            size_t datacount = MENGINE_JPEG_OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
+
+            if( datacount > 0 )
+            {
+                dest->m_stream->write( dest->buffer, datacount );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void jpeg_mengine_dst( j_compress_ptr _cinfo, OutputStreamInterface * _stream )
+        {
+            mengine_dst_ptr dest;
+
+            if( _cinfo->dest == nullptr )
+            {
+                _cinfo->dest = (struct jpeg_destination_mgr *)(*_cinfo->mem->alloc_small)
+                    ((j_common_ptr)_cinfo, JPOOL_PERMANENT, sizeof( DestinationManager ));
+            }
+
+            dest = (mengine_dst_ptr)_cinfo->dest;
+            dest->pub.init_destination = &Detail::init_destination;
+            dest->pub.empty_output_buffer = &Detail::empty_output_buffer;
+            dest->pub.term_destination = &Detail::term_destination;
+            dest->m_stream = _stream;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderJPEG::ImageEncoderJPEG()
@@ -125,11 +130,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderJPEG::~ImageEncoderJPEG()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ImageEncoderJPEG::_initialize()
-    {
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderJPEG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
@@ -142,10 +142,9 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 
-        EncoderJPEGErrorManager errorMgr;
-
-        errorMgr.pub.error_exit = &s_jpegErrorExit;
-        errorMgr.pub.output_message = &s_jpegOutputMessage;
+        Detail::EncoderJPEGErrorManager errorMgr;
+        errorMgr.pub.error_exit = &Detail::s_jpegErrorExit;
+        errorMgr.pub.output_message = &Detail::s_jpegOutputMessage;
 
 #if !defined(MENGINE_SETJMP_UNSUPPORTED)
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
@@ -168,7 +167,7 @@ namespace Mengine
 
         jpeg_create_compress( &cinfo );
 
-        jpeg_mengine_dst( &cinfo, m_stream.get() );
+        Detail::jpeg_mengine_dst( &cinfo, m_stream.get() );
 
         cinfo.image_width = (JDIMENSION)dataInfo->width;
         cinfo.image_height = (JDIMENSION)dataInfo->height;

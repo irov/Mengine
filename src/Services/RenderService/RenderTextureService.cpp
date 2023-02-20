@@ -193,7 +193,18 @@ namespace Mengine
 
         size_t bytesWritten = imageEncoder->encode( &data, &dataInfo );
 
+        imageEncoder->finalize();
+
         image->unlock( locked, 0, true );
+
+        if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+        {
+            LOGGER_ERROR( "can't close file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            );
+
+            return false;
+        }
 
         if( bytesWritten == 0 )
         {

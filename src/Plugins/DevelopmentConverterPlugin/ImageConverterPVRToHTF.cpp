@@ -114,6 +114,15 @@ namespace Mengine
             miplevel_data_memory += miplevel_data_size;
         }
 
+        if( Helper::closeInputStreamFile( m_fileGroup, stream_intput ) == false )
+        {
+            LOGGER_ERROR( "invalid close input file '%s'"
+                , m_options.inputFilePath.c_str()
+            );
+
+            return false;
+        }
+
         OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "invalid open output '%s' for file '%s'"
@@ -147,6 +156,17 @@ namespace Mengine
         htfDataInfo.format = dataInfo->format;
 
         size_t encode_byte = encoder->encode( &htfEncoderData, &htfDataInfo );
+
+        encoder->finalize();
+
+        if( Helper::closeOutputStreamFile( m_fileGroup, stream_output ) == false )
+        {
+            LOGGER_ERROR( "invalid close output '%s'"
+                , full_outputFilePath.c_str()
+            );
+
+            return false;
+        }
 
         if( encode_byte == 0 )
         {

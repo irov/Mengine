@@ -3028,10 +3028,16 @@ namespace Mengine
                     return false;
                 }
 
-                if( fileGroup->closeOutputFile( stream ) == false )
+                if( Helper::closeOutputStreamFile( fileGroup, stream ) == false )
                 {
+                    LOGGER_ERROR( "invalid close file '%s'"
+                        , filePath.c_str()
+                    );
+
                     return false;
                 }
+
+                stream = nullptr;
 
                 return true;
             }

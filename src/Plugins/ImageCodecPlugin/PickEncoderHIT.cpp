@@ -31,6 +31,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PickEncoderHIT::_finalize()
+    {
+        m_archivator = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t PickEncoderHIT::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );

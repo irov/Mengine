@@ -50,6 +50,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ImageEncoderHTF::_finalize()
+    {
+        m_archivator = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderHTF::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );

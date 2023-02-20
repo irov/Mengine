@@ -110,6 +110,8 @@ namespace Mengine
         if( m_stream != nullptr )
         {
             successful_stream_flush = m_stream->flush();
+
+            Helper::closeOutputStreamFile( m_fileGroup, m_stream );
             m_stream = nullptr;
         }
 

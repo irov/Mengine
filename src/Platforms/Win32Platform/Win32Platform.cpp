@@ -2758,28 +2758,15 @@ namespace Mengine
             return NULL;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, true, MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "path '%s' can't open output stream '%s'"
-            , _filePath.c_str()
-            , c_icoFile.c_str()
-        );
-
-        void * memory = _buffer->getBuffer();
-        size_t size = _buffer->getSize();
-
-        if( stream->write( memory, size ) == false )
+        if( Helper::writeOutputStreamFile( fileGroup, c_icoFile, true, _buffer, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            LOGGER_ERROR( "path '%s' can't write output stream '%s'"
+            LOGGER_ERROR( "path '%s' can't write ico '%s'"
                 , _filePath.c_str()
                 , c_icoFile.c_str()
             );
 
             return NULL;
         }
-
-        stream->flush();
-        stream = nullptr;
 
         Char icoFullFile[MENGINE_MAX_PATH] = {L'\0'};
         fileGroup->getFullPath( c_icoFile, icoFullFile );

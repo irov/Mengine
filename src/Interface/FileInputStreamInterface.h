@@ -22,7 +22,7 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FileInputStreamInterface> FileInputStreamInterfacePtr;
+    typedef IntrusivePtr<FileInputStreamInterface, InputStreamInterface> FileInputStreamInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

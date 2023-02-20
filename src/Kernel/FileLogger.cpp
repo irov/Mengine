@@ -51,8 +51,10 @@ namespace Mengine
     void FileLogger::_finalizeLogger()
     {
         if( m_stream != nullptr )
-        {
+        {            
             m_stream->flush();
+
+            Helper::closeOutputStreamFile( m_fileGroup, m_stream );
             m_stream = nullptr;
         }
 

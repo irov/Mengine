@@ -33,6 +33,13 @@ namespace Mengine
     public:
         SDL_RWops * getRWops() const;
 
+#ifdef MENGINE_DEBUG
+    public:
+        const FilePath & getRelationPath() const override;
+        const FilePath & getFolderPath() const override;
+        const FilePath & getFilePath() const override;
+#endif
+
     protected:
         SDL_RWops * m_rwops;
 

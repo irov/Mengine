@@ -338,6 +338,10 @@ namespace Mengine
         bin_stream->write( &write_compress_size, sizeof( write_compress_size ) );
         bin_stream->write( compress_buffer, write_compress_size );
 
+        bin_stream->flush();
+
+        Helper::closeOutputStreamFile( m_fileGroupDev, bin_stream );
+
         return bin_size;
     }
     //////////////////////////////////////////////////////////////////////////

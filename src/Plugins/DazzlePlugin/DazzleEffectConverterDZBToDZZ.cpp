@@ -65,15 +65,24 @@ namespace Mengine
             , full_inputFilePath.c_str()
         );
 
-        OutputStreamInterfacePtr output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output, "invalid open '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open '%s'"
             , full_outputFilePath.c_str()
         );
 
-        if( Helper::writeStreamArchiveData( output, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST ) == false )
+        if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST ) == false )
         {
             LOGGER_ERROR( "invalid write '%s'"
+                , full_outputFilePath.c_str()
+            );
+
+            return false;
+        }
+
+        if( Helper::closeOutputStreamFile( m_fileGroup, stream ) == false )
+        {
+            LOGGER_ERROR( "invalid close '%s'"
                 , full_outputFilePath.c_str()
             );
 

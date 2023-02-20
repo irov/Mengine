@@ -101,6 +101,7 @@ includePlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", false, ":plugins:GoogleP
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false, ":plugins:GoogleGameSocial")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", false, ":plugins:GoogleInAppReviews")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", false, ":plugins:GoogleConsent")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_BIGQUERY", false, ":plugins:GoogleBigQuery")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE", false,":plugins:Firebase")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", false,":plugins:FirebaseAnalytics")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false,":plugins:FirebaseCrashlytics")

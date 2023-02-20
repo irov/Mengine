@@ -14,9 +14,6 @@ namespace Mengine
         ~ImageEncoderDDS() override;
 
     public:
-        bool _initialize() override;
-
-    public:
         size_t encode( const EncoderData * _data, const CodecDataInfo * _dataInfo ) override;
     };
 }

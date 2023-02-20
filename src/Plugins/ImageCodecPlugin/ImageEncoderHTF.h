@@ -17,6 +17,7 @@ namespace Mengine
 
     public:
         bool _initialize() override;
+        void _finalize() override;
 
     public:
         size_t encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo ) override;

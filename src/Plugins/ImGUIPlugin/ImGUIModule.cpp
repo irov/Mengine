@@ -166,6 +166,8 @@ namespace Mengine
         stream->write( imIniSettings, imIniSettingsSize );
         stream->flush();
 
+        Helper::closeOutputStreamFile( userFileGroup, stream );
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         ImGui_ImplDX9_Shutdown();
 #endif

@@ -155,19 +155,19 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONFile( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentPtr & _doc )
         {
-            OutputStreamInterfacePtr file = Helper::openOutputStreamFile( _fileGroup, _filePath, _withTemp, _doc );
+            OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, _withTemp, _doc );
 
-            if( file == nullptr )
+            if( stream == nullptr )
             {
                 return false;
             }
 
-            if( Helper::writeJSONStream( _j, file ) == false )
+            if( Helper::writeJSONStream( _j, stream ) == false )
             {
                 return false;
             }
 
-            if( _fileGroup->closeOutputFile( file ) == false )
+            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
             {
                 return false;
             }

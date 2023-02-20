@@ -1,7 +1,8 @@
 #include "FileStreamHelper.h"
 
 #ifdef MENGINE_DEBUG
-#include "Interface/FileInputStreamInterface.h"
+#   include "Interface/FileInputStreamInterface.h"
+#   include "Interface/FileOutputStreamInterface.h"
 #endif
 
 #include "Kernel/AssertionMemoryPanic.h"
@@ -75,6 +76,72 @@ namespace Mengine
             return file;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool closeInputStreamFile( const FileGroupInterfacePtr & _fileGroup, const InputStreamInterfacePtr & _stream )
+        {
+            if( _fileGroup->closeInputFile( _stream ) == false )
+            {
+                const FilePath & filePath = Helper::getInputStreamDebugRelationPath( _stream );
+
+                LOGGER_ERROR( "invalid close input file '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, filePath )
+                );
+
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool closeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const OutputStreamInterfacePtr & _stream )
+        {
+            if( _fileGroup->closeOutputFile( _stream ) == false )
+            {
+                const FilePath & filePath = Helper::getOutputStreamDebugFilePath( _stream );
+
+                LOGGER_ERROR( "invalid close output file '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, filePath )
+                );
+
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool writeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
+        {
+            OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, _withTemp, _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open output file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            );
+
+            const void * memory_buffer = _memory->getBuffer();
+            size_t memory_size = _memory->getSize();
+
+            if( stream->write( memory_buffer, memory_size ) == false )
+            {
+                LOGGER_ERROR( "invalid write output file '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                );
+
+                return false;
+            }
+
+            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+            {
+                LOGGER_ERROR( "invalid close output file '%s'"
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                );
+
+                return false;
+            }
+
+            stream = nullptr;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         const FilePath & getInputStreamDebugRelationPath( const InputStreamInterfacePtr & _stream )
         {
             MENGINE_UNUSED( _stream );
@@ -130,6 +197,67 @@ namespace Mengine
             const FilePath & filePath = stream->getFilePath();
 
             return filePath;
+#else
+            return FilePath::none();
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const FilePath & getOutputStreamDebugRelationPath( const OutputStreamInterfacePtr & _stream )
+        {
+            MENGINE_UNUSED( _stream );
+
+#ifdef MENGINE_DEBUG
+            FileOutputStreamInterface * stream = stdex::intrusive_dynamic_get<FileOutputStreamInterface *>( _stream );
+
+            if( stream == nullptr )
+            {
+                return FilePath::none();
+            }
+
+            const FilePath & relationPath = stream->getRelationPath();
+
+            return relationPath;
+#else
+            return FilePath::none();
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const FilePath & getOutputStreamDebugFolderPath( const OutputStreamInterfacePtr & _stream )
+        {
+            MENGINE_UNUSED( _stream );
+
+#ifdef MENGINE_DEBUG
+            FileOutputStreamInterface * stream = stdex::intrusive_dynamic_get<FileOutputStreamInterface *>( _stream );
+
+            if( stream == nullptr )
+            {
+                return FilePath::none();
+            }
+
+            const FilePath & folderPath = stream->getFolderPath();
+
+            return folderPath;
+#else
+            return FilePath::none();
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const FilePath & getOutputStreamDebugFilePath( const OutputStreamInterfacePtr & _stream )
+        {
+            MENGINE_UNUSED( _stream );
+
+#ifdef MENGINE_DEBUG
+            FileOutputStreamInterface * stream = stdex::intrusive_dynamic_get<FileOutputStreamInterface *>( _stream );
+
+            if( stream == nullptr )
+            {
+                return FilePath::none();
+            }
+
+            const FilePath & filePath = stream->getFilePath();
+
+            return filePath;
+
 #else
             return FilePath::none();
 #endif

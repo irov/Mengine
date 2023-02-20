@@ -365,6 +365,8 @@ namespace Mengine
             {
                 if( 0 == (count--) )
                 {
+                    Helper::freeArrayT( V );
+
                     return false;
                 }
 
@@ -457,6 +459,8 @@ namespace Mengine
             {
                 if( 0 == (count--) )
                 {
+                    Helper::freeArrayT( V );
+
                     return false;
                 }
 
@@ -487,9 +491,9 @@ namespace Mengine
                     uint32_t b = V[v];
                     uint32_t c = V[w];
 
-                    _result->emplace_back( (VectorPolygonIndices::value_type)a );
-                    _result->emplace_back( (VectorPolygonIndices::value_type)b );
-                    _result->emplace_back( (VectorPolygonIndices::value_type)c );
+                    _result->emplace_back( a );
+                    _result->emplace_back( b );
+                    _result->emplace_back( c );
 
                     for( uint32_t s = v, t = v + 1; t < nv; s++, t++ )
                     {

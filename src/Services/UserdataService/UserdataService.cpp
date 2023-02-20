@@ -179,8 +179,13 @@ namespace Mengine
             return false;
         }
 
-        if( desc.fileGroup->closeOutputFile( stream ) == false )
+        if( Helper::closeOutputStreamFile( desc.fileGroup, stream ) == false )
         {
+            LOGGER_ERROR( "data '%s' invalid close file '%s'"
+                , _name.c_str()
+                , desc.path.c_str()
+            );
+
             return false;
         }
 

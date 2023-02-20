@@ -129,6 +129,18 @@ namespace Mengine
 
         size_t encode_byte = encoder->encode( &htfEncoderData, &htfDataInfo );
 
+        encoder->finalize();
+
+        if( Helper::closeOutputStreamFile( m_fileGroup, stream_output ) == false )
+        {
+            LOGGER_ERROR( "%s invalid close output '%s'"
+                , m_options.inputFilePath.c_str()
+                , full_outputFilePath.c_str()
+            );
+
+            return false;
+        }
+
         if( encode_byte == 0 )
         {
             LOGGER_ERROR( "%s invalid encode"

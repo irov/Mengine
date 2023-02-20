@@ -23,11 +23,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageEncoderDDS::_initialize()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderDDS::encode( const EncoderData * _data, const CodecDataInfo * _dataInfo )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );

@@ -694,9 +694,9 @@ namespace Mengine
 
         FilePath Game_AccountsPath = CONFIG_VALUE( "Game", "AccountsPath", Helper::stringizeFilePath( MENGINE_ACCOUNTS_SETTINGS_JSON_PATH ) );
 
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, Game_AccountsPath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, Game_AccountsPath, true, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( file, "can't open file for writing. Accounts '%s' settings not saved"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open file for writing. Accounts '%s' settings not saved"
             , Game_AccountsPath.c_str()
         );
 
@@ -736,12 +736,12 @@ namespace Mengine
         j_root.set( "SETTINGS", j_settings );
         j_root.set( "ACCOUNTS", j_accounts );
 
-        if( Helper::writeJSONStream( j_root, file ) == false )
+        if( Helper::writeJSONStream( j_root, stream ) == false )
         {
             return false;
         }
 
-        if( m_fileGroup->closeOutputFile( file ) == false )
+        if( Helper::closeOutputStreamFile( m_fileGroup, stream ) == false )
         {
             return false;
         }

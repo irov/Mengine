@@ -9,7 +9,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        //////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////        
         ConstString stringizeString( const Char * _value );
         ConstString stringizeStringSize( const Char * _value, ConstString::size_type _size );
         ConstString stringizeStringSizeHash( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash );
@@ -63,6 +63,8 @@ namespace Mengine
 
             return cstr;
         }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringizeExistSymbol( const ConstString & _value, Char _symbol );
         //////////////////////////////////////////////////////////////////////////
     }
 }

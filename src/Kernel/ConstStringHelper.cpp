@@ -6,6 +6,7 @@
 
 #include "Config/StdArg.h"
 #include "Config/StdIO.h"
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {
@@ -84,6 +85,20 @@ namespace Mengine
                 ->stringizeUnique( _value, _size, _hash, &constString );
 
             return constString;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringizeExistSymbol( const ConstString & _value, Char _symbol )
+        {
+            const Char * str = _value.c_str();
+            size_t size = _value.size();
+            const Char * str_end = str + size;
+
+            if( Algorithm::find( str, str_end, _symbol ) == str_end )
+            {
+                return false;
+            }
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
     }

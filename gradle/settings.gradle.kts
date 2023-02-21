@@ -87,6 +87,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL [https://developers.google.com/games/services]
 / * - MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS [https://developer.android.com/guide/playcore/in-app-review]
 / * - MENGINE_APP_PLUGIN_GOOGLE_CONSENT [https://developers.google.com]
+/ * - MENGINE_APP_PLUGIN_GOOGLE_BIGQUERY [https://cloud.google.com/bigquery]
 / * - MENGINE_APP_PLUGIN_MAR [http://doc.martianyun.com/en]
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]

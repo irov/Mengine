@@ -136,11 +136,20 @@ namespace Mengine
             return;
         }
 
+        ConstString old_aliasEnvironment = m_aliasEnvironment;
+
         m_aliasEnvironment = _aliasEnvironment;
 
         for( const HashtableTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.element;
+
+            const ConstString & text_aliasEnvironment = text->getTextAliasEnvironment();
+
+            if( text_aliasEnvironment != old_aliasEnvironment )
+            {
+                continue;
+            }
 
             text->setTextAliasEnvironment( m_aliasEnvironment );
         }
@@ -429,8 +438,28 @@ namespace Mengine
                 RenderInterface * nodeRender = node->getRender();
                 nodeRender->setExternalRender( true );
 
-                node->setTextId( layer.name );
-                node->setTextAliasEnvironment( m_aliasEnvironment );
+                if( Helper::stringizeExistSymbol( layer.name, '#' ) == false )
+                {
+                    node->setTextId( layer.name );
+                    node->setTextAliasEnvironment( m_aliasEnvironment );
+                }
+                else
+                {
+                    Char layer_name[512] = {'\0'};
+                    MENGINE_STRCPY( layer_name, layer.name.c_str() );
+
+                    Char * delim_aliasEnvironment = MENGINE_STRCHR( layer_name, '#' );
+
+                    *delim_aliasEnvironment = '\0';
+
+                    const Char * extra_aliasEnvironment = delim_aliasEnvironment + 1;
+
+                    ConstString new_textId = Helper::stringizeString( layer_name );
+                    ConstString new_aliasEnvironment = Helper::stringizeString( extra_aliasEnvironment );
+
+                    node->setTextId( new_textId );
+                    node->setTextAliasEnvironment( new_aliasEnvironment );
+                }
 
                 node->setPixelsnap( false );
 

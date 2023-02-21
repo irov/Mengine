@@ -33,6 +33,7 @@ namespace Mengine
 
         Char concatenatePath[MENGINE_MAX_PATH] = {'\0'};
 
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )
         {
             if( Helper::concatenateFilePathTemp( m_relationPath, m_folderPath, m_filePath, concatenatePath, MENGINE_MAX_PATH - 1 ) == false )
@@ -57,6 +58,17 @@ namespace Mengine
                 return false;
             }
         }
+#else
+        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, concatenatePath, MENGINE_MAX_PATH - 1 ) == false )
+        {
+            LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+            );
+
+            return false;
+        }
+#endif
 
         SDL_RWops * rwops = SDL_RWFromFile( concatenatePath, "wb" );
 
@@ -87,6 +99,7 @@ namespace Mengine
         SDL_RWclose( m_rwops );
         m_rwops = nullptr;
 
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )
         {
             Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
@@ -117,6 +130,7 @@ namespace Mengine
                 return false;
             }
         }
+#endif
 
         return successful;
     }

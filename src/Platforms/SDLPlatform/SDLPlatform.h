@@ -181,7 +181,7 @@ namespace Mengine
         SDL_Window * getWindow() const override;
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   if defined(MENGINE_WINDOWS_UNIVERSAL)
+#   if defined(MENGINE_PLATFORM_UWP)
     public:
         IInspectable * getWindowHandle() const override;
 #   else

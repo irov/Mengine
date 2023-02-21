@@ -58,6 +58,9 @@ namespace Mengine
         MENGINE_INLINE void setPremultiply( bool _premultiply );
         MENGINE_INLINE bool isPremultiply() const;
 
+        MENGINE_INLINE void setTrimAtlas( bool _trimAtlas );
+        MENGINE_INLINE bool isTrimAtlas() const;
+
         MENGINE_INLINE void setPow2( bool _pow2 );
         MENGINE_INLINE bool isPow2() const;
 
@@ -99,6 +102,7 @@ namespace Mengine
         bool m_uvAlphaRotate;
         bool m_hasAlpha;
         bool m_isPremultiply;
+        bool m_trimAtlas;
         bool m_isPow2;
         bool m_isUVImageIdentity;
         bool m_isUVAlphaIdentity;
@@ -228,6 +232,16 @@ namespace Mengine
     MENGINE_INLINE bool ResourceImage::hasAlpha() const
     {
         return m_hasAlpha;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE void ResourceImage::setTrimAtlas( bool _trimAtlas )
+    {
+        m_trimAtlas = _trimAtlas;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool ResourceImage::isTrimAtlas() const
+    {
+        return m_trimAtlas;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE void ResourceImage::setPremultiply( bool _premultiply )

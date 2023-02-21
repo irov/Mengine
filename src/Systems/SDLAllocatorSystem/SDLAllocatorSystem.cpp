@@ -20,6 +20,8 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+#if !defined(MENGINE_PLATFORM_UWP)
+        //////////////////////////////////////////////////////////////////////////
         static void * SDL_malloc_func( size_t size )
         {
             void * p = Helper::allocateMemory( size, "SDL" );
@@ -46,6 +48,8 @@ namespace Mengine
             Helper::deallocateMemory( mem, "SDL" );
         }
         //////////////////////////////////////////////////////////////////////////
+#endif
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     SDLAllocatorSystem::SDLAllocatorSystem()
@@ -59,6 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLAllocatorSystem::_initializeService()
     {
+#if !defined(MENGINE_PLATFORM_UWP)
         SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
 
         if( SDL_SetMemoryFunctions( &Detail::SDL_malloc_func, &Detail::SDL_calloc_func, &Detail::SDL_realloc_func, &Detail::SDL_free_func ) != 0 )
@@ -69,13 +74,14 @@ namespace Mengine
 
             return false;
         }
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLAllocatorSystem::_finalizeService()
     {
-#ifndef MENGINE_WINDOWS_UNIVERSAL
+#if !defined(MENGINE_PLATFORM_UWP)
         SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func );
 #endif
     }

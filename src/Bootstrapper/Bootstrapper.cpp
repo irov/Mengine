@@ -677,7 +677,9 @@ namespace Mengine
 
         FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, (FilePath::size_type)userPathLen );
 
-        if( HAS_OPTION( "showuserfolder" ) == true )
+        bool OPTION_showuserfolder = HAS_OPTION( "showuserfolder" );
+
+        if( OPTION_showuserfolder == true )
         {
             PLATFORM_SERVICE()
                 ->messageBox( "Mengine", "user folder: %s", cs_userPath.c_str() );
@@ -720,10 +722,10 @@ namespace Mengine
         unicode_logFilename += L"Game";
 
         bool developmentMode = Helper::isDevelopmentMode();
-        bool OPTION_roamingMode = HAS_OPTION( "roaming" );
-        bool OPTION_noroamingMode = HAS_OPTION( "noroaming" );
+        bool OPTION_roaming = HAS_OPTION( "roaming" );
+        bool OPTION_noroaming = HAS_OPTION( "noroaming" );
 
-        if( developmentMode == true && (OPTION_roamingMode == false || OPTION_noroamingMode == false) )
+        if( developmentMode == true && (OPTION_roaming == false || OPTION_noroaming == false) )
         {
             unicode_logFilename += L"_";
             unicode_logFilename += unicode_date;
@@ -942,9 +944,9 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( LZ4, "Plugin LZ4...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        bool OPTION_norenderMode = HAS_OPTION( "norender" );
+        bool OPTION_norender = HAS_OPTION( "norender" );
 
-        if( OPTION_norenderMode == true )
+        if( OPTION_norender == true )
         {
             BOOTSTRAPPER_SERVICE_CREATE( MockupRenderSystem, MENGINE_DOCUMENT_FACTORABLE );
         }
@@ -957,9 +959,9 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( RenderMaterialService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( RenderTextureService, MENGINE_DOCUMENT_FACTORABLE );
 
-        bool OPTION_muteMode = HAS_OPTION( "mute" );
+        bool OPTION_mute = HAS_OPTION( "mute" );
 
-        if( OPTION_muteMode == true )
+        if( OPTION_mute == true )
         {
             BOOTSTRAPPER_SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
         }

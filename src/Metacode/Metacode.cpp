@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 150;
+        return 151;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 3554461372; 
+        return 2467575927; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -1901,6 +1901,11 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Size );
             }
         
+            if( (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_TrimAtlas );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceImageData::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1990,6 +1995,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_Size) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Size );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_TrimAtlas );
             }
         
         }

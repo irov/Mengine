@@ -2177,6 +2177,7 @@ namespace Metacode
                     EMETA_File_Offset = (1 <<6),
                     EMETA_File_Premultiply = (1 <<4),
                     EMETA_File_Size = (1 <<5),
+                    EMETA_File_TrimAtlas = (1 <<8),
                 };
                 
             public:
@@ -2382,6 +2383,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_TrimAtlas() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_TrimAtlas( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_TrimAtlas );
+                
+                    return true;
+                }
+                
+                bool get_File_TrimAtlas( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_TrimAtlas;
+                
+                    return true;
+                }
+                
             public:
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
@@ -2401,6 +2432,7 @@ namespace Metacode
                 Mengine::FilePath m_File_Path;
                 bool m_File_Premultiply;
                 mt::vec2f m_File_Size;
+                bool m_File_TrimAtlas;
             };
             
             class Meta_ResourceImageDefault
@@ -2419,6 +2451,7 @@ namespace Metacode
                     EMETA_File_Offset = (1 <<7),
                     EMETA_File_Premultiply = (1 <<5),
                     EMETA_File_Size = (1 <<6),
+                    EMETA_File_TrimAtlas = (1 <<9),
                 };
                 
             public:
@@ -2654,6 +2687,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_TrimAtlas() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_TrimAtlas( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_TrimAtlas );
+                
+                    return true;
+                }
+                
+                bool get_File_TrimAtlas( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_TrimAtlas;
+                
+                    return true;
+                }
+                
             public:
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
@@ -2674,6 +2737,7 @@ namespace Metacode
                 Mengine::FilePath m_File_Path;
                 bool m_File_Premultiply;
                 mt::vec2f m_File_Size;
+                bool m_File_TrimAtlas;
             };
             
             class Meta_ResourceImageEmpty

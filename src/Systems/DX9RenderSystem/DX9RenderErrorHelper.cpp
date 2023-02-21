@@ -12,8 +12,6 @@ namespace Mengine
         {
             switch( _hr )
             {
-#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
-
                 MENGINE_MESSAGE_CASE( D3D_OK, "Ok" );
                 MENGINE_MESSAGE_CASE( D3DERR_WRONGTEXTUREFORMAT, "Wrong texture format" );
                 MENGINE_MESSAGE_CASE( D3DERR_UNSUPPORTEDCOLOROPERATION, "Unsupported color operation" );
@@ -51,7 +49,6 @@ namespace Mengine
                 MENGINE_MESSAGE_CASE( D3DERR_CANNOTPROTECTCONTENT, "Contect protection not available" );
                 MENGINE_MESSAGE_CASE( D3DERR_UNSUPPORTEDCRYPTO, "Unsupported cryptographic system" );
                 MENGINE_MESSAGE_CASE( D3DERR_PRESENT_STATISTICS_DISJOINT, "Presentation statistics are disjoint" );
-#endif
 
             default:
                 return "Unknown error.";

@@ -24,7 +24,7 @@ fi
 mkdir -p ../../solutions/solution_xcode_macos_sdl/$CONFIGURATION
 pushd ../../solutions/solution_xcode_macos_sdl/$CONFIGURATION
 
-$CMAKE -G"Xcode" "$PWD/../../../cmake/Xcode_MacOS_SDL" -DCMAKE_BUILD_TYPE:STRING="$CONFIGURATION" -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_XCODE_DEPLOY_PATH="$DEPLOY_PATH"
+$CMAKE -G"Xcode" "$PWD/../../../cmake/Xcode_MacOS_SDL" -DCMAKE_BUILD_TYPE:STRING="$CONFIGURATION" -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_DEPLOY_PATH="$DEPLOY_PATH"
 
 if [ $? -ne 0 ]; then
     echo "please fix CMake"

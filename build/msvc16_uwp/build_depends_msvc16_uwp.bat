@@ -17,7 +17,7 @@ set "YEAR=2019"
 @popd
 
 @pushd %~dp0..
-@call build_depends.bat "SOLUTION_NAME=dependencies_msvc%VERSION%_windowsstore" "SOURCE_DIRECTORY=%CD%\..\cmake\Depends_WIN32_WindowsStore" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "VERBOSITY=minimal" "ARCHITECTURE=x64"
+@call build_depends.bat "SOLUTION_NAME=dependencies_msvc%VERSION%_uwp" "SOURCE_DIRECTORY=%CD%\..\cmake\Depends_WIN32_UWP" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "VERBOSITY=minimal" "ARCHITECTURE=x64"
 @popd
 
 :end

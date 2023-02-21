@@ -2,7 +2,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Config/Utils.h"
+#include "Config/Switch.h"
 
 namespace Mengine
 {
@@ -16,7 +16,6 @@ namespace Mengine
                 MENGINE_MESSAGE_CASE( S_OK, "Ok" );
                 MENGINE_MESSAGE_CASE( S_FALSE, "S_FALSE" );
 
-#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
                 MENGINE_MESSAGE_CASE( D3D11_ERROR_FILE_NOT_FOUND, "file not found" );
                 MENGINE_MESSAGE_CASE( D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS, "There are too many unique instances of a particular type of state object" );
                 MENGINE_MESSAGE_CASE( D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS, "There are too many unique instances of a particular type of view object" );
@@ -50,7 +49,7 @@ namespace Mengine
                 MENGINE_MESSAGE_CASE( DXGI_ERROR_UNSUPPORTED, "The requested functionality is not supported by the device or the driver" );
                 MENGINE_MESSAGE_CASE( DXGI_ERROR_WAIT_TIMEOUT, "The time-out interval elapsed before the next desktop frame was available" );
                 MENGINE_MESSAGE_CASE( DXGI_ERROR_WAS_STILL_DRAWING, "The previous blit operation that is transferring information to or from this surface is incomplete" );
-#endif
+
             default:
                 return "Unknown error.";
             }
@@ -73,7 +72,7 @@ namespace Mengine
 
         const Char * message = Helper::getDX11ErrorMessage( _hr );
 
-        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0 )("[DX11] file '%s' line %u call '%s' get error: %s (hr:%x)"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "dx11" ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("[DX11] file '%s' line %u call '%s' get error: %s (hr:%x)"
             , m_file
             , m_line
             , m_method

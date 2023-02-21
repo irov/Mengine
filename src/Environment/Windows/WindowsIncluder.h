@@ -22,7 +22,7 @@
 #   else
 #       if defined(MENGINE_TOOLCHAIN_MINGW)
 #           define MENGINE_WINDOWS_MIN_VERSION _WIN32_WINNT_VISTA
-#       elif defined(MENGINE_WINDOWS_UNIVERSAL)
+#       elif defined(MENGINE_PLATFORM_UWP)
 #           define MENGINE_WINDOWS_MIN_VERSION _WIN32_WINNT_WIN10
 #       else
 #           define MENGINE_WINDOWS_MIN_VERSION _WIN32_WINNT_VISTA

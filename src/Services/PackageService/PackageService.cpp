@@ -454,9 +454,9 @@ namespace Mengine
         {
             LOGGER_ERROR( "[resources validation is invalid]" );
 
-            bool OPTION_resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
+            bool OPTION_noresourcecheckcritical = HAS_OPTION( "noresourcecheckcritical" );
 
-            if( OPTION_resourceCheckCritical == false )
+            if( OPTION_noresourcecheckcritical == false )
             {
                 LOGGER_CRITICAL( "Please fix resources and restart application!" );
 

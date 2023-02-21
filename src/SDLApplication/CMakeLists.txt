@@ -39,7 +39,7 @@ if(MENGINE_TOOLCHAIN_MSVC)
     )
 endif()
 
-if(MENGINE_WINDOWS_UNIVERSAL)
+if(MENGINE_TARGET_UWP)
     ADD_FILTER(
     EntryPoint
         SDLUWPEntryPoint.cpp
@@ -50,11 +50,7 @@ if(MENGINE_WINDOWS_UNIVERSAL)
     SET_SOURCE_FILES_PROPERTIES(SDLUWPEntryPoint.cpp PROPERTIES COMPILE_FLAGS /ZW)
 endif()
 
-if(MENGINE_WINDOWS_UNIVERSAL)
-    ADD_FILTER(
-    AppXManifest
-        Package.appxmanifest
-    )
+if(MENGINE_TARGET_UWP)
 endif()
 
 if(MENGINE_TARGET_IOS)
@@ -88,6 +84,29 @@ if(MENGINE_TARGET_WINDOWS)
     ADD_MENGINE_EXECUTABLE_WIN32()
 endif()
 
+if(MENGINE_TARGET_UWP)
+    set(CMAKE_CXX_STACK_SIZE 4194304)
+
+    if(MENGINE_DEPLOY_PATH)
+        if(EXISTS "${MENGINE_DEPLOY_PATH}/project_prepare.cmake")
+            include("${MENGINE_DEPLOY_PATH}/project_prepare.cmake")
+        endif()
+
+        ADD_FILTER(
+        AppXManifest
+            ${MENGINE_DEPLOY_PATH}/Package.appxmanifest
+        )
+    endif()
+    
+    ADD_MENGINE_EXECUTABLE_WIN32()
+    
+    if(MENGINE_DEPLOY_PATH)
+        if(EXISTS "${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
+            include("${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
+        endif()
+    endif()    
+endif()
+
 if(MENGINE_TARGET_UNIX)
     ADD_MENGINE_EXECUTABLE_UNIX()
 endif()
@@ -97,9 +116,9 @@ if(MENGINE_TARGET_ANDROID)
 endif()
 
 if(MENGINE_TARGET_APPLE)
-    if(MENGINE_XCODE_DEPLOY_PATH)
-        if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/project_prepare.cmake")
-            include("${MENGINE_XCODE_DEPLOY_PATH}/project_prepare.cmake")
+    if(MENGINE_DEPLOY_PATH)
+        if(EXISTS "${MENGINE_DEPLOY_PATH}/project_prepare.cmake")
+            include("${MENGINE_DEPLOY_PATH}/project_prepare.cmake")
         endif()
     endif()
     
@@ -194,9 +213,9 @@ if(MENGINE_TARGET_APPLE)
         ADD_MENGINE_EXECUTABLE_MACOSX()
     endif()
     
-    if(MENGINE_XCODE_DEPLOY_PATH)
-        if(EXISTS "${MENGINE_XCODE_DEPLOY_PATH}/project_deploy.cmake")
-            include("${MENGINE_XCODE_DEPLOY_PATH}/project_deploy.cmake")
+    if(MENGINE_DEPLOY_PATH)
+        if(EXISTS "${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
+            include("${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
         endif()
     endif()
     
@@ -238,9 +257,11 @@ endif()
 if(MENGINE_TARGET_WINDOWS)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2-static${MENGINE_DEPENDENCIES_DEBUG_SUFFIX}${MENGINE_LIB_SUFFIX})
 
-    if(NOT MENGINE_WINDOWS_UNIVERSAL)
-        TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2main${MENGINE_DEPENDENCIES_DEBUG_SUFFIX}${MENGINE_LIB_SUFFIX})
-    endif()
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2main${MENGINE_DEPENDENCIES_DEBUG_SUFFIX}${MENGINE_LIB_SUFFIX})
+endif()
+
+if(MENGINE_TARGET_UWP)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2-static${MENGINE_DEPENDENCIES_DEBUG_SUFFIX}${MENGINE_LIB_SUFFIX})
 endif()
 
 if(MENGINE_TARGET_APPLE)
@@ -354,6 +375,10 @@ IF(MENGINE_TARGET_ANDROID)
 ENDIF()
 
 IF(MENGINE_TARGET_WINDOWS)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Winmm.lib Version.lib Imm32.lib Setupapi.lib)
+ENDIF()
+
+IF(MENGINE_TARGET_UWP)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Winmm.lib Version.lib Imm32.lib Setupapi.lib)
 ENDIF()
 

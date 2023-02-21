@@ -16,6 +16,7 @@ namespace Mengine
         , m_uvAlphaRotate( false )
         , m_hasAlpha( false )
         , m_isPremultiply( false )
+        , m_trimAtlas( false )
         , m_isPow2( false )
         , m_isUVImageIdentity( false )
         , m_isUVAlphaIdentity( false )

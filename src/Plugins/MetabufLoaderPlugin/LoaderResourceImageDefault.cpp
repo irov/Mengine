@@ -42,8 +42,9 @@ namespace Mengine
         metadata->getm_File_Converter( content.get(), &ContentInterface::setConverterType );
         metadata->getm_File_NoExist( content.get(), &ContentInterface::setValidNoExist );
 
-        metadata->getm_File_Alpha( resource, &ResourceImageDefault::setAlpha );
-        metadata->getm_File_Premultiply( resource, &ResourceImageDefault::setPremultiply );
+        metadata->getm_File_Alpha( resource, &ResourceImage::setAlpha );
+        metadata->getm_File_Premultiply( resource, &ResourceImage::setPremultiply );
+        metadata->getm_File_TrimAtlas( resource, &ResourceImage::setTrimAtlas );
 
         const mt::vec2f & maxSize = metadata->get_File_MaxSize();
         resource->setMaxSize( maxSize );
@@ -58,7 +59,7 @@ namespace Mengine
             resource->setSize( maxSize );
         }
 
-        metadata->getm_File_Offset( resource, &ResourceImageDefault::setOffset );
+        metadata->getm_File_Offset( resource, &ResourceImage::setOffset );
 
         return true;
     }

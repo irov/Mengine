@@ -83,7 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DebugAllocatorSystem::_finalizeService()
     {
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
 #endif
     }

@@ -25,6 +25,7 @@ def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin(project, "MEN
 def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS")
 def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
 def MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG")
+def MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING")
 def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVTODEV")
 def MENGINE_APP_PLUGIN_FACEBOOK = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FACEBOOK")
 def MENGINE_APP_PLUGIN_SENTRY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SENTRY")
@@ -522,6 +523,18 @@ if (MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG == true) {
 
     dependencies {
         implementation project(':plugins:FirebaseRemoteConfig')
+    }
+}
+
+if (MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING == true) {
+    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING required enable MENGINE_APP_PLUGIN_FIREBASE");
+    }
+    
+    android.ext.plugins += 'org.Mengine.Plugin.FirebasePerformanceMonitoring.MengineFirebasePerformanceMonitoringPlugin'
+
+    dependencies {
+        implementation project(':plugins:FirebasePerformanceMonitoring')
     }
 }
 

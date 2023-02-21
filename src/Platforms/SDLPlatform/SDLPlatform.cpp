@@ -170,10 +170,10 @@ namespace Mengine
     {
 #ifdef MENGINE_PLATFORM_WINDOWS
         bool developmentMode = Helper::isDevelopmentMode();
-        bool roamingMode = HAS_OPTION( "roaming" );
-        bool noroamingMode = HAS_OPTION( "noroaming" );
+        bool OPTION_roaming = HAS_OPTION( "roaming" );
+        bool OPTION_noroaming = HAS_OPTION( "noroaming" );
 
-        if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
+        if( (developmentMode == true && OPTION_roaming == false) || OPTION_noroaming == true )
         {
             Char currentPath[MENGINE_MAX_PATH] = {'\0'};
             size_t currentPathLen = this->getCurrentPath( currentPath );
@@ -220,7 +220,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getUserName( Char * const _userName ) const
     {
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         WChar unicode_userName[UNLEN + 1] = {L'\0'};
         DWORD unicode_userNameLen = UNLEN + 1;
         if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
@@ -886,7 +886,7 @@ namespace Mengine
             LOGGER_INFO( "platform", "accelerometer not found" );
         }
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         WChar UserNameBuffer[UNLEN + 1] = {L'\0'};
         DWORD UserNameLen = UNLEN + 1;
         if( ::GetUserName( UserNameBuffer, &UserNameLen ) == FALSE )
@@ -1147,10 +1147,10 @@ namespace Mengine
         else
         {
 #if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS)
-            bool maxfps = HAS_OPTION( "maxfps" );
+            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
 
             if( APPLICATION_SERVICE()
-                ->getVSync() == false && maxfps == false )
+                ->getVSync() == false && OPTION_maxfps == false )
             {
                 SDL_Delay( 1 );
             }
@@ -1436,7 +1436,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::applyWindow_()
     {
-#if defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_UWP)
 #else
         SDL_GLContext glContext = SDL_GL_CreateContext( m_sdlWindow );
 
@@ -2345,7 +2345,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -2498,7 +2498,7 @@ namespace Mengine
         MENGINE_UNUSED( _mask );
         MENGINE_UNUSED( _lambda );
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -2533,7 +2533,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -2601,7 +2601,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _filePath );
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -2852,7 +2852,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   if defined(MENGINE_WINDOWS_UNIVERSAL)
+#   if defined(MENGINE_PLATFORM_UWP)
     //////////////////////////////////////////////////////////////////////////
     IInspectable * SDLPlatform::getWindowHandle() const
     {
@@ -2984,7 +2984,7 @@ namespace Mengine
         {
             return false;
         }
-#elif defined(MENGINE_WINDOWS_UNIVERSAL)
+#elif defined(MENGINE_PLATFORM_UWP)
         SDL_bool sdl_fullscreen = _fullscreen == true ? SDL_TRUE : SDL_FALSE;
         SDL_SetWindowFullscreen( m_sdlWindow, sdl_fullscreen );
 
@@ -3021,8 +3021,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setupWindow_()
     {
-
-#if defined(MENGINE_WINDOWS_UNIVERSAL)
+#if defined(MENGINE_PLATFORM_UWP)
 #else
         uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_RED_SIZE", 8 );
 
@@ -3201,7 +3200,7 @@ namespace Mengine
             );
         }
 
-#elif defined(MENGINE_WINDOWS_UNIVERSAL)
+#elif defined(MENGINE_PLATFORM_UWP)
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "direct3d11" );
 
 #else
@@ -3271,7 +3270,7 @@ namespace Mengine
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
 
-#elif defined(MENGINE_WINDOWS_UNIVERSAL)
+#elif defined(MENGINE_PLATFORM_UWP)
         windowFlags |= SDL_WINDOW_SHOWN;
 
         if( _fullscreen == true )

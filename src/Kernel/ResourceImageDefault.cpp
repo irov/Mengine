@@ -159,19 +159,53 @@ namespace Mengine
         mt::uv4f uvTextureImage;
         mt::uv4f uvTextureAlpha;
 
+        bool trimAtlas = this->isTrimAtlas();
+
         const mt::uv4f & uvImage = this->getUVImage();
         const mt::uv4f & uvAlpha = this->getUVAlpha();
 
-        if( Helper::isTexturePow2( width ) == false )
+        if( trimAtlas == false )
         {
-            uint32_t width_pow2 = Helper::getTexturePow2( width );
-
-            float scale = size.x / float( width_pow2 );
-
-            for( uint32_t i = 0; i != 4; ++i )
+            if( Helper::isTexturePow2( width ) == false )
             {
-                uvTextureImage[i].x = uvImage[i].x * scale;
-                uvTextureAlpha[i].x = uvAlpha[i].x * scale;
+                uint32_t width_pow2 = Helper::getTexturePow2( width );
+
+                float scale = size.x / float( width_pow2 );
+
+                for( uint32_t i = 0; i != 4; ++i )
+                {
+                    uvTextureImage[i].x = uvImage[i].x * scale;
+                    uvTextureAlpha[i].x = uvAlpha[i].x * scale;
+                }
+            }
+            else
+            {
+                for( uint32_t i = 0; i != 4; ++i )
+                {
+                    uvTextureImage[i].x = uvImage[i].x;
+                    uvTextureAlpha[i].x = uvAlpha[i].x;
+                }
+            }
+
+            if( Helper::isTexturePow2( height ) == false )
+            {
+                uint32_t height_pow2 = Helper::getTexturePow2( height );
+
+                float scale = size.y / float( height_pow2 );
+
+                for( uint32_t i = 0; i != 4; ++i )
+                {
+                    uvTextureImage[i].y = uvImage[i].y * scale;
+                    uvTextureAlpha[i].y = uvAlpha[i].y * scale;
+                }
+            }
+            else
+            {
+                for( uint32_t i = 0; i != 4; ++i )
+                {
+                    uvTextureImage[i].y = uvImage[i].y;
+                    uvTextureAlpha[i].y = uvAlpha[i].y;
+                }
             }
         }
         else
@@ -181,22 +215,7 @@ namespace Mengine
                 uvTextureImage[i].x = uvImage[i].x;
                 uvTextureAlpha[i].x = uvAlpha[i].x;
             }
-        }
 
-        if( Helper::isTexturePow2( height ) == false )
-        {
-            uint32_t height_pow2 = Helper::getTexturePow2( height );
-
-            float scale = size.y / float( height_pow2 );
-
-            for( uint32_t i = 0; i != 4; ++i )
-            {
-                uvTextureImage[i].y = uvImage[i].y * scale;
-                uvTextureAlpha[i].y = uvAlpha[i].y * scale;
-            }
-        }
-        else
-        {
             for( uint32_t i = 0; i != 4; ++i )
             {
                 uvTextureImage[i].y = uvImage[i].y;

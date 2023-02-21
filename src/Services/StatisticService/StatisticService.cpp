@@ -71,11 +71,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::addStatisticInteger( const ConstString & _name, int64_t _value )
     {
-        if( this->isAvailableService() == false )
-        {
-            return;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticIntegers[_name] += _value;
@@ -83,11 +78,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StatisticService::hasStatisticInteger( const ConstString & _name ) const
     {
-        if( this->isAvailableService() == false )
-        {
-            return false;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         MapStatisticIntegers::const_iterator it_found = m_statisticIntegers.find( _name );
@@ -102,11 +92,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int64_t StatisticService::getStatisticInteger( const ConstString & _name ) const
     {
-        if( this->isAvailableService() == false )
-        {
-            return 0LL;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         MapStatisticIntegers::const_iterator it_found = m_statisticIntegers.find( _name );
@@ -123,11 +108,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::resetStatisticInteger( const ConstString & _name )
     {
-        if( this->isAvailableService() == false )
-        {
-            return;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticIntegers.erase( _name );
@@ -135,11 +115,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::addStatisticDouble( const ConstString & _name, double _value )
     {
-        if( this->isAvailableService() == false )
-        {
-            return;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticDoubles[_name] += _value;
@@ -147,11 +122,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StatisticService::hasStatisticDouble( const ConstString & _name ) const
     {
-        if( this->isAvailableService() == false )
-        {
-            return false;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         MapStatisticDoubles::const_iterator it_found = m_statisticDoubles.find( _name );
@@ -166,11 +136,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     double StatisticService::getStatisticDouble( const ConstString & _name ) const
     {
-        if( this->isAvailableService() == false )
-        {
-            return 0.0;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         MapStatisticDoubles::const_iterator it_found = m_statisticDoubles.find( _name );
@@ -187,11 +152,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::resetStatisticDouble( const ConstString & _name )
     {
-        if( this->isAvailableService() == false )
-        {
-            return;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticDoubles.erase( _name );
@@ -199,11 +159,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::setStatisticConstString( const ConstString & _name, const ConstString & _value )
     {
-        if( this->isAvailableService() == false )
-        {
-            return;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticConstStrings[_name] = _value;
@@ -211,11 +166,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StatisticService::hasStatisticConstString( const ConstString & _name ) const
     {
-        if( this->isAvailableService() == false )
-        {
-            return false;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         MapStatisticConstStrings::const_iterator it_found = m_statisticConstStrings.find( _name );
@@ -230,11 +180,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & StatisticService::getStatisticConstString( const ConstString & _name ) const
     {
-        if( this->isAvailableService() == false )
-        {
-            return ConstString::none();
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         MapStatisticConstStrings::const_iterator it_found = m_statisticConstStrings.find( _name );
@@ -251,11 +196,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StatisticService::resetStatisticConstString( const ConstString & _name )
     {
-        if( this->isAvailableService() == false )
-        {
-            return;
-        }
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticConstStrings.erase( _name );

@@ -80,7 +80,6 @@ src
     Typeinfo.h
     Atomic.h
     Lambda.h
-    Defines.h
     Config.h
     Export.h
     Abs.h

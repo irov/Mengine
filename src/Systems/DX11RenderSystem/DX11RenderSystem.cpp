@@ -46,6 +46,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -231,7 +232,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::_finalizeService()
     {
-#ifndef MENGINE_WINDOWS_UNIVERSAL
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         m_dxgiSwapChain->SetFullscreenState( FALSE, nullptr );
 #endif
 
@@ -442,9 +443,9 @@ namespace Mengine
         m_renderResourceHandlers.push_back( renderImage.get() );
 
 #ifdef MENGINE_DEBUG
-        bool logcreateimage = HAS_OPTION( "logcreateimage" );
+        bool OPTION_logcreateimage = HAS_OPTION( "logcreateimage" );
 
-        if( logcreateimage == true )
+        if( OPTION_logcreateimage == true )
         {
             LOGGER_STATISTIC( "create texture [%u:%u] format %u (doc %s)"
                 , renderImage->getHWWidth()
@@ -744,7 +745,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setViewport( const Viewport & _viewport )
     {
-        if( m_viewport.equalViewport( _viewport ) == true )
+        if( m_viewport.equalViewport( _viewport, 0.5f ) == true )
         {
             return;
         }
@@ -780,7 +781,7 @@ namespace Mengine
         m_depthStencilBuffer = nullptr;
         m_depthStencilView = nullptr;
 
-#ifndef MENGINE_WINDOWS_UNIVERSAL
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         IF_DXCALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
         {
             return;
@@ -792,7 +793,7 @@ namespace Mengine
         uint32_t resolutionWidth = _resolution.getWidth();
         uint32_t resolutionHeight = _resolution.getHeight();
 
-#ifndef MENGINE_WINDOWS_UNIVERSAL
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         DXGI_MODE_DESC modeDesc;
         modeDesc.Width = resolutionWidth;
         modeDesc.Height = resolutionHeight;
@@ -925,18 +926,6 @@ namespace Mengine
     const ID3D11DeviceContextPtr & DX11RenderSystem::getDirect3D11DeviceContext() const
     {
         return m_pD3DDeviceContext;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderSystem::supportTextureFormat( EPixelFormat _format ) const
-    {
-        MENGINE_UNUSED( _format );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderSystem::supportTextureNonPow2() const
-    {
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderSystem::getMaxCombinedTextureImageUnits() const

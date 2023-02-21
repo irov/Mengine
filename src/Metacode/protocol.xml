@@ -1,4 +1,4 @@
-<Protocol Version = "150">
+<Protocol Version = "151">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -177,6 +177,7 @@
           <Member Node="File" Name="Size" Type="mt::vec2f"/>
           <Member Node="File" Name="Offset" Type="mt::vec2f"/>
           <Member Node="File" Name="NoExist" Type="bool"/>
+          <Member Node="File" Name="TrimAtlas" Type="bool"/>
         </Node>
 
         <Node Name="ResourceImageDefault" Inheritance="Resource">
@@ -189,6 +190,7 @@
           <Member Node="File" Name="Size" Type="mt::vec2f"/>
           <Member Node="File" Name="Offset" Type="mt::vec2f"/>
           <Member Node="File" Name="NoExist" Type="bool"/>
+          <Member Node="File" Name="TrimAtlas" Type="bool"/>
         </Node>
         
         <Node Name="ResourceImageEmpty" Inheritance="Resource">

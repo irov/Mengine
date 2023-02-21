@@ -70,10 +70,10 @@ namespace Mengine
         ELoggerLevel logLevel;
 
         bool developmentMode = Helper::isDevelopmentMode();
-        bool OPTION_roamingMode = HAS_OPTION( "roaming" );
-        bool OPTION_noroamingMode = HAS_OPTION( "noroaming" );
+        bool OPTION_roaming = HAS_OPTION( "roaming" );
+        bool OPTION_noroaming = HAS_OPTION( "noroaming" );
 
-        if( developmentMode == true && (OPTION_roamingMode == false || OPTION_noroamingMode == true) )
+        if( developmentMode == true && (OPTION_roaming == false || OPTION_noroaming == true) )
         {
             logLevel = LM_MESSAGE;
         }

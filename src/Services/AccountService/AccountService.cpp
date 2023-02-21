@@ -495,9 +495,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::loadAccounts()
     {
-        bool OPTION_noLoadAccount = HAS_OPTION( "noaccounts" );
+        bool OPTION_noaccounts = HAS_OPTION( "noaccounts" );
 
-        if( OPTION_noLoadAccount == true )
+        if( OPTION_noaccounts == true )
         {
             return true;
         }

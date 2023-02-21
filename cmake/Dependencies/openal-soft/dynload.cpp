@@ -12,7 +12,7 @@
 void *LoadLib(const char *name)
 {
     std::wstring wname{utf8_to_wstr(name)};
-#if !defined(MENGINE_WINDOWS_UNIVERSAL)
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
     return LoadLibraryW(wname.c_str());
 #else
     return LoadPackagedLibrary(wname.c_str(), 0);

@@ -4,6 +4,10 @@
 
 #include "Environment/SDL2/SDL2Includer.h"
 
+#ifdef MENGINE_PLATFORM_WINDOWS
+#   include "Environment/Windows/WindowsIncluder.h"
+#endif
+
 namespace Mengine
 {
     class SDLPlatformExtensionInterface
@@ -16,7 +20,7 @@ namespace Mengine
         virtual bool attachWindow( const void * _hWND ) = 0;
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   if defined(MENGINE_WINDOWS_UNIVERSAL)
+#  if defined(MENGINE_PLATFORM_UWP)
     public:
         virtual IInspectable * getWindowHandle() const = 0;
 #   else

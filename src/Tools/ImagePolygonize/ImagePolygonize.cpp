@@ -142,7 +142,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     }
 
     fseek( f, 0, SEEK_END );
-    int f_size = ftell( f );
+    long f_size = ftell( f );
     rewind( f );
 
     std::vector<char> v_buffer( f_size );

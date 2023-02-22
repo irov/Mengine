@@ -11,6 +11,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         String stringFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
         //////////////////////////////////////////////////////////////////////////
+        String stringInt32( int32_t _value );
+        String stringFloat( float _value );
+        //////////////////////////////////////////////////////////////////////////
         void split( VectorString * const _outStrings, const String & _str, bool _trimDelims, const String & _delim );
         void wsplit( VectorWString * const _outStrings, const WString & _str, bool _trimDelims, const WString & _delim );
         //////////////////////////////////////////////////////////////////////////

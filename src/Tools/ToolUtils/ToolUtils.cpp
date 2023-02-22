@@ -154,7 +154,6 @@ int ForceRemoveDirectory( LPCTSTR dir )
 bool SelectFile( LPCTSTR _dir, Files & _files )
 {
     WIN32_FIND_DATA fd;
-
     HANDLE hFind = ::FindFirstFile( _dir, &fd );
 
     if( hFind == INVALID_HANDLE_VALUE )
@@ -177,22 +176,58 @@ bool SelectFile( LPCTSTR _dir, Files & _files )
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-uint8_t * ReadFileMemory( const WCHAR * _file, const WCHAR * _mode )
+bool read_file_memory( const wchar_t * _file, uint8_t ** _buffer, size_t * const _size )
 {
-    FILE * f = _wfopen( _file, _mode );
+    FILE * f = ::_wfopen( _file, L"rb" );
 
     if( f == NULL )
     {
-        return nullptr;
+        return false;
     }
 
-    fseek( f, 0, SEEK_END );
-    int f_in_size = ftell( f );
-    rewind( f );
+    ::fseek( f, 0, SEEK_END );
+    long size = ::ftell( f );
+    ::rewind( f );
 
-    uint8_t * buff = new uint8_t[f_in_size];
-    fread( buff, f_in_size, 1, f );
-    fclose( f );
+    uint8_t * buffer = (uint8_t *)::malloc( size * sizeof( uint8_t ) );
+    ::fread( buffer, size, 1, f );
+    ::fclose( f );
 
-    return buff;
+    *_buffer = buffer;
+    *_size = (size_t)size;
+
+    return true;
 }
+//////////////////////////////////////////////////////////////////////////
+bool write_file_memory( const wchar_t * _file, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write )
+{
+    FILE * f = ::_wfopen( _file, L"wb" );
+
+    if( f == NULL )
+    {
+        return false;
+    }
+
+    size_t magic_size = ::strlen( _magic );
+    size_t magic_write_size = ::fwrite( _magic, 1, magic_size, f );
+    size_t buffer_write_size = ::fwrite( _buffer, 1, _size, f );
+
+    ::fclose( f );
+
+    size_t write_size = magic_write_size + buffer_write_size;
+
+    *_write = write_size;
+
+    if( write_size != magic_size + _size )
+    {
+        return false;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void free_file_memory( uint8_t * _buffer )
+{
+    ::free( _buffer );
+}
+//////////////////////////////////////////////////////////////////////////

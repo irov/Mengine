@@ -1,4 +1,7 @@
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+
+#include "ToolUtils/ToolUtils.h"
 
 #include <shellapi.h>
 
@@ -9,12 +12,10 @@
 
 #include <sstream>
 
-#include "ToolUtils/ToolUtils.h"
-
 #define BOOST_NO_IOSTREAM
 
 #pragma warning(push, 0) 
-#pragma warning(disable:4800)  
+#pragma warning(disable:4800)
 
 #include "boost/geometry/geometry.hpp"
 #include "boost/geometry/core/tag.hpp"

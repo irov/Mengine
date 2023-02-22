@@ -152,4 +152,8 @@ void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path );
 int ForceRemoveDirectory( LPCTSTR dir );
 typedef std::vector<std::wstring> Files;
 bool SelectFile( LPCTSTR dir, Files & _files );
-uint8_t * ReadFileMemory( const WCHAR * _file, const WCHAR * _mode );
+//////////////////////////////////////////////////////////////////////////
+bool read_file_memory( const wchar_t * _file, uint8_t ** _buffer, size_t * const _size );
+bool write_file_memory( const wchar_t * _file, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write );
+void free_file_memory( uint8_t * _buffer );
+//////////////////////////////////////////////////////////////////////////

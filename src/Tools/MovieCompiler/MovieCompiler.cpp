@@ -52,7 +52,7 @@ static bool loadFile( const std::wstring & _filepath, Blobject & _buffer )
     }
 
     ::fseek( f, 0, SEEK_END );
-    int f_size = ::ftell( f );
+    long f_size = ::ftell( f );
     ::rewind( f );
 
     if( f_size == 0 )

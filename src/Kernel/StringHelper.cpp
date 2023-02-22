@@ -40,6 +40,43 @@ namespace Mengine
             return String( str, size_vsnprintf );
         }
         //////////////////////////////////////////////////////////////////////////
+        String stringInt32( int32_t _value )
+        {
+            Char buffer[64] = {'\0'};
+            MENGINE_SNPRINTF( buffer, 64, "%d", _value );
+
+            return String( buffer );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        String stringFloat( float _value )
+        {
+            Char buffer[2048] = {'\0'};
+            MENGINE_SNPRINTF( buffer, 2048, "%.1024f", _value );
+
+            Char * float_point = MENGINE_STRCHR( buffer, '.' );
+
+            if( float_point != nullptr )
+            {
+                size_t len = MENGINE_STRLEN( float_point );
+
+                Char * end_buffer = float_point + len;
+
+                --end_buffer;
+
+                for( ; end_buffer != float_point; --end_buffer )
+                {
+                    if( *end_buffer != '0' )
+                    {
+                        *(end_buffer + 1) = 0;
+
+                        break;
+                    }
+                }
+            }
+
+            return String( buffer );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void split( VectorString * const _outStrings, const String & _str, bool _trimDelims, const String & _delim )
         {
             uint32_t numSplits = 0;

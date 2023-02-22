@@ -506,7 +506,7 @@ namespace Mengine
             float b = _value.getB();
             float a = _value.getA();
 
-            if( MENGINE_SNPRINTF( _string, _capacity, "%f %f %f %f", r, g, b, a ) > (int32_t)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%.16f %.16f %.16f %.16f", r, g, b, a ) > (int32_t)_capacity )
             {
                 return false;
             }

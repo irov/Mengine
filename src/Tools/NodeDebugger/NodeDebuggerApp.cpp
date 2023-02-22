@@ -1862,12 +1862,12 @@ namespace Mengine
         case jpp::e_type::JPP_INTEGER:
             {
                 int32_t valueInteger = _object;
-                *_out = Helper::stringFormat( "%d", valueInteger );
+                *_out = Helper::stringInt32( valueInteger );
             }break;
         case jpp::e_type::JPP_REAL:
             {
                 float valueDouble = _object;
-                *_out = Helper::stringFormat( "%f", valueDouble );
+                *_out = Helper::stringFloat( valueDouble );
             }break;
         case jpp::e_type::JPP_FALSE:
             {

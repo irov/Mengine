@@ -45,26 +45,12 @@ namespace al {
 
 al::optional<std::string> getenv(const char *envname)
 {
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-    const char *str{std::getenv(envname)};
-    if(str && str[0] != '\0')
-        return str;
-#else
-    (void)envname;
-#endif
     return al::nullopt;
 }
 
 #ifdef _WIN32
 al::optional<std::wstring> getenv(const WCHAR *envname)
 {
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-    const WCHAR *str{_wgetenv(envname)};
-    if(str && str[0] != L'\0')
-        return str;
-#else
-    (void)envname;
-#endif
     return al::nullopt;
 }
 #endif

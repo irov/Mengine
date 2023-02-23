@@ -151,12 +151,12 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-        implementation 'com.applovin.mediation:amazon-tam-adapter:9.6.2.3'
-        implementation 'com.amazon.android:aps-sdk:9.6.2'
+        implementation 'com.applovin.mediation:amazon-tam-adapter:9.7.0.0'
+        implementation 'com.amazon.android:aps-sdk:9.7.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE == true) {
-        implementation 'com.applovin.mediation:bidmachine-adapter:2.1.7.0'
+        implementation 'com.applovin.mediation:bidmachine-adapter:2.1.8.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST == true) {
@@ -165,11 +165,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CRITEO == true) {
-        implementation 'com.applovin.mediation:criteo-adapter:4.8.1.1'
+        implementation 'com.applovin.mediation:criteo-adapter:4.9.1.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_DTEXCHANGE == true) {
-        implementation 'com.applovin.mediation:fyber-adapter:8.2.1.2'
+        implementation 'com.applovin.mediation:fyber-adapter:8.2.2.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_GOOGLEADMANAGER == true) {
@@ -211,11 +211,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
-        implementation 'com.applovin.mediation:mintegral-adapter:16.3.61.0'
+        implementation 'com.applovin.mediation:mintegral-adapter:16.3.71.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOBILEFUSE == true) {
-        implementation 'com.applovin.mediation:mobilefuse-adapter:1.4.1.0'
+        implementation 'com.applovin.mediation:mobilefuse-adapter:1.4.2.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET == true) {
@@ -231,11 +231,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {
-        implementation 'com.applovin.mediation:bytedance-adapter:4.9.0.9.0'
+        implementation 'com.applovin.mediation:bytedance-adapter:5.0.0.8.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO == true) {
-        implementation 'com.applovin.mediation:smaato-adapter:22.0.1.2'
+        implementation 'com.applovin.mediation:smaato-adapter:22.0.2.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY == true) {

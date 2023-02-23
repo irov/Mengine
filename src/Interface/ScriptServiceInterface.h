@@ -55,7 +55,6 @@ namespace Mengine
         virtual ScriptModuleInterfacePtr importModule( const ConstString & _name ) = 0;
 
     public:
-        virtual void setCurrentModule( PyObject * _module ) = 0;
         virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
         virtual PyObject * getGlobalModule( const Char * _name ) const = 0;
         virtual void removeGlobalModule( const Char * _name ) = 0;

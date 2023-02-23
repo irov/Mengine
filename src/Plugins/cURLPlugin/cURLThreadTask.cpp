@@ -103,7 +103,7 @@ namespace Mengine
             MENGINE_UNUSED( _ultotal );
             MENGINE_UNUSED( _ulnow );
 
-            cURLThreadTask * task = (cURLThreadTask *)_userp;
+            cURLThreadTask * task = static_cast<cURLThreadTask *>(_userp);
 
             if( task->isCancel() == true )
             {

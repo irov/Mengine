@@ -1,12 +1,18 @@
 package org.Mengine.Plugin.AppLovin;
 
+import android.os.Bundle;
+
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
+import org.Mengine.Base.MengineLog;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdWaterfallInfo;
 import com.applovin.mediation.MaxError;
+import com.applovin.mediation.MaxMediatedNetworkInfo;
 import com.applovin.mediation.MaxNetworkResponseInfo;
+
+import java.util.List;
 
 public class MengineAppLovinBase {
     protected MengineAppLovinPlugin m_plugin;
@@ -93,46 +99,76 @@ public class MengineAppLovinBase {
     }
 
     protected void logMaxAd(String type, String callback, MaxAd ad) {
-        m_plugin.logInfo( "AppLovin: type: " + type + " callback: " + callback );
+        StringBuilder sb = new StringBuilder(512);
+
+        sb.append("AppLovin: type: " + type + " callback: " + callback + "\n");
 
         MaxAdWaterfallInfo waterfall = ad.getWaterfall();
 
-        this.logMaxAdWaterfallInfo(waterfall);
+        this.writeMaxAdWaterfallInfo(sb, waterfall);
+
+        String message = sb.toString();
+
+        m_plugin.logInfo(message);
     }
 
     protected void logMaxError(String type, String callback, MaxError error) {
-        m_plugin.logMessage( "AppLovin: type: " + type + " callback: " + callback );
-        m_plugin.logMessage( "MaxError: code: " + error.getCode() + " message: " + error.getMessage() );
-        m_plugin.logMessage( "MediatedNetwork: code: " + error.getMediatedNetworkErrorCode() + " message: " + error.getMediatedNetworkErrorMessage() );
+        StringBuilder sb = new StringBuilder(512);
+
+        int errorCode = error.getCode();
+        String errorMessage = error.getMessage();
+        int mediatedNetworkErrorCode = error.getMediatedNetworkErrorCode();
+        String mediatedNetworkErrorMessage = error.getMediatedNetworkErrorMessage();
+
+        sb.append("AppLovin: type: " + type + " callback: " + callback + "\n");
+        sb.append("MaxError: code: " + errorCode + " message: " + errorMessage + "\n");
+        sb.append("MediatedNetwork: code: " + mediatedNetworkErrorCode + " message: " + mediatedNetworkErrorMessage + "\n");
 
         MaxAdWaterfallInfo waterfall = error.getWaterfall();
 
-        this.logMaxAdWaterfallInfo(waterfall);
+        this.writeMaxAdWaterfallInfo(sb, waterfall);
+
+        sb.setLength(sb.length() - 1); //remove last '\n'
+
+        String message = sb.toString();
+
+        m_plugin.logWarning(message);
     }
 
-    protected void logMaxAdWaterfallInfo(MaxAdWaterfallInfo waterfall) {
+    protected void writeMaxAdWaterfallInfo(StringBuilder sb, MaxAdWaterfallInfo waterfall) {
         if (waterfall == null) {
             return;
         }
 
-        m_plugin.logInfo( "Waterfall Name: " + waterfall.getName() + " and Test Name: " + waterfall.getTestName() );
-        m_plugin.logInfo( "Waterfall latency was: " + waterfall.getLatencyMillis() + " milliseconds" );
+        String waterfallName = waterfall.getName();
+        String waterfallTestName = waterfall.getTestName();
+        long waterfallLatencyMillis = waterfall.getLatencyMillis();
 
-        for (MaxNetworkResponseInfo networkResponse : waterfall.getNetworkResponses()) {
-            this.logMaxNetworkResponseInfo(networkResponse);
+        sb.append("Waterfall Name: " + waterfallName + " and Test Name: " + waterfallTestName + "\n");
+        sb.append("Waterfall latency was: " + waterfallLatencyMillis + " milliseconds" + "\n");
+
+        List<MaxNetworkResponseInfo> responses = waterfall.getNetworkResponses();
+
+        for (MaxNetworkResponseInfo networkResponse : responses) {
+            this.writeMaxNetworkResponseInfo(sb, networkResponse);
         }
     }
 
-    protected void logMaxNetworkResponseInfo(MaxNetworkResponseInfo networkResponse) {
-        String waterfallInfoStr = "Network -> " + networkResponse.getMediatedNetwork() +
-            "\n...adLoadState: " + networkResponse.getAdLoadState() +
-            "\n...latency: " + networkResponse.getLatencyMillis() + " milliseconds" +
-            "\n...credentials: " + networkResponse.getCredentials();
+    protected void writeMaxNetworkResponseInfo(StringBuilder sb, MaxNetworkResponseInfo networkResponse) {
+        MaxMediatedNetworkInfo responseMediatedNetwork = networkResponse.getMediatedNetwork();
+        MaxNetworkResponseInfo.AdLoadState responseAdLoadState = networkResponse.getAdLoadState();
+        long responseLatencyMillis = networkResponse.getLatencyMillis();
+        Bundle responseCredentials = networkResponse.getCredentials();
 
-        if (networkResponse.getError() != null) {
-            waterfallInfoStr += "\n...error: " + networkResponse.getError();
+        sb.append("Network -> " + responseMediatedNetwork +
+            "\n...adLoadState: " + responseAdLoadState +
+            "\n...latency: " + responseLatencyMillis + " milliseconds" +
+            "\n...credentials: " + responseCredentials + "\n");
+
+        MaxError error = networkResponse.getError();
+
+        if (error != null) {
+            sb.append("...error: " + error + "\n");
         }
-
-        m_plugin.logInfo(waterfallInfoStr);
     }
 }

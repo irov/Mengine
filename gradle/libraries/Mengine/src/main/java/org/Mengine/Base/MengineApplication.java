@@ -151,14 +151,14 @@ public class MengineApplication extends Application {
         return deviceName;
     }
 
-    public int getAndroidVersionCode() {
+    public long getAndroidVersionCode() {
         Context context = this.getApplicationContext();
         PackageManager manager = context.getPackageManager();
         String packageName = context.getPackageName();
-        int versionCode = 0;
+        long versionCode = 0;
         try {
             PackageInfo pInfo = manager.getPackageInfo(packageName, 0);
-            versionCode = pInfo.versionCode;
+            versionCode = pInfo.getLongVersionCode();
         } catch (PackageManager.NameNotFoundException e) {
             //FixMe?
         }

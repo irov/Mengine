@@ -127,10 +127,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Package::unmountFileGroup_()
     {
-        FILE_SERVICE()
-            ->unmountFileGroup( m_desc.name );
+        if( m_fileGroup != nullptr )
+        {
+            FILE_SERVICE()
+                ->unmountFileGroup(m_desc.name);
 
-        m_fileGroup = nullptr;
+            m_fileGroup = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadPackage_()

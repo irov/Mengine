@@ -43,8 +43,6 @@ namespace Mengine
 
         ScriptModuleInterfacePtr importModule( const ConstString & _name ) override;
 
-        void setCurrentModule( PyObject * _module ) override;
-
         void addGlobalModule( const Char * _name, PyObject * _module ) override;
         PyObject * getGlobalModule( const Char * _name ) const override;
         void removeGlobalModule( const Char * _name ) override;

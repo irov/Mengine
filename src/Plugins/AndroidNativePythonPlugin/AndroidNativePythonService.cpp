@@ -188,7 +188,7 @@ namespace Mengine
         m_eventation->addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * AndroidNativePythonService::getPythonAttribute( JNIEnv * _jenv, jobject _obj )
+    PyObject * AndroidNativePythonService::makePythonAttribute( JNIEnv * _jenv, jobject _obj )
     {
         PyObject * py_value = nullptr;
 
@@ -302,11 +302,13 @@ namespace Mengine
             {
                 jobject list_obj = _jenv->GetObjectArrayElement( list_elementData, index );
 
-                PyObject * py_obj = this->getPythonAttribute( _jenv, list_obj );
+                PyObject * py_obj = this->makePythonAttribute( _jenv, list_obj );
 
                 MENGINE_ASSERTION_FATAL( py_obj != nullptr );
 
                 m_kernel->tuple_setitem( py_list, index, py_obj );
+
+                m_kernel->decref( py_obj );
 
                 _jenv->DeleteLocalRef( list_obj );
             }
@@ -393,7 +395,7 @@ namespace Mengine
         {
             jobject obj = jenv->GetObjectArrayElement( _args, index );
 
-            PyObject * py_arg = this->getPythonAttribute( jenv, obj );
+            PyObject * py_arg = this->makePythonAttribute( jenv, obj );
 
             MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' id '%d' invalid arg"
                 , _plugin.c_str()
@@ -402,6 +404,8 @@ namespace Mengine
             );
 
             m_kernel->tuple_setitem( py_args, index, py_arg );
+
+            m_kernel->decref( py_arg );
 
             jenv->DeleteLocalRef( obj );
         }
@@ -429,6 +433,8 @@ namespace Mengine
             , _method.c_str()
             , py_result.str().c_str()
         );
+
+        m_kernel->decref( py_args );
 
         if( _id == 0 )
         {

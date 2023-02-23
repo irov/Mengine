@@ -38,55 +38,60 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
 #pragma pack( push , 1 )
     //////////////////////////////////////////////////////////////////////////
-    struct ZipCentralDirectoryFileHeader
-    {
-        uint16_t versionMade;
-        uint16_t versionNeeded;
-        uint16_t generalPurposeFlag;
-        uint16_t compressionMethod;
-        uint16_t lastModTime;
-        uint16_t lastModDate;
-        uint32_t crc32;
-        uint32_t compressedSize;
-        uint32_t uncompressedSize;
-        uint16_t fileNameLen;
-        uint16_t extraFieldLen;
-        uint16_t commentLen;
-        uint16_t diskNumber;
-        uint16_t internalAttributes;
-        uint32_t externalAttributes;
-        uint32_t relativeOffset;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct ZipLocalFileHeader
-    {
-        uint16_t versionNeeded;
-        uint16_t generalPurposeFlag;
-        uint16_t compressionMethod;
-        uint16_t lastModTime;
-        uint16_t lastModDate;
-        uint32_t crc32;
-        uint32_t compressedSize;
-        uint32_t uncompressedSize;
-        uint16_t fileNameLen;
-        uint16_t extraFieldLen;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct ZipEndOfCentralDirectoryFileHeader
-    {
-        uint16_t numberOfThisDisk;
-        uint16_t diskWhereCentralDirectoryStarts;
-        uint16_t numberOfCentralDirectoryRecordsOnThisDisk;
-        uint16_t totalNumberOfCentralDirectoryRecords;
-        uint32_t sizeOfCentralDirectoryBytes;
-        uint32_t offsetOfStartOfCentralDirectoryRelativeToStartOfArchive;
-        uint16_t commentLength;
-    };
-    //////////////////////////////////////////////////////////////////////////
+        struct ZipCentralDirectoryFileHeader
+        {
+            uint16_t versionMade;
+            uint16_t versionNeeded;
+            uint16_t generalPurposeFlag;
+            uint16_t compressionMethod;
+            uint16_t lastModTime;
+            uint16_t lastModDate;
+            uint32_t crc32;
+            uint32_t compressedSize;
+            uint32_t uncompressedSize;
+            uint16_t fileNameLen;
+            uint16_t extraFieldLen;
+            uint16_t commentLen;
+            uint16_t diskNumber;
+            uint16_t internalAttributes;
+            uint32_t externalAttributes;
+            uint32_t relativeOffset;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        struct ZipLocalFileHeader
+        {
+            uint16_t versionNeeded;
+            uint16_t generalPurposeFlag;
+            uint16_t compressionMethod;
+            uint16_t lastModTime;
+            uint16_t lastModDate;
+            uint32_t crc32;
+            uint32_t compressedSize;
+            uint32_t uncompressedSize;
+            uint16_t fileNameLen;
+            uint16_t extraFieldLen;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        struct ZipEndOfCentralDirectoryFileHeader
+        {
+            uint16_t numberOfThisDisk;
+            uint16_t diskWhereCentralDirectoryStarts;
+            uint16_t numberOfCentralDirectoryRecordsOnThisDisk;
+            uint16_t totalNumberOfCentralDirectoryRecords;
+            uint32_t sizeOfCentralDirectoryBytes;
+            uint32_t offsetOfStartOfCentralDirectoryRelativeToStartOfArchive;
+            uint16_t commentLength;
+        };
+        //////////////////////////////////////////////////////////////////////////
 #pragma pack( pop )
-    //////////////////////////////////////////////////////////////////////////    
+    //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -217,6 +222,15 @@ namespace Mengine
                     return false;
                 }
             }
+
+            if( enumerator == 0 )
+            {
+                LOGGER_ERROR( "format path '%s' can't find any zip"
+                    , m_folderPath.c_str()
+                );
+
+                return false;
+            }
         }
 
         return true;
@@ -296,7 +310,7 @@ namespace Mengine
             , _folderPath.c_str()
         );
 
-        ZipEndOfCentralDirectoryFileHeader eocd;
+        Detail::ZipEndOfCentralDirectoryFileHeader eocd;
         stream->read( &eocd, sizeof( eocd ) );
 
         MENGINE_ASSERTION_FATAL( eocd.commentLength == 0 );
@@ -329,7 +343,7 @@ namespace Mengine
                 , signature
             );
 
-            ZipCentralDirectoryFileHeader header;
+            Detail::ZipCentralDirectoryFileHeader header;
             stream->read( &header, sizeof( header ) );
 
             stream->read( &fileNameBuffer, header.fileNameLen );

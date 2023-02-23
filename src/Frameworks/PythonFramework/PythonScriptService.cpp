@@ -279,13 +279,8 @@ namespace Mengine
 
         m_moduleMengine = this->initModule( "Menge" );
 
-        this->addGlobalModule( "Menge"
-            , m_moduleMengine
-        );
-
-        this->addGlobalModule( "Mengine"
-            , m_moduleMengine
-        );
+        this->addGlobalModule( "Menge", m_moduleMengine );
+        this->addGlobalModule( "Mengine", m_moduleMengine );
 
         kernel->set_currentmodule( m_moduleMengine );
 
@@ -586,7 +581,6 @@ namespace Mengine
 
         this->removeGlobalModule( "Menge" );
         this->removeGlobalModule( "Mengine" );
-        this->removeGlobalModule( "_PYTHON_VERSION" );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ) );
 
@@ -605,6 +599,11 @@ namespace Mengine
         m_kernel->remove_scope<PythonScriptLogger>();
         m_kernel->remove_scope<PythonScriptModuleFinder>();
 
+        m_kernel->module_fini( m_moduleMengine );
+        m_moduleMengine = nullptr;
+
+        m_kernel->set_current_module( nullptr );
+
         m_bootstrapperModules.clear();
         m_prototypies.clear();
 
@@ -621,7 +620,6 @@ namespace Mengine
         }
 
         m_holdersPythonString.clear();
-
         m_poolPythonString.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
@@ -734,8 +732,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::removeScriptEmbedding( const ConstString & _name )
     {
-        m_kernel->collect();
-
         VectorEmbeddings::const_iterator it_found = Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
@@ -748,6 +744,8 @@ namespace Mengine
         const ScriptEmbeddingInterfacePtr & embedding = desc.embedding;
 
         embedding->eject( m_kernel );
+
+        m_kernel->collect();
 
         m_embeddings.erase( it_found );
     }
@@ -1013,11 +1011,6 @@ namespace Mengine
         }
 
         return module;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::setCurrentModule( PyObject * _module )
-    {
-        m_kernel->set_currentmodule( _module );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::addGlobalModule( const Char * _name, PyObject * _module )

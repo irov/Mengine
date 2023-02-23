@@ -172,7 +172,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
             switch (statusCode) {
                 case CommonStatusCodes.SIGN_IN_REQUIRED: {
-                    this.logError("Google game social signIn required" );
+                    this.logError("google game social signIn required" );
 
                     if (status.hasResolution() == true) {
                         try {
@@ -183,13 +183,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                             );
                         }
                     } else {
-                        this.logError("Google game social signIn required failed has resolution" );
+                        this.logError("google game social signIn required failed has resolution" );
 
                         this.pythonCall("onGoogleGameSocialOnSignError");
                     }
                 }break;
                 default: {
-                    this.logError("Google game social signIn failed status error '%s' code [%d]"
+                    this.logError("google game social signIn failed status error '%s' code [%d]"
                         , status.getStatusMessage()
                         , status.getStatusCode()
                     );

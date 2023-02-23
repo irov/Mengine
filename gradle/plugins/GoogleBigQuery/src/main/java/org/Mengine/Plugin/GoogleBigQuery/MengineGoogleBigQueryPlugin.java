@@ -50,13 +50,13 @@ public class MengineGoogleBigQueryPlugin extends MenginePlugin implements Mengin
             if (response.hasErrors() == true) {
                 // If any of the insertions failed, this lets you inspect the errors
                 for (Map.Entry<Long, List<BigQueryError>> entry : response.getInsertErrors().entrySet()) {
-                    this.logError("Response error: %s"
+                    this.logError("response error: %s"
                         , entry.getValue()
                     );
                 }
             }
         }  catch (BigQueryException e) {
-            this.logError("Response exception: %s"
+            this.logError("response exception: %s"
                 , e.getLocalizedMessage()
             );
         }

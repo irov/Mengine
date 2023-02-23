@@ -12,16 +12,16 @@ public class MengineLog {
     private static native void AndroidEnvironmentService_logMessageRelease(String msg);
     private static native void AndroidEnvironmentService_logError(String msg);
 
-    public static int LM_SILENT = 0;
-    public static int LM_FATAL = 1;
-    public static int LM_CRITICAL = 2;
-    public static int LM_MESSAGE_RELEASE = 3;
-    public static int LM_ERROR = 4;
-    public static int LM_WARNING = 5;
-    public static int LM_MESSAGE = 6;
-    public static int LM_INFO = 7;
-    public static int LM_DEBUG = 8;
-    public static int LM_VERBOSE = 9;
+    public final static int LM_SILENT = 0;
+    public final static int LM_FATAL = 1;
+    public final static int LM_CRITICAL = 2;
+    public final static int LM_MESSAGE_RELEASE = 3;
+    public final static int LM_ERROR = 4;
+    public final static int LM_WARNING = 5;
+    public final static int LM_MESSAGE = 6;
+    public final static int LM_INFO = 7;
+    public final static int LM_DEBUG = 8;
+    public final static int LM_VERBOSE = 9;
 
     private static MengineApplication m_application;
     private static boolean m_initializeBaseServices = false;
@@ -59,6 +59,38 @@ public class MengineLog {
         String totalMsg = "[" + tag + "] " + msg;
 
         return totalMsg;
+    }
+
+    public static void log(int level, String tag, String format, Object ... args) {
+        switch (level) {
+            case LM_SILENT:
+                break;
+            case LM_FATAL:
+            case LM_CRITICAL:
+                //ToDo
+                break;
+            case LM_MESSAGE_RELEASE:
+                MengineLog.logMessageRelease(tag, format, args);
+                break;
+            case LM_ERROR:
+                MengineLog.logError(tag, format, args);
+                break;
+            case LM_WARNING:
+                MengineLog.logWarning(tag, format, args);
+                break;
+            case LM_MESSAGE:
+                MengineLog.logMessage(tag, format, args);
+                break;
+            case LM_INFO:
+                MengineLog.logInfo(tag, format, args);
+                break;
+            case LM_DEBUG:
+                //ToDo
+                break;
+            case LM_VERBOSE:
+                //ToDo
+                break;
+        }
     }
 
     public static void logInfo(String tag, String format, Object ... args) {

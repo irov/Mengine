@@ -3509,7 +3509,6 @@ namespace Mengine
                     PyObject * py_tag = pybind::ptr( _kernel, tag );
 
                     _kernel->list_appenditem( py_tags, py_tag );
-
                     _kernel->decref( py_tag );
                 }
 

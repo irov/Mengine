@@ -46,6 +46,10 @@ public class MenginePlugin {
         return instance;
     }
 
+    public void log(int level, String format, Object ... args) {
+        MengineLog.log(level, m_pluginName, format, args);
+    }
+
     public void logInfo(String format, Object ... args) {
         MengineLog.logInfo(m_pluginName, format, args);
     }
@@ -165,13 +169,13 @@ public class MenginePlugin {
     }
 
     public void onExtensionRun(MengineActivity activity) {
-        for( MenginePluginExtension extension : m_extensions ) {
+        for (MenginePluginExtension extension : m_extensions) {
             extension.onPluginExtensionRun(activity, this);
         }
     }
 
     public void onExtensionFinalize(MengineActivity activity) {
-        for( MenginePluginExtension extension : m_extensions ) {
+        for (MenginePluginExtension extension : m_extensions) {
             extension.onPluginExtensionFinalize(activity, this);
         }
 

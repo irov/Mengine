@@ -35,7 +35,7 @@ namespace Mengine
         void addCommand( const LambdaPythonEventHandler & _command );
 
     protected:
-        PyObject * getPythonAttribute( JNIEnv * _jenv, jobject _obj );
+        PyObject * makePythonAttribute( JNIEnv * _jenv, jobject _obj );
 
     public:
         void pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args ) override;

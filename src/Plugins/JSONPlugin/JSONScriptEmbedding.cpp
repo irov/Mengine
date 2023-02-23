@@ -33,9 +33,7 @@ namespace Mengine
                         d[key] = Helper::jpp2pybind( _kernel, value );
                     }
 
-                    pybind::object ob = pybind::dictobject_new( _kernel, d );
-
-                    return ob;
+                    return d;
                 }break;
             case jpp::e_type::JPP_ARRAY:
                 {
@@ -95,6 +93,7 @@ namespace Mengine
 
             return ob;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     JSONScriptEmbedding::JSONScriptEmbedding()

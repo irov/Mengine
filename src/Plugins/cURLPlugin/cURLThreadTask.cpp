@@ -1,6 +1,7 @@
 #include "cURLThreadTask.h"
 
 #include "Interface/FileGroupInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "cURLErrorHelper.h"
 
@@ -207,6 +208,16 @@ namespace Mengine
         return m_receiver;
     }
     //////////////////////////////////////////////////////////////////////////
+    void cURLThreadTask::_onThreadTaskPreparation()
+    {
+        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+
+        m_mutex = mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool cURLThreadTask::_onThreadTaskRun()
     {
         //Empty
@@ -286,13 +297,20 @@ namespace Mengine
 
         CURLcode status = curl_easy_perform( curl );
 
-        m_response->setStatus( status );
-        m_response->setError( errorbuf );
+        m_mutex->lock();
 
-        long http_code = 0;
-        CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );
+        if( m_response != nullptr )
+        {
+            m_response->setStatus( status );
+            m_response->setError( errorbuf );
 
-        m_response->setCode( (uint32_t)http_code );
+            long http_code = 0;
+            CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );
+
+            m_response->setCode( (uint32_t)http_code );
+        }
+
+        m_mutex->unlock();
 
         if( m_curl_header_list != nullptr )
         {
@@ -328,21 +346,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::writeResponse( const Char * _ptr, size_t _size )
     {
-        m_response->appendData( _ptr, _size );
+        m_mutex->lock();
+
+        if( m_response != nullptr )
+        {
+            m_response->appendData( _ptr, _size );
+        }
+
+        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::writeHeader( const Char * _ptr, size_t _size )
     {
-        m_response->appendHeaders( _ptr, _size );
+        m_mutex->lock();
+
+        if( m_response != nullptr )
+        {
+            m_response->appendHeaders( _ptr, _size );
+        }
+
+        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::_onThreadTaskComplete( bool _successful )
     {
         m_response->setSuccessful( _successful );
 
+        m_mutex->lock();
+
         cURLResponsePtr response = std::move( m_response );
         cURLReceiverInterfacePtr receiver = std::move( m_receiver );
         receiver->onHttpRequestComplete( response );
+
+        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
 }

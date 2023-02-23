@@ -44,6 +44,7 @@ namespace Mengine
         const cURLReceiverInterfacePtr & getReceiver() const;
 
     protected:
+        void _onThreadTaskPreparation() override;
         bool _onThreadTaskRun() override;
         bool _onThreadTaskProcess() override;
 
@@ -72,6 +73,8 @@ namespace Mengine
 
         cURLResponsePtr m_response;
         cURLReceiverInterfacePtr m_receiver;
+
+        ThreadMutexInterfacePtr m_mutex;
 
     protected:
         struct curl_slist * m_curl_header_list;        

@@ -26,10 +26,10 @@ namespace Mengine
             return;
         }
 
-        const mt::vec2f & size = resourceImage->getMaxSize();
+        const mt::vec2f & maxSize = resourceImage->getMaxSize();
 
-        _page->width = (int)size.x;
-        _page->height = (int)size.y;
+        _page->width = (int)maxSize.x;
+        _page->height = (int)maxSize.y;
         _page->rendererObject = (void *)resourceImage.get();
     }
     //////////////////////////////////////////////////////////////////////////

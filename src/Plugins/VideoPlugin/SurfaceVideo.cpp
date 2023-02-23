@@ -535,13 +535,13 @@ namespace Mengine
 
         size_t bufferSize = pitch * (rect.bottom - rect.top);
 
-        EPixelFormat pixelFormat = image->getHWPixelFormat();
+        EPixelFormat hwPixelFormat = image->getHWPixelFormat();
 
         VideoDecoderData data;
         data.buffer = lockRect;
         data.size = bufferSize;
         data.pitch = pitch;
-        data.format = pixelFormat;
+        data.format = hwPixelFormat;
         data.flags = this->getDecodeFlags_();
 
         size_t bytes = m_decoderVideo->decode( &data );

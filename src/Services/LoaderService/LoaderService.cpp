@@ -218,6 +218,14 @@ namespace Mengine
             }
             else
             {
+                LOGGER_MESSAGE( "error '%s' invalid version read [%u] need [%u] or protocol [%u] need [%u] (Update you protocol file)"
+                    , Metacode::getHeaderErrorMessage( result )
+                    , readVersion
+                    , needVersion
+                    , readProtocol
+                    , needProtocol
+                );
+
                 *_reimport = true;
             }
 

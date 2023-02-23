@@ -2342,11 +2342,11 @@ namespace Mengine
             return false;
         }
 
-        EPixelFormat pixelFormat = renderImage->getHWPixelFormat();
+        EPixelFormat hwPixelFormat = renderImage->getHWPixelFormat();
 
-        uint32_t channels = Helper::getPixelFormatChannels( pixelFormat );
+        uint32_t hwPixelChannels = Helper::getPixelFormatChannels( hwPixelFormat );
 
-        if( channels != 4 )
+        if( hwPixelChannels != 4 )
         {
             return true;
         }

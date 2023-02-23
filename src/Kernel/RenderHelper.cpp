@@ -31,11 +31,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t getImageMemorySize( const RenderImageInterfacePtr & _image )
         {
-            uint32_t HWWidth = _image->getHWWidth();
-            uint32_t HWHeight = _image->getHWHeight();
-            EPixelFormat HWPixelFormat = _image->getHWPixelFormat();
+            uint32_t hwWidth = _image->getHWWidth();
+            uint32_t hwHeight = _image->getHWHeight();
+            EPixelFormat hwPixelFormat = _image->getHWPixelFormat();
 
-            uint32_t memorySize = Helper::getTextureMemorySize( HWWidth, HWHeight, HWPixelFormat );
+            uint32_t memorySize = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
 
             return memorySize;
         }

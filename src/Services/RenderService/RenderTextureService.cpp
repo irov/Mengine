@@ -161,13 +161,17 @@ namespace Mengine
             return false;
         }
 
+        const RenderImageInterfacePtr & image = _texture->getImage();
+
+        uint32_t hwWidth = image->getHWWidth();
+        uint32_t hwHeight = image->getHWHeight();
+        EPixelFormat hwPixelFormat = image->getHWPixelFormat();
+
         ImageCodecDataInfo dataInfo;
         dataInfo.mipmaps = 1;
-        dataInfo.width = _texture->getWidth();
-        dataInfo.height = _texture->getHeight();
-
-        const RenderImageInterfacePtr & image = _texture->getImage();
-        dataInfo.format = image->getHWPixelFormat();        
+        dataInfo.width = hwWidth;
+        dataInfo.height = hwHeight;
+        dataInfo.format = hwPixelFormat;
 
         Rect rect;
         rect.left = 0;
@@ -260,7 +264,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const DocumentPtr & _doc )
+    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentPtr & _doc )
     {
         const ConstString & fileGroupName = _fileGroup->getName();
 
@@ -301,6 +305,16 @@ namespace Mengine
 
         RenderImageDesc imageDesc;
         imageLoader->getImageDesc( &imageDesc );
+
+        if( _width != ~0U )
+        {
+            imageDesc.width = _width;
+        }
+
+        if( _height != ~0U )
+        {
+            imageDesc.height = _height;
+        }
 
         RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.format, _doc );
 

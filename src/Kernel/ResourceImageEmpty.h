@@ -20,13 +20,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        bool _initialize() override;
-        void _finalize() override;
-
-    public:
-        void correctUVTexture();
-
-    protected:
         void prepareImageFrame_();
     };
     //////////////////////////////////////////////////////////////////////////

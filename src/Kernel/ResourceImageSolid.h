@@ -20,6 +20,7 @@ namespace Mengine
 
     protected:
         bool _compile() override;
+        void _release() override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceImageSolid> ResourceImageSolidPtr;

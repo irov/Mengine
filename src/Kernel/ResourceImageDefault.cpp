@@ -12,6 +12,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -80,8 +81,16 @@ namespace Mengine
         const FilePath & filePath = m_content->getFilePath();
         const ConstString & codecType = m_content->getCodecType();
 
+        bool trimAtlas = this->isTrimAtlas();
+        const mt::vec2f & maxSize = this->getMaxSize();
+        uint32_t maxSize_width = (uint32_t)(maxSize.x + 0.5f);
+        uint32_t maxSize_height = (uint32_t)(maxSize.y + 0.5f);
+
+        uint32_t width = trimAtlas == true ? maxSize_width : ~0U;
+        uint32_t height = trimAtlas == true ? maxSize_height : ~0U;
+
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, codecType, decoder_options, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTexture( fileGroup, filePath, codecType, decoder_options, width, height, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "name '%s' category '%s' group '%s' can't load image file '%s'"
             , this->getName().c_str()
@@ -132,9 +141,11 @@ namespace Mengine
         const RenderImageInterfacePtr & image = texture->getImage();
 
         //ToDo: fix required setup alpha
-        uint32_t hwChannels = image->getHWPixelFormat();
+        EPixelFormat hwPixelFormat = image->getHWPixelFormat();
 
-        if( hwChannels == 3 )
+        uint32_t hwPixelChannels = Helper::getPixelFormatChannels( hwPixelFormat );
+
+        if( hwPixelChannels == 3 )
         {
             this->setAlpha( false );
         }
@@ -213,12 +224,9 @@ namespace Mengine
             for( uint32_t i = 0; i != 4; ++i )
             {
                 uvTextureImage[i].x = uvImage[i].x;
-                uvTextureAlpha[i].x = uvAlpha[i].x;
-            }
-
-            for( uint32_t i = 0; i != 4; ++i )
-            {
                 uvTextureImage[i].y = uvImage[i].y;
+
+                uvTextureAlpha[i].x = uvAlpha[i].x;
                 uvTextureAlpha[i].y = uvAlpha[i].y;
             }
         }

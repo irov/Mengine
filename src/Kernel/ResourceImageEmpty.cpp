@@ -8,6 +8,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -45,18 +46,6 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageEmpty::_initialize()
-    {
-        //Empty
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImageEmpty::_finalize()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ResourceImageEmpty::prepareImageFrame_()
     {
         const RenderTextureInterfacePtr & texture = this->getTexture();
@@ -64,9 +53,11 @@ namespace Mengine
         const RenderImageInterfacePtr & image = texture->getImage();
 
         //ToDo: fix required setup alpha
-        uint32_t hwChannels = image->getHWPixelFormat();
+        EPixelFormat hwPixelFormat = image->getHWPixelFormat();
 
-        if( hwChannels == 3 )
+        uint32_t hwPixelChannels = Helper::getPixelFormatChannels( hwPixelFormat );
+
+        if( hwPixelChannels == 3 )
         {
             this->setAlpha( false );
         }

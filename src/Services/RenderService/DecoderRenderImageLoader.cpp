@@ -99,13 +99,13 @@ namespace Mengine
 
         size_t mipmap_size = pitch * image_height;
 
-        EPixelFormat HWPixelFormat = _image->getHWPixelFormat();
+        EPixelFormat hwPixelFormat = _image->getHWPixelFormat();
 
         ImageDecoderData data;
         data.buffer = textureBuffer;
         data.size = mipmap_size;
         data.pitch = pitch;
-        data.format = HWPixelFormat;
+        data.format = hwPixelFormat;
         data.mipmap = mipmap;
         data.flags = m_codecFlags;
 
@@ -123,7 +123,7 @@ namespace Mengine
             uint32_t mipmap_width = image_width >> mipmap;
             uint32_t mipmap_height = image_height >> mipmap;
 
-            uint32_t pixel_size = Helper::getPixelFormatChannels( HWPixelFormat );
+            uint32_t pixel_size = Helper::getPixelFormatChannels( hwPixelFormat );
 
             const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 

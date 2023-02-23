@@ -64,7 +64,7 @@ namespace Mengine
             ->findCodecType( filePath );
 
         m_textureFont = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, fontImageCodec, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTexture( fileGroup, filePath, fontImageCodec, DF_IMAGE_NONE, ~0U, ~0U, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s'"
             , m_name.c_str()

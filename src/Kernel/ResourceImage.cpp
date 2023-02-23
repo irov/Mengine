@@ -51,7 +51,7 @@ namespace Mengine
     {
         if( m_texture != nullptr )
         {
-            LOGGER_INFO( "image", "texture release '%s' file '%s'"
+            LOGGER_INFO( "image", "finalize texture '%s' file '%s'"
                 , this->getName().c_str()
                 , m_texture->getFilePath().c_str()
             );
@@ -61,7 +61,7 @@ namespace Mengine
 
         if( m_textureAlpha != nullptr )
         {
-            LOGGER_INFO( "image", "release texture alpha '%s' file '%s'"
+            LOGGER_INFO( "image", "finalize texture alpha '%s' file '%s'"
                 , this->getName().c_str()
                 , m_textureAlpha->getFilePath().c_str()
             );

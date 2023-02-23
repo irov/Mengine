@@ -78,11 +78,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture_memory );
 
-        EPixelFormat pixelFormat = texture_image->getHWPixelFormat();
+        EPixelFormat hwPixelFormat = texture_image->getHWPixelFormat();
 
-        uint32_t texture_channel = Helper::getPixelFormatChannels( pixelFormat );
+        uint32_t hwPixelChannels = Helper::getPixelFormatChannels( hwPixelFormat );
 
-        bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, texture_channel );
+        bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, hwPixelChannels );
 
         texture_image->unlock( texture_locked, 0, successful );
 

@@ -52,4 +52,16 @@ class Utils {
 
         return true
     }
+
+    public static void logAvailable(String name, boolean value) {
+        if (value == false) {
+            println "\u001b[31m" + name + ": " + value + "\u001b[0m"
+        } else {
+            println "\u001b[32m" + name + ": " + value + "\u001b[0m"
+        }
+    }
+
+    public static void logInteger(String name, int value) {
+        println "\u001b[33m" + name + ": " + value + "\u001b[0m"
+    }
 }

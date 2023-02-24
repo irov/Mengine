@@ -14,8 +14,8 @@ import android.widget.RelativeLayout;
 import android.os.Bundle;
 
 public class MengineSplashScreenPlugin extends MenginePlugin {
-    public static String PLUGIN_NAME = "SplashScreen";
-    public static boolean PLUGIN_EMBEDDING = false;
+    public static final String PLUGIN_NAME = "SplashScreen";
+    public static final boolean PLUGIN_EMBEDDING = false;
 
     protected ImageView m_image;
 

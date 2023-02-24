@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MengineGoogleBigQueryPlugin extends MenginePlugin implements MenginePluginAnalyticsListener {
-    public static String PLUGIN_NAME = "GoogleBigQuery";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "GoogleBigQuery";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     private BigQuery m_bigQuery;
 

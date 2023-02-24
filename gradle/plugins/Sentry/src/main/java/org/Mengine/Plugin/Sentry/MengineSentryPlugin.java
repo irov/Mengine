@@ -9,7 +9,7 @@ import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 
 public class MengineSentryPlugin extends MenginePlugin {
-    public static String PLUGIN_NAME = "Sentry";
+    public static final String PLUGIN_NAME = "Sentry";
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

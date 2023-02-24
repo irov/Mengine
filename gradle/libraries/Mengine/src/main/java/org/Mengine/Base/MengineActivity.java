@@ -178,6 +178,14 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
+    public boolean hasMetaData(String name) {
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        boolean result = application.hasMetaData(name);
+
+        return result;
+    }
+
     public String getMetaDataString(String name) {
         MengineApplication application = (MengineApplication)this.getApplication();
 

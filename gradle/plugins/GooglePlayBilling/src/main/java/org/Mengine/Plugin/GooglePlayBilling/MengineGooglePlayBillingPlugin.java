@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MengineGooglePlayBillingPlugin extends MenginePlugin {
-    public static String PLUGIN_NAME = "GooglePlayBilling";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "GooglePlayBilling";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     /**
      * Метода для библиотеки

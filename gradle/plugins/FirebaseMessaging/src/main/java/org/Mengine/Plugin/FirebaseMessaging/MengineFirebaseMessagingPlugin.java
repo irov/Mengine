@@ -21,8 +21,8 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 
 public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MenginePluginExtensionListener {
-    public static String PLUGIN_NAME = "FirebaseMessaging";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "FirebaseMessaging";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     private ArrayList<MengineFirebaseMessagingListener> m_messagings = new ArrayList<>();
 

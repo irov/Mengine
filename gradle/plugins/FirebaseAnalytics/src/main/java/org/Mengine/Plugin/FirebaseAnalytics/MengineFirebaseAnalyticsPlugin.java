@@ -18,8 +18,8 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import java.util.Map;
 
 public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener {
-    public static String PLUGIN_NAME = "FirebaseAnalytics";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "FirebaseAnalytics";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     /**
      * void logEvent (String name, Bundle params)

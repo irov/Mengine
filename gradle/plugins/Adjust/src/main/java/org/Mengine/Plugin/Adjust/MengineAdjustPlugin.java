@@ -16,8 +16,8 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 
 public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static String PLUGIN_NAME = "Adjust";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "Adjust";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     /**
      * событие

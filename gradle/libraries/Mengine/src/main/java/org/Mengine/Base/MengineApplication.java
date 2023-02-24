@@ -83,6 +83,20 @@ public class MengineApplication extends Application {
         return null;
     }
 
+    public boolean hasMetaData(String name) {
+        Bundle bundle = this.getMetaDataBundle();
+
+        if (bundle == null) {
+            return false;
+        }
+
+        if (bundle.containsKey(name) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
     public String getMetaDataString(String name) {
         Bundle bundle = this.getMetaDataBundle();
 

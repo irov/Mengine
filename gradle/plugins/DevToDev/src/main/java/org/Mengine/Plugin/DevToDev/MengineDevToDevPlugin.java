@@ -17,8 +17,8 @@ import org.Mengine.Base.MenginePlugin;
 import java.util.Map;
 
 public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener {
-    public static String PLUGIN_NAME = "DevToDev";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "DevToDev";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     private boolean m_initializeSuccessful = false;
 

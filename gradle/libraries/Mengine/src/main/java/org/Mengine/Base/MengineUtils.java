@@ -72,4 +72,12 @@ public class MengineUtils {
     public static void performOnMainThreadWithDelay(Runnable runnable, long delayMillis) {
         new Handler(Looper.getMainLooper()).postDelayed(runnable, delayMillis);
     }
+
+    public static boolean getDebugValue(boolean debug, boolean release) {
+        if (BuildConfig.DEBUG == true) {
+            return debug;
+        } else {
+            return release;
+        }
+    }
 }

@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MengineAdvertisingPlugin extends MenginePlugin {
-    public static String PLUGIN_NAME = "Advertising";
+    public static final String PLUGIN_NAME = "Advertising";
 
     private String m_advertisingId;
     private boolean m_advertisingLimitTrackingEnabled;

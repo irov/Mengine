@@ -10,7 +10,7 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import com.google.firebase.FirebaseApp;
 
 public class MengineFirebasePlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static String PLUGIN_NAME = "Firebase";
+    public static final String PLUGIN_NAME = "Firebase";
 
     @Override
     public void onAppCreate(MengineApplication application) {

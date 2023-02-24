@@ -14,7 +14,7 @@ import com.google.android.ump.FormError;
 import com.google.android.ump.UserMessagingPlatform;
 
 public class MengineGoogleConsentPlugin extends MenginePlugin {
-    public static String PLUGIN_NAME = "GoogleConsent";
+    public static final String PLUGIN_NAME = "GoogleConsent";
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {

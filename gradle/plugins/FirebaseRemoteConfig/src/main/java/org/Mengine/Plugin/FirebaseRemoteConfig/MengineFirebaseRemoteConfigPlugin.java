@@ -21,8 +21,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static String PLUGIN_NAME = "FirebaseRemoteConfig";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "FirebaseRemoteConfig";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     /**
      * <p>

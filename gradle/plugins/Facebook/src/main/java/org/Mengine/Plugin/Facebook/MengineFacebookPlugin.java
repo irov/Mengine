@@ -43,8 +43,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener {
-    public static String PLUGIN_NAME = "Facebook";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "Facebook";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     private CallbackManager m_facebookCallbackManager;
     private AccessTokenTracker m_accessTokenTracker;

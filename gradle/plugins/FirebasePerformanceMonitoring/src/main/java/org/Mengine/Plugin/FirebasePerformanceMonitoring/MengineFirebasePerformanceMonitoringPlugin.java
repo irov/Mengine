@@ -17,8 +17,8 @@ import java.util.Map;
 
 
 public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginApplicationListener {
-    public static String PLUGIN_NAME = "FirebasePerformanceMonitoring";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "FirebasePerformanceMonitoring";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     private String LIVE_TRACE = "live_trace";
 

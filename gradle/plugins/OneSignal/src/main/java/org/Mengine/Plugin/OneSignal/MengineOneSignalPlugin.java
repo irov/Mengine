@@ -10,7 +10,7 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 
 public class MengineOneSignalPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static String PLUGIN_NAME = "OneSignal";
+    public static final String PLUGIN_NAME = "OneSignal";
 
     @Override
     public void onAppCreate(MengineApplication application) {

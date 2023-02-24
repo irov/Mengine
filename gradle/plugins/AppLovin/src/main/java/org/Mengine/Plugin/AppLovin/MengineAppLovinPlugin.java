@@ -16,11 +16,14 @@ import android.content.Context;
 import android.os.Bundle;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginExtensionListener {
-    public static String PLUGIN_NAME = "AppLovin";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "AppLovin";
+    public static final boolean PLUGIN_EMBEDDING = true;
+
+    public static final String PLUGIN_METADATA_VERBOSE_LOGGING = "mengine.applovin.verbose_logging";
+    public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";
+    public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
 
     /**
      * <p>
@@ -123,29 +126,35 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         appLovinSdk.setMediationProvider("max");
 
-        boolean MengineAppLovinPlugin_VerboseLogging = activity.getMetaDataBoolean("mengine.applovin.verbose_logging", false);
+        if (activity.hasMetaData(PLUGIN_METADATA_VERBOSE_LOGGING) == true) {
+            boolean MengineAppLovinPlugin_VerboseLogging = activity.getMetaDataBoolean(PLUGIN_METADATA_VERBOSE_LOGGING, false);
 
-        if (MengineAppLovinPlugin_VerboseLogging == true) {
-            this.logMessage("setVerboseLogging: true");
+            this.logMessage("setVerboseLogging: %b"
+                , MengineAppLovinPlugin_VerboseLogging
+            );
 
-            appLovinSdk.getSettings().setVerboseLogging(true);
+            appLovinSdk.getSettings().setVerboseLogging(MengineAppLovinPlugin_VerboseLogging);
         }
 
-        boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean("mengine.applovin.is_age_restricted_user", true);
+        if (activity.hasMetaData(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER) == true) {
+            boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, true);
 
-        this.logMessage("setIsAgeRestrictedUser: %b"
-            , MengineAppLovinPlugin_IsAgeRestrictedUser
-        );
+            this.logMessage("setIsAgeRestrictedUser: %b"
+                , MengineAppLovinPlugin_IsAgeRestrictedUser
+            );
 
-        AppLovinPrivacySettings.setIsAgeRestrictedUser(MengineAppLovinPlugin_IsAgeRestrictedUser, context);
+            AppLovinPrivacySettings.setIsAgeRestrictedUser(MengineAppLovinPlugin_IsAgeRestrictedUser, context);
+        }
 
-        boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean("mengine.applovin.CCPA", true);
+        if (activity.hasMetaData(PLUGIN_METADATA_CCPA) == true) {
+            boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean(PLUGIN_METADATA_CCPA, true);
 
-        this.logMessage("CCPA: %b"
-            , MengineAppLovinPlugin_CCPA
-        );
+            this.logMessage("CCPA: %b"
+                , MengineAppLovinPlugin_CCPA
+            );
 
-        AppLovinPrivacySettings.setDoNotSell(MengineAppLovinPlugin_CCPA, context);
+            AppLovinPrivacySettings.setDoNotSell(MengineAppLovinPlugin_CCPA, context);
+        }
 
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override

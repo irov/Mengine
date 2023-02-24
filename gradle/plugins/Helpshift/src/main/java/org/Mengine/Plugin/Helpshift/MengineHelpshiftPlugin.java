@@ -22,8 +22,8 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 
 public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener {
-    public static String PLUGIN_NAME = "Helpshift";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "Helpshift";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     /**
      * <p>

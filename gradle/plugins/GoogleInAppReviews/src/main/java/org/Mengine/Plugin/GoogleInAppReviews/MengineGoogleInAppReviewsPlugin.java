@@ -11,8 +11,8 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 
 public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
-    public static String PLUGIN_NAME = "GoogleInAppReviews";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "GoogleInAppReviews";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     /**
      * <p>

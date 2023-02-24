@@ -29,8 +29,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 public class MengineGoogleGameSocialPlugin extends MenginePlugin {
-    public static String PLUGIN_NAME = "GoogleGameSocial";
-    public static boolean PLUGIN_EMBEDDING = true;
+    public static final String PLUGIN_NAME = "GoogleGameSocial";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     //добавить каллбеки на ошибку авторизации
     //глянуть id по возврату в Activity

@@ -302,6 +302,16 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
+Utils.logAvailable("MENGINE_APP_PLUGIN_SPLASHSCREEN", MENGINE_APP_PLUGIN_SPLASHSCREEN)
+
+if (MENGINE_APP_PLUGIN_SPLASHSCREEN == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.SplashScreen.MengineSplashScreenPlugin'
+
+    dependencies {
+        implementation project(':plugins:SplashScreen')
+    }
+}
+
 Utils.logAvailable("MENGINE_APP_PLUGIN_DEVTODEV", MENGINE_APP_PLUGIN_DEVTODEV)
 
 if (MENGINE_APP_PLUGIN_DEVTODEV == true) {
@@ -462,16 +472,6 @@ if (MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING == true) {
 
     dependencies {
         implementation project(':plugins:FirebasePerformanceMonitoring')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_SPLASHSCREEN", MENGINE_APP_PLUGIN_SPLASHSCREEN)
-
-if (MENGINE_APP_PLUGIN_SPLASHSCREEN == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.SplashScreen.MengineSplashScreenPlugin'
-
-    dependencies {
-        implementation project(':plugins:SplashScreen')
     }
 }
 

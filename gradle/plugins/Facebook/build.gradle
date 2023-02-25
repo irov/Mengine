@@ -1,33 +1,10 @@
 import com.Mengine.Utils
 
-def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
-def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 
 def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
 
-apply plugin: 'com.android.library'
-
 android {
-    ext.extensions = []
-
-    buildToolsVersion project.buildToolsVersion
-    compileSdkVersion project.compileSdkVersion
-
-    defaultConfig {
-        minSdkVersion project.minSdkVersion
-        targetSdkVersion project.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility project.javaVersion
-        targetCompatibility project.javaVersion
-    }
-
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
     sourceSets {
         main {
             if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
@@ -35,26 +12,6 @@ android {
                 
                 java.srcDirs += ['firebaseMessaging']
             }
-            
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
-                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
-            } else {
-                res.srcDirs += ['../../app/res']
-            }
-        }
-    }
-
-    buildTypes {
-        debug {
-            minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
-
-            consumerProguardFiles 'proguard-rules.pro'
-        }
-
-        release {
-            minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
-
-            consumerProguardFiles 'proguard-rules.pro'
         }
     }
 }
@@ -70,16 +27,5 @@ if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
 }
 
 dependencies {
-    implementation project(':libraries:Mengine')
-    implementation project(':libraries:SDL2')
-
     implementation 'com.facebook.android:facebook-android-sdk:15.2.0'
-}
-
-android {
-    defaultConfig {
-        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
-            "\"${it}\""
-        }.join(",") + '}'
-    }
 }

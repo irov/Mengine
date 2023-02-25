@@ -21,7 +21,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     public static final String PLUGIN_NAME = "AppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_VERBOSE_LOGGING = "mengine.applovin.verbose_logging";
     public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";
     public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
 
@@ -76,7 +75,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
 
-    private ArrayList<MengineAppLovinAnalyticsListener> m_analytics = new ArrayList<>();;
+    private ArrayList<MengineAppLovinAnalyticsListener> m_analytics = new ArrayList<>();
 
     @Override
     public void onEvent(MengineActivity activity, String id, Object ... args) {
@@ -126,41 +125,33 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         appLovinSdk.setMediationProvider("max");
 
-        if (activity.hasMetaData(PLUGIN_METADATA_VERBOSE_LOGGING) == true) {
-            boolean MengineAppLovinPlugin_VerboseLogging = activity.getMetaDataBoolean(PLUGIN_METADATA_VERBOSE_LOGGING, false);
+        MengineApplication application = activity.getMengineApplication();
+        String installKey = application.getInstallKey();
 
-            this.logMessage("setVerboseLogging: %b"
-                , MengineAppLovinPlugin_VerboseLogging
-            );
+        appLovinSdk.setUserIdentifier(installKey);
 
-            appLovinSdk.getSettings().setVerboseLogging(MengineAppLovinPlugin_VerboseLogging);
-        }
+        boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, true);
 
-        if (activity.hasMetaData(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER) == true) {
-            boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, true);
+        this.logMessage("setIsAgeRestrictedUser: %b"
+            , MengineAppLovinPlugin_IsAgeRestrictedUser
+        );
 
-            this.logMessage("setIsAgeRestrictedUser: %b"
-                , MengineAppLovinPlugin_IsAgeRestrictedUser
-            );
+        AppLovinPrivacySettings.setIsAgeRestrictedUser(MengineAppLovinPlugin_IsAgeRestrictedUser, context);
 
-            AppLovinPrivacySettings.setIsAgeRestrictedUser(MengineAppLovinPlugin_IsAgeRestrictedUser, context);
-        }
+        boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean(PLUGIN_METADATA_CCPA, true);
 
-        if (activity.hasMetaData(PLUGIN_METADATA_CCPA) == true) {
-            boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean(PLUGIN_METADATA_CCPA, true);
+        this.logMessage("CCPA: %b"
+            , MengineAppLovinPlugin_CCPA
+        );
 
-            this.logMessage("CCPA: %b"
-                , MengineAppLovinPlugin_CCPA
-            );
-
-            AppLovinPrivacySettings.setDoNotSell(MengineAppLovinPlugin_CCPA, context);
-        }
+        AppLovinPrivacySettings.setDoNotSell(MengineAppLovinPlugin_CCPA, context);
 
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized: country [%s]"
+                MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized: country [%s] AmazonAdUnitIds: %s"
                     , configuration.getCountryCode()
+                    , configuration.getEnabledAmazonAdUnitIds()
                 );
 
                 MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");

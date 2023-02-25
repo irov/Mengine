@@ -3,6 +3,14 @@
 
     <application>
         <meta-data
+            android:name="mengine.applovin.is_age_restricted_user"
+            android:value="@bool/mengine_applovin_is_age_restricted_user" />
+
+        <meta-data
+            android:name="mengine.applovin.CCPA"
+            android:value="@bool/mengine_applovin_CCPA" />
+
+        <meta-data
             android:name="applovin.sdk.key"
             android:value="@string/applovin_sdk_key" />
 

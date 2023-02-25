@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 
@@ -169,10 +170,21 @@ public class MengineApplication extends Application {
         Context context = this.getApplicationContext();
         PackageManager manager = context.getPackageManager();
         String packageName = context.getPackageName();
+
         long versionCode = 0;
         try {
-            PackageInfo pInfo = manager.getPackageInfo(packageName, 0);
-            versionCode = pInfo.getLongVersionCode();
+            PackageInfo pInfo;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                pInfo = manager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0));
+            } else {
+                pInfo = manager.getPackageInfo(packageName, 0);
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                versionCode = pInfo.getLongVersionCode();
+            } else {
+                versionCode = pInfo.versionCode;
+            }
         } catch (PackageManager.NameNotFoundException e) {
             //FixMe?
         }

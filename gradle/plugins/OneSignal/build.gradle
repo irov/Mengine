@@ -1,67 +1,10 @@
 import com.Mengine.Utils
 
-apply plugin: 'com.android.library'
-
-def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
-def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 
 android {
-    ext.extensions = []
-
-    buildToolsVersion project.buildToolsVersion
-    compileSdkVersion project.compileSdkVersion
-
-    defaultConfig {
-        minSdkVersion project.minSdkVersion
-        targetSdkVersion project.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility project.javaVersion
-        targetCompatibility project.javaVersion
-    }
-
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    sourceSets {
-        main {
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
-                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
-            } else {
-                res.srcDirs += ['../../app/res']
-            }
-        }
-    }
-
-    buildTypes {
-        debug {
-            minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
-
-            consumerProguardFiles 'proguard-rules.pro'
-        }
-
-        release {
-            minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
-
-            consumerProguardFiles 'proguard-rules.pro'
-        }
-    }
 }
 
 dependencies {
-    implementation project(':libraries:Mengine')
-    implementation project(':libraries:SDL2')
-
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
-}
-
-android {
-    defaultConfig {
-        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
-            "\"${it}\""
-        }.join(",") + '}'
-    }
 }

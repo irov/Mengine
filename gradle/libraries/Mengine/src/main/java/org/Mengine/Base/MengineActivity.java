@@ -137,8 +137,14 @@ public class MengineActivity extends SDLActivity {
         return AndroidEnvironmentService_getBuildVersion();
     }
 
-    protected ArrayList<MenginePlugin> getPlugins() {
+    public MengineApplication getMengineApplication() {
         MengineApplication app = (MengineApplication)this.getApplication();
+
+        return app;
+    }
+
+    protected ArrayList<MenginePlugin> getPlugins() {
+        MengineApplication app = this.getMengineApplication();
 
         ArrayList<MenginePlugin> plugins = app.getPlugins();
 
@@ -146,7 +152,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     protected ArrayList<MenginePluginKeyListener> getKeyListeners() {
-        MengineApplication app = (MengineApplication)this.getApplication();
+        MengineApplication app = this.getMengineApplication();
 
         ArrayList<MenginePluginKeyListener> listeners = app.getKeyListeners();
 
@@ -159,7 +165,7 @@ public class MengineActivity extends SDLActivity {
             return null;
         }
 
-        MengineApplication app = (MengineApplication)this.getApplication();
+        MengineApplication app = this.getMengineApplication();
 
         T plugin = app.getPlugin(cls);
 
@@ -179,7 +185,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public boolean hasMetaData(String name) {
-        MengineApplication application = (MengineApplication)this.getApplication();
+        MengineApplication application = this.getMengineApplication();
 
         boolean result = application.hasMetaData(name);
 
@@ -187,7 +193,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public String getMetaDataString(String name) {
-        MengineApplication application = (MengineApplication)this.getApplication();
+        MengineApplication application = this.getMengineApplication();
 
         String value = application.getMetaDataString(name);
 
@@ -195,7 +201,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public boolean getMetaDataBoolean(String name, boolean d) {
-        MengineApplication application = (MengineApplication)this.getApplication();
+        MengineApplication application = this.getMengineApplication();
 
         boolean value = application.getMetaDataBoolean(name, d);
 
@@ -203,7 +209,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public int getMetaDataInteger(String name, int d) {
-        MengineApplication application = (MengineApplication)this.getApplication();
+        MengineApplication application = this.getMengineApplication();
 
         int value = application.getMetaDataInteger(name, d);
 
@@ -254,7 +260,7 @@ public class MengineActivity extends SDLActivity {
             p.onMengineInitializeBaseServices(this);
         }
 
-        MengineApplication app = (MengineApplication)this.getApplication();
+        MengineApplication app = this.getMengineApplication();
         app.onMengineInitializeBaseServices(this);
     }
 
@@ -271,7 +277,7 @@ public class MengineActivity extends SDLActivity {
             p.onExtensionRun(this);
         }
 
-        MengineApplication app = (MengineApplication)this.getApplication();
+        MengineApplication app = this.getMengineApplication();
         app.onMengineCreateApplication(this);
     }
 
@@ -284,7 +290,7 @@ public class MengineActivity extends SDLActivity {
             p.onMengineApplicationRun(this);
         }
 
-        MengineApplication app = (MengineApplication)this.getApplication();
+        MengineApplication app = this.getMengineApplication();
         app.onMengineApplicationRun(this);
     }
 
@@ -297,7 +303,7 @@ public class MengineActivity extends SDLActivity {
             p.onMengineApplicationReady(this);
         }
 
-        MengineApplication app = (MengineApplication)this.getApplication();
+        MengineApplication app = this.getMengineApplication();
         app.onMengineApplicationReady(this);
     }
 
@@ -310,7 +316,7 @@ public class MengineActivity extends SDLActivity {
             p.onMengineApplicationStop(this);
         }
 
-        MengineApplication app = (MengineApplication)this.getApplication();
+        MengineApplication app = this.getMengineApplication();
         app.onMengineApplicationStop(this);
 
         MengineLog.onMengineApplicationStop(this);

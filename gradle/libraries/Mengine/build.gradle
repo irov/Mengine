@@ -1,51 +1,14 @@
 import com.Mengine.Utils
 
-def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false)
+apply from: rootProject.projectDir.getAbsolutePath() + '/libraries/library.gradle'
+
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
 def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false)
 def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)
 
-apply plugin: 'com.android.library'
-
 android {
-    ndkVersion project.ndkVersion
-    buildToolsVersion project.buildToolsVersion
-    compileSdkVersion project.compileSdkVersion
-
-    compileOptions {
-        sourceCompatibility project.javaVersion
-        targetCompatibility project.javaVersion
-    }
-
-    defaultConfig {
-        minSdkVersion project.minSdkVersion
-        targetSdkVersion project.targetSdkVersion
-
-        multiDexEnabled true
-
-        if (ANDROID_APP_SPLIT_ENABLE == false) {
-            ndk {
-                abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
-            }
-        }
-    }
-
-    splits {
-        abi {
-            enable ANDROID_APP_SPLIT_ENABLE
-
-            reset()
-
-            include "arm64-v8a", "armeabi-v7a", "x86_64"
-
-            universalApk false
-        }
-    }
-
     externalNativeBuild {
         cmake {
-            version project.cmakeVersion
-
             path "../../../cmake/Android_SDL/CMakeLists.txt"
         }
     }
@@ -92,6 +55,9 @@ android {
 }
 
 dependencies {
+    implementation project(':libraries:SDL2')
+    implementation project(':libraries:OpenAL32')
+
     implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -100,7 +66,4 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-process:2.5.1"
     implementation "androidx.lifecycle:lifecycle-common:2.5.1"
-
-    implementation project(':libraries:SDL2')
-    implementation project(':libraries:OpenAL32')
 }

@@ -1,0 +1,33 @@
+import com.Mengine.Utils
+
+apply plugin: 'com.android.library'
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
+apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
+
+android {
+    ext.extensions = []
+
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                res.srcDirs += ['../../app/res']
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation project(':libraries:Mengine')
+    implementation project(':libraries:SDL2')
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
+            "\"${it}\""
+        }.join(",") + '}'
+    }
+}

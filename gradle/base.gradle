@@ -1,0 +1,21 @@
+android {
+    ndkVersion project.ndkVersion
+    buildToolsVersion project.buildToolsVersion
+    compileSdkVersion project.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility project.javaVersion
+        targetCompatibility project.javaVersion
+    }
+
+    defaultConfig {
+        multiDexEnabled project.multiDexEnabled
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}

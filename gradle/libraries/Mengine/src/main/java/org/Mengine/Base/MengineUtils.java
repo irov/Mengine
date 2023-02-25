@@ -65,12 +65,22 @@ public class MengineUtils {
         return null;
     }
 
-    public static void performOnMainThread(Runnable runnable) {
-        new Handler(Looper.getMainLooper()).post(runnable);
+    public static Handler performOnMainThread(Runnable runnable) {
+        Looper looper = Looper.getMainLooper();
+        Handler handler = new Handler(looper);
+
+        handler.post(runnable);
+
+        return handler;
     }
 
-    public static void performOnMainThreadWithDelay(Runnable runnable, long delayMillis) {
-        new Handler(Looper.getMainLooper()).postDelayed(runnable, delayMillis);
+    public static Handler performOnMainThreadDelayed(Runnable runnable, long delayMillis) {
+        Looper looper = Looper.getMainLooper();
+        Handler handler = new Handler(looper);
+
+        handler.postDelayed(runnable, delayMillis);
+
+        return handler;
     }
 
     public static boolean getDebugValue(boolean debug, boolean release) {

@@ -20,15 +20,12 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     private int m_enumeratorRequest;
     private int m_requestId;
 
-    private boolean m_processLoadAd;
-
     public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) {
         super(plugin);
 
         m_retryAttemptInterstitial = 0;
         m_enumeratorRequest = 0;
         m_requestId = 0;
-        m_processLoadAd = false;
 
         MengineActivity activity = m_plugin.getActivity();
 
@@ -74,8 +71,6 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.buildEvent("ad_interstitial_load")
             .addParameterInteger("request_id", m_requestId)
             .log();
-
-        m_processLoadAd = true;
 
         m_interstitialAd.loadAd();
     }
@@ -205,7 +200,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptInterstitial)));
 
-        MengineUtils.performOnMainThreadWithDelay(() -> {
+        MengineUtils.performOnMainThreadDelayed(() -> {
             this.loadAd();
         }, delayMillis);
 

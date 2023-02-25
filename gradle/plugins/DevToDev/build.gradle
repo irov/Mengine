@@ -1,75 +1,20 @@
 import com.Mengine.Utils
 
-def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
-def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 
 apply plugin: 'com.android.library'
 
 android {
-    ext.extensions = []
-
-    buildToolsVersion project.buildToolsVersion
-    compileSdkVersion project.compileSdkVersion
-
-    defaultConfig {
-        minSdkVersion project.minSdkVersion
-        targetSdkVersion project.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility project.javaVersion
-        targetCompatibility project.javaVersion
-    }
-
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    sourceSets {
-        main {
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
-                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
-            } else {
-                res.srcDirs += ['../../app/res']
-            }
-        }
-    }
-
-    buildTypes {
-        debug {
-            minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
-
-            consumerProguardFiles 'proguard-rules.pro'
-        }
-
-        release {
-            minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
-
-            consumerProguardFiles 'proguard-rules.pro'
-        }
-    }
 }
 
 dependencies {
-    implementation project(':libraries:Mengine')
-    implementation project(':libraries:SDL2')
-
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-    implementation 'com.google.android.gms:play-services-base:18.1.0'
+    implementation 'com.google.android.gms:play-services-base:18.2.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
 
     implementation 'com.devtodev:android-google:1.0.0'
     implementation 'com.devtodev:android-analytics:2.3.0'
 
     implementation 'com.android.installreferrer:installreferrer:2.2'
-}
-
-android {
-    defaultConfig {
-        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS", '{' + android.ext.extensions.collect {
-            "\"${it}\""
-        }.join(",") + '}'
-    }
 }

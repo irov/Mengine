@@ -3,7 +3,7 @@ package com.Mengine
 import org.gradle.api.Project
 
 class Utils {
-    public static Boolean getBooleanProperty(Project project, String name, Boolean d) {
+    static Boolean getBooleanProperty(Project project, String name, Boolean d) {
         def p = project.getProperties().get(name, null)
 
         if (p == null) {
@@ -17,7 +17,7 @@ class Utils {
         return true
     }
 
-    public static Boolean getStringProperty(Project project, String name, String d) {
+    static String getStringProperty(Project project, String name, String d) {
         def p = project.getProperties().get(name, null)
 
         if (p == null) {
@@ -27,7 +27,7 @@ class Utils {
         return p
     }
 
-    public static Integer getIntegerProperty(Project project, String name, Integer d) {
+    static Integer getIntegerProperty(Project project, String name, Integer d) {
         def p = project.getProperties().get(name, null)
 
         if (p == null) {
@@ -39,7 +39,7 @@ class Utils {
         return v
     }
 
-    public static Boolean existAppPlugin(Project project, String name) {
+    static Boolean existAppPlugin(Project project, String name) {
         def p = project.getProperties().get(name, null)
 
         if (p == null) {
@@ -53,7 +53,7 @@ class Utils {
         return true
     }
 
-    public static void logAvailable(String name, boolean value) {
+    static void logAvailable(String name, boolean value) {
         if (value == false) {
             println "\u001b[31m" + name + ": " + value + "\u001b[0m"
         } else {
@@ -61,7 +61,7 @@ class Utils {
         }
     }
 
-    public static void logInteger(String name, int value) {
+    static void logInteger(String name, int value) {
         println "\u001b[33m" + name + ": " + value + "\u001b[0m"
     }
 }

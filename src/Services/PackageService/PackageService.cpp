@@ -114,7 +114,7 @@ namespace Mengine
             PackageDesc pack;
             Detail::configPackageDesc( config, frameworkPack, &pack, true );
 
-            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", frameworkPack.c_str() ) ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework package '%s'", frameworkPack.c_str() ) ) == false )
             {
                 LOGGER_ERROR( "invalid add framework package '%s'"
                     , pack.name.c_str()
@@ -146,7 +146,7 @@ namespace Mengine
             PackageDesc pack;
             Detail::configPackageDesc( config, resourcePack, &pack, false );
 
-            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", resourcePack.c_str() ) ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "resource package '%s'", resourcePack.c_str() ) ) == false )
             {
                 LOGGER_ERROR( "invalid add resource package '%s'"
                     , pack.name.c_str()
@@ -178,7 +178,7 @@ namespace Mengine
             PackageDesc pack;
             Detail::configPackageDesc( config, languagePack, &pack, false );
 
-            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", languagePack.c_str() ) ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "language package '%s'", languagePack.c_str() ) ) == false )
             {
                 LOGGER_ERROR( "invalid add language package '%s'"
                     , pack.name.c_str()

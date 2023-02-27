@@ -277,9 +277,8 @@ namespace Mengine
 
         pybind::set_logger( (pybind::pybind_logger_t)&Detail::s_pybind_logger, nullptr );
 
-        m_moduleMengine = this->initModule( "Menge" );
+        m_moduleMengine = this->initModule( "Mengine" );
 
-        this->addGlobalModule( "Menge", m_moduleMengine );
         this->addGlobalModule( "Mengine", m_moduleMengine );
 
         kernel->set_currentmodule( m_moduleMengine );
@@ -578,9 +577,9 @@ namespace Mengine
         m_embeddings.clear();
 
         m_kernel->remove_module_finder();
-
-        this->removeGlobalModule( "Menge" );
+                
         this->removeGlobalModule( "Mengine" );
+        this->removeGlobalModule( "_PLUGINS" );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ) );
 

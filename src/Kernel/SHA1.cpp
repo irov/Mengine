@@ -45,9 +45,7 @@ namespace Mengine
                     uint32_t l[16];
                 } CHAR64LONG16;
 
-                CHAR64LONG16 * block;
-
-                block = (CHAR64LONG16 *)buffer;
+                CHAR64LONG16 * block = (CHAR64LONG16 *)buffer;
 
                 uint32_t a = state[0];
                 uint32_t b = state[1];
@@ -109,7 +107,7 @@ namespace Mengine
 
                 if( (j + len) > 63 )
                 {
-                    MENGINE_MEMCPY( &context->buffer[j], data, (i = 64 - j) );
+                    MENGINE_MEMCPY( &context->buffer[j], data, (i = 64 - j) * sizeof( uint8_t ) );
 
                     SHA1_Transform( context->state, context->buffer );
 
@@ -125,7 +123,7 @@ namespace Mengine
                     i = 0;
                 }
 
-                MENGINE_MEMCPY( &context->buffer[j], &data[i], len - i );
+                MENGINE_MEMCPY( &context->buffer[j], &data[i], (len - i) * sizeof( uint8_t ) );
             }
             //////////////////////////////////////////////////////////////////////////
             static void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, uint32_t _size )
@@ -151,9 +149,9 @@ namespace Mengine
                     digest[i] = (uint8_t)((context->state[i >> 2] >> ((3 - (i & 3)) * 8)) & 255);
                 }
 
-                MENGINE_MEMSET( context->buffer, 0, 64 );
-                MENGINE_MEMSET( context->state, 0, 20 );
-                MENGINE_MEMSET( context->count, 0, 8 );
+                MENGINE_MEMSET( context->buffer, 0, 64 * sizeof( uint8_t ) );
+                MENGINE_MEMSET( context->state, 0, 5 * sizeof( uint32_t ) );
+                MENGINE_MEMSET( context->count, 0, 2 * sizeof( size_t ) );
                 MENGINE_MEMSET( finalcount, 0, 8 );
             }
             //////////////////////////////////////////////////////////////////////////

@@ -129,6 +129,31 @@ namespace Mengine
             }
             
         protected:
+            void onPropComplete( const ConstString & _orderId ) override
+            {
+                pybind::object cb = m_cbs.get("onPropComplete");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _orderId, m_args );
+            }
+            
+            void onPropError( const ConstString & _orderId ) override
+            {
+                pybind::object cb = m_cbs.get("onPropError");
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _orderId, m_args );
+            }
+            
+        protected:
             void onAdRewardedDidFailed() override
             {
                 pybind::object cb = m_cbs.get("onAdRewardedDidFailed");
@@ -278,6 +303,12 @@ namespace Mengine
                 ->submitPaymentData( _data );
         }
         //////////////////////////////////////////////////////////////////////////
+        static void s_AppleMARSDK_propComplete( const ConstString & _orderId )
+        {
+            APPLE_MARSDK_SERVICE()
+                ->propComplete( _orderId );
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void s_AppleMARSDK_showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
         {
             APPLE_MARSDK_SERVICE()
@@ -305,6 +336,7 @@ namespace Mengine
         pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );
         pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_AppleMARSDK_submitExtendedData );
         pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::s_AppleMARSDK_submitPaymentData );
+        pybind::def_function( _kernel, "appleMARSDKPropComplete", &Detail::s_AppleMARSDK_propComplete );
         pybind::def_function( _kernel, "appleMARSDKShowRewardVideoAd", &Detail::s_AppleMARSDK_showRewardVideoAd );
         
         return true;
@@ -318,6 +350,7 @@ namespace Mengine
         _kernel->remove_from_module( "appleMARSDKSwitchAccount", nullptr );
         _kernel->remove_from_module( "appleMARSDKSubmitExtendedData", nullptr );
         _kernel->remove_from_module( "appleMARSDKSubmitPaymentData", nullptr );
+        _kernel->remove_from_module( "appleMARSDKPropComplete", nullptr );
         _kernel->remove_from_module( "appleMARSDKShowRewardVideoAd", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////

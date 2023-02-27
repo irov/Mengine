@@ -38,6 +38,13 @@ namespace Mengine
             return value_string;
         }
         /////////////////////////////////////////////////////////////////////////
+        NSIDMessage NSIdToString( id _value )
+        {
+            const Char * message_str = [[NSString stringWithFormat:@"%@", _value] UTF8String];
+
+            return NSIDMessage( message_str );
+        }
+        /////////////////////////////////////////////////////////////////////////
         NSString * unicodeToNSString( const WString & _value )
         {
             const WChar * value_str = _value.c_str();

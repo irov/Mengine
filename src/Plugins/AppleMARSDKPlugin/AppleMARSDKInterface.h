@@ -27,6 +27,10 @@ namespace Mengine
         virtual void onPayPaid( const MARSDKResultParams & _params ) = 0;
         
     public:
+        virtual void onPropComplete( const ConstString & _orderId ) = 0;
+        virtual void onPropError( const ConstString & _orderId ) = 0;
+        
+    public:
         virtual void onAdRewardedDidFailed() = 0;
         virtual void onAdRewardedDidLoaded() = 0;
         virtual void onAdRewardedDidShow() = 0;
@@ -54,6 +58,8 @@ namespace Mengine
         
         virtual void submitExtendedData( const Char * _data ) = 0;
         virtual void submitPaymentData( const Char * _data ) = 0;
+        
+        virtual void propComplete( const ConstString & _productId ) = 0;
         
         virtual void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) = 0;
     };

@@ -33,6 +33,8 @@ namespace Mengine
         void submitExtendedData( const Char * _data ) override;
         void submitPaymentData( const Char * _data ) override;
         
+        void propComplete( const ConstString & _productId ) override;
+        
     public:
         void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) override;
         

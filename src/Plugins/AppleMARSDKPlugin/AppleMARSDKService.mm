@@ -2,6 +2,7 @@
 
 #include "Environment/iOS/iOSDetail.h"
 #include "Environment/Apple/AppleString.h"
+#include "Environment/Apple/AppleErrorHelper.h"
 
 #include "Kernel/Logger.h"
 
@@ -92,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitExtendedData( const Char * _data )
     {
-        MARUserExtraData* extraData = [MARUserExtraData dataFromJsonString:@(_data)];
+        MARUserExtraData * extraData = [MARUserExtraData dataFromJsonString:@(_data)];
         
         LOGGER_MESSAGE( "submit extended data: %s"
             , [[extraData toJsonString] UTF8String]
@@ -103,13 +104,43 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitPaymentData( const Char * _data )
     {
-        MARProductInfo* productInfo = [MARProductInfo productFromJsonString:@(_data)];
+        MARProductInfo * productInfo = [MARProductInfo productFromJsonString:@(_data)];
 
         LOGGER_MESSAGE( "submit payment data: %s"
             , [[productInfo toJsonString] UTF8String]
         );
         
         [[MARSDK sharedInstance] pay:productInfo];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleMARSDKService::propComplete( const ConstString & _orderId )
+    {
+        LOGGER_MESSAGE( "prop complete orderId: %s"
+            , _orderId.c_str()
+        );
+        
+        [[MARSDK sharedInstance] propComplete:Helper::stringToNSString(_orderId)
+                              responseHandler:^(NSURLResponse* _response, id _data, NSError * _connectionError) {
+            if( _connectionError != nil )
+            {
+                LOGGER_ERROR( "prop complete '%s' response failed data: %s error: %s"
+                    , _orderId.c_str()
+                    , Helper::NSIdToString( _data ).c_str()
+                    , Helper::AppleGetMessageFromNSError( _connectionError ).c_str()
+                );
+                
+                m_provider->onPropError( _orderId );
+            }
+            else
+            {
+                LOGGER_ERROR( "prop complete '%s' response sucessful data: %s"
+                    , _orderId.c_str()
+                    , Helper::NSIdToString( _data ).c_str()
+                );
+                
+                m_provider->onPropComplete( _orderId );
+            }
+        }];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
@@ -123,7 +154,8 @@ namespace Mengine
         
         [[MARAd sharedInstance] showRewardVideoAd:rootViewController
                                          itemName:[[NSString alloc] initWithUTF8String:_itemName.c_str()]
-                                          itemNum:_itemNum delegate:m_adRewardedDelegate];
+                                          itemNum:_itemNum
+                                         delegate:m_adRewardedDelegate];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogin( const MARSDKResultParams & _params )

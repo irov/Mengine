@@ -17,7 +17,6 @@ namespace Mengine
     namespace Helper
     {
         typedef StaticString<MENGINE_APPLE_MESSAGE_NSERROR> NSErrorMessage;
-
         NSErrorMessage AppleGetMessageFromNSError( NSError * _error );
         
         void AppleGetMapNSDictionary( NSDictionary * _dictionary, Map<String, String> * const _map );

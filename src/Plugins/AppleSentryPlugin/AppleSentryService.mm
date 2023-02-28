@@ -7,7 +7,8 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 
-#include "Kernel/ConfigHelper.h"
+#include "Environment/Apple/AppleDetail.h"
+
 #include "Kernel/Crash.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/UnicodeHelper.h"
@@ -42,28 +43,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleSentryService::_initializeService()
     {
-        const Char * AppleSentryPlugin_DSN = CONFIG_VALUE( "AppleSentryPlugin", "DSN", "" );
-
-        if( MENGINE_STRCMP( AppleSentryPlugin_DSN, "" ) == 0 )
+        NSString * AppleSentryPlugin_DSN = Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
+        
+        if( AppleSentryPlugin_DSN == nil )
         {
             LOGGER_WARNING( "Sentry don't setup DSN" );
 
-            return true;
+            return false;
         }
 
         LOGGER_INFO_PROTECTED( "sentry", "sentry DSN: %s"
-            , AppleSentryPlugin_DSN
+            , [AppleSentryPlugin_DSN UTF8String]
         );
         
-        bool AppleSentryPlugin_Debug = CONFIG_VALUE( "AppleSentryPlugin", "Debug", false );
+        BOOL AppleSentryPlugin_Debug = Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("Debug"), NO );
         
         const Char * BUILD_VERSION = Helper::getBuildVersion();
         
         [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
-            options.dsn = @(AppleSentryPlugin_DSN);
+            options.dsn = AppleSentryPlugin_DSN;
             options.debug = AppleSentryPlugin_Debug; // Enabled debug when first installing is always helpful
             options.releaseName = @(BUILD_VERSION);
             options.attachStacktrace = true;
+            options.tracesSampleRate = @(1.0);
         }];
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AppleSentryService::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
@@ -108,13 +110,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleSentryService::notifyCreateApplication_()
     {
-        const Char * AppleSentryPlugin_Application = CONFIG_VALUE( "AppleSentryPlugin", "Application", "Mengine" );
-
+        NSString * bundleIdentifier = Helper::AppleGetBundleIdentifier();
+        
         LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Application: %s]"
-            , AppleSentryPlugin_Application
+            , [bundleIdentifier UTF8String]
         );
 
-        Helper::appleSentrySetExtraString( "Application", AppleSentryPlugin_Application );
+        Helper::appleSentrySetExtraNSString( "Application", bundleIdentifier );
 
         Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()

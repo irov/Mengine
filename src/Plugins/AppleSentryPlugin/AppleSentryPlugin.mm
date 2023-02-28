@@ -1,6 +1,7 @@
 #include "AppleSentryPlugin.h"
 
-#include "Kernel/ConfigHelper.h"
+#include "Environment/Apple/AppleDetail.h"
+
 #include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,9 +37,9 @@ namespace Mengine
             return false;
         }
         
-        bool AppleSentryPlugin_Available = CONFIG_VALUE( "AppleSentryPlugin", "Available", true );
+        BOOL AppleSentryPlugin_Available = Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("Available"), YES );
 
-        if( AppleSentryPlugin_Available == false )
+        if( AppleSentryPlugin_Available == NO )
         {
             return false;
         }

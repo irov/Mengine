@@ -34,5 +34,12 @@ namespace Mengine
             }];
         }
         //////////////////////////////////////////////////////////////////////////
+        void appleSentrySetExtraNSString( const Char * _key, NSString * _value )
+        {
+            [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
+                [scope setExtraValue:_value forKey:@(_key)];
+            }];
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

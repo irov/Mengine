@@ -1,6 +1,6 @@
 #import "AppleMARSDKApplicationDelegate.h"
 
-#import "Environment/iOS/iOSDetail.h"
+#import "Environment/Apple/AppleDetail.h"
 
 #import "MARSDKCore/MARSDKCore.h"
 
@@ -9,7 +9,7 @@
 #pragma mark - UIKitProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSDictionary * MARSDKConfig = Mengine::Helper::iOSGetBundlePluginConfig(@"MARSDK");
+    NSDictionary * MARSDKConfig = Mengine::Helper::AppleGetBundlePluginConfig(@"MARSDK");
     [[MARSDK sharedInstance] initWithParams:MARSDKConfig];
     
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];

@@ -3,6 +3,8 @@
 #include "Config/Char.h"
 #include "Config/StdInt.h"
 
+#import <Foundation/Foundation.h>
+
 namespace Mengine
 {
     namespace Helper
@@ -12,5 +14,6 @@ namespace Mengine
         void appleSentrySetExtraBoolean( const Char * _key, int32_t _value );
         void appleSentrySetExtraInteger( const Char * _key, int32_t _value );
         void appleSentrySetExtraString( const Char * _key, const Char * _value );
+        void appleSentrySetExtraNSString( const Char * _key, NSString * _value );
     }
 }

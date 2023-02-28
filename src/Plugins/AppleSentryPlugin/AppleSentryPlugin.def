@@ -1,2 +1,0 @@
-LIBRARY "SentryPlugin"
-EXPORTS dllCreatePlugin @1

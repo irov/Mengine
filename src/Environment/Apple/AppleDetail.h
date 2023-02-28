@@ -9,6 +9,8 @@ namespace Mengine
 {
     namespace Helper
     {
+        NSString * AppleGetBundleIdentifier();
+    
         BOOL AppleHasBundlePluginConfig( NSString * _plugin );
         NSDictionary * AppleGetBundlePluginConfig( NSString * _plugin );
         NSString * AppleGetBundlePluginConfigString( NSString * _plugin, NSString * _key, NSString * _default );

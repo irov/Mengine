@@ -96,7 +96,7 @@ namespace Mengine
         MARUserExtraData * extraData = [MARUserExtraData dataFromJsonString:@(_data)];
         
         LOGGER_MESSAGE( "submit extended data: %s"
-            , [[extraData toJsonString] UTF8String]
+            , _data
         );
         
         [[MARSDK sharedInstance] submitExtraData:extraData];
@@ -107,7 +107,7 @@ namespace Mengine
         MARProductInfo * productInfo = [MARProductInfo productFromJsonString:@(_data)];
 
         LOGGER_MESSAGE( "submit payment data: %s"
-            , [[productInfo toJsonString] UTF8String]
+            , _data
         );
         
         [[MARSDK sharedInstance] pay:productInfo];

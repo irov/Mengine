@@ -7,6 +7,15 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        NSString * AppleGetBundleIdentifier()
+        {
+            NSBundle * mainBundle = [NSBundle mainBundle];
+            
+            NSString * bundleIdentifier = [mainBundle bundleIdentifier];
+            
+            return bundleIdentifier;
+        }
+        //////////////////////////////////////////////////////////////////////////
         BOOL AppleHasBundlePluginConfig( NSString * _plugin )
         {
             NSBundle * mainBundle = [NSBundle mainBundle];

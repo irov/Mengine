@@ -1,0 +1,20 @@
+import com.Mengine.Utils
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+
+buildscript {
+    repositories {
+        google()
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://dl.bintray.com/datadog/datadog-maven" }
+    }
+}
+
+android {
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation "com.datadoghq:dd-sdk-android:1.17.1"
+}

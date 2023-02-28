@@ -3,12 +3,15 @@ package org.Mengine.Plugin.Sentry;
 import android.os.Bundle;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginLoggerListener;
 
 import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 
-public class MengineSentryPlugin extends MenginePlugin {
+public class MengineSentryPlugin extends MenginePlugin implements MenginePluginLoggerListener {
     public static final String PLUGIN_NAME = "Sentry";
 
     @Override
@@ -56,5 +59,14 @@ public class MengineSentryPlugin extends MenginePlugin {
             scope.setExtra("Build Timestamp", buildTimestamp);
             scope.setExtra("Build Username", buildUsername);
         });
+    }
+
+    @Override
+    public void onMengineLogger(MengineApplication application, String category, int level, int filter, int color, String msg) {
+        if (level > MengineLog.LM_ERROR) {
+            return;
+        }
+
+        Sentry.captureMessage("[" + category + "]" + msg);
     }
 }

@@ -34,6 +34,7 @@ def MENGINE_APP_PLUGIN_APPLOVIN = Utils.existAppPlugin(project, "MENGINE_APP_PLU
 def MENGINE_APP_PLUGIN_ADJUST = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ADJUST")
 def MENGINE_APP_PLUGIN_HELPSHIFT = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_HELPSHIFT")
 def MENGINE_APP_PLUGIN_ONESIGNAL = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ONESIGNAL")
+def MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DATADOG")
 def MENGINE_APP_PLUGIN_DEVDEBUGGER = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVDEBUGGER")
 
 Utils.logAvailable("ANDROID_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH)
@@ -542,6 +543,16 @@ if (MENGINE_APP_PLUGIN_ONESIGNAL == true) {
 
     dependencies {
         implementation project(':plugins:OneSignal')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_DATADOG", MENGINE_APP_PLUGIN_DATADOG)
+
+if (MENGINE_APP_PLUGIN_DATADOG == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.DataDog.MengineDataDogPlugin'
+
+    dependencies {
+        implementation project(':plugins:DataDog')
     }
 }
 

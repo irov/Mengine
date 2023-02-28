@@ -231,9 +231,9 @@ namespace Mengine
     {
         if( this->proccess_() == false )
         {
-            LOGGER_CRITICAL(
-                "Force send quit for application\n"
-                "Please registry application or remove xlsExport plugin\n"
+            LOGGER_FATAL(
+                "force send quit for application\n"
+                "please registry application or remove xlsExport plugin"
             );
 
             APPLICATION_SERVICE()

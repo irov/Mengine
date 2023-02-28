@@ -458,7 +458,7 @@ namespace Mengine
 
             if( OPTION_noresourcecheckcritical == false )
             {
-                LOGGER_CRITICAL( "Please fix resources and restart application!" );
+                LOGGER_FATAL( "please fix resources and restart application!" );
 
                 return false;
             }

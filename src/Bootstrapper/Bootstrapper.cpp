@@ -527,7 +527,7 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->initializeGame( defaultFileGroup, m_packagesPaths, m_settingsPaths ) == false )
         {
-            LOGGER_CRITICAL( "Application invalid initialize game" );
+            LOGGER_FATAL( "Application invalid initialize game" );
 
             return false;
         }
@@ -537,7 +537,7 @@ namespace Mengine
         if( GAME_SERVICE()
             ->loadPersonality() == false )
         {
-            LOGGER_CRITICAL( "Game invalid load personality" );
+            LOGGER_FATAL( "Game invalid load personality" );
 
             return false;
         }
@@ -1312,7 +1312,7 @@ namespace Mengine
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "failed to load dynamic plugin '%s'"
+                LOGGER_FATAL( "failed to load dynamic plugin '%s'"
                     , pluginName.c_str()
                 );
 

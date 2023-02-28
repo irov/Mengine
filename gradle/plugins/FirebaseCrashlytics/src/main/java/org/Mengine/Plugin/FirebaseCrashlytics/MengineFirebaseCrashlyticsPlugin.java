@@ -143,6 +143,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
             return;
         }
 
-        FirebaseCrashlytics.getInstance().log(msg);
+        FirebaseCrashlytics.getInstance().log("[" + category + "]" + msg);
     }
 }

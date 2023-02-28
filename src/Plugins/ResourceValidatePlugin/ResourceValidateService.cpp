@@ -111,7 +111,7 @@ namespace Mengine
 
             if( OPTION_resourceCheckCritical == false )
             {
-                LOGGER_CRITICAL( "Please fix [resources] and restart application!" );
+                LOGGER_FATAL( "please fix [resources] and restart application!" );
 
                 throw ExceptionNotificationFailed();
             }

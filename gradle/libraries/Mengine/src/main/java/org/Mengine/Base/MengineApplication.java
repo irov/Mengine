@@ -48,9 +48,13 @@ public class MengineApplication extends Application {
     private MengineActivityLifecycle m_activityLifecycle;
 
     public String[] getGradleAndroidPlugins() {
-        String[] empty = {};
+        String[] plugins = {};
 
-        return empty;
+        return plugins;
+    }
+
+    public String getApplicationId() {
+        return "";
     }
 
     @SuppressWarnings("deprecation")

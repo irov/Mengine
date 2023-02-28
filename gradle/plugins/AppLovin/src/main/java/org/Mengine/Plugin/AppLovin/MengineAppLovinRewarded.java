@@ -83,17 +83,14 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             , ready
         );
 
-        if (ready == false) {
-            this.buildEvent("ad_rewarded_offer_unready")
-                .addParameterInteger("request_id", m_requestId)
-                .log();
-
-            return false;
-        }
-
         this.buildEvent("ad_rewarded_offer")
             .addParameterInteger("request_id", m_requestId)
+            .addParameterBoolean("ready", ready)
             .log();
+
+        if (ready == false) {
+            return false;
+        }
 
         return true;
     }
@@ -106,8 +103,9 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         );
 
         if (ready == false) {
-            this.buildEvent("ad_rewarded_show_unready")
+            this.buildEvent("ad_rewarded_show")
                 .addParameterInteger("request_id", m_requestId)
+                .addParameterBoolean("ready", false)
                 .log();
 
             return false;
@@ -123,17 +121,14 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             , ready
         );
 
-        if (ready == false) {
-            this.buildEvent("ad_rewarded_show_unready")
-                .addParameterInteger("request_id", m_requestId)
-                .log();
-
-            return false;
-        }
-
         this.buildEvent("ad_rewarded_show")
             .addParameterInteger("request_id", m_requestId)
+            .addParameterBoolean("ready", ready)
             .log();
+
+        if (ready == false) {
+            return false;
+        }
 
         m_rewardedAd.showAd();
 

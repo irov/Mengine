@@ -85,7 +85,6 @@ namespace Mengine
         case LM_SILENT:
             return;
         case LM_FATAL:
-        case LM_CRITICAL:
             desc.level = 'F';
             break;
         case LM_MESSAGE_RELEASE:

@@ -314,12 +314,16 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {
+            LOGGER_FATAL( "invalid create window" );
+
             return false;
         }
 #elif defined(MENGINE_PLATFORM_ANDROID)
         if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {
+            LOGGER_FATAL( "invalid create window" );
+
             return false;
         }
 #else
@@ -330,12 +334,22 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->calcWindowResolution( fullscreen, &windowResolution ) == false )
         {
+            LOGGER_FATAL( "invalid calculate window resolution for fullscreen [%s]"
+                , fullscreen == true ? "YES" : "NO"
+            );
+
             return false;
         }
 
         if( PLATFORM_SERVICE()
             ->createWindow( windowResolution, fullscreen ) == false )
         {
+            LOGGER_FATAL( "invalid create window [%u:%u] fullscreen [%s]"
+                , windowResolution.getWidth()
+                , windowResolution.getHeight()
+                , fullscreen == true ? "YES" : "NO"
+            );
+
             return false;
         }
 #endif
@@ -343,7 +357,7 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )
         {
-            LOGGER_CRITICAL( "invalid create render window" );
+            LOGGER_FATAL( "invalid create render window" );
 
             return false;
         }

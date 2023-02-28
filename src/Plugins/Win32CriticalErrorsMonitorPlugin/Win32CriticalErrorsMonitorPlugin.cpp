@@ -86,13 +86,13 @@ namespace Mengine
         Char stack[8096] = {'\0'};
         if( extension->getCallstack( ~0U, stack, 8095, pExceptionPointers->ContextRecord ) == false )
         {
-            LOGGER_CRITICAL( "Catch exception and write dumb '%s'"
+            LOGGER_FATAL( "catch exception and write dumb '%s'"
                 , g_monitor->m_dumpPath
             );
         }
         else
         {
-            LOGGER_CRITICAL( "Catch exception and write dumb '%s'\n\n\n%s\n\n\n"
+            LOGGER_FATAL( "catch exception and write dumb '%s'\n\n\n%s\n\n\n"
                 , g_monitor->m_dumpPath
                 , stack
             );

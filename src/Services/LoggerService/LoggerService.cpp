@@ -86,27 +86,23 @@ namespace Mengine
 #endif
         }
 
-        if( TEST_OPTION_VALUE( "log", "0" ) == true )
+        if( TEST_OPTION_VALUE( "log", "info" ) == true )
         {
             logLevel = LM_INFO;
         }
-        else if( TEST_OPTION_VALUE( "log", "1" ) == true )
+        else if( TEST_OPTION_VALUE( "log", "message" ) == true )
         {
             logLevel = LM_MESSAGE;
         }
-        else if( TEST_OPTION_VALUE( "log", "2" ) == true )
+        else if( TEST_OPTION_VALUE( "log", "warning" ) == true )
         {
             logLevel = LM_WARNING;
         }
-        else if( TEST_OPTION_VALUE( "log", "3" ) == true )
+        else if( TEST_OPTION_VALUE( "log", "error" ) == true )
         {
             logLevel = LM_ERROR;
         }
-        else if( TEST_OPTION_VALUE( "log", "4" ) == true )
-        {
-            logLevel = LM_CRITICAL;
-        }
-        else if( TEST_OPTION_VALUE( "log", "5" ) == true )
+        else if( TEST_OPTION_VALUE( "log", "fatal" ) == true )
         {
             logLevel = LM_FATAL;
         }
@@ -117,10 +113,6 @@ namespace Mengine
         else if( HAS_OPTION( "verbose" ) == true )
         {
             logLevel = LM_VERBOSE;
-        }
-        else if( HAS_OPTION( "message" ) == true )
-        {
-            logLevel = LM_MESSAGE;
         }
 
 #ifdef MENGINE_LOGGER_LEVEL_FORCE_VERBOSE_ENABLE

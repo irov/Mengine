@@ -143,6 +143,14 @@ public class MengineActivity extends SDLActivity {
         return app;
     }
 
+    public String getApplicationId() {
+        MengineApplication app = this.getMengineApplication();
+
+        String applicationId = app.getApplicationId();
+
+        return applicationId;
+    }
+
     protected ArrayList<MenginePlugin> getPlugins() {
         MengineApplication app = this.getMengineApplication();
 

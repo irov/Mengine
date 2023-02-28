@@ -15,7 +15,6 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.library'
 apply plugin: 'io.sentry.android.gradle'
 
 android {

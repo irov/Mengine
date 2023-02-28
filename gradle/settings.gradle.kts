@@ -87,6 +87,8 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
 / * - MENGINE_APP_PLUGIN_ONESIGNAL [https://onesignal.com]
+/ * - MENGINE_APP_PLUGIN_DATADOG [https://www.datadoghq.com/]
+DataDog
 *****************************************************************************/
 
 includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", false, ":plugins:SplashScreen")
@@ -111,5 +113,6 @@ includePlugin("MENGINE_APP_PLUGIN_ADJUST", false, ":plugins:Adjust")
 includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", false, ":plugins:Helpshift")
 includePlugin("MENGINE_APP_PLUGIN_ONESIGNAL", false, ":plugins:OneSignal")
 includePlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER", false, ":plugins:DevDebugger")
+includePlugin("MENGINE_APP_PLUGIN_DATADOG", false, ":plugins:DataDog")
 
 println("Mengine complete settings")

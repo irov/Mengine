@@ -17,8 +17,6 @@ namespace Mengine
                 return 'S';
             case LM_FATAL:
                 return 'F';
-            case LM_CRITICAL:
-                return 'C';
             case LM_MESSAGE_RELEASE:
                 return 'R';
             case LM_ERROR:

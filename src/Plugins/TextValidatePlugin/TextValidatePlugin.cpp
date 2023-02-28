@@ -93,7 +93,7 @@ namespace Mengine
 
             if( OPTION_notextcheckcritical == false )
             {
-                LOGGER_CRITICAL( "Please fix [text] and restart application!" );
+                LOGGER_FATAL( "please fix [text] and restart application!" );
 
                 throw ExceptionNotificationFailed();
             }

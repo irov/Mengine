@@ -142,7 +142,7 @@ namespace Mengine
 
         Win32MessageBoxLoggerPtr loggerMessageBox = Helper::makeFactorableUnique<Win32MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
 
-        loggerMessageBox->setVerboseLevel( LM_CRITICAL );
+        loggerMessageBox->setVerboseLevel( LM_FATAL );
 
         LOGGER_SERVICE()
             ->registerLogger( loggerMessageBox );
@@ -366,19 +366,29 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->calcWindowResolution( fullscreen, &windowResolution ) == false )
         {
+            LOGGER_FATAL( "invalid calculate window resolution for fullscreen [%s]"
+                , fullscreen == true ? "YES" : "NO"
+            );
+
             return false;
         }
 
         if( PLATFORM_SERVICE()
             ->createWindow( windowResolution, fullscreen ) == false )
         {
+            LOGGER_FATAL( "invalid create window [%u:%u] fullscreen [%s]"
+                , windowResolution.getWidth()
+                , windowResolution.getHeight()
+                , fullscreen == true ? "YES" : "NO" 
+            );
+
             return false;
         }
 
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )
         {
-            LOGGER_CRITICAL( "Invalid create render window" );
+            LOGGER_FATAL( "invalid create render window" );
 
             return false;
         }
@@ -389,7 +399,7 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->runPlatform() == false )
         {
-            LOGGER_CRITICAL( "Invalid run platform" );
+            LOGGER_FATAL( "invalid run platform" );
 
             return false;
         }

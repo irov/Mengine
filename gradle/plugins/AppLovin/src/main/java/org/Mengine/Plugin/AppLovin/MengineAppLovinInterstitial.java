@@ -83,8 +83,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         );
 
         if (ready == false) {
-            this.buildEvent("ad_interstitial_show_unready")
+            this.buildEvent("ad_interstitial_show")
                 .addParameterInteger("request_id", m_requestId)
+                .addParameterBoolean("ready", false)
                 .log();
 
             return false;
@@ -100,17 +101,14 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             , ready
         );
 
-        if (ready == false) {
-            this.buildEvent("ad_interstitial_show_unready")
-                .addParameterInteger("request_id", m_requestId)
-                .log();
-
-            return false;
-        }
-
         this.buildEvent("ad_interstitial_show")
             .addParameterInteger("request_id", m_requestId)
+            .addParameterBoolean("ready", ready)
             .log();
+
+        if (ready == false) {
+            return false;
+        }
 
         m_interstitialAd.showAd();
 

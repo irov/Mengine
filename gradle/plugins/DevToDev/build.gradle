@@ -2,8 +2,6 @@ import com.Mengine.Utils
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 
-apply plugin: 'com.android.library'
-
 android {
 }
 

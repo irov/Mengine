@@ -172,7 +172,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1logInfo )(JNIEnv * env, jclass cls, jstring _msg)
+    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1log )(JNIEnv * env, jclass cls, jint _level, jstring _msg)
     {
         if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
         {
@@ -181,71 +181,45 @@ extern "C"
 
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-            , msg_str
-        );
-
-        env->ReleaseStringUTFChars( _msg, msg_str );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1logWarning )(JNIEnv * env, jclass cls, jstring _msg)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
-        {
-            return;
+        Mengine::ELoggerLevel level;
+        uint32_t color;
+        switch (_level) {
+            case 0:
+                return;
+            case 1:
+                level = Mengine::LM_FATAL;
+                color = Mengine::LCOLOR_RED;
+                break;
+            case 2:
+                level = Mengine::LM_MESSAGE_RELEASE;
+                color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
+                break;
+            case 3:
+                level = Mengine::LM_ERROR;
+                color = Mengine::LCOLOR_RED;
+                break;
+            case 4:
+                level = Mengine::LM_WARNING;
+                color = Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN;
+                break;
+            case 5:
+                level = Mengine::LM_MESSAGE;
+                color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
+                break;
+            case 6:
+                level = Mengine::LM_INFO;
+                color = Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE;
+                break;
+            case 7:
+                level = Mengine::LM_DEBUG;
+                color = Mengine::LCOLOR_BLUE;
+                break;
+            case 8:
+                return;
+                break;
         }
 
-        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
-
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-            , msg_str
-        );
-
-        env->ReleaseStringUTFChars( _msg, msg_str );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1logMessage )(JNIEnv * env, jclass cls, jstring _msg)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
-        {
-            return;
-        }
-
-        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
-
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-            , msg_str
-        );
-
-        env->ReleaseStringUTFChars( _msg, msg_str );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1logMessageRelease )(JNIEnv * env, jclass cls, jstring _msg)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
-        {
-            return;
-        }
-
-        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
-
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
-            , msg_str
-        );
-
-        env->ReleaseStringUTFChars( _msg, msg_str );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1logError )(JNIEnv * env, jclass cls, jstring _msg)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
-        {
-            return;
-        }
-
-        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
-
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), level, Mengine::LFILTER_NONE, color, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
             , msg_str
         );
 

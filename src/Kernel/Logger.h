@@ -33,7 +33,7 @@ namespace Mengine
     class LoggerOperator
     {
     public:
-        LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, ELoggerFlag _flag);
+        LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, ELoggerFlag _flag );
         ~LoggerOperator();
 
     public:

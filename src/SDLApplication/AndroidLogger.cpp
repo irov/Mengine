@@ -26,7 +26,6 @@ namespace Mengine
         case LM_SILENT:
             return;
         case LM_FATAL:
-        case LM_CRITICAL:
             prio = ANDROID_LOG_FATAL;
             break;
         case LM_MESSAGE_RELEASE:

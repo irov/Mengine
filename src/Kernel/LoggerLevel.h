@@ -11,7 +11,6 @@ namespace Mengine
     {
         LM_SILENT = 0,
         LM_FATAL,
-        LM_CRITICAL,
         LM_MESSAGE_RELEASE,
         LM_ERROR,
         LM_WARNING,

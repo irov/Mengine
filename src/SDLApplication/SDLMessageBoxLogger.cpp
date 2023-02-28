@@ -37,26 +37,13 @@ namespace Mengine
 
         ::printf( "%s %.*s\n", timestamp, (int32_t)size, data );
 
-        if( _message.level == LM_CRITICAL )
-        {
-            Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'0'};
-            MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
-                , (int32_t)size
-                , data
-            );
+        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'0'};
+        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
+            , (int32_t)size
+            , data
+        );
 
-            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine critical error", message, NULL );
-        }
-        else if( _message.level == LM_FATAL )
-        {
-            Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'0'};
-            MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
-                , (int32_t)size
-                , data
-            );
-
-            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine fatal error", message, NULL );
-        }
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine fatal error", message, NULL );
     }
     //////////////////////////////////////////////////////////////////////////
 }

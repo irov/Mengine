@@ -454,7 +454,7 @@ namespace Mengine
             case SDL_LOG_PRIORITY_ERROR:
                 return LM_ERROR;
             case SDL_LOG_PRIORITY_CRITICAL:
-                return LM_CRITICAL;
+                return LM_FATAL;
             default:
                 break;
             }

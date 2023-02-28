@@ -527,7 +527,7 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->initializeGame( defaultFileGroup, m_packagesPaths, m_settingsPaths ) == false )
         {
-            LOGGER_FATAL( "Application invalid initialize game" );
+            LOGGER_FATAL( "application invalid initialize game" );
 
             return false;
         }
@@ -537,7 +537,7 @@ namespace Mengine
         if( GAME_SERVICE()
             ->loadPersonality() == false )
         {
-            LOGGER_FATAL( "Game invalid load personality" );
+            LOGGER_FATAL( "game invalid load personality" );
 
             return false;
         }

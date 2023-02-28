@@ -182,7 +182,7 @@ namespace Mengine
 
         LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
 
-        loggerMessageBox->setVerboseLevel( LM_CRITICAL );
+        loggerMessageBox->setVerboseLevel( LM_FATAL );
 
         LOGGER_SERVICE()
             ->registerLogger( loggerMessageBox );

@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     AppleUtils.h
     AppleUtils.mm
+    AppleDetail.h
+    AppleDetail.mm
     AppleErrorHelper.h
     AppleErrorHelper.mm
     AppleString.h

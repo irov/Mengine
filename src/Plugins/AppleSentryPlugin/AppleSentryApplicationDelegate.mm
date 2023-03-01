@@ -1,0 +1,34 @@
+#import "AppleSentryApplicationDelegate.h"
+
+#import "Environment/Apple/AppleDetail.h"
+
+#import "Sentry/Sentry.h"
+
+@implementation AppleSentryApplicationDelegate
+
+#pragma mark - UIKitProxyApplicationDelegateInterface
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    NSString * AppleSentryPlugin_DSN = Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
+    
+    if( AppleSentryPlugin_DSN == nil )
+    {
+        return NO;
+    }
+
+    BOOL AppleSentryPlugin_Debug = Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("Debug"), NO );
+    
+    const Char * BUILD_VERSION = Helper::getBuildVersion();
+    
+    [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
+        options.dsn = AppleSentryPlugin_DSN;
+        options.debug = AppleSentryPlugin_Debug; // Enabled debug when first installing is always helpful
+        options.releaseName = @(BUILD_VERSION);
+        options.attachStacktrace = true;
+        options.tracesSampleRate = @(1.0);
+    }];
+    
+    return YES;
+}
+
+@end

@@ -43,31 +43,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleSentryService::_initializeService()
     {
-        NSString * AppleSentryPlugin_DSN = Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
-        
-        if( AppleSentryPlugin_DSN == nil )
-        {
-            LOGGER_WARNING( "Sentry don't setup DSN" );
-
-            return false;
-        }
-
-        LOGGER_INFO_PROTECTED( "sentry", "sentry DSN: %s"
-            , [AppleSentryPlugin_DSN UTF8String]
-        );
-        
-        BOOL AppleSentryPlugin_Debug = Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("Debug"), NO );
-        
-        const Char * BUILD_VERSION = Helper::getBuildVersion();
-        
-        [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
-            options.dsn = AppleSentryPlugin_DSN;
-            options.debug = AppleSentryPlugin_Debug; // Enabled debug when first installing is always helpful
-            options.releaseName = @(BUILD_VERSION);
-            options.attachStacktrace = true;
-            options.tracesSampleRate = @(1.0);
-        }];
-
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AppleSentryService::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &AppleSentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &AppleSentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );

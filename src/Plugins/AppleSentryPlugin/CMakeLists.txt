@@ -6,6 +6,9 @@ src
 
     AppleSentryPlugin.h
     AppleSentryPlugin.mm
+    
+    AppleSentryApplicationDelegate.h
+    AppleSentryApplicationDelegate.mm
 
     AppleSentryLoggerCapture.h
     AppleSentryLoggerCapture.mm
@@ -18,6 +21,8 @@ src
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_SENTRY)
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleSentryApplicationDelegate")
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})

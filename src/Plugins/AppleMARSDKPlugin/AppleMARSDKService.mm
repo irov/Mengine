@@ -133,7 +133,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "prop complete '%s' response sucessful data: %s"
+                LOGGER_MESSAGE( "prop complete '%s' response sucessful data: %s"
                     , _orderId.c_str()
                     , Helper::NSIdToString( _data ).c_str()
                 );

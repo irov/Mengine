@@ -147,7 +147,7 @@ namespace Mengine
 #define SERVICE_GET( Type )\
     (Mengine::Helper::getService<Type>(MENGINE_CODE_FILE, MENGINE_CODE_LINE))
 //////////////////////////////////////////////////////////////////////////
-#define SERVICE_EXIST( Type )\
+#define SERVICE_IS_EXIST( Type )\
     (Mengine::Helper::isExistService<Type>())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_IS_AVAILABLE( Type )\

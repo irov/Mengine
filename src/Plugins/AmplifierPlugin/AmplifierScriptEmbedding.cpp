@@ -100,7 +100,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped, const pybind::object & _cb, const pybind::args & _args )
             {
-                if( SERVICE_EXIST( AmplifierInterface ) == false )
+                if( SERVICE_IS_INITIALIZE( AmplifierInterface ) == false )
                 {
                     return;
                 }
@@ -253,7 +253,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                if( SERVICE_EXIST( AmplifierInterface ) == false )
+                if( SERVICE_IS_INITIALIZE( AmplifierInterface ) == false )
                 {
                     return 0;
                 }
@@ -293,7 +293,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                if( SERVICE_EXIST( AmplifierInterface ) == false )
+                if( SERVICE_IS_INITIALIZE( AmplifierInterface ) == false )
                 {
                     return 0;
                 }

@@ -53,7 +53,7 @@ namespace Mengine
         MENGINE_STRCAT( exception_msg, "\n" );
 
 #ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
-        if( SERVICE_EXIST( PlatformInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( PlatformInterface ) == true )
         {
             Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
                 ->getDynamicUnknown();

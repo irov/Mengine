@@ -138,7 +138,7 @@ namespace Mengine
         m_rwops = rwops;
 
 #ifdef MENGINE_DEBUG
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), m_streaming );
         }
@@ -155,7 +155,7 @@ namespace Mengine
         }
 
 #ifdef MENGINE_DEBUG
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
         }

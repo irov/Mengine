@@ -429,7 +429,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::_stopService()
     {
-        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->finalizeRenderResources();
@@ -1607,7 +1607,7 @@ namespace Mengine
             return;
         }
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->setFocus( m_focus );
@@ -1633,7 +1633,7 @@ namespace Mengine
             return;
         }
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->setFocus( !m_freeze );
@@ -1665,13 +1665,13 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        if( SERVICE_EXIST( ThreadServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
         {
             THREAD_SERVICE()
                 ->update();
         }
 
-        if( SERVICE_EXIST( ModuleServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( ModuleServiceInterface ) == true )
         {
             MODULE_SERVICE()
                 ->beginUpdate( m_focus );
@@ -1794,7 +1794,7 @@ namespace Mengine
     {
         bool needQuit = true;
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             needQuit = GAME_SERVICE()
                 ->close();
@@ -1810,19 +1810,19 @@ namespace Mengine
     {
         if( _turn == false )
         {
-            if( SERVICE_EXIST( SoundServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( SoundServiceInterface ) == true )
             {
                 SOUND_SERVICE()
                     ->onTurnStream( false );
             }
 
-            if( SERVICE_EXIST( GameServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
             {
                 GAME_SERVICE()
                     ->turnSound( false );
             }
 
-            if( SERVICE_EXIST( SoundServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( SoundServiceInterface ) == true )
             {
                 SOUND_SERVICE()
                     ->onTurnSound( false );
@@ -1830,19 +1830,19 @@ namespace Mengine
         }
         else
         {
-            if( SERVICE_EXIST( SoundServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( SoundServiceInterface ) == true )
             {
                 SOUND_SERVICE()
                     ->onTurnSound( true );
             }
 
-            if( SERVICE_EXIST( GameServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
             {
                 GAME_SERVICE()
                     ->turnSound( true );
             }
 
-            if( SERVICE_EXIST( SoundServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( SoundServiceInterface ) == true )
             {
                 SOUND_SERVICE()
                     ->onTurnStream( true );
@@ -1851,7 +1851,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_TURN_SOUND, _turn );
 
-        if( SERVICE_EXIST( SoundServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( SoundServiceInterface ) == true )
         {
             SOUND_SERVICE()
                 ->updateVolume();
@@ -2102,7 +2102,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->setRenderViewport( m_renderViewport, m_contentResolution );
@@ -2348,7 +2348,7 @@ namespace Mengine
         {
             bool vsync = this->getVSync();
 
-            if( SERVICE_EXIST( RenderServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( RenderServiceInterface ) == true )
             {
                 RENDER_SERVICE()
                     ->setVSync( vsync );
@@ -2378,7 +2378,7 @@ namespace Mengine
 
         m_cursorMode = _cursorMode;
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->setCursorMode( m_cursorMode );

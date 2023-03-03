@@ -779,13 +779,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
         {\
-            if(SERVICE_EXIST(LoggerServiceInterface) == true)\
+            if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
             {\
                 LOGGER_INFO( "bootstrapper", "%s", Info );\
             }\
             if( PLUGIN_CREATE(Name, Doc) == false )\
             {\
-                if(SERVICE_EXIST(LoggerServiceInterface) == true)\
+                if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
                 {\
                     LOGGER_ERROR( "%s [invalid initialize]", Info );\
                 }\
@@ -795,13 +795,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_SERVICE( Name, Doc )\
         {\
-            if(SERVICE_EXIST(LoggerServiceInterface) == true)\
+            if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
             {\
                 LOGGER_INFO( "bootstrapper", "create service: " #Name);\
             }\
             if( SERVICE_CREATE(Name, Doc) == false )\
             {\
-                if(SERVICE_EXIST(LoggerServiceInterface) == true)\
+                if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
                 {\
                     LOGGER_ERROR("invalid create service: " #Name);\
                 }\
@@ -1758,12 +1758,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stop()
     {
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP );
         }
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->interruption();
@@ -1771,7 +1771,7 @@ namespace Mengine
 
         SERVICE_FINALIZE( SceneService );
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->stop();
@@ -1780,25 +1780,25 @@ namespace Mengine
         m_packagesPaths.clear();
         m_settingsPaths.clear();
 
-        if( SERVICE_EXIST( ApplicationInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == true )
         {
             APPLICATION_SERVICE()
                 ->finalizeGame();
         }
 
-        if( SERVICE_EXIST( AccountServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( AccountServiceInterface ) == true )
         {
             ACCOUNT_SERVICE()
                 ->stopAccounts();
         }
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->removePersonality();
         }
 
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
@@ -1809,24 +1809,24 @@ namespace Mengine
 
         SERVICE_PROVIDER_STOP();
 
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_SERVICES );
         }
 
-        if( SERVICE_EXIST( FrameworkServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( FrameworkServiceInterface ) == true )
         {
             this->stopFrameworks_();
 
             this->finalizeFrameworks_();
         }
 
-        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_THREADS );
         }
 
-        if( SERVICE_EXIST( ThreadServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
         {
             THREAD_SERVICE()
                 ->stopTasks();
@@ -1849,7 +1849,7 @@ namespace Mengine
         SERVICE_FINALIZE( DataService );
         SERVICE_FINALIZE( ConfigService );
 
-        if( SERVICE_EXIST( PluginServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( PluginServiceInterface ) == true )
         {
             PLUGIN_SERVICE()
                 ->unloadPlugins();
@@ -1893,7 +1893,7 @@ namespace Mengine
             m_loggerFile = nullptr;
         }
 
-        if( SERVICE_EXIST( FileServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == true )
         {
             FILE_SERVICE()
                 ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );

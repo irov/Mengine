@@ -263,7 +263,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::_initializeService()
     {
-        if( SERVICE_EXIST( ScriptProviderServiceInterface ) == false )
+        if( SERVICE_IS_INITIALIZE( ScriptProviderServiceInterface ) == false )
         {
             return false;
         }

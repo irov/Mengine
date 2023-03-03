@@ -707,7 +707,7 @@ namespace Mengine
             }
             else
             {
-                if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
+                if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
                         ->renderDebugNode( scene, _renderPipeline, &m_renderContext, false, false );
@@ -728,7 +728,7 @@ namespace Mengine
             }
             else
             {
-                if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
+                if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
                         ->renderDebugNode( m_arrow, _renderPipeline, &m_renderContext, false, false );
@@ -736,7 +736,7 @@ namespace Mengine
             }
         }
 
-        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
         {
             NODEDEBUGRENDER_SERVICE()
                 ->renderDebugInfo( _renderPipeline, &m_renderContext );
@@ -863,7 +863,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -927,7 +927,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -975,7 +975,7 @@ namespace Mengine
         PICKER_SERVICE()
             ->setScene( nullptr );
 
-        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();

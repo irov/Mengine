@@ -275,7 +275,7 @@ namespace Mengine
             return RenderTextureInterfacePtr::from( texture );
         }
 
-        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( GraveyardServiceInterface ) == true )
         {
             RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
                 ->resurrectTexture( _fileGroup, _filePath, _doc );

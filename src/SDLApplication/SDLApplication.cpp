@@ -224,7 +224,7 @@ namespace Mengine
 #if defined(MENGINE_WINDOWS_DEBUG)
         if( m_loggerOutputDebug != nullptr )
         {
-            if( SERVICE_EXIST( LoggerServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
                 LOGGER_SERVICE()
                     ->unregisterLogger( m_loggerOutputDebug );
@@ -382,13 +382,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( Mengine::PlatformInterface ) == true )
         {
             PLATFORM_SERVICE()
                 ->stopPlatform();
         }
 
-        if( SERVICE_EXIST( Mengine::BootstrapperInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
         {
             BOOTSTRAPPER_SERVICE()
                 ->stop();

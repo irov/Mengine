@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderPlugin::_finalizePlugin()
     {
-        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == false )
+        if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == false )
         {
             return;
         }

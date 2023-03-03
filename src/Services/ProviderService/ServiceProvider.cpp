@@ -104,13 +104,15 @@ namespace Mengine
                     desc.service->finalizeService();
                     desc.service = nullptr;
                 }
-            }            
+            }
 
+            desc.service = nullptr;
             desc.exist = true;
             desc.safe = _safe;
-            desc.service = nullptr;
             desc.available = false;
+            desc.initialize = false;
             desc.requiring = false;
+            desc.available = false;
 
             if( service->availableService() == false )
             {
@@ -272,6 +274,7 @@ namespace Mengine
             }
 
             desc.exist = false;
+            desc.available = false;
             desc.initialize = false;
             desc.service->finalizeService();
 
@@ -312,7 +315,9 @@ namespace Mengine
             this->removeDependency_( desc.service );
 
             desc.exist = false;
+            desc.available = false;
             desc.initialize = false;
+
             desc.service->finalizeService();
             desc.service = nullptr;
 

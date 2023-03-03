@@ -148,7 +148,7 @@ namespace Mengine
             this->addTextPath_( m_desc.textsPath, Tags() );
         }
 
-        if( SERVICE_EXIST( LoaderServiceInterface ) == false )
+        if( SERVICE_IS_INITIALIZE( LoaderServiceInterface ) == false )
         {
             return false;
         }
@@ -334,7 +334,7 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( ScriptServiceInterface ) == true )
         {
             SCRIPT_SERVICE()
                 ->addModulePath( m_fileGroup, m_scriptsPackages );
@@ -483,7 +483,7 @@ namespace Mengine
 
         m_enable = false;
 
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( ScriptServiceInterface ) == true )
         {
             SCRIPT_SERVICE()
                 ->removeModulePath( m_fileGroup, m_scriptsPackages );

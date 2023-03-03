@@ -113,7 +113,7 @@ namespace Mengine
 
         m_networkLogger = networkLogger;
 
-        if( SERVICE_EXIST( cURLServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( cURLServiceInterface ) == true )
         {
             m_requestListenerId = CURL_SERVICE()
                 ->addRequestListener( m_networkLogger, MENGINE_DOCUMENT_FACTORABLE );
@@ -215,7 +215,7 @@ namespace Mengine
             m_networkLogger = nullptr;
         }
 
-        if( SERVICE_EXIST( cURLServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( cURLServiceInterface ) == true )
         {
             CURL_SERVICE()
                 ->removeRequestListener( m_requestListenerId );
@@ -225,7 +225,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const
     {
-        if( SERVICE_EXIST( SocketSystemInterface ) == false )
+        if( SERVICE_IS_INITIALIZE( SocketSystemInterface ) == false )
         {
             return false;
         }

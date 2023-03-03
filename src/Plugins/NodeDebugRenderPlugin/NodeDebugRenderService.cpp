@@ -59,7 +59,7 @@ namespace Mengine
             return false;
         }
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::_dependencyService()
@@ -282,7 +282,7 @@ namespace Mengine
 
                 ss << "Texture Count: " << textureCount << std::endl;
 
-                if( SERVICE_EXIST( Mengine::AstralaxServiceInterface ) == true )
+                if( SERVICE_IS_INITIALIZE( Mengine::AstralaxServiceInterface ) == true )
                 {
                     uint32_t particlesCount = ASTRALAX_SERVICE()
                         ->getEmitterCount();

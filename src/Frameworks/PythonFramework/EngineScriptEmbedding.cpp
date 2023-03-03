@@ -4189,7 +4189,7 @@ namespace Mengine
                     , _resourceName.c_str()
                 );
 
-                if( SERVICE_EXIST( ResourceValidateServiceInterface ) == false )
+                if( SERVICE_IS_INITIALIZE( ResourceValidateServiceInterface ) == false )
                 {
                     return true;
                 }

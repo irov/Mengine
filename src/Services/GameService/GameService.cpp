@@ -258,7 +258,7 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( ScriptServiceInterface ) == true )
         {
             if( SCRIPT_SERVICE()
                 ->initializeModules() == false )
@@ -335,7 +335,7 @@ namespace Mengine
 
         this->finalizeRenderResources();
 
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( ScriptServiceInterface ) == true )
         {
             SCRIPT_SERVICE()
                 ->finalizeModules();
@@ -440,7 +440,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFocus( bool _focus )
     {
-        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->onFocus( _focus );
@@ -452,7 +452,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFullscreen( const Resolution & _resolution, bool _fullscreen )
     {
-        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->onFullscreen( _resolution, _fullscreen );
@@ -464,7 +464,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
-        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->onFixedContentResolution( _resolution, _fixed );
@@ -476,7 +476,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
     {
-        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->onFixedContentResolution( _resolution, _fixed );

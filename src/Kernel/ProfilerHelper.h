@@ -15,7 +15,7 @@ namespace Mengine
         public:
             ProfilerFrameScope( const ProfilerDescriptionInterface * _description )
             {
-                if( SERVICE_EXIST( ProfilerSystemInterface ) == true )
+                if( SERVICE_IS_INITIALIZE( ProfilerSystemInterface ) == true )
                 {
                     m_profiler = PROFILER_SYSTEM()
                         ->addFrame( _description );
@@ -35,7 +35,7 @@ namespace Mengine
         public:
             ProfilerCategoryScope( const ProfilerDescriptionInterface * _description )
             {
-                if( SERVICE_EXIST( ProfilerSystemInterface ) == true )
+                if( SERVICE_IS_INITIALIZE( ProfilerSystemInterface ) == true )
                 {
                     m_profiler = PROFILER_SYSTEM()
                         ->addCategory( _description );
@@ -55,7 +55,7 @@ namespace Mengine
         public:
             ProfilerThreadScope( const Char * _name )
             {
-                if( SERVICE_EXIST( ProfilerSystemInterface ) == true )
+                if( SERVICE_IS_INITIALIZE( ProfilerSystemInterface ) == true )
                 {
                     m_profiler = PROFILER_SYSTEM()\
                         ->addThread( _name );
@@ -78,7 +78,7 @@ namespace Mengine
 #ifndef MENGINE_PROFILER_FRAME
 #define MENGINE_PROFILER_FRAME(Name)\
     static const Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
-    if( SERVICE_EXIST( Mengine::ProfilerSystemInterface ) == true && MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) == nullptr )\
+    if( SERVICE_IS_INITIALIZE( Mengine::ProfilerSystemInterface ) == true && MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) == nullptr )\
     {\
         MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = PROFILER_SYSTEM()\
             ->createDescription( MENGINE_CODE_FUNCTION, MENGINE_CODE_FILE, MENGINE_CODE_LINE );\
@@ -93,7 +93,7 @@ namespace Mengine
 #ifndef MENGINE_PROFILER_CATEGORY
 #define MENGINE_PROFILER_CATEGORY()\
     static const Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
-    if( SERVICE_EXIST( Mengine::ProfilerSystemInterface ) == true && MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) == nullptr )\
+    if( SERVICE_IS_INITIALIZE( Mengine::ProfilerSystemInterface ) == true && MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) == nullptr )\
     {\
         MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = PROFILER_SYSTEM()\
             ->createDescription( MENGINE_CODE_FUNCTION, MENGINE_CODE_FILE, MENGINE_CODE_LINE );\
@@ -116,7 +116,7 @@ namespace Mengine
 #ifdef MENGINE_PROFILER_ENABLE
 #ifndef MENGINE_PROFILER_BEGIN_APPLICATION
 #define MENGINE_PROFILER_BEGIN_APPLICATION()\
-    if( SERVICE_EXIST( ProfilerSystemInterface ) == true )\
+    if( SERVICE_IS_INITIALIZE( ProfilerSystemInterface ) == true )\
     {\
         PROFILER_SYSTEM()\
             ->beginApplication();\
@@ -129,7 +129,7 @@ namespace Mengine
 #ifdef MENGINE_PROFILER_ENABLE
 #ifndef MENGINE_PROFILER_END_APPLICATION
 #define MENGINE_PROFILER_END_APPLICATION()\
-    if( SERVICE_EXIST( ProfilerSystemInterface ) == true )\
+    if( SERVICE_IS_INITIALIZE( ProfilerSystemInterface ) == true )\
     {\
         PROFILER_SYSTEM()\
             ->endApplication();\

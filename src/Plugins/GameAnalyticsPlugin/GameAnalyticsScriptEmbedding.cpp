@@ -14,7 +14,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_GameAnalyticsStartProgressionEvent( const Char * _name )
         {
-            if( SERVICE_EXIST( GameAnalyticsServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( GameAnalyticsServiceInterface ) == true )
             {
                 GAME_ANALYTICS_SERVICE()
                     ->startProgressionEvent( _name );
@@ -23,7 +23,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_GameAnalyticsCompleteProgressionEvent( const Char * _name )
         {
-            if( SERVICE_EXIST( GameAnalyticsServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( GameAnalyticsServiceInterface ) == true )
             {
                 GAME_ANALYTICS_SERVICE()
                     ->completeProgressionEvent( _name );
@@ -32,7 +32,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_GameAnalyticsFailProgressionEvent( const Char * _name )
         {
-            if( SERVICE_EXIST( GameAnalyticsServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( GameAnalyticsServiceInterface ) == true )
             {
                 GAME_ANALYTICS_SERVICE()
                     ->failProgressionEvent( _name );
@@ -41,7 +41,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_GameAnalyticsDesignEvent( const Char * _event )
         {
-            if( SERVICE_EXIST( GameAnalyticsServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( GameAnalyticsServiceInterface ) == true )
             {
                 GAME_ANALYTICS_SERVICE()
                     ->addDesignEvent( _event );

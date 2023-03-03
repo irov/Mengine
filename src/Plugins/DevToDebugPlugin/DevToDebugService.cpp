@@ -160,7 +160,7 @@ namespace Mengine
 
         if( MENGINE_STRCMP( DevToDebug_DSN, "" ) == 0 )
         {
-            LOGGER_WARNING( "DevToDebug don't setup DSN" );
+            LOGGER_ERROR( "DevToDebug don't setup DSN" );
 
             return false;
         }
@@ -281,7 +281,7 @@ namespace Mengine
         uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
         logger->setVerboseFilter( loggerFilter );
 
-        logger->setVerboseLevel( LM_VERBOSE );
+        logger->setVerboseLevel( LM_MESSAGE );
         logger->setWriteHistory( true );
 
         LOGGER_SERVICE()

@@ -89,6 +89,8 @@ namespace Mengine
             if( desc.name.size() == 0 )
             {
                 desc.name.assign( name );
+
+                ++m_servicesCount;
             }
             else if( desc.name.compare( name ) != 0 )
             {
@@ -102,20 +104,21 @@ namespace Mengine
                     desc.service->finalizeService();
                     desc.service = nullptr;
                 }
-            }
+            }            
 
-            ++m_servicesCount;
+            desc.exist = true;
+            desc.safe = _safe;
+            desc.service = nullptr;
+            desc.available = false;
+            desc.requiring = false;
 
             if( service->availableService() == false )
             {
                 return true;
             }
 
-            desc.exist = true;
-            desc.safe = _safe;
             desc.service = service;
             desc.available = true;
-            desc.requiring = false;
 
             const ServiceRequiredList & required = service->requiredServices();
 
@@ -587,6 +590,12 @@ namespace Mengine
         ServiceDesc & desc = m_services[m_servicesCount++];
 
         desc.name.assign( _name );
+        desc.exist = false;
+        desc.safe = false;
+        desc.service = nullptr;
+        desc.available = false;
+        desc.initialize = false;
+        desc.requiring = false;
 
         return &desc.exist;
     }
@@ -614,6 +623,12 @@ namespace Mengine
         ServiceDesc & desc = m_services[m_servicesCount++];
 
         desc.name.assign( _name );
+        desc.exist = false;
+        desc.safe = false;
+        desc.service = nullptr;
+        desc.available = false;
+        desc.initialize = false;
+        desc.requiring = false;
 
         return &desc.available;
     }
@@ -641,6 +656,12 @@ namespace Mengine
         ServiceDesc & desc = m_services[m_servicesCount++];
 
         desc.name.assign( _name );
+        desc.exist = false;
+        desc.safe = false;
+        desc.service = nullptr;
+        desc.available = false;
+        desc.initialize = false;
+        desc.requiring = false;
 
         return &desc.initialize;
     }

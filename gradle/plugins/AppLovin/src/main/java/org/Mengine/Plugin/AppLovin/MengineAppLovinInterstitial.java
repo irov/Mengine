@@ -78,7 +78,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     public boolean canYouShowInterstitial() {
         boolean ready = m_interstitialAd.isReady();
 
-        m_plugin.logMessage("[Interstitial] canYouShowInterstitial [%d]"
+        m_plugin.logMessage("[Interstitial] canYouShowInterstitial [%b]"
             , ready
         );
 
@@ -97,7 +97,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     public boolean showInterstitial() {
         boolean ready = m_interstitialAd.isReady();
 
-        m_plugin.logMessage("[Interstitial] showInterstitial [%d]"
+        m_plugin.logMessage("[Interstitial] showInterstitial [%b]"
             , ready
         );
 

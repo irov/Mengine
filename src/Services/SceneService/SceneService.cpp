@@ -186,7 +186,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_DESTROY, oldScene );
 
-        STATISTIC_SET_CONSTSTRING( "CURRENT_SCENE_NAME", ConstString::none() );
+        STATISTIC_SET_CONSTSTRING( STATISTIC_CURRENT_SCENE_NAME, ConstString::none() );
 
         if( _desc.cb != nullptr )
         {
@@ -197,7 +197,7 @@ namespace Mengine
 
         m_currentScene = _desc.scene;
 
-        STATISTIC_SET_CONSTSTRING( "CURRENT_SCENE_NAME", m_currentScene->getName() );
+        STATISTIC_SET_CONSTSTRING( STATISTIC_CURRENT_SCENE_NAME, m_currentScene->getName() );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, m_currentScene );
 
@@ -353,7 +353,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_DESTROY );
 
-        STATISTIC_SET_CONSTSTRING( "CURRENT_SCENE_NAME", ConstString::none() );
+        STATISTIC_SET_CONSTSTRING( STATISTIC_CURRENT_SCENE_NAME, ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     const ScenePtr & SceneService::getCurrentScene() const

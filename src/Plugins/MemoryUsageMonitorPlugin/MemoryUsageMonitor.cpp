@@ -96,7 +96,7 @@ namespace Mengine
         uint32_t totalMemoryUsage = ALLOCATOR_SYSTEM()
             ->getMemoryUsage();
 
-        const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( "CURRENT_SCENE_NAME" );
+        const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( STATISTIC_CURRENT_SCENE_NAME );
 
         LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%ugb %umb %ukb] [scene %s]"
             , (totalMemoryUsage / (1000 * 1000 * 1000))

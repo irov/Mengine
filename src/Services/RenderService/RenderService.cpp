@@ -68,11 +68,10 @@ namespace Mengine
         m_maxVertexCount = CONFIG_VALUE( "Engine", "RenderMaxVertexCount", 32000U );
         m_maxIndexCount = CONFIG_VALUE( "Engine", "RenderMaxIndexCount", 48000U );
 
-        STATISTIC_RESET_INTEGER( "DrawIndexPrimitives" );
-        STATISTIC_RESET_INTEGER( "RenderFrame" );
-        STATISTIC_RESET_DOUBLE( "RenderFillrate" );
-        STATISTIC_RESET_INTEGER( "RenderObjects" );
-        STATISTIC_RESET_INTEGER( "RenderTriangles" );
+        STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES );
+        STATISTIC_RESET_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE );
+        STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_OBJECTS );
+        STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_TRIANGLES );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), Helper::makeDefaultPrototypeGenerator<BatchRenderPipeline, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -490,7 +489,7 @@ namespace Mengine
 
         m_renderSystem->endScene();
 
-        STATISTIC_ADD_INTEGER( "RenderFrame", 1 );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_FRAME, 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::swapBuffers()
@@ -702,7 +701,7 @@ namespace Mengine
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( material );
 
-        STATISTIC_ADD_INTEGER( "DrawIndexPrimitives", 1 );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES, 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreTextureStage_( uint32_t _stage )
@@ -738,9 +737,11 @@ namespace Mengine
         m_debugRenderVertices.clear();
         m_debugRenderIndices.clear();
 
-        STATISTIC_RESET_DOUBLE( "RenderFillrate" );
-        STATISTIC_RESET_DOUBLE( "RenderObjects" );
-        STATISTIC_RESET_DOUBLE( "RenderTriangles" );
+        STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES );
+        STATISTIC_RESET_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE );
+        STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_OBJECTS );
+        STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_TRIANGLES );
+        STATISTIC_RESET_INTEGER( STATISTIC_RENDER_PERFRAME_BATCHES );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreRenderSystemStates_()
@@ -1177,9 +1178,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::flushRender_( const RenderPipelineInterfacePtr & _renderPipeline )
     {
-        STATISTIC_RESET_INTEGER( "RenderBatch" );
-        STATISTIC_RESET_INTEGER( "DrawIndexPrimitives" );
-
         if( this->makeBatches_( _renderPipeline ) == false )
         {
             return;

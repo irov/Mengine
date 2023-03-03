@@ -83,12 +83,12 @@ namespace Mengine
         {
             MENGINE_UNUSED( _id );
 
-            int64_t Statistic_RenderFrame = STATISTIC_GET_INTEGER( "RenderFrame" );
+            static int64_t old_RenderFrame = 0;
 
-            m_fps = (uint32_t)Statistic_RenderFrame;
+            int64_t Statistic_RenderFrame = STATISTIC_GET_INTEGER( STATISTIC_RENDER_FRAME );
 
-            STATISTIC_RESET_INTEGER( "RenderFrame" );
-
+            m_fps = (uint32_t)(Statistic_RenderFrame - old_RenderFrame);
+            old_RenderFrame = Statistic_RenderFrame;
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -251,13 +251,13 @@ namespace Mengine
                 const Resolution & contentResolution = APPLICATION_SERVICE()
                     ->getContentResolution();
 
-                double Statistic_RenderFillrate = STATISTIC_GET_DOUBLE( "RenderFillrate" );
+                double Statistic_RenderFillrate = STATISTIC_GET_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE );
 
                 double sreenfillrate = Statistic_RenderFillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
 
-                int64_t Statistic_RenderObjects = STATISTIC_GET_INTEGER( "RenderObjects" );
-                int64_t Statistic_RenderTriangles = STATISTIC_GET_INTEGER( "RenderTriangles" );
-                int64_t Statistic_DrawIndexPrimitives = STATISTIC_GET_INTEGER( "DrawIndexPrimitives" );
+                int64_t Statistic_RenderObjects = STATISTIC_GET_INTEGER( STATISTIC_RENDER_PERFRAME_OBJECTS );
+                int64_t Statistic_RenderTriangles = STATISTIC_GET_INTEGER( STATISTIC_RENDER_PERFRAME_TRIANGLES );
+                int64_t Statistic_DrawIndexPrimitives = STATISTIC_GET_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES );
 
                 ss << "Fillrate " << std::setiosflags( std::ios::fixed ) << std::setprecision( 2 ) << sreenfillrate << " (Object " << Statistic_RenderObjects << " Triangle " << Statistic_RenderTriangles << ")" << std::endl;
                 ss << "DIP: " << Statistic_DrawIndexPrimitives << std::endl;

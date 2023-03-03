@@ -282,7 +282,7 @@ namespace Mengine
 
                     double fillrate = Helper::calcRenderQuadSquare( _vertices, _vertexCount, vp );
 
-                    STATISTIC_ADD_DOUBLE( "RenderFillrate", fillrate );
+                    STATISTIC_ADD_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE, fillrate );
                 }break;
             default:
                 {

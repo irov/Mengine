@@ -133,6 +133,7 @@ Common
     SecureValueInterface.h
     UIKitProxyApplicationDelegateInterface.h
     ExecutorInterface.h
+    StatisticInterface.h
     StatisticServiceInterface.h
     PersistentSystemInterface.h
     DateTimeSystemInterface.h

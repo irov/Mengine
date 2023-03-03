@@ -542,9 +542,14 @@ namespace Mengine
         SoundBufferInterfacePtr buffer = SOUND_SYSTEM()
             ->createSoundBuffer( soundDecoder, _streamable, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't create sound buffer for file '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-        );
+        if( buffer == nullptr )
+        {
+            LOGGER_ERROR( "can't create sound buffer for file '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            );
+
+            return nullptr;
+        }
 
         return buffer;
     }

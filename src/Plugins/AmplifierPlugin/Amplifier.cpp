@@ -166,9 +166,14 @@ namespace Mengine
                 ->createSoundBufferFromFile( defaultFileGroup, filePath, codecType, true, MENGINE_DOCUMENT_FACTORABLE );
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't load sample '%s'"
-            , filePath.c_str()
-        );
+        if( buffer == nullptr )
+        {
+            LOGGER_ERROR( "can't load sample '%s'"
+                , filePath.c_str()
+            );
+
+            return false;
+        }
 
         SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
             ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true

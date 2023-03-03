@@ -109,7 +109,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logInfo(message);
+        m_plugin.logMessage(message);
     }
 
     protected void logMaxError(String type, String callback, MaxError error) {

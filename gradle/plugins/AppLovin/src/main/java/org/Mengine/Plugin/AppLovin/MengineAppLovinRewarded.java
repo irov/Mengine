@@ -79,7 +79,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public boolean canOfferRewarded() {
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] canOfferRewarded [%d]"
+        m_plugin.logMessage("[Rewarded] canOfferRewarded [%b]"
             , ready
         );
 
@@ -98,7 +98,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public boolean canYouShowRewarded() {
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] canYouShowRewarded [%d]"
+        m_plugin.logMessage("[Rewarded] canYouShowRewarded [%b]"
             , ready
         );
 
@@ -117,7 +117,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public boolean showRewarded() {
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] showInterstitial [%d]"
+        m_plugin.logMessage("[Rewarded] showRewarded [%b]"
             , ready
         );
 

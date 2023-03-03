@@ -64,26 +64,30 @@ namespace Mengine
         object->setDocument( _doc );
 #endif
 
-#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
-        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
-        {
-            FACTORY_SERVICE()
-                ->debugFactoryCreateObject( this, object );
-        }
-#endif
+        //FixMe rework to intrusive list
+
+//#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
+//        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
+//        {
+//            FACTORY_SERVICE()
+//                ->debugFactoryCreateObject( this, object );
+//        }
+//#endif
 
         return object;
     }
     //////////////////////////////////////////////////////////////////////////
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
-#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
-        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
-        {
-            FACTORY_SERVICE()
-                ->debugFactoryDestroyObject( this, _object );
-        }
-#endif
+        //FixMe rework to intrusive list
+        
+//#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
+//        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
+//        {
+//            FACTORY_SERVICE()
+//                ->debugFactoryDestroyObject( this, _object );
+//        }
+//#endif
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

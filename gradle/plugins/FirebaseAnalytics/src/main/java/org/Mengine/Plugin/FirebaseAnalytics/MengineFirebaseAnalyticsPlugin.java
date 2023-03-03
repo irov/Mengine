@@ -30,6 +30,15 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     @Override
     public void onAppCreate(MengineApplication application) {
         m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
+
+        String installKey = application.getInstallKey();
+        m_firebaseAnalytics.setUserId(installKey);
+
+        long installKeyTimestamp = application.getInstallKeyTimestamp();
+        m_firebaseAnalytics.setUserProperty("install_key_timestamp", String.valueOf(installKeyTimestamp));
+
+        long sessionIndex = application.getSessionIndex();
+        m_firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
     }
 
     @Override

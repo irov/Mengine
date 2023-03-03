@@ -205,7 +205,7 @@ namespace Mengine
         bool sceneProcess = SCENE_SERVICE()
             ->isProcess();
 
-        const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( "CURRENT_SCENE_NAME" );
+        const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( STATISTIC_CURRENT_SCENE_NAME );
 
         MENGINE_ERROR_FATAL( "Antifreeze monitor detect freeze process for [%u] seconds, and create dump '%s' [scene process: %s] [scene: %s]"
             , m_seconds

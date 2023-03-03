@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Interface/StatisticServiceInterface.h"
+#include "Interface/StatisticInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Map.h"
 
 namespace Mengine
 {
@@ -17,38 +17,29 @@ namespace Mengine
 
     public:
         const ServiceRequiredList & requiredServices() const override;
-        bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 
     public:
-        void addStatisticInteger( const ConstString & _name, int64_t _value ) override;
-        bool hasStatisticInteger( const ConstString & _name ) const override;
-        int64_t getStatisticInteger( const ConstString & _name ) const override;
-        void resetStatisticInteger( const ConstString & _name ) override;
+        void addStatisticInteger( uint32_t _id, int64_t _value ) override;
+        int64_t getStatisticInteger( uint32_t _id ) const override;
+        void resetStatisticInteger( uint32_t _id ) override;
 
     public:
-        void addStatisticDouble( const ConstString & _name, double _value ) override;
-        bool hasStatisticDouble( const ConstString & _name ) const override;
-        double getStatisticDouble( const ConstString & _name ) const override;
-        void resetStatisticDouble( const ConstString & _name ) override;
+        void addStatisticDouble( uint32_t _id, double _value ) override;
+        double getStatisticDouble( uint32_t _id ) const override;
+        void resetStatisticDouble( uint32_t _id ) override;
 
     public:
-        void setStatisticConstString( const ConstString & _name, const ConstString & _value ) override;
-        bool hasStatisticConstString( const ConstString & _name ) const override;
-        const ConstString & getStatisticConstString( const ConstString & _name ) const override;
-        void resetStatisticConstString( const ConstString & _name ) override;
+        void setStatisticConstString( uint32_t _id, const ConstString & _value ) override;
+        const ConstString & getStatisticConstString( uint32_t _id ) const override;
+        void resetStatisticConstString( uint32_t _id ) override;
 
     protected:
         ThreadMutexInterfacePtr m_mutex;
 
-        typedef Map<ConstString, int64_t> MapStatisticIntegers;
-        MapStatisticIntegers m_statisticIntegers;
-
-        typedef Map<ConstString, double> MapStatisticDoubles;
-        MapStatisticDoubles m_statisticDoubles;
-
-        typedef Map<ConstString, ConstString> MapStatisticConstStrings;
-        MapStatisticConstStrings m_statisticConstStrings;
+        int64_t m_statisticIntegers[MENGINE_STATISTIC_MAX_COUNT] = {0LL};
+        double m_statisticDoubles[MENGINE_STATISTIC_MAX_COUNT] = {0.0};
+        ConstString m_statisticConstStrings[MENGINE_STATISTIC_MAX_COUNT];
     };
 }

@@ -46,13 +46,10 @@ namespace Mengine
 
         SoundBufferInterfacePtr soundBuffer = m_resourceSound->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, "sound '%s' resource '%s' sound buffer not create"
-            , this->getName().c_str()
-            , m_resourceSound->getName().c_str()
-        );
-
         if( soundBuffer == nullptr )
         {
+            m_resourceSound->release();
+
             LOGGER_ERROR( "sound '%s' resource '%s' failed create buffer"
                 , this->getName().c_str()
                 , m_resourceSound->getName().c_str()

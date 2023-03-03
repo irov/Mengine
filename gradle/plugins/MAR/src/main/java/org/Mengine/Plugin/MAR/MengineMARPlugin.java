@@ -267,7 +267,9 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
         switch(code) {
             case MARCode.CODE_LOGIN_SUCCESS: {
-                this.logMessage("marsdk login success, game type [%d]", MARSDK.getInstance().getGameType());
+                this.logMessage("marsdk login success, game type [%d]"
+                    , MARSDK.getInstance().getGameType()
+                );
 
                 int gameType = MARSDK.getInstance().getGameType();
 

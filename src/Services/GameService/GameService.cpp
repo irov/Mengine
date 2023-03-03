@@ -5,7 +5,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
-#include "Interface/StatisticServiceInterface.h"
+#include "Interface/StatisticInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -29,6 +29,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );
@@ -205,10 +206,9 @@ namespace Mengine
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
-        double fillrate = STATISTIC_SERVICE()
-            ->getStatisticDouble( STRINGIZE_STRING_LOCAL( "fillrate" ) );
+        double fillrate = STATISTIC_GET_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE );
 
-        double sreenFillrate = fillrate / double( (uint64_t)contentResolution.getWidth() * (uint64_t)contentResolution.getHeight() );
+        double sreenFillrate = fillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
 
         if( sreenFillrate > Limit_Fillrate )
         {

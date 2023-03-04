@@ -159,7 +159,7 @@ namespace Mengine
                 ->debugBreak();
         }
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+#if defined(MENGINE_PLATFORM_WINDOWS)
         Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
             ->getUnknown();
 

@@ -1,11 +1,11 @@
 #include "ImGUIPlugin.h"
 
-#include "ImGUIModule.h"
-
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/AssertionAllocator.h"
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( ImGUIService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( ImGUI, Mengine::ImGUIPlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -23,19 +23,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImGUIPlugin::_initializePlugin()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleImGUI" )
-            , Helper::makeModuleFactory<ImGUIModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( ImGUIService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIPlugin::_finalizePlugin()
     {
-        //Empty
+        SERVICE_FINALIZE( ImGUIService );
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIPlugin::_destroyPlugin()
     {
+        SERVICE_DESTROY( ImGUIService );
+
         MENGINE_ASSERTION_ALLOCATOR( "imgui" );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -489,7 +489,7 @@ namespace Mengine
 
         m_renderSystem->endScene();
 
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_FRAME, 1 );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_FRAME_COUNT, 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::swapBuffers()

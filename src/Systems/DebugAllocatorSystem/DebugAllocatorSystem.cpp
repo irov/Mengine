@@ -10,6 +10,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/StdString.h"
 
@@ -94,10 +95,12 @@ namespace Mengine
 
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
-        void * mem = MENGINE_MALLOC( _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+        size_t total_size = _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
+
+        void * mem = MENGINE_MALLOC( total_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' total '%u' [%s]"
-            , _size
+            , total_size
             , this->getMemoryUsage()
             , _doc
         );
@@ -109,6 +112,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
         this->report( _doc, usage_size, 0 );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
 
         return mem;
     }
@@ -139,6 +144,8 @@ namespace Mengine
         MENGINE_FREE( _mem );
 
         this->report( _doc, 0, old_size );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
     }
     //////////////////////////////////////////////////////////////////////////
     void * DebugAllocatorSystem::calloc( size_t _num, size_t _size, const Char * _doc )
@@ -147,25 +154,28 @@ namespace Mengine
 
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
-        size_t total = _num * _size;
+        size_t calloc_size = _num * _size;
+        size_t total_size = calloc_size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
 
-        void * mem = MENGINE_MALLOC( total + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+        void * mem = MENGINE_MALLOC( total_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid calloc memory '%zu' total '%u' [%s]"
-            , _size
+            , total_size
             , this->getMemoryUsage()
             , _doc
         );
 
-        MENGINE_MEMSET( mem, 0x00, total );
+        MENGINE_MEMSET( mem, 0x00, calloc_size );
 
-        Detail::setMemoryOverrideCorruptionTrap( mem, total );
+        Detail::setMemoryOverrideCorruptionTrap( mem, calloc_size );
 
         size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
         this->report( _doc, usage_size, 0 );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, total_size );
 
         return mem;
     }
@@ -176,12 +186,14 @@ namespace Mengine
 
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
+        size_t total_size = _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
+
         if( _mem == nullptr )
         {
-            void * mem = MENGINE_MALLOC( _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+            void * mem = MENGINE_MALLOC( total_size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from nullptr [%s]"
-                , _size
+                , total_size
                 , this->getMemoryUsage()
                 , _doc
             );
@@ -193,6 +205,8 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
             this->report( _doc, usage_size, 0 );
+
+            STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, total_size );
 
             return mem;
         }
@@ -208,10 +222,10 @@ namespace Mengine
             );
         }
 
-        void * mem = MENGINE_REALLOC( _mem, _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+        void * mem = MENGINE_REALLOC( _mem, total_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from '%p' [%s]"
-            , _size
+            , total_size
             , this->getMemoryUsage()
             , _mem
             , _doc
@@ -224,6 +238,9 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
         this->report( _doc, usage_size, old_size );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, total_size );
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
 
         return mem;
     }

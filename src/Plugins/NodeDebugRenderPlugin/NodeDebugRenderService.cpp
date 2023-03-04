@@ -83,12 +83,12 @@ namespace Mengine
         {
             MENGINE_UNUSED( _id );
 
-            static int64_t old_RenderFrame = 0;
+            static int64_t old_RenderFrameCount = 0;
 
-            int64_t Statistic_RenderFrame = STATISTIC_GET_INTEGER( STATISTIC_RENDER_FRAME );
+            int64_t Statistic_RenderFrameCount = STATISTIC_GET_INTEGER( STATISTIC_RENDER_FRAME_COUNT );
 
-            m_fps = (uint32_t)(Statistic_RenderFrame - old_RenderFrame);
-            old_RenderFrame = Statistic_RenderFrame;
+            m_fps = (uint32_t)(Statistic_RenderFrameCount - old_RenderFrameCount);
+            old_RenderFrameCount = Statistic_RenderFrameCount;
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;

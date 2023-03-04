@@ -30,4 +30,11 @@ namespace Mengine
         virtual const LambdaImGUIProvider & getProvider() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
+    class ImGUIServiceInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE( "ImGUIService" );
+
+    };
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -1042,13 +1042,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::tickPlatform( float _frameTime )
     {
-        bool quitRequest = this->processEvents_();
-
-        if( quitRequest == true )
-        {
-            return false;
-        }
-
         for( const UpdateDesc & desc : m_updates )
         {
             if( desc.id == INVALID_UNIQUE_ID )
@@ -1170,6 +1163,11 @@ namespace Mengine
 
         for( ;; )
         {
+            if( this->updatePlatform() == false )
+            {
+                break;
+            }
+
             TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
 
             float frameTime = (float)(currentTime - m_prevTime);
@@ -1455,7 +1453,7 @@ namespace Mengine
         int attribute_GL_CONTEXT_PROFILE_MASK = 0;
         if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
+            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
                 , SDL_GetError()
             );
         }
@@ -1463,7 +1461,7 @@ namespace Mengine
         int attribute_GL_CONTEXT_MAJOR_VERSION = 0;
         if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
+            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
                 , SDL_GetError()
             );
         }
@@ -1471,7 +1469,7 @@ namespace Mengine
         int attribute_GL_CONTEXT_MINOR_VERSION = 0;
         if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
+            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
                 , SDL_GetError()
             );
         }
@@ -1479,7 +1477,7 @@ namespace Mengine
         int attribute_SDL_GL_RED_SIZE = 0;
         if( SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &attribute_SDL_GL_RED_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "get attribute SDL_GL_RED_SIZE error: %s"
+            LOGGER_WARNING( "get attribute SDL_GL_RED_SIZE error: %s"
                 , SDL_GetError()
             );
         }
@@ -1487,7 +1485,7 @@ namespace Mengine
         int attribute_SDL_GL_GREEN_SIZE = 0;
         if( SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &attribute_SDL_GL_GREEN_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "get attribute SDL_GL_GREEN_SIZE error: %s"
+            LOGGER_WARNING( "get attribute SDL_GL_GREEN_SIZE error: %s"
                 , SDL_GetError()
             );
         }
@@ -1495,7 +1493,7 @@ namespace Mengine
         int attribute_SDL_GL_BLUE_SIZE = 0;
         if( SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &attribute_SDL_GL_BLUE_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "get attribute SDL_GL_BLUE_SIZE error: %s"
+            LOGGER_WARNING( "get attribute SDL_GL_BLUE_SIZE error: %s"
                 , SDL_GetError()
             );
         }
@@ -1503,7 +1501,7 @@ namespace Mengine
         int attribute_SDL_GL_ALPHA_SIZE = 0;
         if( SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &attribute_SDL_GL_ALPHA_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "get attribute SDL_GL_ALPHA_SIZE error: %s"
+            LOGGER_WARNING( "get attribute SDL_GL_ALPHA_SIZE error: %s"
                 , SDL_GetError()
             );
         }
@@ -1511,7 +1509,7 @@ namespace Mengine
         int attribute_SDL_GL_DEPTH_SIZE = 0;
         if( SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &attribute_SDL_GL_DEPTH_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_DEPTH_SIZE error: %s"
                 , SDL_GetError()
             );
         }
@@ -1519,7 +1517,7 @@ namespace Mengine
         int attribute_SDL_GL_DOUBLEBUFFER = 0;
         if( SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &attribute_SDL_GL_DOUBLEBUFFER ) != 0 )
         {
-            LOGGER_ERROR( "get attribute SDL_GL_DOUBLEBUFFER error: %s"
+            LOGGER_WARNING( "get attribute SDL_GL_DOUBLEBUFFER error: %s"
                 , SDL_GetError()
             );
         }
@@ -1588,13 +1586,17 @@ namespace Mengine
         int win_right;
         if( SDL_GetWindowBordersSize( m_sdlWindow, &win_top, &win_left, &win_bottom, &win_right ) == 0 )
         {
-            LOGGER_INFO( "platform", "SDL window borders [%d, %d] - [%d, %d]"
-                , win_left
-                , win_top
-                , win_right
-                , win_bottom
+            LOGGER_WARNING( "platform", "SDL window borders get error: %s"
+                , SDL_GetError()
             );
         }
+
+        LOGGER_INFO( "platform", "SDL window borders [%d, %d] - [%d, %d]"
+            , win_left
+            , win_top
+            , win_right
+            , win_bottom
+        );
 #endif
 
         int win_min_width;
@@ -1635,7 +1637,7 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "SDL display [%d] bounds get error: %s"
+                    LOGGER_WARNING( "SDL display [%d] bounds get error: %s"
                         , displayIndex
                         , SDL_GetError()
                     );
@@ -1653,7 +1655,7 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "SDL display [%d] usable bounds get error: %s"
+                    LOGGER_WARNING( "SDL display [%d] usable bounds get error: %s"
                         , displayIndex
                         , SDL_GetError()
                     );
@@ -1668,6 +1670,8 @@ namespace Mengine
                 return false;
             }
         }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
 
         return true;
     }
@@ -1989,7 +1993,7 @@ namespace Mengine
             {
                 if( SDL_GL_SetSwapInterval( 0 ) != 0 )
                 {
-                    LOGGER_ERROR( "notify vsync changed error: %s"
+                    LOGGER_WARNING( "notify vsync changed error: %s"
                         , SDL_GetError()
                     );
                 }
@@ -1998,7 +2002,7 @@ namespace Mengine
             {
                 if( SDL_GL_SetSwapInterval( 1 ) != 0 )
                 {
-                    LOGGER_ERROR( "notify vsync changed error: %s"
+                    LOGGER_WARNING( "notify vsync changed error: %s"
                         , SDL_GetError()
                     );
                 }
@@ -3027,7 +3031,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_RED_SIZE to [%u] error: %s"
                 , Engine_SDL_GL_RED_SIZE
                 , SDL_GetError()
             );
@@ -3037,7 +3041,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, Engine_SDL_GL_GREEN_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_GREEN_SIZE to [%u] error: %s"
                 , Engine_SDL_GL_GREEN_SIZE
                 , SDL_GetError()
             );
@@ -3047,7 +3051,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, Engine_SDL_GL_BLUE_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_BLUE_SIZE to [%u] error: %s"
                 , Engine_SDL_GL_BLUE_SIZE
                 , SDL_GetError()
             );
@@ -3057,7 +3061,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, Engine_SDL_GL_ALPHA_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_ALPHA_SIZE to [%u] error: %s"
                 , Engine_SDL_GL_ALPHA_SIZE
                 , SDL_GetError()
             );
@@ -3067,7 +3071,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, Engine_SDL_GL_DEPTH_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_DEPTH_SIZE to [%u] error: %s"
                 , Engine_SDL_GL_DEPTH_SIZE
                 , SDL_GetError()
             );
@@ -3077,7 +3081,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, Engine_SDL_GL_DOUBLEBUFFER ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_DOUBLEBUFFER to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_DOUBLEBUFFER to [%u] error: %s"
                 , Engine_SDL_GL_DOUBLEBUFFER
                 , SDL_GetError()
             );
@@ -3091,7 +3095,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_PROFILE_MASK
                 , SDL_GetError()
             );
@@ -3101,7 +3105,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
                 , SDL_GetError()
             );
@@ -3111,7 +3115,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
@@ -3121,7 +3125,7 @@ namespace Mengine
 
         if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
+            LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
                 , Engine_SDL_HINT_RENDER_SCALE_QUALITY
                 , SDL_GetError()
             );
@@ -3131,7 +3135,7 @@ namespace Mengine
 
         if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
+            LOGGER_WARNING( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
                 , Engine_SDL_HINT_ORIENTATIONS
                 , SDL_GetError()
             );
@@ -3141,7 +3145,7 @@ namespace Mengine
 
         if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to [%s] error: %s"
+            LOGGER_WARNING( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to [%s] error: %s"
                 , Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR
                 , SDL_GetError()
             );
@@ -3154,7 +3158,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_PROFILE_MASK
                 , SDL_GetError()
             );
@@ -3164,7 +3168,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
                 , SDL_GetError()
             );
@@ -3174,7 +3178,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
@@ -3184,7 +3188,7 @@ namespace Mengine
 
         if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
+            LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
                 , Engine_SDL_HINT_RENDER_SCALE_QUALITY
                 , SDL_GetError()
             );
@@ -3194,7 +3198,7 @@ namespace Mengine
 
         if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
+            LOGGER_WARNING( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
                 , Engine_SDL_HINT_ORIENTATIONS
                 , SDL_GetError()
             );
@@ -3210,7 +3214,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_PROFILE_MASK
                 , SDL_GetError()
             );
@@ -3220,7 +3224,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
                 , SDL_GetError()
             );
@@ -3230,7 +3234,7 @@ namespace Mengine
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
+            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
@@ -3240,7 +3244,7 @@ namespace Mengine
 
         if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
+            LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
                 , Engine_SDL_HINT_RENDER_SCALE_QUALITY
                 , SDL_GetError()
             );
@@ -3716,7 +3720,7 @@ namespace Mengine
 
         if( SDL_PushEvent( &e ) == -1 )
         {
-            LOGGER_ERROR( "invalid push event [SDL_QUIT] error: %s"
+            LOGGER_WARNING( "invalid push event [SDL_QUIT] error: %s"
                 , SDL_GetError()
             );
         }

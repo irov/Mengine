@@ -51,6 +51,13 @@ namespace Mengine
         m_statisticIntegers[_id] += _value;
     }
     //////////////////////////////////////////////////////////////////////////
+    void StatisticService::delStatisticInteger( uint32_t _id, int64_t _value )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        m_statisticIntegers[_id] -= _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
     int64_t StatisticService::getStatisticInteger( uint32_t _id ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );

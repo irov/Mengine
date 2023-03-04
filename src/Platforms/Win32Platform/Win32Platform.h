@@ -208,8 +208,8 @@ namespace Mengine
         HWND getWindowHandle() const override;
 
     protected:
-        uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc ) override;
-        void removeWin32ProcessHandler( uint32_t _id ) override;
+        UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc ) override;
+        void removeWin32ProcessHandler( UniqueId _id ) override;
 
     protected:
         time_t getFileUnixTime( const FILETIME * filetime ) const override;

@@ -4,10 +4,12 @@ ADD_FILTER(
 src
     ImGUIInterface.h
 
-    ImGUIPlugin.cpp
     ImGUIPlugin.h
-    ImGUIModule.cpp
-    ImGUIModule.h
+    ImGUIPlugin.def
+    ImGUIPlugin.cpp
+    
+    ImGUIService.cpp
+    ImGUIService.h
     
     ImGUIRender.cpp
     ImGUIRender.h
@@ -26,8 +28,8 @@ endif()
 if(MENGINE_PLATFORM_SDL)
     ADD_FILTER(
     imgui_platform_ext
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl.h
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl.cpp
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl2.h
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl2.cpp
     )
 
     include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
@@ -50,6 +52,7 @@ if(MENGINE_RENDER_OPENGL)
     )
 endif()
 
+INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/imgui)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui/backends)
 

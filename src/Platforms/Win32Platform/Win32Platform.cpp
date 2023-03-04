@@ -950,17 +950,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::tickPlatform( float _frameTime )
     {
-        MENGINE_PROFILER_FRAME( "main" );
-
-        this->updateWndMessage_();
-
-        if( m_close == true )
-        {
-            return false;
-        }
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
-
 #ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
         if( m_sessionLock == true )
         {
@@ -1084,6 +1073,15 @@ namespace Mengine
 
         while( m_close == false )
         {
+            MENGINE_PROFILER_FRAME( "main" );
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
+
+            if( this->updatePlatform() == false )
+            {
+                break;
+            }
+
             TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
 
             float frameTime = (float)(currentTime - m_prevTime);
@@ -2576,9 +2574,7 @@ namespace Mengine
             LOGGER_ERROR( "can't atach window" );
 
             return false;
-        }
-
-        this->updateWndMessage_();
+        }        
 
         return true;
     }
@@ -2640,6 +2636,10 @@ namespace Mengine
         ::UpdateWindow( m_hWnd );
 
         m_mouseEvent.setHWND( m_hWnd );
+
+        this->updateWndMessage_();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
 
         return true;
     }
@@ -5241,7 +5241,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc )
+    UniqueId Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -5260,7 +5260,7 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::removeWin32ProcessHandler( uint32_t _id )
+    void Win32Platform::removeWin32ProcessHandler( UniqueId _id )
     {
         VectorWin32ProcessHandler::iterator it_found = Algorithm::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
         {

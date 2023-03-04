@@ -23,8 +23,8 @@ namespace Mengine
 
     public:
         typedef Lambda<LRESULT( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )> LambdaWin32ProcessHandler;
-        virtual uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc ) = 0;
-        virtual void removeWin32ProcessHandler( uint32_t _id ) = 0;
+        virtual UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc ) = 0;
+        virtual void removeWin32ProcessHandler( UniqueId _id ) = 0;
 
     public:
         virtual bool setHWNDIcon( const WChar * _iconResource ) = 0;

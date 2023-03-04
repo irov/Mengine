@@ -26,7 +26,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
-#ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
+#ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Interface/Win32PlatformExtensionInterface.h"
 #endif
 
@@ -93,7 +93,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY, &NodeDebuggerModule::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION, &NodeDebuggerModule::notifyIncrefFactoryGeneration, MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+#if defined(MENGINE_PLATFORM_WINDOWS)
         UniqueId globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
             Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()

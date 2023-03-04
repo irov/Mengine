@@ -222,7 +222,7 @@ namespace Mengine
     {
         OpenALSoundBufferBasePtr base = nullptr;
 
-        if( _isStream == false || SERVICE_IS_AVAILABLE( ThreadServiceInterface ) == false )
+        if( _isStream == false || SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == false )
         {
             OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( _doc );
 

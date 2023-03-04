@@ -291,7 +291,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32MutexFileInputStream::time( uint64_t * const _time ) const
     {
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+#if defined(MENGINE_PLATFORM_WINDOWS)
         FILETIME creation;
         FILETIME access;
         FILETIME write;

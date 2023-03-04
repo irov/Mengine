@@ -12,6 +12,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/DocumentableHelper.h"
 #include "Kernel/MemoryCopy.h"
+#include "Kernel/StatisticHelper.h"
 
 namespace Mengine
 {
@@ -71,7 +72,13 @@ namespace Mengine
     {
         m_memory = nullptr;
 
-        DXRELEASE( m_pD3DIndexBuffer );
+        if( m_pD3DIndexBuffer != nullptr )
+        {
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_SIZE, m_indexCapacity * m_indexSize );
+
+            DXRELEASE( m_pD3DIndexBuffer );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderIndexBuffer::getIndexCount() const
@@ -93,7 +100,13 @@ namespace Mengine
             return true;
         }
 
-        DXRELEASE( m_pD3DIndexBuffer );
+        if( m_pD3DIndexBuffer != nullptr )
+        {
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_SIZE, m_indexCapacity * m_indexSize );
+
+            DXRELEASE( m_pD3DIndexBuffer );
+        }
 
         m_indexCapacity = m_indexCount;
 
@@ -104,6 +117,10 @@ namespace Mengine
         {
             return false;
         }
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_SIZE, m_indexCapacity * m_indexSize );
 
         m_pD3DIndexBuffer = pD3DIndexBuffer;
 
@@ -154,6 +171,9 @@ namespace Mengine
             return nullptr;
         }
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_LOCK_NEW );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_LOCK_SIZE, lockSize );
+
         m_memory->setBuffer( lock_memory, lockSize );
 
         return m_memory;
@@ -165,8 +185,8 @@ namespace Mengine
 
         IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {
-            LOGGER_ERROR( "invalid (doc: %s)"
-                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
+            LOGGER_ERROR( "invalid unlock (doc: %s)"
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 
             return false;
@@ -209,7 +229,7 @@ namespace Mengine
         IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {
             LOGGER_ERROR( "invalid unlock (doc: %s)"
-                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 
             return false;
@@ -237,7 +257,13 @@ namespace Mengine
 
         m_memory->setBuffer( nullptr, 0 );
 
-        DXRELEASE( m_pD3DIndexBuffer );
+        if( m_pD3DIndexBuffer != nullptr )
+        {
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_SIZE, m_indexCapacity * m_indexSize );
+
+            DXRELEASE( m_pD3DIndexBuffer );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::onRenderRestore()
@@ -256,6 +282,10 @@ namespace Mengine
         {
             return false;
         }
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_INDEX_BUFFER_SIZE, m_indexCapacity * m_indexSize );
 
         m_pD3DIndexBuffer = pD3DIndexBuffer;
 

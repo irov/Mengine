@@ -22,6 +22,7 @@ namespace Mengine
 
     public:
         void addStatisticInteger( uint32_t _id, int64_t _value ) override;
+        void delStatisticInteger( uint32_t _id, int64_t _value ) override;
         int64_t getStatisticInteger( uint32_t _id ) const override;
         void resetStatisticInteger( uint32_t _id ) override;
 

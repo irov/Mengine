@@ -8,6 +8,8 @@
 #include "Kernel/TextureHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
+#include "Kernel/StatisticHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -71,6 +73,10 @@ namespace Mengine
 
         m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_IMAGE_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -78,7 +84,13 @@ namespace Mengine
     {
         m_renderImageProvider = nullptr;
 
-        DXRELEASE( m_pD3DTexture );
+        if( m_pD3DTexture != nullptr )
+        {
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_IMAGE_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_IMAGE_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+
+            DXRELEASE( m_pD3DTexture );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::bind( uint32_t _stage )
@@ -134,6 +146,9 @@ namespace Mengine
         {
             return nullptr;
         }
+
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_IMAGE_LOCK_COUNT, 1 );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_IMAGE_LOCK_PIXEL, (rect.bottom - rect.top) * (rect.right - rect.left) );
 
         DX9RenderImageLockedPtr imageLocked = DX9RenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 

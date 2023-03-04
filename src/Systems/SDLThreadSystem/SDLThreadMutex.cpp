@@ -26,10 +26,9 @@ namespace Mengine
 
         if( cs == nullptr )
         {
-            const char * err_str = SDL_GetError();
-
-            LOGGER_ERROR( "invalid create mutex error: %s"
-                , err_str
+            LOGGER_ERROR( "invalid create mutex error: %s (doc: %s)"
+                , SDL_GetError()
+                , MENGINE_DOCUMENT_STR( m_doc )
             );
 
             return false;
@@ -57,10 +56,9 @@ namespace Mengine
     {
         if( SDL_LockMutex( m_cs ) != 0 )
         {
-            const char * err_str = SDL_GetError();
-
-            LOGGER_ERROR( "invalid lock error: %s"
-                , err_str
+            LOGGER_ERROR( "invalid lock error: %s (doc: %s)"
+                , SDL_GetError()
+                , MENGINE_DOCUMENT_STR( m_doc )
             );
         }
     }
@@ -69,10 +67,9 @@ namespace Mengine
     {
         if( SDL_UnlockMutex( m_cs ) != 0 )
         {
-            const char * err_str = SDL_GetError();
-
-            LOGGER_ERROR( "invalid unlock error: %s"
-                , err_str
+            LOGGER_ERROR( "invalid unlock error: %s (doc: %s)"
+                , SDL_GetError()
+                , MENGINE_DOCUMENT_STR( m_doc )
             );
         }
     }
@@ -87,10 +84,9 @@ namespace Mengine
         }
         else if( err == -1 )
         {
-            const char * err_msg = SDL_GetError();
-
-            LOGGER_ERROR( "invalid try lock error: %s"
-                , err_msg
+            LOGGER_ERROR( "invalid try lock error: %s (doc: %s)"
+                , SDL_GetError()
+                , MENGINE_DOCUMENT_STR( m_doc )
             );
         }
 

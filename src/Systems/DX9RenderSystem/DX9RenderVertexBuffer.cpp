@@ -12,6 +12,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryCopy.h"
+#include "Kernel/StatisticHelper.h"
 
 namespace Mengine
 {
@@ -69,7 +70,13 @@ namespace Mengine
     {
         m_memory = nullptr;
 
-        DXRELEASE( m_pD3DVertexBuffer );
+        if( m_pD3DVertexBuffer != nullptr )
+        {
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_SIZE, m_vertexCapacity * m_vertexSize );
+
+            DXRELEASE( m_pD3DVertexBuffer );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderVertexBuffer::getVertexCount() const
@@ -91,7 +98,13 @@ namespace Mengine
             return true;
         }
 
-        DXRELEASE( m_pD3DVertexBuffer );
+        if( m_pD3DVertexBuffer != nullptr )
+        {
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_SIZE, m_vertexCapacity * m_vertexSize );
+
+            DXRELEASE( m_pD3DVertexBuffer );
+        }
 
         m_vertexCapacity = m_vertexCount;
 
@@ -102,6 +115,10 @@ namespace Mengine
         {
             return false;
         }
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_SIZE, m_vertexCapacity * m_vertexSize );
 
         m_pD3DVertexBuffer = pD3DVertexBuffer;
 
@@ -143,7 +160,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pD3DVertexBuffer, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
         {
-            LOGGER_ERROR( "%d offset %d invalid lock doc '%s'"
+            LOGGER_ERROR( "invalid lock count %u offset %u (doc '%s')"
                 , _count
                 , _offset
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
@@ -151,6 +168,9 @@ namespace Mengine
 
             return nullptr;
         }
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_LOCK_NEW );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_LOCK_SIZE, lockSize );
 
         m_memory->setBuffer( lock_memory, lockSize );
 
@@ -163,7 +183,9 @@ namespace Mengine
 
         IF_DXCALL( m_pD3DVertexBuffer, Unlock, () )
         {
-            LOGGER_ERROR( "invalid unlock" );
+            LOGGER_ERROR( "invalid unlock (doc: %s)"
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
+            );
 
             return false;
         }
@@ -234,7 +256,13 @@ namespace Mengine
 
         m_memory->setBuffer( nullptr, 0 );
 
-        DXRELEASE( m_pD3DVertexBuffer );
+        if( m_pD3DVertexBuffer != nullptr )
+        {
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_SIZE, m_vertexCapacity * m_vertexSize );
+
+            DXRELEASE( m_pD3DVertexBuffer );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::onRenderRestore()
@@ -253,6 +281,10 @@ namespace Mengine
         {
             return false;
         }
+
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_VERTEX_BUFFER_SIZE, m_vertexCapacity * m_vertexSize );
 
         m_pD3DVertexBuffer = pD3DVertexBuffer;
 

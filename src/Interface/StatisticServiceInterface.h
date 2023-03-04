@@ -26,6 +26,7 @@ namespace Mengine
 
     public:
         virtual void addStatisticInteger( uint32_t _id, int64_t _value ) = 0;
+        virtual void delStatisticInteger( uint32_t _id, int64_t _value ) = 0;
         virtual int64_t getStatisticInteger( uint32_t _id ) const = 0;
         virtual void resetStatisticInteger( uint32_t _id ) = 0;
 

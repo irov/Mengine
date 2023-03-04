@@ -17,7 +17,7 @@ namespace Mengine
 
     public:
         DX9RenderImageLocked();
-        ~DX9RenderImageLocked();
+        ~DX9RenderImageLocked() override;
 
     public:
         void initialize( const D3DLOCKED_RECT & _lockedRect );

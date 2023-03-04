@@ -24,7 +24,7 @@
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)

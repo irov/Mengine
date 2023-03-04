@@ -1,5 +1,7 @@
 project(imgui)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/imconfig.h.cmakein ${THIRDPARTY_CONFIG_DIR}/imgui/imconfig.h @ONLY)
+
 SET(SOURCE_DIR ${THIRDPARTY_DIR}/imgui)
 
 set(SRC_FILES
@@ -11,6 +13,6 @@ set(SRC_FILES
 
 SET(LIB_TYPE STATIC)
 
-add_definitions(-DIMGUI_DISABLE_DEMO_WINDOWS)
+include_directories(${THIRDPARTY_CONFIG_DIR}/imgui)
 
 add_library(${PROJECT_NAME} ${LIB_TYPE} ${SRC_FILES})

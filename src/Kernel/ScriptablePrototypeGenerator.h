@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class Type, uint32_t Count>
     class ScriptablePrototypeGenerator
         : public BaseScriptablePrototypeGenerator
@@ -57,4 +58,16 @@ namespace Mengine
             return scriptable;
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class Type, uint32_t Count>
+        FactoryPrototypeGeneratorPtr makeScriptPrototypeGenerator( const DocumentPtr & _doc )
+        {
+            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<ScriptablePrototypeGenerator<Type, Count>>( _doc );
+
+            return generator;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

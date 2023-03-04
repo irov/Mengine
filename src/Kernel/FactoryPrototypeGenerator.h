@@ -15,7 +15,7 @@ namespace Mengine
         ~FactoryPrototypeGenerator() override;
 
     protected:
-        MENGINE_INLINE const FactoryInterfacePtr & getPrototypeFactory() const;
+        const FactoryInterfacePtr & getPrototypeFactory() const;
 
     protected:
         bool initialize() override;
@@ -33,10 +33,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FactoryPrototypeGenerator> FactoryPrototypeGeneratorPtr;
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const FactoryInterfacePtr & FactoryPrototypeGenerator::getPrototypeFactory() const
-    {
-        return m_prototypeFactory;
-    }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -14,6 +14,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const FactoryInterfacePtr & FactoryPrototypeGenerator::getPrototypeFactory() const
+    {
+        return m_prototypeFactory;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FactoryPrototypeGenerator::initialize()
     {
         FactoryInterfacePtr factory = this->_initializeFactory();

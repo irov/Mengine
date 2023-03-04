@@ -14,7 +14,6 @@ namespace Mengine
     class ImGUIRender
         : public Node
         , public RenderExternalInterface
-        , public ImGUIRenderProviderInterface
         , public UnknownImGUIRenderInterface
         , protected BaseRender
         , protected BaseTransformation
@@ -33,6 +32,10 @@ namespace Mengine
         void setProvider( const LambdaImGUIProvider & _provider ) override;
         const LambdaImGUIProvider & getProvider() const override;
 
+    public:
+        void setImGUIRenderProvider( const ImGUIRenderProviderInterfacePtr & _renderProvider );
+        const ImGUIRenderProviderInterfacePtr & getImGUIRenderProvider() const;
+
     protected:
         bool _activate() override;
         void _deactivate() override;
@@ -44,12 +47,11 @@ namespace Mengine
         void onRenderExternal() const override;
 
     protected:
-        ImTextureID getImTexture( const RenderTextureInterfacePtr & _texture ) const override;
-
-    protected:
         LambdaImGUIProvider m_provider;
+
+        ImGUIRenderProviderInterfacePtr m_renderProvider;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ImGUIRender> ImGUIPtr;
+    typedef IntrusiveNodePtr<ImGUIRender> ImGUIRenderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

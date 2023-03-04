@@ -11,25 +11,33 @@ src
     ImGUIService.cpp
     ImGUIService.h
     
+    ImGUIRenderPrototypeGenerator.cpp
+    ImGUIRenderPrototypeGenerator.h
+    
+    ImGUIRenderProvider.cpp
+    ImGUIRenderProvider.h
+    
     ImGUIRender.cpp
     ImGUIRender.h
 )
+
+SET(IMGUI_BACKENDS_SOURCE ${THIRDPARTY_DIR}/imgui/backends)
 
 if(MENGINE_PLATFORM_WIN32)
     ADD_DEFINITIONS(-DIMGUI_IMPL_WIN32_DISABLE_GAMEPAD)
     
     ADD_FILTER(
     imgui_platform_ext
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_win32.h
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_win32.cpp
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_win32.h
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_win32.cpp
     )
 endif()
 
 if(MENGINE_PLATFORM_SDL)
     ADD_FILTER(
     imgui_platform_ext
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl2.h
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl2.cpp
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_sdl2.h
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_sdl2.cpp
     )
 
     include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
@@ -39,16 +47,16 @@ endif()
 if(MENGINE_RENDER_DIRECTX9)
     ADD_FILTER(
     imgui_render_ext
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_dx9.h
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_dx9.cpp
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_dx9.h
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_dx9.cpp
     )
 endif()
 
 if(MENGINE_RENDER_OPENGL)
     ADD_FILTER(
     imgui_render_ext
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_opengl2.h
-        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_opengl2.cpp
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl2.h
+        ${IMGUI_BACKENDS_SOURCE}/imgui_impl_opengl2.cpp
     )
 endif()
 

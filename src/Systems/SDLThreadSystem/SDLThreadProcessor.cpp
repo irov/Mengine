@@ -166,7 +166,6 @@ namespace Mengine
         m_conditionLock = nullptr;
 
         m_thread = nullptr;
-
         m_mutex = nullptr;
 
 #ifdef MENGINE_DOCUMENT_ENABLE

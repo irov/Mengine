@@ -70,6 +70,16 @@ namespace Mengine
         return m_provider;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ImGUIRender::setImGUIRenderProvider( const ImGUIRenderProviderInterfacePtr & _renderProvider )
+    {
+        m_renderProvider = _renderProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ImGUIRenderProviderInterfacePtr & ImGUIRender::getImGUIRenderProvider() const
+    {
+        return m_renderProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ImGUIRender::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
@@ -103,7 +113,7 @@ namespace Mengine
 
         ImGui::NewFrame();
 
-        m_provider( ImGUIRenderProviderInterfacePtr::from( this ) );
+        m_provider( m_renderProvider );
 
         ImGui::EndFrame();
 
@@ -119,29 +129,6 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         ImGui_ImplOpenGL2_RenderDrawData( imData );
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ImTextureID ImGUIRender::getImTexture( const RenderTextureInterfacePtr & _texture ) const
-    {
-        const RenderImageInterfacePtr & image = _texture->getImage();
-
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        DX9RenderImageExtensionInterface * extension = image->getUnknown();
-
-        IDirect3DTexture9 * pD3DTexture = extension->getD3DTexture();
-
-        return (ImTextureID)pD3DTexture;
-#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        OpenGLRenderImageExtensionInterface * extension = image->getUnknown();
-
-        GLuint UID = extension->getUID();
-
-        return MENGINE_UINT32_TO_POINTER( ImTextureID, UID );
-#else
-        MENGINE_UNUSED( image );
-
-        return (ImTextureID)nullptr;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

@@ -29,5 +29,7 @@ namespace Mengine
 
     protected:
         UniqueId m_handlerId;
+
+        ImGUIRenderProviderInterfacePtr m_renderProvider;
     };
 }

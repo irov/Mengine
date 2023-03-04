@@ -20,6 +20,8 @@
 #include "Interface/RenderServiceInterface.h"
 
 #include "ImGUIRender.h"
+#include "ImGUIRenderProvider.h"
+#include "ImGUIRenderPrototypeGenerator.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
@@ -57,6 +59,7 @@ SERVICE_FACTORY( ImGUIService, Mengine::ImGUIService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -111,8 +114,14 @@ namespace Mengine
             ImGui::LoadIniSettingsFromMemory( buffer, size );
         }
 
+        m_renderProvider = Helper::makeFactorableUnique<ImGUIRenderProvider>( MENGINE_DOCUMENT_FACTORABLE );
+
+        ImGUIRenderPrototypeGeneratorPtr imGUIRenderPrototypeGenerator = Helper::makeFactorableUnique<ImGUIRenderPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
+
+        imGUIRenderPrototypeGenerator->setImGUIRenderProvider( m_renderProvider );
+
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), Helper::makeFactorableUnique<NodePrototypeGenerator<ImGUIRender, 16>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), imGUIRenderPrototypeGenerator ) == false )
         {
             return false;
         }
@@ -143,6 +152,26 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CREATE_RENDER_WINDOW );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            win32Platform->removeWin32ProcessHandler( m_handlerId );
+        }
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            sdlPlatform->removeSDLEventHandler( m_handlerId );
+        }
+#endif
 
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
@@ -181,25 +210,7 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), nullptr );
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        if( m_handlerId != INVALID_UNIQUE_ID )
-        {
-            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
-
-            win32Platform->removeWin32ProcessHandler( m_handlerId );
-        }
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-        if( m_handlerId != INVALID_UNIQUE_ID )
-        {
-            SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-                ->getDynamicUnknown();
-
-            sdlPlatform->removeSDLEventHandler( m_handlerId );
-        }
-#endif
+        m_renderProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyPlatformAtachWindow_()

@@ -1,35 +1,35 @@
-#include "CameraDebugGizmoPlugin.h"
+#include "DebugPanelPlugin.h"
 
-#include "ModuleCameraDebugGizmo.h"
+#include "ModuleDebugPanel.h"
 
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( CameraDebugGizmo, Mengine::CameraDebugGizmoPlugin )
+PLUGIN_FACTORY( DebugPanel, Mengine::DebugPanelPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    CameraDebugGizmoPlugin::CameraDebugGizmoPlugin()
+    DebugPanelPlugin::DebugPanelPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    CameraDebugGizmoPlugin::~CameraDebugGizmoPlugin()
+    DebugPanelPlugin::~DebugPanelPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool CameraDebugGizmoPlugin::_initializePlugin()
+    bool DebugPanelPlugin::_initializePlugin()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleCameraDebugGizmo" )
-            , Helper::makeModuleFactory<ModuleCameraDebugGizmo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleDebugPanel" )
+            , Helper::makeModuleFactory<ModuleDebugPanel>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void CameraDebugGizmoPlugin::_finalizePlugin()
+    void DebugPanelPlugin::_finalizePlugin()
     {
-        //Empty
+        //Empty   
     }
     //////////////////////////////////////////////////////////////////////////
 }

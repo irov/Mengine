@@ -19,6 +19,10 @@ namespace Mengine
 
     protected:
         ImTextureID getImTexture( const RenderTextureInterfacePtr & _texture ) const override;
+
+    protected:
+        void newFrame() override;
+        void endFrame() override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ImGUIRenderProvider, ImGUIRenderProviderInterface> ImGUIRenderProviderPtr;

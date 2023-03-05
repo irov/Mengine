@@ -2884,12 +2884,6 @@ namespace Mengine
                 _affector->stop();
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params )
-            {
-                MODULE_SERVICE()
-                    ->message( _moduleName, _messageName, _params );
-            }
-            //////////////////////////////////////////////////////////////////////////
             mt::vec3f s_getCameraPosition( const RenderCameraInterfacePtr & _camera, const NodePtr & _node )
             {
                 const TransformationInterface * transformation = _node->getTransformation();
@@ -4466,7 +4460,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "addShapeFollowerCustomSize", nodeScriptMethod, &EngineScriptMethod::s_addShapeFollowerCustomSize );
         pybind::def_functor( _kernel, "addShapeFollowerTextureUVScale", nodeScriptMethod, &EngineScriptMethod::s_addShapeFollowerTextureUVScale );
         pybind::def_functor( _kernel, "removeNodeFollower", nodeScriptMethod, &EngineScriptMethod::s_removeNodeFollower );
-        pybind::def_functor( _kernel, "moduleMessage", nodeScriptMethod, &EngineScriptMethod::s_moduleMessage );
         pybind::def_functor( _kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
         pybind::def_functor( _kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 

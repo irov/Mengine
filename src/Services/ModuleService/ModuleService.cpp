@@ -253,23 +253,115 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::message( const ConstString & _name, const ConstString & _messageName, const MapWParams & _params )
-    {
-        const ModuleInterfacePtr & module = this->findModule_( _name );
-
-        if( module == nullptr )
-        {
-            return;
-        }
-
-        module->message( _messageName, _params );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ModuleService::messageAll( const ConstString & _name, const MapWParams & _params )
+    bool ModuleService::handleKeyEvent( const InputKeyEvent & _event )
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->messageAll( _name, _params );
+            if( module->handleKeyEvent( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleTextEvent( const InputTextEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleTextEvent( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleMouseButtonEvent( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleMouseButtonEventBegin( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleMouseButtonEventEnd( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleMouseMove( const InputMouseMoveEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleMouseMove( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleMouseWheel( const InputMouseWheelEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleMouseWheel( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleMouseEnter( const InputMouseEnterEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleMouseEnter( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleService::handleMouseLeave( const InputMouseLeaveEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            module->handleMouseLeave( _event );
         }
     }
     //////////////////////////////////////////////////////////////////////////

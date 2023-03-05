@@ -41,8 +41,19 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     public:
-        void message( const ConstString & _name, const ConstString & _messageName, const MapWParams & _params ) override;
-        void messageAll( const ConstString & _messageName, const MapWParams & _params ) override;
+        bool handleKeyEvent( const InputKeyEvent & _event ) override;
+        bool handleTextEvent( const InputTextEvent & _event ) override;
+
+    public:
+        bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
+        bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
+
+    public:
+        bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
+        void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     protected:
         const ModuleInterfacePtr & findModule_( const ConstString & _name ) const;

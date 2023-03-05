@@ -22,6 +22,9 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
+        const ImGUIRenderProviderInterfacePtr & getRenderProvider() const override;
+
+    protected:
         void notifyPlatformAtachWindow_();
         void notifyCreateRenderWindow_();
         void notifyRenderDeviceLostPrepare_();

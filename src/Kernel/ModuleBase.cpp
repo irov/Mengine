@@ -145,28 +145,143 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::message( const ConstString & _messageName, const MapWParams & _params )
+    bool ModuleBase::handleKeyEvent( const InputKeyEvent & _event )
     {
-        this->_message( _messageName, _params );
+        bool handle = this->_handleKeyEvent( _event );
+
+        return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::messageAll( const ConstString & _messageName, const MapWParams & _params )
+    bool ModuleBase::handleTextEvent( const InputTextEvent & _event )
     {
-        this->_messageAll( _messageName, _params );
+        bool handle = this->_handleTextEvent( _event );
+
+        return handle;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::_message( const ConstString & _messageName, const MapWParams & _params )
+    //////////////////////////////////////////////////////////////////////////    
+    bool ModuleBase::_handleKeyEvent( const InputKeyEvent & _event )
     {
-        MENGINE_UNUSED( _messageName );
-        MENGINE_UNUSED( _params );
+        MENGINE_UNUSED( _event );
 
         //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////    
+    bool ModuleBase::_handleTextEvent( const InputTextEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::_messageAll( const ConstString & _messageName, const MapWParams & _params )
+    bool ModuleBase::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
-        MENGINE_UNUSED( _messageName );
-        MENGINE_UNUSED( _params );
+        bool handle = this->_handleMouseButtonEvent( _event );
+
+        return handle;
+
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    {
+        bool handle = this->_handleMouseButtonEventBegin( _event );
+
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    {
+        bool handle = this->_handleMouseButtonEventEnd( _event );
+
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleMouseMove( const InputMouseMoveEvent & _event )
+    {
+        bool handle = this->_handleMouseMove( _event );
+
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleMouseWheel( const InputMouseWheelEvent & _event )
+    {
+        bool handle = this->_handleMouseWheel( _event );
+
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::_handleMouseButtonEvent( const InputMouseButtonEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::_handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::_handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::_handleMouseMove( const InputMouseMoveEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::_handleMouseWheel( const InputMouseWheelEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleMouseEnter( const InputMouseEnterEvent & _event )
+    {
+        bool handle = this->_handleMouseEnter( _event );
+
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleBase::handleMouseLeave( const InputMouseLeaveEvent & _event )
+    {
+        this->_handleMouseLeave( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::_handleMouseEnter( const InputMouseEnterEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleBase::_handleMouseLeave( const InputMouseLeaveEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
 
         //Empty
     }

@@ -157,6 +157,10 @@ PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( NodeDebugRender );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_DEBUGPANEL_STATIC
+PLUGIN_EXPORT( DebugPanel );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
@@ -1047,6 +1051,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugRender, "Plugin Node Debug Render...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_DEBUGPANEL_STATIC
+        MENGINE_ADD_PLUGIN( DebugPanel, "Plugin Debug Panel...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC

@@ -50,6 +50,10 @@ if(MENGINE_PLUGIN_NODEDEBUGGER)
     ADD_SUBDIRECTORY(NodeDebuggerPlugin)
 endif()
 
+if(MENGINE_PLUGIN_DEBUGPANEL)
+    ADD_SUBDIRECTORY(DebugPanelPlugin)
+endif()
+
 if(MENGINE_PLUGIN_METABUFLOADER)
     ADD_SUBDIRECTORY(MetabufLoaderPlugin)
 endif()

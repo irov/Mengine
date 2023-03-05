@@ -13,6 +13,7 @@ namespace Mengine
 {    
     class ModuleServiceInterface
         : public ServiceInterface
+        , public InputHandlerInterface
     {
         SERVICE_DECLARE( "ModuleService" )
 
@@ -38,10 +39,6 @@ namespace Mengine
 
     public:
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) = 0;
-
-    public:
-        virtual void message( const ConstString & _name, const ConstString & _messageName, const MapWParams & _params ) = 0;
-        virtual void messageAll( const ConstString & _messageName, const MapWParams & _params ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

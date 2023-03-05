@@ -834,9 +834,6 @@ namespace Mengine
         MENGINE_UNUSED( _oldScene );
         MENGINE_UNUSED( _newScene );
 
-        MODULE_SERVICE()
-            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), MapWParams() );
-
         if( m_arrow != nullptr )
         {
             m_arrow->removeFromParent();
@@ -897,9 +894,6 @@ namespace Mengine
     void PlayerService::notifyRestartScenePrepareDisable( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
-
-        MODULE_SERVICE()
-            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneRestart" ), MapWParams() );
 
         if( m_arrow != nullptr )
         {

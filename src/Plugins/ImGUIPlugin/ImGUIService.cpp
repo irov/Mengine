@@ -96,6 +96,8 @@ namespace Mengine
 
         ImGui::CreateContext();
 
+        ImGui::StyleColorsDark();
+
         ImGuiIO & io = ImGui::GetIO();
 
         io.LogFilename = nullptr;
@@ -211,6 +213,11 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), nullptr );
 
         m_renderProvider = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ImGUIRenderProviderInterfacePtr & ImGUIService::getRenderProvider() const
+    {
+        return m_renderProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyPlatformAtachWindow_()

@@ -24,8 +24,6 @@ src
 SET(IMGUI_BACKENDS_SOURCE ${THIRDPARTY_DIR}/imgui/backends)
 
 if(MENGINE_PLATFORM_WIN32)
-    ADD_DEFINITIONS(-DIMGUI_IMPL_WIN32_DISABLE_GAMEPAD)
-    
     ADD_FILTER(
     imgui_platform_ext
         ${IMGUI_BACKENDS_SOURCE}/imgui_impl_win32.h

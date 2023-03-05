@@ -15,6 +15,10 @@ namespace Mengine
     {
     public:
         virtual ImTextureID getImTexture( const RenderTextureInterfacePtr & _texture ) const = 0;
+
+    public:
+        virtual void newFrame() = 0;
+        virtual void endFrame() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ImGUIRenderProviderInterface> ImGUIRenderProviderInterfacePtr;
@@ -24,8 +28,6 @@ namespace Mengine
     {
     public:
         typedef Lambda<void( const ImGUIRenderProviderInterfacePtr & )> LambdaImGUIProvider;
-
-    public:
         virtual void setProvider( const LambdaImGUIProvider & _provider ) = 0;
         virtual const LambdaImGUIProvider & getProvider() const = 0;
     };
@@ -35,6 +37,12 @@ namespace Mengine
     {
         SERVICE_DECLARE( "ImGUIService" );
 
+    public:
+        virtual const ImGUIRenderProviderInterfacePtr & getRenderProvider() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }
+//////////////////////////////////////////////////////////////////////////
+#define IMGUI_SERVICE()\
+    ((Mengine::ImGUIServiceInterface*)SERVICE_GET(Mengine::ImGUIServiceInterface))
+//////////////////////////////////////////////////////////////////////////

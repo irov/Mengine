@@ -69,4 +69,49 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
+    void ImGUIRenderProvider::newFrame()
+    {
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
+        ImGui_ImplDX9_NewFrame();
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+        ImGui_ImplOpenGL2_NewFrame();
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+        ImGui_ImplWin32_NewFrame();
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+        SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+
+        SDL_Window * window = sdlPlatform->getWindow();
+
+        ImGui_ImplSDL2_NewFrame( window );
+#endif
+
+        ImGui::NewFrame();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImGUIRenderProvider::endFrame()
+    {
+        ImGui::EndFrame();
+
+        ImGui::Render();
+
+        ImDrawData * imData = ImGui::GetDrawData();
+
+        MENGINE_UNUSED( imData );
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
+        ImGui_ImplDX9_RenderDrawData( imData );
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+        ImGui_ImplOpenGL2_RenderDrawData( imData );
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -20,9 +20,27 @@ src
     AppleSentryHelper.mm
 )
 
+if(MENGINE_TARGET_IOS)
+    ADD_FILTER(
+    delegate
+        AppleSentryApplicationDelegate.h
+        AppleSentryApplicationDelegate.mm
+    )
+elseif(MENGINE_TARGET_MACOS)
+    ADD_FILTER(
+    delegate
+        MacOSSentryApplicationDelegate.h
+        MacOSSentryApplicationDelegate.mm
+    )
+endif()
+
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_SENTRY)
 
-ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleSentryApplicationDelegate")
+if(MENGINE_TARGET_IOS)
+    ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleSentryApplicationDelegate")
+elseif(MENGINE_TARGET_MACOS)
+    ADD_MENGINE_APPLE_APPLICATION_DELEGATE("MacOSSentryApplicationDelegate")
+endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})

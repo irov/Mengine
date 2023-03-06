@@ -6,7 +6,7 @@ else()
     MENGINE_PROJECT(SDLApplication)
 endif()
 
-if(MENGINE_TARGET_IOS)
+if(MENGINE_TARGET_APPLE)
     SET(MENGINE_APPLE_APPLICATION_DELEGATE_STRING "")
     
     foreach(DELEGATE ${APPLICATION_APPLE_APPLICATION_DELEGATE})
@@ -72,11 +72,17 @@ endif()
 if(MENGINE_TARGET_UWP)
 endif()
 
+if(MENGINE_TARGET_APPLE)
+    ADD_FILTER(
+    apple
+        MengineAppleApplicationDelegates.mm
+        MengineAppleApplicationDelegates.h
+    )
+endif()
+
 if(MENGINE_TARGET_IOS)
     ADD_FILTER(
     ios
-        MengineAppleApplicationDelegates.mm
-        MengineAppleApplicationDelegates.h
         MengineUIKitDelegate.mm
         MengineUIKitDelegate.h
     )

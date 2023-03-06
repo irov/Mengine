@@ -16,10 +16,29 @@ if(MENGINE_TARGET_IOS)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MengineAppleApplicationDelegates.mm.in ${CMAKE_CURRENT_SOURCE_DIR}/MengineAppleApplicationDelegates.mm @ONLY)
 endif()
 
-ADD_FILTER(
-main
-    main.cpp
-)
+if(MENGINE_TARGET_UWP)
+    ADD_FILTER(
+    main
+        UWPMain.cpp
+    )
+elseif(MENGINE_TARGET_WINDOWS)
+    ADD_FILTER(
+    main
+        Win32Main.cpp
+    )
+elseif(MENGINE_TARGET_MACOS)
+    ADD_FILTER(
+    main
+        MacOSMain.mm
+    )
+elseif(MENGINE_TARGET_IOS)
+    ADD_FILTER(
+    main
+        iOSMain.mm
+    )
+else()
+    message( FATAL_ERROR "SDLApplication unsupport this target")
+endif()
 
 ADD_FILTER(
 src

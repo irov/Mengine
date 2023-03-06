@@ -1,25 +1,25 @@
 MACRO(MENGINE_GENERATE_COCOAPODS)
-    if(APPLICATION_APPLE_COCOAPODS)
-        SET(PODFILE_BUFFER "")
-        
-        STRING(APPEND PODFILE_BUFFER "project '${MENGINE_PROJECT_NAME}.xcodeproj'\n")
-        
-        if(MENGINE_TARGET_MACOS)
-            STRING(APPEND PODFILE_BUFFER "platform :macos, '${CMAKE_OSX_DEPLOYMENT_TARGET}'\n")
-        endif()
-        
-        if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
-            STRING(APPEND PODFILE_BUFFER "platform :ios, '${CMAKE_OSX_DEPLOYMENT_TARGET}'\n")
-        endif()
-        
-        STRING(APPEND PODFILE_BUFFER "inhibit_all_warnings!\n")
-        STRING(APPEND PODFILE_BUFFER "\n")
+    SET(PODFILE_BUFFER "")
+    
+    STRING(APPEND PODFILE_BUFFER "project '${MENGINE_PROJECT_NAME}.xcodeproj'\n")
+    
+    if(MENGINE_TARGET_MACOS)
+        STRING(APPEND PODFILE_BUFFER "platform :macos, '${CMAKE_OSX_DEPLOYMENT_TARGET}'\n")
+    endif()
+    
+    if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
+        STRING(APPEND PODFILE_BUFFER "platform :ios, '${CMAKE_OSX_DEPLOYMENT_TARGET}'\n")
+    endif()
+    
+    STRING(APPEND PODFILE_BUFFER "inhibit_all_warnings!\n")
+    STRING(APPEND PODFILE_BUFFER "\n")
 
-        SET(LENGTH_APPLICATION_APPLE_COCOAPODS)
-        list(LENGTH APPLICATION_APPLE_COCOAPODS LENGTH_APPLICATION_APPLE_COCOAPODS)
-        
-        math(EXPR LENGTH_APPLICATION_APPLE_COCOAPODS "${LENGTH_APPLICATION_APPLE_COCOAPODS}-1")
-        
+    SET(LENGTH_APPLICATION_APPLE_COCOAPODS)
+    list(LENGTH APPLICATION_APPLE_COCOAPODS LENGTH_APPLICATION_APPLE_COCOAPODS)
+    
+    math(EXPR LENGTH_APPLICATION_APPLE_COCOAPODS "${LENGTH_APPLICATION_APPLE_COCOAPODS}-1")
+    
+    if(NOT ${LENGTH_APPLICATION_APPLE_COCOAPODS} EQUAL -1)
         SET(APPLICATION_APPLE_COCOAPODS_PROJECTS)
 
         foreach(COCOAPODS_INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS} 4)
@@ -94,30 +94,30 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
                 math(EXPR COCOAPODS_INDEX "${COCOAPODS_INDEX}+1")
 
                 string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPODS_NO_GIT)
-				string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPODS_NO_TAG)
-				
-				MESSAGE("COCOAPOD_TAG: ${COCOAPOD_NAME} ${COCOAPOD_TAG} ${COCOAPODS_NO_TAG}")
+                string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPODS_NO_TAG)
+                
+                MESSAGE("COCOAPOD_TAG: ${COCOAPOD_NAME} ${COCOAPOD_TAG} ${COCOAPODS_NO_TAG}")
                 
                 if(COCOAPODS_NO_GIT)
-					if(COCOAPODS_NO_TAG)
-						STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'\n")
-												
-						MESSAGE("COCOAPOD: ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME} [${COCOAPOD_TAG}]")
-					else()
-						STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', '" ${COCOAPOD_TAG} "'\n")
+                    if(COCOAPODS_NO_TAG)
+                        STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'\n")
+                        
+                        MESSAGE("COCOAPOD: ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME} [${COCOAPOD_TAG}]")
+                    else()
+                        STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', '" ${COCOAPOD_TAG} "'\n")
 
-						MESSAGE("COCOAPOD: ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME}")
-					endif()
+                        MESSAGE("COCOAPOD: ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME}")
+                    endif()
                 else()
-					if(COCOAPODS_NO_TAG)
-						STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "'\n")
-											
-						MESSAGE("COCOAPOD: ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME} '${COCOAPOD_GIT}' [${COCOAPOD_TAG}]")
-					else()
-	                    STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
-						
-						MESSAGE("COCOAPOD: ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME} '${COCOAPOD_GIT}'")
-					endif()
+                    if(COCOAPODS_NO_TAG)
+                        STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "'\n")
+                        
+                        MESSAGE("COCOAPOD: ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME} '${COCOAPOD_GIT}' [${COCOAPOD_TAG}]")
+                    else()
+                        STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
+                        
+                        MESSAGE("COCOAPOD: ${COCOAPOD_PROJECT_NAME} ${COCOAPOD_NAME} '${COCOAPOD_GIT}'")
+                    endif()
                 endif()
             endforeach()
                 
@@ -125,9 +125,11 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             STRING(APPEND PODFILE_BUFFER "end\n")
             STRING(APPEND PODFILE_BUFFER "\n")
         endforeach()
+    endif()
 
-        STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
+    STRING(APPEND PODFILE_BUFFER "target '" ${PROJECT_NAME} "' do\n")
 
+    if(NOT ${LENGTH_APPLICATION_APPLE_COCOAPODS} EQUAL -1)
         foreach(COCOAPODS_INDEX RANGE 0 ${LENGTH_APPLICATION_APPLE_COCOAPODS} 4)
             SET(COCOAPOD_PROJECT_NAME)
             list(GET APPLICATION_APPLE_COCOAPODS ${COCOAPODS_INDEX} COCOAPOD_PROJECT_NAME)
@@ -146,39 +148,37 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             math(EXPR COCOAPODS_INDEX "${COCOAPODS_INDEX}+1")
 
             string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPODS_NO_GIT)
-			string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPODS_NO_TAG)
+            string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPODS_NO_TAG)
         
             if(COCOAPODS_NO_GIT)
-				if(COCOAPODS_NO_TAG)
-					STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'\n")
-				else()
-					STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', '" ${COCOAPOD_TAG} "'\n")
-				endif()
+                if(COCOAPODS_NO_TAG)
+                    STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'\n")
+                else()
+                    STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', '" ${COCOAPOD_TAG} "'\n")
+                endif()
             else()
-				if(COCOAPODS_NO_TAG)				
-					STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "'\n")
-				else()
-					STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
-				endif()					
+                if(COCOAPODS_NO_TAG)
+                    STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "'\n")
+                else()
+                    STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "', :git => '" ${COCOAPOD_GIT} "', :tag => '" ${COCOAPOD_TAG} "'\n")
+                endif()
             endif()
         endforeach()
-        
-        STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
-        STRING(APPEND PODFILE_BUFFER "end\n")
-        STRING(APPEND PODFILE_BUFFER "\n")
-        
-        STRING(APPEND PODFILE_BUFFER "#patch\n")
-        STRING(APPEND PODFILE_BUFFER "\n")
-
-        SET(PODS_END_PATCH)
-        file(STRINGS "Pods.patch" PODS_END_PATCH NEWLINE_CONSUME)
-            
-        STRING(APPEND PODFILE_BUFFER ${PODS_END_PATCH})
-        
-        FILE(WRITE ${CMAKE_BINARY_DIR}/Podfile ${PODFILE_BUFFER})
-    else()
-        FILE(REMOVE ${CMAKE_BINARY_DIR}/Podfile)
     endif()
     
+    STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
+    STRING(APPEND PODFILE_BUFFER "end\n")
+    STRING(APPEND PODFILE_BUFFER "\n")
+    
+    STRING(APPEND PODFILE_BUFFER "#patch\n")
+    STRING(APPEND PODFILE_BUFFER "\n")
+
+    SET(PODS_END_PATCH)
+    file(STRINGS "Pods.patch" PODS_END_PATCH NEWLINE_CONSUME)
+        
+    STRING(APPEND PODFILE_BUFFER ${PODS_END_PATCH})
+    
+    FILE(WRITE ${CMAKE_BINARY_DIR}/Podfile ${PODFILE_BUFFER})
+
     FILE(REMOVE ${CMAKE_BINARY_DIR}/Podfile.lock)
 ENDMACRO()

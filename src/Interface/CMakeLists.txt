@@ -132,6 +132,7 @@ Common
     AnalyticsServiceInterface.h
     SecureValueInterface.h
     UIKitProxyApplicationDelegateInterface.h
+    MacOSProxyApplicationDelegateInterface.h
     ExecutorInterface.h
     StatisticInterface.h
     StatisticServiceInterface.h

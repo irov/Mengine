@@ -1,16 +1,16 @@
-#import "AppleSentryApplicationDelegate.h"
+#import "MacOSSentryApplicationDelegate.h"
 
 #import "Environment/Apple/AppleDetail.h"
 
 #include "Kernel/BuildMode.h"
 
-#import "Sentry/Sentry.h"
+#import <Sentry/Sentry.h>
 
-@implementation AppleSentryApplicationDelegate
+@implementation MacOSSentryApplicationDelegate
 
-#pragma mark - UIKitProxyApplicationDelegateInterface
+#pragma mark - MacOSProxyApplicationDelegateInterface
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application {
     NSString * AppleSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
     
     if( AppleSentryPlugin_DSN == nil )

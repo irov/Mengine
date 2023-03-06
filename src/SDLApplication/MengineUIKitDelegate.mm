@@ -2,7 +2,7 @@
 
 #import "MengineAppleApplicationDelegates.h"
 
-#import "Interface/UIKitProxyApplicationDelegateInterface.h"
+#import "Environment/iOS/UIKitProxyApplicationDelegateInterface.h"
 
 @implementation MengineUIKitDelegate
 

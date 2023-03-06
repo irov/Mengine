@@ -1,5 +1,7 @@
 #include "Environment/SDL2/SDL2Includer.h"
 
+#import "Environment/MacOS/MacOSProxyApplicationDelegateInterface.h"
+
 #import "MengineAppleApplicationDelegates.h"
 
 #include "SDLApplication.h"
@@ -8,16 +10,21 @@ int main( int argc, char * argv[] )
 {
     NSArray * proxysClassed = getMengineAppleApplicationDelegates();
 
-    for (NSString * className in proxysClassed) {
-        Class c = NSClassFromString(@"MacOSSentryApplicationDelegate");
+    for (NSString * className in proxysClassed)
+    {
+        Class clazz = NSClassFromString(className);
 
-        if (c == nil) {
-            continue;
+        if( clazz == nil )
+        {
+            return EXIT_FAILURE;
         }
         
-        id delegate = [c alloc];
+        id<MacOSProxyApplicationDelegateInterface> delegate = [clazz alloc];
 
-        [delegate application];
+        if( [delegate application] == NO )
+        {
+            return EXIT_FAILURE;
+        }
     }
     
     Mengine::SDLApplication application;

@@ -10,6 +10,7 @@ fi
 
 CONFIGURATION=$1
 DEPLOY_PATH=$2
+BUILD_VERSION=$3
 
 if test -z "$CONFIGURATION"; then
     echo "please setup CONFIGURATION"
@@ -21,10 +22,15 @@ if test -z "$DEPLOY_PATH"; then
     exit 0
 fi
 
+if test -z "$BUILD_VERSION"; then
+    echo "please setup BUILD_VERSION"
+    exit 0
+fi
+
 mkdir -p ../../solutions/solution_xcode_macos_sdl/$CONFIGURATION
 pushd ../../solutions/solution_xcode_macos_sdl/$CONFIGURATION
 
-$CMAKE -G"Xcode" "$PWD/../../../cmake/Xcode_MacOS_SDL" -DCMAKE_BUILD_TYPE:STRING="$CONFIGURATION" -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_DEPLOY_PATH="$DEPLOY_PATH"
+$CMAKE -G"Xcode" "$PWD/../../../cmake/Xcode_MacOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_DEPLOY_PATH:STRING="$DEPLOY_PATH" -DMENGINE_BUILD_VERSION:STRING="$BUILD_VERSION"
 
 if [ $? -ne 0 ]; then
     echo "please fix CMake"

@@ -3,14 +3,14 @@ MENGINE_PROJECT(Win32Application)
 if(MENGINE_TOOLCHAIN_MSVC)
 ADD_FILTER(
 main
-    win32_main.cpp
+    Win32Main.cpp
 )
 endif()
 
 if(MENGINE_TOOLCHAIN_MINGW)
 ADD_FILTER(
 main
-    mingw32_main.cpp
+    MinGW32Main.cpp
 )
 endif()
     

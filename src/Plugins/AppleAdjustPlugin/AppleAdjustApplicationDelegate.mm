@@ -35,24 +35,6 @@
     return YES;
 }
 
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo {}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void(^)(UIBackgroundFetchResult)) completionHandler {}
-
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {}
-
-- (void)applicationWillResignActive:(UIApplication *)application {}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application {}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {}
-
-- (void)applicationWillTerminate:(UIApplication *)application {}
-
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation handled:(BOOL *)handler {
     *handler = YES;
     

@@ -196,6 +196,7 @@ namespace Mengine
         bool m_debugStopRenderObjects;
         uint32_t m_debugLimitRenderObjects;
         uint32_t m_iterateRenderObjects;
+        uint32_t m_showLogRenderObjects;
 #endif
 
     protected:

@@ -781,7 +781,14 @@ namespace Mengine
     {
         m_depthMask = _depthWrite;
 
-        GLCALL( glDepthMask, (m_depthMask ? GL_TRUE : GL_FALSE) );
+        if( m_depthMask == true )
+        {
+            GLCALL( glDepthMask, (GL_TRUE) );
+        }
+        else
+        {
+            GLCALL( glDepthMask, (GL_FALSE) );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
@@ -804,7 +811,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
     {
-        GLCALL( glColorMask, (_r ? GL_TRUE : GL_FALSE, _g ? GL_TRUE : GL_FALSE, _b ? GL_TRUE : GL_FALSE, _a ? GL_TRUE : GL_FALSE) );
+        GLboolean red = _r ? GL_TRUE : GL_FALSE;
+        GLboolean green = _g ? GL_TRUE : GL_FALSE;
+        GLboolean blue = _b ? GL_TRUE : GL_FALSE;
+        GLboolean alpha = _a ? GL_TRUE : GL_FALSE;
+
+        GLCALL( glColorMask, (red, green, blue, alpha) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setAlphaBlendEnable( bool _alphaBlend )
@@ -938,7 +950,9 @@ namespace Mengine
             }
 
 #ifndef MENGINE_RENDER_OPENGL_ES
-            GLCALL( glClearDepth, (static_cast<GLclampd>(_depth)) );
+            GLclampd depth = static_cast<GLclampd>(_depth);
+
+            GLCALL( glClearDepth, (depth) );
 #endif          
         }
 

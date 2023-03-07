@@ -37,6 +37,7 @@ namespace Mengine
         , m_debugStopRenderObjects( false )
         , m_debugLimitRenderObjects( 0 )
         , m_iterateRenderObjects( 0 )
+        , m_showLogRenderObjects( ~0U )
 #endif
     {
     }
@@ -302,15 +303,21 @@ namespace Mengine
         {
             if( m_iterateRenderObjects == m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
             {
-                //const RenderTextureInterfacePtr & texture = _material->getTexture( 0 );
+                const RenderTextureInterfacePtr & texture = _material->getTexture( 0 );
 
-                //if( texture != nullptr )
-                //{
-                //    LOGGER_ERROR( "texture: '%s' material '%s'"
-                //        , texture->getFilePath().c_str()
-                //        , _material->getName().c_str()
-                //    );
-                //}
+                if( texture != nullptr )
+                {
+                    if( m_showLogRenderObjects != m_debugLimitRenderObjects )
+                    {
+                        LOGGER_MESSAGE_RELEASE( "index: %u texture: %s material: %s"
+                            , m_debugLimitRenderObjects
+                            , texture->getFilePath().c_str()
+                            , _material->getName().c_str()
+                        );
+
+                        m_showLogRenderObjects = m_debugLimitRenderObjects;
+                    }
+                }
 
                 EPrimitiveType primitiveType = _material->getPrimitiveType();
 
@@ -623,6 +630,11 @@ namespace Mengine
         }
 
         --m_debugLimitRenderObjects;
+
+        if( m_debugLimitRenderObjects == 0 )
+        {
+            m_showLogRenderObjects = ~0U;
+        }
 #endif
 
         return true;

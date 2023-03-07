@@ -50,6 +50,8 @@
 #include "imgui_impl_opengl2.h"
 #endif
 
+#include "implot.h"
+
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 #endif
@@ -95,6 +97,7 @@ namespace Mengine
         ImGui::SetAllocatorFunctions( &Detail::ImGUIPlugin_alloc_func, &Detail::ImGUIPlugin_free_func, nullptr );
 
         ImGui::CreateContext();
+        ImPlot::CreateContext();
 
         ImGui::StyleColorsDark();
 
@@ -129,6 +132,8 @@ namespace Mengine
         }
         
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_ATACH_WINDOW, &ImGUIService::notifyPlatformAtachWindow_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_DETACH_WINDOW, &ImGUIService::notifyPlatformDetachWindow_, MENGINE_DOCUMENT_FACTORABLE );
+        
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CREATE_RENDER_WINDOW, &ImGUIService::notifyCreateRenderWindow_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &ImGUIService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &ImGUIService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
@@ -151,6 +156,7 @@ namespace Mengine
     void ImGUIService::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CREATE_RENDER_WINDOW );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
@@ -162,6 +168,7 @@ namespace Mengine
                 ->getDynamicUnknown();
 
             win32Platform->removeWin32ProcessHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
         }
 #endif
 
@@ -172,6 +179,7 @@ namespace Mengine
                 ->getDynamicUnknown();
 
             sdlPlatform->removeSDLEventHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
         }
 #endif
 
@@ -207,6 +215,7 @@ namespace Mengine
         ImGui_ImplSDL2_Shutdown();
 #endif
 
+        ImPlot::DestroyContext();
         ImGui::DestroyContext();
 
         PROTOTYPE_SERVICE()
@@ -257,6 +266,35 @@ namespace Mengine
         } );
 
         m_handlerId = handlerId;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImGUIService::notifyPlatformDetachWindow_()
+    {
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            win32Platform->removeWin32ProcessHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+
+        ImGui_ImplWin32_Shutdown();
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
+        if( m_handlerId != INVALID_UNIQUE_ID )
+        {
+            SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+                ->getDynamicUnknown();
+
+            sdlPlatform->removeSDLEventHandler( m_handlerId );
+            m_handlerId = INVALID_UNIQUE_ID;
+        }
+
+        ImGui_ImplSDL2_Shutdown();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

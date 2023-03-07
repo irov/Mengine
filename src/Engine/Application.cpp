@@ -1357,19 +1357,36 @@ namespace Mengine
             }
         }
 #endif
+        if( MODULE_SERVICE()
+            ->handleKeyEvent( _event ) == true )
+        {
+            return true;
+        }
 
-        bool handle = GAME_SERVICE()
-            ->handleKeyEvent( _event );
+        if( GAME_SERVICE()
+            ->handleKeyEvent( _event ) == true )
+        {
+            return true;
+        }
 
-        return handle;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleTextEvent( const InputTextEvent & _event )
     {
-        bool handle = GAME_SERVICE()
-            ->handleTextEvent( _event );
+        if( MODULE_SERVICE()
+            ->handleTextEvent( _event ) == true )
+        {
+            return true;
+        }
 
-        return handle;
+        if( GAME_SERVICE()
+            ->handleTextEvent( _event ) == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
@@ -1379,10 +1396,19 @@ namespace Mengine
             return false;
         }
 
-        bool handle = GAME_SERVICE()
-            ->handleMouseButtonEvent( _event );
+        if( MODULE_SERVICE()
+            ->handleMouseButtonEvent( _event ) == true )
+        {
+            return true;
+        }
 
-        return handle;
+        if( GAME_SERVICE()
+            ->handleMouseButtonEvent( _event ) == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
@@ -1392,10 +1418,19 @@ namespace Mengine
             return false;
         }
 
-        bool handle = GAME_SERVICE()
-            ->handleMouseButtonEventBegin( _event );
+        if( MODULE_SERVICE()
+            ->handleMouseButtonEventBegin( _event ) == true )
+        {
+            return true;
+        }
 
-        return handle;
+        if( GAME_SERVICE()
+            ->handleMouseButtonEventBegin( _event ) == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
@@ -1405,18 +1440,36 @@ namespace Mengine
             return false;
         }
 
-        bool handle = GAME_SERVICE()
-            ->handleMouseButtonEventEnd( _event );
+        if( MODULE_SERVICE()
+            ->handleMouseButtonEventEnd( _event ) == true )
+        {
+            return true;
+        }
 
-        return handle;
+        if( GAME_SERVICE()
+            ->handleMouseButtonEventEnd( _event ) == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseMove( const InputMouseMoveEvent & _event )
     {
-        bool handle = GAME_SERVICE()
-            ->handleMouseMove( _event );
+        if( MODULE_SERVICE()
+            ->handleMouseMove( _event ) == true )
+        {
+            return true;
+        }
 
-        return handle;
+        if( GAME_SERVICE()
+            ->handleMouseMove( _event ) == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::updateDebugOpenFile_()
@@ -1509,22 +1562,43 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
-        bool handle = GAME_SERVICE()
-            ->handleMouseWheel( _event );
+        if( MODULE_SERVICE()
+            ->handleMouseWheel( _event ) == true )
+        {
+            return true;
+        }
 
-        return handle;
+        if( GAME_SERVICE()
+            ->handleMouseWheel( _event ) == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
-        bool handle = GAME_SERVICE()
-            ->handleMouseEnter( _event );
+        if( MODULE_SERVICE()
+            ->handleMouseEnter( _event ) == true )
+        {
+            return true;
+        }
 
-        return handle;
+        if( GAME_SERVICE()
+            ->handleMouseEnter( _event ) == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
+        MODULE_SERVICE()
+            ->handleMouseLeave( _event );
+
         GAME_SERVICE()
             ->handleMouseLeave( _event );
     }

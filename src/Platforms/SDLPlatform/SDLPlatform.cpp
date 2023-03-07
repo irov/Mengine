@@ -1584,9 +1584,9 @@ namespace Mengine
         int win_left;
         int win_bottom;
         int win_right;
-        if( SDL_GetWindowBordersSize( m_sdlWindow, &win_top, &win_left, &win_bottom, &win_right ) == 0 )
+        if( SDL_GetWindowBordersSize( m_sdlWindow, &win_top, &win_left, &win_bottom, &win_right ) != 0 )
         {
-            LOGGER_WARNING( "platform", "SDL window borders get error: %s"
+            LOGGER_WARNING( "SDL window borders get error: %s"
                 , SDL_GetError()
             );
         }
@@ -3375,6 +3375,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::destroyWindow_()
     {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
+
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         if( m_glContext != nullptr )
         {

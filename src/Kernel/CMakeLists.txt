@@ -547,6 +547,8 @@ Core
     VectorFilePath.h
     LambdaFilePath.h
     
+    Histogram.h
+    
     PathHelper.h
     PathHelper.cpp
     

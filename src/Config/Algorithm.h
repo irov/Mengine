@@ -23,5 +23,7 @@ namespace Mengine
         using std::copy;
         using std::fill;
         using std::fill_n;
+        using std::min_element;
+        using std::max_element;
     }
 }

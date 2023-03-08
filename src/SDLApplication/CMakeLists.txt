@@ -26,6 +26,11 @@ elseif(MENGINE_TARGET_WINDOWS)
     main
         Win32Main.cpp
     )
+elseif(MENGINE_TARGET_ANDROID)
+    ADD_FILTER(
+    main
+        AndroidMain.mm
+    )
 elseif(MENGINE_TARGET_MACOS)
     ADD_FILTER(
     main
@@ -37,7 +42,7 @@ elseif(MENGINE_TARGET_IOS)
         iOSMain.mm
     )
 else()
-    message( FATAL_ERROR "SDLApplication unsupport this target")
+    message(FATAL_ERROR "SDLApplication unsupport this target")
 endif()
 
 ADD_FILTER(

@@ -29,7 +29,7 @@ elseif(MENGINE_TARGET_WINDOWS)
 elseif(MENGINE_TARGET_ANDROID)
     ADD_FILTER(
     main
-        AndroidMain.mm
+        AndroidMain.cpp
     )
 elseif(MENGINE_TARGET_MACOS)
     ADD_FILTER(

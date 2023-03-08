@@ -23,6 +23,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import kotlin.Suppress;
+
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
 
@@ -170,28 +172,47 @@ public class MengineApplication extends Application {
         return deviceName;
     }
 
+    @SuppressWarnings("deprecation")
+    private PackageInfo getPackageInfo(PackageManager manager, String packageName) {
+        PackageInfo packageInfo;
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageInfo = manager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0));
+            } else {
+                packageInfo = manager.getPackageInfo(packageName, 0);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+
+        return packageInfo;
+    }
+
+    @SuppressWarnings("deprecation")
+    private long getPackageInfoVersionCode(PackageInfo packageInfo) {
+        long versionCode = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            versionCode = packageInfo.getLongVersionCode();
+        } else {
+            versionCode = packageInfo.versionCode;
+        }
+
+        return versionCode;
+    }
+
     public long getAndroidVersionCode() {
         Context context = this.getApplicationContext();
         PackageManager manager = context.getPackageManager();
         String packageName = context.getPackageName();
 
-        long versionCode = 0;
-        try {
-            PackageInfo pInfo;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                pInfo = manager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0));
-            } else {
-                pInfo = manager.getPackageInfo(packageName, 0);
-            }
+        PackageInfo packageInfo = this.getPackageInfo(manager, packageName);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                versionCode = pInfo.getLongVersionCode();
-            } else {
-                versionCode = pInfo.versionCode;
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            //FixMe?
+        if (packageInfo == null) {
+            return 0;
         }
+
+        long versionCode = this.getPackageInfoVersionCode(packageInfo);
 
         return versionCode;
     }

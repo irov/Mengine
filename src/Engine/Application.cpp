@@ -342,14 +342,14 @@ namespace Mengine
                 ->messageBox( "Mengine", "build info: %s %s %s %s", buildVersion, buildUserName, buildTimestamp, buildProjectName );
         }
 
-        LOGGER_INFO( "system", "build Info: %s %s %s [%s]", buildVersion, buildUserName, buildTimestamp, buildProjectName );
+        LOGGER_MESSAGE( "build Info: %s %s %s [%s]", buildVersion, buildUserName, buildTimestamp, buildProjectName );
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
         }
 
-        LOGGER_INFO( "system", "application company '%s' project '%s' version [%u] locale '%s'"
+        LOGGER_MESSAGE( "application company '%s' project '%s' version [%u] locale '%s'"
             , m_companyName.c_str()
             , m_projectName.c_str()
             , m_projectVersion

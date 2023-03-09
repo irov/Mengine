@@ -113,12 +113,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
         if (mediationAmazon != null) {
-            try {
-                mediationAmazon.initializeMediator(activity);
+            mediationAmazon.initializeMediator(activity, this);
 
-                m_mediationAmazon = mediationAmazon;
-            } catch (Exception e) {
-            }
+            m_mediationAmazon = mediationAmazon;
         }
 
         AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
@@ -166,6 +163,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     @Override
     public void onDestroy(MengineActivity activity) {
         if (m_mediationAmazon != null) {
+            m_mediationAmazon.finalizeMediator(activity, this);
             m_mediationAmazon = null;
         }
 

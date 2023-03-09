@@ -75,6 +75,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_FIREBASE_MESSAGING [https://firebase.google.com/docs/cloud-messaging]
 / * - MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG [https://firebase.google.com/docs/remote-config]
 / * - MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING [https://firebase.google.com/docs/perf-mon]
+/ * - MENGINE_APP_PLUGIN_AMAZON [https://developer.amazon.com]
 / * - MENGINE_APP_PLUGIN_APPLOVIN [https://www.applovin.com]
 / * - MENGINE_APP_PLUGIN_SENTRY [https://sentry.io]
 / * - MENGINE_APP_PLUGIN_FACEBOOK [https://developers.facebook.com]
@@ -87,7 +88,7 @@ includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
 / * - MENGINE_APP_PLUGIN_ONESIGNAL [https://onesignal.com]
-/ * - MENGINE_APP_PLUGIN_DATADOG [https://www.datadoghq.com/]
+/ * - MENGINE_APP_PLUGIN_DATADOG [https://www.datadoghq.com]
 DataDog
 *****************************************************************************/
 
@@ -104,6 +105,7 @@ includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false,":plugins:Firebas
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", false,":plugins:FirebaseMessaging")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", false,":plugins:FirebaseRemoteConfig")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", false,":plugins:FirebasePerformanceMonitoring")
+includePlugin("MENGINE_APP_PLUGIN_AMAZON", false, ":plugins:Amazon")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", false, ":plugins:AppLovin")
 includePlugin("MENGINE_APP_PLUGIN_SENTRY", false, ":plugins:Sentry")
 includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", false,":plugins:Facebook")

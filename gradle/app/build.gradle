@@ -30,6 +30,7 @@ def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin(project, "MENGINE_APP_PLU
 def MENGINE_APP_PLUGIN_FACEBOOK = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FACEBOOK")
 def MENGINE_APP_PLUGIN_SENTRY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SENTRY")
 def MENGINE_APP_PLUGIN_MAR = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_MAR")
+def MENGINE_APP_PLUGIN_AMAZON = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_AMAZON")
 def MENGINE_APP_PLUGIN_APPLOVIN = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN")
 def MENGINE_APP_PLUGIN_ADJUST = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ADJUST")
 def MENGINE_APP_PLUGIN_HELPSHIFT = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_HELPSHIFT")
@@ -503,6 +504,16 @@ if (MENGINE_APP_PLUGIN_MAR == true) {
 
     dependencies {
         implementation project(':plugins:MAR')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_AMAZON", MENGINE_APP_PLUGIN_AMAZON)
+
+if (MENGINE_APP_PLUGIN_AMAZON == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Amazon.MengineAmazonPlugin'
+
+    dependencies {
+        implementation project(':plugins:Amazon')
     }
 }
 

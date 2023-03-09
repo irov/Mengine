@@ -1,0 +1,7 @@
+import com.Mengine.Utils
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+
+dependencies {
+    implementation 'com.amazon.android:aps-sdk:9.7.0'
+}

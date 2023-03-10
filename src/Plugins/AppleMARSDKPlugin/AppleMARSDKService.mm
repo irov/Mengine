@@ -105,6 +105,15 @@ namespace Mengine
     void AppleMARSDKService::submitPaymentData( const Char * _data )
     {
         MARProductInfo * productInfo = [MARProductInfo productFromJsonString:@(_data)];
+        
+        if( productInfo == nil )
+        {
+            LOGGER_ERROR( "invalid create product from data: %s"
+                , _data
+            );
+            
+            return;
+        }
 
         LOGGER_MESSAGE( "submit payment data: %s"
             , _data
@@ -119,27 +128,39 @@ namespace Mengine
             , _orderId.c_str()
         );
         
+        ConstString copy_orderId = _orderId;
+        
         [[MARSDK sharedInstance] propComplete:Helper::stringToNSString(_orderId)
                               responseHandler:^(NSURLResponse* _response, id _data, NSError * _connectionError) {
             if( _connectionError != nil )
             {
                 LOGGER_ERROR( "prop complete '%s' response failed data: %s error: %s"
-                    , _orderId.c_str()
+                    , copy_orderId.c_str()
                     , Helper::NSIdToString( _data ).c_str()
                     , Helper::AppleGetMessageFromNSError( _connectionError ).c_str()
                 );
                 
-                m_provider->onPropError( _orderId );
-            }
-            else
-            {
-                LOGGER_MESSAGE( "prop complete '%s' response sucessful data: %s"
-                    , _orderId.c_str()
-                    , Helper::NSIdToString( _data ).c_str()
-                );
+                if( m_provider == nullptr )
+                {
+                    return;
+                }
                 
-                m_provider->onPropComplete( _orderId );
+                m_provider->onPropError( copy_orderId );
+                
+                return;
             }
+
+            LOGGER_MESSAGE( "prop complete '%s' response sucessful data: %s"
+                , copy_orderId.c_str()
+                , Helper::NSIdToString( _data ).c_str()
+            );
+            
+            if( m_provider == nullptr )
+            {
+                return;
+            }
+                
+            m_provider->onPropComplete( copy_orderId );
         }];
     }
     //////////////////////////////////////////////////////////////////////////

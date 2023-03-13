@@ -26,25 +26,48 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        Configuration config = new Configuration.Builder(
-            true,
-            true,
-            true,
-            false)
-            .useSite(DatadogSite.EU1)
+        String MengineDataDogPlugin_Site = activity.getMetaDataString("mengine.datadog.site");
+
+        DatadogSite site;
+
+        if (MengineDataDogPlugin_Site.equals("us1") == true) {
+            site = DatadogSite.US1;
+        } else if (MengineDataDogPlugin_Site.equals("us3") == true) {
+            site = DatadogSite.US3;
+        } else if (MengineDataDogPlugin_Site.equals("us5") == true) {
+            site = DatadogSite.US5;
+        } else if (MengineDataDogPlugin_Site.equals("us1_fed") == true) {
+            site = DatadogSite.US1_FED;
+        } else if (MengineDataDogPlugin_Site.equals("eu1") == true) {
+            site = DatadogSite.EU1;
+        } else {
+            throw new RuntimeException("unknown site: " + MengineDataDogPlugin_Site);
+        }
+
+        boolean logsEnabled = true;
+        boolean tracesEnabled = true;
+        boolean crashReportsEnabled = true;
+        boolean rumEnabled = false;
+
+        Configuration config = new Configuration.Builder(logsEnabled, tracesEnabled, crashReportsEnabled, rumEnabled)
+            .useSite(site)
             .build();
 
-        Credentials credentials = new Credentials(
-            "pubda43545394399088f99470a48958f89c",
-            "production",
-            Credentials.NO_VARIANT,
-            "",
-            null
-        );
+        String MengineDataDogPlugin_ClientToken = activity.getMetaDataString("mengine.datadog.client_token");
+
+        String clientToken = MengineDataDogPlugin_ClientToken;
+        String envName = "production";
+        String variant = Credentials.NO_VARIANT;
+        String rumApplicationId = "";
+        String serviceName = null;
+
+        Credentials credentials = new Credentials(clientToken, envName, variant, rumApplicationId, serviceName);
 
         Datadog.initialize(activity, credentials, config, TrackingConsent.GRANTED);
 
-        Datadog.setVerbosity(Log.VERBOSE);
+        if (BuildConfig.DEBUG == true) {
+            Datadog.setVerbosity(Log.VERBOSE);
+        }
 
         Logger loggerDataDog = new Logger.Builder()
             .setNetworkInfoEnabled(true)

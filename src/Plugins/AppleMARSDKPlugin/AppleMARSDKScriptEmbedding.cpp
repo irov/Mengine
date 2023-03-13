@@ -40,7 +40,7 @@ namespace Mengine
                     return;
                 }
                 
-                pybind::dict d = this->makePyParams( _params );
+                pybind::dict d = this->makePyParams_( _params );
                 
                 cb.call_args( d, m_args );
             }
@@ -54,7 +54,7 @@ namespace Mengine
                     return;
                 }
                 
-                pybind::dict d = this->makePyParams( _params );
+                pybind::dict d = this->makePyParams_( _params );
                 
                 cb.call_args( d, m_args );
             }
@@ -80,7 +80,7 @@ namespace Mengine
                     return;
                 }
                 
-                pybind::dict d = this->makePyParams( _params );
+                pybind::dict d = this->makePyParams_( _params );
                 
                 cb.call_args( _eventName, d, m_args );
             }
@@ -95,7 +95,7 @@ namespace Mengine
                     return;
                 }
                 
-                pybind::dict d = this->makePyParams( _params );
+                pybind::dict d = this->makePyParams_( _params );
                 
                 cb.call_args( d, m_args );
             }
@@ -109,7 +109,7 @@ namespace Mengine
                     return;
                 }
                 
-                pybind::dict d = this->makePyParams( _params );
+                pybind::dict d = this->makePyParams_( _params );
                 
                 cb.call_args( d, m_args );
             }
@@ -123,7 +123,7 @@ namespace Mengine
                     return;
                 }
                 
-                pybind::dict d = this->makePyParams( _params );
+                pybind::dict d = this->makePyParams_( _params );
                 
                 cb.call_args( d, m_args );
             }
@@ -131,7 +131,7 @@ namespace Mengine
         protected:
             void onPropComplete( const ConstString & _orderId ) override
             {
-                pybind::object cb = m_cbs.get("onPropComplete");
+                pybind::object cb = m_cbs["onPropComplete"];
                 
                 if( cb.is_none() == true )
                 {
@@ -143,7 +143,7 @@ namespace Mengine
             
             void onPropError( const ConstString & _orderId ) override
             {
-                pybind::object cb = m_cbs.get("onPropError");
+                pybind::object cb = m_cbs["onPropError"];
                 
                 if( cb.is_none() == true )
                 {
@@ -156,7 +156,7 @@ namespace Mengine
         protected:
             void onAdRewardedDidFailed() override
             {
-                pybind::object cb = m_cbs.get("onAdRewardedDidFailed");
+                pybind::object cb = m_cbs["onAdRewardedDidFailed"];
                 
                 if( cb.is_none() == true )
                 {
@@ -180,7 +180,7 @@ namespace Mengine
             
             void onAdRewardedDidShow() override
             {
-                pybind::object cb = m_cbs.get("onAdRewardedDidShow");
+                pybind::object cb = m_cbs["onAdRewardedDidShow"];
                 
                 if( cb.is_none() == true )
                 {
@@ -192,7 +192,7 @@ namespace Mengine
             
             void onAdRewardedDidClicked() override
             {
-                pybind::object cb = m_cbs.get("onAdRewardedDidClicked");
+                pybind::object cb = m_cbs["onAdRewardedDidClicked"];
                 
                 if( cb.is_none() == true )
                 {
@@ -204,7 +204,7 @@ namespace Mengine
             
             void onAdRewardedDidClosed() override
             {
-                pybind::object cb = m_cbs.get("onAdRewardedDidClosed");
+                pybind::object cb = m_cbs["onAdRewardedDidClosed"];
                 
                 if( cb.is_none() == true )
                 {
@@ -216,7 +216,7 @@ namespace Mengine
             
             void onAdRewardedDidSkipped() override
             {
-                pybind::object cb = m_cbs.get("onAdRewardedDidSkipped");
+                pybind::object cb = m_cbs["onAdRewardedDidSkipped"];
                 
                 if( cb.is_none() == true )
                 {
@@ -228,7 +228,7 @@ namespace Mengine
             
             void onAdRewardedDidFinished( const Char * _itemName, uint32_t _itemNum ) override
             {
-                pybind::object cb = m_cbs.get("onAdRewardedDidFinished");
+                pybind::object cb = m_cbs["onAdRewardedDidFinished"];
                 
                 if( cb.is_none() == true )
                 {
@@ -239,7 +239,7 @@ namespace Mengine
             }
             
         protected:
-            pybind::dict makePyParams( const MARSDKResultParams & _params ) const
+            pybind::dict makePyParams_( const MARSDKResultParams & _params ) const
             {
                 pybind::dict d( m_kernel );
                 

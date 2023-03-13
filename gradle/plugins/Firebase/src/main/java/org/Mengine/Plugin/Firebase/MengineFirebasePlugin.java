@@ -16,16 +16,4 @@ public class MengineFirebasePlugin extends MenginePlugin implements MenginePlugi
     public void onAppCreate(MengineApplication application) {
         FirebaseApp.initializeApp(application);
     }
-
-    @Override
-    public void onAppTerminate(MengineApplication application) {
-    }
-
-    @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-    }
-
-    @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-    }
 }

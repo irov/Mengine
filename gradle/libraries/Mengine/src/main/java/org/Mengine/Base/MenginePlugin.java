@@ -163,7 +163,7 @@ public class MenginePlugin {
 
         for (String extensionName : (String[])MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS) {
             if (this.createExtension(activity, extensionName) == false) {
-                new RuntimeException(extensionName);
+                throw new RuntimeException(extensionName);
             }
         }
     }

@@ -36,16 +36,6 @@ public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin im
     }
 
     @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-        //Empty
-    }
-
-    @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-        //Empty
-    }
-
-    @Override
     public void onMengineApplicationReady(MengineActivity activity) {
         m_startupTrace.stop();
     }

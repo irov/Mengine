@@ -1,16 +1,16 @@
 package org.Mengine.Base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class MengineSemaphore {
     protected boolean m_activate;
-    protected Vector<MengineCallbackInterface> m_listeners;
+    protected ArrayList<MengineCallbackInterface> m_listeners;
 
     MengineSemaphore(boolean _activate) {
         m_activate = _activate;
 
         if (m_activate == false) {
-            m_listeners = new Vector<>();
+            m_listeners = new ArrayList<>();
         }
     }
 

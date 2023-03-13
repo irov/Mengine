@@ -49,6 +49,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onDestroy(MengineActivity activity) {
+        //Empty
     }
 
     public void tutorialEvent(int stateOrStep) {

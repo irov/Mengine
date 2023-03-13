@@ -148,12 +148,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
                 AccessToken accessToken = loginResult.getAccessToken();
 
-                if (accessToken == null) {
-                    MengineFacebookPlugin.this.pythonCall("onFacebookLoginFailed");
-
-                    return;
-                }
-
                 m_facebookUserId = accessToken.getUserId();
 
                 String applicationId = accessToken.getApplicationId();

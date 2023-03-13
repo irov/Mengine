@@ -83,7 +83,6 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         params.setServerName("测试");		//服务器名称
         params.setVip("1");			//角色VIP等级
 
-        // params.setPayNotifyUrl("http://www.game.com/pay/callback");
         this.logMessage("pay params: %s"
             , params.toString()
         );
@@ -417,8 +416,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         try {
             String code = "";
 
-            MengineActivity activity = this.getActivity();
-            Context context = activity.getContext();
+            Context context = MengineActivity.getContext();
 
             ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
 

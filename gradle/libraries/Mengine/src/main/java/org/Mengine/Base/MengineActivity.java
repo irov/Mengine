@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.view.KeyEvent;
+import android.view.View;
 
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
@@ -222,6 +223,18 @@ public class MengineActivity extends SDLActivity {
         int value = application.getMetaDataInteger(name, d);
 
         return value;
+    }
+
+    public static View getContentView() {
+        View view = SDLActivity.getContentView();
+
+        return view;
+    }
+
+    public static Context getContext() {
+        Context context = SDLActivity.getContext();
+
+        return context;
     }
 
     @Override
@@ -708,13 +721,13 @@ public class MengineActivity extends SDLActivity {
     }
 
     protected CallbackResponse pythonCallResponseGet(int id) {
-        Iterator itr = m_callbackResponses.iterator();
+        Iterator<CallbackResponse> itr = m_callbackResponses.iterator();
 
         CallbackResponse response;
 
         while(itr.hasNext() == true)
         {
-            response = (CallbackResponse)itr.next();
+            response = itr.next();
 
             if( response.id != id )
             {

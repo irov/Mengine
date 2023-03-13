@@ -23,18 +23,6 @@ public class MengineOneSignalPlugin extends MenginePlugin implements MenginePlug
         OneSignal.setAppId(onesignal_app_id);
     }
 
-    @Override
-    public void onAppTerminate(MengineApplication application) {
-    }
-
-    @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-    }
-
-    @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-    }
-
     public void logError(String message) {
         OneSignal.onesignalLog(OneSignal.LOG_LEVEL.ERROR, message);
     }

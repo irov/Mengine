@@ -42,18 +42,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
-    }
-
-    @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-    }
-
-    @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-    }
-
-    @Override
     public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
         switch (eventType) {
             case EAET_CUSTOM: {

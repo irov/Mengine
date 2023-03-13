@@ -25,13 +25,13 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         ImageView image = new ImageView(activity);
-        Drawable mengine_splashscreen = activity.getContext().getResources().getDrawable(R.drawable.mengine_splashscreen);
+        Drawable mengine_splashscreen = MengineActivity.getContext().getResources().getDrawable(R.drawable.mengine_splashscreen);
         image.setBackground(mengine_splashscreen);
         image.setScaleType(ImageView.ScaleType.CENTER_CROP);
         ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         image.setLayoutParams(params);
 
-        ViewGroup view = (ViewGroup)activity.getContentView();
+        ViewGroup view = (ViewGroup)MengineActivity.getContentView();
         view.addView(image);
 
         m_image = image;
@@ -46,7 +46,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
     private void showSplash(@NonNull MengineActivity activity) {
         AlphaAnimation showAnimation = new AlphaAnimation(0.f, 1.f);
-        long durationMillis = activity.getContext().getResources().getInteger(R.integer.mengine_splashscreen_show_duration);
+        long durationMillis = MengineActivity.getContext().getResources().getInteger(R.integer.mengine_splashscreen_show_duration);
         showAnimation.setDuration(durationMillis);
         showAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -82,7 +82,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
         }
 
         AlphaAnimation hideAnimation = new AlphaAnimation(alphaFrom, 0.f);
-        long durationMillis = activity.getContext().getResources().getInteger(R.integer.mengine_splashscreen_hide_duration);
+        long durationMillis = MengineActivity.getContext().getResources().getInteger(R.integer.mengine_splashscreen_hide_duration);
         hideAnimation.setDuration(durationMillis);
         hideAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -109,7 +109,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     private void removeSpash(@NonNull MengineActivity activity) {
-        ViewGroup view = (ViewGroup)activity.getContentView();
+        ViewGroup view = (ViewGroup)MengineActivity.getContentView();
         view.removeView(m_image);
 
         m_image = null;

@@ -55,18 +55,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
-    }
-
-    @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-    }
-
-    @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-    }
-
-    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         FirebaseCrashlytics.getInstance().setCustomKey("onCreate", true);
     }

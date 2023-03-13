@@ -46,7 +46,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void scheduleJobServiceNotification(int id, String title, String content, int delay) {
+    public void scheduleJobServiceNotification(int id, String title, String content, long delay) {
         this.logMessage("scheduleJobServiceNotification id: %d title: %s content: %s delay: %d"
             , id
             , title
@@ -59,7 +59,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
         this.scheduleJobNotification(delay, bundle);
     }
 
-    public void scheduleNotification(Notification notification, int id, int delay) {
+    public void scheduleNotification(Notification notification, int id, long delay) {
         this.logMessage("scheduleNotification id: %d delay: %d"
             , id
             , delay
@@ -166,7 +166,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleJobNotification(int delayMillis, PersistableBundle bundle){
+    private void scheduleJobNotification(long delayMillis, PersistableBundle bundle){
         this.logMessage("schedule notification with delay: %d", delayMillis);
         
         MengineActivity activity = this.getActivity();

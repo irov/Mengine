@@ -5,7 +5,16 @@ import android.content.res.Configuration;
 
 public interface MenginePluginApplicationListener {
     void onAppCreate(MengineApplication application);
-    void onAppTerminate(MengineApplication application);
-    void onAppAttachBaseContext(MengineApplication application, Context base);
-    void onAppConfigurationChanged(MengineApplication application, Configuration newConfig);
+
+    default void onAppTerminate(MengineApplication application) {
+        //Empty
+    }
+
+    default void onAppAttachBaseContext(MengineApplication application, Context base) {
+        //Empty
+    }
+
+    default void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
+        //Empty
+    }
 }

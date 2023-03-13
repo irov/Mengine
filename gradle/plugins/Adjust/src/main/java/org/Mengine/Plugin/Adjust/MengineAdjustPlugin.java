@@ -62,18 +62,6 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
-    }
-
-    @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-    }
-
-    @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-    }
-
-    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         Adjust.gdprForgetMe(activity);
     }

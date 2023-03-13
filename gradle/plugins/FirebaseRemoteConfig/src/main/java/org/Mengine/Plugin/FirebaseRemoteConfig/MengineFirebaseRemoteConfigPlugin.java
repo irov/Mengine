@@ -43,18 +43,6 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
-    }
-
-    @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-    }
-
-    @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-    }
-
-    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 

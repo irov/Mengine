@@ -37,16 +37,4 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
             AdRegistration.enableLogging(true);
         }
     }
-
-    @Override
-    public void onAppTerminate(MengineApplication application) {
-    }
-
-    @Override
-    public void onAppAttachBaseContext(MengineApplication application, Context base) {
-    }
-
-    @Override
-    public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
-    }
 }

@@ -25,8 +25,6 @@ public class MengineUtils {
     }
 
     public static Class<?> getPackageBuildConfig(String TAG, Package p) {
-        ClassLoader cl = MengineActivity.class.getClassLoader();
-
         String packageName = p.getName();
         String buildConfigName = packageName + ".BuildConfig";
 
@@ -37,8 +35,6 @@ public class MengineUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> T newInstance(String TAG, String name, boolean required) {
-        ClassLoader cl = MengineActivity.class.getClassLoader();
-
         Class<?> clazz = MengineUtils.getClazz(TAG, name, required);
 
         if (clazz == null) {

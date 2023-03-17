@@ -5,7 +5,7 @@ src
     AppleFirebaseRemoteConfigInterface.h
 
     AppleFirebaseRemoteConfigPlugin.h
-    AppleFirebaseRemoteConfigPlugin.cpp
+    AppleFirebaseRemoteConfigPlugin.mm
     
     AppleFirebaseRemoteConfigApplicationDelegate.h
     AppleFirebaseRemoteConfigApplicationDelegate.mm

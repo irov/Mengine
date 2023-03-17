@@ -5,7 +5,7 @@ src
     AppleUserNotificationCenterInterface.h
 
     AppleUserNotificationCenterPlugin.h
-    AppleUserNotificationCenterPlugin.cpp
+    AppleUserNotificationCenterPlugin.mm
     
     AppleUserNotificationCenterApplicationDelegate.h
     AppleUserNotificationCenterApplicationDelegate.mm

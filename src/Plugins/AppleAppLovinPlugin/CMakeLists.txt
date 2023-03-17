@@ -3,7 +3,7 @@ MENGINE_PROJECT(AppleAppLovinPlugin)
 ADD_FILTER(
 src
     AppleAppLovinPlugin.h
-    AppleAppLovinPlugin.cpp
+    AppleAppLovinPlugin.mm
 
     AppleAppLovinInterface.h
 
@@ -54,7 +54,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AppleAppLovinScriptEmbedding.h
-        AppleAppLovinScriptEmbedding.cpp
+        AppleAppLovinScriptEmbedding.mm
     )
     
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

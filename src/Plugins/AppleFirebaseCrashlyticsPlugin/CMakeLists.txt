@@ -5,8 +5,7 @@ src
     AppleFirebaseCrashlyticsInterface.h
 
     AppleFirebaseCrashlyticsPlugin.h
-    AppleFirebaseCrashlyticsPlugin.cpp
-
+    AppleFirebaseCrashlyticsPlugin.mm
     
     AppleFirebaseCrashlyticsService.h
     AppleFirebaseCrashlyticsService.mm

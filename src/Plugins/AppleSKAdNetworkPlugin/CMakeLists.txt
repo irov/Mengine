@@ -5,7 +5,7 @@ src
     AppleSKAdNetworkInterface.h
     
     AppleSKAdNetworkPlugin.h
-    AppleSKAdNetworkPlugin.cpp
+    AppleSKAdNetworkPlugin.mm
 
     AppleSKAdNetworkApplicationDelegate.h
     AppleSKAdNetworkApplicationDelegate.mm

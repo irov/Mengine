@@ -5,8 +5,7 @@ src
     AppleGameCenterInterface.h
 
     AppleGameCenterPlugin.h
-    AppleGameCenterPlugin.cpp
-    AppleGameCenterPlugin.def
+    AppleGameCenterPlugin.mm
     
     AppleGameCenterService.h
     AppleGameCenterService.mm
@@ -19,7 +18,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AppleGameCenterScriptEmbedding.h
-        AppleGameCenterScriptEmbedding.cpp
+        AppleGameCenterScriptEmbedding.mm
         )
         
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

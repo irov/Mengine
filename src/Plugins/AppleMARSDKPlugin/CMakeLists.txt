@@ -11,7 +11,7 @@ src
     AppleMARSDKInterface.h
 
     AppleMARSDKPlugin.h
-    AppleMARSDKPlugin.cpp
+    AppleMARSDKPlugin.mm
 
     AppleMARSDKApplicationDelegate.h
     AppleMARSDKApplicationDelegate.mm
@@ -30,7 +30,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AppleMARSDKScriptEmbedding.h
-        AppleMARSDKScriptEmbedding.cpp
+        AppleMARSDKScriptEmbedding.mm
         )
         
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

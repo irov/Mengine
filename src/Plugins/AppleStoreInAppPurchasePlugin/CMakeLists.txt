@@ -6,7 +6,7 @@ src
     AppleStoreInAppPurchaseFactoryInterface.h
 
     AppleStoreInAppPurchasePlugin.h
-    AppleStoreInAppPurchasePlugin.cpp
+    AppleStoreInAppPurchasePlugin.mm
     
     AppleStoreInAppPurchaseService.h
     AppleStoreInAppPurchaseService.mm
@@ -29,7 +29,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AppleStoreInAppPurchaseScriptEmbedding.h
-        AppleStoreInAppPurchaseScriptEmbedding.cpp
+        AppleStoreInAppPurchaseScriptEmbedding.mm
     )
     
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

@@ -5,7 +5,7 @@ src
     AppleFirebaseMessagingInterface.h
 
     AppleFirebaseMessagingPlugin.h
-    AppleFirebaseMessagingPlugin.cpp
+    AppleFirebaseMessagingPlugin.mm
     
     AppleFirebaseMessagingApplicationDelegate.h
     AppleFirebaseMessagingApplicationDelegate.mm

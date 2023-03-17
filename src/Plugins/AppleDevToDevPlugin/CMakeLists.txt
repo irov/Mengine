@@ -5,7 +5,7 @@ src
     AppleDevToDevInterface.h
 
     AppleDevToDevPlugin.h
-    AppleDevToDevPlugin.cpp
+    AppleDevToDevPlugin.mm
     
     AppleDevToDevService.h
     AppleDevToDevService.mm

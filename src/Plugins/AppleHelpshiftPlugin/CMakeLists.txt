@@ -3,7 +3,7 @@ MENGINE_PROJECT(AppleHelpshiftPlugin)
 ADD_FILTER(
 src
     AppleHelpshiftPlugin.h
-    AppleHelpshiftPlugin.cpp
+    AppleHelpshiftPlugin.mm
 
     AppleHelpshiftInterface.h
 

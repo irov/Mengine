@@ -5,7 +5,7 @@ src
     AppleFirebaseAnalyticsInterface.h
 
     AppleFirebaseAnalyticsPlugin.h
-    AppleFirebaseAnalyticsPlugin.cpp
+    AppleFirebaseAnalyticsPlugin.mm
     
     AppleFirebaseAnalyticsService.h
     AppleFirebaseAnalyticsService.mm

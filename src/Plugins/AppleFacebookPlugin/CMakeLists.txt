@@ -3,7 +3,7 @@ MENGINE_PROJECT(AppleFacebookPlugin)
 ADD_FILTER(
 src
     AppleFacebookPlugin.h
-    AppleFacebookPlugin.cpp
+    AppleFacebookPlugin.mm
 
     AppleFacebookInterface.h
 
@@ -21,7 +21,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AppleFacebookScriptEmbedding.h
-        AppleFacebookScriptEmbedding.cpp
+        AppleFacebookScriptEmbedding.mm
     )
     
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

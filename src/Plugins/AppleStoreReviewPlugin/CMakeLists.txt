@@ -7,14 +7,14 @@ src
     AppleStoreReviewService.mm
 
     AppleStoreReviewPlugin.h
-    AppleStoreReviewPlugin.cpp
+    AppleStoreReviewPlugin.mm
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AppleStoreReviewScriptEmbedding.h
-        AppleStoreReviewScriptEmbedding.cpp
+        AppleStoreReviewScriptEmbedding.mm
     )
     
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

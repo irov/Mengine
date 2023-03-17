@@ -5,7 +5,7 @@ src
     AppleAppTrackingInterface.h
 
     AppleAppTrackingPlugin.h
-    AppleAppTrackingPlugin.cpp
+    AppleAppTrackingPlugin.mm
     
     AppleAppTrackingService.h
     AppleAppTrackingService.mm
@@ -15,10 +15,10 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AppleAppTrackingScriptEmbedding.h
-        AppleAppTrackingScriptEmbedding.cpp
+        AppleAppTrackingScriptEmbedding.mm
         )
         
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_APPTRACKING)

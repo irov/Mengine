@@ -3,7 +3,7 @@ MENGINE_PROJECT(AppleAdjustPlugin)
 ADD_FILTER(
 src
     AppleAdjustPlugin.h
-    AppleAdjustPlugin.cpp
+    AppleAdjustPlugin.mm
 
     AppleAdjustInterface.h
 
@@ -18,7 +18,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AppleAdjustScriptEmbedding.h
-        AppleAdjustScriptEmbedding.cpp
+        AppleAdjustScriptEmbedding.mm
     )
     
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

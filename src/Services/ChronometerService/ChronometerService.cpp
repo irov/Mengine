@@ -40,7 +40,7 @@ namespace Mengine
         m_chronometers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ChronometerService::addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc )
+    UniqueId ChronometerService::addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -59,7 +59,7 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ChronometerService::removeChronometer( uint32_t _id )
+    bool ChronometerService::removeChronometer( UniqueId _id )
     {
         for( ChronometerDesc & desc : m_chronometers )
         {

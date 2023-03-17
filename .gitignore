@@ -3,5 +3,6 @@
 /bin/
 /solutions/
 /contributing/cppcheck/
+/contributing/doc/
 **.exe
 **.DS_Store

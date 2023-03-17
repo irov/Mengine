@@ -5,6 +5,7 @@
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/EventableHelper.h"
+#include "Kernel/AssertionContainer.h"
 
 #include "Kernel/Logger.h"
 
@@ -73,6 +74,30 @@ namespace Mengine
         bool picked = this->isPickerPicked();
 
         return picked;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpot::addInputHandler( const InputHandlerInterfacePtr & _inputHandler, const DocumentPtr & _doc )
+    {
+        InputHandlerDesc desc;
+        desc.handler = _inputHandler;
+
+#ifdef MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
+        
+        m_inputHandlers.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpot::removeInputHandler( const InputHandlerInterfacePtr & _inputHandler )
+    {
+        VectorInputHandlers::iterator it_found = std::find_if( m_inputHandlers.begin(), m_inputHandlers.end(), [_inputHandler]( const InputHandlerDesc & _desc )
+        {
+            return _desc.handler == _inputHandler;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_inputHandlers.end() );
+
+        m_inputHandlers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::activatePicker_()
@@ -145,13 +170,35 @@ namespace Mengine
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_ENTER, m_defaultHandle )
             ->onHotSpotMouseEnter( _event );
 
-        return handle;
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleMouseEnter( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
         EVENTABLE_METHOD( EVENT_HOTSPOT_MOUSE_LEAVE )
             ->onHotSpotMouseLeave( _event );
+        
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            handler->handleMouseLeave( _event );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleKeyEvent( const InputKeyEvent & _event )
@@ -159,7 +206,22 @@ namespace Mengine
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_KEY, m_defaultHandle )
             ->onHotSpotKey( _event );
 
-        return handle;
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleKeyEvent( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleTextEvent( const InputTextEvent & _event )
@@ -167,7 +229,22 @@ namespace Mengine
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_TEXT, m_defaultHandle )
             ->onHotSpotText( _event );
 
-        return handle;
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleTextEvent( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
@@ -175,7 +252,22 @@ namespace Mengine
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_BUTTON, m_defaultHandle )
             ->onHotSpotMouseButton( _event );
 
-        return handle;
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleMouseButtonEvent( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
@@ -183,7 +275,22 @@ namespace Mengine
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN, false )
             ->onHotSpotMouseButtonBegin( _event );
 
-        return handle;
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleMouseButtonEventBegin( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
@@ -191,7 +298,22 @@ namespace Mengine
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_BUTTON_END, false )
             ->onHotSpotMouseButtonEnd( _event );
 
-        return handle;
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleMouseButtonEventEnd( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseMove( const InputMouseMoveEvent & _event )
@@ -199,7 +321,22 @@ namespace Mengine
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_MOVE, m_defaultHandle )
             ->onHotSpotMouseMove( _event );
 
-        return handle;
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleMouseMove( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -207,7 +344,22 @@ namespace Mengine
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_WHEEL, m_defaultHandle )
             ->onHotSpotMouseWheel( _event );
 
-        return handle;
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const InputHandlerDesc & desc : m_inputHandlers )
+        {
+            const InputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleMouseWheel( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_freeze( bool _value )
@@ -263,6 +415,15 @@ namespace Mengine
         }
 
         Node::_deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpot::_dispose()
+    {
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_inputHandlers );
+
+        m_inputHandlers.clear();
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const

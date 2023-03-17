@@ -28,15 +28,15 @@ namespace Mengine
         void update() override;
 
     public:
-        uint32_t addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc ) override;
-        bool removeChronometer( uint32_t _id ) override;
+        UniqueId addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc ) override;
+        bool removeChronometer( UniqueId _id ) override;
 
     protected:
         TimeMilliseconds m_oldTime;
 
         struct ChronometerDesc
         {
-            uint32_t id;
+            UniqueId id;
             LambdaChronometer lambda;
 
 #ifdef MENGINE_DOCUMENT_ENABLE

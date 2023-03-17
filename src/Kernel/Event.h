@@ -29,7 +29,7 @@ namespace Mengine
         }
 
     public:
-        uint32_t add( const LambdaEvent & _lambda )
+        UniqueId add( const LambdaEvent & _lambda )
         {
             UniqueId id = Helper::generateUniqueIdentity();
 
@@ -42,7 +42,7 @@ namespace Mengine
             return id;
         }
 
-        uint32_t remove( const LambdaEvent & _lambda )
+        UniqueId remove( const LambdaEvent & _lambda )
         {
             typename VectorEvents::iterator it_found = Algorithm::find_if( m_events.begin(), m_events.end(), [&_lambda]( const EventDesc & _desc )
             {
@@ -53,14 +53,14 @@ namespace Mengine
 
             const EventDesc & desc = *it_found;
 
-            uint32_t id = desc.id;
+            UniqueId id = desc.id;
 
             m_events.erase( it_found );
 
             return id;
         }
 
-        LambdaEvent remove( uint32_t _id )
+        LambdaEvent remove( UniqueId _id )
         {
             typename VectorEvents::iterator it_found = Algorithm::find_if( m_events.begin(), m_events.end(), [_id]( const EventDesc & _desc )
             {

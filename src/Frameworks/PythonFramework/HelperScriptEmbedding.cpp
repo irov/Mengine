@@ -619,7 +619,7 @@ namespace Mengine
             uint32_t s_addChronometer( const pybind::object & _cb, const pybind::args & _args )
             {
                 uint32_t id = CHRONOMETER_SERVICE()
-                    ->addChronometer( [_cb, _args]( uint32_t _id, uint64_t _time )
+                    ->addChronometer( [_cb, _args]( UniqueId _id, TimeMilliseconds _time )
                 {
                     _cb.call_args( _id, _time, _args );
                 }, MENGINE_DOCUMENT_PYBIND );

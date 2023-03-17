@@ -48,6 +48,10 @@ namespace Mengine
         bool isMousePickerOver() const;
 
     public:
+        void addInputHandler( const InputHandlerInterfacePtr & _inputHandler, const DocumentPtr & _doc );
+        void removeInputHandler( const InputHandlerInterfacePtr & _inputHandler );
+
+    public:
         virtual bool testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const = 0;
         virtual bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const = 0;
         virtual bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
@@ -56,6 +60,9 @@ namespace Mengine
         bool _activate() override;
         bool _afterActivate() override;
         void _deactivate() override;
+
+    protected:
+        void _dispose() override;
 
     protected:
         void _freeze( bool _value ) override;
@@ -98,6 +105,18 @@ namespace Mengine
         void _invalidateWorldMatrix() const override;
 
     protected:
+        struct InputHandlerDesc
+        {
+            InputHandlerInterfacePtr handler;
+
+#ifdef MENGINE_DOCUMENT_ENABLE
+            DocumentPtr doc;
+#endif
+        };
+
+        typedef Vector<InputHandlerDesc> VectorInputHandlers;
+        VectorInputHandlers m_inputHandlers;
+
         bool m_outward;
         bool m_global;
         bool m_exclusive;

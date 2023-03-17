@@ -81,35 +81,35 @@ namespace Mengine
         return buffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SilentSoundSystem::genSourceId()
+    UniqueId SilentSoundSystem::genSourceId()
     {
         UniqueId new_id = Helper::generateUniqueIdentity();
 
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundSystem::releaseSourceId( uint32_t _sourceId )
+    void SilentSoundSystem::releaseSourceId( UniqueId _sourceId )
     {
         MENGINE_UNUSED( _sourceId );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SilentSoundSystem::genBufferId()
+    UniqueId SilentSoundSystem::genBufferId()
     {
         UniqueId new_id = Helper::generateUniqueIdentity();
 
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundSystem::releaseBufferId( uint32_t _bufferId )
+    void SilentSoundSystem::releaseBufferId( UniqueId _bufferId )
     {
         MENGINE_UNUSED( _bufferId );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundSystem::clearSourceId( uint32_t _sourceId )
+    void SilentSoundSystem::clearSourceId( UniqueId _sourceId )
     {
         MENGINE_UNUSED( _sourceId );
 

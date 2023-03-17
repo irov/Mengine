@@ -8,6 +8,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     class SilentSoundSystem
@@ -35,13 +37,13 @@ namespace Mengine
         SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable, const DocumentPtr & _doc ) override;
 
     public:
-        uint32_t genSourceId();
-        void releaseSourceId( uint32_t _sourceId );
-        void clearSourceId( uint32_t _sourceId );
+        UniqueId genSourceId();
+        void releaseSourceId( UniqueId _sourceId );
+        void clearSourceId( UniqueId _sourceId );
 
     public:
-        uint32_t genBufferId();
-        void releaseBufferId( uint32_t _bufferId );
+        UniqueId genBufferId();
+        void releaseBufferId( UniqueId _bufferId );
 
     public:
         uint32_t getSourcesCount() const override;

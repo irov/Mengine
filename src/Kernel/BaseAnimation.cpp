@@ -200,11 +200,11 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t BaseAnimation::play( float _time )
+    UniqueId BaseAnimation::play( float _time )
     {
         if( m_pause == true )
         {
-            return 0;
+            return INVALID_UNIQUE_ID;
         }
 
         m_playIterator = m_playCount;
@@ -226,7 +226,7 @@ namespace Mengine
             {
                 m_play = false;
 
-                return 0;
+                return INVALID_UNIQUE_ID;
             }
         }
         else
@@ -235,7 +235,7 @@ namespace Mengine
             {
                 m_play = false;
 
-                return 0;
+                return INVALID_UNIQUE_ID;
             }
         }
 

@@ -2,6 +2,8 @@
 
 #include "Interface/Interface.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -56,7 +58,7 @@ namespace Mengine
         virtual float getStretch() const = 0;
 
     public:
-        virtual uint32_t play( float _time ) = 0;
+        virtual UniqueId play( float _time ) = 0;
         virtual bool stop() = 0;
         virtual bool pause() = 0;
         virtual void resume( float _time ) = 0;
@@ -74,7 +76,7 @@ namespace Mengine
         virtual bool isLastCicle() const = 0;
 
     public:
-        virtual uint32_t getPlayId() const = 0;
+        virtual UniqueId getPlayId() const = 0;
         virtual float getPlayTime() const = 0;
 
     public:

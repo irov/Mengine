@@ -4,8 +4,6 @@
 
 #include "Kernel/UpdateContext.h"
 
-#include "Config/UniqueId.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -59,7 +57,7 @@ namespace Mengine
         float getStretch() const override;
 
     public:
-        uint32_t play( float _time ) override;
+        UniqueId play( float _time ) override;
         bool stop() override;
         bool pause() override;
         void resume( float _time ) override;
@@ -77,7 +75,7 @@ namespace Mengine
         bool isLastCicle() const override;
 
     public:
-        uint32_t getPlayId() const override;
+        UniqueId getPlayId() const override;
         float getPlayTime() const override;
 
     public:
@@ -196,7 +194,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE uint32_t BaseAnimation::getPlayId() const
+    MENGINE_INLINE UniqueId BaseAnimation::getPlayId() const
     {
         return m_playId;
     }

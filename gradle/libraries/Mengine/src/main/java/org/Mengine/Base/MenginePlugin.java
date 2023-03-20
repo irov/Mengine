@@ -1,6 +1,7 @@
 package org.Mengine.Base;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -44,6 +45,34 @@ public class MenginePlugin {
         T instance = MengineUtils.newInstance(m_pluginName, name, exist);
 
         return instance;
+    }
+
+    public SharedPreferences getPrivateSharedPreferences() {
+        SharedPreferences settings = m_application.getPrivateSharedPreferences(m_pluginName);
+
+        return settings;
+    }
+
+    public void setPrivateSettingString(String name, String value) {
+        SharedPreferences settings = m_application.getPrivateSharedPreferences(m_pluginName);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(name, value);
+        editor.apply();
+    }
+
+    public String getPrivateSettingString(String name, String defaultValue) {
+        SharedPreferences settings = m_application.getPrivateSharedPreferences(m_pluginName);
+
+        String value = settings.getString(name, defaultValue);
+
+        return value;
+    }
+
+    protected void invalidInitialize(String format, Object ... args) throws MenginePluginInvalidInitializeException {
+        MengineLog.logFatal(m_pluginName, format, args);
+
+        throw new MenginePluginInvalidInitializeException(m_pluginName);
     }
 
     public void log(int level, String format, Object ... args) {
@@ -108,7 +137,7 @@ public class MenginePlugin {
         //Empty
     }
 
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         //Empty
     }
 
@@ -134,7 +163,7 @@ public class MenginePlugin {
         return true;
     }
 
-    public void onExtensionInitialize(MengineActivity activity) {
+    public void onExtensionInitialize(MengineActivity activity) throws MenginePluginInvalidInitializeException {
         Class<?> c = this.getClass();
         Package p = c.getPackage();
         Class<?> buildConfig = MengineUtils.getPackageBuildConfig(m_pluginName, p);
@@ -163,7 +192,7 @@ public class MenginePlugin {
 
         for (String extensionName : (String[])MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS) {
             if (this.createExtension(activity, extensionName) == false) {
-                throw new RuntimeException(extensionName);
+                throw new MenginePluginInvalidInitializeException(extensionName);
             }
         }
     }

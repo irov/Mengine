@@ -14,13 +14,17 @@ public class MengineOneSignalPlugin extends MenginePlugin implements MenginePlug
 
     @Override
     public void onAppCreate(MengineApplication application) {
+        String MengineOneSignalPlugin_AppId = application.getMetaDataString("mengine.onesignal.app_id");
+
+        if (MengineOneSignalPlugin_AppId == null) {
+            this.invalidInitialize("invalid setup meta data [mengine.onesignal.app_id]");
+
+            return;
+        }
+
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
-
         OneSignal.initWithContext(application);
-
-        String onesignal_app_id = application.getMetaDataString("mengine.onesignal.app_id");
-
-        OneSignal.setAppId(onesignal_app_id);
+        OneSignal.setAppId(MengineOneSignalPlugin_AppId);
     }
 
     public void logError(String message) {

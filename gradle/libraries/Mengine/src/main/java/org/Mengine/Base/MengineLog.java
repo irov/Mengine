@@ -100,7 +100,7 @@ public class MengineLog {
         MengineLog.log(LM_ERROR, tag, format, args);
     }
 
-    private static String buildTotalMsg(String tag, String format, Object ... args) {
+    public static String buildTotalMsg(String tag, String format, Object ... args) {
         StringBuilder sb = new StringBuilder();
 
         String msg;

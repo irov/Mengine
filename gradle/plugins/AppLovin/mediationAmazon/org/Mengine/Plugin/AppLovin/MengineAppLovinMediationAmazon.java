@@ -43,8 +43,8 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     public void initializeMediatorBanner(MengineActivity activity, MengineAppLovinPlugin plugin, MaxAdView adView, MengineAppLovinMediationLoadAdCallback loadAdCallback) {
         String MengineAppLovinPlugin_AmazonBannerSlotId = activity.getMetaDataString("mengine.applovin.amazon_banner_slot_id");
 
-        if (MengineAppLovinPlugin_AmazonBannerSlotId.isEmpty() == true) {
-            throw new RuntimeException("need to add config value for [AppLovin] mengine.applovin.amazon_banner_slot_id");
+        if (MengineAppLovinPlugin_AmazonBannerSlotId == null) {
+            throw new RuntimeException("MengineAppLovinMediationAmazon need to add config value for [mengine.applovin.amazon_banner_slot_id]");
         }
 
         int width = activity.getWindow().getDecorView().getWidth();
@@ -106,8 +106,8 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
             case ADLOAD_NONE:
                 String MengineAppLovinPlugin_AmazonInterstitialSlotId = activity.getMetaDataString("mengine.applovin.amazon_interstitial_slot_id");
 
-                if (MengineAppLovinPlugin_AmazonInterstitialSlotId.isEmpty() == true) {
-                    throw new RuntimeException("need to add config value for [AppLovin] mengine.applovin.amazon_interstitial_slot_id");
+                if (MengineAppLovinPlugin_AmazonInterstitialSlotId == null) {
+                    throw new RuntimeException("MengineAppLovinMediationAmazon need to add config value for [mengine.applovin.amazon_interstitial_slot_id]");
                 }
 
                 m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_PROCESS;
@@ -170,8 +170,8 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
             case ADLOAD_NONE:
                 String MengineAppLovinPlugin_AmazonRewardedSlotId = activity.getMetaDataString("mengine.applovin.amazon_rewarded_slot_id");
 
-                if (MengineAppLovinPlugin_AmazonRewardedSlotId.isEmpty() == true) {
-                    throw new RuntimeException("need to add config value for [AppLovin] mengine.applovin.amazon_rewarded_slot_id");
+                if (MengineAppLovinPlugin_AmazonRewardedSlotId == null) {
+                    throw new RuntimeException("MengineAppLovinMediationAmazon need to add config value for [mengine.applovin.amazon_rewarded_slot_id]");
                 }
 
                 m_loadRewardedStatus = ELoadAdStatus.ADLOAD_PROCESS;

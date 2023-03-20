@@ -86,7 +86,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         String MengineHelpshiftPlugin_PlatformId = activity.getMetaDataString("mengine.helpshift.platform_id");
 
         if (MengineHelpshiftPlugin_PlatformId == null) {
-            this.logError("Invalid setup meta data [mengine.helpshift.platform_id]");
+            this.invalidInitialize("invalid setup meta data [mengine.helpshift.platform_id]");
 
             return;
         }
@@ -94,7 +94,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         String MengineHelpshiftPlugin_Domain = activity.getMetaDataString("mengine.helpshift.domain");
 
         if (MengineHelpshiftPlugin_Domain == null) {
-            this.logError("Invalid setup meta data [mengine.helpshift.domain]");
+            this.invalidInitialize("invalid setup meta data [mengine.helpshift.domain]");
 
             return;
         }
@@ -104,11 +104,11 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
             Helpshift.install(application, MengineHelpshiftPlugin_PlatformId, MengineHelpshiftPlugin_Domain, config);
         } catch (UnsupportedOSVersionException e) {
-            this.logError("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
+            this.invalidInitialize("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
 
             return;
         } catch (HelpshiftInstallException e) {
-            this.logError("Install exception: %s"
+            this.invalidInitialize("install exception: %s"
                 , e.getLocalizedMessage()
             );
 

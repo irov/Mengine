@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 
 public interface MenginePluginApplicationListener {
-    void onAppCreate(MengineApplication application);
+    void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException;
 
     default void onAppTerminate(MengineApplication application) {
         //Empty

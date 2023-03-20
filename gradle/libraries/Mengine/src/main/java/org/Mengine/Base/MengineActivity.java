@@ -256,11 +256,27 @@ public class MengineActivity extends SDLActivity {
         for (MenginePlugin p : plugins) {
             p.setActivity(this);
 
-            p.onCreate(this, savedInstanceState);
+            try {
+                p.onCreate(this, savedInstanceState);
+            } catch (MenginePluginInvalidInitializeException e) {
+                MengineLog.logError(TAG, "invalid onCreate plugin: %s"
+                    , e.getPluginName()
+                );
+
+                this.finish();
+            }
         }
 
         for (MenginePlugin p : plugins) {
-            p.onExtensionInitialize(this);
+            try {
+                p.onExtensionInitialize(this);
+            } catch (MenginePluginInvalidInitializeException e) {
+                MengineLog.logError(TAG, "invalid onExtensionInitialize plugin: %s"
+                    , e.getPluginName()
+                );
+
+                this.finish();
+            }
         }
     }
 

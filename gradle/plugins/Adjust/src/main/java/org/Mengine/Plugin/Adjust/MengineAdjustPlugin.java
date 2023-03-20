@@ -14,6 +14,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "Adjust";
@@ -38,16 +39,22 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
 
         if (BuildConfig.DEBUG == true) {
             environment = AdjustConfig.ENVIRONMENT_SANDBOX;
         }
 
-        String adjust_app_token = application.getMetaDataString("mengine.adjust.app_token");
+        String MengineAdjustPlugin_AppToken = application.getMetaDataString("mengine.adjust.app_token");
 
-        AdjustConfig config = new AdjustConfig(application, adjust_app_token, environment);
+        if (MengineAdjustPlugin_AppToken == null) {
+            this.invalidInitialize("invalid setup meta data [mengine.adjust.app_token]");
+
+            return;
+        }
+
+        AdjustConfig config = new AdjustConfig(application, MengineAdjustPlugin_AppToken, environment);
 
         if (BuildConfig.DEBUG) {
             config.setLogLevel(LogLevel.VERBOSE);

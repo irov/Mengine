@@ -24,6 +24,14 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+        String MengineDevToDevPlugin_AppId = activity.getMetaDataString("mengine.devtodev.app_id");
+
+        if (MengineDevToDevPlugin_AppId == null) {
+            this.invalidInitialize("initialize unsetup [mengine.devtodev.app_id]");
+
+            return;
+        }
+
         DTDAnalytics.INSTANCE.setInitializationCompleteCallback(() -> {
             MengineDevToDevPlugin.this.logMessage("Initialized DevToDev has been finished");
 
@@ -42,9 +50,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             configuration.setLogLevel(DTDLogLevel.Error);
         }
 
-        String devtodev_app_id = activity.getMetaDataString("mengine.devtodev.app_id");
-
-        DTDAnalytics.INSTANCE.initialize(devtodev_app_id, configuration, activity);
+        DTDAnalytics.INSTANCE.initialize(MengineDevToDevPlugin_AppId, configuration, activity);
     }
 
     @Override

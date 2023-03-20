@@ -1,8 +1,10 @@
 package org.Mengine.Base;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,7 +13,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 
 import org.libsdl.app.SDL;
@@ -27,6 +31,8 @@ import kotlin.Suppress;
 
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
+
+    private static final int EXIT_FAILURE = 1;
 
     private static native void AndroidEnvironmentService_setMengineAndroidApplicationJNI(Object activity);
     private static native void AndroidEnvironmentService_removeMengineAndroidApplicationJNI();
@@ -425,6 +431,49 @@ public class MengineApplication extends Application {
         }
     }
 
+    public SharedPreferences getPrivateSharedPreferences(@NonNull String tag) {
+        Context applicationContext = this.getApplicationContext();
+
+        String packageName = applicationContext.getPackageName();
+
+        SharedPreferences settings = applicationContext.getSharedPreferences(packageName + "." + tag, MODE_PRIVATE);
+
+        return settings;
+    }
+
+    public void showToast(String format, Object ... args) {
+        String message = MengineLog.buildTotalMsg(null, format, args);
+
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+
+        toast.show();
+    }
+
+    public void showAlertDialog(String format, Object ... args) {
+        String message = MengineLog.buildTotalMsg(null, format, args);
+
+        MengineLog.logInfo(TAG, "show alert dialog: %s"
+            , message
+        );
+
+        Context context = this.getApplicationContext();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+
+        alert.show();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -432,17 +481,13 @@ public class MengineApplication extends Application {
         try {
             SDL.loadLibrary("SDLApplication");
         } catch (UnsatisfiedLinkError e) {
-            MengineLog.logError(TAG, "load library SDLApplication catch UnsatisfiedLinkError: %s"
+            this.invalidInitialize("load library SDLApplication catch UnsatisfiedLinkError: %s"
                 , e.getLocalizedMessage()
             );
-
-            throw new RuntimeException("invalid load library SDLApplication catch UnsatisfiedLinkError: " + e.getLocalizedMessage());
         } catch (Exception e) {
-            MengineLog.logError(TAG, "load library SDLApplication catch Exception: %s"
+            this.invalidInitialize("load library SDLApplication catch Exception: %s"
                 , e.getLocalizedMessage()
             );
-
-            throw new RuntimeException("invalid load library SDLApplication catch Exception: " + e.getLocalizedMessage());
         }
 
         AndroidEnvironmentService_setMengineAndroidApplicationJNI(this);
@@ -456,9 +501,7 @@ public class MengineApplication extends Application {
         ContentResolver resolver = applicationContext.getContentResolver();
         m_androidId = Settings.Secure.getString(resolver, Settings.Secure.ANDROID_ID);
 
-        String packageName = applicationContext.getPackageName();
-
-        SharedPreferences settings = applicationContext.getSharedPreferences(packageName + ".Activity", MODE_PRIVATE);
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
 
         String installKey = settings.getString("install_key", null);
         long installKeyTimestamp = settings.getLong("install_key_timestamp", 0);
@@ -497,18 +540,22 @@ public class MengineApplication extends Application {
 
         for (String namePlugin : plugins) {
             if (this.createPlugin(namePlugin) == false) {
-                MengineLog.logError(TAG, "invalid create plugin: %s"
+                this.invalidInitialize("invalid create plugin: %s"
                     , namePlugin
                 );
-
-                throw new RuntimeException("invalid create plugin: " + namePlugin);
             }
         }
 
         ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
-            l.onAppCreate(this);
+            try {
+                l.onAppCreate(this);
+            } catch (MenginePluginInvalidInitializeException e) {
+                this.invalidInitialize("invalid onAppCreate plugin: %s"
+                    , e.getPluginName()
+                );
+            }
         }
     }
 
@@ -586,5 +633,11 @@ public class MengineApplication extends Application {
         for (MenginePluginAnalyticsListener l : listeners) {
             l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, parameters);
         }
+    }
+
+    private void invalidInitialize(String format, Object ... args) {
+        MengineLog.logError(TAG, format, args);
+
+        System.exit(EXIT_FAILURE);
     }
 }

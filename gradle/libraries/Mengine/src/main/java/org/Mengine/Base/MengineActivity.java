@@ -181,7 +181,7 @@ public class MengineActivity extends SDLActivity {
         return plugin;
     }
 
-    public void sendEvent(String id, Object ... args) {
+    public void sendEvent(MengineEvent event, Object ... args) {
         if (m_destroy == true) {
             return;
         }
@@ -189,7 +189,7 @@ public class MengineActivity extends SDLActivity {
         ArrayList<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
-            p.onEvent(this, id, args);
+            p.onEvent(this, event, args);
         }
     }
 

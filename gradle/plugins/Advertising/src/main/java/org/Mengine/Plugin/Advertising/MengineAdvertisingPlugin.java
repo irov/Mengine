@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.Advertising;
 
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
@@ -82,7 +83,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
                 , MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled == true ? "true" : "false"
             );
 
-            activity.sendEvent("AdvertisingId", MengineAdvertisingPlugin.this.m_advertisingId, MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled);
+            activity.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, MengineAdvertisingPlugin.this.m_advertisingId, MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled);
         });
     }
 }

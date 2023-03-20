@@ -2,6 +2,7 @@ package org.Mengine.Plugin.AppLovin;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 import org.Mengine.Base.MenginePluginExtensionListener;
@@ -78,8 +79,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     private ArrayList<MengineAppLovinAnalyticsListener> m_analytics = new ArrayList<>();
 
     @Override
-    public void onEvent(MengineActivity activity, String id, Object ... args) {
-        if (id.equals("AdvertisingId") == true) {
+    public void onEvent(MengineActivity activity, MengineEvent event, Object ... args) {
+        if (event == MengineEvent.EVENT_ADVERTISING_ID) {
             final Context context = activity.getBaseContext();
 
             String advertisingId = (String)args[0];

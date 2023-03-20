@@ -1,13 +1,20 @@
 package org.Mengine.Plugin.FirebaseMessaging;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 import org.Mengine.Base.MenginePluginExtensionListener;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,10 +29,34 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        String token = this.getPrivateSettingString("PushToken", null);
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 
-        if (token != null) {
-            this.sendPushTokenEvent(token);
+        Context context = activity.getApplicationContext();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
+
+        if (resultCode == ConnectionResult.SUCCESS) {
+            FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (task.isSuccessful() == false) {
+                            MengineFirebaseMessagingPlugin.this.logError("fetching FCM registration token failed: %s"
+                                , task.getException()
+                            );
+
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        MengineFirebaseMessagingPlugin.this.logInfo("fetching FCM registration token successful: %s"
+                            , token
+                        );
+
+                        activity.sendEvent(MengineEvent.EVENT_PUSH_TOKEN, token);
+                    }
+                });
         }
     }
 
@@ -70,18 +101,8 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
     }
 
     public void onNewToken(@NonNull String token) {
-        this.setPrivateSettingString("PushToken", token);
-
-        this.sendPushTokenEvent(token);
-
         for (MengineFirebaseMessagingListener listener : m_messagings) {
             listener.onNewToken(token);
         }
-    }
-
-    private void sendPushTokenEvent(String token) {
-        MengineActivity activity = this.getActivity();
-
-        activity.sendEvent("PushToken", token);
     }
 }

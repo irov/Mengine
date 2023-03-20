@@ -324,7 +324,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         MengineActivity activity = this.getActivity();
 
         for (ProductDetails product : m_productsDetails) {
-            if (product.getProductId().equals(productId) == false) {
+            String currentProductId = product.getProductId();
+
+            if (currentProductId.equals(productId) == false) {
                 continue;
             }
 

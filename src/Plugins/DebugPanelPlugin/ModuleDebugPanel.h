@@ -5,8 +5,12 @@
 #include "Kernel/ModuleBase.h"
 #include "Kernel/Histogram.h"
 
-#ifndef MENGINE_DEBUG_PANEL_HISTOGRAM_COUNT
-#define MENGINE_DEBUG_PANEL_HISTOGRAM_COUNT 32
+#ifndef MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT
+#define MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT 32
+#endif
+
+#ifndef MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT
+#define MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT 120
 #endif
 
 namespace Mengine
@@ -38,9 +42,29 @@ namespace Mengine
         void onRenderExternal() const override;
 
     protected:
+        typedef Histogram<float, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT> HistogramUpdate;
+        typedef Histogram<float, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT> HistogramPerframe;
+
+    protected:
+        void updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier );
+
+    protected:
+        void drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _overlayFormat, float _maxValue, float _height ) const;
+        void drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _overlayFormat, float _maxValue, float _height ) const;
+
+    protected:
         ImGUIRenderProviderInterfacePtr m_imguiRenderProvider;
 
-        Histogram<float, MENGINE_DEBUG_PANEL_HISTOGRAM_COUNT> m_histogramFPS;
+        mutable HistogramUpdate m_histogramFPS;
+        mutable HistogramUpdate m_histogramAllocatorNew;
+        mutable HistogramUpdate m_histogramAllocatorFree;
+
+        mutable HistogramPerframe m_histogramPerFrameDrawIndexPrimitives;
+        mutable HistogramPerframe m_histogramPerFrameObjects;
+        mutable HistogramPerframe m_histogramPerFrameTriangles;
+        mutable HistogramPerframe m_histogramPerFrameBatches;
+
+        mutable HistogramPerframe m_histogramPerFrameFillrate;
 
         bool m_showDebugPanel;
     };

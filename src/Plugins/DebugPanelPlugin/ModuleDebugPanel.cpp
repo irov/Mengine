@@ -8,8 +8,6 @@
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
 
-#include "implot.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -47,6 +45,42 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ModuleDebugPanel::updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier )
+    {
+        static int64_t old_value[MENGINE_STATISTIC_MAX_COUNT] = {0};
+
+        int64_t Statistic_Value = STATISTIC_GET_INTEGER( _statisticId );
+
+        int64_t deltha_value = Statistic_Value - old_value[_statisticId];
+        old_value[_statisticId] = Statistic_Value;
+
+        float value = float( deltha_value ) * _coeffTime * _multiplier;
+
+        _histogram->add( value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleDebugPanel::drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _overlayFormat, float _maxValue, float _height ) const
+    {
+        float currentValue = _histogram.getLastValue();
+        const float * values = _histogram.getValues();
+
+        Char overlayText[32] = {'\0'};
+        MENGINE_SNPRINTF( overlayText, 32, _overlayFormat, currentValue );
+
+        ImGui::PlotHistogram( "", values, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleDebugPanel::drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _overlayFormat, float _maxValue, float _height ) const
+    {
+        float currentValue = _histogram.getLastValue();
+        const float * values = _histogram.getValues();
+
+        Char overlayText[32] = {'\0'};
+        MENGINE_SNPRINTF( overlayText, 32, _overlayFormat, currentValue );
+
+        ImGui::PlotHistogram( "", values, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ModuleDebugPanel::_beginUpdate( bool _focus )
     {
         MENGINE_UNUSED( _focus );
@@ -61,16 +95,11 @@ namespace Mengine
         {
             old_Time = current_Time;
 
-            static int64_t old_RenderFrameCount = 0;
+            float coeffTime = 1000.f / (float)deltha_Time;
 
-            int64_t Statistic_RenderFrameCount = STATISTIC_GET_INTEGER( STATISTIC_RENDER_FRAME_COUNT );
-
-            int64_t deltha_RenderFrameCount = Statistic_RenderFrameCount - old_RenderFrameCount;
-            old_RenderFrameCount = Statistic_RenderFrameCount;
-
-            float fps = float( deltha_RenderFrameCount ) * 1000.f / float( deltha_Time );
-
-            m_histogramFPS.add( fps );
+            this->updateHistogramUpdate( &m_histogramFPS, STATISTIC_RENDER_FRAME_COUNT, coeffTime, 1.f );
+            this->updateHistogramUpdate( &m_histogramAllocatorNew, STATISTIC_ALLOCATOR_NEW, coeffTime, 1.f / 1024.f );
+            this->updateHistogramUpdate( &m_histogramAllocatorFree, STATISTIC_ALLOCATOR_FREE, coeffTime, 1.f / 1024.f );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -80,6 +109,30 @@ namespace Mengine
         {
             return;
         }
+
+        int64_t Statistic_PerFrame_DrawIndexPrimitives = STATISTIC_GET_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES );
+        m_histogramPerFrameDrawIndexPrimitives.add( (float)Statistic_PerFrame_DrawIndexPrimitives );
+
+        int64_t Statistic_PerFrame_Objects = STATISTIC_GET_INTEGER( STATISTIC_RENDER_PERFRAME_OBJECTS );
+        m_histogramPerFrameObjects.add( (float)Statistic_PerFrame_Objects );
+
+        int64_t Statistic_PerFrame_Triangles = STATISTIC_GET_INTEGER( STATISTIC_RENDER_PERFRAME_TRIANGLES );
+        m_histogramPerFrameTriangles.add( (float)Statistic_PerFrame_Triangles );
+
+        int64_t Statistic_PerFrame_Batches = STATISTIC_GET_INTEGER( STATISTIC_RENDER_PERFRAME_BATCHES );
+        m_histogramPerFrameBatches.add( (float)Statistic_PerFrame_Batches );
+
+        double Statistic_PerFrame_Fillrate = STATISTIC_GET_DOUBLE( STATISTIC_RENDER_PERFRAME_FILLRATE );
+
+        const Viewport & viewport = _context->viewport->getViewport();
+
+        float viewportWidth = viewport.getWidth();
+        float viewportHeight = viewport.getHeight();
+
+        Statistic_PerFrame_Fillrate /= viewportWidth;
+        Statistic_PerFrame_Fillrate /= viewportHeight;
+
+        m_histogramPerFrameFillrate.add( (float)Statistic_PerFrame_Fillrate );
 
         const RenderMaterialInterfacePtr & renderMaterial = RENDERMATERIAL_SERVICE()
             ->getDebugTriangleMaterial();
@@ -93,24 +146,22 @@ namespace Mengine
 
         ImGui::Begin( "debug panel" );
 
-        float currentFPS = m_histogramFPS.getLastValue();
         float maxFPS = m_histogramFPS.getMaxValue();
         float histogramFPSHeight = maxFPS > 80.f ? maxFPS : 80.f;
 
-        const float * values = m_histogramFPS.getValues();
+        this->drawHistogramUpdate( m_histogramFPS, "FPS: %.2f", histogramFPSHeight, 80.f );
+        this->drawHistogramUpdate( m_histogramAllocatorNew, "alloc: %.2fkb", FLT_MAX, 80.f );
+        this->drawHistogramUpdate( m_histogramAllocatorFree, "free: %.2fkb", FLT_MAX, 80.f );
 
-        Char histogramFPSTitle[32] = {'\0'};
-        MENGINE_SNPRINTF( histogramFPSTitle, 32, "FPS: %.2f", currentFPS );
+        this->drawHistogramPerFrame( m_histogramPerFrameDrawIndexPrimitives, "DIP: %.0f", FLT_MAX, 50.f );
 
-        if( ImPlot::BeginPlot( "##DebugPanel_FPS" ) )
-        {
-            ImPlot::SetupAxes( "time", "fps" );
-            ImPlot::SetupAxesLimits( 0.0, (double)MENGINE_DEBUG_PANEL_HISTOGRAM_COUNT, 0.0, (double)histogramFPSHeight );
+        float maxFillrate = m_histogramPerFrameFillrate.getMaxValue();
+        float histogramFillrateHeight = maxFillrate > 10.f ? maxFillrate : 13.f;
 
-            ImPlot::PlotBars( histogramFPSTitle, values, MENGINE_DEBUG_PANEL_HISTOGRAM_COUNT );
-
-            ImPlot::EndPlot();
-        }
+        this->drawHistogramPerFrame( m_histogramPerFrameFillrate, "Fillrate: %.2f", histogramFillrateHeight, 50.f );
+        this->drawHistogramPerFrame( m_histogramPerFrameObjects, "Objects: %.0f", FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( m_histogramPerFrameTriangles, "Triangles: %.0f", FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( m_histogramPerFrameBatches, "Batches: %.0f", FLT_MAX, 50.f );
 
         ImGui::End();
 

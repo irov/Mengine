@@ -97,25 +97,26 @@ namespace Mengine
 
         size_t total_size = _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
 
-        void * mem = MENGINE_MALLOC( total_size );
+        void * new_mem = MENGINE_MALLOC( total_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' total '%u' [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid alloc memory '%zu' total '%u' [%s]"
             , total_size
             , this->getMemoryUsage()
             , _doc
         );
 
-        Detail::setMemoryOverrideCorruptionTrap( mem, _size );
+        Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
 
-        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
         this->report( _doc, usage_size, 0 );
 
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
 
-        return mem;
+        return new_mem;
     }
     //////////////////////////////////////////////////////////////////////////
     void DebugAllocatorSystem::free( void * _mem, const Char * _doc )
@@ -146,6 +147,7 @@ namespace Mengine
         this->report( _doc, 0, old_size );
 
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
+        STATISTIC_DEL_INTEGER( STATISTIC_ALLOCATOR_SIZE, old_size );
     }
     //////////////////////////////////////////////////////////////////////////
     void * DebugAllocatorSystem::calloc( size_t _num, size_t _size, const Char * _doc )
@@ -157,27 +159,28 @@ namespace Mengine
         size_t calloc_size = _num * _size;
         size_t total_size = calloc_size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
 
-        void * mem = MENGINE_MALLOC( total_size );
+        void * new_mem = MENGINE_MALLOC( total_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid calloc memory '%zu' total '%u' [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid calloc memory '%zu' total '%u' [%s]"
             , total_size
             , this->getMemoryUsage()
             , _doc
         );
 
-        MENGINE_MEMSET( mem, 0x00, calloc_size );
+        MENGINE_MEMSET( new_mem, 0x00, calloc_size );
 
-        Detail::setMemoryOverrideCorruptionTrap( mem, calloc_size );
+        Detail::setMemoryOverrideCorruptionTrap( new_mem, calloc_size );
 
-        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
         this->report( _doc, usage_size, 0 );
 
-        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, total_size );
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
 
-        return mem;
+        return new_mem;
     }
     //////////////////////////////////////////////////////////////////////////
     void * DebugAllocatorSystem::realloc( void * _mem, size_t _size, const Char * _doc )
@@ -206,7 +209,8 @@ namespace Mengine
 
             this->report( _doc, usage_size, 0 );
 
-            STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, total_size );
+            STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
+            STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
 
             return mem;
         }
@@ -222,27 +226,30 @@ namespace Mengine
             );
         }
 
-        void * mem = MENGINE_REALLOC( _mem, total_size );
+        void * new_mem = MENGINE_REALLOC( _mem, total_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from '%p' [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid realloc memory '%zu' total '%u' from '%p' [%s]"
             , total_size
             , this->getMemoryUsage()
             , _mem
             , _doc
         );
 
-        Detail::setMemoryOverrideCorruptionTrap( mem, _size );
+        Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
 
-        size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+        size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
 
         this->report( _doc, usage_size, old_size );
 
-        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, total_size );
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
 
-        return mem;
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );
+        STATISTIC_DEL_INTEGER( STATISTIC_ALLOCATOR_SIZE, old_size );
+        
+        return new_mem;
     }
     //////////////////////////////////////////////////////////////////////////
     void DebugAllocatorSystem::startThread()

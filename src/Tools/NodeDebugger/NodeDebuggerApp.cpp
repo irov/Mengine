@@ -144,7 +144,7 @@ namespace Mengine
         glfwSetWindowUserPointer( m_window, this );
 
         glfwMakeContextCurrent( m_window );
-        gladLoadGLLoader( reinterpret_cast<GLADloadproc>(glfwGetProcAddress) );
+        gladLoadGL( reinterpret_cast<GLADloadfunc>(&glfwGetProcAddress) );
         glfwSwapInterval( 1 ); // enable v-sync
 
         this->LoadIconsAtlas();

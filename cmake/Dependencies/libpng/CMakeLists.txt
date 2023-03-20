@@ -19,6 +19,7 @@
 # Revised by Owen Rudge, 2020
 # Revised by Gleb Mazovetskiy, 2021
 # Revised by Christopher Sean Morrison, 2022
+# Revised by Martin Storsjo, 2022
 
 # This code is released under the libpng license.
 # For conditions of distribution and use, see the disclaimer
@@ -32,7 +33,7 @@ enable_testing()
 
 set(PNGLIB_MAJOR 1)
 set(PNGLIB_MINOR 6)
-set(PNGLIB_REVISION 38)
+set(PNGLIB_REVISION 39)
 set(PNGLIB_SUBREVISION 0)
 #set(PNGLIB_SUBREVISION "git")
 set(PNGLIB_NAME libpng${PNGLIB_MAJOR}${PNGLIB_MINOR})
@@ -72,6 +73,7 @@ option(PNG_FRAMEWORK "Build OS X framework" OFF)
 option(PNG_DEBUG "Build with debug output" OFF)
 option(PNG_HARDWARE_OPTIMIZATIONS "Enable hardware optimizations" ON)
 
+set(PNG_PREFIX "" CACHE STRING "Prefix to add to the API function names")
 set(DFA_XTRA "" CACHE FILEPATH "File containing extra configuration settings")
 
 # CMake currently sets CMAKE_SYSTEM_PROCESSOR to one of x86_64 or arm64 on macOS,
@@ -85,10 +87,138 @@ else()
   set(TARGET_ARCH ${CMAKE_SYSTEM_PROCESSOR})
 endif()
 
-add_definitions(-DPNG_ARM_NEON_OPT=0)
-add_definitions(-DPNG_POWERPC_VSX_OPT=0)
-add_definitions(-DPNG_INTEL_SSE_OPT=0)
-add_definitions(-DPNG_MIPS_MSA_OPT=0)
+if(PNG_HARDWARE_OPTIMIZATIONS)
+
+# Set definitions and sources for ARM.
+if(TARGET_ARCH MATCHES "^arm" OR
+   TARGET_ARCH MATCHES "^aarch64")
+  if(TARGET_ARCH MATCHES "^arm64" OR
+     TARGET_ARCH MATCHES "^aarch64")
+    set(PNG_ARM_NEON_POSSIBLE_VALUES on off)
+    set(PNG_ARM_NEON "on"
+        CACHE STRING "Enable ARM NEON optimizations: on|off; on is default")
+  else()
+    set(PNG_ARM_NEON_POSSIBLE_VALUES check on off)
+    set(PNG_ARM_NEON "off"
+        CACHE STRING "Enable ARM NEON optimizations: check|on|off; off is default")
+  endif()
+  set_property(CACHE PNG_ARM_NEON
+               PROPERTY STRINGS ${PNG_ARM_NEON_POSSIBLE_VALUES})
+  list(FIND PNG_ARM_NEON_POSSIBLE_VALUES ${PNG_ARM_NEON} index)
+  if(index EQUAL -1)
+    message(FATAL_ERROR "PNG_ARM_NEON must be one of [${PNG_ARM_NEON_POSSIBLE_VALUES}]")
+  elseif(NOT ${PNG_ARM_NEON} STREQUAL "off")
+    set(libpng_arm_sources
+        arm/arm_init.c
+        arm/filter_neon.S
+        arm/filter_neon_intrinsics.c
+        arm/palette_neon_intrinsics.c)
+    if(${PNG_ARM_NEON} STREQUAL "on")
+      add_definitions(-DPNG_ARM_NEON_OPT=2)
+    elseif(${PNG_ARM_NEON} STREQUAL "check")
+      add_definitions(-DPNG_ARM_NEON_CHECK_SUPPORTED)
+    endif()
+  else()
+    add_definitions(-DPNG_ARM_NEON_OPT=0)
+  endif()
+endif()
+
+# Set definitions and sources for PowerPC.
+if(TARGET_ARCH MATCHES "^powerpc*" OR
+   TARGET_ARCH MATCHES "^ppc64*")
+  set(PNG_POWERPC_VSX_POSSIBLE_VALUES on off)
+  set(PNG_POWERPC_VSX "on"
+      CACHE STRING "Enable POWERPC VSX optimizations: on|off; on is default")
+  set_property(CACHE PNG_POWERPC_VSX
+               PROPERTY STRINGS ${PNG_POWERPC_VSX_POSSIBLE_VALUES})
+  list(FIND PNG_POWERPC_VSX_POSSIBLE_VALUES ${PNG_POWERPC_VSX} index)
+  if(index EQUAL -1)
+    message(FATAL_ERROR "PNG_POWERPC_VSX must be one of [${PNG_POWERPC_VSX_POSSIBLE_VALUES}]")
+  elseif(NOT ${PNG_POWERPC_VSX} STREQUAL "off")
+    set(libpng_powerpc_sources
+        powerpc/powerpc_init.c
+        powerpc/filter_vsx_intrinsics.c)
+    if(${PNG_POWERPC_VSX} STREQUAL "on")
+      add_definitions(-DPNG_POWERPC_VSX_OPT=2)
+    endif()
+  else()
+    add_definitions(-DPNG_POWERPC_VSX_OPT=0)
+  endif()
+endif()
+
+# Set definitions and sources for Intel.
+if(TARGET_ARCH MATCHES "^i?86" OR
+   TARGET_ARCH MATCHES "^x86_64*")
+  set(PNG_INTEL_SSE_POSSIBLE_VALUES on off)
+  set(PNG_INTEL_SSE "on"
+      CACHE STRING "Enable INTEL_SSE optimizations: on|off; on is default")
+  set_property(CACHE PNG_INTEL_SSE
+               PROPERTY STRINGS ${PNG_INTEL_SSE_POSSIBLE_VALUES})
+  list(FIND PNG_INTEL_SSE_POSSIBLE_VALUES ${PNG_INTEL_SSE} index)
+  if(index EQUAL -1)
+    message(FATAL_ERROR "PNG_INTEL_SSE must be one of [${PNG_INTEL_SSE_POSSIBLE_VALUES}]")
+  elseif(NOT ${PNG_INTEL_SSE} STREQUAL "off")
+    set(libpng_intel_sources
+        intel/intel_init.c
+        intel/filter_sse2_intrinsics.c)
+    if(${PNG_INTEL_SSE} STREQUAL "on")
+      add_definitions(-DPNG_INTEL_SSE_OPT=1)
+    endif()
+  else()
+    add_definitions(-DPNG_INTEL_SSE_OPT=0)
+  endif()
+endif()
+
+# Set definitions and sources for MIPS.
+if(TARGET_ARCH MATCHES "mipsel*" OR
+   TARGET_ARCH MATCHES "mips64el*")
+  set(PNG_MIPS_MSA_POSSIBLE_VALUES on off)
+  set(PNG_MIPS_MSA "on"
+      CACHE STRING "Enable MIPS_MSA optimizations: on|off; on is default")
+  set_property(CACHE PNG_MIPS_MSA
+               PROPERTY STRINGS ${PNG_MIPS_MSA_POSSIBLE_VALUES})
+  list(FIND PNG_MIPS_MSA_POSSIBLE_VALUES ${PNG_MIPS_MSA} index)
+  if(index EQUAL -1)
+    message(FATAL_ERROR "PNG_MIPS_MSA must be one of [${PNG_MIPS_MSA_POSSIBLE_VALUES}]")
+  elseif(NOT ${PNG_MIPS_MSA} STREQUAL "off")
+    set(libpng_mips_sources
+        mips/mips_init.c
+        mips/filter_msa_intrinsics.c)
+    if(${PNG_MIPS_MSA} STREQUAL "on")
+      add_definitions(-DPNG_MIPS_MSA_OPT=2)
+    endif()
+  else()
+    add_definitions(-DPNG_MIPS_MSA_OPT=0)
+  endif()
+endif()
+
+else(PNG_HARDWARE_OPTIMIZATIONS)
+
+# Set definitions and sources for ARM.
+if(TARGET_ARCH MATCHES "^arm" OR
+   TARGET_ARCH MATCHES "^aarch64")
+  add_definitions(-DPNG_ARM_NEON_OPT=0)
+endif()
+
+# Set definitions and sources for PowerPC.
+if(TARGET_ARCH MATCHES "^powerpc*" OR
+   TARGET_ARCH MATCHES "^ppc64*")
+  add_definitions(-DPNG_POWERPC_VSX_OPT=0)
+endif()
+
+# Set definitions and sources for Intel.
+if(TARGET_ARCH MATCHES "^i?86" OR
+   TARGET_ARCH MATCHES "^x86_64*")
+  add_definitions(-DPNG_INTEL_SSE_OPT=0)
+endif()
+
+# Set definitions and sources for MIPS.
+if(TARGET_ARCH MATCHES "mipsel*" OR
+   TARGET_ARCH MATCHES "mips64el*")
+  add_definitions(-DPNG_MIPS_MSA_OPT=0)
+endif()
+
+endif(PNG_HARDWARE_OPTIMIZATIONS)
 
 # Set PNG_LIB_NAME.
 set(PNG_LIB_NAME png${PNGLIB_MAJOR}${PNGLIB_MINOR})
@@ -167,10 +297,219 @@ find_program(AWK NAMES gawk awk)
 
 include_directories(${THIRDPARTY_CONFIG_DIR}/libpng)
 
-# No awk available to generate sources; use pre-built pnglibconf.h
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt
-             ${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h)
-add_custom_target(genfiles) # Dummy
+if(NOT AWK OR ANDROID OR IOS)
+  # No awk available to generate sources; use pre-built pnglibconf.h
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt
+                 ${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h)
+  add_custom_target(genfiles) # Dummy
+else()
+  # Copy the awk scripts, converting their line endings to Unix (LF)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/checksym.awk
+                 ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/checksym.awk
+                 @ONLY
+                 NEWLINE_STYLE LF)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/options.awk
+                 ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/options.awk
+                 @ONLY
+                 NEWLINE_STYLE LF)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/dfn.awk
+                 ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/dfn.awk
+                 @ONLY
+                 NEWLINE_STYLE LF)
+
+  # Generate .chk from .out with awk:
+  # generate_chk(INPUT inputfile OUTPUT outputfile [DEPENDS dep1 [dep2...]])
+  include(CMakeParseArguments)
+  function(generate_chk)
+    set(options)
+    set(oneValueArgs INPUT OUTPUT)
+    set(multiValueArgs DEPENDS)
+    cmake_parse_arguments(_GC "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    if(NOT _GC_INPUT)
+      message(FATAL_ERROR "generate_chk: Missing INPUT argument")
+    endif()
+    if(NOT _GC_OUTPUT)
+      message(FATAL_ERROR "generate_chk: Missing OUTPUT argument")
+    endif()
+
+    add_custom_command(OUTPUT "${_GC_OUTPUT}"
+                       COMMAND "${CMAKE_COMMAND}"
+                               "-DINPUT=${_GC_INPUT}"
+                               "-DOUTPUT=${_GC_OUTPUT}"
+                               -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/genchk.cmake"
+                       DEPENDS "${_GC_INPUT}" ${_GC_DEPENDS}
+                       WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+  endfunction()
+
+  # Generate .out from .c with awk
+  # generate_out(INPUT inputfile OUTPUT outputfile [DEPENDS dep1 [dep2...]])
+  function(generate_out)
+    set(options)
+    set(oneValueArgs INPUT OUTPUT)
+    set(multiValueArgs DEPENDS)
+    cmake_parse_arguments(_GO "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    if(NOT _GO_INPUT)
+      message(FATAL_ERROR "generate_out: Missing INPUT argument")
+    endif()
+    if(NOT _GO_OUTPUT)
+      message(FATAL_ERROR "generate_out: Missing OUTPUT argument")
+    endif()
+
+    add_custom_command(OUTPUT "${_GO_OUTPUT}"
+                       COMMAND "${CMAKE_COMMAND}"
+                               "-DINPUT=${_GO_INPUT}"
+                               "-DOUTPUT=${_GO_OUTPUT}"
+                               -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/genout.cmake"
+                       DEPENDS "${_GO_INPUT}" ${_GO_DEPENDS}
+                       WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+  endfunction()
+
+  # Generate specific source file with awk
+  # generate_source(OUTPUT outputfile [DEPENDS dep1 [dep2...]])
+  function(generate_source)
+    set(options)
+    set(oneValueArgs OUTPUT)
+    set(multiValueArgs DEPENDS)
+    cmake_parse_arguments(_GSO "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    if(NOT _GSO_OUTPUT)
+      message(FATAL_ERROR "generate_source: Missing OUTPUT argument")
+    endif()
+
+    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GSO_OUTPUT}"
+                       COMMAND "${CMAKE_COMMAND}"
+                               "-DOUTPUT=${_GSO_OUTPUT}"
+                               -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/gensrc.cmake"
+                       DEPENDS ${_GSO_DEPENDS}
+                       WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+  endfunction()
+
+  # Copy file
+  # generate_copy(INPUT inputfile OUTPUT outputfile [DEPENDS dep1 [dep2...]])
+  function(generate_copy)
+    set(options)
+    set(oneValueArgs INPUT OUTPUT)
+    set(multiValueArgs DEPENDS)
+    cmake_parse_arguments(_GCO "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    add_custom_command(OUTPUT "${_GCO_OUTPUT}"
+                       COMMAND "${CMAKE_COMMAND}"
+                               -E remove "${_GCO_OUTPUT}"
+                       COMMAND "${CMAKE_COMMAND}"
+                               -E copy "${_GCO_INPUT}" "${_GCO_OUTPUT}"
+                       DEPENDS "${source}" ${_GCO_DEPENDS})
+  endfunction()
+
+  # Generate scripts/pnglibconf.h
+  generate_source(OUTPUT "scripts/pnglibconf.c"
+                  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.dfa"
+                          "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/options.awk"
+                          "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h")
+  add_custom_target(scripts_pnglibconf_c DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.c")
+
+  # Generate pnglibconf.c
+  generate_source(OUTPUT "pnglibconf.c"
+                  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.dfa"
+                          "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/options.awk"
+                          "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h")
+  add_custom_target(pnglibconf_c DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.c")
+
+  if(PNG_PREFIX)
+    set(PNGLIBCONF_H_EXTRA_DEPENDS
+        "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out"
+        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/macro.lst")
+    set(PNGPREFIX_H_EXTRA_DEPENDS
+        "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/intprefix.out")
+  endif()
+
+  generate_out(INPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.c"
+               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out"
+               DEPENDS pnglibconf_c)
+  add_custom_target(pnglibconf_out DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out")
+
+  # Generate pnglibconf.h
+  generate_source(OUTPUT "pnglibconf.h"
+                  DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out" pnglibconf_out
+                          ${PNGLIBCONF_H_EXTRA_DEPENDS})
+  add_custom_target(pnglibconf_h DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h")
+
+  generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/intprefix.c"
+               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/intprefix.out"
+               DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h" pnglibconf_h)
+  add_custom_target(scripts_intprefix_out DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/intprefix.out")
+
+  generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/prefix.c"
+               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out"
+               DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/png.h"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h"
+                       "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out" pnglibconf_out)
+  add_custom_target(scripts_prefix_out DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out")
+
+  # Generate pngprefix.h
+  generate_source(OUTPUT "pngprefix.h"
+                  DEPENDS ${PNGPREFIX_H_EXTRA_DEPENDS})
+  add_custom_target(pngprefix_h DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h")
+
+  generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/sym.c"
+               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/sym.out"
+               DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h" pnglibconf_h)
+  add_custom_target(scripts_sym_out DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/sym.out")
+
+  generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/symbols.c"
+               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.out"
+               DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/png.h"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt")
+  add_custom_target(scripts_symbols_out DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.out")
+
+  generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/vers.c"
+               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/vers.out"
+               DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/png.h"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h"
+                       "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h" pnglibconf_h)
+  add_custom_target(scripts_vers_out DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/vers.out")
+
+  generate_chk(INPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.out"
+               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.chk"
+               DEPENDS scripts_symbols_out
+                       "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/checksym.awk"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/scripts/symbols.def")
+
+  add_custom_target(scripts_symbols_chk
+                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.chk")
+
+  generate_copy(INPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/sym.out"
+                OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.sym"
+                DEPENDS scripts_sym_out)
+  generate_copy(INPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/vers.out"
+                OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.vers"
+                DEPENDS scripts_vers_out)
+
+  add_custom_target(genvers
+                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.vers")
+  add_custom_target(gensym
+                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.sym")
+
+  add_custom_target("genprebuilt"
+                    COMMAND "${CMAKE_COMMAND}"
+                            "-DOUTPUT=scripts/pnglibconf.h.prebuilt"
+                            -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/gensrc.cmake"
+                    WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+
+  # A single target handles generation of all generated files.
+  add_custom_target(genfiles
+                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.sym" gensym
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.vers" genvers
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.c" pnglibconf_c
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h" pnglibconf_h
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out" pnglibconf_out
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h" pngprefix_h
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/intprefix.out" scripts_intprefix_out
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.c" scripts_pnglibconf_c
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out" scripts_prefix_out
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/sym.out" scripts_sym_out
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.chk" scripts_symbols_chk
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.out" scripts_symbols_out
+                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/vers.out" scripts_vers_out)
+endif(NOT AWK OR ANDROID OR IOS)
 
 # List the source code files.
 set(libpng_public_hdrs
@@ -184,6 +523,9 @@ set(libpng_private_hdrs
     pnginfo.h
     pngstruct.h
 )
+if(AWK AND NOT ANDROID AND NOT IOS)
+  list(APPEND libpng_private_hdrs "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h")
+endif()
 set(libpng_sources
     ${libpng_public_hdrs}
     ${libpng_private_hdrs}

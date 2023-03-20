@@ -12,7 +12,7 @@
 #include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 
 #include "jpp/jpp.hpp"
-#include "glad/glad.h"
+#include "glad/gl.h"
 #include "GLFW/glfw3.h"
 
 #include "zed_net.h"

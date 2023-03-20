@@ -50,8 +50,6 @@
 #include "imgui_impl_opengl2.h"
 #endif
 
-#include "implot.h"
-
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 #endif
@@ -97,7 +95,6 @@ namespace Mengine
         ImGui::SetAllocatorFunctions( &Detail::ImGUIPlugin_alloc_func, &Detail::ImGUIPlugin_free_func, nullptr );
 
         ImGui::CreateContext();
-        ImPlot::CreateContext();
 
         ImGui::StyleColorsDark();
 
@@ -215,7 +212,6 @@ namespace Mengine
         ImGui_ImplSDL2_Shutdown();
 #endif
 
-        ImPlot::DestroyContext();
         ImGui::DestroyContext();
 
         PROTOTYPE_SERVICE()

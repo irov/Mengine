@@ -8,6 +8,7 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BasePicker.h"
 #include "Kernel/BaseTransformation.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {

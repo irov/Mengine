@@ -35,6 +35,10 @@
     return YES;
 }
 
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    [Adjust setDeviceToken:deviceToken];
+}
+
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation handled:(BOOL *)handler {
     *handler = YES;
     

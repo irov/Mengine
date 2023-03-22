@@ -2,6 +2,7 @@
 
 #include "Interface/UnknownInterface.h"
 #include "Interface/RenderTextureInterface.h"
+#include "Interface/ServiceInterface.h"
 
 #include "Config/Lambda.h"
 

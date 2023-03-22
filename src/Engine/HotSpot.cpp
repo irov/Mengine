@@ -78,6 +78,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::addInputHandler( const InputHandlerInterfacePtr & _inputHandler, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         InputHandlerDesc desc;
         desc.handler = _inputHandler;
 

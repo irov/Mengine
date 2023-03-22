@@ -4,6 +4,7 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginKeyListener;
 
 import android.app.AlertDialog;

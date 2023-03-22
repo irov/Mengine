@@ -2,6 +2,7 @@ package org.Mengine.Plugin.SplashScreen;
 
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;

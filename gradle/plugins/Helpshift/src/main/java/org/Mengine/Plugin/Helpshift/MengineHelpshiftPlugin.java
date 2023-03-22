@@ -5,7 +5,9 @@ import android.os.Bundle;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import com.helpshift.Helpshift;
 import com.helpshift.HelpshiftAuthenticationFailureReason;
@@ -14,9 +16,7 @@ import com.helpshift.HelpshiftEventsListener;
 import com.helpshift.UnsupportedOSVersionException;
 import com.helpshift.HelpshiftInstallException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.NonNull;

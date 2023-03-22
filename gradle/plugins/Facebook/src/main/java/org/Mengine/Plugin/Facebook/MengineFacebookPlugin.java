@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.Facebook;
 
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
 
@@ -25,20 +26,17 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.facebook.appevents.AppEventsLogger;
 
-import android.app.Application;
-import android.content.Context;
 import android.net.Uri;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import org.Mengine.Base.MenginePluginAnalyticsListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

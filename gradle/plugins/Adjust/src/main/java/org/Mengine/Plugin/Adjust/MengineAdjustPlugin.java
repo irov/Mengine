@@ -1,7 +1,6 @@
 package org.Mengine.Plugin.Adjust;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.adjust.sdk.Adjust;
@@ -12,6 +11,7 @@ import com.adjust.sdk.LogLevel;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;

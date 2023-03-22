@@ -1,13 +1,11 @@
 package org.Mengine.Plugin.OneSignal;
 
-import android.content.Context;
-import android.content.res.Configuration;
-
 import com.onesignal.OneSignal;
 
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineOneSignalPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "OneSignal";

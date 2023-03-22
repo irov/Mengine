@@ -23,7 +23,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     private boolean m_initializeSuccessful = false;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         String MengineDevToDevPlugin_AppId = activity.getMetaDataString("mengine.devtodev.app_id");
 
         if (MengineDevToDevPlugin_AppId == null) {

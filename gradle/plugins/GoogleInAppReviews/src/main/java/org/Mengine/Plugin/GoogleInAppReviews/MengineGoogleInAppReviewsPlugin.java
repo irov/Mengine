@@ -9,6 +9,7 @@ import com.google.android.play.core.review.ReviewManagerFactory;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
     public static final String PLUGIN_NAME = "GoogleInAppReviews";
@@ -28,7 +29,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
     ReviewInfo m_reviewInfo = null;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         m_manager = ReviewManagerFactory.create(activity);
 
         Task<ReviewInfo> request = m_manager.requestReviewFlow();

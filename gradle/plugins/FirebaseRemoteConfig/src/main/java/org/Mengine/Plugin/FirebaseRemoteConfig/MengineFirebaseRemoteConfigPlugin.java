@@ -31,7 +31,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
      */
 
     @Override
-    public void onAppCreate(MengineApplication application) {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -43,7 +43,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         remoteConfig.fetchAndActivate()

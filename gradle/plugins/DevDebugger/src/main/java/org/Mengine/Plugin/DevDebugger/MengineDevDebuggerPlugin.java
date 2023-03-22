@@ -17,7 +17,7 @@ public class MengineDevDebuggerPlugin extends MenginePlugin {
     private static native void AndroidDevDebuggerMengine_addDevButton(String tab, String tag, String title, DevButtonCallbackInterface cb);
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
     }
 
     @Override

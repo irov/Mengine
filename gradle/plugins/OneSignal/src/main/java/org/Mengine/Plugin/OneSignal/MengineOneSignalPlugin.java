@@ -13,7 +13,7 @@ public class MengineOneSignalPlugin extends MenginePlugin implements MenginePlug
     public static final String PLUGIN_NAME = "OneSignal";
 
     @Override
-    public void onAppCreate(MengineApplication application) {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String MengineOneSignalPlugin_AppId = application.getMetaDataString("mengine.onesignal.app_id");
 
         if (MengineOneSignalPlugin_AppId == null) {

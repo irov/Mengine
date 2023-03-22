@@ -15,6 +15,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 import org.Mengine.Base.MenginePlugin;
 
@@ -30,7 +31,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
      */
 
     @Override
-    public void onAppCreate(MengineApplication application) {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
 
@@ -55,7 +56,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         FirebaseCrashlytics.getInstance().setCustomKey("onCreate", true);
     }
 

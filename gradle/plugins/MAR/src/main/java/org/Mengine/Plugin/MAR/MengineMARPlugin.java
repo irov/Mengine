@@ -40,7 +40,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     public static final boolean PLUGIN_EMBEDDING = true;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         MARPlatform.getInstance().init(activity, this);
     }
 
@@ -124,7 +124,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         MARSDK.getInstance().onAppCreateAll(application);
         MARSDK.getInstance().onAppCreate(application);
     }

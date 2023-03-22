@@ -24,6 +24,7 @@ import com.android.billingclient.api.QueryPurchasesParams;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineCallbackInterface;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     private Boolean m_responseEndPurchases = true;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         final PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
             @Override
             public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchases) {

@@ -69,7 +69,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         Map<String, Object> config = new HashMap<>();
 
         if (BuildConfig.DEBUG) {

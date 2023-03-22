@@ -30,7 +30,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     private static final CharSequence CHANNEL_NAME = "Mengine Channel";
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         //Empty
     }
 

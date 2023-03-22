@@ -6,6 +6,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 
 import io.sentry.Sentry;
@@ -15,7 +16,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
     public static final String PLUGIN_NAME = "Sentry";
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         String MengineSentryPlugin_DSN = activity.getMetaDataString("mengine.sentry.dsn");
 
         if (MengineSentryPlugin_DSN == null) {

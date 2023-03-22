@@ -13,6 +13,7 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 import org.Mengine.Base.MenginePluginExtensionListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -28,7 +29,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
     private ArrayList<MengineFirebaseMessagingListener> m_messagings = new ArrayList<>();
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 
         Context context = activity.getApplicationContext();

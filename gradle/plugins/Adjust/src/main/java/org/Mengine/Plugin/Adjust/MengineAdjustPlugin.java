@@ -69,7 +69,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         Adjust.gdprForgetMe(activity);
     }
 

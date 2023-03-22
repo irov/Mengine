@@ -6,6 +6,7 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 import org.Mengine.Base.MenginePluginExtensionListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import com.applovin.mediation.MaxAd;
 
@@ -108,7 +109,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         final Context context = activity.getBaseContext();
 
         MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);

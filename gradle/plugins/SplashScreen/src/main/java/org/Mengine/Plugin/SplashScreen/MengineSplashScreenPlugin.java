@@ -23,7 +23,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     protected ImageView m_image;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         ImageView image = new ImageView(activity);
         Drawable mengine_splashscreen = MengineActivity.getContext().getResources().getDrawable(R.drawable.mengine_splashscreen);
         image.setBackground(mengine_splashscreen);

@@ -2,6 +2,7 @@ package org.Mengine.Plugin.GoogleGameSocial;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import android.content.Intent;
 import android.content.IntentSender;
@@ -79,7 +80,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     private AchievementsClient m_achievementsClient;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
         RC_UNUSED = activity.genRequestCode("RC_UNUSED");
 

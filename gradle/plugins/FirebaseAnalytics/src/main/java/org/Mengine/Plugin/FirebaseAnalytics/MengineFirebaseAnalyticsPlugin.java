@@ -14,6 +14,7 @@ import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     FirebaseAnalytics m_firebaseAnalytics;
 
     @Override
-    public void onAppCreate(MengineApplication application) {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
         String installKey = application.getInstallKey();

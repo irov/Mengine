@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.Advertising;
 
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
@@ -27,7 +28,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
     private ExecutorService m_executor;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         m_executor = Executors.newSingleThreadExecutor();
 
         m_executor.execute(() -> {

@@ -12,6 +12,7 @@ import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin im
     private Trace m_startupTrace;
 
     @Override
-    public void onAppCreate(MengineApplication application) {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_startupTrace = FirebasePerformance.getInstance().newTrace(STARTUP_TRACE);
     }
 

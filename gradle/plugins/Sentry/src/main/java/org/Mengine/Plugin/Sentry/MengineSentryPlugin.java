@@ -68,6 +68,6 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             return;
         }
 
-        Sentry.captureMessage("[" + category + "]" + msg);
+        Sentry.captureMessage("[" + category + "] " + msg);
     }
 }

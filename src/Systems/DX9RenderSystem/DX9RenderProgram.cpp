@@ -99,17 +99,17 @@ namespace Mengine
     {
         if( m_vertexShader != nullptr )
         {
-            DXCALL( _pD3DDevice, SetVertexShader, (NULL) );
+            MENGINE_DXCALL( _pD3DDevice, SetVertexShader, (NULL) );
         }
 
         if( m_fragmentShader != nullptr )
         {
-            DXCALL( _pD3DDevice, SetPixelShader, (NULL) );
+            MENGINE_DXCALL( _pD3DDevice, SetPixelShader, (NULL) );
         }
 
         if( m_vertexAttribute != nullptr )
         {
-            DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
+            MENGINE_DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,7 @@ namespace Mengine
         MENGINE_UNUSED( _viewMatrix );
         MENGINE_UNUSED( _projectionMatrix );
 
-        DXCALL( _pD3DDevice, SetVertexShaderConstantF, (0, _totalPMWInvMatrix.buff(), 4) );
+        MENGINE_DXCALL( _pD3DDevice, SetVertexShaderConstantF, (0, _totalPMWInvMatrix.buff(), 4) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

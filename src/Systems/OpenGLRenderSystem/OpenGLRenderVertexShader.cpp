@@ -59,16 +59,16 @@ namespace Mengine
         const Char * str_source = m_memory->getBuffer();
         GLint str_size = (GLint)m_memory->getSize();
 
-        GLCALL( glShaderSource, (shaderId, 1, &str_source, &str_size) );
-        GLCALL( glCompileShader, (shaderId) );
+        MENGINE_GLCALL( glShaderSource, (shaderId, 1, &str_source, &str_size) );
+        MENGINE_GLCALL( glCompileShader, (shaderId) );
 
         GLint status;
-        GLCALL( glGetShaderiv, (shaderId, GL_COMPILE_STATUS, &status) );
+        MENGINE_GLCALL( glGetShaderiv, (shaderId, GL_COMPILE_STATUS, &status) );
 
         if( status == GL_FALSE )
         {
             GLchar errorLog[1024] = {'\0'};
-            GLCALL( glGetShaderInfoLog, (shaderId, 1023, NULL, errorLog) );
+            MENGINE_GLCALL( glGetShaderInfoLog, (shaderId, 1023, NULL, errorLog) );
 
             LOGGER_ERROR( "compilation vertex shader '%s' error '%s'"
                 , m_name.c_str()
@@ -97,7 +97,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexShader::attach( GLuint _program )
     {
-        GLCALL( glAttachShader, (_program, m_shaderId) );
+        MENGINE_GLCALL( glAttachShader, (_program, m_shaderId) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexShader::onRenderReset()

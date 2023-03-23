@@ -100,8 +100,8 @@ namespace Mengine
 
         GLuint tuid = extension->genTexture();
 
-        GLCALL( glBindTexture, (GL_TEXTURE_2D, tuid) );
-        GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
+        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, tuid) );
+        MENGINE_GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
 
         m_tuid = tuid;
 
@@ -120,23 +120,23 @@ namespace Mengine
         m_fuid = fuid;
         
         GLint oldFBO = 0;
-        GLCALL( glGetIntegerv, (GL_FRAMEBUFFER_BINDING, &oldFBO) );
+        MENGINE_GLCALL( glGetIntegerv, (GL_FRAMEBUFFER_BINDING, &oldFBO) );
 
-        GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
+        MENGINE_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
 
 
 #ifdef MENGINE_RENDER_OPENGL_ES
-        GLCALL( glFramebufferTexture2D, (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_tuid, 0) );
+        MENGINE_GLCALL( glFramebufferTexture2D, (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_tuid, 0) );
 #else
-        GLCALL( glFramebufferTexture, (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_tuid, 0) );
+        MENGINE_GLCALL( glFramebufferTexture, (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_tuid, 0) );
 
         GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-        GLCALL( glDrawBuffers, (1, DrawBuffers) );
+        MENGINE_GLCALL( glDrawBuffers, (1, DrawBuffers) );
 #endif
 
         if( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE )
         {
-            OPENGL_RENDER_CHECK_ERROR();
+            MENGINE_OPENGL_RENDER_CHECK_ERROR();
 
             extension->deleteTexture( m_tuid );
             m_tuid = 0;
@@ -147,9 +147,9 @@ namespace Mengine
             return false;
         }
         
-        GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, oldFBO) );
+        MENGINE_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, oldFBO) );
         
-        GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
+        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
 
         return true;
     }
@@ -225,20 +225,20 @@ namespace Mengine
     bool OpenGLRenderTargetTexture::begin() const
     {
         GLint oldFBO = 0;
-        GLCALL( glGetIntegerv, (GL_FRAMEBUFFER_BINDING, &oldFBO) );
+        MENGINE_GLCALL( glGetIntegerv, (GL_FRAMEBUFFER_BINDING, &oldFBO) );
         
         m_oldfuid = oldFBO;
         
-        GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
+        MENGINE_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
 
-        GLCALL( glViewport, (0, 0, m_width, m_height) );
+        MENGINE_GLCALL( glViewport, (0, 0, m_width, m_height) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::end() const
     {
-        GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_oldfuid) );
+        MENGINE_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_oldfuid) );
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & OpenGLRenderTargetTexture::getUV() const

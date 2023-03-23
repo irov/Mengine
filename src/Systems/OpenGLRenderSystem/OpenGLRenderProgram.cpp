@@ -78,7 +78,7 @@ namespace Mengine
         );
 
         GLuint programId;
-        GLCALLR( programId, glCreateProgram, () );
+        MENGINE_GLCALLR( programId, glCreateProgram, () );
 
         if( programId == 0 )
         {
@@ -119,15 +119,15 @@ namespace Mengine
             m_fragmentShader->attach( programId );
         }
 
-        GLCALL( glLinkProgram, (programId) );
+        MENGINE_GLCALL( glLinkProgram, (programId) );
 
         GLint linked;
-        GLCALL( glGetProgramiv, (programId, GL_LINK_STATUS, &linked) );
+        MENGINE_GLCALL( glGetProgramiv, (programId, GL_LINK_STATUS, &linked) );
 
         if( linked == GL_FALSE )
         {
             GLchar errorLog[1024] = {0};
-            GLCALL( glGetProgramInfoLog, (programId, 1023, NULL, errorLog) );
+            MENGINE_GLCALL( glGetProgramInfoLog, (programId, 1023, NULL, errorLog) );
 
             LOGGER_ERROR( "program '%s' linking error '%s'"
                 , m_name.c_str()
@@ -153,7 +153,7 @@ namespace Mengine
             const Char * uniform = matrix_uniforms[index];
 
             GLint location;
-            GLCALLR( location, glGetUniformLocation, (programId, uniform) );
+            MENGINE_GLCALLR( location, glGetUniformLocation, (programId, uniform) );
 
             m_matrixLocation[index] = location;
         }
@@ -164,7 +164,7 @@ namespace Mengine
             MENGINE_SNPRINTF( samplerVar, 15, "inSampler%u", index );
 
             GLint location;
-            GLCALLR( location, glGetUniformLocation, (programId, samplerVar) );
+            MENGINE_GLCALLR( location, glGetUniformLocation, (programId, samplerVar) );
 
             MENGINE_ASSERTION_FATAL( location != -1, "program '%s' not found uniform sampler '%s'"
                 , m_name.c_str()
@@ -186,7 +186,7 @@ namespace Mengine
 
         if( m_programId != 0 )
         {
-            GLCALL( glDeleteProgram, (m_programId) );
+            MENGINE_GLCALL( glDeleteProgram, (m_programId) );
             m_programId = 0;
         }
 
@@ -203,14 +203,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::enable() const
     {
-        GLCALL( glUseProgram, (m_programId) );
+        MENGINE_GLCALL( glUseProgram, (m_programId) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::disable() const
     {
-        GLCALL( glUseProgram, (0) );
+        MENGINE_GLCALL( glUseProgram, (0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const
@@ -219,21 +219,21 @@ namespace Mengine
         {
             GLint location = m_matrixLocation[EPML_VIEW];
 
-            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _viewMatrix.buff()) );
+            MENGINE_GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _viewMatrix.buff()) );
         }
 
         if( m_matrixLocation[EPML_PROJECTION] != -1 )
         {
             GLint location = m_matrixLocation[EPML_PROJECTION];
 
-            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _projectionMatrix.buff()) );
+            MENGINE_GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _projectionMatrix.buff()) );
         }
 
         if( m_matrixLocation[EPML_WORLD] != -1 )
         {
             GLint location = m_matrixLocation[EPML_WORLD];
 
-            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _worldMatrix.buff()) );
+            MENGINE_GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _worldMatrix.buff()) );
         }
 
         if( m_matrixLocation[EPML_VIEW_PROJECTION] != -1 )
@@ -242,14 +242,14 @@ namespace Mengine
 
             GLint location = m_matrixLocation[EPML_VIEW_PROJECTION];
 
-            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, vpMat.buff()) );
+            MENGINE_GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, vpMat.buff()) );
         }
 
         if( m_matrixLocation[EPML_WORLD_VIEW_PROJECTION] != -1 )
         {
             GLint location = m_matrixLocation[EPML_WORLD_VIEW_PROJECTION];
 
-            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _totalWVPMatrix.buff()) );
+            MENGINE_GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _totalWVPMatrix.buff()) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -263,7 +263,7 @@ namespace Mengine
 
         GLint location = m_samplerLocation[_textureInd];
 
-        GLCALL( glUniform1i, (location, _textureInd) );
+        MENGINE_GLCALL( glUniform1i, (location, _textureInd) );
 
         return true;
     }

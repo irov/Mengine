@@ -83,7 +83,7 @@ namespace Mengine
 #ifdef MENGINE_RENDER_OPENGL_NORMAL
         if( m_vertexArrayId != 0 )
         {
-            GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
+            MENGINE_GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
             m_vertexArrayId = 0;
         }
 #endif
@@ -168,21 +168,21 @@ namespace Mengine
         Mengine::initialize_GLEXT();
 #endif
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
-        OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_OPENGL_RENDER_CHECK_ERROR();
 
         LOGGER_INFO( "openal", "OpenGL version: %s"
             , versionStr 
         );
 
         const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
-        OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_OPENGL_RENDER_CHECK_ERROR();
 
         LOGGER_INFO( "openal", "OpenGL vendor: %s"
             , vendorStr 
         );
 
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
-        OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_OPENGL_RENDER_CHECK_ERROR();
 
         LOGGER_INFO( "openal", "OpenGL renderer: %s"
             , rendererStr 
@@ -190,7 +190,7 @@ namespace Mengine
 
 #ifdef MENGINE_RENDER_OPENGL_ES
         const Char * extensionsStr = reinterpret_cast<const Char *>(glGetString( GL_EXTENSIONS ));
-        OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_OPENGL_RENDER_CHECK_ERROR();
 
         LOGGER_INFO( "openal", "OpenGL extensions: %s"
             , extensionsStr 
@@ -198,30 +198,30 @@ namespace Mengine
 #endif
 
         const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
-        OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_OPENGL_RENDER_CHECK_ERROR();
 
         LOGGER_INFO( "openal", "OpenGL shading language version: %s"
             , shadingLanguageVersion 
         );
 
         GLint maxCombinedTextureImageUnits;
-        GLCALL( glGetIntegerv, (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits) );
+        MENGINE_GLCALL( glGetIntegerv, (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits) );
 
         m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
 
-        GLCALL( glFrontFace, (GL_CW) );
-        GLCALL( glEnable, (GL_DEPTH_TEST) );
-        GLCALL( glDisable, (GL_STENCIL_TEST) );
-        GLCALL( glDisable, (GL_CULL_FACE) );
-        GLCALL( glDisable, (GL_BLEND) );
-        GLCALL( glDisable, (GL_DITHER) );
+        MENGINE_GLCALL( glFrontFace, (GL_CW) );
+        MENGINE_GLCALL( glEnable, (GL_DEPTH_TEST) );
+        MENGINE_GLCALL( glDisable, (GL_STENCIL_TEST) );
+        MENGINE_GLCALL( glDisable, (GL_CULL_FACE) );
+        MENGINE_GLCALL( glDisable, (GL_BLEND) );
+        MENGINE_GLCALL( glDisable, (GL_DITHER) );
 
-        GLCALL( glDepthMask, (GL_FALSE) );
-        GLCALL( glDepthFunc, (GL_LESS) );
+        MENGINE_GLCALL( glDepthMask, (GL_FALSE) );
+        MENGINE_GLCALL( glDepthFunc, (GL_LESS) );
 
 #ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLuint vertexArrayId = 0;
-        GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
+        MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
         if( vertexArrayId == 0 )
         {
@@ -275,13 +275,13 @@ namespace Mengine
         uint32_t width = right - left;
         uint32_t height = top - bottom;
 
-        GLCALL( glEnable, (GL_SCISSOR_TEST) );
-        GLCALL( glScissor, (left, bottom, width, height) );
+        MENGINE_GLCALL( glEnable, (GL_SCISSOR_TEST) );
+        MENGINE_GLCALL( glScissor, (left, bottom, width, height) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::removeScissor()
     {
-        GLCALL( glDisable, (GL_SCISSOR_TEST) );
+        MENGINE_GLCALL( glDisable, (GL_SCISSOR_TEST) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
@@ -307,7 +307,7 @@ namespace Mengine
         GLsizei w = static_cast<GLsizei>(viewportWidth + 0.5f);
         GLsizei h = static_cast<GLsizei>(viewportHeight + 0.5f);
 
-        GLCALL( glViewport, (x, y, w, h) );
+        MENGINE_GLCALL( glViewport, (x, y, w, h) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewMatrix( const mt::mat4f & _viewMatrix )
@@ -590,12 +590,12 @@ namespace Mengine
             if( texture == nullptr )
             {
 #ifdef MENGINE_RENDER_OPENGL_ES
-                GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
+                MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
 #else
-                GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
+                MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
 #endif
 
-                GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
+                MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
 
                 continue;
             }
@@ -603,10 +603,10 @@ namespace Mengine
             OpenGLRenderImageExtensionInterface * extension = texture->getUnknown();
             extension->bind( stageId );
 
-            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS) );
-            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
-            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter) );
-            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
+            MENGINE_GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS) );
+            MENGINE_GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
+            MENGINE_GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter) );
+            MENGINE_GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
 
             if( m_currentProgram->bindTexture( stageId ) == false )
             {
@@ -615,7 +615,7 @@ namespace Mengine
         }
 
 #ifdef MENGINE_RENDER_OPENGL_NORMAL
-        GLCALL( glBindVertexArray, (m_vertexArrayId) );
+        MENGINE_GLCALL( glBindVertexArray, (m_vertexArrayId) );
 #endif
 
         m_currentIndexBuffer->enable();
@@ -629,7 +629,7 @@ namespace Mengine
         GLenum indexType = Helper::toGLIndexType( sizeof( RenderIndex ) );
         const GLvoid * indices = reinterpret_cast<const GLvoid *>(_desc.startIndex * sizeof( RenderIndex ));
 
-        GLCALL( glDrawElements, (mode, _desc.indexCount, indexType, indices) );
+        MENGINE_GLCALL( glDrawElements, (mode, _desc.indexCount, indexType, indices) );
 
         vertexAttribute->disable();
 
@@ -654,7 +654,7 @@ namespace Mengine
         m_currentProgram->disable();
 
 #ifdef MENGINE_RENDER_OPENGL_NORMAL
-        GLCALL( glBindVertexArray, (0) );
+        MENGINE_GLCALL( glBindVertexArray, (0) );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -701,12 +701,12 @@ namespace Mengine
 
         if( _separate == false )
         {
-            GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
+            MENGINE_GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
 
 #ifdef MENGINE_RENDER_OPENGL_ES
-            GLCALL( glBlendEquation, (blendOp) );
+            MENGINE_GLCALL( glBlendEquation, (blendOp) );
 #else
-            GLCALL( glBlendEquation_, (blendOp) );
+            MENGINE_GLCALL( glBlendEquation_, (blendOp) );
 #endif
         }
         else
@@ -716,15 +716,15 @@ namespace Mengine
             const GLenum separateBlendOp = Helper::toGLBlendOp( _separateOp );
 
 #ifdef MENGINE_RENDER_OPENGL_ES
-            GLCALL( glBlendFuncSeparate, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
+            MENGINE_GLCALL( glBlendFuncSeparate, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
 #else
-            GLCALL( glBlendFuncSeparate_, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
+            MENGINE_GLCALL( glBlendFuncSeparate_, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
 #endif
 
 #ifdef MENGINE_RENDER_OPENGL_ES
-            GLCALL( glBlendEquationSeparate, (blendOp, separateBlendOp) );
+            MENGINE_GLCALL( glBlendEquationSeparate, (blendOp, separateBlendOp) );
 #else
-            GLCALL( glBlendEquationSeparate_, (blendOp, separateBlendOp) );
+            MENGINE_GLCALL( glBlendEquationSeparate_, (blendOp, separateBlendOp) );
 #endif
         }
     }
@@ -735,17 +735,17 @@ namespace Mengine
         {
         case CM_CULL_CW:
             {
-                GLCALL( glCullFace, (GL_FRONT) );
-                GLCALL( glEnable, (GL_CULL_FACE) );
+                MENGINE_GLCALL( glCullFace, (GL_FRONT) );
+                MENGINE_GLCALL( glEnable, (GL_CULL_FACE) );
             }break;
         case CM_CULL_CCW:
             {
-                GLCALL( glCullFace, (GL_BACK) );
-                GLCALL( glEnable, (GL_CULL_FACE) );
+                MENGINE_GLCALL( glCullFace, (GL_BACK) );
+                MENGINE_GLCALL( glEnable, (GL_CULL_FACE) );
             }break;
         case CM_CULL_NONE:
             {
-                GLCALL( glDisable, (GL_CULL_FACE) );
+                MENGINE_GLCALL( glDisable, (GL_CULL_FACE) );
             }break;
         }
     }
@@ -769,11 +769,11 @@ namespace Mengine
     {
         if( _depthTest == true )
         {
-            GLCALL( glEnable, (GL_DEPTH_TEST) );
+            MENGINE_GLCALL( glEnable, (GL_DEPTH_TEST) );
         }
         else
         {
-            GLCALL( glDisable, (GL_DEPTH_TEST) );
+            MENGINE_GLCALL( glDisable, (GL_DEPTH_TEST) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -783,11 +783,11 @@ namespace Mengine
 
         if( m_depthMask == true )
         {
-            GLCALL( glDepthMask, (GL_TRUE) );
+            MENGINE_GLCALL( glDepthMask, (GL_TRUE) );
         }
         else
         {
-            GLCALL( glDepthMask, (GL_FALSE) );
+            MENGINE_GLCALL( glDepthMask, (GL_FALSE) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -795,7 +795,7 @@ namespace Mengine
     {
         GLenum cmpFunc = Helper::toGLCmpFunc( _depthFunction );
 
-        GLCALL( glDepthFunc, (cmpFunc) );
+        MENGINE_GLCALL( glDepthFunc, (cmpFunc) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setFillMode( EFillMode _mode )
@@ -805,7 +805,7 @@ namespace Mengine
 #ifndef MENGINE_RENDER_OPENGL_ES
         GLenum mode = Helper::toGLFillMode( _mode );
 
-        GLCALL( glPolygonMode, (GL_FRONT_AND_BACK, mode) );
+        MENGINE_GLCALL( glPolygonMode, (GL_FRONT_AND_BACK, mode) );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -816,18 +816,18 @@ namespace Mengine
         GLboolean blue = _b ? GL_TRUE : GL_FALSE;
         GLboolean alpha = _a ? GL_TRUE : GL_FALSE;
 
-        GLCALL( glColorMask, (red, green, blue, alpha) );
+        MENGINE_GLCALL( glColorMask, (red, green, blue, alpha) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setAlphaBlendEnable( bool _alphaBlend )
     {
         if( _alphaBlend == true )
         {
-            GLCALL( glEnable, (GL_BLEND) );
+            MENGINE_GLCALL( glEnable, (GL_BLEND) );
         }
         else
         {
-            GLCALL( glDisable, (GL_BLEND) );
+            MENGINE_GLCALL( glDisable, (GL_BLEND) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -836,7 +836,7 @@ namespace Mengine
         TextureStage & tStage = m_textureStage[_stage];
 
         tStage.minFilter = Helper::toGLMinFilter( _minification, _mipmap );
-        tStage.magFilter = Helper::toMagFilter( _magnification );
+        tStage.magFilter = Helper::toGLMagFilter( _magnification );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const
@@ -936,7 +936,7 @@ namespace Mengine
                 GLclampf b = m_clearColor.getB();
                 GLclampf a = m_clearColor.getA();
 
-                GLCALL( glClearColor, (r, g, b, a) );
+                MENGINE_GLCALL( glClearColor, (r, g, b, a) );
             }
         }
 
@@ -946,13 +946,13 @@ namespace Mengine
 
             if( m_depthMask == false )
             {
-                GLCALL( glDepthMask, (GL_TRUE) );
+                MENGINE_GLCALL( glDepthMask, (GL_TRUE) );
             }
 
 #ifndef MENGINE_RENDER_OPENGL_ES
             GLclampd depth = static_cast<GLclampd>(_depth);
 
-            GLCALL( glClearDepth, (depth) );
+            MENGINE_GLCALL( glClearDepth, (depth) );
 #endif          
         }
 
@@ -960,16 +960,16 @@ namespace Mengine
         {
             frameBufferFlags |= GL_STENCIL_BUFFER_BIT;
 
-            GLCALL( glClearStencil, (_stencil) );
+            MENGINE_GLCALL( glClearStencil, (_stencil) );
         }
 
-        GLCALL( glClear, (frameBufferFlags) );
+        MENGINE_GLCALL( glClear, (frameBufferFlags) );
 
         if( (_frameBufferTypes & FBT_DEPTH) != 0 )
         {
             if( m_depthMask == false )
             {
-                GLCALL( glDepthMask, (GL_FALSE) );
+                MENGINE_GLCALL( glDepthMask, (GL_FALSE) );
             }
         }
     }
@@ -1009,7 +1009,7 @@ namespace Mengine
 #ifdef MENGINE_RENDER_OPENGL_NORMAL
         if( m_vertexArrayId != 0 )
         {
-            GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
+            MENGINE_GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
             m_vertexArrayId = 0;
         }
 #endif
@@ -1026,7 +1026,7 @@ namespace Mengine
 
 #ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLuint vertexArrayId = 0;
-        GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
+        MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
         if( vertexArrayId == 0 )
         {
@@ -1199,7 +1199,7 @@ namespace Mengine
     GLuint OpenGLRenderSystem::genTexture()
     {
         GLuint id = 0;
-        GLCALL( glGenTextures, (1, &id) );
+        MENGINE_GLCALL( glGenTextures, (1, &id) );
 
         ++m_counterTexture;
 
@@ -1208,7 +1208,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::deleteTexture( GLuint _id )
     {
-        GLCALL( glDeleteTextures, (1, &_id) );
+        MENGINE_GLCALL( glDeleteTextures, (1, &_id) );
 
         --m_counterTexture;
     }
@@ -1216,7 +1216,7 @@ namespace Mengine
     GLuint OpenGLRenderSystem::genFramebuffer()
     {
         GLuint id = 0;
-        GLCALL( glGenFramebuffers, (1, &id) );
+        MENGINE_GLCALL( glGenFramebuffers, (1, &id) );
 
         ++m_counterFramebuffer;
 
@@ -1225,7 +1225,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::deleteFramebuffer( GLuint _id )
     {
-        GLCALL( glDeleteFramebuffers, (1, &_id) );
+        MENGINE_GLCALL( glDeleteFramebuffers, (1, &_id) );
 
         --m_counterFramebuffer;
     }
@@ -1233,7 +1233,7 @@ namespace Mengine
     GLuint OpenGLRenderSystem::genBuffer()
     {
         GLuint id = 0;
-        GLCALL( glGenBuffers, (1, &id) );
+        MENGINE_GLCALL( glGenBuffers, (1, &id) );
 
         ++m_counterBuffer;
 
@@ -1242,7 +1242,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::deleteBuffer( GLuint _id )
     {
-        GLCALL( glDeleteBuffers, (1, &_id) );
+        MENGINE_GLCALL( glDeleteBuffers, (1, &_id) );
 
         --m_counterBuffer;
     }
@@ -1250,7 +1250,7 @@ namespace Mengine
     GLuint OpenGLRenderSystem::genFragmentShader()
     {
         GLuint id;
-        GLCALLR( id, glCreateShader, (GL_FRAGMENT_SHADER) );
+        MENGINE_GLCALLR( id, glCreateShader, (GL_FRAGMENT_SHADER) );
 
         ++m_counterFragmentShader;
 
@@ -1259,7 +1259,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::deleteFragmentShader( GLuint _id )
     {
-        GLCALL( glDeleteShader, (_id) );
+        MENGINE_GLCALL( glDeleteShader, (_id) );
 
         --m_counterFragmentShader;
     }
@@ -1267,7 +1267,7 @@ namespace Mengine
     GLuint OpenGLRenderSystem::genVertexShader()
     {
         GLuint id;
-        GLCALLR( id, glCreateShader, (GL_VERTEX_SHADER) );
+        MENGINE_GLCALLR( id, glCreateShader, (GL_VERTEX_SHADER) );
 
         ++m_counterVertexShader;
 
@@ -1276,7 +1276,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::deleteVertexShader( GLuint _id )
     {
-        GLCALL( glDeleteShader, (_id) );
+        MENGINE_GLCALL( glDeleteShader, (_id) );
 
         --m_counterVertexShader;
     }

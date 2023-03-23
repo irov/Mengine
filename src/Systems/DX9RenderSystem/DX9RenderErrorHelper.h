@@ -31,33 +31,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
-#define DXERRORCHECK( MethodName, HRES )\
+#define MENGINE_DXERRORCHECK( MethodName, HRES )\
     (Mengine::DX9ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MethodName ) == HRES)
 //////////////////////////////////////////////////////////////////////////
-#define IF_DXERRORCHECK( Method, HRES )\
-    if( DXERRORCHECK(#Method, HRES) )
+#define MENGINE_IF_DXERRORCHECK( Method, HRES )\
+    if( MENGINE_DXERRORCHECK(#Method, HRES) )
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_RENDER_CHECK_ERROR_ENABLE
 //////////////////////////////////////////////////////////////////////////
-#   define DXRELEASE( Object )\
+#   define MENGINE_DXRELEASE( Object )\
     if( Object == nullptr ){}else{ ULONG ref = Object -> Release(); MENGINE_ASSERTION_FATAL( ref == 0 ); Object = nullptr; }
 //////////////////////////////////////////////////////////////////////////
-#   define DXCALL( Device, Method, Args )\
-    (DXERRORCHECK(#Method, Device -> Method Args))
+#   define MENGINE_DXCALL( Device, Method, Args )\
+    (MENGINE_DXERRORCHECK(#Method, Device -> Method Args))
 //////////////////////////////////////////////////////////////////////////
 #else
 //////////////////////////////////////////////////////////////////////////
-#   define DXRELEASE( Object )\
+#   define MENGINE_DXRELEASE( Object )\
     if( Object == nullptr ){}else{ Object -> Release(); Object = nullptr; }
 //////////////////////////////////////////////////////////////////////////
-#   define DXCALL( Device, Method, Args )\
+#   define MENGINE_DXCALL( Device, Method, Args )\
     (Device -> Method Args)
 //////////////////////////////////////////////////////////////////////////
 #endif
 //////////////////////////////////////////////////////////////////////////
-#define IF_DXCALL( Device, Method, Args )\
-    if( DXCALL(Device, Method, Args) )
+#define MENGINE_IF_DXCALL( Device, Method, Args )\
+    if( MENGINE_DXCALL(Device, Method, Args) )
 //////////////////////////////////////////////////////////////////////////
-#define DXGETREF( Object )\
+#define MENGINE_DXGETREF( Object )\
     [Object](){ Object -> AddRef(); ULONG ref = Object -> Release(); return ref; }()
 //////////////////////////////////////////////////////////////////////////

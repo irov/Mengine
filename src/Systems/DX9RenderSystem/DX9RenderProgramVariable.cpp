@@ -83,7 +83,7 @@ namespace Mengine
         {
             const float * buff = m_dataFloats.data() + v.offset;
 
-            IF_DXCALL( _pD3DDevice, SetVertexShaderConstantF, (vertexEnumerator, buff, v.count) )
+            MENGINE_IF_DXCALL( _pD3DDevice, SetVertexShaderConstantF, (vertexEnumerator, buff, v.count) )
             {
                 return false;
             }
@@ -96,7 +96,7 @@ namespace Mengine
         {
             const float * buff = m_pixelFloats.data() + v.offset;
 
-            IF_DXCALL( _pD3DDevice, SetPixelShaderConstantF, (pixelEnumerator, buff, v.count) )
+            MENGINE_IF_DXCALL( _pD3DDevice, SetPixelShaderConstantF, (pixelEnumerator, buff, v.count) )
             {
                 return false;
             }

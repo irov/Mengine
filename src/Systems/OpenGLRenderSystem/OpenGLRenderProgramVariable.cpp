@@ -87,7 +87,7 @@ namespace Mengine
             if( v.location == -1 )
             {
                 GLint location;
-                GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
+                MENGINE_GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
 
                 if( location == -1 )
                 {
@@ -108,28 +108,28 @@ namespace Mengine
             {
             case 1:
                 {
-                    IF_GLCALL( glUniform1fv, (v.location, v.count, buff) )
+                    MENGINE_IF_GLCALL( glUniform1fv, (v.location, v.count, buff) )
                     {
                         return false;
                     }
                 }break;
             case 2:
                 {
-                    IF_GLCALL( glUniform2fv, (v.location, v.count, buff) )
+                    MENGINE_IF_GLCALL( glUniform2fv, (v.location, v.count, buff) )
                     {
                         return false;
                     }
                 }break;
             case 3:
                 {
-                    IF_GLCALL( glUniform3fv, (v.location, v.count, buff) )
+                    MENGINE_IF_GLCALL( glUniform3fv, (v.location, v.count, buff) )
                     {
                         return false;
                     }
                 }break;
             case 4:
                 {
-                    IF_GLCALL( glUniform4fv, (v.location, v.count, buff) )
+                    MENGINE_IF_GLCALL( glUniform4fv, (v.location, v.count, buff) )
                     {
                         return false;
                     }
@@ -147,7 +147,7 @@ namespace Mengine
             if( v.location == -1 )
             {
                 GLint location;
-                GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
+                MENGINE_GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
 
                 if( location == -1 )
                 {
@@ -168,28 +168,28 @@ namespace Mengine
             {
             case 1:
                 {
-                    IF_GLCALL( glUniform1fv, (v.location, v.count, buff) )
+                    MENGINE_IF_GLCALL( glUniform1fv, (v.location, v.count, buff) )
                     {
                         return false;
                     }
                 }break;
             case 2:
                 {
-                    IF_GLCALL( glUniform2fv, (v.location, v.count, buff) )
+                    MENGINE_IF_GLCALL( glUniform2fv, (v.location, v.count, buff) )
                     {
                         return false;
                     }
                 }break;
             case 3:
                 {
-                    IF_GLCALL( glUniform3fv, (v.location, v.count, buff) )
+                    MENGINE_IF_GLCALL( glUniform3fv, (v.location, v.count, buff) )
                     {
                         return false;
                     }
                 }break;
             case 4:
                 {
-                    IF_GLCALL( glUniform4fv, (v.location, v.count, buff) )
+                    MENGINE_IF_GLCALL( glUniform4fv, (v.location, v.count, buff) )
                     {
                         return false;
                     }

@@ -63,7 +63,7 @@ namespace Mengine
             const Char * attribute_uniform_str = attribute.uniform.c_str();
 
             int location;
-            GLCALLR( location, glGetAttribLocation, (_program, attribute_uniform_str) );
+            MENGINE_GLCALLR( location, glGetAttribLocation, (_program, attribute_uniform_str) );
 
             if( location == -1 )
             {
@@ -87,11 +87,11 @@ namespace Mengine
         {
             GLint attribute_location = attribute.location;
 
-            GLCALL( glEnableVertexAttribArray, (attribute_location) );
+            MENGINE_GLCALL( glEnableVertexAttribArray, (attribute_location) );
 
             GLenum gl_type = Helper::toGLVertexAttributeType( attribute.type );
 
-            GLCALL( glVertexAttribPointer, (attribute_location
+            MENGINE_GLCALL( glVertexAttribPointer, (attribute_location
                 , attribute.size
                 , gl_type
                 , attribute.normalized
@@ -105,7 +105,7 @@ namespace Mengine
     {
         for( const AttributeDesc & attribute : m_attributes )
         {
-            GLCALL( glDisableVertexAttribArray, (attribute.location) );
+            MENGINE_GLCALL( glDisableVertexAttribArray, (attribute.location) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

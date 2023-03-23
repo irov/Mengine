@@ -55,7 +55,7 @@ namespace Mengine
             );
 
             IDirect3DPixelShader9 * pD3DPixelShader;
-            IF_DXCALL( _pD3DDevice, CreatePixelShader, (shader_compile_data, &pD3DPixelShader) )
+            MENGINE_IF_DXCALL( _pD3DDevice, CreatePixelShader, (shader_compile_data, &pD3DPixelShader) )
             {
                 return false;
             }
@@ -74,13 +74,13 @@ namespace Mengine
 
         if( m_compileReferenceCount == 0 )
         {
-            DXRELEASE( m_pD3DPixelShader );
+            MENGINE_DXRELEASE( m_pD3DPixelShader );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderFragmentShader::enable( IDirect3DDevice9 * _pD3DDevice )
     {
-        DXCALL( _pD3DDevice, SetPixelShader, (m_pD3DPixelShader) );
+        MENGINE_DXCALL( _pD3DDevice, SetPixelShader, (m_pD3DPixelShader) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

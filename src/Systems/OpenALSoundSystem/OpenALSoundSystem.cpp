@@ -65,7 +65,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "failed to create context" );
 
-            OPENAL_CALL( alcCloseDevice, (m_device) );
+            MENGINE_OPENAL_CALL( alcCloseDevice, (m_device) );
             m_device = nullptr;
 
             return false;
@@ -73,33 +73,33 @@ namespace Mengine
 
         m_context = context;
 
-        RET_OPENAL_CALL( ALCboolean, currentResult, alcMakeContextCurrent, (m_context) );
+        MENGINE_RET_OPENAL_CALL( ALCboolean, currentResult, alcMakeContextCurrent, (m_context) );
 
         if( currentResult == ALC_FALSE )
         {
             LOGGER_ERROR( "failed to make context current" );
 
-            OPENAL_CALL( alcDestroyContext, (m_context) );
+            MENGINE_OPENAL_CALL( alcDestroyContext, (m_context) );
             m_context = nullptr;
 
-            OPENAL_CALL( alcCloseDevice, (m_device) );
+            MENGINE_OPENAL_CALL( alcCloseDevice, (m_device) );
             m_device = nullptr;
 
             return false;
         }
 
         ALCint majorVersion;
-        OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MAJOR_VERSION, 1, &majorVersion) );
+        MENGINE_OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MAJOR_VERSION, 1, &majorVersion) );
 
         ALCint minorVersion;
-        OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MINOR_VERSION, 1, &minorVersion) );
+        MENGINE_OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MINOR_VERSION, 1, &minorVersion) );
 
         LOGGER_INFO( "openal", "OpenAL version: %d.%d"
             , majorVersion
             , minorVersion
         );
 
-        RET_OPENAL_CALL( const ALCchar *, defaultDeviceSpecifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
+        MENGINE_RET_OPENAL_CALL( const ALCchar *, defaultDeviceSpecifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
 
         LOGGER_INFO( "openal", "OpenAL device specifier: %s"
             , defaultDeviceSpecifier
@@ -122,13 +122,13 @@ namespace Mengine
         );
 
         ALfloat lposition[] = { 0.f, 0.f, 0.f };
-        OPENAL_CALL( alListenerfv, (AL_POSITION, lposition) );
+        MENGINE_OPENAL_CALL( alListenerfv, (AL_POSITION, lposition) );
 
         ALfloat lvelocity[] = { 0.f, 0.f, 0.f };
-        OPENAL_CALL( alListenerfv, (AL_VELOCITY, lvelocity) );
+        MENGINE_OPENAL_CALL( alListenerfv, (AL_VELOCITY, lvelocity) );
 
         ALfloat lorient[] = { 0.f, 0.f, -1.f, 0.f, 1.f, 0.f };
-        OPENAL_CALL( alListenerfv, (AL_ORIENTATION, lorient) );
+        MENGINE_OPENAL_CALL( alListenerfv, (AL_ORIENTATION, lorient) );
         
         m_factoryOpenALSoundBuffer = Helper::makeFactoryPool<OpenALSoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryOpenALSoundBufferStream = Helper::makeFactoryPool<OpenALSoundBufferStream, 32>( MENGINE_DOCUMENT_FACTORABLE );
@@ -256,7 +256,7 @@ namespace Mengine
     ALuint OpenALSoundSystem::genSourceId()
     {
         ALuint sourceId = 0;
-        OPENAL_CALL( alGenSources, (1, &sourceId) );
+        MENGINE_OPENAL_CALL( alGenSources, (1, &sourceId) );
 
         if( sourceId == 0 )
         {
@@ -275,7 +275,7 @@ namespace Mengine
             return;
         }
 
-        OPENAL_CALL( alDeleteSources, (1, &_sourceId) );
+        MENGINE_OPENAL_CALL( alDeleteSources, (1, &_sourceId) );
 
         --m_sourcesCount;
     }
@@ -283,7 +283,7 @@ namespace Mengine
     ALuint OpenALSoundSystem::genBufferId()
     {
         ALuint bufferId = 0;
-        OPENAL_CALL( alGenBuffers, (1, &bufferId) );
+        MENGINE_OPENAL_CALL( alGenBuffers, (1, &bufferId) );
 
         if( bufferId == 0 )
         {
@@ -302,7 +302,7 @@ namespace Mengine
             return;
         }
 
-        OPENAL_CALL( alDeleteBuffers, (1, &_bufferId) );
+        MENGINE_OPENAL_CALL( alDeleteBuffers, (1, &_bufferId) );
 
         --m_buffersCount;
     }

@@ -167,7 +167,7 @@ namespace Mengine
 
         // Set up Windowed presentation parameters
         D3DDISPLAYMODE Mode;
-        IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
+        MENGINE_IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
         {
             LOGGER_ERROR( "can't determine desktop video mode" );
 
@@ -178,7 +178,7 @@ namespace Mengine
 
         // Get adapter info
         D3DADAPTER_IDENTIFIER9 AdID;
-        IF_DXCALL( m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdID) )
+        MENGINE_IF_DXCALL( m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdID) )
         {
             LOGGER_ERROR( "can't determine adapter identifier" );
 
@@ -336,7 +336,7 @@ namespace Mengine
         m_waitForVSync = _windowDesc->waitForVSync;
         
         D3DCAPS9 d3dCaps;
-        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &d3dCaps) )
+        MENGINE_IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &d3dCaps) )
         {
             return false;
         }
@@ -571,7 +571,7 @@ namespace Mengine
         }
 
         //Get Devivce Caps after create device
-        DXCALL( m_pD3DDevice, GetDeviceCaps, (&m_d3dCaps) );
+        MENGINE_DXCALL( m_pD3DDevice, GetDeviceCaps, (&m_d3dCaps) );
 
         LOGGER_INFO( "render", "window resolution [%ux%u] format '%s'"
             , m_windowResolution.getWidth()
@@ -855,7 +855,7 @@ namespace Mengine
         if( m_fullscreen == false )
         {
             D3DDISPLAYMODE Mode;
-            IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
+            MENGINE_IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
             {
                 return false;
             }
@@ -923,7 +923,7 @@ namespace Mengine
 
         m_lostDevice = false;
 
-        IF_DXCALL( m_pD3DDevice, BeginScene, () )
+        MENGINE_IF_DXCALL( m_pD3DDevice, BeginScene, () )
         {
             return false;
         }
@@ -935,7 +935,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        DXCALL( m_pD3DDevice, EndScene, () );
+        MENGINE_DXCALL( m_pD3DDevice, EndScene, () );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::swapBuffers()
@@ -1006,7 +1006,7 @@ namespace Mengine
 
         ColorValue_ARGB argb = _color.getAsARGB();
 
-        DXCALL( m_pD3DDevice, Clear, (0, NULL, frameBufferFlags, argb, _depth, _stencil) );
+        MENGINE_DXCALL( m_pD3DDevice, Clear, (0, NULL, frameBufferFlags, argb, _depth, _stencil) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setScissor( const Viewport & _viewport )
@@ -1038,13 +1038,13 @@ namespace Mengine
         r.right = (uint32_t)ex;
         r.bottom = (uint32_t)ey;
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE) );
-        DXCALL( m_pD3DDevice, SetScissorRect, (&r) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE) );
+        MENGINE_DXCALL( m_pD3DDevice, SetScissorRect, (&r) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::removeScissor()
     {
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, FALSE) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, FALSE) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setViewport( const Viewport & _viewport )
@@ -1076,7 +1076,7 @@ namespace Mengine
         VP.MinZ = 0.f;
         VP.MaxZ = 1.f;
 
-        IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
+        MENGINE_IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
         {
             LOGGER_ERROR( "failed viewport (%lu, %lu, %lu, %lu)"
                 , VP.X
@@ -1147,7 +1147,7 @@ namespace Mengine
             return false;
         }
 
-        IF_DXERRORCHECK( CheckDeviceFormat, hresult )
+        MENGINE_IF_DXERRORCHECK( CheckDeviceFormat, hresult )
         {
             return false;
         }
@@ -1220,13 +1220,13 @@ namespace Mengine
         }
 
         DWORD state = D3DTTFF_COUNT2;
-        IF_DXCALL( m_pD3DDevice, SetTextureStageState, (_stage, D3DTSS_TEXTURETRANSFORMFLAGS, state) )
+        MENGINE_IF_DXCALL( m_pD3DDevice, SetTextureStageState, (_stage, D3DTSS_TEXTURETRANSFORMFLAGS, state) )
         {
             return;
         }
 
         D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>(static_cast<DWORD>(D3DTS_TEXTURE0) + _stage);
-        IF_DXCALL( m_pD3DDevice, SetTransform, (level, (const D3DMATRIX *)_matrix.buff()) )
+        MENGINE_IF_DXCALL( m_pD3DDevice, SetTransform, (level, (const D3DMATRIX *)_matrix.buff()) )
         {
             return;
         }
@@ -1240,7 +1240,7 @@ namespace Mengine
         {
             m_vertexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
+            MENGINE_IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
             {
                 LOGGER_ERROR( "stream source not reset" );
             }
@@ -1250,7 +1250,7 @@ namespace Mengine
         {
             m_indexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
+            MENGINE_IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
             {
                 LOGGER_ERROR( "indices not reset" );
             }
@@ -1265,7 +1265,7 @@ namespace Mengine
 
             m_textureEnable[i] = false;
 
-            IF_DXCALL( m_pD3DDevice, SetTexture, (i, NULL) )
+            MENGINE_IF_DXCALL( m_pD3DDevice, SetTexture, (i, NULL) )
             {
                 LOGGER_ERROR( "texture [%u] not reset"
                     , i
@@ -1277,21 +1277,21 @@ namespace Mengine
         {
             m_vertexShaderEnable = false;
 
-            DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+            MENGINE_DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
         }
 
         if( m_fragmentShaderEnable == true )
         {
             m_fragmentShaderEnable = false;
 
-            DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+            MENGINE_DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
         }
 
         if( m_vertexAttributeEnable == true )
         {
             m_vertexAttributeEnable = false;
 
-            DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+            MENGINE_DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
         }
 
         return true;
@@ -1438,7 +1438,7 @@ namespace Mengine
 
             m_vertexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
+            MENGINE_IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
             {
                 return false;
             }
@@ -1487,7 +1487,7 @@ namespace Mengine
 
             m_indexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
+            MENGINE_IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
             {
                 return false;
             }
@@ -1509,7 +1509,7 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
         DWORD pNumPasses;
-        DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
+        MENGINE_DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
 #endif
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
@@ -1518,7 +1518,7 @@ namespace Mengine
 
         UINT primitiveCount = Helper::getPrimitiveCount( _desc.primitiveType, _desc.indexCount );
 
-        DXCALL( m_pD3DDevice, DrawIndexedPrimitive
+        MENGINE_DXCALL( m_pD3DDevice, DrawIndexedPrimitive
             , (primitiveType, _desc.baseVertexIndex, _desc.minIndex, _desc.vertexCount, _desc.startIndex, primitiveCount)
         );
     }
@@ -1551,7 +1551,7 @@ namespace Mengine
         }
         else
         {
-            DXCALL( m_pD3DDevice, SetTexture, (_stage, NULL) );
+            MENGINE_DXCALL( m_pD3DDevice, SetTexture, (_stage, NULL) );
 
             m_textureEnable[_stage] = false;
         }
@@ -1565,25 +1565,25 @@ namespace Mengine
         DWORD dstBlendFactor = Helper::toD3DBlendFactor( _dst );
         DWORD blendOp = Helper::toD3DBlendOp( _op );
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLEND, srcBlendFactor) );
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLEND, dstBlendFactor) );
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOP, blendOp) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLEND, srcBlendFactor) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLEND, dstBlendFactor) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOP, blendOp) );
 
         if( _separate == false )
         {
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SEPARATEALPHABLENDENABLE, FALSE) );
+            MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SEPARATEALPHABLENDENABLE, FALSE) );
         }
         else
         {
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SEPARATEALPHABLENDENABLE, TRUE) );
+            MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SEPARATEALPHABLENDENABLE, TRUE) );
 
             DWORD srcSeparateBlendFactor = Helper::toD3DBlendFactor( _separateSrc );
             DWORD dstSeparateBlendFactor = Helper::toD3DBlendFactor( _separateDst );
             DWORD blendSeparateOp = Helper::toD3DBlendOp( _separateOp );
 
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLENDALPHA, srcSeparateBlendFactor) );
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLENDALPHA, dstSeparateBlendFactor) );
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOPALPHA, blendSeparateOp) );
+            MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLENDALPHA, srcSeparateBlendFactor) );
+            MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLENDALPHA, dstSeparateBlendFactor) );
+            MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOPALPHA, blendSeparateOp) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1606,9 +1606,9 @@ namespace Mengine
         D3DTEXTUREADDRESS adrU = Helper::toD3DTextureAddress( _modeU );
         D3DTEXTUREADDRESS adrV = Helper::toD3DTextureAddress( _modeV );
 
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_ADDRESSU, adrU) );
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_ADDRESSV, adrV) );
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_BORDERCOLOR, _border) );
+        MENGINE_DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_ADDRESSU, adrU) );
+        MENGINE_DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_ADDRESSV, adrV) );
+        MENGINE_DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_BORDERCOLOR, _border) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureFactor( uint32_t _color )
@@ -1617,7 +1617,7 @@ namespace Mengine
 
         DWORD color = _color;
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_TEXTUREFACTOR, color) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_TEXTUREFACTOR, color) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setCullMode( ECullMode _mode )
@@ -1626,7 +1626,7 @@ namespace Mengine
 
         D3DCULL mode = Helper::toD3DCullMode( _mode );
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_CULLMODE, mode) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_CULLMODE, mode) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setDepthBufferTestEnable( bool _depthTest )
@@ -1635,7 +1635,7 @@ namespace Mengine
 
         D3DZBUFFERTYPE test = _depthTest == true ? D3DZB_TRUE : D3DZB_FALSE;
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZENABLE, test) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZENABLE, test) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
@@ -1644,7 +1644,7 @@ namespace Mengine
 
         DWORD dWrite = _depthWrite == true ? TRUE : FALSE;
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZWRITEENABLE, dWrite) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZWRITEENABLE, dWrite) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
@@ -1653,7 +1653,7 @@ namespace Mengine
 
         D3DCMPFUNC func = Helper::toD3DCmpFunc( _depthFunction );
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZFUNC, func) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZFUNC, func) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setFillMode( EFillMode _mode )
@@ -1662,7 +1662,7 @@ namespace Mengine
 
         D3DFILLMODE mode = Helper::toD3DFillMode( _mode );
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_FILLMODE, mode) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_FILLMODE, mode) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
@@ -1691,7 +1691,7 @@ namespace Mengine
             value |= D3DCOLORWRITEENABLE_ALPHA;
         }
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_COLORWRITEENABLE, value) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_COLORWRITEENABLE, value) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
@@ -1700,7 +1700,7 @@ namespace Mengine
 
         DWORD alphaBlend = _alphaBlend ? TRUE : FALSE;
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHABLENDENABLE, alphaBlend) );
+        MENGINE_DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHABLENDENABLE, alphaBlend) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
@@ -1723,9 +1723,9 @@ namespace Mengine
         D3DTEXTUREFILTERTYPE dx_mipmap = Helper::toD3DTextureFilter( _mipmap );
         D3DTEXTUREFILTERTYPE dx_magnification = Helper::toD3DTextureFilter( _magnification );
 
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
+        MENGINE_DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
+        MENGINE_DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
+        MENGINE_DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentPtr & _doc )
@@ -1846,21 +1846,21 @@ namespace Mengine
             {
                 m_vertexAttributeEnable = false;
 
-                DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+                MENGINE_DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
             }
 
             if( m_vertexShaderEnable == true && vertexShaderEnable == false )
             {
                 m_vertexShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+                MENGINE_DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
             }
 
             if( m_fragmentShaderEnable == true && fragmentShaderEnable == false )
             {
                 m_fragmentShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+                MENGINE_DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
             }
         }
         else
@@ -1869,21 +1869,21 @@ namespace Mengine
             {
                 m_vertexShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+                MENGINE_DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
             }
 
             if( m_fragmentShaderEnable == true )
             {
                 m_vertexShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+                MENGINE_DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
             }
 
             if( m_vertexAttributeEnable == true )
             {
                 m_vertexShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+                MENGINE_DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
             }
         }
     }

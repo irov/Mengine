@@ -124,7 +124,7 @@ namespace Mengine
 
         ALsizei al_decode_size = (ALsizei)decode_size;
         ALsizei al_frequency = (ALsizei)m_frequency;
-        IF_OPENAL_CALL( alBufferData, (alBufferId, m_format, binary_memory_buffer, al_decode_size, al_frequency) )
+        MENGINE_IF_OPENAL_CALL( alBufferData, (alBufferId, m_format, binary_memory_buffer, al_decode_size, al_frequency) )
         {
             m_soundSystem->releaseBufferId( alBufferId );
 
@@ -139,62 +139,62 @@ namespace Mengine
     bool OpenALSoundBufferMemory::playSource( ALuint _source, bool _looped, float _pos )
     {
         ALint state = 0;
-        OPENAL_CALL( alGetSourcei, (_source, AL_SOURCE_STATE, &state) );
+        MENGINE_OPENAL_CALL( alGetSourcei, (_source, AL_SOURCE_STATE, &state) );
 
         if( state == AL_PLAYING )
         {
-            OPENAL_CALL( alSourceRewind, (_source) );
-            OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
+            MENGINE_OPENAL_CALL( alSourceRewind, (_source) );
+            MENGINE_OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
         }
 
-        OPENAL_CALL( alSourcei, (_source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE) );
+        MENGINE_OPENAL_CALL( alSourcei, (_source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE) );
 
-        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, m_alBufferId) );
+        MENGINE_OPENAL_CALL( alSourcei, (_source, AL_BUFFER, m_alBufferId) );
 
         if( _pos > 0.f )
         {
             ALfloat al_pos = (ALfloat)(_pos * 0.001f);
-            OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) );
+            MENGINE_OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) );
         }
 
-        OPENAL_CALL( alSourcePlay, (_source) );
+        MENGINE_OPENAL_CALL( alSourcePlay, (_source) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::resumeSource( ALuint _source )
     {
-        OPENAL_CALL( alSourcePlay, (_source) );
+        MENGINE_OPENAL_CALL( alSourcePlay, (_source) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferMemory::pauseSource( ALuint _source )
     {
-        OPENAL_CALL( alSourcePause, (_source) );
+        MENGINE_OPENAL_CALL( alSourcePause, (_source) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferMemory::stopSource( ALuint _source )
     {
-        OPENAL_CALL( alSourceStop, (_source) );
+        MENGINE_OPENAL_CALL( alSourceStop, (_source) );
 
         {
             ALint val;
 
             do
             {
-                OPENAL_CALL( alGetSourcei, (_source, AL_SOURCE_STATE, &val) );
+                MENGINE_OPENAL_CALL( alGetSourcei, (_source, AL_SOURCE_STATE, &val) );
             } while( val == AL_PLAYING );
         }
 
-        OPENAL_CALL( alSourceRewind, (_source) );
-        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
+        MENGINE_OPENAL_CALL( alSourceRewind, (_source) );
+        MENGINE_OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::setTimePos( ALuint _source, float _pos ) const
     {
         ALfloat al_pos = (ALfloat)(_pos * 0.001f);
-        IF_OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) )
+        MENGINE_IF_OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) )
         {
             return false;
         }
@@ -205,7 +205,7 @@ namespace Mengine
     bool OpenALSoundBufferMemory::getTimePos( ALuint _source, float * const _pos ) const
     {
         ALfloat al_pos = 0.f;
-        IF_OPENAL_CALL( alGetSourcef, (_source, AL_SEC_OFFSET, &al_pos) )
+        MENGINE_IF_OPENAL_CALL( alGetSourcef, (_source, AL_SEC_OFFSET, &al_pos) )
         {
             return false;
         }

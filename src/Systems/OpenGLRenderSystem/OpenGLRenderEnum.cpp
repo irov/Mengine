@@ -90,7 +90,7 @@ namespace Mengine
             return 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        GLenum toMagFilter( ETextureFilter _magFilter )
+        GLenum toGLMagFilter( ETextureFilter _magFilter )
         {
             switch( _magFilter )
             {

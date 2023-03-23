@@ -23,7 +23,7 @@ namespace Mengine
     bool DX9RenderTargetOffscreen::_initialize()
     {
         IDirect3DSurface9 * pD3DSurfacePlain;
-        IF_DXCALL( m_pD3DDevice, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &pD3DSurfacePlain, NULL) )
+        MENGINE_IF_DXCALL( m_pD3DDevice, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &pD3DSurfacePlain, NULL) )
         {
             return false;
         }
@@ -37,7 +37,7 @@ namespace Mengine
     {
         DX9RenderTargetTexture::_finalize();
 
-        DXRELEASE( m_pD3DSurfacePlain );
+        MENGINE_DXRELEASE( m_pD3DSurfacePlain );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
@@ -45,10 +45,10 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DSurfacePlain, "not set d3d surface plain" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DSurfaceCurrent, "not set d3d surface" );
 
-        DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurfaceCurrent, m_pD3DSurfacePlain) );
+        MENGINE_DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurfaceCurrent, m_pD3DSurfacePlain) );
 
         D3DLOCKED_RECT LockedRect;
-        IF_DXCALL( m_pD3DSurfacePlain, LockRect, (&LockedRect, NULL, 0) )
+        MENGINE_IF_DXCALL( m_pD3DSurfacePlain, LockRect, (&LockedRect, NULL, 0) )
         {
             return false;
         }
@@ -73,7 +73,7 @@ namespace Mengine
         //    srcData += LockedRect.Pitch;
         //}
 
-        DXCALL( m_pD3DSurfacePlain, UnlockRect, () );
+        MENGINE_DXCALL( m_pD3DSurfacePlain, UnlockRect, () );
 
         return true;
     }

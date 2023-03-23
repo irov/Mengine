@@ -74,7 +74,7 @@ namespace Mengine
             );
 
             IDirect3DVertexDeclaration9 * pD3DVertexDeclaration;
-            IF_DXCALL( _pD3DDevice, CreateVertexDeclaration, (declaration, &pD3DVertexDeclaration) )
+            MENGINE_IF_DXCALL( _pD3DDevice, CreateVertexDeclaration, (declaration, &pD3DVertexDeclaration) )
             {
                 return false;
             }
@@ -89,7 +89,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::release()
     {
-        DXRELEASE( m_pD3DVertexDeclaration );
+        MENGINE_DXRELEASE( m_pD3DVertexDeclaration );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderVertexAttribute::getName() const
@@ -104,12 +104,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::enable( IDirect3DDevice9 * _pD3DDevice )
     {
-        DXCALL( _pD3DDevice, SetVertexDeclaration, (m_pD3DVertexDeclaration) );
+        MENGINE_DXCALL( _pD3DDevice, SetVertexDeclaration, (m_pD3DVertexDeclaration) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::disable( IDirect3DDevice9 * _pD3DDevice )
     {
-        DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
+        MENGINE_DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )

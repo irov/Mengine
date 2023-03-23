@@ -92,9 +92,9 @@ namespace Mengine
 
         const uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
-        GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        MENGINE_GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
         return true;
     }
@@ -119,10 +119,10 @@ namespace Mengine
 
         m_memory->newBuffer( bufferSize );
 #else
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         void * buffer = nullptr;
-        GLCALLR( buffer, glMapBuffer, (GL_ARRAY_BUFFER, GL_WRITE_ONLY) );
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALLR( buffer, glMapBuffer, (GL_ARRAY_BUFFER, GL_WRITE_ONLY) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid map buffer" );
 
@@ -140,15 +140,15 @@ namespace Mengine
 #if defined(MENGINE_RENDER_OPENGL_ES)
         void * memory_buffer = m_memory->getBuffer();
 
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
-        GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * m_vertexSize, m_lockCount * m_vertexSize, memory_buffer) );
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        MENGINE_GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * m_vertexSize, m_lockCount * m_vertexSize, memory_buffer) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 #else
         m_memory->setBuffer( nullptr, 0 );
 
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
-        GLCALL( glUnmapBuffer, (GL_ARRAY_BUFFER) );
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        MENGINE_GLCALL( glUnmapBuffer, (GL_ARRAY_BUFFER) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 #endif
 
         m_lockOffset = 0;
@@ -164,25 +164,25 @@ namespace Mengine
             return false;
         }
 
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
 
         const uint32_t bufferOffset = _offset * m_vertexSize;
         const uint32_t bufferSize = _count * m_vertexSize;
 
-        GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, bufferOffset, bufferSize, _buffer) );
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, bufferOffset, bufferSize, _buffer) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexBuffer::enable()
     {
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexBuffer::disable()
     {
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexBuffer::release()
@@ -223,9 +223,9 @@ namespace Mengine
 
         const uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
-        GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
-        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        MENGINE_GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
         return true;
     }

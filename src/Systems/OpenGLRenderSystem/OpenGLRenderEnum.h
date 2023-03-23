@@ -13,7 +13,7 @@ namespace Mengine
         GLenum toGLBlendOp( EBlendOp _filter );
         GLenum toGLCmpFunc( ECompareFunction _function );
         GLenum toGLShadeMode( EShadeType _type );
-        GLenum toMagFilter( ETextureFilter _magFilter );
+        GLenum toGLMagFilter( ETextureFilter _magFilter );
         GLenum toGLMinFilter( ETextureFilter _minFilter, ETextureFilter _mipFilter );
         GLenum toGLInternalFormat( EPixelFormat _format );
         GLenum toGLColorFormat( EPixelFormat _format );

@@ -100,6 +100,8 @@ namespace Mengine
             this->updateHistogramUpdate( &m_histogramFPS, STATISTIC_RENDER_FRAME_COUNT, coeffTime, 1.f );
             this->updateHistogramUpdate( &m_histogramAllocatorNew, STATISTIC_ALLOCATOR_NEW, coeffTime, 1.f / 1024.f );
             this->updateHistogramUpdate( &m_histogramAllocatorFree, STATISTIC_ALLOCATOR_FREE, coeffTime, 1.f / 1024.f );
+            this->updateHistogramUpdate( &m_histogramImageNew, STATISTIC_RENDER_IMAGE_NEW, coeffTime, 1.f );
+            this->updateHistogramUpdate( &m_histogramImageFree, STATISTIC_RENDER_IMAGE_FREE, coeffTime, 1.f );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -150,8 +152,17 @@ namespace Mengine
         float histogramFPSHeight = maxFPS > 80.f ? maxFPS : 80.f;
 
         this->drawHistogramUpdate( m_histogramFPS, "FPS: %.2f", histogramFPSHeight, 80.f );
-        this->drawHistogramUpdate( m_histogramAllocatorNew, "alloc: %.2fkb", FLT_MAX, 80.f );
-        this->drawHistogramUpdate( m_histogramAllocatorFree, "free: %.2fkb", FLT_MAX, 80.f );
+        this->drawHistogramUpdate( m_histogramAllocatorNew, "Memory alloc: %.2fkb", FLT_MAX, 60.f );
+        this->drawHistogramUpdate( m_histogramAllocatorFree, "Memory free: %.2fkb", FLT_MAX, 60.f );
+
+        int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( STATISTIC_ALLOCATOR_SIZE );
+        ImGui::Text( "Allocator size: %lldmb %lldkb", Statistic_AllocatorSize / (1024 * 1024), (Statistic_AllocatorSize % (1024 * 1024)) / 1024 );
+
+        this->drawHistogramUpdate( m_histogramImageNew, "Image new: %.0f", FLT_MAX, 60.f );
+        this->drawHistogramUpdate( m_histogramImageFree, "Image free: %.0f", FLT_MAX, 60.f );
+
+        int64_t Statistic_Render_ImageSize = STATISTIC_GET_INTEGER( STATISTIC_RENDER_IMAGE_SIZE );
+        ImGui::Text( "Image size: %lld", Statistic_Render_ImageSize );
 
         this->drawHistogramPerFrame( m_histogramPerFrameDrawIndexPrimitives, "DIP: %.0f", FLT_MAX, 50.f );
 

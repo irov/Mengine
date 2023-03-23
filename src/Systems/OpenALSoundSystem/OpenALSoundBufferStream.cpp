@@ -184,7 +184,7 @@ namespace Mengine
         }
 
         ALint state = 0;
-        OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
+        MENGINE_OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
 
         if( state != AL_STOPPED && state != AL_INITIAL )
         {
@@ -196,9 +196,9 @@ namespace Mengine
             return false;
         }
 
-        OPENAL_CALL( alSourceRewind, (m_sourceId) );
-        OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) );
-        OPENAL_CALL( alSourcei, (m_sourceId, AL_LOOPING, AL_FALSE) );
+        MENGINE_OPENAL_CALL( alSourceRewind, (m_sourceId) );
+        MENGINE_OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) );
+        MENGINE_OPENAL_CALL( alSourcei, (m_sourceId, AL_LOOPING, AL_FALSE) );
 
         if( m_soundDecoder->seek( _pos ) == false )
         {
@@ -224,7 +224,7 @@ namespace Mengine
                 break;
             }
 
-            OPENAL_CALL( alSourceQueueBuffers, (m_sourceId, 1, &bufferId) );
+            MENGINE_OPENAL_CALL( alSourceQueueBuffers, (m_sourceId, 1, &bufferId) );
 
             if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE )
             {
@@ -232,7 +232,7 @@ namespace Mengine
             }
         }
 
-        OPENAL_CALL( alSourcePlay, (m_sourceId) );
+        MENGINE_OPENAL_CALL( alSourcePlay, (m_sourceId) );
 
         this->setUpdating_( true );
 
@@ -315,16 +315,16 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
         ALfloat newVolume;
-        OPENAL_CALL( alGetSourcef, (m_sourceId, AL_GAIN, &newVolume) );
+        MENGINE_OPENAL_CALL( alGetSourcef, (m_sourceId, AL_GAIN, &newVolume) );
 #endif
 
         ALint processed_count = 0;
-        OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_PROCESSED, &processed_count) );
+        MENGINE_OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_PROCESSED, &processed_count) );
 
         while( processed_count-- )
         {
             ALuint bufferId;
-            OPENAL_CALL( alSourceUnqueueBuffers, (m_sourceId, 1, &bufferId) );
+            MENGINE_OPENAL_CALL( alSourceUnqueueBuffers, (m_sourceId, 1, &bufferId) );
 
             size_t bytesWritten = 0;
             if( this->bufferData_( bufferId, &bytesWritten ) == false )
@@ -337,18 +337,18 @@ namespace Mengine
                 continue;
             }
 
-            OPENAL_CALL( alSourceQueueBuffers, (m_sourceId, 1, &bufferId) );
+            MENGINE_OPENAL_CALL( alSourceQueueBuffers, (m_sourceId, 1, &bufferId) );
         }
 
         ALint state;
-        OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
+        MENGINE_OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
 
         if( state == AL_STOPPED )
         {
             if( m_looped == false )
             {
                 ALint queued_count = 0;
-                OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_QUEUED, &queued_count) );
+                MENGINE_OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_QUEUED, &queued_count) );
 
                 if( queued_count == 0 )
                 {
@@ -356,7 +356,7 @@ namespace Mengine
                 }
             }
 
-            OPENAL_CALL( alSourcePlay, (m_sourceId) );
+            MENGINE_OPENAL_CALL( alSourcePlay, (m_sourceId) );
         }
 
         return true;
@@ -400,7 +400,7 @@ namespace Mengine
 
         ALsizei al_bytesWritten = (ALsizei)bytesWritten;
         ALsizei al_frequency = (ALsizei)m_frequency;
-        IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, al_frequency) )
+        MENGINE_IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, al_frequency) )
         {
             LOGGER_ERROR( "invalid alBufferData buffer [%u] id [%u] format [%u] bytes [%zu] frequency [%u]"
                 , _alBufferId

@@ -10,13 +10,13 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#define OPENAL_CALL(Method, Args)\
+#define MENGINE_OPENAL_CALL(Method, Args)\
     (Method Args, Mengine::Helper::OpenALErrorCheck( #Method, MENGINE_CODE_FILE, MENGINE_CODE_LINE ))
 //////////////////////////////////////////////////////////////////////////
-#define IF_OPENAL_CALL(Method, Args)\
+#define MENGINE_IF_OPENAL_CALL(Method, Args)\
     if((Method Args, Mengine::Helper::OpenALErrorCheck( #Method, MENGINE_CODE_FILE, MENGINE_CODE_LINE )) == false)
 //////////////////////////////////////////////////////////////////////////
-#define RET_OPENAL_CALL(Type, Ret, Method, Args)\
+#define MENGINE_RET_OPENAL_CALL(Type, Ret, Method, Args)\
     Type Ret = Method Args; Mengine::Helper::OpenALErrorCheck( #Method, MENGINE_CODE_FILE, MENGINE_CODE_LINE )
 //////////////////////////////////////////////////////////////////////////
 

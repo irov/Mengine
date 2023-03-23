@@ -489,7 +489,7 @@ namespace Mengine
 
         m_renderSystem->endScene();
 
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_FRAME_COUNT, 1 );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_FRAME_COUNT );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::swapBuffers()
@@ -701,7 +701,7 @@ namespace Mengine
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( material );
 
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES, 1 );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_PERFRAME_DRAWINDEXPRIMITIVES );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreTextureStage_( uint32_t _stage )

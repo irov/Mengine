@@ -145,23 +145,23 @@ namespace Mengine
     void OpenGLRenderImage::bind( uint32_t _stage )
     {
 #ifdef MENGINE_RENDER_OPENGL_ES
-        GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
+        MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
 #else
-        GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
+        MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
 #endif
 
-        GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
+        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::unbind( uint32_t _stage )
     {
 #ifdef MENGINE_RENDER_OPENGL_ES
-        GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
+        MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
 #else
-        GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
+        MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
 #endif
 
-        GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
+        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
@@ -243,7 +243,7 @@ namespace Mengine
         size_t pitch;
         void * buffer = imageLocked->getBuffer( &pitch );
 
-        GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
+        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
         bool successful = true;
 
@@ -263,9 +263,9 @@ namespace Mengine
                 {
                     GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwPixelFormat );
 #ifdef MENGINE_RENDER_OPENGL_ES
-                    IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
+                    MENGINE_IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
 #else
-                    IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
+                    MENGINE_IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
 #endif
                     {
                         LOGGER_ERROR( "glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
@@ -289,7 +289,7 @@ namespace Mengine
             {
                 if( lockedRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
-                    IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, buffer) )
+                    MENGINE_IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, buffer) )
                     {
                         LOGGER_ERROR( "glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                             , _level
@@ -313,7 +313,7 @@ namespace Mengine
 
                     if( m_lockFirst == true )
                     {
-                        IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, nullptr) )
+                        MENGINE_IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, nullptr) )
                         {
                             LOGGER_ERROR( "glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                                 , _level
@@ -329,7 +329,7 @@ namespace Mengine
                         }
                     }
 
-                    IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, _level, miplevel_xoffset, miplevel_yoffset, miplevel_width, miplevel_height, m_format, m_type, buffer) )
+                    MENGINE_IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, _level, miplevel_xoffset, miplevel_yoffset, miplevel_width, miplevel_height, m_format, m_type, buffer) )
                     {
                         LOGGER_ERROR( "glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                             , _level

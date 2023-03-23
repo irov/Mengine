@@ -189,7 +189,7 @@ namespace Mengine
         if( m_playing == true && m_sourceId != 0 )
         {
             ALfloat gain = (ALfloat)MENGINE_POWF( m_volume, 2.f );
-            OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, gain) );
+            MENGINE_OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, gain) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -355,26 +355,26 @@ namespace Mengine
     {
         if( m_headMode == true )
         {
-            OPENAL_CALL( alSourcei, (_source, AL_SOURCE_RELATIVE, AL_TRUE) );
-            OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 0.f) );
-            OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
+            MENGINE_OPENAL_CALL( alSourcei, (_source, AL_SOURCE_RELATIVE, AL_TRUE) );
+            MENGINE_OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 0.f) );
+            MENGINE_OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
         }
         else
         {
-            OPENAL_CALL( alSourcei, (_source, AL_SOURCE_RELATIVE, AL_FALSE) );
-            OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 1.f) );
-            OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
+            MENGINE_OPENAL_CALL( alSourcei, (_source, AL_SOURCE_RELATIVE, AL_FALSE) );
+            MENGINE_OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 1.f) );
+            MENGINE_OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
         }
 
-        OPENAL_CALL( alSourcei, (_source, AL_LOOPING, m_loop ? AL_TRUE : AL_FALSE) );
-        OPENAL_CALL( alSource3f, (_source, AL_POSITION, 0.f, 0.f, -1.f) );
-        OPENAL_CALL( alSource3f, (_source, AL_VELOCITY, 0.f, 0.f, 0.f) );
-        OPENAL_CALL( alSourcef, (_source, AL_MIN_GAIN, 0.f) );
-        OPENAL_CALL( alSourcef, (_source, AL_MAX_GAIN, 1.f) );
-        OPENAL_CALL( alSourcef, (_source, AL_PITCH, 1.f) );
+        MENGINE_OPENAL_CALL( alSourcei, (_source, AL_LOOPING, m_loop ? AL_TRUE : AL_FALSE) );
+        MENGINE_OPENAL_CALL( alSource3f, (_source, AL_POSITION, 0.f, 0.f, -1.f) );
+        MENGINE_OPENAL_CALL( alSource3f, (_source, AL_VELOCITY, 0.f, 0.f, 0.f) );
+        MENGINE_OPENAL_CALL( alSourcef, (_source, AL_MIN_GAIN, 0.f) );
+        MENGINE_OPENAL_CALL( alSourcef, (_source, AL_MAX_GAIN, 1.f) );
+        MENGINE_OPENAL_CALL( alSourcef, (_source, AL_PITCH, 1.f) );
 
         ALfloat gain = (ALfloat)MENGINE_POWF( m_volume, 2.f );
-        OPENAL_CALL( alSourcef, (_source, AL_GAIN, gain) );
+        MENGINE_OPENAL_CALL( alSourcef, (_source, AL_GAIN, gain) );
     }
     //////////////////////////////////////////////////////////////////////////
     const SoundBufferInterfacePtr & OpenALSoundSource::getSoundBuffer() const

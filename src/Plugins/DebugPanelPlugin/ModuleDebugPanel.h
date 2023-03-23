@@ -58,6 +58,8 @@ namespace Mengine
         mutable HistogramUpdate m_histogramFPS;
         mutable HistogramUpdate m_histogramAllocatorNew;
         mutable HistogramUpdate m_histogramAllocatorFree;
+        mutable HistogramUpdate m_histogramImageNew;
+        mutable HistogramUpdate m_histogramImageFree;
 
         mutable HistogramPerframe m_histogramPerFrameDrawIndexPrimitives;
         mutable HistogramPerframe m_histogramPerFrameObjects;

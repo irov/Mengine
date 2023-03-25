@@ -165,9 +165,9 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             } else if (parameter instanceof String) {
                 params.add(name, (String)parameter);
             } else {
-                this.logError("customEvent unsupported parameter [%s] %s"
-                    , parameter.getClass()
+                this.logError("customEvent unsupported parameter: %s class: %s"
                     , parameter
+                    , parameter.getClass()
                 );
 
                 return;

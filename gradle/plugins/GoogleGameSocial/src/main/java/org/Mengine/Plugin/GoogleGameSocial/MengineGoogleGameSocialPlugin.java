@@ -179,7 +179,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                         try {
                             status.startResolutionForResult(activity, RC_SIGN_IN);
                         } catch (IntentSender.SendIntentException ex) {
-                            this.logError("Start resolution for result RC_SIGN_IN catch SendIntentException: %s"
+                            this.logError("start resolution for result RC_SIGN_IN catch SendIntentException: %s"
                                 , ex.getLocalizedMessage()
                             );
                         }
@@ -190,7 +190,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                     }
                 }break;
                 default: {
-                    this.logError("google game social signIn failed status error '%s' code [%d]"
+                    this.logError("google game social signIn failed status error message: %s code: %d"
                         , status.getStatusMessage()
                         , status.getStatusCode()
                     );
@@ -307,7 +307,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    MengineGoogleGameSocialPlugin.this.logError("get achievements error '%s'"
+                    MengineGoogleGameSocialPlugin.this.logError("get achievements error: %s"
                         , e.getLocalizedMessage()
                     );
 
@@ -319,7 +319,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean unlockAchievement(String achievementId) {
-        this.logMessage("unlockAchievement '%s'"
+        this.logMessage("unlockAchievement: %s"
             , achievementId
         );
 
@@ -331,7 +331,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
-                    MengineGoogleGameSocialPlugin.this.logMessage("unlockAchievement '%s' complete"
+                    MengineGoogleGameSocialPlugin.this.logMessage("unlockAchievement complete achievementId: %s"
                         , achievementId
                     );
 
@@ -341,7 +341,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    MengineGoogleGameSocialPlugin.this.logError("unlockAchievement '%s' error '%s'"
+                    MengineGoogleGameSocialPlugin.this.logError("unlockAchievement achievementId: %s error: %s"
                         , achievementId
                         , e.getLocalizedMessage()
                     );
@@ -354,7 +354,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
-        this.logMessage("incrementAchievement '%s' [%d]"
+        this.logMessage("incrementAchievement achievementId: %s numSteps: %d"
             , achievementId
             , numSteps
         );
@@ -367,7 +367,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             .addOnSuccessListener(new OnSuccessListener<Boolean>() {
                 @Override
                 public void onSuccess(Boolean aBoolean) {
-                    MengineGoogleGameSocialPlugin.this.logMessage("incrementImmediate '%s' complete"
+                    MengineGoogleGameSocialPlugin.this.logMessage("incrementImmediate complete achievementId: %s"
                         , achievementId
                     );
 
@@ -376,7 +376,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    MengineGoogleGameSocialPlugin.this.logError("incrementImmediate '%s' error '%s'"
+                    MengineGoogleGameSocialPlugin.this.logError("incrementImmediate achievementId: %s error: %s"
                         , achievementId
                         , e.getLocalizedMessage()
                     );

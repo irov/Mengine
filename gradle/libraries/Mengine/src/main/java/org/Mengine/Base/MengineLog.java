@@ -37,37 +37,40 @@ public class MengineLog {
     public static void log(int level, String tag, String format, Object ... args) {
         String totalMsg = MengineLog.buildTotalMsg(tag, format, args);
 
+        switch (level) {
+            case LM_SILENT:
+                return;
+            case LM_FATAL:
+                Log.wtf(tag, totalMsg);
+                break;
+            case LM_MESSAGE_RELEASE:
+                Log.e(tag, totalMsg);
+                break;
+            case LM_ERROR:
+                Log.e(tag, totalMsg);
+                break;
+            case LM_WARNING:
+                Log.w(tag, totalMsg);
+                break;
+            case LM_MESSAGE:
+                Log.i(tag, totalMsg);
+                break;
+            case LM_INFO:
+                Log.i(tag, totalMsg);
+                break;
+            case LM_DEBUG:
+                Log.d(tag, totalMsg);
+                break;
+            case LM_VERBOSE:
+                Log.v(tag, totalMsg);
+                break;
+        }
+
         if( MengineLog.m_initializeBaseServices == true ) {
             synchronized (MengineLog.m_lock) {
                 AndroidEnvironmentService_log(level, totalMsg);
             }
         } else {
-            switch (level) {
-                case LM_SILENT:
-                    return;
-                case LM_FATAL:
-                    Log.wtf(tag, totalMsg);
-                    break;
-                case LM_MESSAGE_RELEASE:
-                    Log.e(tag, totalMsg);
-                    break;
-                case LM_ERROR:
-                    Log.e(tag, totalMsg);
-                    break;
-                case LM_WARNING:
-                    Log.w(tag, totalMsg);
-                    break;
-                case LM_INFO:
-                    Log.i(tag, totalMsg);
-                    break;
-                case LM_DEBUG:
-                    Log.d(tag, totalMsg);
-                    break;
-                case LM_VERBOSE:
-                    Log.v(tag, totalMsg);
-                    break;
-            }
-
             if (MengineLog.m_application != null) {
                 String msg = MengineLog.buildTotalMsg(null, format, args);
 

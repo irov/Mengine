@@ -73,7 +73,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 plugin.logError("Amazon failure load banner [%s] code [%s] message: %s"
                     , MengineAppLovinPlugin_AmazonBannerSlotId
-                    , adError.getCode().toString()
+                    , adError.getCode()
                     , adError.getMessage()
                 );
 
@@ -129,7 +129,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         plugin.logError("Amazon failure load interstitial [%s] code [%s] message: %s"
                             , MengineAppLovinPlugin_AmazonInterstitialSlotId
-                            , adError.getCode().toString()
+                            , adError.getCode()
                             , adError.getMessage()
                         );
 
@@ -198,7 +198,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         plugin.logError("Amazon failure load rewarded [%s] code [%s] message: %s"
                             , MengineAppLovinPlugin_AmazonRewardedSlotId
-                            , adError.getCode().toString()
+                            , adError.getCode()
                             , adError.getMessage()
                         );
 

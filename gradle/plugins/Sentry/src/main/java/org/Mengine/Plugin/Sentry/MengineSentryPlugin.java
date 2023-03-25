@@ -25,7 +25,9 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             return;
         }
 
-        MengineSentryPlugin.this.logInfo("Sentry DNS: %s", MengineSentryPlugin_DSN);
+        MengineSentryPlugin.this.logInfo("Sentry DNS: %s"
+            , MengineSentryPlugin_DSN
+        );
 
         SentryAndroid.init(activity, options -> {
             options.setDsn(MengineSentryPlugin_DSN);

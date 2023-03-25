@@ -1,17 +1,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.Mengine.Plugin.MAR">
 
-    <application
-        android:extractNativeLibs="true"
-        android:usesCleartextTraffic="true">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
-        <!-- MarSDK -->
+    <application
+        android:allowBackup="true">
+
         <activity
             android:name="com.mar.sdk.impl.activities.LoginActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="true"
             android:screenOrientation="behind"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
         </activity>
 
         <activity
@@ -19,7 +22,7 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="true"
             android:screenOrientation="behind"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
         </activity>
 
         <activity
@@ -32,7 +35,5 @@
         <meta-data android:name="ulog.enable" android:value="true"/>
         <meta-data android:name="ulog.level" android:value="DEBUG"/>
         <meta-data android:name="ulog.local" android:value="true"/>
-        <!-- MARSDK -->
     </application>
-
 </manifest>

@@ -102,10 +102,10 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         } else if (value instanceof String) {
             FirebaseCrashlytics.getInstance().setCustomKey(key, (String)value);
         } else {
-            this.logError("unsupported custom key [%s] value [%s] %s"
+            this.logError("unsupported custom key: %s value: %s class: %s"
                 , key
-                , value.getClass()
                 , value
+                , value.getClass()
             );
         }
     }

@@ -69,7 +69,9 @@ public class MengineAppLovinBase {
 
         sb.append("}");
 
-        return sb.toString();
+        String params = sb.toString();
+
+        return params;
     }
 
     protected String getMaxErrorParams(MaxError error) {
@@ -89,7 +91,9 @@ public class MengineAppLovinBase {
         sb.append(String.format(", \"latency\": %d", latency));
         sb.append("}");
 
-        return sb.toString();
+        String params = sb.toString();
+
+        return params;
     }
 
     protected MengineAnalyticsEventBuilder buildEvent(String name) {
@@ -106,6 +110,8 @@ public class MengineAppLovinBase {
         MaxAdWaterfallInfo waterfall = ad.getWaterfall();
 
         this.writeMaxAdWaterfallInfo(sb, waterfall);
+
+        sb.setLength(sb.length() - 1); //remove last '\n'
 
         String message = sb.toString();
 

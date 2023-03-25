@@ -237,9 +237,9 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     } else if (value instanceof String) {
                         params.putString(name, (String)value);
                     } else {
-                        this.logError("unsupported parameter [%s] %s"
-                        	, value.getClass()
+                        this.logError("unsupported parameter: %s class: %s"
                             , value
+                            , value.getClass()
                         );
 
                         return;
@@ -264,7 +264,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 m_logger.logEvent(AppEventsConstants.EVENT_NAME_UNLOCKED_ACHIEVEMENT, params);
             } break;
             default: {
-                this.logError("Unknown event type: %d name: %s"
+                this.logError("unknown event type: %d name: %s"
                 	, eventType
                     , eventName
                 );
@@ -508,7 +508,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 JSONObject responseObject = response.getJSONObject();
 
                 if (responseObject == null) {
-                    MengineFacebookPlugin.this.logError("profile user picture link [%s] invalid response [%s]"
+                    MengineFacebookPlugin.this.logError("profile user picture link [%s] invalid response: %s"
                         , graphPath
                         , response
                     );
@@ -524,7 +524,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 } catch (JSONException e) {
                     e.printStackTrace();
 
-                    MengineFacebookPlugin.this.logError("profile user picture link [%s] catch JSONException [%s]"
+                    MengineFacebookPlugin.this.logError("profile user picture link [%s] catch JSONException: %s"
                         , graphPath
                         , e.getLocalizedMessage()
                     );

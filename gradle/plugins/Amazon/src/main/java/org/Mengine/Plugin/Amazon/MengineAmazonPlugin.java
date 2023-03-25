@@ -21,10 +21,17 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String MengineAmazonPlugin_AppId = application.getMetaDataString("mengine.amazon.appId");
 
+        if (MengineAmazonPlugin_AppId == null) {
+            this.invalidInitialize("invalid setup meta data [mengine.amazon.appId]");
+
+            return;
+        }
+
         try {
             AdRegistration.getInstance(MengineAmazonPlugin_AppId, application);
         } catch (IllegalArgumentException e) {
             this.invalidInitialize("AdRegistration get instance failed: %s"
+                , MengineAmazonPlugin_AppId
                 , e.getLocalizedMessage()
             );
 

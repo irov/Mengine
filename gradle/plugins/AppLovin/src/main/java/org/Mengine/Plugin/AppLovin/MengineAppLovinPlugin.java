@@ -148,7 +148,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized: country [%s] AmazonAdUnitIds: %s"
+                MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized country: %s AmazonAdUnitIds: %s"
                     , configuration.getCountryCode()
                     , configuration.getEnabledAmazonAdUnitIds()
                 );

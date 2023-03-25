@@ -142,7 +142,7 @@ public class MenginePlugin {
     }
 
     public boolean createExtension(MengineActivity activity, String type) {
-        this.logMessage("Plugin [%s] add extension: %s"
+        this.logMessage("plugin [%s] add extension: %s"
             , m_pluginName
             , type
         );
@@ -150,7 +150,7 @@ public class MenginePlugin {
         MenginePluginExtension extension = m_application.createPluginExtension(activity, this, type);
 
         if (extension == null) {
-            this.logError("Plugin [%s] invalid create extension: %s"
+            this.logError("plugin [%s] invalid create extension: %s"
                 , m_pluginName
                 , type
             );

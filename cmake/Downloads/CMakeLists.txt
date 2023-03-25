@@ -21,11 +21,11 @@ IF(APPLE)
     DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip)
 ENDIF()
 
-IF(ANDROID OR WIN32)
-    DOWNLOAD_URL(devtodev-android https://github.com/devtodev-analytics/android-sdk-2.0/archive/refs/tags/v2.1.2.zip)
-ENDIF()
+#ANDROID
+DOWNLOAD_URL(devtodev-android https://github.com/devtodev-analytics/android-sdk-2.0/archive/refs/tags/v2.1.2.zip)
+DOWNLOAD_URL(marsdk-android https://marsdkserver-1300810349.file.myqcloud.com/marsdk/MARSDK_v2.6.27.zip)
 
-
+#COMMON
 GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-4")
 GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "4.3.0")
 GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.2.13")

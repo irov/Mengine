@@ -17,7 +17,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import com.mar.sdk.MARCallBack;
+import com.mar.sdk.MARCloudCallBack;
 import com.mar.sdk.MARCode;
 import com.mar.sdk.MARSDK;
 import com.mar.sdk.PayParams;
@@ -27,8 +27,10 @@ import com.mar.sdk.gg.control.MggControl;
 import com.mar.sdk.platform.MARExitListener;
 import com.mar.sdk.platform.MARInitListener;
 import com.mar.sdk.platform.MARPlatform;
+import com.mar.sdk.verify.UGameArchive;
 import com.mar.sdk.verify.UToken;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.view.KeyEvent;
@@ -54,74 +56,298 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     public void loginCustom(final String loginType) {
-        this.logMessage("login custom loginType: %s", loginType);
+        this.logMessage("login custom loginType: %s"
+            , loginType
+        );
 
         MengineActivity activity = this.getActivity();
 
         MARPlatform.getInstance().loginCustom(activity, loginType);
     }
 
-    public void pay(int coinNum, String productID, String productName, String productDesc, int price) {
-        this.logMessage("pay coinNum: %d productID: %s productName: %s productDesc: %s price: %d", coinNum, productID, productName, productDesc, price);
-
-        MengineActivity activity = this.getActivity();
-
+    private PayParams makePayParams(String jsonData) {
         PayParams params = new PayParams();
-        params.setCoinNum(coinNum);        //当前玩家身上拥有的游戏币数量
 
-        params.setPrice(price);        //单位 元
-        params.setProductId(productID);    //产品ID
-        params.setProductName(productName);    //产品名称
-        params.setProductDesc(productDesc);    //产品描述
+        try {
+            JSONObject json = new JSONObject(jsonData);
 
-        params.setBuyNum(1);		//购买数量，固定1
+            String productId = json.getString("productId");
+            String productName = json.getString("productName");
+            String productDesc = json.getString("productDesc");
+            int price = json.getInt("price");
+            int ratio = json.getInt("ratio");
+            int buyNum = json.getInt("buyNum");
+            int coinNum = json.getInt("coinNum");
+            String serverId = json.has("serverId") == true ? json.getString("serverId") : params.getServerId();
+            String serverName = json.has("serverName") == true ? json.getString("serverName") : params.getServerName();
+            String roleId = json.has("roleId") == true ? json.getString("roleId") : params.getRoleId();
+            String roleName = json.has("roleName") == true ? json.getString("roleName") : params.getRoleName();
+            int roleLevel = json.has("roleLevel") == true ? json.getInt("roleLevel") : params.getRoleLevel();
+            String payNotifyUrl = json.getString("payNotifyUrl");
+            String vip = json.has("vip") == true ? json.getString("vip") : params.getVip();
+            String orderID = json.getString("orderID");
+            String extension = json.getString("extension");
+            String channelOrderID = json.getString("channelOrderID");
+            int state = json.getInt("state");
 
-        params.setExtension(System.currentTimeMillis()+"");	//游戏自定义数据，充值成功，回调游戏服的时候，会原封不动返回
-        params.setRoleId("100");		//角色ID
-        params.setRoleLevel(10);		//角色等级
-        params.setRoleName("test_112");	//角色名称
-        params.setServerId("10");		//服务器ID
-        params.setServerName("测试");		//服务器名称
-        params.setVip("1");			//角色VIP等级
+            params.setProductId(productId);
+            params.setProductName(productName);
+            params.setProductDesc(productDesc);
+            params.setPrice(price);
+            params.setRatio(ratio);
+            params.setBuyNum(buyNum);
+            params.setCoinNum(coinNum);
+            params.setServerId(serverId);
+            params.setServerName(serverName);
+            params.setRoleId(roleId);
+            params.setRoleName(roleName);
+            params.setRoleLevel(roleLevel);
+            params.setPayNotifyUrl(payNotifyUrl);
+            params.setVip(vip);
+            params.setOrderID(orderID);
+            params.setExtension(extension);
+            params.setChannelOrderID(channelOrderID);
+            params.setState(state);
+        } catch (JSONException e) {
+            this.logError("makePayParams jsonData: %s error: %s"
+                , jsonData
+                , e.getLocalizedMessage()
+            );
 
-        this.logMessage("pay params: %s"
-            , params.toString()
+            return null;
+        }
+
+        return params;
+    }
+
+    public boolean pay(String jsonData) {
+        this.logMessage("pay json: %s"
+            , jsonData
         );
 
+        PayParams params = this.makePayParams(jsonData);
+
+        if (params == null) {
+            return false;
+        }
+
+        this.logMessage("pay params: %s"
+            , params
+        );
+
+        MengineActivity activity = this.getActivity();
         MARPlatform.getInstance().pay(activity, params);
+
+        return true;
     }
 
     public void redeemCode(String code) {
-        this.logMessage("try redeem code %s", code);
+        this.logMessage("try redeem code: %s"
+            , code
+        );
 
         MARPlatform.getInstance().exchangeGift(code);
     }
 
-    public void showAd() {
-        this.logMessage("show ad");
+    public boolean showAd() {
+        boolean videoFlag = MARGgPlatform.getInstance().getVideoFlag();
 
-        if (MARGgPlatform.getInstance().getVideoFlag() == true) {
-            MARGgPlatform.getInstance().showVideo();
+        this.logMessage("show ad videoFlag: %b"
+            , videoFlag
+        );
+
+        if (videoFlag == false) {
+            return false;
         }
+
+        MARGgPlatform.getInstance().showVideo();
+
+        return true;
     }
 
-    public void updateData(String json_str) {
-        this.logMessage("update data: %s", json_str);
+    public void updateData(String gameArchive, int serialNumber) {
+        this.logMessage("update data: %s serialNumber: %d"
+            , gameArchive
+            , serialNumber
+        );
 
-        MARPlatform.getInstance().updateGameArchive(json_str,1);
-    }
-
-    public void marSDKGetData(int serialNumber) {
-        this.logMessage("get data [%d]", serialNumber);
-
-        MARPlatform.getInstance().getGameArchive(serialNumber, new MARCallBack() {
+        MARPlatform.getInstance().updateGameArchive(gameArchive, serialNumber, new MARCloudCallBack() {
             @Override
-            public void onCallBack(String var1) {
-                MengineMARPlugin.this.logMessage("get data from server, start...");
+            public void onCloudResult(UGameArchive var1) {
+                int status = var1.getStatus();
+                int serialNumber = var1.getSerialNumber();
+                String gameArchive = var1.getGameArchive();
+                String extraData = var1.getExtraData();
 
-                MengineMARPlugin.this.pythonCall("onMarSDKGetData", var1);
+                MengineMARPlugin.this.logMessage("update data to server status: %d serialNumber: %d gameArchive: %s extraData: %s"
+                    , status
+                    , serialNumber
+                    , gameArchive
+                    , extraData
+                );
+
+                MengineMARPlugin.this.pythonCall("onMarSDKUpdateData", status, serialNumber, gameArchive, extraData);
             }
         });
+    }
+
+    public void getData(int serialNumber) {
+        this.logMessage("get data: %d"
+            , serialNumber
+        );
+
+        MARPlatform.getInstance().getGameArchive(serialNumber, new MARCloudCallBack() {
+            @Override
+            public void onCloudResult(UGameArchive var1) {
+                int status = var1.getStatus();
+                int serialNumber = var1.getSerialNumber();
+                String gameArchive = var1.getGameArchive();
+                String extraData = var1.getExtraData();
+
+                MengineMARPlugin.this.logMessage("get data from server status: %s serialNumber: %d gameArchive: %s extraData: %s"
+                    , status
+                    , serialNumber
+                    , gameArchive
+                    , extraData
+                );
+
+                MengineMARPlugin.this.pythonCall("onMarSDKGetData", status, serialNumber, gameArchive, extraData);
+            }
+        });
+    }
+
+    public boolean pasteCode() {
+        this.logMessage("pasteCode");
+
+        try {
+            String code = "";
+
+            Context context = MengineActivity.getContext();
+
+            ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+
+            boolean hasPrimaryClip = clipboard.hasPrimaryClip();
+
+            if (hasPrimaryClip == true) {
+                ClipData clip = clipboard.getPrimaryClip();
+                ClipData.Item item = clip.getItemAt(0);
+
+                Object data = item.getText();
+
+                if (data != null) {
+                    code = data.toString();
+                }
+            }
+
+            this.logMessage("try to paste code: %s"
+                , code
+            );
+
+            this.pythonCall("onMarSDKSaveClipboard", hasPrimaryClip, code);
+        } catch (Exception e) {
+            this.logError("pasteCode exception: %s"
+                , e.getLocalizedMessage()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private UserExtraData makeUserExtraData(String jsonData) {
+        UserExtraData data = new UserExtraData();
+
+        try {
+            JSONObject json = new JSONObject(jsonData);
+
+            int dataType = json.has("dataType") == true ? json.getInt("dataType") : data.getDataType();
+            String roleID = json.has("roleID") == true ? json.getString("roleID") : data.getRoleID();
+            String roleName = json.has("roleName") == true ? json.getString("roleName") : data.getRoleName();
+            String roleLevel = json.has("roleLevel") == true ? json.getString("roleLevel") : data.getRoleLevel();
+            int serverID = json.has("serverID") == true ? json.getInt("serverID") : data.getServerID();
+            String serverName = json.has("serverName") == true ? json.getString("serverName") : data.getServerName();
+            int moneyNum = json.has("moneyNum") == true ? json.getInt("moneyNum") : data.getMoneyNum();
+            long roleCreateTime = json.has("roleCreateTime") == true ? json.getLong("roleCreateTime") : data.getRoleCreateTime();
+            long roleLevelUpTime = json.has("roleLevelUpTime") == true ? json.getLong("roleLevelUpTime") : data.getRoleLevelUpTime();
+            String vip = json.has("vip") == true ? json.getString("vip") : data.getVip();
+            int roleGender = json.has("roleGender") == true ? json.getInt("roleGender") : data.getRoleGender();
+            String professionID = json.has("professionID") == true ? json.getString("professionID") : data.getProfessionID();
+            String professionName = json.has("professionName") == true ? json.getString("professionName") : data.getProfessionName();
+            String power = json.has("power") == true ? json.getString("power") : data.getPower();
+            String partyID = json.has("partyID") == true ? json.getString("partyID") : data.getPartyID();
+            String partyName = json.has("partyName") == true ? json.getString("partyName") : data.getPartyName();
+            String partyMasterID = json.has("partyMasterID") == true ? json.getString("partyMasterID") : data.getPartyMasterID();
+            String partyMasterName = json.has("partyMasterName") == true ? json.getString("partyMasterName") : data.getPartyMasterName();
+
+            data.setDataType(dataType);
+            data.setMoneyNum(moneyNum);
+            data.setRoleCreateTime(roleCreateTime);
+            data.setRoleID(roleID);
+            data.setRoleName(roleName);
+            data.setRoleLevel(roleLevel);
+            data.setRoleLevelUpTime(roleLevelUpTime);
+            data.setServerID(serverID);
+            data.setServerName(serverName);
+            data.setVip(vip);
+            data.setRoleGender(roleGender);
+            data.setProfessionID(professionID);
+            data.setProfessionName(professionName);
+            data.setPower(power);
+            data.setPartyID(partyID);
+            data.setPartyName(partyName);
+            data.setPartyMasterID(partyMasterID);
+            data.setPartyMasterName(partyMasterName);
+        } catch (JSONException e) {
+            this.logError("makeUserExtraData jsonData: %s error: %s"
+                , jsonData
+                , e.getLocalizedMessage()
+            );
+
+            return null;
+        }
+
+        return data;
+    }
+
+    public boolean submitExtraData(String jsonData) {
+        this.logMessage("submitExtraData jsonData: %s"
+            , jsonData
+        );
+
+        UserExtraData data = this.makeUserExtraData(jsonData);
+
+        if (data == null) {
+            return false;
+        }
+
+        this.logMessage("submitExtraData data: %s"
+            , data
+        );
+
+        MARPlatform.getInstance().submitExtraData(data);
+
+        return true;
+    }
+
+    public void visitorLogin() {
+        this.logMessage("visitorLogin");
+
+        MARPlatform.getInstance().visitorLogin();
+    }
+
+    public void reqAdControlInfo() {
+        this.logMessage("reqAdControlInfo");
+
+        MggControl.getInstance().reqAdControlInfo();
+    }
+
+    public void setPropDeliveredComplete(String orderID) {
+        this.logMessage("setPropDeliveredComplete orderID: %s"
+            , orderID
+        );
+
+        MARPlatform.getInstance().setPropDeliveredComplete(orderID);
     }
 
     @Override
@@ -159,17 +385,17 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     @Override
-    public void onStart(MengineActivity activity){
+    public void onStart(MengineActivity activity) {
         MARSDK.getInstance().onStart();
     }
 
     @Override
-    public void onPause(MengineActivity activity){
+    public void onPause(MengineActivity activity) {
         MARSDK.getInstance().onPause();
     }
 
     @Override
-    public void onResume(MengineActivity activity){
+    public void onResume(MengineActivity activity) {
         MARSDK.getInstance().onResume();
     }
 
@@ -199,6 +425,8 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         int keyCode = event.getKeyCode();
 
         if (keyCode == KeyEvent.KEYCODE_BACK && action == KeyEvent.ACTION_DOWN) {
+            this.logMessage("exit MARSDK");
+
             MARPlatform.getInstance().exitSDK( new MARExitListener() {
                 @Override
                 public void onGameExit() {
@@ -242,60 +470,83 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
     @Override
     public void onInitResult(int code, String msg) {
-        this.logMessage("marsdk.onInitResult code: %d msg: %s", code, msg);
+        this.logMessage("onInitResult code: %d msg: %s"
+            , code
+            , msg
+        );
+
+        String versionName = MARSDK.getInstance().getSDKVersionName();
+        String versionCode = MARSDK.getInstance().getSDKVersionCode();
+
+        this.logMessage("MARSDK Version: %s code: %s"
+            , versionName
+            , versionCode
+        );
 
         switch(code) {
-            case MARCode.CODE_INIT_SUCCESS:
-                this.logMessage("marsdk init success");
+            case MARCode.CODE_INIT_SUCCESS: {
+                this.logMessage("init success");
 
                 this.activateSemaphore("onMarSDKInitSuccess");
-                break;
-            case MARCode.CODE_INIT_FAIL:
-                this.logError("marsdk init fail");
+            } break;
+            case MARCode.CODE_INIT_FAIL: {
+                this.logError("init fail");
 
                 this.activateSemaphore("onMarSDKInitFail");
-                break;
+            } break;
+            default: {
+                this.logWarning("init undefined code: %d msg: %s"
+                    , code
+                    , msg
+                );
+            } break;
         }
     }
 
     @Override
     public void onLoginResult(int code, UToken uToken) {
-        this.logMessage("marsdk.onLoginResult code: %d uToken: %s"
+        this.logMessage("onLoginResult code: %d uToken: %s"
             , code
             , uToken
         );
 
         switch(code) {
             case MARCode.CODE_LOGIN_SUCCESS: {
-                this.logMessage("marsdk login success, game type [%d]"
-                    , MARSDK.getInstance().getGameType()
+                int gameType = MARSDK.getInstance().getGameType();
+                boolean isFreeFlag = MggControl.getInstance().getFreeFlag();
+
+                this.logMessage("login success gameType: %d isFreeFlag: %b"
+                    , gameType
+                    , isFreeFlag
                 );
 
-                int gameType = MARSDK.getInstance().getGameType();
-
-                if ((gameType == 1 || gameType == 3) && !MggControl.getInstance().getFreeFlag()) {
-                    MggControl.getInstance().reqAdControlInfo();
-                }
-
-                this.submitExtraData(UserExtraData.TYPE_ENTER_GAME);
-
-                this.pythonCall("onMarSDKLoginSuccess");
+                this.pythonCall("onMarSDKLoginSuccess", gameType, isFreeFlag);
             } break;
             case MARCode.CODE_LOGIN_FAIL: {
-                this.logError("marsdk login fail");
+                int gameType = MARSDK.getInstance().getGameType();
 
-                if (MARSDK.getInstance().getGameType() == 1) {
-                    MARPlatform.getInstance().visitorLogin();
-                }
+                this.logWarning("login fail gameType: %d"
+                    , gameType
+                );
 
-                this.pythonCall("onMarSDKLoginFail");
+                this.pythonCall("onMarSDKLoginFail", gameType);
             } break;
+            case MARCode.CODE_LOGIN_TIMEOUT: {
+                this.logWarning("login timeout");
+
+                this.pythonCall("onMarSDKLoginTimeout");
+            } break;
+            default: {
+                this.logWarning("login undefined code: %d"
+                    , code
+                );
+            }
         }
     }
     
     @Override
     public void onSwitchAccount(UToken uToken) {
-        this.logMessage("marsdk.onSwitchAccount uToken: %s"
+        this.logMessage("onSwitchAccount uToken: %s"
             , uToken
         );
 
@@ -306,150 +557,104 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     
     @Override
     public void onLogout() {
-        this.logMessage("marsdk.onLogout");
+        this.logMessage("onLogout");
 
         this.pythonCall("onMarSDKLogout");
     }    
     
     @Override
     public void onPayResult(int code, String msg) {
-        this.logMessage("marsdk.onPayResult code: %d msg: %s", code, msg);
+        this.logMessage("onPayResult code: %d msg: %s"
+            , code
+            , msg
+        );
         
         try {
             JSONObject json = new JSONObject(msg);
 
             String productId = json.getString("productId");
+            int payResult = json.getInt("payResult");
 
-            if (json.getInt("payResult") == 0) {
+            if (payResult == 0) {
                 String orderId = json.getString("orderId");
 
-                this.logMessage("pay complete orderId: %s", orderId);
+                this.logMessage("pay complete productId: %s orderId: %s"
+                    , productId
+                    , orderId
+                );
 
-                this.setPropDeliveredComplete(orderId);
-
-                this.pythonCall("onMarSDKPaySuccess", productId);
+                this.pythonCall("onMarSDKPaySuccess", productId, orderId);
             } else {
-                this.logError("pay fail");
+                this.logError("pay fail productId: %s"
+                    , productId
+                );
 
                 this.pythonCall("onMarSDKPayFail", productId);
             }
-        } catch (Exception e) {
-            this.logError("pay error");
+        } catch (JSONException e) {
+            this.logError("pay msg: %s JSONException: %s"
+                , msg
+                , e.getLocalizedMessage()
+            );
 
-            e.printStackTrace();
+            this.pythonCall("onMarSDKPayError", code, msg, e.getLocalizedMessage());
         }
     }
 
     @Override
     public void onRedeemResult(String msg) {
-        this.logMessage("marsdk.onRedeemResult msg: %s", msg);
+        this.logMessage("onRedeemResult msg: %s"
+            , msg
+        );
 
-        int result;
         try {
-            result = 0;
-
             JSONObject json = new JSONObject(msg);
 
             int propNumber = json.getInt("propNumber");
             String propType = json.getString("propType");
             String message = json.getString("msg");
 
-            this.pythonCall("onMarSDKRedeemResult", result, propNumber, propType, message);
-        } catch(Exception e) {
-            e.printStackTrace();
-
-            this.logError("redeem exception: %s"
+            this.pythonCall("onMarSDKRedeemResult", propNumber, propType, message);
+        } catch(JSONException e) {
+            this.logError("onRedeemResult msg: %s JSONException: %s"
+                , msg
                 , e.getLocalizedMessage()
             );
 
-            result = -1;
-
-            this.pythonCall("onMarSDKRedeemResult", result, 0, "", "");
+            this.pythonCall("onMarSDKRedeemError", msg, e.getLocalizedMessage());
         }
     }
 
     @Override
     public void onResult(int code, String msg) {
-        this.logMessage("marsdk.onResult code: %d msg: %s", code, msg);
-        
-        if (MARCode.CODE_AD_VIDEO_CALLBACK == code) {
-            //play video callback msg : 1 suc 0 fail
-            this.logMessage("Video callback: %s", msg);
+        switch (code) {
+            case MARCode.CODE_AD_VIDEO_CALLBACK: {
+                this.logMessage("onResult CODE_AD_VIDEO_CALLBACK: %s"
+                    , msg
+                );
 
-            String watchAdTime = getCurrentTime();
+                String watchAdTime = this.getCurrentTime();
 
-            this.pythonCall("onMarSDKAdVideoCallback", msg, watchAdTime);
-        }
+                this.pythonCall("onMarSDKAdVideoCallback", msg, watchAdTime);
+            } break;
+            default: {
+                this.logMessage("onResult code: %d msg: %s"
+                    , code
+                    , msg
+                );
 
-        this.pythonCall("onMarSDKResult", code, msg);
-    }
-
-	private void submitExtraData(final int dataType) {
-        this.logMessage("marsdk.submitExtraData dataType: %d", dataType);
-
-		UserExtraData data = new UserExtraData();
-		data.setDataType(dataType);
-		data.setMoneyNum(100);
-		data.setRoleCreateTime(System.currentTimeMillis()/1000);
-		data.setRoleID("100");
-		data.setRoleName("test_112");
-		data.setRoleLevel("10");
-		data.setRoleLevelUpTime(System.currentTimeMillis()/1000);
-		data.setServerID(10);
-		data.setServerName("server_10");
-
-        this.logMessage("marsdk.submitExtraData data: %s"
-            , data.toString()
-        );
-
-		MARPlatform.getInstance().submitExtraData(data);
-	}
-    
-    public void setPropDeliveredComplete(String orderID) {
-        this.logMessage("marsdk.setPropDeliveredComplete orderID: %s", orderID);
-
-        MARPlatform.getInstance().setPropDeliveredComplete(orderID);
-	}
-
-	public void pasteCode() {
-        this.logMessage("marsdk.pasteCode");
-
-        try {
-            String code = "";
-
-            Context context = MengineActivity.getContext();
-
-            ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
-
-            if (clipboard.hasPrimaryClip() == true) {
-                ClipData clip = clipboard.getPrimaryClip();
-                ClipData.Item item = clip.getItemAt(0);
-
-                Object data = item.getText();
-
-                if (data != null) {
-                    code = data.toString();
-                }
-            }
-
-            this.logMessage("try to paste code: %s", code);
-
-            this.pythonCall("onMarSDKSaveClipboard", code);
-        } catch (Exception e) {
-            this.logError("paste code error");
-
-            e.printStackTrace();
+                this.pythonCall("onMarSDKResult", code, msg);
+            } break;
         }
     }
 
-    public String getCurrentTime() {
+    private String getCurrentTime() {
         TimeZone tz = TimeZone.getTimeZone("Asia/Beijing");
         Calendar calendar = Calendar.getInstance(tz);
         int DATE = calendar.get(Calendar.DATE);
         int MONTH = calendar.get(Calendar.MONTH);
         int YEAR = calendar.get(Calendar.YEAR);
         String time = "" + DATE + "/" + MONTH + "/" + YEAR;
-        this.logInfo("China (Beijing) time: %s", time);
 
         return time;
     }

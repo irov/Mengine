@@ -44,7 +44,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
                 Exception exception = task.getException();
 
                 if (exception != null) {
-                    MengineGoogleInAppReviewsPlugin.this.logError("requestReviewFlow error %s -> %s"
+                    MengineGoogleInAppReviewsPlugin.this.logError("requestReviewFlow error message: %s trace: %s"
                         , task.getException().getMessage()
                         , task.getException().fillInStackTrace()
                     );

@@ -81,13 +81,17 @@ set(DFA_XTRA "" CACHE FILEPATH "File containing extra configuration settings")
 # to check CMAKE_OSX_ARCHITECTURES to identify which hardware-specific flags to
 # enable. Note that this will fail if you attempt to build a universal binary in
 # a single CMake invocation.
+MESSAGE("CMAKE_OSX_ARCHITECTURES: ${CMAKE_OSX_ARCHITECTURES}")
+MESSAGE("CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
 if (APPLE AND CMAKE_OSX_ARCHITECTURES)
-  set(TARGET_ARCH ${CMAKE_OSX_ARCHITECTURES})
+  set(TARGET_ARCH ${CMAKE_SYSTEM_PROCESSOR})
 else()
   set(TARGET_ARCH ${CMAKE_SYSTEM_PROCESSOR})
 endif()
 
 if(PNG_HARDWARE_OPTIMIZATIONS)
+
+MESSAGE("TARGET_ARCH: ${TARGET_ARCH}")
 
 # Set definitions and sources for ARM.
 if(TARGET_ARCH MATCHES "^arm" OR

@@ -225,7 +225,7 @@ if(MENGINE_DEPENDENCE_PNG)
     
     if(APPLE)
         #Note that this will fail if you attempt to build a universal binary in a single CMake invocation.
-        set(PNG_HARDWARE_OPTIMIZATIONS OFF CACHE BOOL "PNG_HARDWARE_OPTIMIZATIONS" FORCE)
+        set(PNG_HARDWARE_OPTIMIZATIONS ON CACHE BOOL "PNG_HARDWARE_OPTIMIZATIONS" FORCE)
     else()
         set(PNG_HARDWARE_OPTIMIZATIONS ON CACHE BOOL "PNG_HARDWARE_OPTIMIZATIONS" FORCE)
     endif()

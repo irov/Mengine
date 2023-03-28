@@ -65,6 +65,28 @@ public class MengineApplication extends Application {
         return "";
     }
 
+    public int getVersionCode() {
+        return 0;
+    }
+
+    public String getVersionName() {
+        return "";
+    }
+
+    public MengineApplication() {
+        super();
+
+        String[] plugins = this.getGradleAndroidPlugins();
+
+        for (String namePlugin : plugins) {
+            if (this.createPlugin(namePlugin) == false) {
+                this.invalidInitialize("invalid create plugin: %s"
+                    , namePlugin
+                );
+            }
+        }
+    }
+
     @SuppressWarnings("deprecation")
     private ApplicationInfo getPackageApplicationInfo(PackageManager packageManager, String packageName) throws PackageManager.NameNotFoundException {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
@@ -505,6 +527,8 @@ public class MengineApplication extends Application {
 
         String installKey = settings.getString("install_key", null);
         long installKeyTimestamp = settings.getLong("install_key_timestamp", 0);
+        long installRND = settings.getLong("install_rnd", -1);
+        long sessionIndex = settings.getLong("session_index", 0);
 
         SharedPreferences.Editor editor = settings.edit();
 
@@ -515,18 +539,17 @@ public class MengineApplication extends Application {
             editor.putLong("install_key_timestamp", installKeyTimestamp);
         }
 
-        long installRND = settings.getLong("install_rnd", -1);
-
         if (installRND == -1) {
             installRND = java.util.concurrent.ThreadLocalRandom.current().nextLong();
-            if (installRND < 0) {
+
+            if (installRND == 0) {
+                installRND = 1;
+            } else if (installRND < 0) {
                 installRND = -installRND;
             }
 
             editor.putLong("install_rnd", installRND);
         }
-
-        long sessionIndex = settings.getLong("session_index", 0);
 
         editor.putLong("session_index", sessionIndex + 1);
         editor.apply();
@@ -535,16 +558,6 @@ public class MengineApplication extends Application {
         m_installKeyTimestamp = installKeyTimestamp;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
-
-        String[] plugins = this.getGradleAndroidPlugins();
-
-        for (String namePlugin : plugins) {
-            if (this.createPlugin(namePlugin) == false) {
-                this.invalidInitialize("invalid create plugin: %s"
-                    , namePlugin
-                );
-            }
-        }
 
         ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 

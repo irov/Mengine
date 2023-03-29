@@ -21,7 +21,7 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/GitSHA1.h"
-#include "Config/BuildVersion.h"
+#include "Config/BuildInfo.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 

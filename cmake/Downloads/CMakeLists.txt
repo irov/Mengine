@@ -23,7 +23,10 @@ ENDIF()
 
 #ANDROID
 DOWNLOAD_URL(devtodev-android https://github.com/devtodev-analytics/android-sdk-2.0/archive/refs/tags/v2.1.2.zip)
-DOWNLOAD_URL(marsdk-android https://marsdkserver-1300810349.file.myqcloud.com/marsdk/MARSDK_v2.6.27.zip)
+
+IF(WIN32)
+    DOWNLOAD_URL(marsdk-android https://marsdkserver-1300810349.file.myqcloud.com/marsdk/MARSDK_v2.6.27.zip)
+endif()
 
 #COMMON
 GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-4")

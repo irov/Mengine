@@ -235,7 +235,7 @@ namespace Mengine
         desc.progress = false;
         desc.complete = false;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 

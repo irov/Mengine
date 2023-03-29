@@ -38,7 +38,7 @@
 #include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_MENGINE_STATIC
+#if defined(MENGINE_PLUGIN_MENGINE_STATIC)
 extern Mengine::ServiceProviderInterface * initializeMengine();
 extern bool bootstrapMengine();
 extern void finalizeMengine();
@@ -237,9 +237,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initialize( int32_t _argc, Char ** const _argv )
     {
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
-#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif MENGINE_PLUGIN_MENGINE_STATIC
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
+#   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         ServiceProviderInterface * serviceProvider = initializeMengine();
 #else
         ServiceProviderInterface * serviceProvider = nullptr;
@@ -272,9 +272,9 @@ namespace Mengine
             this->finalizeLoggerService_();
         } );
 
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
 #error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif MENGINE_PLUGIN_MENGINE_STATIC
+#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         if( bootstrapMengine() == false )
         {
             return false;
@@ -394,9 +394,9 @@ namespace Mengine
                 ->stop();
         }
 
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
-#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif MENGINE_PLUGIN_MENGINE_STATIC
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
+#   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         finalizeMengine();
 #endif
     }

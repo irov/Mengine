@@ -11,7 +11,7 @@
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_RENDER_TEXTURE_RGBA
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
 #   define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto
 #   define MENGINE_WEBP_DECODE_RGB WebPDecodeRGBInto
 #else

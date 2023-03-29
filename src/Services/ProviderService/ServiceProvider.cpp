@@ -20,7 +20,7 @@ namespace Mengine
         , m_dependenciesCount( 0 )
         , m_leaveCount( 0 )
         , m_waitsCount( 0 )
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         , m_initializeServiceName( nullptr )
 #endif
     {
@@ -48,7 +48,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( service );
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         service->setDocument( _doc );
 #endif
 
@@ -155,7 +155,7 @@ namespace Mengine
     {
         const ServiceInterfacePtr & service = _desc.service;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr );
 
         m_initializeServiceName = service->getServiceID();
@@ -171,7 +171,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( ex );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             m_initializeServiceName = nullptr;
 #endif
 
@@ -186,7 +186,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_initializeServiceName = nullptr;
 #endif
 
@@ -574,7 +574,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const bool * ServiceProvider::isExistServiceProvider( const Char * _name )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0 );
 #endif
 
@@ -607,7 +607,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const bool * ServiceProvider::isAvailableServiceProvider( const Char * _name )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0 );
 #endif
 
@@ -640,7 +640,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const bool * ServiceProvider::isInitializeServiceProvider( const Char * _name )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0 );
 #endif
 

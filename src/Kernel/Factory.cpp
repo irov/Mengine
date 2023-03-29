@@ -5,7 +5,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include "Kernel/NotificationHelper.h"
 #endif
 
@@ -13,11 +13,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Factory::Factory()
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         : m_register( false )
 #endif
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
         {
             FACTORY_SERVICE()
@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Factory::~Factory()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_register == true )
         {
             FACTORY_SERVICE()
@@ -67,11 +67,11 @@ namespace Mengine
 
         object->setFactory( this );
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         object->setDocument( _doc );
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_factorables.push_back( object );
 #endif
 
@@ -96,11 +96,11 @@ namespace Mengine
 //        }
 //#endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_factorables.remove( _object );
 #endif
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentPtr doc = _object->getDocument();
         MENGINE_UNUSED( doc );
 
@@ -133,7 +133,7 @@ namespace Mengine
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     //////////////////////////////////////////////////////////////////////////
     void Factory::foreachFactorables( const LambdaFactorable & _lambda )
     {

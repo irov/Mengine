@@ -1,6 +1,6 @@
 #include "DebugBreak.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
@@ -10,7 +10,7 @@ namespace Mengine
     {
         void debuggerBreak()
         {
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
             if( ::IsDebuggerPresent() == TRUE )
             {
                 ::DebugBreak();

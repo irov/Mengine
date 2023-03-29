@@ -56,7 +56,7 @@ namespace Mengine
 
                 ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 if( serviceProvider == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' invalid get provider"
@@ -71,7 +71,7 @@ namespace Mengine
 
                 ServiceInterface * service_ptr = service.get();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 if( service_ptr == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' not found"
@@ -82,7 +82,7 @@ namespace Mengine
                 }
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 if( dynamic_cast<T *>(service_ptr) == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' invalid cast to '%s'"

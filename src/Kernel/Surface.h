@@ -11,7 +11,7 @@
 #include "Kernel/Unknowable.h"
 #include "Kernel/UpdateContext.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Kernel/Scriptable.h"
 #endif
 
@@ -31,7 +31,7 @@ namespace Mengine
         , public Animatable
         , public Eventable
         , public Unknowable
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         , public Scriptable
 #endif
     {

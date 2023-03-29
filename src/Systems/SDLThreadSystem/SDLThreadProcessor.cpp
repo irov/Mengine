@@ -80,7 +80,7 @@ namespace Mengine
 
         m_mutex = _mutex;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_doc = _doc;
 #endif
 
@@ -168,7 +168,7 @@ namespace Mengine
         m_thread = nullptr;
         m_mutex = nullptr;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         m_doc = nullptr;
 #endif
     }

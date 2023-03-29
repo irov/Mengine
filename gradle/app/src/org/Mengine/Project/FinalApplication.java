@@ -10,4 +10,14 @@ public class FinalApplication extends org.Mengine.Base.MengineApplication {
     public String getApplicationId() {
         return BuildConfig.APPLICATION_ID;
     }
+
+    @Override
+    public int getVersionCode() {
+        return BuildConfig.VERSION_CODE;
+    }
+
+    @Override
+    public String getVersionName() {
+        return BuildConfig.VERSION_NAME;
+    }
 }

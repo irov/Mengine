@@ -5,7 +5,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include "Kernel/Document.h"
 #endif
 
@@ -39,7 +39,7 @@ namespace Mengine
             UniqueId id;
             LambdaChronometer lambda;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };

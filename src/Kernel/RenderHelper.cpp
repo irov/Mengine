@@ -44,7 +44,7 @@ namespace Mengine
         {
             ColorValue_ARGB argb = _color.getAsARGB();
 
-#ifdef MENGINE_RENDER_COLOR_RGBA
+#if defined(MENGINE_RENDER_COLOR_RGBA)
             uint8_t a8 = (argb >> 24) & 0xFF;
             uint8_t b8 = (argb >> 16) & 0xFF;
             uint8_t g8 = (argb >> 8) & 0xFF;

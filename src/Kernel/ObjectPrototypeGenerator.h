@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #else
 #include "Kernel/DefaultPrototypeGenerator.h"
@@ -13,7 +13,7 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class ObjectPrototypeGenerator
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         : public ScriptablePrototypeGenerator<Type, Count>
 #else
         : public DefaultPrototypeGenerator<Type, Count>
@@ -41,7 +41,7 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Object type '%s' create '%s'"
                 , object->getType().c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -50,7 +50,7 @@ namespace Mengine
             object->setDocument( doc );
 #endif
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
             this->setupScriptable( object );
 #endif
 

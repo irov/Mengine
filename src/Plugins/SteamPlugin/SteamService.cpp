@@ -5,7 +5,7 @@
 
 #include "SteamService.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
 #   include "SteamScriptEmbedding.h"
 #endif
@@ -60,7 +60,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "[steam] invalid SteamAPI_Init" );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             return true;
 #else
             return false;
@@ -96,7 +96,7 @@ namespace Mengine
         m_iso639_1["turkish"] = STRINGIZE_STRING_LOCAL( "tr" );
         m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( "ua" );
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -204,7 +204,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

@@ -64,9 +64,9 @@ namespace Mengine
                 );
         }
         //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_WINDOWS_DEBUG
+#   if defined(MENGINE_WINDOWS_DEBUG)
         //////////////////////////////////////////////////////////////////////////
         static void py_invalid_parameter_handler( const wchar_t * _expression
             , const wchar_t * _function
@@ -90,7 +90,7 @@ namespace Mengine
                 , traceback );
         }
         //////////////////////////////////////////////////////////////////////////
-#endif
+#   endif
         //////////////////////////////////////////////////////////////////////////
         class My_observer_bind_call
             : public pybind::observer_bind_call
@@ -98,19 +98,19 @@ namespace Mengine
         public:
             explicit My_observer_bind_call( PythonScriptService * _scriptService )
                 : m_scriptService( _scriptService )
-#ifdef MENGINE_WINDOWS_DEBUG
+#   if defined(MENGINE_WINDOWS_DEBUG)
                 , m_prev_handler( nullptr )
                 , m_prev_mode( 0 )
                 , m_prev_handler_count( 0 )
-#endif
+#   endif
             {
             }
 
             virtual ~My_observer_bind_call()
             {
-#ifdef MENGINE_WINDOWS_DEBUG
+#   if defined(MENGINE_WINDOWS_DEBUG)
                 MENGINE_ASSERTION_FATAL( m_prev_handler_count == 0 );
-#endif
+#   endif
             }
 
         public:
@@ -122,7 +122,7 @@ namespace Mengine
                 MENGINE_UNUSED( _functionName );
                 MENGINE_UNUSED( _className );
 
-#ifdef MENGINE_LOGGER_ANALYZE_ENABLE
+#   if defined(MENGINE_LOGGER_ANALYZE_ENABLE)
                 bool OPTION_pythoncalltrace = HAS_OPTION( "pythoncalltrace" );
 
                 if( OPTION_pythoncalltrace == true )
@@ -134,7 +134,7 @@ namespace Mengine
                         , _kernel->object_repr( _kwds ).c_str()
                     );
                 }
-#endif
+#   endif
 
                 uint32_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );
@@ -144,26 +144,26 @@ namespace Mengine
                 m_scriptService
                     ->debugCallFunction( _className, _functionName, _args, _kwds );
 
-#ifdef MENGINE_WINDOWS_DEBUG
+#   if defined(MENGINE_WINDOWS_DEBUG)
                 if( m_prev_handler_count++ == 0 )
                 {
                     m_prev_handler = _set_invalid_parameter_handler( &Detail::py_invalid_parameter_handler );
                     m_prev_mode = _CrtSetReportMode( _CRT_ASSERT, 0 );
                 }
-#endif
+#   endif
             }
 
             void end_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds ) override
             {
-#ifdef MENGINE_WINDOWS_DEBUG
+#   if defined(MENGINE_WINDOWS_DEBUG)
                 if( --m_prev_handler_count == 0 )
                 {
                     _set_invalid_parameter_handler( m_prev_handler );
                     _CrtSetReportMode( _CRT_ASSERT, m_prev_mode );
                 }
-#endif
+#   endif
 
-#ifdef MENGINE_LOGGER_ANALYZE_ENABLE
+#   if defined(MENGINE_LOGGER_ANALYZE_ENABLE)
                 bool OPTION_pythoncalltrace = HAS_OPTION( "pythoncalltrace" );
 
                 if( OPTION_pythoncalltrace == true )
@@ -173,7 +173,7 @@ namespace Mengine
                         , _functionName
                     );
                 }
-#endif
+#   endif
 
                 uint32_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );
@@ -238,11 +238,11 @@ namespace Mengine
             typedef Vector<uint32_t> VectorStackMsgCount;
             VectorStackMsgCount m_counts;
 
-#ifdef MENGINE_WINDOWS_DEBUG
+#   if defined(MENGINE_WINDOWS_DEBUG)
             _invalid_parameter_handler m_prev_handler;
             int m_prev_mode;
             uint32_t m_prev_handler_count;
-#endif
+#   endif
         };
         //////////////////////////////////////////////////////////////////////////
 #endif
@@ -313,6 +313,9 @@ namespace Mengine
         const Char * buildVersion = Helper::getBuildVersion();
         this->addGlobalModuleT( "_BUILD_VERSION", buildVersion );
 
+        uint64_t buildNumber = Helper::getBuildNumber();
+        this->addGlobalModuleT( "_BUILD_NUMBER", buildNumber );
+
         m_availablePlugins = pybind::make_dict_t( kernel );
 
         this->addGlobalModule( "_PLUGINS", m_availablePlugins.ptr() );
@@ -343,7 +346,7 @@ namespace Mengine
         pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         pybind::observer_bind_call * bind_call = Helper::newT<Detail::My_observer_bind_call>( this );
         m_kernel->set_observer_bind_call( bind_call );
 #endif
@@ -411,7 +414,7 @@ namespace Mengine
         m_factoryScriptModule = Helper::makeFactoryPool<PythonScriptModule, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryEntityEventable = Helper::makeFactoryPool<EntityEventable, 64>( MENGINE_DOCUMENT_FACTORABLE );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         pybind::def_functor( m_kernel, "addDebugLogFunction", this, &PythonScriptService::addDebugLogFunction );
         pybind::def_functor( m_kernel, "removeDebugLogFunction", this, &PythonScriptService::removeDebugLogFunction );
 #endif
@@ -550,7 +553,7 @@ namespace Mengine
     {
         m_availablePlugins = nullptr;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 
         Detail::My_observer_bind_call * observer_bind_call = static_cast<Detail::My_observer_bind_call *>(observer);
@@ -561,7 +564,7 @@ namespace Mengine
         m_debugCallFunctions.clear();
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const ScriptEmbeddingDesc & desc : m_embeddings )
         {
             const ScriptEmbeddingInterfacePtr & embedding = desc.embedding;
@@ -630,7 +633,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::_runService()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &PythonScriptService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
@@ -639,7 +642,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::_stopService()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
 #endif
     }
@@ -1065,7 +1068,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::stringize( PyObject * _object, ConstString * const _cstr )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_kernel->string_check( _object ) == false )
         {
             LOGGER_ERROR( "invalid stringize object '%s'"
@@ -1140,7 +1143,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::addDebugLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter )
     {

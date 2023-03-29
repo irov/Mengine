@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#ifdef MENGINE_PLATFORM_APPLE
+#if defined(MENGINE_PLATFORM_APPLE)
 #   include <malloc/malloc.h>
 #else
 #   include <cstdlib>

@@ -27,7 +27,7 @@ namespace Mengine
         float m_to;
         float m_speed;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentPtr m_doc;
 #endif
 

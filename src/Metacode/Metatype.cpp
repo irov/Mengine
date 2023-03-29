@@ -94,7 +94,7 @@ namespace Metabuf
 
         const Mengine::ConstString & value = cache->strings[index];
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         const Mengine::Char * test_value = value.c_str();
 
         const Mengine::Char * s = MENGINE_STRCHR( test_value, '\\' );

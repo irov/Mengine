@@ -95,7 +95,7 @@ namespace Mengine
             ++leakcount;
         } );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
         if( m_memleakLogFileName.empty() == false )
         {
             FILE * f = ::fopen( m_memleakLogFileName.c_str(), "wb" );

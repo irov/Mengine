@@ -18,7 +18,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_doc = _doc;
 #endif
 
@@ -47,7 +47,7 @@ namespace Mengine
             m_cs = nullptr;
         }
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         m_doc = nullptr;
 #endif
     }

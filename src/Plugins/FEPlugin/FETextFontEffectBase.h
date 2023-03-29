@@ -56,9 +56,9 @@ namespace Mengine
         float m_effectSampleInv;
 
         uint32_t m_layoutCount;
-        const fe_node * m_effectNodes[FE_MAX_PINS];
+        const fe_node * m_effectNodes[FE_MAX_PINS] = {nullptr};
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FETextFontEffectBase> FETextFontEffectBasePtr;
+    typedef IntrusivePtr<FETextFontEffectBase, TextFontEffectInterface> FETextFontEffectBasePtr;
     //////////////////////////////////////////////////////////////////////////
 }

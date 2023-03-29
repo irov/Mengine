@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
 #   include "Interface/DocumentServiceInterface.h"
 
 #   include "Kernel/Document.h"

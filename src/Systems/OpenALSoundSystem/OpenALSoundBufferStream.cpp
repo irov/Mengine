@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferStream::~OpenALSoundBufferStream()
     {
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
         for( ALuint index = 0; index != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++index )
         {
             ALuint id = m_alBuffersId[index];
@@ -313,7 +313,7 @@ namespace Mengine
             return true;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         ALfloat newVolume;
         MENGINE_OPENAL_CALL( alGetSourcef, (m_sourceId, AL_GAIN, &newVolume) );
 #endif

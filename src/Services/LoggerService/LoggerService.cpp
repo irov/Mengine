@@ -79,7 +79,7 @@ namespace Mengine
         }
         else
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             logLevel = LM_MESSAGE;
 #else
             logLevel = LM_ERROR;
@@ -115,7 +115,7 @@ namespace Mengine
             logLevel = LM_VERBOSE;
         }
 
-#ifdef MENGINE_LOGGER_LEVEL_FORCE_VERBOSE_ENABLE
+#if defined(MENGINE_LOGGER_LEVEL_FORCE_VERBOSE_ENABLE)
         logLevel = LM_VERBOSE;
 #endif
 

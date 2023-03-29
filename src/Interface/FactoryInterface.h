@@ -5,7 +5,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/FactorablePointer.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include "Config/Lambda.h"
 #endif
 
@@ -26,7 +26,7 @@ namespace Mengine
         virtual bool isEmptyObjects() const = 0;
         virtual uint32_t getCountObject() const = 0;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     public:
         typedef Lambda<bool( Factorable * )> LambdaFactorable;
         virtual void foreachFactorables( const LambdaFactorable & _factorable ) = 0;

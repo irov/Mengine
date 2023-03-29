@@ -11,7 +11,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_LOGGER_ANALYZE
-#   ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
 #       define MENGINE_LOGGER_ANALYZE 1
 #   else
 #       define MENGINE_LOGGER_ANALYZE 0

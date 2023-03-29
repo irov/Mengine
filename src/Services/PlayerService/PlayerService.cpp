@@ -152,7 +152,7 @@ namespace Mengine
 
         for( const SchedulerInterfacePtr & scheduler : m_schedulers )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             const Char * doc = MENGINE_DOCUMENTABLE_STR( scheduler.get(), "forgotten scheduler" );
 
             LOGGER_ERROR( "was forgotten finalize scheduler '%s' (doc: %s)"

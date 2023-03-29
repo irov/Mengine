@@ -6,7 +6,7 @@
 #include "NodeAreaOfInterestTrigger.h"
 #include "NodeAreaOfInterestActor.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
 
 #   include "AreaOfInterestScriptEmbedding.h"
@@ -39,7 +39,7 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), Helper::makeFactorableUnique<NodePrototypeGenerator<NodeAreaOfInterestActor, 32>>( MENGINE_DOCUMENT_FACTORABLE ) );
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -63,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AreaOfInterestService::_finalizeService()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

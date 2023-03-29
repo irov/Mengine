@@ -6,6 +6,18 @@
 
 #include "Kernel/Assertion.h"
 
+#ifndef MENGINE_DXRENDER_CHECK_ERROR
+#   if defined(MENGINE_DEBUG)
+#       define MENGINE_DXRENDER_CHECK_ERROR 1
+#   else
+#       define MENGINE_DXRENDER_CHECK_ERROR 0
+#   endif
+#endif
+
+#if MENGINE_DXRENDER_CHECK_ERROR == 1
+#   define MENGINE_DXRENDER_CHECK_ERROR_ENABLE
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -37,7 +49,7 @@ namespace Mengine
 #define MENGINE_IF_DXERRORCHECK( Method, HRES )\
     if( MENGINE_DXERRORCHECK(#Method, HRES) )
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_RENDER_CHECK_ERROR_ENABLE
+#if defined(MENGINE_DXRENDER_CHECK_ERROR_ENABLE)
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_DXRELEASE( Object )\
     if( Object == nullptr ){}else{ ULONG ref = Object -> Release(); MENGINE_ASSERTION_FATAL( ref == 0 ); Object = nullptr; }

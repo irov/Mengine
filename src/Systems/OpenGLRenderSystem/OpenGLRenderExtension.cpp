@@ -1,8 +1,8 @@
 #include "OpenGLRenderExtension.h"
 
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
 
-#include "SDL_video.h"
+#   include "SDL_video.h"
 
 // textures
 PFNGLACTIVETEXTUREPROC              glActiveTexture_ = nullptr;
@@ -126,8 +126,8 @@ namespace Mengine
 {
     void initialize_GLEXT()
     {
-#define GETGLPROC(ptype, pname) pname = reinterpret_cast<ptype>(SDL_GL_GetProcAddress(#pname))
-#define GETGLPROC_(ptype, pname) pname##_ = reinterpret_cast<ptype>(SDL_GL_GetProcAddress(#pname))
+#   define GETGLPROC(ptype, pname) pname = reinterpret_cast<ptype>(SDL_GL_GetProcAddress(#pname))
+#   define GETGLPROC_(ptype, pname) pname##_ = reinterpret_cast<ptype>(SDL_GL_GetProcAddress(#pname))
 
         if( nullptr == glGenBuffers || nullptr == glDeleteProgram )
         {
@@ -250,8 +250,8 @@ namespace Mengine
             GETGLPROC( PFNGLGETVERTEXATTRIBPOINTERVPROC, glGetVertexAttribPointerv );
         }
 
-#undef GETGLPROC
-#undef GETGLPROC_
+#   undef GETGLPROC
+#   undef GETGLPROC_
     }
 }
 #endif

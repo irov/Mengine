@@ -6,21 +6,29 @@ if ["%~1"]==[""] (
 )
 
 set "CONFIGURATION=%1"
-
-@echo Starting make solution %CONFIGURATION% configuration...
+set "EXTERNAL_PDB_PATH=%2"
+set "BUILD_NUMBER=%3"
+set "BUILD_VERSION=%4"
 
 set "VERSION=15"
 set "YEAR=2017"
+
+set "SOLUTION_NAME=solution_msvc%VERSION%"
+set "SOURCE_DIRECTORY=%CD%\..\cmake\Win32"
+set "GENERATOR=Visual Studio %VERSION% %YEAR%"
+set "ARCHITECTURE=Win32"
+set "BUILD_PUBLISH=OFF"
 
 @pushd %~dp0..
 @call vcvarsall_msvc%VERSION%.bat
 @popd
 
+@echo Starting make %SOLUTION_NAME% %CONFIGURATION% configuration...
+
 @pushd %~dp0..
-@call make_solution.bat "SOLUTION_NAME=solution_msvc%VERSION%" "SOURCE_DIRECTORY=%CD%\..\cmake\Win32" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%"
+@call make_solution.bat "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "BUILD_PUBLISH=%BUILD_PUBLISH%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=%ARCHITECTURE%" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%" "BUILD_NUMBER=%BUILD_NUMBER%" "BUILD_VERSION=%BUILD_VERSION%"
 @popd
 
 :end
-@echo Done
 
-@pause
+@exit /b %errorlevel%

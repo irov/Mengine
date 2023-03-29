@@ -71,7 +71,7 @@ namespace Mengine
     protected:
         bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
     public:
         Scriptable * getPickerScriptable() override;
 #endif
@@ -110,7 +110,7 @@ namespace Mengine
         {
             InputHandlerInterfacePtr handler;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };

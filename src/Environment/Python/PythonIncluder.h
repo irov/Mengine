@@ -4,7 +4,7 @@
 
 #define PYBIND_STL_SUPPORT
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   define PYBIND_CALL_DEBUG
 #endif
 

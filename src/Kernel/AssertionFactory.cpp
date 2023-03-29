@@ -1,11 +1,11 @@
 #include "AssertionFactory.h"
 
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
-#include "Kernel/Assertion.h"
-#include "Kernel/MixinDebug.h"
-#include "Kernel/DocumentableHelper.h"
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+#   include "Kernel/Assertion.h"
+#   include "Kernel/MixinDebug.h"
+#   include "Kernel/DocumentableHelper.h"
 
-#include "Config/StdIO.h"
+#   include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -31,7 +31,7 @@ namespace Mengine
 
             msg_offset += msg_size;
 
-#ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
             _factory->foreachFactorables( [&msg, &msg_offset]( const Factorable * _factorable )
             {
                 int32_t msg_size = MENGINE_SNPRINTF( msg + msg_offset, 4096 - msg_offset, "Factorable '%s' [%u] doc: %s\n"
@@ -49,7 +49,7 @@ namespace Mengine
 
                 return true;
             } );
-#endif
+#   endif
 
             Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Factory Empty" );
         }

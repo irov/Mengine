@@ -1,1 +1,1 @@
-@call %~dp0build_solution_msvc16.bat Debug
+@call %~dp0build_solution_msvc16.bat Debug %1 %2 %3

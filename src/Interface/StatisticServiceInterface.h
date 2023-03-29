@@ -6,7 +6,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_STATISTIC
-#   ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
 #       define MENGINE_STATISTIC 1
 #   else
 #       define MENGINE_STATISTIC 0

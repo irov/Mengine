@@ -700,7 +700,7 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( renderImage.get() );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         bool OPTION_logcreateimage = HAS_OPTION( "logcreateimage" );
 
         if( OPTION_logcreateimage == true )
@@ -714,7 +714,7 @@ namespace Mengine
         }
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         ++m_textureCount;
 
         uint32_t hwWidth = renderImage->getHWHeight();
@@ -762,7 +762,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         ++m_textureCount;
 
         uint32_t hwWidth = renderTargetTexture->getHWHeight();
@@ -808,7 +808,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         ++m_textureCount;
 
         uint32_t hwWidth = renderTargetOffscreen->getHWHeight();
@@ -1420,7 +1420,7 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( vertexBuffer.get() );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         ++m_vertexBufferCount;
 #endif
 
@@ -1469,7 +1469,7 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( indexBuffer.get() );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         ++m_indexBufferCount;
 #endif
 
@@ -1507,7 +1507,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _stageCache );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         DWORD pNumPasses;
         MENGINE_DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
 #endif
@@ -1985,7 +1985,7 @@ namespace Mengine
     {
         _buffer->finalize();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         --m_vertexBufferCount;
 #endif
     }
@@ -1994,7 +1994,7 @@ namespace Mengine
     {
         _buffer->finalize();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         --m_indexBufferCount;
 #endif
     }
@@ -2003,7 +2003,7 @@ namespace Mengine
     {
         _image->finalize();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         --m_textureCount;
 
         uint32_t hwWidth = _image->getHWWidth();
@@ -2025,7 +2025,7 @@ namespace Mengine
     {
         _targetTexture->finalize();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         --m_textureCount;
 
         uint32_t hwWidth = _targetTexture->getHWWidth();
@@ -2042,7 +2042,7 @@ namespace Mengine
     {
         _targetOffscreen->finalize();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         --m_textureCount;
 
         uint32_t hwWidth = _targetOffscreen->getHWWidth();

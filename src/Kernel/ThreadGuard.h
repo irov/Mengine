@@ -6,7 +6,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_THREAD_GUARD
-#   ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
 #       define MENGINE_THREAD_GUARD 1
 #   else
 #       define MENGINE_THREAD_GUARD 0
@@ -40,7 +40,7 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_THREAD_GUARD_ENABLE
+#if defined(MENGINE_THREAD_GUARD_ENABLE)
     //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_THREAD_GUARD_INIT(Type)\
     public:\

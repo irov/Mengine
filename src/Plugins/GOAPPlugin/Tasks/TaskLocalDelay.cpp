@@ -48,7 +48,7 @@ namespace Mengine
     TaskLocalDelay::TaskLocalDelay( GOAP::Allocator * _allocator, float _time, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_time( _time )
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         , m_doc( _doc )
 #endif
         , m_id( 0 )
@@ -102,7 +102,7 @@ namespace Mengine
             m_id = 0;
         }
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         m_doc = nullptr;
 #endif
     }

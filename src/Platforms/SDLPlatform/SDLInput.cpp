@@ -134,7 +134,7 @@ namespace Mengine
 
                 Helper::pushKeyEvent( point.x, point.y, code, isDown, false );
 
-#ifdef MENGINE_PLATFORM_MOBILE
+#if defined(MENGINE_PLATFORM_MOBILE)
                 if( code == KC_RETURN )
                 {
                     SDL_StopTextInput();

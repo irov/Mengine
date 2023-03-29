@@ -141,7 +141,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( vorbisInfo, "invalid ov_info" );
 
-#ifdef MENGINE_SOUND_STEREO_ONLY
+#if defined(MENGINE_SOUND_STEREO_ONLY)
         MENGINE_ASSERTION_FATAL( vorbisInfo->channels == 2, "invalid channels %d need %d"
             , vorbisInfo->channels
             , 2

@@ -7,7 +7,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_CURL_CHECK_ERROR
-#   ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
 #       define MENGINE_CURL_CHECK_ERROR 1
 #   else
 #       define MENGINE_CURL_CHECK_ERROR 0
@@ -41,14 +41,12 @@ namespace Mengine
 #define IF_CURLERRORCHECK( Method, HRES )\
     if( CURLERRORCHECK(#Method, HRES) )
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_CURL_CHECK_ERROR_ENABLE
-#define CURLCALL( Method, Args )\
+#if defined(MENGINE_CURL_CHECK_ERROR_ENABLE)
+#   define CURLCALL( Method, Args )\
     (CURLERRORCHECK(#Method, Method Args))
-//////////////////////////////////////////////////////////////////////////
 #else
-#define CURLCALL( Method, Args )\
+#   define CURLCALL( Method, Args )\
     (Method Args)
-//////////////////////////////////////////////////////////////////////////
 #endif
 //////////////////////////////////////////////////////////////////////////
 #define IF_CURLCALL( Method, Args )\

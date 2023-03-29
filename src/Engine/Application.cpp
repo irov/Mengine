@@ -335,14 +335,15 @@ namespace Mengine
         const Char * buildUserName = Helper::getBuildUsername();
         const Char * buildTimestamp = Helper::getBuildTimestamp();
         const Char * buildProjectName = Helper::getBuildProjectName();
+        uint64_t buildNumber = Helper::getBuildNumber();
 
         if( HAS_OPTION( "buildinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build info: %s %s %s %s", buildVersion, buildUserName, buildTimestamp, buildProjectName );
+                ->messageBox( "Mengine", "build info: %s %s %s %s [%" MENGINE_PRIu64 "]", buildVersion, buildUserName, buildTimestamp, buildProjectName, buildNumber );
         }
 
-        LOGGER_MESSAGE( "build Info: %s %s %s [%s]", buildVersion, buildUserName, buildTimestamp, buildProjectName );
+        LOGGER_MESSAGE( "build Info: %s %s %s %s [%" MENGINE_PRIu64 "]", buildVersion, buildUserName, buildTimestamp, buildProjectName, buildNumber );
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {
@@ -977,7 +978,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleKeyEvent( const InputKeyEvent & _event )
     {
-#ifdef MENGINE_PLATFORM_DESKTOP
+#if defined(MENGINE_PLATFORM_DESKTOP)
         bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == true )

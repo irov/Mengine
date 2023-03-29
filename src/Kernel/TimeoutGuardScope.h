@@ -21,7 +21,7 @@ namespace Mengine
     };
 }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   define TIMEOUT_GUARD_SCOPE( Timeout, Doc, ... ) Mengine::TimeoutGuardScope tgs__##__LINE__( Timeout, Doc, __VA_ARGS__ )
 #else
 #   define TIMEOUT_GUARD_SCOPE( Timeout, Doc, ... )

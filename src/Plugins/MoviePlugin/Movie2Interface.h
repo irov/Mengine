@@ -8,7 +8,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/RenderContext.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Kernel/Scriptable.h"
 #endif
 
@@ -26,7 +26,7 @@ namespace Mengine
         , public Identity
         , public Eventable
         , public Animatable
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         , public Scriptable
 #endif
     {

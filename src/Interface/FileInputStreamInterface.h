@@ -14,7 +14,7 @@ namespace Mengine
         virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share ) = 0;
         virtual bool close() = 0;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     public:
         virtual const FilePath & getRelationPath() const = 0;
         virtual const FilePath & getFolderPath() const = 0;

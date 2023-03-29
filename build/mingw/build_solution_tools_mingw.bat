@@ -18,6 +18,5 @@ set "CONFIGURATION=%1"
 @popd
 
 :end
-@echo Done
 
-@pause
+exit /b %errorlevel%

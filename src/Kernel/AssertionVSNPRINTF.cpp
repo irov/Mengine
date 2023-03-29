@@ -1,9 +1,9 @@
 #include "AssertionVSNPRINTF.h"
 
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
-#include "Kernel/Assertion.h"
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+#   include "Kernel/Assertion.h"
 
-#include "Config/StdIO.h"
+#   include "Config/StdIO.h"
 
 namespace Mengine
 {

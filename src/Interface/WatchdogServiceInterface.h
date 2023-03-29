@@ -21,7 +21,7 @@ namespace Mengine
 #define WATCHDOG_SERVICE()\
     ((Mengine::WatchdogServiceInterface*)SERVICE_GET(Mengine::WatchdogServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_MASTER_RELEASE
+#if defined(MENGINE_MASTER_RELEASE)
 #   define MENGINE_WATCHDOG( tag ) (0.0)
 #else
 #   define MENGINE_WATCHDOG( tag ) (SERVICE_IS_INITIALIZE(Mengine::WatchdogServiceInterface) ? WATCHDOG_SERVICE()->watch(tag) : 0.0)

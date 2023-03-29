@@ -23,7 +23,7 @@ namespace Mengine
     protected:
         float m_time;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentPtr m_doc;
 #endif
 

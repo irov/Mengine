@@ -18,7 +18,7 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/GitSHA1.h"
-#include "Config/BuildVersion.h"
+#include "Config/BuildInfo.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
@@ -93,7 +93,7 @@ namespace Mengine
     {
         bool OPTION_sentrydebug = HAS_OPTION( "sentrydebug" );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true && OPTION_sentrydebug == false )
         {
@@ -120,7 +120,7 @@ namespace Mengine
 
         sentry_options_t * options = sentry_options_new();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         sentry_options_set_debug( options, 1 );
 #else
         if( OPTION_sentrydebug == true )
@@ -147,7 +147,7 @@ namespace Mengine
             , sentryDatabasePath.c_str()
         );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_sentryDatabasePath[MENGINE_MAX_PATH] = {L'\0'};
         Helper::utf8ToUnicode( sentryDatabasePath, unicode_sentryDatabasePath, MENGINE_MAX_PATH, nullptr );
 
@@ -165,7 +165,7 @@ namespace Mengine
         PathString sentryHandlerPath;
         sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
         const Char * SentryPlugin_Handler = CONFIG_VALUE( "Win32SentryPlugin", "Handler", "crashpad_handler.exe" );
 #else
         const Char * SentryPlugin_Handler = CONFIG_VALUE( "Win32SentryPlugin", "Handler", "crashpad_handler" );
@@ -177,7 +177,7 @@ namespace Mengine
 
         sentryHandlerPath.append( SentryPlugin_Handler );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_sentryHandlerPath[MENGINE_MAX_PATH] = {L'\0'};
         Helper::utf8ToUnicode( sentryHandlerPath, unicode_sentryHandlerPath, MENGINE_MAX_PATH, nullptr );
 
@@ -194,6 +194,24 @@ namespace Mengine
         const Char * BUILD_VERSION = Helper::getBuildVersion();
 
         sentry_options_set_release( options, BUILD_VERSION );
+
+        Char environment[128] = {'\0'};
+
+#if defined(MENGINE_BUILD_PUBLISH)
+        MENGINE_STRCAT( environment, "publish_" );
+#endif
+
+#if defined(MENGINE_MASTER_RELEASE)
+        MENGINE_STRCAT( environment, "master_" );
+#endif
+
+#if defined(MENGINE_DEBUG)
+        MENGINE_STRCAT( environment, "debug" );
+#else
+        MENGINE_STRCAT( environment, "release" );
+#endif
+        
+        sentry_options_set_environment( options, environment );
 
         if( sentry_init( options ) != 0 )
         {
@@ -227,7 +245,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32SentryService::_finalizeService()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
         {
@@ -313,7 +331,7 @@ namespace Mengine
 
         sentry_set_extra( "Project", sentry_value_new_string( projectName ) );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserName( userName );

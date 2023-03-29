@@ -65,7 +65,7 @@ namespace Mengine
         }
 
     protected:        
-#ifdef MENGINE_DEBUG //avoid warning C4324
+#if defined(MENGINE_DEBUG) //avoid warning C4324
         C * m_self;
         M m_method;
 #else

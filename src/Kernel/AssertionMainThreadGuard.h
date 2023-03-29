@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
 #   include "Interface/ThreadServiceInterface.h"
 
 #   include "Kernel/Assertion.h"

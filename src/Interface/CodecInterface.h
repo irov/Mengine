@@ -7,7 +7,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct CodecDataInfo
     {
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
         CodecDataInfo() = default;
         virtual ~CodecDataInfo() = default;
 #endif

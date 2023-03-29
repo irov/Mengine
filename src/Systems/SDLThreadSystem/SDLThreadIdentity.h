@@ -58,7 +58,7 @@ namespace Mengine
 
         SDL_Thread * m_thread;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         DocumentPtr m_doc;
 #endif
     };

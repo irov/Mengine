@@ -96,7 +96,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::bind( uint32_t _stage )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         DWORD fillmode;
         MENGINE_DXCALL( m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
 

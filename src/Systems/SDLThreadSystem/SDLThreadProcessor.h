@@ -68,7 +68,7 @@ namespace Mengine
 
         AtomicBool m_exit;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         DocumentPtr m_doc;
 #endif
     };

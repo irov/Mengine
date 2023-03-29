@@ -10,7 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Factorable::Factorable()
         : m_factory( nullptr )
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         , m_destroy( false )
         , m_immortal( false )
 #endif
@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Factorable::~Factorable()
     {
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         if( m_destroy == false && m_factory != nullptr )
         {
             MENGINE_THROW_EXCEPTION( "Factorable deleter but not destroy!!" );
@@ -50,14 +50,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _value );
 
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         m_immortal = _value;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool Factorable::getImmortal() const
     {
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         return m_immortal;
 #else
         return false;
@@ -92,7 +92,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factorable::destroy()
     {
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         if( m_immortal == true )
         {
             MENGINE_THROW_EXCEPTION( "m_immortal == true" );
@@ -101,7 +101,7 @@ namespace Mengine
         }
 #endif
 
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         if( m_destroy == true )
         {
             MENGINE_THROW_EXCEPTION( "m_destroy == true" );
@@ -114,7 +114,7 @@ namespace Mengine
 
         this->_destroy();
 
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         if( m_factory == nullptr )
         {
             MENGINE_THROW_EXCEPTION( "m_factory == nullptr" );
@@ -126,12 +126,13 @@ namespace Mengine
         m_factory->destroyObject( this );
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
     //////////////////////////////////////////////////////////////////////////
     bool Factorable::isDestroyed() const
     {
         return m_destroy;
     }
+    //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
     void Factorable::_destroy()

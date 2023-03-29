@@ -42,7 +42,7 @@
 #include "MovieNodeExtra.h"
 #include "MovieMesh2D.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "MovieInternalObject.h"
 #   include "MovieEvent.h"
 #endif
@@ -304,7 +304,7 @@ namespace Mengine
 
         if( _layer.isMesh2D() == true )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             if( MovieMesh2DPtr::dynamic_from( _node ) == nullptr )
             {
                 LOGGER_ERROR( "'%s' resource '%s' layer '%s' is Mesh2D but node is not Mesh2D name '%s' type '%s'"
@@ -1038,7 +1038,7 @@ namespace Mengine
                     return false;
                 }
             }
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
             else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) )
             {
                 if( this->createMovieInternalObject_( layer ) == false )
@@ -1079,7 +1079,7 @@ namespace Mengine
             {
                 //Empty
             }
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
             else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieEvent" ) )
             {
                 if( this->createMovieEvent_( layer ) == false )
@@ -1528,7 +1528,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
     {
@@ -1792,7 +1792,7 @@ namespace Mengine
             return false;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( TextFieldPtr::dynamic_from( node ) == nullptr )
         {
             LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' must be 'TextField' but node is '%s' type '%s'"
@@ -1833,7 +1833,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieEvent_( const MovieLayer & _layer )
     {
@@ -2001,7 +2001,7 @@ namespace Mengine
 
             const NodePtr & node = this->getLayerNode_( l );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             if( MovieSceneEffectPtr::dynamic_from( node ) == nullptr )
             {
                 LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' must be 'MovieSceneEffect' but node is '%s' type '%s'"
@@ -2490,7 +2490,7 @@ namespace Mengine
             }
             else if( layer.isExtra() == true )
             {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 if( MovieNodeExtraPtr::dynamic_from( node ) == nullptr )
                 {
                     LOGGER_ERROR( "'%s' layer '%s' must be 'MovieNodeExtra' but node is '%s' type '%s'"

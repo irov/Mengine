@@ -10,10 +10,6 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstString.h"
 
-#ifdef MENGINE_DEBUG
-#include "Kernel/DocumentHelper.h"
-#endif
-
 #include "Config/UniqueId.h"
 
 namespace Mengine

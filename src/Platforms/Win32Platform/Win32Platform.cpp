@@ -16,7 +16,7 @@
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
 
-#ifdef MENGINE_PLUGIN_DEVTODEBUG
+#if defined(MENGINE_PLUGIN_DEVTODEBUG)
 #   include "Plugins/DevToDebugPlugin/DevToDebugInterface.h"
 
 #   include "Win32PlatformDevToDebug.h"
@@ -123,7 +123,7 @@ namespace Mengine
         , m_touchpad( false )
         , m_desktop( false )
         , m_fullscreen( false )
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         , m_sessionNotification( false )
         , m_sessionLock( false )
 #endif
@@ -140,7 +140,7 @@ namespace Mengine
     {
         m_beginTime = Helper::getTimeMilliseconds();
 
-#ifdef MENGINE_SETLOCALE_ENABLE
+#if defined(MENGINE_SETLOCALE_ENABLE)
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
 
@@ -224,15 +224,15 @@ namespace Mengine
         {
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 #endif
 
-#ifdef MENGINE_PLATFORM_WINDOWS32
+#if defined(MENGINE_PLATFORM_WINDOWS32)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 #endif
 
-#ifdef MENGINE_PLATFORM_WINDOWS64
+#if defined(MENGINE_PLATFORM_WINDOWS64)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #endif
 
@@ -243,15 +243,15 @@ namespace Mengine
         {
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 #endif
 
-#ifdef MENGINE_PLATFORM_WINDOWS32
+#if defined(MENGINE_PLATFORM_WINDOWS32)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 #endif
 
-#ifdef MENGINE_PLATFORM_WINDOWS64
+#if defined(MENGINE_PLATFORM_WINDOWS64)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #endif
 
@@ -262,15 +262,15 @@ namespace Mengine
         {
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 #endif
 
-#ifdef MENGINE_PLATFORM_WINDOWS32
+#if defined(MENGINE_PLATFORM_WINDOWS32)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 #endif
 
-#ifdef MENGINE_PLATFORM_WINDOWS64
+#if defined(MENGINE_PLATFORM_WINDOWS64)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #endif
 
@@ -288,11 +288,11 @@ namespace Mengine
         {
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 
-#ifdef MENGINE_PLATFORM_WINDOWS32
+#if defined(MENGINE_PLATFORM_WINDOWS32)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 #endif
 
-#ifdef MENGINE_PLATFORM_WINDOWS64
+#if defined(MENGINE_PLATFORM_WINDOWS64)
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #endif
 
@@ -362,7 +362,7 @@ namespace Mengine
             this->finalizeFileService_();
         } );
 
-#ifdef MENGINE_PLUGIN_DEVTODEBUG
+#if defined(MENGINE_PLUGIN_DEVTODEBUG)
         SERVICE_WAIT( DevToDebugServiceInterface, [this]()
         {
             if( Helper::execute<Win32PlatformDevToDebug>( MENGINE_DOCUMENT_FACTORABLE ) == false )
@@ -374,7 +374,7 @@ namespace Mengine
         } );
 #endif
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( HAS_OPTION( "workdir" ) == true )
         {
             Char currentPath[MENGINE_MAX_PATH] = {'\0'};
@@ -432,7 +432,7 @@ namespace Mengine
 
         m_cursors.clear();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const Win32ProcessDesc & desc : m_win32ProcessHandlers )
         {
             LOGGER_ERROR( "forgot remove win32 process handler (doc: %s)"
@@ -443,7 +443,7 @@ namespace Mengine
 
         m_win32ProcessHandlers.clear();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const TimerDesc & desc : m_timers )
         {
             if( desc.id == INVALID_UNIQUE_ID )
@@ -459,7 +459,7 @@ namespace Mengine
 
         m_timers.clear();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const UpdateDesc & desc : m_updates )
         {
             if( desc.id == INVALID_UNIQUE_ID )
@@ -483,7 +483,7 @@ namespace Mengine
 
         if( m_hWnd != NULL )
         {
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
             if( m_sessionNotification == true )
             {
                 if( ::WTSUnRegisterSessionNotification( m_hWnd ) == FALSE )
@@ -842,7 +842,7 @@ namespace Mengine
         desc.id = new_id;
         desc.lambda = _lambda;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -880,7 +880,7 @@ namespace Mengine
         desc.time = _milliseconds;
         desc.lambda = _lambda;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -950,7 +950,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::tickPlatform( float _frameTime )
     {
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( m_sessionLock == true )
         {
             ::Sleep( 200 );
@@ -1360,7 +1360,7 @@ namespace Mengine
 
                     Win32Platform * app = (Win32Platform *)createStruct->lpCreateParams;
 
-#ifdef MENGINE_PLATFORM_WINDOWS64
+#if defined(MENGINE_PLATFORM_WINDOWS64)
                     ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)app );
 #else
                     ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG)app );
@@ -1522,7 +1522,7 @@ namespace Mengine
 
                 return 1;
             }break;
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         case WM_WTSSESSION_CHANGE:
             {
                 LOGGER_INFO( "platform", "HWND [%p] WM_WTSSESSION_CHANGE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
@@ -2599,7 +2599,7 @@ namespace Mengine
             ::ShowWindow( m_hWnd, SW_SHOW );
         }
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( ::WTSRegisterSessionNotification( m_hWnd, NOTIFY_FOR_ALL_SESSIONS ) == FALSE )
         {
             LOGGER_ERROR( "invalid hwnd [%p] register session notification %ls"
@@ -3316,7 +3316,7 @@ namespace Mengine
         WChar newFilePathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( newFilePathCorrect, unicode_newFilePath );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         DWORD oldFileAttributes = ::GetFileAttributes( oldFilePathCorrect );
 
         if( oldFileAttributes != INVALID_FILE_ATTRIBUTES && (oldFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
@@ -3333,7 +3333,7 @@ namespace Mengine
 
         if( newFileAttributes != INVALID_FILE_ATTRIBUTES )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             if( (newFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
             {
                 LOGGER_WARNING( "invalid move file '%ls' it's directory"
@@ -4154,7 +4154,7 @@ namespace Mengine
             STACKFRAME64 frame;
             MENGINE_MEMSET( &frame, 0, sizeof( frame ) );
 
-#ifdef _M_IX86
+#if defined(MENGINE_MACHINE_I386)
             DWORD imageType = IMAGE_FILE_MACHINE_I386;
             frame.AddrPC.Offset = contex.Eip;
             frame.AddrPC.Mode = AddrModeFlat;
@@ -4162,7 +4162,7 @@ namespace Mengine
             frame.AddrFrame.Mode = AddrModeFlat;
             frame.AddrStack.Offset = contex.Esp;
             frame.AddrStack.Mode = AddrModeFlat;
-#elif _M_X64
+#elif defined(MENGINE_MACHINE_AMD64)
             DWORD imageType = IMAGE_FILE_MACHINE_AMD64;
             frame.AddrPC.Offset = contex.Rip;
             frame.AddrPC.Mode = AddrModeFlat;
@@ -4170,7 +4170,7 @@ namespace Mengine
             frame.AddrFrame.Mode = AddrModeFlat;
             frame.AddrStack.Offset = contex.Rsp;
             frame.AddrStack.Mode = AddrModeFlat;
-#elif _M_IA64
+#elif defined(MENGINE_MACHINE_IA64)
             DWORD imageType = IMAGE_FILE_MACHINE_IA64;
             frame.AddrPC.Offset = contex.StIIP;
             frame.AddrPC.Mode = AddrModeFlat;
@@ -4181,7 +4181,7 @@ namespace Mengine
             frame.AddrStack.Offset = contex.IntSp;
             frame.AddrStack.Mode = AddrModeFlat;
 #else
-#error "Platform not supported!"
+#   error "Platform not supported!"
 #endif
 
             uint8_t pSymBuff[sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN];
@@ -4426,7 +4426,7 @@ namespace Mengine
 
         if( lRes == ERROR_FILE_NOT_FOUND )
         {
-#ifdef _MSC_VER
+#if defined(MENGINE_COMPILER_MSVC)
             lRes = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );
 #endif
         }
@@ -5251,7 +5251,7 @@ namespace Mengine
         desc.id = id;
         desc.lambda = _lambda;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 

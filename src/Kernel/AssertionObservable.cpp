@@ -1,7 +1,7 @@
 #include "AssertionObservable.h"
 
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
-#include "Interface/NotificationServiceInterface.h"
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+#   include "Interface/NotificationServiceInterface.h"
 
 namespace Mengine
 {

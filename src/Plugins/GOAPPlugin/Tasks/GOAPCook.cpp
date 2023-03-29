@@ -171,7 +171,7 @@ namespace Mengine
             MENGINE_UNUSED( _source );
             MENGINE_UNUSED( _format );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
 

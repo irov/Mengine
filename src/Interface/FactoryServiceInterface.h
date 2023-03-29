@@ -8,7 +8,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DEBUG_FACTORY
-#   ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
 #       define MENGINE_DEBUG_FACTORY 1
 #   else
 #       define MENGINE_DEBUG_FACTORY 0

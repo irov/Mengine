@@ -25,7 +25,7 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_THREAD_GUARD_ENABLE
+#if defined(MENGINE_THREAD_GUARD_ENABLE)
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_THREAD_GUARD_SCOPE(Type, Self, Doc)\
     Mengine::ThreadGuardScope __meingine_thread_guard_scope##Type(Self->__mengine_thread_guard##Type, Doc)

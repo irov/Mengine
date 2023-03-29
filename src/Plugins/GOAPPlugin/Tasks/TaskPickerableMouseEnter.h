@@ -32,7 +32,7 @@ namespace Mengine
 
         LambdaPickerMouseEnterEvent m_filter;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentPtr m_doc;
 #endif
 

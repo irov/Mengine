@@ -56,7 +56,7 @@ namespace Mengine
         EVENT_GAME_CLOSE,
         EVENT_GAME_OVER_FILLRATE,
         EVENT_GAME_FRAME_END,
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
         EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE,
         EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND,
         EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD,
@@ -111,7 +111,7 @@ namespace Mengine
         virtual bool onGameClose() = 0;
         virtual void onGameOverFillrate( double _fillrate, double _limit ) = 0;
         virtual void onGameFrameEnd() = 0;
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
         virtual void onGameiOSApplicationDidBecomeActive() = 0;
         virtual void onGameiOSApplicationWillEnterForeground() = 0;
         virtual void onGameiOSApplicationDidEnterBackground() = 0;
@@ -160,7 +160,7 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CLOSE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_OVER_FILLRATE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FRAME_END );
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD );

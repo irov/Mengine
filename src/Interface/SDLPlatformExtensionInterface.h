@@ -4,7 +4,7 @@
 
 #include "Environment/SDL2/SDL2Includer.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 

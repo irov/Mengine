@@ -2,11 +2,11 @@
 
 #include "Config/Config.h"
 
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
-#include "Kernel/ConstString.h"
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+#   include "Kernel/ConstString.h"
 
-#include "Config/Char.h"
-#include "Config/Typedef.h"
+#   include "Config/Char.h"
+#   include "Config/Typedef.h"
 
 namespace Mengine
 {

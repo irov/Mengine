@@ -306,7 +306,7 @@ namespace Mengine
         m_currentFrame = _frame;
         m_frameTime = 0.f;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( this->isCompile() == true )
         {
             uint32_t sequenceCount = m_resourceImageSequence->getSequenceCount();

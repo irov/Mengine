@@ -5,7 +5,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Interface/Win32PlatformExtensionInterface.h"
 #endif
 

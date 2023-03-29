@@ -6,6 +6,18 @@
 
 #include "Config/Char.h"
 
+#ifndef MENGINE_OPENGL_RENDER_CHECK_ERROR
+#   if defined(MENGINE_DEBUG)
+#       define MENGINE_OPENGL_RENDER_CHECK_ERROR 1
+#   else
+#       define MENGINE_OPENGL_RENDER_CHECK_ERROR 0
+#   endif
+#endif
+
+#if MENGINE_OPENGL_RENDER_CHECK_ERROR == 1
+#   define MENGINE_OPENGL_RENDER_CHECK_ERROR_ENABLE
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -16,35 +28,37 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_RENDER_CHECK_ERROR_ENABLE
+#if defined(MENGINE_OPENGL_RENDER_CHECK_ERROR_ENABLE)
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_OPENGL_RENDER_CHECK_ERROR() Mengine::Helper::OpenGLRenderErrorCheck( __FILE__, __LINE__ )
-#   define MENGINE_OPENGL_RENDER_CHECK_ERROR_IF() if( MENGINE_OPENGL_RENDER_CHECK_ERROR() == true )
+#   define MENGINE_GLERRORCHECK() Mengine::Helper::OpenGLRenderErrorCheck( __FILE__, __LINE__ )
+//////////////////////////////////////////////////////////////////////////
+#   define MENGINE_IF_GLERRORCHECK() if( MENGINE_GLERRORCHECK() == true )
 //////////////////////////////////////////////////////////////////////////
 #else
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_OPENGL_RENDER_CHECK_ERROR() (false)
-#   define MENGINE_OPENGL_RENDER_CHECK_ERROR_IF() for( ;false; )
+#   define MENGINE_GLERRORCHECK()
+//////////////////////////////////////////////////////////////////////////
+#   define MENGINE_IF_GLERRORCHECK() for( ;false; )
 //////////////////////////////////////////////////////////////////////////
 #endif
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_GLCALL( Method, Args )\
     do{\
         Method Args;\
-        MENGINE_OPENGL_RENDER_CHECK_ERROR();\
+        MENGINE_GLERRORCHECK();\
     }while(false)
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_GLCALLR( R, Method, Args )\
     do{\
         R = Method Args;\
-        MENGINE_OPENGL_RENDER_CHECK_ERROR();\
+        MENGINE_GLERRORCHECK();\
     }while(false)
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_IF_GLCALLR( R, Method, Args )\
     R = Method Args;\
-    MENGINE_OPENGL_RENDER_CHECK_ERROR_IF()
+    MENGINE_IF_GLERRORCHECK()
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_IF_GLCALL( Method, Args )\
     Method Args;\
-    MENGINE_OPENGL_RENDER_CHECK_ERROR_IF()
+    MENGINE_IF_GLERRORCHECK()
 //////////////////////////////////////////////////////////////////////////

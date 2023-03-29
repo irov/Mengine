@@ -83,7 +83,7 @@
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WCSICMP
-#   ifdef MENGINE_PLATFORM_WINDOWS
+#   if defined(MENGINE_PLATFORM_WINDOWS)
 #       define MENGINE_WCSICMP(a,b) ::_wcsicmp((a), (b))
 #   endif
 #endif

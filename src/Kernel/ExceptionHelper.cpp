@@ -1,7 +1,7 @@
 #include "ExceptionHelper.h"
 #include "Exception.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Interface/PlatformInterface.h"
 #   include "Interface/Win32PlatformExtensionInterface.h"
 #endif
@@ -52,7 +52,7 @@ namespace Mengine
         MENGINE_STRCAT( exception_msg, format_line );
         MENGINE_STRCAT( exception_msg, "\n" );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
         if( SERVICE_IS_INITIALIZE( PlatformInterface ) == true )
         {
             Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()

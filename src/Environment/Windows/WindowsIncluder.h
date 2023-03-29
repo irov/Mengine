@@ -50,22 +50,27 @@
 #   define MENGINE_WINDOWS_SUPPORT_MIN_VERSION_WIN10
 #endif
 
-#ifdef WINVER
-#undef WINVER
+#if defined(WINVER)
+#   undef WINVER
+#endif
+
 #define WINVER MENGINE_WINDOWS_MIN_VERSION
+
+#if defined(_WIN32_WINNT)
+#   undef _WIN32_WINNT
 #endif
 
-#ifdef _WIN32_WINNT
-#undef _WIN32_WINNT
 #define _WIN32_WINNT MENGINE_WINDOWS_MIN_VERSION
+
+#if defined(_WIN32_WINDOWS)
+#   undef _WIN32_WINDOWS
 #endif
 
-#ifdef _WIN32_WINDOWS
-#undef _WIN32_WINDOWS
 #define _WIN32_WINDOWS MENGINE_WINDOWS_MIN_VERSION
-#endif
 
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 
 #ifndef NOMINMAX
 #define NOMINMAX

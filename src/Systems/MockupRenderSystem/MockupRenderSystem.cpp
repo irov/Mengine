@@ -779,7 +779,7 @@ namespace Mengine
 
         dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwPixelFormat );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         bool OPTION_logcreateimage = HAS_OPTION( "logcreateimage" );
 
         if( OPTION_logcreateimage == true )

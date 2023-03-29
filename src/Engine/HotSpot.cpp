@@ -83,7 +83,7 @@ namespace Mengine
         InputHandlerDesc desc;
         desc.handler = _inputHandler;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
         
@@ -148,7 +148,7 @@ namespace Mengine
             ->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
     //////////////////////////////////////////////////////////////////////////
     Scriptable * HotSpot::getPickerScriptable()
     {

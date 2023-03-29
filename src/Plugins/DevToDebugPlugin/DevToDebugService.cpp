@@ -289,7 +289,7 @@ namespace Mengine
 
         m_logger = logger;
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -308,7 +308,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_finalizeService()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
@@ -618,7 +618,7 @@ namespace Mengine
                     break;
                 }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 String json_data;
                 Helper::writeJSONStringCompact( j, &json_data );
 
@@ -778,7 +778,7 @@ namespace Mengine
             }
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         static uint32_t old_revision = 0;
 
         if( m_revision != old_revision )

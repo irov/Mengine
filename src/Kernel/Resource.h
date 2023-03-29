@@ -14,7 +14,7 @@
 #include "Kernel/Tags.h"
 #include "Kernel/ReferenceCounter.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Kernel/Scriptable.h"
 #endif
 
@@ -31,7 +31,7 @@ namespace Mengine
         , public Visitable
         , public Unknowable
         , public LoadableInterface
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         , public Scriptable
 #endif
     {

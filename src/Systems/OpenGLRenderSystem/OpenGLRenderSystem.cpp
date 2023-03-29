@@ -32,7 +32,7 @@ namespace Mengine
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         , m_vertexArrayId( 0 )
 #endif
         , m_counterTexture( 0 )
@@ -49,7 +49,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::~OpenGLRenderSystem()
     {
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         MENGINE_ASSERTION_FATAL( m_vertexArrayId == 0 );
 #endif
     }
@@ -80,7 +80,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::_finalizeService()
     {
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         if( m_vertexArrayId != 0 )
         {
             MENGINE_GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
@@ -164,33 +164,33 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         Mengine::initialize_GLEXT();
 #endif
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
-        MENGINE_OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_GLERRORCHECK();
 
         LOGGER_INFO( "openal", "OpenGL version: %s"
             , versionStr 
         );
 
         const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
-        MENGINE_OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_GLERRORCHECK();
 
         LOGGER_INFO( "openal", "OpenGL vendor: %s"
             , vendorStr 
         );
 
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
-        MENGINE_OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_GLERRORCHECK();
 
         LOGGER_INFO( "openal", "OpenGL renderer: %s"
             , rendererStr 
         );      
 
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
         const Char * extensionsStr = reinterpret_cast<const Char *>(glGetString( GL_EXTENSIONS ));
-        MENGINE_OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_GLERRORCHECK();
 
         LOGGER_INFO( "openal", "OpenGL extensions: %s"
             , extensionsStr 
@@ -198,7 +198,7 @@ namespace Mengine
 #endif
 
         const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
-        MENGINE_OPENGL_RENDER_CHECK_ERROR();
+        MENGINE_GLERRORCHECK();
 
         LOGGER_INFO( "openal", "OpenGL shading language version: %s"
             , shadingLanguageVersion 
@@ -219,7 +219,7 @@ namespace Mengine
         MENGINE_GLCALL( glDepthMask, (GL_FALSE) );
         MENGINE_GLCALL( glDepthFunc, (GL_LESS) );
 
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint vertexArrayId = 0;
         MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
@@ -589,7 +589,7 @@ namespace Mengine
 
             if( texture == nullptr )
             {
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
                 MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
 #else
                 MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
@@ -614,7 +614,7 @@ namespace Mengine
             }
         }
 
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         MENGINE_GLCALL( glBindVertexArray, (m_vertexArrayId) );
 #endif
 
@@ -653,7 +653,7 @@ namespace Mengine
 
         m_currentProgram->disable();
 
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         MENGINE_GLCALL( glBindVertexArray, (0) );
 #endif
     }
@@ -703,7 +703,7 @@ namespace Mengine
         {
             MENGINE_GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
 
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
             MENGINE_GLCALL( glBlendEquation, (blendOp) );
 #else
             MENGINE_GLCALL( glBlendEquation_, (blendOp) );
@@ -715,13 +715,13 @@ namespace Mengine
             const GLenum dstSeparateBlendFactor = Helper::toGLBlendFactor( _separateDst );
             const GLenum separateBlendOp = Helper::toGLBlendOp( _separateOp );
 
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
             MENGINE_GLCALL( glBlendFuncSeparate, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
 #else
             MENGINE_GLCALL( glBlendFuncSeparate_, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
 #endif
 
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
             MENGINE_GLCALL( glBlendEquationSeparate, (blendOp, separateBlendOp) );
 #else
             MENGINE_GLCALL( glBlendEquationSeparate_, (blendOp, separateBlendOp) );
@@ -1006,7 +1006,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _fullscreen );
 
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         if( m_vertexArrayId != 0 )
         {
             MENGINE_GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
@@ -1024,7 +1024,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _fullscreen );
 
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint vertexArrayId = 0;
         MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 

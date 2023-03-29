@@ -2,7 +2,7 @@
 
 #include "Kernel/Resource.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include <type_traits>
 #   include <stdexcept>
 #endif
@@ -12,7 +12,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         //////////////////////////////////////////////////////////////////////////
         namespace Detail
         {
@@ -34,7 +34,7 @@ namespace Mengine
         template<class T>
         T reinterpretResourceCast( void * _resource )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "reinterpret resource cast use on non 'Resourcable' type");
 
             if( _resource == nullptr )
@@ -54,7 +54,7 @@ namespace Mengine
         template<class T>
         T staticResourceCast( Resource * _resource )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "static resource cast use on non 'Resourcable' type");
 
             if( _resource == nullptr )
@@ -74,7 +74,7 @@ namespace Mengine
         template<class T>
         T staticResourceCast( const Resource * _resource )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "static resource cast use on non 'Resourcable' type");
 
             if( _resource == nullptr )
@@ -94,7 +94,7 @@ namespace Mengine
         template<class T>
         T staticResourceCast( const ResourcePtr & _resource )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<typename T::value_type>>, "static resource cast use on non 'Resourcable' type");
 
             if( _resource == nullptr )
@@ -116,7 +116,7 @@ namespace Mengine
         template<class T>
         T dynamicResourceCast( Resource * _resource )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 
@@ -128,7 +128,7 @@ namespace Mengine
         template<class T>
         T dynamicResourceCast( const Resource * _resource )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 
@@ -140,7 +140,7 @@ namespace Mengine
         template<class T>
         T dynamicResourceCast( const ResourcePtr & _resource )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<typename T::value_type>>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 

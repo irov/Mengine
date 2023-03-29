@@ -1,1 +1,1 @@
-@call %~dp0build_publish_solution_mingw.bat Debug %1 %2
+@call %~dp0build_publish_solution_mingw.bat Debug %1 %2 %3

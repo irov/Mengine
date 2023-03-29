@@ -5,7 +5,6 @@
 
 #include "Config/GitSHA1.h"
 #include "Config/BuildInfo.h"
-#include "Config/BuildVersion.h"
 
 namespace Mengine
 {
@@ -34,7 +33,7 @@ namespace Mengine
                 }
             }
 
-#ifdef MENGINE_BUILD_DEVELOPMENT
+#if defined(MENGINE_BUILD_DEVELOPMENT)
             return true;
 #else
             return false;
@@ -143,6 +142,13 @@ namespace Mengine
             const Char * BUILD_VERSION = MENGINE_BUILD_VERSION;
 
             return BUILD_VERSION;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint64_t getBuildNumber()
+        {
+            uint64_t BUILD_NUMBER = MENGINE_BUILD_NUMBER;
+
+            return BUILD_NUMBER;
         }
         //////////////////////////////////////////////////////////////////////////
     }

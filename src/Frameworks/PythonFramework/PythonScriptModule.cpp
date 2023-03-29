@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModule::onInitialize( const ConstString & _method )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         //FixMe python2.7 don't support non native string key
         if( m_module.has_attr( _method.c_str() ) == false )
         {
@@ -45,7 +45,7 @@ namespace Mengine
 
         pybind::object py_result = module_function.call();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( py_result.is_invalid() == true )
         {
             LOGGER_ERROR( "module '%s' invalid call initializer '%s'"
@@ -75,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModule::onFinalize( const ConstString & _method )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_module.has_attr( _method.c_str() ) == false )
         {
             LOGGER_ERROR( "invalid has finalizer '%s'"

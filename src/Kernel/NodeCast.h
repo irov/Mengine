@@ -2,7 +2,7 @@
 
 #include "Kernel/Node.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include <type_traits>
 #   include <stdexcept>
 #endif
@@ -13,7 +13,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         //////////////////////////////////////////////////////////////////////////
         namespace Detail
         {
@@ -35,7 +35,7 @@ namespace Mengine
         template<class T>
         T reinterpretNodeCast( void * _node )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "reinterpret node cast use on non 'Nodeable' type");
 
             if( _node == nullptr )
@@ -55,7 +55,7 @@ namespace Mengine
         template<class T>
         T staticNodeCast( Node * _node )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "static node cast use on non 'Nodeable' type");
 
             if( _node == nullptr )
@@ -75,7 +75,7 @@ namespace Mengine
         template<class T>
         T staticNodeCast( const Node * _node )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "static node cast use on non 'Nodeable' type");
 
             if( _node == nullptr )
@@ -97,7 +97,7 @@ namespace Mengine
         template<class T>
         T staticNodeCast( const NodePtr & _node )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<typename T::value_type>>, "static node cast use on non 'Nodeable' type");
 
             if( _node == nullptr )
@@ -119,7 +119,7 @@ namespace Mengine
         template<class T>
         T dynamicNodeCast( Node * _node )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "dynamic node cast use on non 'Nodeable' type");
 #endif
 
@@ -131,7 +131,7 @@ namespace Mengine
         template<class T>
         T dynamicNodeCast( const Node * _node )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "dynamic node cast use on non 'Nodeable' type");
 #endif
 
@@ -143,7 +143,7 @@ namespace Mengine
         template<class T>
         T dynamicNodeCast( const NodePtr & _node )
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<typename T::value_type>>, "dynamic node cast use on non 'Nodeable' type");
 #endif
 

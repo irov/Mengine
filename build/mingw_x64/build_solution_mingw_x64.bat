@@ -7,15 +7,20 @@ if ["%~1"]==[""] (
 
 set "CONFIGURATION=%1"
 set "EXTERNAL_PDB_PATH=%2"
-set "BUILD_VERSION=%3"
+set "BUILD_NUMBER=%3"
+set "BUILD_VERSION=%4"
 
-@echo Starting build solution mingw64 %CONFIGURATION% configuration...
+set "SOLUTION_NAME=solution_mingw64"
+set "SOURCE_DIRECTORY=%CD%\..\cmake\MinGW64"
+set "GENERATOR=Ninja"
+set "BUILD_PUBLISH=OFF"
+
+@echo Starting build %SOLUTION_NAME% %CONFIGURATION% configuration...
 
 @pushd %~dp0..
-@call build_solution.bat "SOLUTION_NAME=solution_mingw64" "SOURCE_DIRECTORY=%CD%\..\cmake\MinGW64" "GENERATOR=Ninja" "CONFIGURATION=%CONFIGURATION%" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%" "BUILD_VERSION=%BUILD_VERSION%"
+@call build_solution.bat "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "BUILD_PUBLISH=%BUILD_PUBLISH%" "CONFIGURATION=%CONFIGURATION%" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%" "BUILD_NUMBER=%BUILD_NUMBER%" "BUILD_VERSION=%BUILD_VERSION%"
 @popd
 
 :end
 
-@pause
 exit /b %errorlevel%

@@ -60,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float ResourceImageSequence::getSequenceDelay( uint32_t _index ) const
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
@@ -86,7 +86,7 @@ namespace Mengine
     {
         uint32_t sequenceCount = this->getSequenceCount();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( sequenceCount == 0 )
         {
             LOGGER_ERROR( "'%s' invalid get last frame on empty sequences"

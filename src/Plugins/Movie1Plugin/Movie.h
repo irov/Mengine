@@ -21,7 +21,7 @@
 #include "MovieNodeExtra.h"
 #include "MovieSceneEffect.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "MovieInternalObject.h"
 #endif
 
@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum EMovieEventFlag
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         EVENT_MOVIE_GET_INTERNAL = __EVENT_ANIMATION_LAST__,
         EVENT_MOVIE_DEACTIVATE_INTERNAL,
         EVENT_MOVIE_ACTIVATE_INTERNAL,
@@ -44,7 +44,7 @@ namespace Mengine
     class MovieEventReceiverInterface
         : public AnimationEventReceiverInterface
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
     public:
         virtual pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) const = 0;
         virtual NodePtr onMovieActivateInternal( const pybind::object & _internal ) = 0;
@@ -52,7 +52,7 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
     EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_ACTIVATE_INTERNAL );
     EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_DEACTIVATE_INTERNAL );
     EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_GET_INTERNAL );
@@ -210,7 +210,7 @@ namespace Mengine
         bool createMovieExtraSprite_( const MovieLayer & _layer );
         bool createMovieParticleEmitter2_( const MovieLayer & _layer );
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         bool createMovieInternalObject_( const MovieLayer & _layer );
         bool createMovieEvent_( const MovieLayer & _layer );
 #endif

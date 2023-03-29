@@ -43,7 +43,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_MENGINE_STATIC
+#if defined(MENGINE_PLUGIN_MENGINE_STATIC)
 extern Mengine::ServiceProviderInterface * initializeMengine();
 extern bool bootstrapMengine();
 extern void finalizeMengine();
@@ -52,7 +52,7 @@ extern void finalizeMengine();
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
     //////////////////////////////////////////////////////////////////////////
     typedef ServiceProviderInterface * (*FMengineInitialize)(void);
     typedef bool (*FMengineBootstrap)(void);
@@ -61,7 +61,7 @@ namespace Mengine
 #endif
     //////////////////////////////////////////////////////////////////////////
     Win32Application::Win32Application()
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
         : m_hInstance( NULL )
 #endif
     {
@@ -215,7 +215,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()
     {
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
         HINSTANCE hInstance = ::LoadLibrary( MENGINE_DLL_NAME );
 
         if( hInstance == NULL )
@@ -298,7 +298,7 @@ namespace Mengine
             this->finalizeLoggerService_();
         } );
 
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
         FARPROC dllBootstrapMengine = ::GetProcAddress( hInstance, "bootstrapMengine" );
 
         if( dllBootstrapMengine == nullptr )
@@ -436,7 +436,7 @@ namespace Mengine
                 ->stop();
         }
 
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
         FARPROC dllFinalizeMengine = ::GetProcAddress( m_hInstance, "finalizeMengine" );
 
         if( dllFinalizeMengine == nullptr )

@@ -19,13 +19,21 @@
 #   define MENGINE_COMPILER_EMSCRIPTEN
 #elif defined(__MINGW32__)
 #   define MENGINE_COMPILER_MINGW
-#   ifdef defined(__MINGW64__)
+#   if defined(__MINGW64__)
 #       define MENGINE_COMPILER_MINGW64
 #   else
 #       define MENGINE_COMPILER_MINGW32
 #   endif
 #else
 #   error "undefine compiler"
+#endif
+
+#if defined(_M_IX86)
+#   define MENGINE_MACHINE_I386
+#elif defined(_M_X64)
+#   define MENGINE_MACHINE_AMD64
+#elif defined(_M_IA64)
+#   define MENGINE_MACHINE_IA64
 #endif
 
 #if defined(_WIN32)
@@ -97,7 +105,7 @@
 #   define MENGINE_RELEASE
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #       define MENGINE_WINDOWS_DEBUG
 #   endif
@@ -112,7 +120,7 @@
 #endif
 
 #ifndef MENGINE_CODE_FUNCTION
-#   ifdef MENGINE_COMPILER_GCC
+#   if defined(MENGINE_COMPILER_GCC)
 #       define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
 #   else
 #       define MENGINE_CODE_FUNCTION __FUNCTION__
@@ -127,56 +135,44 @@
 #define MENGINE_NOP [](){}()
 #endif
 
-#ifndef MENGINE_DEBUG
+#if defined(MENGINE_RELEASE)
 #   define MENGINE_RELEASE_UNUSED(X) MENGINE_UNUSED(X)
 #else
 #   define MENGINE_RELEASE_UNUSED(X)
 #endif
 
-#ifdef MENGINE_WINDOWS_DEBUG
+#if defined(MENGINE_WINDOWS_DEBUG)
 #   define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (X)
 #else
 #   define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (Y)
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   define MENGINE_DEBUG_VALUE(X, Y) (X)
 #else
 #   define MENGINE_DEBUG_VALUE(X, Y) (Y)
 #endif
 
-#ifdef MENGINE_MASTER_RELEASE
+#if defined(MENGINE_MASTER_RELEASE)
 #   define MENGINE_MASTER_RELEASE_VALUE(X, Y) (X)
 #else
 #   define MENGINE_MASTER_RELEASE_VALUE(X, Y) (Y)
 #endif
 
-#ifdef MENGINE_BUILD_PUBLISH
+#if defined(MENGINE_BUILD_PUBLISH)
 #   define MENGINE_BUILD_PUBLISH_VALUE(X, Y) (X)
 #else
 #   define MENGINE_BUILD_PUBLISH_VALUE(X, Y) (Y)
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   define MENGINE_DEBUG_ARGUMENTS(...) __VA_ARGS__
 #else
 #   define MENGINE_DEBUG_ARGUMENTS(...)
 #endif
 
-#ifndef MENGINE_RENDER_CHECK_ERROR
-#   ifdef MENGINE_DEBUG
-#       define MENGINE_RENDER_CHECK_ERROR 1
-#   else
-#       define MENGINE_RENDER_CHECK_ERROR 0
-#   endif
-#endif
-
-#if MENGINE_RENDER_CHECK_ERROR == 1
-#   define MENGINE_RENDER_CHECK_ERROR_ENABLE
-#endif
-
 #ifndef MENGINE_ASSERTION_DEBUG
-#   ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
 #       define MENGINE_ASSERTION_DEBUG 1
 #   else
 #       define MENGINE_ASSERTION_DEBUG 0
@@ -188,7 +184,7 @@
 #endif
 
 #ifndef MENGINE_DOCUMENT
-#   ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
 #       define MENGINE_DOCUMENT 1
 #   else
 #       define MENGINE_DOCUMENT 0
@@ -199,13 +195,13 @@
 #   define MENGINE_DOCUMENT_ENABLE
 #endif
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
 #   define MENGINE_DOCUMENT_VALUE(X, Y) (X)
 #else
 #   define MENGINE_DOCUMENT_VALUE(X, Y) (Y)
 #endif
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
 #   define MENGINE_DOCUMENT_ARGUMENTS(...) __VA_ARGS__
 #else
 #   define MENGINE_DOCUMENT_ARGUMENTS(...)
@@ -228,7 +224,7 @@
 #endif
 
 #ifndef MENGINE_PROFILER_ENABLE
-#   ifdef MENGINE_WINDOWS_DEBUG
+#   if defined(MENGINE_WINDOWS_DEBUG)
 #       define MENGINE_PROFILER_ENABLE
 #   endif
 #endif
@@ -332,9 +328,9 @@
 #endif
 
 #ifndef MENGINE_MAX_ALIGNED_POINTER_VALUE
-#   ifdef MENGINE_ENVIRONMENT_ARCHITECTURE_X86
+#   if defined(MENGINE_ENVIRONMENT_ARCHITECTURE_X86)
 #       define MENGINE_MAX_ALIGNED_POINTER_VALUE (0xfffffffc)
-#   elif MENGINE_ENVIRONMENT_ARCHITECTURE_X64
+#   elif defined(MENGINE_ENVIRONMENT_ARCHITECTURE_X64)
 #       define MENGINE_MAX_ALIGNED_POINTER_VALUE (0xfffffffffffffff8)
 #   else
 #       error "invalid define MENGINE_MAX_ALIGNED_POINTER_VALUE [unsupport architecture]"

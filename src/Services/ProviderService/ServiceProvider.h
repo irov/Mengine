@@ -116,7 +116,7 @@ namespace Mengine
 
         uint32_t m_waitsCount;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         const Char * m_initializeServiceName;
 #endif
 

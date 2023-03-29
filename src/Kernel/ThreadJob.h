@@ -37,7 +37,7 @@ namespace Mengine
         AtomicBool process;
         AtomicBool remove;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentPtr doc;
 #endif
     };
@@ -71,7 +71,7 @@ namespace Mengine
 
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentPtr m_doc;
 #endif
     };

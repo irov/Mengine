@@ -144,7 +144,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::bind( uint32_t _stage )
     {
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
         MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
 #else
         MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
@@ -155,7 +155,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::unbind( uint32_t _stage )
     {
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
         MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
 #else
         MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
@@ -255,14 +255,14 @@ namespace Mengine
         case GL_ETC1_RGB8_OES:
         case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
         case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 #endif
             {
                 if( lockedRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
                     GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwPixelFormat );
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
                     MENGINE_IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
 #else
                     MENGINE_IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )

@@ -49,7 +49,7 @@ namespace Mengine
             }
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const HashtableGroupResources::value_type & value : m_resourcesGroup )
         {
             const ResourcePtr & resource = value.element;

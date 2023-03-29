@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
 #   include "Kernel/Assertion.h"
 
 #   define MENGINE_ASSERTION_CONTAINER_EMPTY(C) MENGINE_ASSERTION_FATAL((C).empty() == true, "Container '%s' not empty", #C)

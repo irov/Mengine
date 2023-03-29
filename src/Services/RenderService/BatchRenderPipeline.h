@@ -181,7 +181,7 @@ namespace Mengine
             const RenderIndex * indices;
             uint32_t indexCount;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };
@@ -190,7 +190,7 @@ namespace Mengine
         VectorDebugRenderObjects m_debugRenderObjects;
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         bool m_debugFillrateCalcMode;
         bool m_debugStepRenderMode;
         bool m_debugStopRenderObjects;

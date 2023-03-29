@@ -3914,6 +3914,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "getBuildMode", helperScriptMethod, &HelperScriptMethod::s_getBuildMode );
         pybind::def_functor( _kernel, "getBuildVersion", helperScriptMethod, &HelperScriptMethod::s_getBuildVersion );
+        pybind::def_functor( _kernel, "getBuildNumber", helperScriptMethod, &HelperScriptMethod::s_getBuildNumber );
         pybind::def_functor( _kernel, "getEngineGitSHA1", helperScriptMethod, &HelperScriptMethod::s_getEngineGitSHA1 );
         pybind::def_functor( _kernel, "getContentCommit", helperScriptMethod, &HelperScriptMethod::s_getContentCommit );
 

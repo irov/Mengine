@@ -32,7 +32,7 @@ namespace Mengine
 
         uint32_t m_flags;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentPtr m_doc;
 #endif
 

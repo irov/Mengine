@@ -15,7 +15,7 @@ namespace Mengine
         template<class T>
         T * allocateT()
         {
-#ifdef MENGINE_WINDOWS_DEBUG
+#if defined(MENGINE_WINDOWS_DEBUG)
             const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
@@ -30,7 +30,7 @@ namespace Mengine
         template<class T>
         void freeT( T * _ptr )
         {
-#ifdef MENGINE_WINDOWS_DEBUG
+#if defined(MENGINE_WINDOWS_DEBUG)
             const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
@@ -42,7 +42,7 @@ namespace Mengine
         template<class T>
         T * allocateArrayT( size_t _count )
         {
-#ifdef MENGINE_WINDOWS_DEBUG
+#if defined(MENGINE_WINDOWS_DEBUG)
             const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
@@ -58,7 +58,7 @@ namespace Mengine
         template<class T>
         T * callocateArrayT( size_t _count )
         {
-#ifdef MENGINE_WINDOWS_DEBUG
+#if defined(MENGINE_WINDOWS_DEBUG)
             const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
@@ -73,7 +73,7 @@ namespace Mengine
         template<class T>
         T * reallocateArrayT( T * _ptr, size_t _count )
         {
-#ifdef MENGINE_WINDOWS_DEBUG
+#if defined(MENGINE_WINDOWS_DEBUG)
             const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
@@ -89,7 +89,7 @@ namespace Mengine
         template<class T>
         void freeArrayT( T * _ptr )
         {
-#ifdef MENGINE_WINDOWS_DEBUG
+#if defined(MENGINE_WINDOWS_DEBUG)
             const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;

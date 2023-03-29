@@ -48,7 +48,7 @@ namespace Mengine
 
         updation->deactivate();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_schedulers.insert( m_schedulers.end(), m_schedulersAdd.begin(), m_schedulersAdd.end() );
         m_schedulersAdd.clear();
 
@@ -111,7 +111,7 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalid = true;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -152,7 +152,7 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalid = true;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 

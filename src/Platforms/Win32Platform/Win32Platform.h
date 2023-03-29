@@ -252,7 +252,7 @@ namespace Mengine
             UniqueId id;
             LambdaWin32ProcessHandler lambda;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };
@@ -267,7 +267,7 @@ namespace Mengine
             float time;
             LambdaTimer lambda;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };
@@ -280,7 +280,7 @@ namespace Mengine
             UniqueId id;
             LambdaUpdate lambda;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };
@@ -328,7 +328,7 @@ namespace Mengine
         bool m_touchpad;
         bool m_desktop;
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         bool m_sessionNotification;
         bool m_sessionLock;
 #endif

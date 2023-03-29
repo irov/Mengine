@@ -15,5 +15,4 @@ set "CONFIGURATION=%1"
 
 :end
 
-@pause
 exit /b %errorlevel%

@@ -2,8 +2,8 @@
 
 #include "Config/Config.h"
 
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
-#include "Interface/FactoryInterface.h"
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+#   include "Interface/FactoryInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

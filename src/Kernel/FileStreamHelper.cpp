@@ -1,6 +1,6 @@
 #include "FileStreamHelper.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include "Interface/FileInputStreamInterface.h"
 #   include "Interface/FileOutputStreamInterface.h"
 #endif
@@ -146,7 +146,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _stream );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             FileInputStreamInterface * stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 
             if( stream == nullptr )
@@ -166,7 +166,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _stream );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             FileInputStreamInterface * stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 
             if( stream == nullptr )
@@ -186,7 +186,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _stream );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             FileInputStreamInterface * stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 
             if( stream == nullptr )
@@ -206,7 +206,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _stream );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             FileOutputStreamInterface * stream = stdex::intrusive_dynamic_get<FileOutputStreamInterface *>( _stream );
 
             if( stream == nullptr )
@@ -226,7 +226,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _stream );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             FileOutputStreamInterface * stream = stdex::intrusive_dynamic_get<FileOutputStreamInterface *>( _stream );
 
             if( stream == nullptr )
@@ -246,7 +246,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _stream );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             FileOutputStreamInterface * stream = stdex::intrusive_dynamic_get<FileOutputStreamInterface *>( _stream );
 
             if( stream == nullptr )

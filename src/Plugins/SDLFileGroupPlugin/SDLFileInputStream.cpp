@@ -36,7 +36,7 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::open" );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
@@ -137,7 +137,7 @@ namespace Mengine
 
         m_rwops = rwops;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), m_streaming );
@@ -154,7 +154,7 @@ namespace Mengine
             return true;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
@@ -365,7 +365,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::time( uint64_t * const _time ) const
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         Char filePath[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -403,7 +403,7 @@ namespace Mengine
         return m_rwops;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     //////////////////////////////////////////////////////////////////////////
     const FilePath & SDLFileInputStream::getRelationPath() const
     {

@@ -155,12 +155,12 @@ namespace Mengine
             new_desc.reference = 0;
             new_desc.container = container.get();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             new_desc.fileGroupName = _fileGroup->getName();
             new_desc.FilePath = _filePath;
 #endif
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             new_desc.doc = _doc;
 #endif
 
@@ -170,7 +170,7 @@ namespace Mengine
         {
             container->finalize();
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             const AstralaxEmitterContainerDesc & old_desc = it_found->second;
 
             LOGGER_PERFORMANCE( "useless load container '%s' original is '%s'"
@@ -1503,7 +1503,7 @@ namespace Mengine
             return cache.fragmentShader;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         ERenderPlatform renderPlatform = RENDER_SYSTEM()
             ->getRenderPlatformType();
 

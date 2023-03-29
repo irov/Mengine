@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::bind( uint32_t _stage )
     {
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
         MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
 #else
         MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::unbind( uint32_t _stage )
     {
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
         MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
 #else
         MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );

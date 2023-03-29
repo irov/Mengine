@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::finalize()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
         m_handlersAdd.clear();
 
@@ -255,7 +255,7 @@ namespace Mengine
         desc.enable = true;
         desc.dead = false;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 

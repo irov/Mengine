@@ -3,7 +3,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include "Interface/PlatformInterface.h"
 #endif
 
@@ -45,7 +45,7 @@ namespace Mengine
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
@@ -276,7 +276,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLMutexFileInputStream::time( uint64_t * const _time ) const
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         Char filePath[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -309,7 +309,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     //////////////////////////////////////////////////////////////////////////
     const FilePath & SDLMutexFileInputStream::getRelationPath() const
     {

@@ -1,7 +1,7 @@
 #include "JSONSetting.h"
 
-#ifdef MENGINE_DEBUG
-#include "Plugins/FileModifyHookPlugin/FileModifyHookInterface.h"
+#if defined(MENGINE_DEBUG)
+#   include "Plugins/FileModifyHookPlugin/FileModifyHookInterface.h"
 #endif
 
 #include "Kernel/AssertionMemoryPanic.h"
@@ -30,7 +30,7 @@ namespace Mengine
 
         m_json = json;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         FILEMODIFYHOOK_SERVICE()
             ->setFileModifyHook( m_fileGroup, m_filePath, [this, _doc]()
         {
@@ -47,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void JSONSetting::finalize()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         FILEMODIFYHOOK_SERVICE()
             ->removeFileModifyHook( m_fileGroup, m_filePath );
 #endif
@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
         //////////////////////////////////////////////////////////////////////////
         static bool exist_value( const jpp::object & _j, const Char * _key )
         {

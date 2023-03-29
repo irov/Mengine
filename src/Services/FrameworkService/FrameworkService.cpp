@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FrameworkService::_finalizeService()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const FrameworkInterfacePtr & framework : m_frameworks )
         {
             LOGGER_ERROR( "was forgotten stop framework '%s'"

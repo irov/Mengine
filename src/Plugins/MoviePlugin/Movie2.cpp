@@ -390,7 +390,7 @@ namespace Mengine
 
         const ResourceMovie2::CompositionDesc * compositionDesc = m_resourceMovie2->getCompositionDesc( m_compositionName );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( compositionDesc == nullptr )
         {
             Stringstream ss;
@@ -845,7 +845,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
         {
             LOGGER_ERROR( "name '%s' layer '%s' not found"
@@ -874,7 +874,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
         {
             LOGGER_ERROR( "name '%s' layer '%s' not found"

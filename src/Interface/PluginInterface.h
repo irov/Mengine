@@ -73,7 +73,7 @@ namespace Mengine
         }\
     }
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_DLL
+#if defined(MENGINE_PLUGIN_DLL)
 #   define PLUGIN_FACTORY(Name, Type)\
     PLUGIN_FACTORY_STATIC(Name, Type)\
     PLUGIN_FACTORY_DYNAMIC(Name, Type)

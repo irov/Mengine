@@ -15,7 +15,7 @@ namespace Mengine
         : GOAP::TaskInterface( _allocator )
         , m_animatable( _animatable )
         , m_eventable( _eventable )
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         , m_doc( _doc )
 #endif
     {
@@ -95,7 +95,7 @@ namespace Mengine
         m_animatable = nullptr;
         m_eventable = nullptr;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         m_doc = nullptr;
 #endif
     }

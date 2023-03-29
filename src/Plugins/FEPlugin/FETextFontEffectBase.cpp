@@ -149,7 +149,7 @@ namespace Mengine
                 , effect_node_layout
                 , &res );
 
-#ifdef MENGINE_RENDER_TEXTURE_RGBA
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
             fe_image_create( &bgra_image, res.image.w, res.image.h, FE_IMG_R8G8B8A8 );
 #else
             fe_image_create( &bgra_image, res.image.w, res.image.h, FE_IMG_B8G8R8A8 );

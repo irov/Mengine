@@ -13,7 +13,7 @@ SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_DLL
+#if defined(MENGINE_PLUGIN_DLL)
 extern "C"
 {
 #endif
@@ -80,7 +80,7 @@ extern "C"
         SERVICE_PROVIDER_FINALIZE( serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_DLL
+#if defined(MENGINE_PLUGIN_DLL)
 }
 #endif
 //////////////////////////////////////////////////////////////////////////

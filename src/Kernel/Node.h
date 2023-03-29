@@ -15,7 +15,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Viewport.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Kernel/Scriptable.h"
 #endif
 
@@ -50,7 +50,7 @@ namespace Mengine
         , public Eventable
         , public Pickerable
         , public Unknowable
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         , public Scriptable
 #endif
     {

@@ -28,7 +28,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION( m_mixins.empty() == true, "Vocabulary not empty!" );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const HashtableMixins::value_type & value : m_mixins )
         {
             const ConstString & category = value.key1;

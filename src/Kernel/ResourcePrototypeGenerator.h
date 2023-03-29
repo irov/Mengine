@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #else
 #include "Kernel/DefaultPrototypeGenerator.h"
@@ -15,7 +15,7 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class ResourcePrototypeGenerator
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         : public ScriptablePrototypeGenerator<Type, Count>
 #else
         : public DefaultPrototypeGenerator<Type, Count>
@@ -47,7 +47,7 @@ namespace Mengine
 
             resource->setUniqueIdentity( uniqueIdentity );
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Resource '%s' type '%s' create '%s'"
                 , resource->getName().c_str()
                 , resource->getType().c_str()
@@ -57,7 +57,7 @@ namespace Mengine
             resource->setDocument( doc );
 #endif
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
             this->setupScriptable( resource );
 #endif
 

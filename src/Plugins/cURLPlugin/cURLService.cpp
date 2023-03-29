@@ -10,7 +10,7 @@
 #include "cURLGetAssetThreadTask.h"
 #include "cURLDeleteMessageThreadTask.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
 #   include "cURLScriptEmbedding.h"
 #endif
@@ -172,7 +172,7 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &cURLService::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -191,14 +191,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_finalizeService()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const RequestListenerDesk & desc : m_networkListeners )
         {
             LOGGER_ERROR( "Forgot remove listener '%u' from cURLService (doc: %s)"
@@ -311,7 +311,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -376,7 +376,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -441,7 +441,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -506,7 +506,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -577,7 +577,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -630,7 +630,7 @@ namespace Mengine
         desc.id = id;
         desc.listener = _listener;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 

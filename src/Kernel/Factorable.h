@@ -7,7 +7,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_FACTORABLE_DEBUG
-#   ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
 #       define MENGINE_FACTORABLE_DEBUG 1
 #   else
 #       define MENGINE_FACTORABLE_DEBUG 0
@@ -18,7 +18,7 @@
 #   define MENGINE_FACTORABLE_DEBUG_ENABLE
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
 #   include "Kernel/Documentable.h"
 #endif
 //////////////////////////////////////////////////////////////////////////
@@ -28,12 +28,12 @@ namespace Mengine
     class FactoryInterface;
     //////////////////////////////////////////////////////////////////////////
     class Factorable
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         : public Documentable
 #else
         : public Mixin
 #endif
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         , public IntrusiveLinked<Factorable>
 #endif
     {
@@ -65,12 +65,12 @@ namespace Mengine
     protected:
         virtual void _destroy();
 
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
     public:
         bool isDestroyed() const;
 #endif
 
-#ifdef STDEX_INTRUSIVE_PTR_DEBUG
+#if defined(STDEX_INTRUSIVE_PTR_DEBUG)
     public:
         MENGINE_INLINE static bool intrusive_ptr_check_ref( const Factorable * _ptr );
 #endif
@@ -80,7 +80,7 @@ namespace Mengine
 
         FactoryInterface * m_factory;
 
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         bool m_destroy;
         bool m_immortal;
 #endif
@@ -93,7 +93,7 @@ namespace Mengine
         return m_factory;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef STDEX_INTRUSIVE_PTR_DEBUG
+#if defined(STDEX_INTRUSIVE_PTR_DEBUG)
     MENGINE_INLINE bool Factorable::intrusive_ptr_check_ref( const Factorable * _ptr )
     {
         if( _ptr == nullptr )
@@ -101,7 +101,7 @@ namespace Mengine
             return false;
         }
 
-#ifdef MENGINE_FACTORABLE_DEBUG_ENABLE
+#if defined(MENGINE_FACTORABLE_DEBUG_ENABLE)
         if( _ptr->isDestroyed() == true )
         {
             return false;

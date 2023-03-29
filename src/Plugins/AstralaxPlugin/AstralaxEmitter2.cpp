@@ -527,7 +527,7 @@ namespace Mengine
             return false;
         }
 
-#ifdef MENGINE_RENDER_COLOR_RGBA
+#if defined(MENGINE_RENDER_COLOR_RGBA)
         MAGIC_ARGB_ENUM color_mode = MAGIC_ARGB;
 #else
         MAGIC_ARGB_ENUM color_mode = MAGIC_ABGR;

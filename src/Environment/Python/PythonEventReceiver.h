@@ -118,7 +118,7 @@ namespace Mengine
                 event->addEventReceiver( _event, receiver );
             }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             _kwds.remove( _method );
 #endif
         }
@@ -196,7 +196,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   define MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER(Factorable, Kwds)\
     Helper::assertPythonEventReceiver(Factorable, Kwds)
 #else

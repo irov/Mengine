@@ -47,7 +47,7 @@ namespace Mengine
             case BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
             case BOP_REVSUBTRACT: return GL_FUNC_REVERSE_SUBTRACT;
 
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
             case BOP_MIN: return GL_MIN_EXT;
             case BOP_MAX: return GL_MAX_EXT;
 #else
@@ -177,7 +177,7 @@ namespace Mengine
                 return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
             case PF_PVRTC4_RGBA:
                 return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
             case PF_DXT1:
                 return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 #endif
@@ -205,7 +205,7 @@ namespace Mengine
                 return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
             case PF_PVRTC4_RGBA:
                 return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
             case PF_DXT1:
                 return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 #endif

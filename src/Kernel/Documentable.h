@@ -14,7 +14,7 @@ namespace Mengine
         Documentable();
         ~Documentable() override;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
     public:
         void setDocument( const DocumentPtr & _document );
         const DocumentPtr & getDocument() const;

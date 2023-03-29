@@ -1,7 +1,0 @@
-#pragma once
-
-#include "Config/Config.h"
-
-#ifndef MENGINE_BUILD_VERSION
-#define MENGINE_BUILD_VERSION "@MENGINE_BUILD_VERSION@"
-#endif

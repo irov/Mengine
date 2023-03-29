@@ -20,7 +20,7 @@ namespace Mengine
                 size_t carriage;
                 size_t capacity;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
                 DocumentPtr doc;
 #endif
             };
@@ -139,7 +139,7 @@ namespace Mengine
             jd.carriage = 0;
             jd.capacity = _size;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             jd.doc = _doc;
 #endif
 

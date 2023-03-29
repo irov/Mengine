@@ -1,12 +1,12 @@
 #include "AssertionVocabulary.h"
 
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
-#include "Interface/VocabularyServiceInterface.h"
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+#   include "Interface/VocabularyServiceInterface.h"
 
-#include "Kernel/Assertion.h"
-#include "Kernel/Logger.h"
+#   include "Kernel/Assertion.h"
+#   include "Kernel/Logger.h"
 
-#include "Config/StdIO.h"
+#   include "Config/StdIO.h"
 
 namespace Mengine
 {

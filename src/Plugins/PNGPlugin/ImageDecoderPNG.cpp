@@ -176,7 +176,7 @@ namespace Mengine
             m_interlace_number_of_passes = png_set_interlace_handling( m_png_ptr );
         }
 
-#ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
+#if defined(PNG_READ_SCALE_16_TO_8_SUPPORTED)
         if( bit_depth == 16 )
         {
             png_set_scale_16( m_png_ptr );

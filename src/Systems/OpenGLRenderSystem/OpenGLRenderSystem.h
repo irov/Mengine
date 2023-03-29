@@ -214,7 +214,7 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderProgram;
         FactoryInterfacePtr m_factoryRenderProgramVariable;
 
-#ifdef MENGINE_RENDER_OPENGL_NORMAL
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint m_vertexArrayId;
 #endif
 

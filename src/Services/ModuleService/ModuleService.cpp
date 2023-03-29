@@ -34,7 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleService::_finalizeService()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const ModuleInterfacePtr & module : m_modules )
         {
             LOGGER_ERROR( "was forgotten stop module '%s'"

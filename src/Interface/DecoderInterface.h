@@ -11,7 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct DecoderData
     {
-#ifdef MENGINE_ASSERTION_DEBUG_ENABLE
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
         DecoderData() = default;
         virtual ~DecoderData() = default;
 #endif

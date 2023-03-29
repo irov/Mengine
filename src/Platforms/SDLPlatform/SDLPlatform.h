@@ -253,7 +253,7 @@ namespace Mengine
             float time;
             LambdaTimer lambda;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };
@@ -266,7 +266,7 @@ namespace Mengine
             UniqueId id;
             LambdaUpdate lambda;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             DocumentPtr doc;
 #endif
         };

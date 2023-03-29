@@ -70,7 +70,7 @@ namespace Mengine
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onOverFillrate" ), EVENT_GAME_OVER_FILLRATE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFrameEnd" ), EVENT_GAME_FRAME_END, _doc );
 
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationDidBecomeActive" ), EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillEnterForeground" ), EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationDidEnterBackground" ), EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD, _doc );

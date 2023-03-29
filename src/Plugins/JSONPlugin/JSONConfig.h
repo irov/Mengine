@@ -78,7 +78,7 @@ namespace Mengine
 
         jpp::object m_json;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         FilePath m_debugFilePath;
 #endif
     };

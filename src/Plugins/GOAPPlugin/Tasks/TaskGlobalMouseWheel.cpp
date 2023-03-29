@@ -12,7 +12,7 @@ namespace Mengine
     TaskGlobalMouseWheel::TaskGlobalMouseWheel( GOAP::Allocator * _allocator, const LambdaInputMouseWheelEvent & _filter, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_filter( _filter )
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         , m_doc( _doc )
 #endif
         , m_id( INVALID_UNIQUE_ID )
@@ -60,7 +60,7 @@ namespace Mengine
 
         m_filter = nullptr;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         m_doc = nullptr;
 #endif
     }

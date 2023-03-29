@@ -1,1 +1,1 @@
-@call %~dp0make_solution_msvc17.bat Release
+@call %~dp0make_solution_msvc17.bat Release %1 %2 %3

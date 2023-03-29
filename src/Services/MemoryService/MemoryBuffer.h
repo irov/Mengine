@@ -5,10 +5,6 @@
 
 #include "Kernel/Factorable.h"
 
-#ifdef MENGINE_DEBUG
-#include "Kernel/DocumentHelper.h"
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

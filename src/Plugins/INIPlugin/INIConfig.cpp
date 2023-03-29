@@ -52,7 +52,7 @@ namespace Mengine
         {
             for( const INIUtils::IniStore & ini : _stores )
             {
-#ifdef MENGINE_BUILD_PUBLISH
+#if defined(MENGINE_BUILD_PUBLISH)
                 if( Detail::hasValueT2( ini, "Publish-", _platform, _section, _key, _value ) == true )
                 {
                     return true;
@@ -104,7 +104,7 @@ namespace Mengine
         {
             for( const INIUtils::IniStore & ini : _stores )
             {
-#ifdef MENGINE_BUILD_PUBLISH
+#if defined(MENGINE_BUILD_PUBLISH)
                 Detail::calcValuesT2( ini, "Publish-", _platform, _section, _key, _value );
 #endif
 

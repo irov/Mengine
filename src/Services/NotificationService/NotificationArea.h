@@ -52,7 +52,7 @@ namespace Mengine
             Observable * observer;
             ObserverCallableInterfacePtr callable;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };

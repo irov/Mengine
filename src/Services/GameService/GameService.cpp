@@ -200,7 +200,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::update()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         double Limit_Fillrate = CONFIG_VALUE( "Limit", "Fillrate", 100.0 );
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
@@ -240,7 +240,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameService::loadPersonality()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         bool is_debug = true;
 #else
         bool is_debug = false;
@@ -364,7 +364,7 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::onTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
 
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE, &GameService::oniOSApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::oniOSApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD, &GameService::oniOSApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
@@ -379,7 +379,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
 
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD );
@@ -527,7 +527,7 @@ namespace Mengine
             ->onGameTimeFactor( _timeFactor );
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
     //////////////////////////////////////////////////////////////////////////
     void GameService::oniOSApplicationDidBecomeActive_()
     {

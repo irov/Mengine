@@ -48,7 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptickPlugin::_initializePlugin()
     {
-#ifdef MENGINE_PLUGIN_DLL
+#if defined(MENGINE_PLUGIN_DLL)
         //Useless because optick use static variables [https://github.com/bombomby/optick/issues/136]
 
         ::Optick::SetAllocator( []( size_t _size )

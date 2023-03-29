@@ -80,7 +80,7 @@ namespace Mengine
     protected:
         void onTimeFactorChange_( float _timeFactor );
 
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
         void oniOSApplicationDidBecomeActive_();
         void oniOSApplicationWillEnterForeground_();
         void oniOSApplicationDidEnterBackground_();

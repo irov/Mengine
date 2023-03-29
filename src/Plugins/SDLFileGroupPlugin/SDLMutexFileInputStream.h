@@ -49,7 +49,7 @@ namespace Mengine
         bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
         bool seek_( size_t _pos );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     protected:
         const FilePath & getRelationPath() const override;
         const FilePath & getFolderPath() const override;
@@ -69,7 +69,7 @@ namespace Mengine
 
         uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE];
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         FilePath m_relationPath;
         FilePath m_folderPath;
         FilePath m_filePath;

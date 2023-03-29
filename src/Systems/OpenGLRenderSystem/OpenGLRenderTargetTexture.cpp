@@ -125,7 +125,7 @@ namespace Mengine
         MENGINE_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
 
 
-#ifdef MENGINE_RENDER_OPENGL_ES
+#if defined(MENGINE_RENDER_OPENGL_ES)
         MENGINE_GLCALL( glFramebufferTexture2D, (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_tuid, 0) );
 #else
         MENGINE_GLCALL( glFramebufferTexture, (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_tuid, 0) );
@@ -136,7 +136,7 @@ namespace Mengine
 
         if( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE )
         {
-            MENGINE_OPENGL_RENDER_CHECK_ERROR();
+            MENGINE_GLERRORCHECK();
 
             extension->deleteTexture( m_tuid );
             m_tuid = 0;

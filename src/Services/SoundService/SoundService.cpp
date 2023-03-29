@@ -365,7 +365,7 @@ namespace Mengine
         identity->looped = false;
         identity->turn = _streamable ? m_turnStream : m_turnSound;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         identity->doc = _doc;
 #endif
 
@@ -900,7 +900,7 @@ namespace Mengine
             }break;
         default:
             {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
                     , MENGINE_DOCUMENT_STR( identity->doc )
@@ -957,7 +957,7 @@ namespace Mengine
             }break;
         default:
             {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
                     , MENGINE_DOCUMENT_STR( identity->doc )
@@ -1028,7 +1028,7 @@ namespace Mengine
             }break;
         default:
             {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
                     , MENGINE_DOCUMENT_STR( identity->doc )
@@ -1087,7 +1087,7 @@ namespace Mengine
             }break;
         default:
             {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
                     , MENGINE_DOCUMENT_STR( identity->doc )
@@ -1519,7 +1519,7 @@ namespace Mengine
                 , Limit_MaxSoundPlay
             );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             for( const SoundIdentityPtr & identity : m_soundIdentities )
             {
                 if( identity->streamable == false )

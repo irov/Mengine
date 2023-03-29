@@ -15,7 +15,7 @@
 
 #include "Kernel/ReferenceCounter.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include "Kernel/IntrusiveList.h"
 #endif
 
@@ -49,7 +49,7 @@ namespace Mengine
         virtual Factorable * _createObject() = 0;
         virtual void _destroyObject( Factorable * _object ) = 0;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     protected:
         void foreachFactorables( const LambdaFactorable & _lambda ) override;
 #endif
@@ -59,12 +59,12 @@ namespace Mengine
 
         ReferenceCounter m_count;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         typedef IntrusiveList<Factorable> IntrusiveListFactorables;
         IntrusiveListFactorables m_factorables;
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         bool m_register;
 #endif
     };

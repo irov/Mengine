@@ -1,7 +1,7 @@
 #include "Abort.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
-#include "Environment/Windows/WindowsIncluder.h"
+#if defined(MENGINE_PLATFORM_WINDOWS)
+#   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
 #include "Kernel/NotificationHelper.h"

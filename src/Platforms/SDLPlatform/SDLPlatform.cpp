@@ -168,7 +168,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getUserPath( Char * const _userPath ) const
     {
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
         bool developmentMode = Helper::isDevelopmentMode();
         bool OPTION_roaming = HAS_OPTION( "roaming" );
         bool OPTION_noroaming = HAS_OPTION( "noroaming" );
@@ -481,7 +481,7 @@ namespace Mengine
     {
         m_beginTime = Helper::getTimeMilliseconds();
 
-#ifdef MENGINE_SETLOCALE_ENABLE
+#if defined(MENGINE_SETLOCALE_ENABLE)
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
 
@@ -506,7 +506,7 @@ namespace Mengine
             , isTablet == SDL_TRUE ? "true" : "false"
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_VERBOSE );
 #else
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
@@ -602,11 +602,11 @@ namespace Mengine
 
                 m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 
-#ifdef MENGINE_PLATFORM_WINDOWS32
+#if defined(MENGINE_PLATFORM_WINDOWS32)
                 m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 #endif
 
-#ifdef MENGINE_PLATFORM_WINDOWS64
+#if defined(MENGINE_PLATFORM_WINDOWS64)
                 m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #endif
             }
@@ -976,7 +976,7 @@ namespace Mengine
     {
         m_active = false;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const TimerDesc & desc : m_timers )
         {
             if( desc.id == INVALID_UNIQUE_ID )
@@ -992,7 +992,7 @@ namespace Mengine
 
         m_timers.clear();
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( const UpdateDesc & desc : m_updates )
         {
             if( desc.id == INVALID_UNIQUE_ID )
@@ -1300,7 +1300,7 @@ namespace Mengine
         desc.id = new_id;
         desc.lambda = _lambda;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         desc.doc = _doc;
 #endif
 
@@ -1339,7 +1339,7 @@ namespace Mengine
         desc.time = _milliseconds;
         desc.lambda = _lambda;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 
@@ -1579,7 +1579,7 @@ namespace Mengine
             , win_height
         );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS)
         int win_top;
         int win_left;
         int win_bottom;
@@ -3646,7 +3646,7 @@ namespace Mengine
                 {
                     shouldQuit = true;
                 }break;
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
             /*==================*/
             /* Apple iOS events */
             /*==================*/

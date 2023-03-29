@@ -300,7 +300,7 @@ namespace Mengine
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLATFORM_IOS
+#if defined(MENGINE_PLATFORM_IOS)
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameiOSApplicationDidBecomeActive()
     {

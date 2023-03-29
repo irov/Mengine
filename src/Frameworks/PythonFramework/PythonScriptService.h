@@ -80,7 +80,7 @@ namespace Mengine
         void setTracebackOffset( uint32_t _tracebackOffset );
         uint32_t getTracebackOffset() const;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     public:
         void addDebugLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter );
         void removeDebugLogFunction( const ConstString & _className, const ConstString & _functionName );
@@ -143,7 +143,7 @@ namespace Mengine
 
         bool m_initializeModules;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         struct DebugCallDesc
         {
             ConstString className;

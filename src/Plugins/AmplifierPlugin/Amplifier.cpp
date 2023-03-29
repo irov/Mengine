@@ -14,7 +14,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
 
 #   include "AmplifierScriptEmbedding.h"
@@ -94,7 +94,7 @@ namespace Mengine
     {
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TURN_SOUND, &Amplifier::notifyTurnSound_, MENGINE_DOCUMENT_FACTORABLE );
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -113,7 +113,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Amplifier::_finalizeService()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif

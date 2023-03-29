@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #else
 #include "Kernel/DefaultPrototypeGenerator.h"
@@ -13,7 +13,7 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class SurfacePrototypeGenerator
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         : public ScriptablePrototypeGenerator<Type, Count>
 #else
         : public DefaultPrototypeGenerator<Type, Count>
@@ -45,7 +45,7 @@ namespace Mengine
 
             surface->setUniqueIdentity( uniqueIdentity );
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Surface '%s' type '%s' create '%s'"
                 , surface->getName().c_str()
                 , surface->getType().c_str()
@@ -55,7 +55,7 @@ namespace Mengine
             surface->setDocument( doc );
 #endif
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
             this->setupScriptable( surface );
 #endif
 

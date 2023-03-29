@@ -31,7 +31,7 @@ namespace Mengine
     BatchRenderPipeline::BatchRenderPipeline()
         : m_renderService( nullptr )
         , m_batchMode( ERBM_NORMAL )
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         , m_debugFillrateCalcMode( false )
         , m_debugStepRenderMode( false )
         , m_debugStopRenderObjects( false )
@@ -155,7 +155,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_debugStepRenderMode == true /*&& _debug == false*/ )
         {
             if( m_iterateRenderObjects++ >= m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
@@ -246,7 +246,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_debugStepRenderMode == true /*&& _debug == false*/ )
         {
             if( m_iterateRenderObjects++ >= m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
@@ -298,7 +298,7 @@ namespace Mengine
 
         RenderMaterialInterfacePtr rp_material = _material;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_debugStepRenderMode == true && _debug == false )
         {
             if( m_iterateRenderObjects == m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
@@ -418,7 +418,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_debugStepRenderMode == true /*&& _debug == false*/ )
         {
             if( m_iterateRenderObjects++ >= m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
@@ -491,7 +491,7 @@ namespace Mengine
         dro.indices = _indices;
         dro.indexCount = _indexCount;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         dro.doc = _doc;
 #endif
 
@@ -575,14 +575,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _enable );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_debugFillrateCalcMode = _enable;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::isDebugFillrateCalcMode() const
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         return m_debugFillrateCalcMode;
 #else
         return false;
@@ -593,14 +593,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _enable );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_debugStepRenderMode = _enable;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::isDebugStepRenderMode() const
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         return m_debugStepRenderMode;
 #else
         return false;
@@ -609,21 +609,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::endDebugLimitRenderObjects()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_debugStopRenderObjects = true;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::increfDebugLimitRenderObjects()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         ++m_debugLimitRenderObjects;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::decrefDebugLimitRenderObjects()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_debugLimitRenderObjects == 0 )
         {
             return false;
@@ -651,7 +651,7 @@ namespace Mengine
         m_debugRenderObjects.clear();
 #endif
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_iterateRenderObjects = 0;
         m_debugStopRenderObjects = false;
 #endif

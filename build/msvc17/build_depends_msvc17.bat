@@ -22,5 +22,4 @@ set "YEAR=2022"
 
 :end
 
-@pause
 @exit /b %errorlevel%

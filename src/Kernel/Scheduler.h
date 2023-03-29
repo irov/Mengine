@@ -100,7 +100,7 @@ namespace Mengine
             bool freeze;
             bool iterate_invalid;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };

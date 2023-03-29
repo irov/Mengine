@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::_stopService()
     {
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         for( const InputMousePositionProviderDesc & desc : m_mousePositionProviders )
         {
             LOGGER_ERROR( "forgot remove input mouse position provider (doc: %s)"
@@ -346,7 +346,7 @@ namespace Mengine
         desc.id = new_id;
         desc.provider = _provider;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
 

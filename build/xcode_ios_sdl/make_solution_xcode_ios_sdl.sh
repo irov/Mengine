@@ -10,25 +10,41 @@ fi
 
 CONFIGURATION=$1
 DEPLOY_PATH=$2
+BUILD_NUMBER=$3
+BUILD_VERSION=$4
 
 if test -z "$CONFIGURATION"; then
     echo "please setup CONFIGURATION"
-    exit 0
+    exit 1
 fi
 
 if test -z "$DEPLOY_PATH"; then
     echo "please setup DEPLOY_PATH"
-    exit 0
+    exit 1
 fi
 
-mkdir -p ../../solutions/solution_xcode_ios_sdl/$CONFIGURATION
-pushd ../../solutions/solution_xcode_ios_sdl/$CONFIGURATION
+if test -z "$BUILD_NUMBER"; then
+    echo "please setup BUILD_NUMBER"
+    exit 1
+fi
 
-$CMAKE -G"Xcode" "$PWD/../../../cmake/Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_DEPLOY_PATH:STRING="$DEPLOY_PATH"
+if test -z "$BUILD_VERSION"; then
+    echo "please setup BUILD_VERSION"
+    exit 1
+fi
+
+SOURCE_NAME=solution_xcode_ios_sdl
+SOURCE_DIRECTORY="$PWD/../../../cmake/Xcode_IOS_SDL"
+
+mkdir -p ../../solutions/$SOURCE_NAME/$CONFIGURATION
+
+pushd ../../solutions/$SOURCE_NAME/$CONFIGURATION
+$CMAKE -G"Xcode" $SOURCE_DIRECTORY -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_DEPLOY_PATH:STRING="$DEPLOY_PATH" -DMENGINE_BUILD_NUMBER:STRING="$BUILD_NUMBER" -DMENGINE_BUILD_VERSION:STRING="$BUILD_VERSION"
+popd
 
 if [ $? -ne 0 ]; then
-    echo "please fix CMake"
-    exit 0
+    echo "please fix generate CMake"
+    exit 1
 fi
 
 if test -f "Podfile"; then
@@ -36,8 +52,8 @@ if test -f "Podfile"; then
     
     if [ $? -ne 0 ]; then
         echo "please fix Cocoapods"
-        exit 0
+        exit 1
     fi
 fi
 
-popd
+exit 0

@@ -76,7 +76,7 @@ namespace Mengine
             bool progress;
             bool complete;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentPtr doc;
 #endif
         };

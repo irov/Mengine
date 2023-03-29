@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Char.h"
+#include "Config/StdInt.h"
 
 namespace Mengine
 {
@@ -21,5 +22,6 @@ namespace Mengine
         const Char * getBuildTimestamp();
         const Char * getBuildUsername();
         const Char * getBuildVersion();
+        uint64_t getBuildNumber();
     }
 }

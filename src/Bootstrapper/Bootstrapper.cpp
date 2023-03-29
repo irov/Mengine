@@ -109,7 +109,7 @@ SERVICE_EXTERN( ChronometerService );
 SERVICE_EXTERN( AndroidEnvironmentService );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_EXTERNAL_SOURCE
+#if defined(MENGINE_EXTERNAL_SOURCE)
 PLUGIN_EXPORT( ExternalBootstrapper );
 #endif
 //////////////////////////////////////////////////////////////////////////
@@ -866,7 +866,7 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "enable allocator debug [OFF]" );
 #endif
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         LOGGER_INFO( "bootstrapper", "enable document debug [ON]" );
 #else
         LOGGER_INFO( "bootstrapper", "enable document debug [OFF]" );
@@ -1565,15 +1565,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::runDevModules_()
     {
-#ifdef MENGINE_MASTER_RELEASE
+#if defined(MENGINE_MASTER_RELEASE)
         bool devmodules = false;
 #else
-#ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
         bool devmodules = true;
-#else
+#   else
         bool developmentMode = Helper::isDevelopmentMode();
         bool devmodules = developmentMode;
-#endif
+#   endif
 #endif
 
         if( HAS_OPTION( "devmodules" ) == true )
@@ -1671,15 +1671,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stopDevModules_()
     {
-#ifdef MENGINE_MASTER_RELEASE
+#if defined(MENGINE_MASTER_RELEASE)
         bool devmodules = false;
 #else
-#ifdef MENGINE_DEBUG
+#   if defined(MENGINE_DEBUG)
         bool devmodules = true;
-#else
+#   else
         bool developmentMode = Helper::isDevelopmentMode();
         bool devmodules = developmentMode;
-#endif
+#   endif
 #endif
 
         if( HAS_OPTION( "devmodules" ) == true )

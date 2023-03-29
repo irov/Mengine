@@ -98,7 +98,7 @@ namespace Mengine
             , _doc
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
@@ -118,7 +118,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
         MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
@@ -126,7 +126,7 @@ namespace Mengine
 
         MENGINE_FREE( _mem );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         this->report( 0, old_size );
 #endif
     }
@@ -143,7 +143,7 @@ namespace Mengine
             , _doc
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
@@ -168,7 +168,7 @@ namespace Mengine
                 , _doc
             );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
             MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
@@ -179,7 +179,7 @@ namespace Mengine
             return mem;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
         MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
@@ -194,7 +194,7 @@ namespace Mengine
             , _doc
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );

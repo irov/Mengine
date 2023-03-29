@@ -77,7 +77,7 @@ namespace Mengine
         m_priority = _priority;
         m_name = _name;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_doc = _doc;
 #endif
 
@@ -89,7 +89,7 @@ namespace Mengine
         m_thread = nullptr;
         m_runner = nullptr;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         m_doc = nullptr;
 #endif
     }

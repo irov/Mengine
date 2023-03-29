@@ -4,7 +4,7 @@
 
 #include "Kernel/ThreadMutexScope.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #   include "Kernel/NotificationHelper.h"
 #   include "Kernel/Logger.h"
 #endif
@@ -49,7 +49,7 @@ namespace Mengine
 
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_factorables.push_back( object );
 #endif
 
@@ -60,7 +60,7 @@ namespace Mengine
 
         object->setFactory( this );
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         object->setDocument( _doc );
 #endif
 
@@ -91,7 +91,7 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_factorables.remove( _object );
 #endif
 

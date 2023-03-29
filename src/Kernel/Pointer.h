@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 #include "stdex/mpl.h"
 #endif
 
@@ -55,7 +55,7 @@ namespace Mengine
         template<class U>
         operator U * () const
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             if( m_pointer == nullptr )
             {
                 return nullptr;
@@ -75,7 +75,7 @@ namespace Mengine
         template<class U, class D>
         operator IntrusivePtr<U, D>() &&
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             if( m_pointer == nullptr )
             {
                 return nullptr;
@@ -141,7 +141,7 @@ namespace Mengine
         template<class U>
         operator const U * () const
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             if( m_pointer == nullptr )
             {
                 return nullptr;
@@ -161,7 +161,7 @@ namespace Mengine
         template<class U, class D>
         operator IntrusivePtr<U, D>() &&
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             if( m_pointer == nullptr )
             {
                 return nullptr;
@@ -364,7 +364,7 @@ namespace Mengine
         template<class U>
         operator IntrusivePtr<U>() &&
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             T * p = m_pointer.get();
 
             if( p == nullptr )
@@ -390,7 +390,7 @@ namespace Mengine
         template<class U, class D>
         operator IntrusivePtr<U, D>() &&
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             T * p = m_pointer.get();
 
             if( p == nullptr )
@@ -484,7 +484,7 @@ namespace Mengine
         template<class U, class D>
         operator IntrusivePtr<U, D>() &&
         {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             T * p = m_pointer.get();
 
             if( p == nullptr )

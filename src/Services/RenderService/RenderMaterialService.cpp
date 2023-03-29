@@ -471,7 +471,7 @@ namespace Mengine
             return nullptr;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         for( uint32_t index = 0; index != _textureCount; ++index )
         {
             if( _textures[index] == nullptr )

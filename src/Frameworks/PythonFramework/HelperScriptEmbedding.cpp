@@ -70,7 +70,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/StdString.h"
-#include "Config/BuildVersion.h"
+#include "Config/BuildInfo.h"
 #include "Config/GitSHA1.h"
 #include "Config/StdMath.h"
 
@@ -1268,7 +1268,7 @@ namespace Mengine
                 return t;
             }
             //////////////////////////////////////////////////////////////////////////
-#ifdef PYBIND_VISIT_OBJECTS
+#if defined(PYBIND_VISIT_OBJECTS)
             class MyObjectVisits
                 : public pybind::pybind_visit_objects
             {
@@ -1293,7 +1293,7 @@ namespace Mengine
             {
                 pybind::list py_list( _kernel );
 
-#ifdef PYBIND_VISIT_OBJECTS
+#if defined(PYBIND_VISIT_OBJECTS)
                 MyObjectVisits mov( py_list );
                 pybind::visit_objects( &mov );
 #endif
@@ -1617,17 +1617,30 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getBuildVersion()
             {
-                return Helper::getBuildVersion();
+                const Char * buildVersion = Helper::getBuildVersion();
+
+                return buildVersion;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            uint64_t s_getBuildNumber()
+            {
+                uint64_t buildNumber = Helper::getBuildNumber();
+
+                return buildNumber;
             }
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getEngineGitSHA1()
             {
-                return Helper::getEngineGITSHA1();
+                const Char * engineGitSHA1 = Helper::getEngineGITSHA1();
+
+                return engineGitSHA1;
             }
             //////////////////////////////////////////////////////////////////////////
-            const Char * s_getResourceGitSHA1()
+            const Char * s_getContentCommit()
             {
-                return Helper::getContentCommit();
+                const Char * contentCommit = Helper::getContentCommit();
+
+                return contentCommit;
             }
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getBuildMode()
@@ -3902,7 +3915,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getBuildMode", helperScriptMethod, &HelperScriptMethod::s_getBuildMode );
         pybind::def_functor( _kernel, "getBuildVersion", helperScriptMethod, &HelperScriptMethod::s_getBuildVersion );
         pybind::def_functor( _kernel, "getEngineGitSHA1", helperScriptMethod, &HelperScriptMethod::s_getEngineGitSHA1 );
-        pybind::def_functor( _kernel, "getResourceGitSHA1", helperScriptMethod, &HelperScriptMethod::s_getResourceGitSHA1 );
+        pybind::def_functor( _kernel, "getContentCommit", helperScriptMethod, &HelperScriptMethod::s_getContentCommit );
 
         pybind::def_functor( _kernel, "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );

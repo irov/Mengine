@@ -12,7 +12,7 @@
 #define MENGINE_THEORA_OGG_BUFFER_SIZE 4096
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_RENDER_TEXTURE_RGBA
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
 #   define THEORA_COLOR_R 0
 #   define THEORA_COLOR_G 1
 #   define THEORA_COLOR_B 2

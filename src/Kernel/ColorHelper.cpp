@@ -51,7 +51,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ColorValue_ARGB makeRGBA8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
         {
-#ifdef MENGINE_RENDER_COLOR_RGBA
+#if defined(MENGINE_RENDER_COLOR_RGBA)
             uint8_t b8 = _r;
             uint8_t g8 = _g;
             uint8_t r8 = _b;
@@ -89,7 +89,7 @@ namespace Mengine
                 return Color();
             }
 
-#ifdef MENGINE_RENDER_COLOR_RGBA
+#if defined(MENGINE_RENDER_COLOR_RGBA)
             uint8_t b8 = _r;
             uint8_t g8 = _g;
             uint8_t r8 = _b;
@@ -121,7 +121,7 @@ namespace Mengine
                 return Color();
             }
 
-#ifdef MENGINE_RENDER_COLOR_RGBA
+#if defined(MENGINE_RENDER_COLOR_RGBA)
             uint8_t r8 = (_argb >> 0) & 0xFF;
             uint8_t g8 = (_argb >> 8) & 0xFF;
             uint8_t b8 = (_argb >> 16) & 0xFF;

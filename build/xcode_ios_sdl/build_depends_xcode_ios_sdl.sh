@@ -12,19 +12,27 @@ CONFIGURATION=$1
 
 if test -z "$CONFIGURATION"; then
     echo "please setup CONFIGURATION"
-    exit 0
+    exit 1
 fi
 
 mkdir -p ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
-pushd ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
 
+pushd ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
 $CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION
+popd
 
 if [ $? -ne 0 ]; then
-    echo "please fix CMake"
-    exit 0
+    echo "please fix generate CMake"
+    exit 1
 fi
 
+pushd ../../solutions/dependencies_xcode_ios_sdl/$CONFIGURATION
 $CMAKE --build ./ --config $CONFIGURATION
-
 popd
+
+if [ $? -ne 0 ]; then
+    echo "please fix build CMake"
+    exit 1
+fi
+
+exit 0

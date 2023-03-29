@@ -135,7 +135,7 @@ namespace Mengine
         template<class T>
         static bool hasJSONValueT( const jpp::object & _json, const Tags & _platform, const Char * _section, const Char * _key, const T & _default, T * const _value )
         {
-#ifdef MENGINE_BUILD_PUBLISH
+#if defined(MENGINE_BUILD_PUBLISH)
             if( Detail::hasJSONValueT2( _json, "Publish-", _platform, _section, _key, _value ) == true )
             {
                 return true;
@@ -184,7 +184,7 @@ namespace Mengine
         template<class T>
         static void calcJSONValuesT( const jpp::object & _json, const Tags & _platform, const Char * _section, const Char * _key, T * const _value )
         {
-#ifdef MENGINE_BUILD_PUBLISH
+#if defined(MENGINE_BUILD_PUBLISH)
             Detail::calcJSONValuesT2( _json, "Publish-", _platform, _section, _key, _value );
 #endif
 
@@ -221,7 +221,7 @@ namespace Mengine
             , Helper::getInputStreamDebugFilePath( _stream ).c_str()
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_debugFilePath = Helper::getInputStreamDebugFilePath( _stream );
 #endif
 

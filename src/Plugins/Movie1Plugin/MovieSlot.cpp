@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_destroy()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         this->foreachChildrenSlug( [this]( const NodePtr & _child )
         {
             LOGGER_ERROR( "slot name '%s' type '%s' has children name '%s' type '%s'!! (please remove, before release movie '%s')"

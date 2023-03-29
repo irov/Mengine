@@ -187,7 +187,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountId, const DocumentPtr & _doc )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         AccountInterfacePtr account = m_accounts.find( _accountId );
 
         if( account != nullptr )

@@ -3,7 +3,7 @@
 #include "Interface/StatisticServiceInterface.h"
 #include "Interface/StatisticInterface.h"
 
-#ifdef MENGINE_STATISTIC_ENABLE
+#if defined(MENGINE_STATISTIC_ENABLE)
 #   define STATISTIC_INC_INTEGER(ID) (SERVICE_IS_INITIALIZE(StatisticServiceInterface) == true ? STATISTIC_SERVICE()->addStatisticInteger(ID, 1) : MENGINE_NOP)
 #   define STATISTIC_DEC_INTEGER(ID) (SERVICE_IS_INITIALIZE(StatisticServiceInterface) == true ? STATISTIC_SERVICE()->delStatisticInteger(ID, 1) : MENGINE_NOP)
 #   define STATISTIC_ADD_INTEGER(ID, VALUE) (SERVICE_IS_INITIALIZE(StatisticServiceInterface) == true ? STATISTIC_SERVICE()->addStatisticInteger(ID, (VALUE)) : MENGINE_NOP)

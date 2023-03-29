@@ -3,7 +3,7 @@
 #include "Config/Export.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_DLL
+#if defined(MENGINE_PLUGIN_DLL)
 extern "C"
 {
     MENGINE_DLL_EXPORT Mengine::ServiceProviderInterface * initializeMengine();

@@ -42,7 +42,7 @@
 #endif
 
 #ifndef MENGINE_PRDWORD
-#   ifdef MENGINE_PLATFORM_WINDOWS64
+#   if defined(MENGINE_PLATFORM_WINDOWS64)
 #       define MENGINE_PRDWORD "lu"
 #   else
 #       define MENGINE_PRDWORD "lu"
@@ -50,7 +50,7 @@
 #endif
 
 #ifndef MENGINE_PRDWORD_PTR
-#   ifdef MENGINE_PLATFORM_WINDOWS64
+#   if defined(MENGINE_PLATFORM_WINDOWS64)
 #       define MENGINE_PRDWORD_PTR "llu"
 #   else
 #       define MENGINE_PRDWORD_PTR "lu"
@@ -58,7 +58,7 @@
 #endif
 
 #ifndef MENGINE_PRWPARAM
-#   ifdef MENGINE_PLATFORM_WINDOWS64
+#   if defined(MENGINE_PLATFORM_WINDOWS64)
 #       define MENGINE_PRWPARAM "llu"
 #   else
 #       define MENGINE_PRWPARAM "u"
@@ -66,7 +66,7 @@
 #endif
 
 #ifndef MENGINE_PRLPARAM
-#   ifdef MENGINE_PLATFORM_WINDOWS64
+#   if defined(MENGINE_PLATFORM_WINDOWS64)
 #       define MENGINE_PRLPARAM "lld"
 #   else
 #       define MENGINE_PRLPARAM "ld"

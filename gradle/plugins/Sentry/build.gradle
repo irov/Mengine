@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.sentry:sentry-android-gradle-plugin:2.1.5'
+        classpath 'io.sentry:sentry-android-gradle-plugin:3.4.3'
     }
 }
 

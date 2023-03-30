@@ -10,6 +10,7 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 
 import io.sentry.Sentry;
+import io.sentry.SentryLevel;
 import io.sentry.android.core.SentryAndroid;
 
 public class MengineSentryPlugin extends MenginePlugin implements MenginePluginLoggerListener {
@@ -34,6 +35,9 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
 
             String buildVersion = activity.getBuildVersion();
             options.setRelease(buildVersion);
+
+            options.setAttachStacktrace(false);
+            options.setAttachThreads(false);
         });
     }
 
@@ -70,6 +74,6 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             return;
         }
 
-        Sentry.captureMessage("[" + category + "] " + msg);
+        Sentry.captureMessage("[" + category + "] " + msg, SentryLevel.ERROR);
     }
 }

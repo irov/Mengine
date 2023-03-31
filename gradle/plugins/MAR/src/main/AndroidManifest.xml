@@ -13,7 +13,6 @@
             android:name="com.mar.sdk.impl.activities.LoginActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="true"
-            android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
         </activity>
 
@@ -21,14 +20,12 @@
             android:name="com.mar.sdk.impl.activities.PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="true"
-            android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
         </activity>
 
         <activity
             android:name="com.mar.sdk.permission.MARProtocolActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
-            android:screenOrientation="behind"
             android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 

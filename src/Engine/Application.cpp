@@ -30,6 +30,7 @@
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 // All Node type
 #include "Isometric.h"

@@ -1,8 +1,8 @@
 #include "VideoConverterFFMPEGToOGVA.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
+#include "Interface/PlatformServiceInterface.h"
+#include "Interface/Win32PlatformServiceExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -33,7 +33,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool VideoConverterFFMPEGToOGVA::convert()
     {
-        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         const ConstString & folderPath = m_options.fileGroup->getFolderPath();

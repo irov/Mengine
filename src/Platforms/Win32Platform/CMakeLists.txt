@@ -2,8 +2,10 @@ MENGINE_PROJECT(Win32Platform)
 
 ADD_FILTER(
 src
-    Win32Platform.h
-    Win32Platform.cpp
+    Win32PlatformService.h
+    Win32PlatformService.cpp
+    Win32PlatformSystem.h
+    Win32PlatformSystem.cpp
     Win32DynamicLibrary.h
     Win32DynamicLibrary.cpp
     Win32MouseEvent.h

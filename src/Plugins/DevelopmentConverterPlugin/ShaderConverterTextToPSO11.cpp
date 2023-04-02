@@ -1,8 +1,8 @@
 #include "ShaderConverterTextToPSO11.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
+#include "Interface/PlatformServiceInterface.h"
+#include "Interface/Win32PlatformServiceExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePath.h"
@@ -37,7 +37,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ShaderConverterTextToPSO11::convert()
     {
-        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         FilePath fxcPath = CONFIG_VALUE( "Engine", "FxcPath", STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) );

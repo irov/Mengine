@@ -1,7 +1,7 @@
 #include "PluginService.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConstStringHelper.h"

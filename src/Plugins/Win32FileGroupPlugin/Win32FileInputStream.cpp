@@ -1,8 +1,8 @@
 #include "Win32FileInputStream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
+#include "Interface/PlatformServiceInterface.h"
+#include "Interface/Win32PlatformServiceExtensionInterface.h"
 
 #include "Environment/Windows/Win32FileHelper.h"
 #include "Environment/Windows/Win32Helper.h"
@@ -403,7 +403,7 @@ namespace Mengine
             return false;
         }
 
-        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getUnknown();
 
         time_t time = win32Platform->getFileUnixTime( &write );

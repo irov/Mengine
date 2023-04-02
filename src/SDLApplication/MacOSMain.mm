@@ -1,4 +1,4 @@
-#include "Environment/SDL2/SDL2Includer.h"
+#include "Environment/SDL/SDLIncluder.h"
 
 #import "Environment/MacOS/MacOSProxyApplicationDelegateInterface.h"
 

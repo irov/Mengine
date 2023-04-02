@@ -51,11 +51,11 @@ android {
         }
     }
 
-    preBuild.dependsOn ":libraries:SDL2:build", ":libraries:OpenAL32:build"
+    preBuild.dependsOn ":libraries:SDL:build", ":libraries:OpenAL32:build"
 }
 
 dependencies {
-    implementation project(':libraries:SDL2')
+    implementation project(':libraries:SDL')
     implementation project(':libraries:OpenAL32')
 
     implementation 'androidx.multidex:multidex:2.0.1'

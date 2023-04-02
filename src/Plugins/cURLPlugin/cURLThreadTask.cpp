@@ -236,7 +236,7 @@ namespace Mengine
 
         const Char * url_str = m_url.c_str();
 
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, url_str) );
+        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, url_str) );
         //CURLCALL( curl_easy_setopt, (curl, CURLOPT_FOLLOWLOCATION, 1) );
 
         struct curl_slist * curl_header_list = nullptr;
@@ -250,7 +250,7 @@ namespace Mengine
                 curl_header_list = curl_slist_append( curl_header_list, header_buffer );
             }
 
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_HTTPHEADER, curl_header_list) );
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_HTTPHEADER, curl_header_list) );
 
             m_curl_header_list = curl_header_list;
         }
@@ -259,41 +259,41 @@ namespace Mengine
 
         if( m_timeout != MENGINE_CURL_TIMEOUT_INFINITY )
         {
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_TIMEOUT_MS, m_timeout) );
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_TIMEOUT_MS, m_timeout) );
         }
 
         if( m_cookies.empty() == false )
         {
             const Char * cookies_str = m_cookies.c_str();
 
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_COOKIE, cookies_str) );
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_COOKIE, cookies_str) );
         }
 
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYHOST, 0) );
+        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );
+        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYHOST, 0) );
 
         Char errorbuf[CURL_ERROR_SIZE] = {'\0'};
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
+        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
 
         bool OPTION_curlverbose = HAS_OPTION( "curlverbose" );
 
         if( OPTION_curlverbose == true )
         {
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_VERBOSE, 1) );
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_VERBOSE, 1) );
         }
 
         bool OPTION_curltrace = HAS_OPTION( "curltrace" );
 
         if( OPTION_curltrace == true )
         {
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );            
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );            
         }
 
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFODATA, (void *)this) );
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFOFUNCTION, &Detail::cURL_XFERInfoCallback) );        
+        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFODATA, (void *)this) );
+        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFOFUNCTION, &Detail::cURL_XFERInfoCallback) );        
 
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_NOPROGRESS, 0L) );
+        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_NOPROGRESS, 0L) );
 
         CURLcode status = curl_easy_perform( curl );
 
@@ -305,7 +305,7 @@ namespace Mengine
             m_response->setError( errorbuf );
 
             long http_code = 0;
-            CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );
+            MENGINE_CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );
 
             m_response->setCode( (uint32_t)http_code );
         }
@@ -334,13 +334,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setupWriteResponse( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)this) );
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &Detail::cURL_writeRequestPerformerResponse) );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)this) );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &Detail::cURL_writeRequestPerformerResponse) );
 
         if( m_receiveHeaders == true )
         {
-            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERDATA, (void *)this) );
-            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERFUNCTION, &Detail::cURL_writeRequestHeaderResponse) );
+            MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERDATA, (void *)this) );
+            MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERFUNCTION, &Detail::cURL_writeRequestHeaderResponse) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

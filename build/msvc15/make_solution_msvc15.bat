@@ -1,20 +1,10 @@
 @echo off
 
-if ["%~1"]==[""] (
-  @echo invalid arguments, please select configuration
-  goto end
-)
-
-set "CONFIGURATION=%1"
-set "EXTERNAL_PDB_PATH=%2"
-set "BUILD_NUMBER=%3"
-set "BUILD_VERSION=%4"
-
 set "VERSION=15"
 set "YEAR=2017"
 
 set "SOLUTION_NAME=solution_msvc%VERSION%"
-set "SOURCE_DIRECTORY=%CD%\..\cmake\Win32"
+set "SOURCE_DIRECTORY=%CD%\..\..\cmake\Win32"
 set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 set "ARCHITECTURE=Win32"
 set "BUILD_PUBLISH=OFF"
@@ -23,10 +13,10 @@ set "BUILD_PUBLISH=OFF"
 @call vcvarsall_msvc%VERSION%.bat
 @popd
 
-@echo Starting make %SOLUTION_NAME% %CONFIGURATION% configuration...
+@echo Starting make %SOLUTION_NAME% configuration...
 
 @pushd %~dp0..
-@call make_solution.bat "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "BUILD_PUBLISH=%BUILD_PUBLISH%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=%ARCHITECTURE%" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%" "BUILD_NUMBER=%BUILD_NUMBER%" "BUILD_VERSION=%BUILD_VERSION%"
+@call make_solution.bat "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "BUILD_PUBLISH=%BUILD_PUBLISH%" "ARCHITECTURE=%ARCHITECTURE%"
 @popd
 
 :end

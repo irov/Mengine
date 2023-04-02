@@ -1,7 +1,7 @@
 #include "Win32FileGroupPlugin.h"
 
 #include "Interface/FileServiceInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Win32FileGroupDirectoryFactory.h"

@@ -1,9 +1,9 @@
-#include "SDLDateTimeSystem.h"
+#include "POSIXDateTimeSystem.h"
 
 #include <ctime>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( DateTimeSystem, Mengine::SDLDateTimeSystem );
+SERVICE_FACTORY( DateTimeSystem, Mengine::POSIXDateTimeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -15,15 +15,15 @@ namespace Mengine
     static const uint64_t MILLISECONDS_MONTH64 = MILLISECONDS_DAY64 * 31ULL;
     static const uint64_t MILLISECONDS_YEAR64 = MILLISECONDS_MONTH64 * 12ULL;
     //////////////////////////////////////////////////////////////////////////
-    SDLDateTimeSystem::SDLDateTimeSystem()
+    POSIXDateTimeSystem::POSIXDateTimeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLDateTimeSystem::~SDLDateTimeSystem()
+    POSIXDateTimeSystem::~POSIXDateTimeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLDateTimeSystem::getLocalDateTime( PlatformDateTime * const _dateTime ) const
+    void POSIXDateTimeSystem::getLocalDateTime( PlatformDateTime * const _dateTime ) const
     {
         std::time_t ctTime = std::time( nullptr );
         std::tm * sTime = std::localtime( &ctTime );
@@ -37,7 +37,7 @@ namespace Mengine
         _dateTime->milliseconds = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    TimeMilliseconds SDLDateTimeSystem::getLocalDateTimeMilliseconds() const
+    TimeMilliseconds POSIXDateTimeSystem::getLocalDateTimeMilliseconds() const
     {
         PlatformDateTime date;
         this->getLocalDateTime( &date );
@@ -68,7 +68,7 @@ namespace Mengine
         return time;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLDateTimeSystem::getLocalDateTimeFromMilliseconds( TimeMilliseconds _time, PlatformDateTime * const _dateTime ) const
+    void POSIXDateTimeSystem::getLocalDateTimeFromMilliseconds( TimeMilliseconds _time, PlatformDateTime * const _dateTime ) const
     {
         PlatformDateTime date;
         date.year = (uint32_t)(_time / MILLISECONDS_YEAR64);
@@ -82,12 +82,12 @@ namespace Mengine
         *_dateTime = date;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t SDLDateTimeSystem::getTimeZoneOffset() const
+    int32_t POSIXDateTimeSystem::getTimeZoneOffset() const
     {
         const std::time_t epoch_plus_11h = 60 * 60 * 11;
 
-        struct tm * lt = ::localtime( &epoch_plus_11h );
-        struct tm * t = ::gmtime( &epoch_plus_11h );
+        struct tm * lt = std::localtime( &epoch_plus_11h );
+        struct tm * t = std::gmtime( &epoch_plus_11h );
 
         int32_t local_time = lt->tm_hour;
         int32_t gm_time = t->tm_hour;

@@ -1,4 +1,4 @@
-#include "SDLAllocatorSystem.h"
+#include "POSIXAllocatorSystem.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -12,81 +12,33 @@
 #include "Config/StdLib.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AllocatorSystem, Mengine::SDLAllocatorSystem );
+SERVICE_FACTORY( AllocatorSystem, Mengine::POSIXAllocatorSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-#if !defined(MENGINE_PLATFORM_UWP)
-        //////////////////////////////////////////////////////////////////////////
-        static void * SDL_malloc_func( size_t size )
-        {
-            void * p = Helper::allocateMemory( size, "SDL" );
-
-            return p;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void * SDL_calloc_func( size_t nmemb, size_t size )
-        {
-            void * p = Helper::callocateMemory( nmemb, size, "SDL" );
-
-            return p;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void * SDL_realloc_func( void * mem, size_t size )
-        {
-            void * p = Helper::reallocateMemory( mem, size, "SDL" );
-
-            return p;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void SDL_free_func( void * mem )
-        {
-            Helper::deallocateMemory( mem, "SDL" );
-        }
-        //////////////////////////////////////////////////////////////////////////
-#endif
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
-    SDLAllocatorSystem::SDLAllocatorSystem()
+    POSIXAllocatorSystem::POSIXAllocatorSystem()
         : m_memoryUsage( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLAllocatorSystem::~SDLAllocatorSystem()
+    POSIXAllocatorSystem::~POSIXAllocatorSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLAllocatorSystem::_initializeService()
+    bool POSIXAllocatorSystem::_initializeService()
     {
-#if !defined(MENGINE_PLATFORM_UWP)
-        SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
-
-        if( SDL_SetMemoryFunctions( &Detail::SDL_malloc_func, &Detail::SDL_calloc_func, &Detail::SDL_realloc_func, &Detail::SDL_free_func ) != 0 )
-        {
-            LOGGER_ERROR( "invalid set memory functions: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-#endif
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLAllocatorSystem::_finalizeService()
+    void POSIXAllocatorSystem::_finalizeService()
     {
-#if !defined(MENGINE_PLATFORM_UWP)
-        SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func );
-#endif
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void * SDLAllocatorSystem::malloc( size_t _size, const Char * _doc )
+    void * POSIXAllocatorSystem::malloc( size_t _size, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -109,7 +61,7 @@ namespace Mengine
         return mem;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLAllocatorSystem::free( void * _mem, const Char * _doc )
+    void POSIXAllocatorSystem::free( void * _mem, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -131,7 +83,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void * SDLAllocatorSystem::calloc( size_t _num, size_t _size, const Char * _doc )
+    void * POSIXAllocatorSystem::calloc( size_t _num, size_t _size, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -154,7 +106,7 @@ namespace Mengine
         return mem;
     }
     //////////////////////////////////////////////////////////////////////////
-    void * SDLAllocatorSystem::realloc( void * _mem, size_t _size, const Char * _doc )
+    void * POSIXAllocatorSystem::realloc( void * _mem, size_t _size, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -205,24 +157,24 @@ namespace Mengine
         return mem;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLAllocatorSystem::startThread()
+    void POSIXAllocatorSystem::startThread()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLAllocatorSystem::stopThread()
+    void POSIXAllocatorSystem::stopThread()
     {
         //Empty
     }    
     ////////////////////////////////////////////////////////////////////////
-    uint32_t SDLAllocatorSystem::getMemoryUsage() const
+    uint32_t POSIXAllocatorSystem::getMemoryUsage() const
     {
         uint32_t memoryUsage = m_memoryUsage;
 
         return memoryUsage;
     }
     ////////////////////////////////////////////////////////////////////////
-    void SDLAllocatorSystem::report( size_t _add, size_t _minus )
+    void POSIXAllocatorSystem::report( size_t _add, size_t _minus )
     {
         MENGINE_ASSERTION_FATAL( m_memoryUsage + _add >= _minus );
 

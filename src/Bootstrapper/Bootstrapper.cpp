@@ -1,11 +1,11 @@
 #include "Bootstrapper.h"
 
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/SoundSystemInterface.h"
-#include "Interface/PlatformInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
 #include "Interface/AccountServiceInterface.h"
@@ -53,7 +53,8 @@ SERVICE_EXTERN( PersistentSystem );
 SERVICE_EXTERN( DateTimeSystem );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( LoggerService );
-SERVICE_EXTERN( Platform );
+SERVICE_EXTERN( PlatformSystem );
+SERVICE_EXTERN( PlatformService );
 SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( FileService );
@@ -736,7 +737,6 @@ namespace Mengine
         }
 
         unicode_logFilename += L".log";
-
         String utf8_logFilename;
         if( Helper::unicodeToUtf8( unicode_logFilename, &utf8_logFilename ) == false )
         {
@@ -816,10 +816,11 @@ namespace Mengine
     bool Bootstrapper::createServices_()
     {
         MENGINE_ADD_SERVICE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PlatformSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );        
         MENGINE_ADD_SERVICE( PersistentSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
@@ -839,7 +840,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( AndroidEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        MENGINE_ADD_SERVICE( Platform, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PlatformService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1918,7 +1919,7 @@ namespace Mengine
         SERVICE_FINALIZE( AnalyticsService );
         SERVICE_FINALIZE( StatisticService );
 
-        SERVICE_FINALIZE( Platform );
+        SERVICE_FINALIZE( PlatformService );
         SERVICE_FINALIZE( LoggerService );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
@@ -1928,6 +1929,7 @@ namespace Mengine
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( PersistentSystem );
+        SERVICE_FINALIZE( PlatformSystem );
 
         SERVICE_DESTROY( SceneService );
         SERVICE_DESTROY( GameService );
@@ -1983,12 +1985,13 @@ namespace Mengine
         SERVICE_DESTROY( AndroidEnvironmentService );
 #endif
 
-        SERVICE_DESTROY( Platform );
+        SERVICE_DESTROY( PlatformService );
         SERVICE_DESTROY( NotificationService );
         SERVICE_DESTROY( LoggerService );
         SERVICE_DESTROY( FactoryService );
         SERVICE_DESTROY( OptionsService );
         SERVICE_DESTROY( PersistentSystem );
+        SERVICE_DESTROY( PlatformSystem );
     }
     //////////////////////////////////////////////////////////////////////////
 }

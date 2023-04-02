@@ -46,7 +46,7 @@ if(MENGINE_TARGET_IOS_SIMULATOR)
 endif()
 
 include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
-include_directories(${THIRDPARTY_DIR}/SDL2/include)
+include_directories(${THIRDPARTY_DIR}/SDL/include)
 
 ADD_MENGINE_LIBRARY(Systems)
 

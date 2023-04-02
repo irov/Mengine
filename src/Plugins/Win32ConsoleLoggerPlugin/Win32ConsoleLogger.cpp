@@ -1,7 +1,5 @@
 #include "Win32ConsoleLogger.h"
 
-#include "Interface/PlatformInterface.h"
-
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
 

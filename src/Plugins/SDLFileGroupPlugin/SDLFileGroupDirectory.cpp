@@ -1,7 +1,7 @@
 #include "SDLFileGroupDirectory.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "SDLFileInputStream.h"
 #include "SDLMutexFileInputStream.h"
@@ -17,6 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/PathString.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "SDL_rwops.h"
 

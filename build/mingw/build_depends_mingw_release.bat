@@ -1,1 +1,3 @@
-@call %~dp0build_depends_mingw.bat Release
+@call %~dp0build_depends_mingw.bat "CONFIGURATION=Release"
+
+@pause

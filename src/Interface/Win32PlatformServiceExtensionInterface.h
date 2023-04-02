@@ -12,7 +12,7 @@
 
 namespace Mengine
 {
-    class Win32PlatformExtensionInterface
+    class Win32PlatformServiceExtensionInterface
         : public UnknownInterface
     {
     public:

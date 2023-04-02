@@ -1,6 +1,5 @@
 #include "FilePathDateTimeHelper.h"
 
-#include "Interface/PlatformInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/Stringstream.h"

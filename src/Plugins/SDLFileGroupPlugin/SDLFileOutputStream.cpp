@@ -1,6 +1,6 @@
 #include "SDLFileOutputStream.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

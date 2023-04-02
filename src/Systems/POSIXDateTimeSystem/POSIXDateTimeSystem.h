@@ -6,12 +6,12 @@
 
 namespace Mengine
 {
-    class SDLDateTimeSystem
+    class POSIXDateTimeSystem
         : public ServiceBase<DateTimeSystemInterface>
     {
     public:
-        SDLDateTimeSystem();
-        ~SDLDateTimeSystem() override;
+        POSIXDateTimeSystem();
+        ~POSIXDateTimeSystem() override;
 
     protected:
         void getLocalDateTime( PlatformDateTime * const _dateTime ) const override;

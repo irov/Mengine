@@ -1,6 +1,6 @@
 #include "SDLFileGroupPlugin.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 

@@ -1,8 +1,8 @@
-MENGINE_PROJECT(SDL2)
+MENGINE_PROJECT(SDL)
 
 ADD_FILTER(
 src     
-    SDL2Includer.h
+    SDLIncluder.h
 )
 
 ADD_MENGINE_INTERFACE(Environment)

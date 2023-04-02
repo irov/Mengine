@@ -1,7 +1,6 @@
 #include "MockupRenderSystem.h"
 
 #include "Interface/RenderServiceInterface.h"
-#include "Interface/PlatformInterface.h"
 
 #include "MockupRenderImage.h"
 #include "MockupRenderImageTarget.h"

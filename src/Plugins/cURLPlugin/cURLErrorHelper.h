@@ -35,20 +35,20 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define CURLERRORCHECK( Method, HRES )\
+#define MENGINE_CURLERRORCHECK( Method, HRES )\
     (Mengine::cURLErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, Method ) == HRES)
 //////////////////////////////////////////////////////////////////////////
-#define IF_CURLERRORCHECK( Method, HRES )\
-    if( CURLERRORCHECK(#Method, HRES) )
+#define MENGINE_IF_CURLERRORCHECK( Method, HRES )\
+    if( MENGINE_CURLERRORCHECK(#Method, HRES) )
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_CURL_CHECK_ERROR_ENABLE)
-#   define CURLCALL( Method, Args )\
-    (CURLERRORCHECK(#Method, Method Args))
+#   define MENGINE_CURLCALL( Method, Args )\
+    (MENGINE_CURLERRORCHECK(#Method, Method Args))
 #else
-#   define CURLCALL( Method, Args )\
+#   define MENGINE_CURLCALL( Method, Args )\
     (Method Args)
 #endif
 //////////////////////////////////////////////////////////////////////////
-#define IF_CURLCALL( Method, Args )\
-    if( CURLCALL(Method, Args) )
+#define MENGINE_IF_CURLCALL( Method, Args )\
+    if( MENGINE_CURLCALL(Method, Args) )
 //////////////////////////////////////////////////////////////////////////

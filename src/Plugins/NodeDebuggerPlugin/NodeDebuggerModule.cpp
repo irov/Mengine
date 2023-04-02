@@ -1,5 +1,6 @@
 #include "NodeDebuggerModule.h"
 
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
 #include "Interface/UnknownAllocatorDebugReportInterface.h"
 #include "Interface/OptionsServiceInterface.h"
@@ -19,7 +20,6 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/PlatformInterface.h"
 #include "Interface/PickerInterface.h"
 #include "Interface/AnimationInterface.h"
 #include "Interface/SettingsServiceInterface.h"
@@ -27,7 +27,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Interface/Win32PlatformExtensionInterface.h"
+#   include "Interface/Win32PlatformServiceExtensionInterface.h"
 #endif
 
 #include "NodeDebuggerSerialization.h"
@@ -96,7 +96,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS)
         UniqueId globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
-            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
                 ->getUnknown();
 
             uint32_t exitCode;

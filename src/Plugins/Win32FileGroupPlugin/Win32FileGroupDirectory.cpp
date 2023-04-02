@@ -1,7 +1,7 @@
 #include "Win32FileGroupDirectory.h"
 
 #include "Interface/MemoryInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Win32ConcatenateFileHelper.h"
 #include "Win32FileInputStream.h"

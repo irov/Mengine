@@ -26,13 +26,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLHeaderDataThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_CUSTOMREQUEST, "POST") );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_CUSTOMREQUEST, "POST") );
 
         const String::value_type * data_buffer = m_data.c_str();
         String::size_type data_size = m_data.size();
 
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, data_buffer) );
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)data_size) );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, data_buffer) );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)data_size) );
 
         this->setupWriteResponse( _curl );
 

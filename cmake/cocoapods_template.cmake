@@ -120,7 +120,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
                     endif()
                 endif()
             endforeach()
-                
+            
             STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
             STRING(APPEND PODFILE_BUFFER "end\n")
             STRING(APPEND PODFILE_BUFFER "\n")
@@ -164,21 +164,21 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
                 endif()
             endif()
         endforeach()
+    else()
+        STRING(APPEND PODFILE_BUFFER "  pod 'Null'\n")
     endif()
     
     STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
     STRING(APPEND PODFILE_BUFFER "end\n")
     STRING(APPEND PODFILE_BUFFER "\n")
     
-    if(NOT ${LENGTH_APPLICATION_APPLE_COCOAPODS} EQUAL -1)
-        STRING(APPEND PODFILE_BUFFER "#patch\n")
-        STRING(APPEND PODFILE_BUFFER "\n")
+    STRING(APPEND PODFILE_BUFFER "#patch\n")
+    STRING(APPEND PODFILE_BUFFER "\n")
 
-        SET(PODS_END_PATCH)
-        file(STRINGS "Pods.patch" PODS_END_PATCH NEWLINE_CONSUME)
+    SET(PODS_END_PATCH)
+    file(STRINGS "Pods.patch" PODS_END_PATCH NEWLINE_CONSUME)
             
-        STRING(APPEND PODFILE_BUFFER ${PODS_END_PATCH})
-    endif()
+    STRING(APPEND PODFILE_BUFFER ${PODS_END_PATCH})
     
     FILE(WRITE ${CMAKE_BINARY_DIR}/Podfile ${PODFILE_BUFFER})
 

@@ -1,7 +1,7 @@
 #include "DevToDebugLogger.h"
 
 #include "Interface/ThreadSystemInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/LoggerHelper.h"

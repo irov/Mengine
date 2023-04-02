@@ -1,8 +1,5 @@
 #include "Win32DynamicLibrary.h"
 
-#include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
-
 #include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/UnicodeHelper.h"
@@ -35,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32DynamicLibrary::load()
     {
-        LOGGER_INFO( "load dll: %s"
+        LOGGER_INFO( "platform", "load dll: %s"
             , this->getName()
         );
 
@@ -69,7 +66,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32DynamicLibrary::unload()
     {
-        LOGGER_INFO( "unload dll: %s"
+        LOGGER_INFO( "platform", "unload dll: %s"
             , this->getName()
         );
 

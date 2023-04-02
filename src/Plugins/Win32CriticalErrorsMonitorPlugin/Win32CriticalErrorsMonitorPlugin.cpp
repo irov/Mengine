@@ -1,9 +1,9 @@
 #include "Win32CriticalErrorsMonitorPlugin.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 
-#include "Interface/Win32PlatformExtensionInterface.h"
+#include "Interface/Win32PlatformServiceExtensionInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/BuildMode.h"
@@ -80,7 +80,7 @@ namespace Mengine
         LOGGER_ERROR( "exception catch" );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
             ->getUnknown();
 
         Char stack[8096] = {'\0'};

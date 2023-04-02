@@ -1,6 +1,5 @@
 #include "PythonFileLogger.h"
 
-#include "Interface/PlatformInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/DocumentHelper.h"

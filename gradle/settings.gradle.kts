@@ -65,7 +65,7 @@ if (ANDROID_APP_ENABLE_DELIVERY_PACKAGE == true) {
 
 includePlugin("MENGINE_APP_PLUGIN_MENGINE", true, ":libraries:Mengine")
 includePlugin("MENGINE_APP_PLUGIN_OPENAL32", true, ":libraries:OpenAL32")
-includePlugin("MENGINE_APP_PLUGIN_SDL2", true, ":libraries:SDL2")
+includePlugin("MENGINE_APP_PLUGIN_SDL", true, ":libraries:SDL")
 
 
 /*****************************************************************************

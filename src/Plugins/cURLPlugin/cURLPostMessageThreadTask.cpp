@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLPostMessageThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "POST" ) );
+        MENGINE_CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "POST" ) );
 
         struct curl_httppost * lastptr = nullptr;
         struct curl_httppost * formpost = nullptr;
@@ -52,7 +52,7 @@ namespace Mengine
             }
         }
 
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HTTPPOST, formpost) );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HTTPPOST, formpost) );
 
         m_curl_formpost = formpost;
 

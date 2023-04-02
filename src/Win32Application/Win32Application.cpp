@@ -1,6 +1,6 @@
 #include "Win32Application.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -9,7 +9,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
+#include "Interface/Win32PlatformServiceExtensionInterface.h"
 
 #include "Environment/Windows/Win32Helper.h"
 
@@ -354,7 +354,7 @@ namespace Mengine
             return true;
         }
 
-        Win32PlatformExtensionInterface * win32PlatformExtension = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * win32PlatformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         win32PlatformExtension->setHWNDIcon( MAKEINTRESOURCEW( IDI_MENGINE ) );
@@ -424,7 +424,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalize()
     {
-        if( SERVICE_IS_INITIALIZE( Mengine::PlatformInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )
         {
             PLATFORM_SERVICE()
                 ->stopPlatform();

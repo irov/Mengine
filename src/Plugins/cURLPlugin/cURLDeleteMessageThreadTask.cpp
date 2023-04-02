@@ -25,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLDeleteMessageThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "DELETE" ) );
+        MENGINE_CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "DELETE" ) );
 
         this->setupWriteResponse( _curl );
 

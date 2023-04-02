@@ -1,7 +1,5 @@
 #include "OpenGLRenderSystem.h"
 
-#include "Interface/PlatformInterface.h"
-
 #include "OpenGLRenderImageLockedFactoryStorage.h"
 
 #include "OpenGLRenderEnum.h"

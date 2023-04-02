@@ -2,7 +2,7 @@
 
 #include "Interface/UnknownInterface.h"
 
-#include "Environment/SDL2/SDL2Includer.h"
+#include "Environment/SDL/SDLIncluder.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
@@ -10,7 +10,7 @@
 
 namespace Mengine
 {
-    class SDLPlatformExtensionInterface
+    class SDLPlatformServiceExtensionInterface
         : virtual public UnknownInterface
     {
     public:

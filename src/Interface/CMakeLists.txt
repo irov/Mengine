@@ -31,9 +31,10 @@ Common
     DataServiceInterface.h
     MemoryInterface.h
     MemoryServiceInterface.h
-    PlatformInterface.h
-    Win32PlatformExtensionInterface.h
-    SDLPlatformExtensionInterface.h
+    PlatformServiceInterface.h
+    PlatformSystemInterface.h
+    Win32PlatformServiceExtensionInterface.h
+    SDLPlatformServiceExtensionInterface.h
     ImageCodecInterface.h
     PickCodecInterface.h
     SoundCodecInterface.h

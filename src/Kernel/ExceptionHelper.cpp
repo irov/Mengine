@@ -2,8 +2,8 @@
 #include "Exception.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Interface/PlatformInterface.h"
-#   include "Interface/Win32PlatformExtensionInterface.h"
+#   include "Interface/PlatformServiceInterface.h"
+#   include "Interface/Win32PlatformServiceExtensionInterface.h"
 #endif
 
 #include "Config/StdIO.h"
@@ -53,9 +53,9 @@ namespace Mengine
         MENGINE_STRCAT( exception_msg, "\n" );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        if( SERVICE_IS_INITIALIZE( PlatformInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( PlatformServiceInterface ) == true )
         {
-            Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
+            Win32PlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
             Char stack_msg[4096] = {'\0'};

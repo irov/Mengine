@@ -1,1 +1,3 @@
-@call %~dp0make_solution_msvc16.bat Release %1 %2 %3
+@call %~dp0make_solution_msvc16.bat "CONFIGURATION=Release" %*
+
+@pause

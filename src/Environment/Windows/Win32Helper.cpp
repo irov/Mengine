@@ -5,9 +5,6 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
-#include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
-
 namespace Mengine
 {
     namespace Helper

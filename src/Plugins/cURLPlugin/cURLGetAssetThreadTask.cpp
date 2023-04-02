@@ -70,25 +70,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLGetAssetThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "GET" ) );
+        MENGINE_CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "GET" ) );
 
         if( m_login.empty() == false || m_password.empty() == false )
         {
             const Char * login_str = m_login.c_str();
             const Char * password_str = m_password.c_str();
 
-            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERNAME, login_str) );
-            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_PASSWORD, password_str) );
+            MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERNAME, login_str) );
+            MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_PASSWORD, password_str) );
         }
 
         /* send all data to this function  */
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &Detail::cURL_WriteMemoryCallback) );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &Detail::cURL_WriteMemoryCallback) );
 
         /* we pass our 'chunk' struct to the callback function */
         OutputStreamInterface * stream_ptr = m_stream.get();
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)stream_ptr) );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)stream_ptr) );
 
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0") );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0") );
 
         bool OPTION_curltrace = HAS_OPTION( "curltrace" );
 

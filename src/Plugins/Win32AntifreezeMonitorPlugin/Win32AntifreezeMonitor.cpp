@@ -1,12 +1,12 @@
 #include "Win32AntifreezeMonitor.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Interface/Win32PlatformExtensionInterface.h"
+#   include "Interface/Win32PlatformServiceExtensionInterface.h"
 #endif
 
 #include "Kernel/ConfigHelper.h"
@@ -160,7 +160,7 @@ namespace Mengine
         }
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
             ->getUnknown();
 
         ThreadId mainThreadId = THREAD_SERVICE()

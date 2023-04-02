@@ -2,8 +2,10 @@ MENGINE_PROJECT(SDLPlatform)
 
 ADD_FILTER(
 src
-    SDLPlatform.h
-    SDLPlatform.cpp
+    SDLPlatformService.h
+    SDLPlatformService.cpp
+    SDLPlatformSystem.h
+    SDLPlatformSystem.cpp
     SDLDynamicLibrary.h
     SDLDynamicLibrary.cpp
     SDLInput.h
@@ -19,7 +21,7 @@ IF(MENGINE_TARGET_MACOS)
 ENDIF()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL/include)
 
 ADD_MENGINE_LIBRARY(Platforms)
 

@@ -1,6 +1,7 @@
 #include "PackageService.h"
 
 #include "Interface/ApplicationInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 

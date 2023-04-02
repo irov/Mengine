@@ -4,7 +4,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #if defined(MENGINE_DEBUG)
-#   include "Interface/PlatformInterface.h"
+#   include "Interface/PlatformServiceInterface.h"
 #endif
 
 #include "Kernel/Logger.h"

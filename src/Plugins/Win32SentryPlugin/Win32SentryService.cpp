@@ -1,6 +1,6 @@
 #include "Win32SentryService.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"

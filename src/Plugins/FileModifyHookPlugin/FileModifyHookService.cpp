@@ -1,6 +1,6 @@
 #include "FileModifyHookService.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 

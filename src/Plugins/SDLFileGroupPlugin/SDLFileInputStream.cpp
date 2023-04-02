@@ -1,7 +1,7 @@
 #include "SDLFileInputStream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "SDLFileHelper.h"
 

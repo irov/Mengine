@@ -1,6 +1,6 @@
 #include "DevToDebugService.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"

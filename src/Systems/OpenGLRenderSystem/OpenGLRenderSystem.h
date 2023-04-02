@@ -2,7 +2,6 @@
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/OpenGLRenderSystemExtensionInterface.h"
-#include "Interface/PlatformInterface.h"
 #include "Interface/FactoryInterface.h"
 
 #include "OpenGLRenderImage.h"

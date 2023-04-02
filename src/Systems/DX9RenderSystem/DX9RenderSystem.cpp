@@ -1,8 +1,8 @@
 #include "DX9RenderSystem.h"
 
 #include "Interface/RenderServiceInterface.h"
-#include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
+#include "Interface/PlatformServiceInterface.h"
+#include "Interface/Win32PlatformServiceExtensionInterface.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9RenderErrorHelper.h"
@@ -355,7 +355,7 @@ namespace Mengine
 
         m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getUnknown();
 
         HWND windowHandle = win32Platform->getWindowHandle();

@@ -295,7 +295,7 @@ dependencies {
     implementation "androidx.preference:preference:1.2.0"
 
 
-    implementation project(':libraries:SDL2')
+    implementation project(':libraries:SDL')
     implementation project(':libraries:OpenAL32')
     implementation project(':libraries:Mengine')
 

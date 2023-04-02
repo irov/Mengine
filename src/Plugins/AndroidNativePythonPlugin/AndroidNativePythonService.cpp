@@ -4,7 +4,7 @@
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/AndroidEnvironmentServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"

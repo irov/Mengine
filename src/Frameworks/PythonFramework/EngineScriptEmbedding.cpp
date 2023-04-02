@@ -1,5 +1,6 @@
 #include "EngineScriptEmbedding.h"
 
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
@@ -8,7 +9,6 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/PlatformInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/RandomizerInterface.h"
 #include "Interface/PluginServiceInterface.h"

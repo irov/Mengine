@@ -45,12 +45,16 @@ namespace al {
 
 al::optional<std::string> getenv(const char *envname)
 {
+    (void)envname;
+    
     return al::nullopt;
 }
 
 #ifdef _WIN32
 al::optional<std::wstring> getenv(const WCHAR *envname)
 {
+    (void)envname;
+    
     return al::nullopt;
 }
 #endif

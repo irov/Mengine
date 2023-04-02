@@ -1,5 +1,6 @@
 #include "HelperScriptEmbedding.h"
 
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"

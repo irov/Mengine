@@ -17,6 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/MemoryAllocator.h"
 
 #include "math/box2.h"
 #include "math/angle.h"

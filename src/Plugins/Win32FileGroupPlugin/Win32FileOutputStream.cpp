@@ -1,7 +1,7 @@
 #include "Win32FileOutputStream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/Windows/Win32FileHelper.h"
 #include "Environment/Windows/Win32Helper.h"

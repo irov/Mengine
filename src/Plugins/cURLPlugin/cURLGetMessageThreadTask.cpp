@@ -25,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLGetMessageThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_CUSTOMREQUEST, "GET") );
+        MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_CUSTOMREQUEST, "GET") );
 
         this->setupWriteResponse( _curl );
 

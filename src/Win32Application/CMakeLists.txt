@@ -69,6 +69,7 @@ endif()
 
 if(NOT MSVC)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} libole32.a)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} atomic)
 endif()
 
 if(MSVC)

@@ -8,7 +8,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/UserdataServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"

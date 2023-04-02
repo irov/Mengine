@@ -2,14 +2,14 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-#include "Interface/Win32PlatformExtensionInterface.h"
+#include "Interface/Win32PlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#include "Interface/SDLPlatformExtensionInterface.h"
+#include "Interface/SDLPlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -136,7 +136,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &ImGUIService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-        SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+        SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         uint32_t handlerId = sdlPlatform->addSDLEventHandler( []( SDL_Event * _event )
@@ -161,7 +161,7 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         if( m_handlerId != INVALID_UNIQUE_ID )
         {
-            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
             win32Platform->removeWin32ProcessHandler( m_handlerId );
@@ -172,7 +172,7 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
         if( m_handlerId != INVALID_UNIQUE_ID )
         {
-            SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+            SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
             sdlPlatform->removeSDLEventHandler( m_handlerId );
@@ -228,7 +228,7 @@ namespace Mengine
     void ImGUIService::notifyPlatformAtachWindow_()
     {
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         HWND hWnd = win32Platform->getWindowHandle();
@@ -248,7 +248,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-        SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+        SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         SDL_Window * window = sdlPlatform->getWindow();
@@ -270,7 +270,7 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         if( m_handlerId != INVALID_UNIQUE_ID )
         {
-            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
             win32Platform->removeWin32ProcessHandler( m_handlerId );
@@ -283,7 +283,7 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
         if( m_handlerId != INVALID_UNIQUE_ID )
         {
-            SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+            SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
             sdlPlatform->removeSDLEventHandler( m_handlerId );

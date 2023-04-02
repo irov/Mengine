@@ -6,7 +6,6 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/PlatformInterface.h"
 
 #include "TTFDataInterface.h"
 #include "TTFFontTextureGlyphProvider.h"

@@ -1,7 +1,7 @@
 #include "ConfigService.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 

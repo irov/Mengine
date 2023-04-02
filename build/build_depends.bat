@@ -12,6 +12,7 @@ echo GENERATOR: %GENERATOR%
 echo PLATFORM_TOOLSET: %PLATFORM_TOOLSET%
 echo ARCHITECTURE: %ARCHITECTURE%
 echo SOURCE_DIRECTORY: %SOURCE_DIRECTORY%
+echo **********************************************************************
 echo VERBOSITY: %VERBOSITY%
 echo **********************************************************************
 
@@ -30,7 +31,7 @@ if defined PLATFORM_TOOLSET (
 if defined VERBOSITY (
     set "CMAKE_VERBOSITY=-- /verbosity:%VERBOSITY%"
 ) else (
-    set "CMAKE_VERBOSITY"
+    set "CMAKE_VERBOSITY="
 )
 
 set "BUILD_TEMP_DIR=..\solutions\%SOLUTION_NAME%\%CONFIGURATION%"

@@ -1,7 +1,6 @@
 #include "Assertion.h"
 
 #include "Interface/LoggerServiceInterface.h"
-#include "Interface/PlatformInterface.h"
 
 #include "Kernel/Crash.h"
 #include "Kernel/Exception.h"

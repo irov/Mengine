@@ -1,6 +1,6 @@
 #include "SDLApplication.h"
 
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -382,7 +382,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        if( SERVICE_IS_INITIALIZE( Mengine::PlatformInterface ) == true )
+        if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )
         {
             PLATFORM_SERVICE()
                 ->stopPlatform();

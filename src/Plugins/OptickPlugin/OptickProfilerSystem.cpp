@@ -1,6 +1,5 @@
 #include "OptickProfilerSystem.h"
 
-#include "Interface/PlatformInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 

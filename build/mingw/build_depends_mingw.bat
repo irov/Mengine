@@ -1,16 +1,13 @@
 @echo off
 
-if ["%~1"]==[""] (
-  @echo invalid arguments, please select configuration
-  goto end
-)
+set "SOLUTION_NAME=dependencies_mingw"
+set "SOURCE_DIRECTORY=%CD%\..\..\cmake\Depends_MinGW"
+set "GENERATOR=Ninja"
 
-set "CONFIGURATION=%1"
-
-@echo Starting build dependencies mingw %CONFIGURATION% configuration...
+@echo Starting build %SOLUTION_NAME% configuration...
 
 @pushd %~dp0..
-@call build_depends.bat "SOLUTION_NAME=dependencies_mingw" "SOURCE_DIRECTORY=%CD%\..\cmake\Depends_MinGW" "GENERATOR=Ninja" "CONFIGURATION=%CONFIGURATION%"
+@call build_depends.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%"
 @popd
 
 :end

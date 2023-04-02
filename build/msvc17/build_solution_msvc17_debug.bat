@@ -1,1 +1,3 @@
-@call %~dp0build_solution_msvc17.bat Debug %1 %2 %3
+@call %~dp0build_solution_msvc17.bat "CONFIGURATION=Debug" %*
+
+@pause

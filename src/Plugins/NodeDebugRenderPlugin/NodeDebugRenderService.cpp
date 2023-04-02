@@ -1,5 +1,6 @@
 #include "NodeDebugRenderService.h"
 
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
 #include "Interface/UnknownAllocatorDebugReportInterface.h"
 #include "Interface/OptionsServiceInterface.h"
@@ -12,7 +13,6 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
-#include "Interface/PlatformInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 

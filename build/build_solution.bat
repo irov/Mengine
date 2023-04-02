@@ -16,6 +16,7 @@ echo ARCHITECTURE: %ARCHITECTURE%
 echo SOURCE_DIRECTORY: %SOURCE_DIRECTORY%
 echo BUILD_NUMBER: %BUILD_NUMBER%
 echo BUILD_VERSION: %BUILD_VERSION%
+echo BUILD_PUBLISH: %BUILD_PUBLISH%
 echo **********************************************************************
 echo VERBOSITY: %VERBOSITY%
 echo **********************************************************************
@@ -67,7 +68,7 @@ if defined BUILD_PUBLISH (
 if defined VERBOSITY (
     set "CMAKE_VERBOSITY=-- /verbosity:%VERBOSITY%"
 ) else (
-    set "CMAKE_VERBOSITY"
+    set "CMAKE_VERBOSITY="
 )
 
 set "BUILD_TEMP_DIR=..\solutions\%SOLUTION_NAME%\%CONFIGURATION%"

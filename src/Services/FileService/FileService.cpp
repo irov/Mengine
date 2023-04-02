@@ -4,7 +4,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ThreadMutexScope.h"

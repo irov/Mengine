@@ -3,6 +3,7 @@
 #include "Config/StdArg.h"
 
 #include <cstdio>
+#include <cwchar>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_VSNPRINTF

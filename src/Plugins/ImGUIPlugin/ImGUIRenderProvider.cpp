@@ -3,8 +3,8 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#include "Interface/PlatformInterface.h"
-#include "Interface/SDLPlatformExtensionInterface.h"
+#include "Interface/PlatformServiceInterface.h"
+#include "Interface/SDLPlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
@@ -84,7 +84,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-        SDLPlatformExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+        SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         SDL_Window * window = sdlPlatform->getWindow();

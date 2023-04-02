@@ -4,8 +4,6 @@
 #include "Kernel/Abort.h"
 #include "Kernel/DebugBreak.h"
 
-#include "Interface/PlatformInterface.h"
-
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif

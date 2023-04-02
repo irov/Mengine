@@ -21,7 +21,7 @@ android {
 
 dependencies {
     implementation project(':libraries:Mengine')
-    implementation project(':libraries:SDL2')
+    implementation project(':libraries:SDL')
 }
 
 android {

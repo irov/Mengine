@@ -16,6 +16,7 @@ echo ARCHITECTURE: %ARCHITECTURE%
 echo SOURCE_DIRECTORY: %SOURCE_DIRECTORY%
 echo BUILD_NUMBER: %BUILD_NUMBER%
 echo BUILD_VERSION: %BUILD_VERSION%
+echo BUILD_PUBLISH: %BUILD_PUBLISH%
 echo **********************************************************************
 
 if defined ARCHITECTURE (

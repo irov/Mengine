@@ -28,12 +28,28 @@
 #   error "undefine compiler"
 #endif
 
-#if defined(_M_IX86)
-#   define MENGINE_MACHINE_I386
-#elif defined(_M_X64)
-#   define MENGINE_MACHINE_AMD64
-#elif defined(_M_IA64)
-#   define MENGINE_MACHINE_IA64
+#if defined(_M_IX86) || defined(__i386__)
+#   define MENGINE_MACHINE_IX86 _M_IX86
+#endif
+
+#if defined(_M_X64) || defined(__x86_64__)
+#   define MENGINE_MACHINE_X64 _M_X64
+#endif
+
+#if defined(_M_IA64) || defined(__ia64__)
+#   define MENGINE_MACHINE_IA64 _M_IA64
+#endif
+
+#if defined(_M_AMD64) || defined(__amd64__)
+#   define MENGINE_MACHINE_AMD64 _M_AMD64
+#endif
+
+#if defined(_M_ARM) || defined(__arm__)
+#   define MENGINE_MACHINE_ARM _M_ARM64
+#endif
+
+#if defined(_M_ARM64) || defined(__aarch64__)
+#   define MENGINE_MACHINE_ARM64 _M_ARM64
 #endif
 
 #if defined(_WIN32)

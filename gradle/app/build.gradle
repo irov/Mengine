@@ -294,7 +294,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.preference:preference:1.2.0"
 
-
     implementation project(':libraries:SDL')
     implementation project(':libraries:OpenAL32')
     implementation project(':libraries:Mengine')

@@ -19,7 +19,7 @@ namespace Mengine
         ~SDLUnicodeSystem() override;
 
     public:
-        const ServiceRequiredList & requiredServices() const;
+        const ServiceRequiredList & requiredServices() const override;
 
     public:
         bool _initializeService() override;

@@ -40,12 +40,12 @@ mkdir -p ../../solutions/$SOURCE_NAME/$CONFIGURATION
 
 pushd ../../solutions/$SOURCE_NAME/$CONFIGURATION
 $CMAKE -G"Xcode" "$PWD/../../../cmake/$SOURCE_DIRECTORY" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_DEPLOY_PATH:STRING="$DEPLOY_PATH" -DMENGINE_BUILD_NUMBER:STRING="$BUILD_NUMBER" -DMENGINE_BUILD_VERSION:STRING="$BUILD_VERSION"
-popd
 
 if [ $? -ne 0 ]; then
     echo "please fix generate CMake"
     exit 1
 fi
+popd
 
 pushd ../../solutions/$SOURCE_NAME/$CONFIGURATION
 if test -f "Podfile"; then

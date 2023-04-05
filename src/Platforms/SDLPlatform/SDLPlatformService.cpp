@@ -1673,7 +1673,7 @@ namespace Mengine
         SDL_Window * sharePixelFormatWindow = SDL_CreateWindow( "MengineSharePixelFormatWindow", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
 
         Char sBuf[64] = {'\0'};
-        MENGINE_SPRINTF( sBuf, "%p", sharePixelFormatWindow );
+        MENGINE_SNPRINTF( sBuf, 64, "%p", sharePixelFormatWindow );
 
         SDL_SetHint( SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT, sBuf );
 
@@ -3470,7 +3470,7 @@ namespace Mengine
             if( _eventId >= SDL_USEREVENT )
             {
                 static MENGINE_THREAD_LOCAL Char userEventMessage[32] = {'\0'};
-                MENGINE_SPRINTF( userEventMessage, "[User event: %u]"
+                MENGINE_SNPRINTF( userEventMessage, 32, "[User event: %u]"
                     , _eventId
                 );
 

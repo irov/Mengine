@@ -4,7 +4,7 @@ set "VERSION=17"
 set "YEAR=2022"
 
 set "SOLUTION_NAME=solution_msvc%VERSION%"
-set "SOURCE_DIRECTORY=%CD%\..\..\cmake\Win32"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win32"
 set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 set "ARCHITECTURE=Win32"
 set "BUILD_PUBLISH=OFF"

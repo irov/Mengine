@@ -1,7 +1,7 @@
 @echo off
 
 set "SOLUTION_NAME=dependencies_mingw"
-set "SOURCE_DIRECTORY=%CD%\..\..\cmake\Depends_MinGW"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Depends_MinGW"
 set "GENERATOR=Ninja"
 
 @echo Starting build %SOLUTION_NAME% configuration...

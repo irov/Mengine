@@ -1,7 +1,7 @@
 @echo off
 
 set "SOLUTION_NAME=solution_mingw64"
-set "SOURCE_DIRECTORY=%CD%\..\..\cmake\MinGW64"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\MinGW64"
 set "GENERATOR=Ninja"
 set "BUILD_PUBLISH=OFF"
 

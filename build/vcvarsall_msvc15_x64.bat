@@ -1,6 +1,5 @@
 @echo off
 
-set build_dir=%cd%
 set cmd_vcvars="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"
 if exist %cmd_vcvars% goto vs_vars_found
 set cmd_vcvars="%ProgramFiles%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"

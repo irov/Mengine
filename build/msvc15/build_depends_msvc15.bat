@@ -4,7 +4,7 @@ set "VERSION=15"
 set "YEAR=2017"
 
 set "SOLUTION_NAME=dependencies_msvc%VERSION%"
-set "SOURCE_DIRECTORY=%CD%\..\..\cmake\Depends_WIN32"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Depends_WIN32"
 set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 
 @echo Starting build %SOLUTION_NAME% configuration...

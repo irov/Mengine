@@ -31,5 +31,5 @@ android {
 }
 
 dependencies {
-    implementation files('../../../dependencies/marsdk-android/aar/libs/MARSDK_release_v2.6.30.aar')
+    implementation fileTree(dir: '../../../dependencies/marsdk-android/jar/libs', include: ['marsdk3.jar', 'marsdksimplesdk.jar'])
 }

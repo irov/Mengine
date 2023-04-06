@@ -87,6 +87,8 @@ namespace Mengine
             iconv_outbuf = (char *)m_utf8Buffer;
             iconv_outsize = MENGINE_UNICODE_CONVERT_BUFFER * sizeof( Char );
         }
+        
+        size_t iconv_capacity = iconv_outsize;
 
         size_t code = SDL_iconv( cd, &iconv_inbuf, &iconv_insize, &iconv_outbuf, &iconv_outsize );
 
@@ -114,7 +116,7 @@ namespace Mengine
             }break;
         }
 
-        size_t utf8Size = code - 1;
+        size_t utf8Size = (iconv_capacity - iconv_outsize) / sizeof(Char) - 1;
 
         if( _utf8Size != nullptr )
         {
@@ -160,6 +162,8 @@ namespace Mengine
             iconv_outbuf = (char *)m_unicodeBuffer;
             iconv_outsize = MENGINE_UNICODE_CONVERT_BUFFER * sizeof( WChar );
         }
+        
+        size_t iconv_capacity = iconv_outsize;
 
         size_t code = SDL_iconv( cd, &iconv_inbuf, &iconv_insize, &iconv_outbuf, &iconv_outsize );
 
@@ -187,7 +191,7 @@ namespace Mengine
             }break;
         }
 
-        size_t unicodeSize = code - 1;
+        size_t unicodeSize = (iconv_capacity - iconv_outsize) / sizeof(WChar) - 1;
 
         if( _sizeUnicode != nullptr )
         {

@@ -77,7 +77,6 @@ set "BUILD_TEMP_DIR=..\solutions\%SOLUTION_NAME%\%CONFIGURATION%"
 
 @pushd "%BUILD_TEMP_DIR%"
 CMake -G "%GENERATOR%" %CMAKE_PLATFORM_TOOLSET% %CMAKE_ARCHITECTURE% -S "%SOURCE_DIRECTORY%" "-DCMAKE_CONFIGURATION_TYPES:STRING='%CONFIGURATION%'" "-DCMAKE_BUILD_TYPE:STRING=%CONFIGURATION%" %MENGINE_DEPLOY_PATH% %MENGINE_EXTERNAL_PDB% %MENGINE_EXTERNAL_PDB_PATH% %MENGINE_BUILD_NUMBER% %MENGINE_BUILD_VERSION% %MENGINE_BUILD_MENGINE_BUILD_PUBLISH%
-@popd
 
 if %errorlevel% NEQ 0 (
     @echo %ESC%[91m*****************************************%ESC%[0m
@@ -89,10 +88,11 @@ if %errorlevel% NEQ 0 (
     @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
     @echo %ESC%[92m=========================================%ESC%[0m
 )
+
+@popd
 
 @pushd "%BUILD_TEMP_DIR%"
 CMake --build .\ -j 8 --config %CONFIGURATION% %CMAKE_VERBOSITY%
-@popd
 
 if %errorlevel% NEQ 0 (
     @echo %ESC%[91m*****************************************%ESC%[0m
@@ -104,6 +104,8 @@ if %errorlevel% NEQ 0 (
     @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
     @echo %ESC%[92m=========================================%ESC%[0m
 )
+
+@popd
 
 :end
 

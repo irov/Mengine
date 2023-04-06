@@ -184,11 +184,19 @@ namespace Mengine
             return false;
         }
 
+        const Char * hexadecimal_str = _hexadecimal.c_str();
+        String::size_type hexadecimal_size = _hexadecimal.size();
+
+        if( hexadecimal_size % 2 != 0 )
+        {
+            return false;
+        }
+
         Blobject blob_raving;
-        blob_raving.resize( _hexadecimal.size() / 2 );
+        blob_raving.resize( hexadecimal_size / 2 );
 
         size_t blob_raving_size;
-        Helper::decodeHexadecimal( _hexadecimal.c_str(), _hexadecimal.size(), blob_raving.data(), blob_raving.size(), &blob_raving_size );
+        Helper::decodeHexadecimal( hexadecimal_str, hexadecimal_size, blob_raving.data(), blob_raving.size(), &blob_raving_size );
 
         Blobject blob;
         blob.resize( blob_raving_size );

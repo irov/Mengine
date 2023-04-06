@@ -15,24 +15,28 @@ if test -z "$CONFIGURATION"; then
     exit 1
 fi
 
-mkdir -p ../../solutions/dependencies_xcode_macos_sdl/$CONFIGURATION
+SOLUTION_NAME=dependencies_xcode_macos_sdl
+SOLUTION_DIR=$PWD/../../solutions/$SOLUTION_NAME/$CONFIGURATION
+SOURCE_DIRECTORY=$PWD/../../cmake/Depends_Xcode_MacOS_SDL
 
-pushd ../../solutions/dependencies_xcode_macos_sdl/$CONFIGURATION
-$CMAKE -G"Xcode" "$PWD/../../../cmake/Depends_Xcode_MacOS_SDL" -DCMAKE_BUILD_TYPE:STRING="$CONFIGURATION"
-popd
+mkdir -p $SOLUTION_DIR
+
+pushd $SOLUTION_DIR
+$CMAKE -G"Xcode" -S "$SOURCE_DIRECTORY" -DCMAKE_BUILD_TYPE:STRING="$CONFIGURATION"
 
 if [ $? -ne 0 ]; then
     echo "please fix generate CMake"
     exit 1
 fi
-
-pushd ../../solutions/dependencies_xcode_macos_sdl/$CONFIGURATION
-$CMAKE --build ./ --config $CONFIGURATION
 popd
+
+pushd $SOLUTION_DIR
+$CMAKE --build ./ --config $CONFIGURATION
 
 if [ $? -ne 0 ]; then
     echo "please fix build CMake"
     exit 1
 fi
+popd
 
 exit 0

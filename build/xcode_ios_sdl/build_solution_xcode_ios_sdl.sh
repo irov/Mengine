@@ -33,21 +33,22 @@ if test -z "$BUILD_VERSION"; then
     exit 1
 fi
 
-SOURCE_NAME=solution_xcode_ios_sdl
-SOURCE_DIRECTORY=Xcode_IOS_SDL
+SOLUTION_NAME=solution_xcode_ios_sdl
+SOLUTION_DIR=$PWD/../../solutions/$SOLUTION_NAME/$CONFIGURATION
+SOURCE_DIRECTORY=$PWD/../../cmake/Xcode_IOS_SDL
 
-mkdir -p ../../solutions/$SOURCE_NAME/$CONFIGURATION
+mkdir -p $SOLUTION_DIR
 
-pushd ../../solutions/$SOURCE_NAME/$CONFIGURATION
-$CMAKE -G"Xcode" "$PWD/../../../cmake/$SOURCE_DIRECTORY" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_DEPLOY_PATH:STRING="$DEPLOY_PATH" -DMENGINE_BUILD_NUMBER:STRING="$BUILD_NUMBER" -DMENGINE_BUILD_VERSION:STRING="$BUILD_VERSION"
-popd
+pushd $SOLUTION_DIR
+$CMAKE -G"Xcode" -S "$SOURCE_DIRECTORY" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING="$CONFIGURATION" -DMENGINE_DEPLOY_PATH:STRING="$DEPLOY_PATH" -DMENGINE_BUILD_NUMBER:STRING="$BUILD_NUMBER" -DMENGINE_BUILD_VERSION:STRING="$BUILD_VERSION"
 
 if [ $? -ne 0 ]; then
     echo "please fix generate CMake"
     exit 1
 fi
+popd
 
-pushd ../../solutions/$SOURCE_NAME/$CONFIGURATION
+pushd $SOLUTION_DIR
 if test -f "Podfile"; then
     pod install --repo-update
     
@@ -58,13 +59,13 @@ if test -f "Podfile"; then
 fi
 popd
 
-pushd ../../solutions/$SOURCE_NAME/$CONFIGURATION
+pushd $SOLUTION_DIR
 $CMAKE --build ./ --config $CONFIGURATION
-popd
 
 if [ $? -ne 0 ]; then
     echo "please fix build CMake"
     exit 1
 fi
+popd
 
 exit 0

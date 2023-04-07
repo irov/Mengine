@@ -226,6 +226,12 @@ namespace Mengine
 
         MENGINE_MEMCPY( m_uid.data, uid, 20 );
 
+        LOGGER_INFO( "account", "load account '%s' projectVersion [%u] uid '%.20s' settings"
+            , m_id.c_str()
+            , projectVersion
+            , m_uid.data
+        );
+
         for( auto && [key, st] : m_settings )
         {
             const Char * value;
@@ -238,6 +244,11 @@ namespace Mengine
 
                 continue;
             }
+
+            LOGGER_INFO( "account", "load setting '%s' value '%s'"
+                , key.c_str()
+                , value
+            );
 
             st.value.assign( value );
         }
@@ -314,11 +325,25 @@ namespace Mengine
         j_account.set( "PROJECT_VERSION", m_projectVersion );
         j_account.set( "UID", jpp::make_stringn( m_uid.data, AccountUID::size_data ) );
 
+        LOGGER_INFO( "account", "save account '%s' projectVersion [%u] uid '%.20s' settings"
+            , m_id.c_str()
+            , m_projectVersion
+            , m_uid.data
+        );
+
         jpp::object j_settings = jpp::make_object();
 
         for( auto && [key, st] : m_settings )
         {
-            j_settings.set( key.c_str(), st.value.c_str() );
+            const Char * key_str = key.c_str();
+            const Char * value_str = st.value.c_str();
+
+            LOGGER_INFO( "account", "save setting '%s' value '%s'"
+                , key_str
+                , value_str
+            );
+
+            j_settings.set( key_str, value_str );
         }
 
         j_root.set( "ACCOUNT", j_account );

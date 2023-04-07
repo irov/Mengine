@@ -82,7 +82,7 @@ namespace Mengine
             Char traceback[4096] = {'\0'};
             kernel->get_traceback( traceback, 4095 );
 
-            MENGINE_ERROR_FATAL( "\nInvalid parameter detected in function %ls.\nFile: %ls Line: %u\nExpression: %ls\nTrackeback:\n%s"
+            MENGINE_ERROR_FATAL( "invalid parameter detected in function %ls.\nFile: %ls Line: %u\nExpression: %ls\nTrackeback:\n%s"
                 , _function
                 , _file
                 , _line
@@ -122,19 +122,17 @@ namespace Mengine
                 MENGINE_UNUSED( _functionName );
                 MENGINE_UNUSED( _className );
 
-#   if defined(MENGINE_LOGGER_ANALYZE_ENABLE)
                 bool OPTION_pythoncalltrace = HAS_OPTION( "pythoncalltrace" );
 
                 if( OPTION_pythoncalltrace == true )
                 {
-                    LOGGER_INFO( "script", "pybind call begin '%s::%s' args '%s' kwds '%s'"
+                    LOGGER_MESSAGE_RELEASE( "script", "pybind call begin '%s::%s' args '%s' kwds '%s'"
                         , _className
                         , _functionName
                         , _kernel->object_repr( _args ).c_str()
                         , _kernel->object_repr( _kwds ).c_str()
                     );
                 }
-#   endif
 
                 uint32_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );
@@ -163,17 +161,15 @@ namespace Mengine
                 }
 #   endif
 
-#   if defined(MENGINE_LOGGER_ANALYZE_ENABLE)
                 bool OPTION_pythoncalltrace = HAS_OPTION( "pythoncalltrace" );
 
                 if( OPTION_pythoncalltrace == true )
                 {
-                    LOGGER_INFO( "script", "pybind call end '%s::%s'"
+                    LOGGER_MESSAGE_RELEASE( "pybind call end '%s::%s'"
                         , _className
                         , _functionName
                     );
                 }
-#   endif
 
                 uint32_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );
@@ -217,7 +213,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "pythoncalltrace" ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "script" ), LM_WARNING, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -227,7 +223,7 @@ namespace Mengine
                 Char traceback[4096] = {'\0'};
                 _kernel->get_traceback( traceback, 4095 );
 
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "pythoncalltrace" ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("traceback:\n%s"
+                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "script" ), LM_WARNING, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("traceback:\n%s"
                     , traceback
                     );
             }

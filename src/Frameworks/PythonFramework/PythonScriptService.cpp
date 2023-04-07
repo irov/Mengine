@@ -126,7 +126,7 @@ namespace Mengine
 
                 if( OPTION_pythoncalltrace == true )
                 {
-                    LOGGER_MESSAGE_RELEASE( "script", "pybind call begin '%s::%s' args '%s' kwds '%s'"
+                    LOGGER_MESSAGE_RELEASE( "pybind call begin '%s::%s' args '%s' kwds '%s'"
                         , _className
                         , _functionName
                         , _kernel->object_repr( _args ).c_str()

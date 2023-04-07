@@ -16,8 +16,6 @@
     
     self.m_service = service;
     
-    [[MARSDK sharedInstance] setDelegate:self];
-    
     return self;
 }
 

@@ -175,9 +175,41 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool writeJSONFileCompact( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentPtr & _doc )
+        {
+            OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, _withTemp, _doc );
+
+            if( stream == nullptr )
+            {
+                return false;
+            }
+
+            if( Helper::writeJSONStreamCompact( _j, stream ) == false )
+            {
+                return false;
+            }
+
+            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool writeJSONStream( const jpp::object & _j, const OutputStreamInterfacePtr & _stream )
         {
             if( jpp::dump( _j, &Detail::my_jpp_dump_stream_callback, _stream.get() ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool writeJSONStreamCompact( const jpp::object & _j, const OutputStreamInterfacePtr & _stream )
+        {
+            if( jpp::dump_compact( _j, &Detail::my_jpp_dump_stream_callback, _stream.get() ) == false )
             {
                 return false;
             }

@@ -191,30 +191,35 @@ namespace Mengine
         {
             return false;
         }
+        
+        if( hexadecimal_size < 16 )
+        {
+            return false;
+        }
 
         Blobject blob_raving;
         blob_raving.resize( hexadecimal_size / 2 );
+        
+        void * blob_raving_data = blob_raving.data();
+        Blobject::size_type blob_raving_capacity = blob_raving.size();
 
         size_t blob_raving_size;
-        Helper::decodeHexadecimal( hexadecimal_str, hexadecimal_size, blob_raving.data(), blob_raving.size(), &blob_raving_size );
+        Helper::decodeHexadecimal( hexadecimal_str, hexadecimal_size, blob_raving_data, blob_raving_capacity, &blob_raving_size );
 
         Blobject blob;
         blob.resize( blob_raving_size );
 
         uint64_t secureHash = SECURE_SERVICE()
             ->getSecureHash();
+        
+        void * blob_data = blob.data();
 
-        Helper::ravingcode( secureHash, blob_raving.data(), blob_raving_size, blob.data() );
-
-        uint32_t load_hash;
-        uint32_t value_size;
-
-        if( blob.size() < 8 )
-        {
-            return false;
-        }
+        Helper::ravingcode( secureHash, blob_raving_data, blob_raving_size, blob_data );
 
         ContainerReader<Blobject> reader( blob );
+        
+        uint32_t load_hash;
+        uint32_t value_size;
 
         reader.readPOD( load_hash );
         reader.readPOD( value_size );

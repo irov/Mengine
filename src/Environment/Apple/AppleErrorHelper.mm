@@ -21,6 +21,11 @@ namespace Mengine
         /////////////////////////////////////////////////////////////////////////
         void AppleGetMapNSDictionary( NSDictionary * _dictionary, Map<String, String> * const _map )
         {
+            if( _dictionary == nil )
+            {
+                return;
+            }
+            
             [_dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
                 const Char * key_str = [[NSString stringWithFormat:@"%@", key] UTF8String];
                 const Char * value_str = [[NSString stringWithFormat:@"%@", value] UTF8String];

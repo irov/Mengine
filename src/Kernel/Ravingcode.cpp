@@ -19,8 +19,10 @@ namespace Mengine
                 seed ^= seed << 5;
 
                 uint8_t xor_seed = seed & 0xFF;
+                
+                uint8_t out_data = *(u8_in++) ^ xor_seed;
 
-                *(u8_out++) = *(u8_in++) ^ xor_seed;
+                *(u8_out++) = out_data;
             }
         }
     }

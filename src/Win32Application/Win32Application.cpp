@@ -12,11 +12,12 @@
 #include "Interface/Win32PlatformServiceExtensionInterface.h"
 
 #include "Environment/Windows/Win32Helper.h"
+#include "Environment/Windows/Win32MessageBoxLogger.h"
 
-#include "Win32MessageBoxLogger.h"
 #if defined(MENGINE_WINDOWS_DEBUG)
-#   include "Win32OutputDebugLogger.h"
+#   include "Environment/Windows/Win32OutputDebugLogger.h"
 #endif
+
 #include "Win32ExtraFileLogger.h"
 
 #include "Kernel/ConfigHelper.h"

@@ -51,17 +51,7 @@ src
     SDLApplication.h
     SDLMessageBoxLogger.cpp
     SDLMessageBoxLogger.h
-    SDLStdioLogger.cpp
-    SDLStdioLogger.h
 )
-
-if(MENGINE_TOOLCHAIN_MSVC)
-    ADD_FILTER(
-    OutputDebugLogger
-        SDLOutputDebugLogger.cpp
-        SDLOutputDebugLogger.h
-    )
-endif()
 
 if(MENGINE_TARGET_UWP)
     ADD_FILTER(
@@ -125,6 +115,19 @@ if(MENGINE_TARGET_UWP)
         ADD_FILTER(
         AppXManifest
             ${MENGINE_DEPLOY_PATH}/Package.appxmanifest
+        )
+        
+        ADD_FILTER(
+        AppXAssets
+            ${MENGINE_DEPLOY_PATH}/Assets/LockScreenLogo.scale-200.png
+            ${MENGINE_DEPLOY_PATH}/Assets/SplashScreen.png
+            ${MENGINE_DEPLOY_PATH}/Assets/SplashScreen.scale-200.png
+            ${MENGINE_DEPLOY_PATH}/Assets/Square44x44Logo.scale-200.png
+            ${MENGINE_DEPLOY_PATH}/Assets/Square44x44Logo.targetsize-24_altform-unplated.png
+            ${MENGINE_DEPLOY_PATH}/Assets/Square150x150Logo.scale-200.png
+            ${MENGINE_DEPLOY_PATH}/Assets/StoreLogo.scale-100.png
+            ${MENGINE_DEPLOY_PATH}/Assets/StoreLogo.scale-200.png
+            ${MENGINE_DEPLOY_PATH}/Assets/Wide310x150Logo.scale-200.png
         )
     endif()
     
@@ -414,10 +417,12 @@ IF(MENGINE_TARGET_ANDROID)
 ENDIF()
 
 IF(MENGINE_TARGET_WINDOWS)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Windows)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Winmm.lib Version.lib Imm32.lib Setupapi.lib)
 ENDIF()
 
 IF(MENGINE_TARGET_UWP)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Windows)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Winmm.lib Version.lib Imm32.lib Setupapi.lib)
 ENDIF()
 
@@ -434,7 +439,6 @@ endif()
 IF(MENGINE_TOOLCHAIN_MSVC)
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 ENDIF()
-
 
 IF(MENGINE_TARGET_APPLE)
     set_target_properties(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_OTHER_LDFLAGS "-ObjC")

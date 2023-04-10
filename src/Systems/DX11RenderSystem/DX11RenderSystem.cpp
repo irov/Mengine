@@ -1,14 +1,14 @@
 #include "DX11RenderSystem.h"
 
 #include "Interface/RenderServiceInterface.h"
-#include "Interface/PlatformInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 #   include "Interface/Win32PlatformExtensionInterface.h"
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#   include "Interface/SDLPlatformExtensionInterface.h"
+#   include "Interface/SDLPlatformServiceExtensionInterface.h"
 #endif
 
 #include "DX11RenderEnum.h"
@@ -1579,7 +1579,7 @@ namespace Mengine
 
         // Set the handle for the window to render to.
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        Win32PlatformExtensionInterface * win32Extension = PLATFORM_SERVICE()
+        Win32PlatformServiceExtensionInterface * win32Extension = PLATFORM_SERVICE()
             ->getUnknown();
 
         HWND hWnd = win32Extension->getWindowHandle();
@@ -1594,7 +1594,7 @@ namespace Mengine
             return false;
         }
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL) && defined(MENGINE_PLATFORM_WINDOWS)
-        SDLPlatformExtensionInterface * sdlExtension = PLATFORM_SERVICE()
+        SDLPlatformServiceExtensionInterface * sdlExtension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         IInspectable * iWindow = sdlExtension->getWindowHandle();

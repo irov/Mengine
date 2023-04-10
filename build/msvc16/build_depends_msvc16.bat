@@ -10,13 +10,9 @@ set "ARCHITECTURE=Win32"
 
 @echo Starting build %SOLUTION_NAME% configuration...
 
-@pushd %~dp0..
-@call vcvarsall_msvc%VERSION%.bat
-@popd
+@call %~dp0../vcvarsall_msvc%VERSION%.bat
 
-@pushd %~dp0..
-@call build_depends.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%"  "ARCHITECTURE=%ARCHITECTURE%" "VERBOSITY=minimal"
-@popd
+@call %~dp0../build_depends.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%"  "ARCHITECTURE=%ARCHITECTURE%" "VERBOSITY=minimal"
 
 :end
 

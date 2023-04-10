@@ -752,6 +752,31 @@ namespace Mengine
                 return str;
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_setClipboardText( const Char * _value )
+            {
+                if( PLATFORM_SERVICE()
+                    ->setClipboardText( _value ) == false )
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_getClipboardText( pybind::kernel_interface * _kernel )
+            {
+                Char value[1024] = {'\0'};
+                if( PLATFORM_SERVICE()
+                    ->getClipboardText( value, 1024 ) == false )
+                {
+                    return _kernel->ret_none();
+                }
+
+                PyObject * py_value = _kernel->ptr_string( value );
+
+                return py_value;
+            }
+            //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
             //////////////////////////////////////////////////////////////////////////
             String s_getAndroidId()
@@ -4172,6 +4197,9 @@ namespace Mengine
         pybind::def_functor( _kernel, "memleakEngine", helperScriptMethod, &HelperScriptMethod::s_memleakEngine );
 
         pybind::def_functor( _kernel, "generateUniqueIdentity", helperScriptMethod, &HelperScriptMethod::s_generateUniqueIdentity );
+
+        pybind::def_functor( _kernel, "setClipboardText", helperScriptMethod, &HelperScriptMethod::s_setClipboardText );
+        pybind::def_functor_kernel( _kernel, "getClipboardText", helperScriptMethod, &HelperScriptMethod::s_getClipboardText );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         pybind::def_functor( _kernel, "getAndroidId", helperScriptMethod, &HelperScriptMethod::s_getAndroidId );

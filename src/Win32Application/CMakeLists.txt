@@ -19,10 +19,6 @@ Win32Application
     
     Win32Application.cpp
     Win32Application.h
-    Win32MessageBoxLogger.h
-    Win32MessageBoxLogger.cpp
-    Win32OutputDebugLogger.h
-    Win32OutputDebugLogger.cpp
     Win32ExtraFileLogger.h
     Win32ExtraFileLogger.cpp
 )

@@ -560,6 +560,9 @@ Core
     StreamLogger.cpp
     StreamLogger.h
         
+    StdioLogger.cpp
+    StdioLogger.h
+
     FileLogger.cpp
     FileLogger.h
     

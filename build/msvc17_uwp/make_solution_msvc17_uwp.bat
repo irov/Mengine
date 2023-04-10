@@ -1,34 +1,22 @@
 @echo off
 
-if ["%~1"]==[""] (
-  @echo invalid arguments, please select configuration
-  goto end
-)
+set "VERSION=17"
+set "YEAR=2022"
 
-if ["%~2"]==[""] (
-  @echo invalid arguments, please set deploy path
-  goto end
-)
+set "SOLUTION_NAME=solution_msvc%VERSION%_uwp"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win32_UWP"
+set "GENERATOR=Visual Studio %VERSION% %YEAR%"
+set "ARCHITECTURE=x64"
+set "BUILD_PUBLISH=OFF"
 
-set "CONFIGURATION=%1"
 set "DEPLOY_PATH=%2"
 set "EXTERNAL_PDB_PATH=%3"
 set "BUILD_VERSION=%4"
 
-@echo Starting make solution %CONFIGURATION% configuration...
+@call %~dp0../vcvarsall_msvc%VERSION%_x64.bat
 
-set "VERSION=17"
-set "YEAR=2022"
+@echo Starting make %SOLUTION_NAME% configuration...
 
-@pushd %~dp0..
-@call vcvarsall_msvc%VERSION%_x64.bat
-@popd
+@call %~dp0../make_solution.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "BUILD_PUBLISH=%BUILD_PUBLISH%" "ARCHITECTURE=%ARCHITECTURE%"
 
-@pushd %~dp0..
-@call make_solution.bat "SOLUTION_NAME=solution_msvc%VERSION%_uwp" "SOURCE_DIRECTORY=%CD%\..\cmake\Win32_UWP" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=x64" "DEPLOY_PATH=%DEPLOY_PATH%" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%" "BUILD_VERSION=%BUILD_VERSION%"
-@popd
-
-:end
-
-@pause
 exit /b %errorlevel%

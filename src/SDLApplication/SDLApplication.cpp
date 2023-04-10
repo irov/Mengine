@@ -22,11 +22,11 @@
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "AndroidLogger.h"
 #else
-#   include "SDLStdioLogger.h"
+#   include "Kernel/StdioLogger.h"
 #endif
 
 #if defined(MENGINE_WINDOWS_DEBUG)
-#   include "SDLOutputDebugLogger.h"
+#   include "Environment/Windows/Win32OutputDebugLogger.h"
 #endif
 
 #include "Kernel/ConfigHelper.h"
@@ -170,7 +170,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_ANDROID)
         LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AndroidLogger>( MENGINE_DOCUMENT_FUNCTION );
 #else
-        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>( MENGINE_DOCUMENT_FUNCTION );
+        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<StdioLogger>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 
         loggerStdio->setWriteHistory( true );
@@ -190,7 +190,7 @@ namespace Mengine
         m_loggerMessageBox = loggerMessageBox;
 
 #if defined(MENGINE_WINDOWS_DEBUG)
-        SDLOutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<SDLOutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
+        Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerOutputDebug->setVerboseLevel( LM_MESSAGE );
 

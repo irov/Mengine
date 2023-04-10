@@ -1,4 +1,4 @@
-#include "SDLOutputDebugLogger.h"
+#include "Win32OutputDebugLogger.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -9,15 +9,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SDLOutputDebugLogger::SDLOutputDebugLogger()
+    Win32OutputDebugLogger::Win32OutputDebugLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLOutputDebugLogger::~SDLOutputDebugLogger()
+    Win32OutputDebugLogger::~Win32OutputDebugLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLOutputDebugLogger::log( const LoggerMessage & _message )
+    void Win32OutputDebugLogger::log( const LoggerMessage & _message )
     {
         Char timestamp[256] = {'\0'};
         Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
@@ -44,13 +44,14 @@ namespace Mengine
         const Char * data = _message.data;
         size_t size = _message.size;
 
-        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'0'};
-        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s\n"
+        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
             , (int32_t)size
-            , data 
+            , data
         );
 
         ::OutputDebugStringA( message );
+        ::OutputDebugStringA( "\n" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

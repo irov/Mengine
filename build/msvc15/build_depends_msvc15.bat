@@ -9,15 +9,9 @@ set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 
 @echo Starting build %SOLUTION_NAME% configuration...
 
-@pushd %~dp0..
-@call vcvarsall_msvc%VERSION%.bat
-@popd
+@call %~dp0../vcvarsall_msvc%VERSION%.bat
 
-@pushd %~dp0..
-@call build_depends.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "VERBOSITY=minimal"
-@popd
-
-:end
+@call %~dp0../build_depends.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "VERBOSITY=minimal"
 
 @pause
 @exit /b %errorlevel%

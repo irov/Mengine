@@ -9,16 +9,10 @@ set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 set "ARCHITECTURE=Win32"
 set "BUILD_PUBLISH=OFF"
 
-@pushd %~dp0..
-@call vcvarsall_msvc%VERSION%.bat
-@popd
+@call %~dp0../vcvarsall_msvc%VERSION%.bat
 
 @echo Starting make %SOLUTION_NAME% configuration...
 
-@pushd %~dp0..
-@call make_solution.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "BUILD_PUBLISH=%BUILD_PUBLISH%" "ARCHITECTURE=%ARCHITECTURE%"
-@popd
-
-:end
+@call %~dp0../make_solution.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "BUILD_PUBLISH=%BUILD_PUBLISH%" "ARCHITECTURE=%ARCHITECTURE%"
 
 @exit /b %errorlevel%

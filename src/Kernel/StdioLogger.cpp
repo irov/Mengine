@@ -1,4 +1,4 @@
-#include "SDLStdioLogger.h"
+#include "StdioLogger.h"
 
 #include "Kernel/LoggerHelper.h"
 
@@ -7,15 +7,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SDLStdioLogger::SDLStdioLogger()
+    StdioLogger::StdioLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLStdioLogger::~SDLStdioLogger()
+    StdioLogger::~StdioLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLStdioLogger::log( const LoggerMessage & _message )
+    void StdioLogger::log( const LoggerMessage & _message )
     {
         Char timestamp[256] = {'\0'};
         size_t timestampSize = Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
@@ -46,7 +46,7 @@ namespace Mengine
         std::cout.write( "\n", 1 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLStdioLogger::flush()
+    void StdioLogger::flush()
     {
         std::cout.flush();
     }

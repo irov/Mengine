@@ -22,7 +22,11 @@
 #pragma mark - MARAdRewardedDelegate
 
 - (void) MARAdRewardedDidFailed: (MARAdErrorCode)code withMessage: (NSString *)message adDict:(NSDictionary *)adDict {
-    LOGGER_INFO( "marsdk", "MARAdRewardedDidFailed" );
+    LOGGER_MESSAGE( "MARAdRewardedDidFailed code: %d message: %s adDict: %s"
+        , (int32_t)code
+        , [message UTF8String]
+        , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
+    );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
@@ -30,7 +34,9 @@
 }
 
 - (void) MARAdRewardedDidLoaded :(NSDictionary *)adDict {
-    LOGGER_INFO( "marsdk", "MARAdRewardedDidLoaded" );
+    LOGGER_MESSAGE( "MARAdRewardedDidLoaded adDict: %s"
+        , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
+    );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
@@ -38,7 +44,9 @@
 }
 
 - (void) MARAdRewardedDidShow :(NSDictionary *)adDict {
-    LOGGER_INFO( "marsdk", "MARAdRewardedDidShow" );
+    LOGGER_MESSAGE( "MARAdRewardedDidShow adDict: %s"
+        , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
+    );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
@@ -46,7 +54,9 @@
 }
 
 - (void) MARAdRewardedDidClicked :(NSDictionary *)adDict {
-    LOGGER_INFO( "marsdk", "MARAdRewardedDidClicked" );
+    LOGGER_MESSAGE( "MARAdRewardedDidClicked adDict: %s"
+        , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
+    );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
@@ -54,7 +64,9 @@
 }
 
 - (void) MARAdRewardedDidClosed :(NSDictionary *)adDict {
-    LOGGER_INFO( "marsdk", "MARAdRewardedDidClosed" );
+    LOGGER_MESSAGE( "MARAdRewardedDidClosed adDict: %s"
+        , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
+    );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
@@ -62,7 +74,9 @@
 }
 
 - (void) MARAdRewardedDidSkipped :(NSDictionary *)adDict {
-    LOGGER_INFO( "marsdk", "MARAdRewardedDidSkipped" );
+    LOGGER_MESSAGE( "MARAdRewardedDidSkipped adDict: %s"
+        , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
+    );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
@@ -70,7 +84,9 @@
 }
 
 - (void) MARAdRewardedDidFinished: (NSString *)itemName itemNum:(int)itemNum adDict:(NSDictionary *)adDict {
-    LOGGER_INFO( "marsdk", "MARAdRewardedDidFinished" );
+    LOGGER_MESSAGE( "MARAdRewardedDidFinished adDict: %s"
+        , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
+    );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     

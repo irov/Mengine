@@ -3,6 +3,7 @@ import com.Mengine.Utils
 apply plugin: 'com.android.library'
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
+apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 
 android {

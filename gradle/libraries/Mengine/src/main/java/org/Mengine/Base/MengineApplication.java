@@ -27,8 +27,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import kotlin.Suppress;
-
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
 

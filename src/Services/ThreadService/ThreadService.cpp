@@ -497,7 +497,7 @@ namespace Mengine
     {
         if( this->isMainThread() == true )
         {
-            return STRINGIZE_STRING_LOCAL( "MengineMainThread" );
+            return STRINGIZE_STRING_LOCAL( "MengineMain" );
         }
 
         for( const ThreadProcessorDesc & desc : m_threadProcessors )
@@ -510,7 +510,7 @@ namespace Mengine
             return desc.name;
         }
 
-        return STRINGIZE_STRING_LOCAL( "MengineUnknownThread" );
+        return STRINGIZE_STRING_LOCAL( "MengineUnknown" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ThreadService::findThreadNameById( ThreadId _id ) const

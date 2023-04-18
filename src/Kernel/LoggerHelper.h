@@ -11,7 +11,8 @@ namespace Mengine
     namespace Helper
     {
         Char getLoggerLevelSymbol( ELoggerLevel _level );
-        size_t makeLoggerTimestamp( const PlatformDateTime & _dateTime, const Char * _format, Char * const _timestamp, size_t _capacity );
-        size_t makeLoggerFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity );
+        size_t makeLoggerTimeStamp( const PlatformDateTime & _dateTime, const Char * _format, Char * const _timestamp, size_t _offset, size_t _capacity );
+        size_t makeLoggerFunctionStamp( const Char * _file, uint32_t _line, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity );
+        size_t makeLoggerThreadStamp( const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity );
     }
 }

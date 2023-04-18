@@ -11,15 +11,16 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.sentry:sentry-android-gradle-plugin:3.4.3'
+        classpath 'io.sentry:sentry-android-gradle-plugin:3.5.0'
     }
 }
 
 apply plugin: 'io.sentry.android.gradle'
 
 android {
+    namespace "org.Mengine.Plugin.Sentry"
 }
 
 dependencies {
-    implementation 'io.sentry:sentry-android:6.16.0'
+    implementation 'io.sentry:sentry-android:6.17.0'
 }

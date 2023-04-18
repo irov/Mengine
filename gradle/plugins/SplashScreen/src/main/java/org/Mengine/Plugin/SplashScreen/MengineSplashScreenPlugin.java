@@ -4,7 +4,10 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -23,10 +26,26 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
     protected ImageView m_image;
 
+    @SuppressWarnings("deprecation")
+    private Drawable getDrawableSplashScreen(Context context) {
+        Resources resources = context.getResources();
+
+        Drawable drawable;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Resources.Theme theme = context.getTheme();
+            drawable = resources.getDrawable(R.drawable.mengine_splashscreen, theme);
+        } else {
+            drawable = resources.getDrawable(R.drawable.mengine_splashscreen);
+        }
+
+        return drawable;
+    }
+
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         ImageView image = new ImageView(activity);
-        Drawable mengine_splashscreen = MengineActivity.getContext().getResources().getDrawable(R.drawable.mengine_splashscreen);
+        Context context = MengineActivity.getContext();
+        Drawable mengine_splashscreen = this.getDrawableSplashScreen(context);
         image.setBackground(mengine_splashscreen);
         image.setScaleType(ImageView.ScaleType.CENTER_CROP);
         ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);

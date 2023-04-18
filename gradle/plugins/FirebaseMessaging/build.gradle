@@ -4,6 +4,7 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/Firebase/firebase.gradle'
 
 android {
+    namespace "org.Mengine.Plugin.FirebaseMessaging"
 }
 
 dependencies {

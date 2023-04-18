@@ -58,6 +58,9 @@ namespace Mengine
         {
             String timestamp;
             ConstString tag;
+            const Char * file;
+            uint32_t line;
+            ConstString threadName;
             String data;
             Char level;
         };

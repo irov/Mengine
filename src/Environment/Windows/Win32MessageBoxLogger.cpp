@@ -23,7 +23,10 @@ namespace Mengine
         size_t size = _message.size;
 
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s", size, data );
+        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
+            , size
+            , data 
+        );
 
         Helper::debuggerBreak();
 

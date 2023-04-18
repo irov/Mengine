@@ -58,7 +58,7 @@ extern "C" {
         if( DEVTODEBUG_SERVICE()
             ->hasTab( tab ) == false )
         {
-            LOGGER_ERROR("invalid create dev tab has already exist '%s'"
+            LOGGER_ERROR( "invalid create dev tab has already exist '%s'"
                 , tab.c_str()
             );
 
@@ -66,10 +66,10 @@ extern "C" {
         }
 
         Mengine::DevToDebugTabInterfacePtr t = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FUNCTION );
 
         DEVTODEBUG_SERVICE()
-                ->addTab( STRINGIZE_STRING_LOCAL( "Platform" ), t );
+            ->addTab( STRINGIZE_STRING_LOCAL( "Platform" ), t );
 
         return JNI_TRUE;
     }
@@ -110,12 +110,12 @@ extern "C" {
 
         jmethodID jmethodId_callback = env->GetMethodID( cls_cb, "callback", "()V" );
 
-        jobject jcb = env->NewGlobalRef(_cb);
+        jobject jcb = env->NewGlobalRef( _cb );
 
         unknown_button->setClickEvent( [env, jcb, jmethodId_callback]()
-                                           {
-                                               env->CallVoidMethod(jcb, jmethodId_callback);
-                                           } );
+        {
+            env->CallVoidMethod( jcb, jmethodId_callback );
+        } );
 
         env->DeleteLocalRef( cls_cb );
 
@@ -250,7 +250,7 @@ namespace Mengine
             return false;
         }
 
-        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 1000 );
+        uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 2000 );
 
         if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugProcess" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
         {
@@ -457,6 +457,35 @@ namespace Mengine
             break;
         case EDTDS_READY:
             {
+                m_status = EDTDS_REGISTRATING;
+
+                cURLHeaders headers;
+                headers.push_back( "Content-Type:application/json" );
+
+                jpp::object j = this->makeJsonRegistrationData();
+
+                String data;
+                Helper::writeJSONStringCompact( j, &data );
+
+                HttpRequestID id = CURL_SERVICE()
+                    ->headerData( m_dsn, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+
+                MENGINE_UNUSED( id );
+            }break;
+        case EDTDS_REGISTRATION:
+            {
+                m_status = EDTDS_WAITING;
+
+                cURLHeaders headers;
+                headers.push_back( "Content-Type:application/json" );
+
+                HttpRequestID id = CURL_SERVICE()
+                    ->getMessage( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+
+                MENGINE_UNUSED( id );
+            }break;
+        case EDTDS_WAIT:
+            {
                 m_status = EDTDS_CONNECTING;
 
                 cURLHeaders headers;
@@ -468,7 +497,7 @@ namespace Mengine
                 Helper::writeJSONStringCompact( j, &data );
 
                 HttpRequestID id = CURL_SERVICE()
-                    ->headerData( m_dsn, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
@@ -502,9 +531,9 @@ namespace Mengine
 
         switch( m_status )
         {
-        case Mengine::EDTDS_NONE:
+        case EDTDS_NONE:
             break;
-        case Mengine::EDTDS_CONNECTING:
+        case EDTDS_REGISTRATING:
             {
                 if( responseSuccessful == false )
                 {
@@ -517,7 +546,7 @@ namespace Mengine
                     this->stop();
 
                     break;
-                }                
+                }
 
                 if( responseCode / 100 != 2 )
                 {
@@ -531,7 +560,7 @@ namespace Mengine
                     this->stop();
 
                     break;
-                }                
+                }
 
                 jpp::object j = Helper::loadJSONStreamFromString( responseData, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -552,9 +581,82 @@ namespace Mengine
 
                 m_throttle = j.get( "throttle" );
 
-                if( m_logger != nullptr )
+                LOGGER_INFO( "devtodebug", "request connect: %s [id %u]"
+                    , m_workerURL.c_str()
+                    , requestId
+                );
+
+                m_status = EDTDS_REGISTRATION;
+            }break;
+        case EDTDS_WAITING:
+            {
+                if( responseSuccessful == false )
                 {
-                    m_logger->setWorkerURL( m_workerURL );
+                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
+                        , responseError.c_str()
+                        , responseCode
+                        , requestId
+                    );
+
+                    this->stop();
+
+                    break;
+                }
+
+                if( responseCode / 100 != 2 )
+                {
+                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
+                        , responseError.c_str()
+                        , responseData.c_str()
+                        , responseCode
+                        , requestId
+                    );
+
+                    this->stop();
+
+                    break;
+                }
+
+                jpp::object j = Helper::loadJSONStreamFromString( responseData, MENGINE_DOCUMENT_FACTORABLE );
+
+                bool is_watched = j.get( "is_watched" );
+
+                if( is_watched == true )
+                {
+                    m_status = EDTDS_WAIT;
+                }
+                else
+                {
+                    m_status = EDTDS_REGISTRATION;
+                }
+            }break;
+        case EDTDS_CONNECTING:
+            {
+                if( responseSuccessful == false )
+                {
+                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
+                        , responseError.c_str()
+                        , responseCode
+                        , requestId
+                    );
+
+                    this->stop();
+
+                    break;
+                }
+
+                if( responseCode / 100 != 2 )
+                {
+                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
+                        , responseError.c_str()
+                        , responseData.c_str()
+                        , responseCode
+                        , requestId
+                    );
+
+                    this->stop();
+
+                    break;
                 }
 
                 LOGGER_INFO( "devtodebug", "request connect: %s [id %u]"
@@ -562,9 +664,14 @@ namespace Mengine
                     , requestId
                 );
 
+                if( m_logger != nullptr )
+                {
+                    m_logger->setWorkerURL( m_workerURL );
+                }
+
                 m_status = EDTDS_CONNECT;
             }break;
-        case Mengine::EDTDS_CONNECT:
+        case EDTDS_CONNECT:
             {
                 if( responseSuccessful == false )
                 {
@@ -716,7 +823,7 @@ namespace Mengine
         return jtabs;
     }
     //////////////////////////////////////////////////////////////////////////
-    jpp::object DevToDebugService::makeJsonConnectData()
+    jpp::object DevToDebugService::makeJsonRegistrationData()
     {
         jpp::object j = jpp::make_object();
 
@@ -737,6 +844,20 @@ namespace Mengine
             , userName
         );
 
+        return j;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jpp::object DevToDebugService::makeJsonWaitData()
+    {
+        jpp::object j = jpp::make_object();
+
+        return j;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jpp::object DevToDebugService::makeJsonConnectData()
+    {
+        jpp::object j = jpp::make_object();
+
         jpp::object jstate = jpp::make_object();
 
         bool invalidateTabs;
@@ -744,7 +865,11 @@ namespace Mengine
 
         jstate.set( "tabs", jtabs );
 
-        j.set( "state", jstate );
+        jpp::object jworker = jpp::make_object();
+
+        jworker.set( "new_state", jstate );
+
+        j.set( "worker", jworker );
 
         m_invalidateTabs = false;
 

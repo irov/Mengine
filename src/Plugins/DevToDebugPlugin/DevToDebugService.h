@@ -18,6 +18,10 @@ namespace Mengine
     {
         EDTDS_NONE,
         EDTDS_READY,
+        EDTDS_REGISTRATING,
+        EDTDS_REGISTRATION,
+        EDTDS_WAITING,
+        EDTDS_WAIT,
         EDTDS_CONNECTING,
         EDTDS_CONNECT,
     };
@@ -56,6 +60,8 @@ namespace Mengine
 
     protected:
         jpp::object makeJsonTabs( bool _force, bool * const _invalidateTabs );
+        jpp::object makeJsonRegistrationData();
+        jpp::object makeJsonWaitData();
         jpp::object makeJsonConnectData();
         jpp::object makeJsonProcessData();
 

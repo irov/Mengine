@@ -1,11 +1,11 @@
 import com.Mengine.Utils
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 android {
+    namespace "org.Mengine.Plugin.GoogleService"
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.android.gms:play-services-basement:18.1.0'
 }

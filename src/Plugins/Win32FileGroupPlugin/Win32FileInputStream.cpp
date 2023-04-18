@@ -9,6 +9,7 @@
 
 #include "Win32ConcatenateFileHelper.h"
 
+#include "Kernel/StatisticHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
@@ -195,6 +196,8 @@ namespace Mengine
         }
 #endif
 
+        STATISTIC_INC_INTEGER( STATISTIC_OPEN_FILE_COUNT );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -288,6 +291,8 @@ namespace Mengine
         }
 
         *_read = (size_t)bytesRead;
+
+        STATISTIC_ADD_INTEGER( STATISTIC_OPEN_FILE_READ_BYTES, bytesRead );
 
         return true;
     }

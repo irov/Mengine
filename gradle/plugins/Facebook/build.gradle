@@ -14,6 +14,8 @@ android {
             }
         }
     }
+
+    namespace "org.Mengine.Plugin.Facebook"
 }
 
 if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {

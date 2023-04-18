@@ -53,19 +53,41 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ExtraFileLogger::log( const LoggerMessage & _message )
     {
-        Char timestamp[256] = {'\0'};
-        Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
-        this->writeMessage_( timestamp );
-        this->writeMessage_( " " );
+        if( _message.flag & ELF_FLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%u]", functionstamp, 0, MENGINE_MAX_PATH );
+            this->writeMessage_( functionstamp );
+            this->writeMessage_( " " );
+        }
 
-        ELoggerLevel level = _message.level;
+        if( _message.flag & ELF_FLAG_TIMESTAMP )
+        {
+            Char timestamp[256] = {'\0'};
+            Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            this->writeMessage_( timestamp );
+            this->writeMessage_( " " );
+        }
 
-        Char symbol = Helper::getLoggerLevelSymbol( level );
-        Char symbol_str[] = {symbol, '\0'};
-        this->writeMessage_( symbol_str );
-        this->writeMessage_( " " );
+        if( _message.flag & ELF_FLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+            this->writeMessage_( threadstamp );
+            this->writeMessage_( " " );
+        }
 
-        if( _message.category.empty() == false )
+        if( _message.flag & ELF_FLAG_SYMBOL )
+        {
+            ELoggerLevel level = _message.level;
+
+            Char symbol = Helper::getLoggerLevelSymbol( level );
+            Char symbol_str[] = {symbol, '\0'};
+            this->writeMessage_( symbol_str );
+            this->writeMessage_( " " );
+        }
+
+        if( _message.flag & ELF_FLAG_CATEGORY )
         {
             const Char * category_str = _message.category.c_str();
 
@@ -79,7 +101,10 @@ namespace Mengine
         size_t size = _message.size;
 
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s", size, data );
+        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
+            , (int32_t)size
+            , data 
+        );
 
         this->writeMessage_( message );
         this->writeMessage_( "\n" );

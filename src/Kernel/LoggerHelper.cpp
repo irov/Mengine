@@ -1,5 +1,7 @@
 #include "LoggerHelper.h"
 
+#include "Interface/ThreadServiceInterface.h"
+
 #include "Kernel/StringRegex.h"
 
 #include "Config/StdIO.h"
@@ -36,9 +38,9 @@ namespace Mengine
             return '?';
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t makeLoggerTimestamp( const PlatformDateTime & _dateTime, const Char * _format, Char * const _timestamp, size_t _capacity )
+        size_t makeLoggerTimeStamp( const PlatformDateTime & _dateTime, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
         {
-            int32_t size = MENGINE_SNPRINTF( _timestamp, _capacity, _format //"[%02u:%02u:%02u:%04u]"
+            int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, _format //"[%02u:%02u:%02u:%04u]"
                 , _dateTime.hour
                 , _dateTime.minute
                 , _dateTime.second
@@ -48,7 +50,7 @@ namespace Mengine
             return (size_t)size;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t makeLoggerFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity )
+        size_t makeLoggerFunctionStamp( const Char * _file, uint32_t _line, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
         {
             if( _file == nullptr )
             {
@@ -79,9 +81,26 @@ namespace Mengine
                 str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
             }
 
-            int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, "%s[%u] "
+            int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, _format //"%s[%u] "
                 , str_function.c_str()
                 , _line
+            );
+
+            return (size_t)size;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        size_t makeLoggerThreadStamp( const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
+        {
+            if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == false )
+            {
+                return 0;
+            }
+
+            const ConstString & threadName = THREAD_SERVICE()
+                ->getCurrentThreadName();
+
+            int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, _format //"|%s|"
+                , threadName.c_str()
             );
 
             return (size_t)size;

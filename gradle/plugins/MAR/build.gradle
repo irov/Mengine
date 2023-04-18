@@ -28,6 +28,8 @@ android {
             }
         }
     }
+
+    namespace "org.Mengine.Plugin.MAR"
 }
 
 dependencies {

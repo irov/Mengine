@@ -34,7 +34,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLDynamicLibrary::load()
     {
-        void * instance = SDL_LoadObject( m_name.c_str() );
+        const Char * name_str = m_name.c_str();
+
+        void * instance = SDL_LoadObject( name_str );
 
         if( instance == nullptr )
         {

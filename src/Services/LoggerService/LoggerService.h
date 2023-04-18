@@ -47,14 +47,11 @@ namespace Mengine
         void clearHistory() override;
 
     public:
-        size_t makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const override;
-
-    public:
         bool validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const override;
 
     public:
         void logMessage( const LoggerMessage & _message ) override;
-        uint32_t getCountMessage( ELoggerLevel _level ) override;
+        uint32_t getCountMessage( ELoggerLevel _level ) const override;
 
     public:
         void lockMessage() override;
@@ -89,13 +86,16 @@ namespace Mengine
 
         uint32_t m_countMessage[LOGGER_LEVEL_COUNT];
 
-        struct Record
+        struct HistoryRecord
         {
             ConstString category;
             PlatformDateTime dateTime;
             ELoggerLevel level;
+            ELoggerFlag flag;
             uint32_t filter;
             uint32_t color;
+            const Char * file;
+            int32_t line;
             String data;
         };
 
@@ -103,7 +103,7 @@ namespace Mengine
 
         uint32_t m_historyLimit;
 
-        typedef List<Record> ListHistory;
-        ListHistory m_history;
+        typedef List<HistoryRecord> ListHistoryRecords;
+        ListHistoryRecords m_history;
     };
 }

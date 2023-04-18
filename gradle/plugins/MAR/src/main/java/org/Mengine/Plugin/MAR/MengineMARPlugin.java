@@ -71,24 +71,24 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         try {
             JSONObject json = new JSONObject(jsonData);
 
-            String productId = json.getString("productId");
-            String productName = json.getString("productName");
-            String productDesc = json.getString("productDesc");
-            int price = json.getInt("price");
-            int ratio = json.getInt("ratio");
-            int buyNum = json.getInt("buyNum");
-            int coinNum = json.getInt("coinNum");
-            String serverId = json.has("serverId") == true ? json.getString("serverId") : params.getServerId();
-            String serverName = json.has("serverName") == true ? json.getString("serverName") : params.getServerName();
-            String roleId = json.has("roleId") == true ? json.getString("roleId") : params.getRoleId();
-            String roleName = json.has("roleName") == true ? json.getString("roleName") : params.getRoleName();
-            int roleLevel = json.has("roleLevel") == true ? json.getInt("roleLevel") : params.getRoleLevel();
-            String payNotifyUrl = json.getString("payNotifyUrl");
-            String vip = json.has("vip") == true ? json.getString("vip") : params.getVip();
-            String orderID = json.getString("orderID");
-            String extension = json.getString("extension");
-            String channelOrderID = json.getString("channelOrderID");
-            int state = json.getInt("state");
+            String productId = json.optString("productId", params.getProductId());
+            String productName = json.optString("productName", params.getProductName());
+            String productDesc = json.optString("productDesc", params.getProductDesc());
+            int price = json.optInt("price", params.getPrice());
+            int ratio = json.optInt("ratio", params.getRatio());
+            int buyNum = json.optInt("buyNum", params.getBuyNum());
+            int coinNum = json.optInt("coinNum", params.getCoinNum());
+            String serverId = json.optString("serverId", params.getServerId());
+            String serverName = json.optString("serverName", params.getServerName());
+            String roleId = json.optString("roleId", params.getRoleId());
+            String roleName = json.optString("roleName", params.getRoleName());
+            int roleLevel = json.optInt("roleLevel", params.getRoleLevel());
+            String payNotifyUrl = json.optString("payNotifyUrl", params.getPayNotifyUrl());
+            String vip = json.optString("vip", params.getVip());
+            String orderID = json.optString("orderID", params.getOrderID());
+            String extension = json.optString("extension", params.getExtension());
+            String channelOrderID = json.optString("channelOrderID", params.getChannelOrderID());
+            int state = json.optInt("state", params.getState());
 
             params.setProductId(productId);
             params.setProductName(productName);

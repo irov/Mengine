@@ -1569,7 +1569,7 @@ namespace Mengine
             , win_height
         );
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         int win_top;
         int win_left;
         int win_bottom;

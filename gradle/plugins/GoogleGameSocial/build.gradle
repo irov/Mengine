@@ -3,9 +3,10 @@ import com.Mengine.Utils
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 
 android {
+    namespace "org.Mengine.Plugin.GoogleGameSocial"
 }
 
 dependencies {
     implementation "com.google.android.gms:play-services-games:23.1.0"
-    implementation "com.google.android.gms:play-services-auth:20.4.1"
+    implementation "com.google.android.gms:play-services-auth:20.5.0"
 }

@@ -169,8 +169,11 @@ namespace Mengine
         msg.category = ConstString::none();
         msg.dateTime = dateTime;
         msg.level = LM_MESSAGE;
+        msg.flag = ELF_FLAG_NONE;
         msg.filter = 0;
         msg.color = LCOLOR_GREEN;
+        msg.file = "";
+        msg.line = 0;
         msg.data = loggerLevelMessage;
         msg.size = loggerLevelMessageLen;
 
@@ -265,17 +268,6 @@ namespace Mengine
         m_history.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t LoggerService::makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const
-    {
-        PlatformDateTime dateTime;
-        DATETIME_SYSTEM()
-            ->getLocalDateTime( &dateTime );
-
-        size_t size = Helper::makeLoggerTimestamp( dateTime, "[%02u:%02u:%02u:%04u] ", _buffer + _offset, _capacity - _offset );
-
-        return size;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool LoggerService::validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const
     {
         MENGINE_UNUSED( _category );
@@ -344,23 +336,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logHistory_( const LoggerMessage & _message )
     {
-        if( m_historically == true )
+        if( m_historically == false )
         {
-            if( m_historyLimit != MENGINE_UNKNOWN_SIZE && m_history.size() >= m_historyLimit )
-            {
-                return;
-            }
-
-            Record history;
-            history.category = _message.category;
-            history.dateTime = _message.dateTime;
-            history.level = _message.level;
-            history.filter = _message.filter;
-            history.color = _message.color;
-            history.data.assign( _message.data, _message.size );
-
-            m_history.emplace_back( history );
+            return;
         }
+
+        if( m_historyLimit != MENGINE_UNKNOWN_SIZE && m_history.size() >= m_historyLimit )
+        {
+            return;
+        }
+
+        HistoryRecord history;
+        history.category = _message.category;
+        history.dateTime = _message.dateTime;
+        history.level = _message.level;
+        history.flag = _message.flag;
+        history.filter = _message.filter;
+        history.color = _message.color;
+        history.file = _message.file;
+        history.line = _message.line;
+        history.data.assign( _message.data, _message.size );
+
+        m_history.emplace_back( history );
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::notifyConfigsLoad_()
@@ -373,7 +370,7 @@ namespace Mengine
         m_verboses.insert( m_verboses.begin(), verboses.begin(), verboses.end() );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t LoggerService::getCountMessage( ELoggerLevel _level )
+    uint32_t LoggerService::getCountMessage( ELoggerLevel _level ) const
     {
         uint32_t count = m_countMessage[_level];
 
@@ -411,14 +408,17 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        for( const Record & record : m_history )
+        for( const HistoryRecord & record : m_history )
         {
             LoggerMessage msg;
             msg.category = record.category;
             msg.dateTime = record.dateTime;
             msg.level = record.level;
+            msg.flag = record.flag;
             msg.filter = record.filter;
             msg.color = record.color;
+            msg.file = record.file;
+            msg.line = record.line;
             msg.data = record.data.c_str();
             msg.size = record.data.size();
 

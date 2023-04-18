@@ -3,9 +3,9 @@ import com.Mengine.Utils
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 
 android {
+    namespace "org.Mengine.Plugin.GooglePlayBilling"
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.5.0'
-    implementation 'com.android.billingclient:billing:5.1.0'
+    implementation 'com.android.billingclient:billing:5.2.0'
 }

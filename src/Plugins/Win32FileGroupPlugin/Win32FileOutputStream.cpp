@@ -8,6 +8,7 @@
 
 #include "Win32ConcatenateFileHelper.h"
 
+#include "Kernel/StatisticHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
@@ -77,6 +78,8 @@ namespace Mengine
 
         m_hFile = hFile;
 
+        STATISTIC_INC_INTEGER( STATISTIC_OPEN_FILE_COUNT );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -142,7 +145,9 @@ namespace Mengine
             return 0;
         }
 
-        m_size += bytesWritten;
+        m_size += (size_t)bytesWritten;
+
+        STATISTIC_ADD_INTEGER( STATISTIC_OPEN_FILE_WRITE_BYTES, bytesWritten );
 
         return (size_t)bytesWritten;
     }

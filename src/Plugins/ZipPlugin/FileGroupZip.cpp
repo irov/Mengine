@@ -581,11 +581,13 @@ namespace Mengine
 
         const FileInfo & fi = it_found->second;
 
+        const FileMappedInterfacePtr & mappedFile = fi.zip->mappedFile;
+
         if( _streaming == true )
         {
-            if( fi.zip->mappedFile != nullptr )
+            if( mappedFile != nullptr )
             {
-                InputStreamInterfacePtr stream = fi.zip->mappedFile->createInputStream( _doc );
+                InputStreamInterfacePtr stream = mappedFile->createInputStream( _doc );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
@@ -593,7 +595,10 @@ namespace Mengine
             }
             else
             {
-                InputStreamInterfacePtr stream = m_baseFileGroup->createInputMutexFile( _filePath, fi.zip->proxyStream, fi.zip->proxyMutex, nullptr, _doc );
+                const InputStreamInterfacePtr & proxyStream = fi.zip->proxyStream;
+                const ThreadMutexInterfacePtr & proxyMutex = fi.zip->proxyMutex;
+
+                InputStreamInterfacePtr stream = m_baseFileGroup->createInputMutexFile( _filePath, proxyStream, proxyMutex, nullptr, _doc );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
@@ -601,7 +606,7 @@ namespace Mengine
             }
         }
 
-        if( fi.file_size < m_mappedThreshold || fi.compr_method != Z_NO_COMPRESSION || fi.zip->mappedFile == nullptr )
+        if( fi.file_size < m_mappedThreshold || fi.compr_method != Z_NO_COMPRESSION || mappedFile == nullptr )
         {
             MemoryInputInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryInput( _doc );

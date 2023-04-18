@@ -1,6 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.Mengine.Plugin.LocalNotifications">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <receiver android:name="org.Mengine.Plugin.LocalNotifications.NotificationPublisher" />
 
@@ -8,5 +6,4 @@
             android:name="org.Mengine.Plugin.LocalNotifications.NotificationJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
-
 </manifest>

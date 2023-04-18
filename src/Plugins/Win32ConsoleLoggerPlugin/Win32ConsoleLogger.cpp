@@ -106,7 +106,7 @@ namespace Mengine
         }
 
         m_createConsole = true;
-    
+
         m_CONOUT = ::freopen( "CONOUT$", "w", stdout );
         m_CONERR = ::freopen( "CONOUT$", "w", stderr );
 
@@ -196,19 +196,41 @@ namespace Mengine
         size_t size = _message.size;
 
         DWORD dWritten;
-        
-        Char timestamp[256] = {'\0'};
-        size_t timestampSize = Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
-        ::WriteConsoleA( output_handle, timestamp, (DWORD)timestampSize, &dWritten, NULL );
-        ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL);
 
-        ELoggerLevel level = _message.level;
+        if( _message.flag & ELF_FLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%u]", functionstamp, 0, MENGINE_MAX_PATH );
+            ::WriteConsoleA( output_handle, functionstamp, (DWORD)functionstampSize, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
 
-        Char symbol = Helper::getLoggerLevelSymbol( level );
-        ::WriteConsoleA( output_handle, &symbol, 1, &dWritten, NULL );
-        ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        if( _message.flag & ELF_FLAG_TIMESTAMP )
+        {
+            Char timestamp[256] = {'\0'};
+            size_t timestampSize = Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            ::WriteConsoleA( output_handle, timestamp, (DWORD)timestampSize, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
 
-        if( _message.category.empty() == false )
+        if( _message.flag & ELF_FLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+            ::WriteConsoleA( output_handle, threadstamp, (DWORD)threadstampSize, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
+
+        if( _message.flag & ELF_FLAG_SYMBOL )
+        {
+            ELoggerLevel level = _message.level;
+
+            Char symbol = Helper::getLoggerLevelSymbol( level );
+            ::WriteConsoleA( output_handle, &symbol, 1, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
+
+        if( _message.flag & ELF_FLAG_CATEGORY )
         {
             const Char * category_str = _message.category.c_str();
             size_t category_size = _message.category.size();

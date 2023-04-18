@@ -826,12 +826,15 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
-                msg.category = ConstString::none();
+                msg.category = STRINGIZE_STRING_LOCAL( "python" );
                 DATETIME_SYSTEM()
                     ->getLocalDateTime( &msg.dateTime );
                 msg.level = _level;
                 msg.filter = _filter;
                 msg.color = _color;
+                msg.flag = ELF_FLAG_NONE;
+                msg.file = "";
+                msg.line = 0;
                 msg.data = _message;
                 msg.size = MENGINE_STRLEN( _message );
 
@@ -1415,7 +1418,7 @@ namespace Mengine
                     ->getLocalDateTime( &dateTime );
 
                 Char loggerTimestamp[1024] = {'\0'};
-                Helper::makeLoggerTimestamp( dateTime, _format, loggerTimestamp, 1024 );
+                Helper::makeLoggerTimeStamp( dateTime, _format, loggerTimestamp, 0, 1024 );
 
                 return loggerTimestamp;
             }

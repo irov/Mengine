@@ -36,14 +36,11 @@ namespace Mengine
         virtual void clearHistory() = 0;
 
     public:
-        virtual size_t makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const = 0;
-
-    public:
         virtual bool validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const = 0;
 
     public:
         virtual void logMessage( const LoggerMessage & _message ) = 0;
-        virtual uint32_t getCountMessage( ELoggerLevel _level ) = 0;
+        virtual uint32_t getCountMessage( ELoggerLevel _level ) const = 0;
 
     public:
         virtual void lockMessage() = 0;

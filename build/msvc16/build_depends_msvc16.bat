@@ -14,6 +14,4 @@ set "ARCHITECTURE=Win32"
 
 @call %~dp0../build_depends.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%"  "ARCHITECTURE=%ARCHITECTURE%" "VERBOSITY=minimal"
 
-:end
-
 @exit /b %errorlevel%

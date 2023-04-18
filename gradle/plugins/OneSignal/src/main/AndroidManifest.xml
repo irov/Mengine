@@ -1,6 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.Mengine.Plugin.OneSignal">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <meta-data android:name="mengine.onesignal.app_id" android:value="@string/mengine_onesignal_app_id" />
 

@@ -16,6 +16,8 @@ import io.sentry.android.core.SentryAndroid;
 public class MengineSentryPlugin extends MenginePlugin implements MenginePluginLoggerListener {
     public static final String PLUGIN_NAME = "Sentry";
 
+    private String m_logMessage = "";
+
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         String MengineSentryPlugin_DSN = activity.getMetaDataString("mengine.sentry.dsn");
@@ -74,6 +76,29 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             return;
         }
 
-        Sentry.captureMessage("[" + category + "] " + msg, SentryLevel.ERROR);
+        m_logMessage += "[" + category + "] " + msg + "\n";
+
+        int length = m_logMessage.length();
+
+        int Sentry_MaxLogSize = 4096;
+
+        if (length < 4096) {
+            Sentry.setExtra("Log", m_logMessage);
+        } else {
+            String begin_message = m_logMessage.substring(length - Sentry_MaxLogSize * 60 / 100);
+            String end_message = m_logMessage.substring(length - Sentry_MaxLogSize * 40 / 100);
+
+            String total_message = "";
+            total_message += begin_message;
+            total_message += "\n";
+            total_message += "\n";
+            total_message += "...\n";
+            total_message += "...\n";
+            total_message += "...\n";
+            total_message += "\n";
+            total_message += end_message;
+
+            Sentry.setExtra("Log", total_message);
+        }
     }
 }

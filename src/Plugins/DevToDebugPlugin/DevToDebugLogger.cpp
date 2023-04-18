@@ -2,6 +2,7 @@
 
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/LoggerHelper.h"
@@ -46,7 +47,7 @@ namespace Mengine
 
         m_mutex = mutex;
 
-        uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 1000 );
+        uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 2000 );
 
         if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugLogger" ), ETP_BELOW_NORMAL, DevToDebug_LoggerTime, nullptr, [this]()
         {
@@ -74,10 +75,21 @@ namespace Mengine
         MessageDesc desc;
 
         Char loggerTimestamp[1024] = {'\0'};
-        Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 1024 );
+        Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
 
         desc.timestamp = loggerTimestamp;
         desc.tag = _message.category;
+        desc.file = _message.file;
+        desc.line = _message.line;
+
+        if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
+        {
+            const ConstString & threadName = THREAD_SERVICE()
+                ->getCurrentThreadName();
+
+            desc.threadName = threadName;
+        }
+        
         desc.data.assign( data, data + size );
 
         switch( _message.level )
@@ -158,6 +170,9 @@ namespace Mengine
 
             j_desc.set( "ts", desc.timestamp );
             j_desc.set( "tag", desc.tag );
+            j_desc.set( "file", desc.file );
+            j_desc.set( "line", desc.line );
+            j_desc.set( "thread", desc.threadName );
             j_desc.set( "data", desc.data );
             j_desc.set( "level", desc.level );
 

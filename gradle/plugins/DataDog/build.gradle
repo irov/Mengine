@@ -1,6 +1,7 @@
 import com.Mengine.Utils
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+apply from: rootProject.projectDir.getAbsolutePath() + '/gson.gradle'
 
 buildscript {
     repositories {
@@ -12,9 +13,9 @@ buildscript {
 }
 
 android {
+    namespace "org.Mengine.Plugin.DataDog"
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.datadoghq:dd-sdk-android:1.17.1'
 }

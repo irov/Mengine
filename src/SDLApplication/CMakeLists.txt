@@ -112,23 +112,48 @@ if(MENGINE_TARGET_UWP)
             include("${MENGINE_DEPLOY_PATH}/project_prepare.cmake")
         endif()
 
-        ADD_FILTER(
-        AppXManifest
-            ${MENGINE_DEPLOY_PATH}/Package.appxmanifest
-        )
+        if(MENGINE_APPLICATION_DEPLOY_PACKAGE)
+            ADD_FILTER(
+            AppXManifest
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PACKAGE}
+            )
+        endif()
         
-        ADD_FILTER(
-        AppXAssets
-            ${MENGINE_DEPLOY_PATH}/Assets/LockScreenLogo.scale-200.png
-            ${MENGINE_DEPLOY_PATH}/Assets/SplashScreen.png
-            ${MENGINE_DEPLOY_PATH}/Assets/SplashScreen.scale-200.png
-            ${MENGINE_DEPLOY_PATH}/Assets/Square44x44Logo.scale-200.png
-            ${MENGINE_DEPLOY_PATH}/Assets/Square44x44Logo.targetsize-24_altform-unplated.png
-            ${MENGINE_DEPLOY_PATH}/Assets/Square150x150Logo.scale-200.png
-            ${MENGINE_DEPLOY_PATH}/Assets/StoreLogo.scale-100.png
-            ${MENGINE_DEPLOY_PATH}/Assets/StoreLogo.scale-200.png
-            ${MENGINE_DEPLOY_PATH}/Assets/Wide310x150Logo.scale-200.png
-        )
+        if(MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS)
+            SET(APPX_VISUAL_ASSETS
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/LockScreenLogo.scale-200.png
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/SplashScreen.scale-200.png
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/Square44x44Logo.scale-200.png
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/Square44x44Logo.targetsize-24_altform-unplated.png
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/Square150x150Logo.scale-200.png
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/StoreLogo.scale-100.png
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/StoreLogo.scale-200.png
+                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/Wide310x150Logo.scale-200.png
+            )
+            
+            set_source_files_properties(${APPX_VISUAL_ASSETS} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+            #set_source_files_properties(${APPX_VISUAL_ASSETS} PROPERTY VS_DEPLOYMENT_LOCATION "VisualAssets")
+            
+            SET(SRC_FILES ${SRC_FILES} ${APPX_VISUAL_ASSETS})
+        endif()
+        
+        if(MENGINE_APPLICATION_DEPLOY_DATA)
+            file(GLOB_RECURSE APPX_DATA ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}/*)
+            foreach(DATA ${APPX_DATA})
+                #file(RELATIVE_PATH RES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA} ${DATA})
+                #get_filename_component(RES_LOC ${RES} PATH)
+                
+                set_source_files_properties(${DATA} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+                #set_source_files_properties(${DATA} PROPERTY VS_DEPLOYMENT_LOCATION "Data/${RES_LOC}")
+                #set_source_files_properties(${DATA} PROPERTY VS_TOOL_OVERRIDE  "None")
+                
+                #string(REPLACE "/" "\\" ide_group_name "AppXData/${RES_LOC}")
+                #MESSAGE("ide_group_name: ${ide_group_name} DATA: ${DATA}")
+                #source_group(${ide_group_name} FILES ${DATA})
+            endforeach()
+
+            SET(SRC_FILES ${SRC_FILES} ${APPX_DATA})
+        endif()
     endif()
     
     ADD_MENGINE_EXECUTABLE_WIN32()
@@ -422,7 +447,7 @@ IF(MENGINE_TARGET_WINDOWS)
 ENDIF()
 
 IF(MENGINE_TARGET_UWP)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Windows)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} WindowsApp)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Winmm.lib Version.lib Imm32.lib Setupapi.lib)
 ENDIF()
 

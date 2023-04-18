@@ -37,7 +37,11 @@ namespace Mengine
     enum ELoggerFlag
     {
         ELF_FLAG_NONE = 0x00000000,
-        ELF_FLAG_FUNCTION_STAMP = 0x00000001,
+        ELF_FLAG_FUNCTIONSTAMP = 0x00000001,
+        ELF_FLAG_TIMESTAMP = 0x00000002,
+        ELF_FLAG_THREADSTAMP = 0x00000004,
+        ELF_FLAG_SYMBOL = 0x00000010,
+        ELF_FLAG_CATEGORY = 0x00000020,
         ELF_FLAG_FULL = 0xFFFFFFFF
     };
     //////////////////////////////////////////////////////////////////////////

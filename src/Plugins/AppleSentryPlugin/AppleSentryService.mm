@@ -215,7 +215,7 @@ namespace Mengine
             ->getLocalDateTime( &dateTime );
 
         Char LOG_TIMESTAMP[256] = {'\0'};
-        Helper::makeLoggerTimestamp( dateTime, "[%02u:%02u:%02u:%04u]", LOG_TIMESTAMP, 256 );
+        Helper::makeLoggerTimeStamp( dateTime, "[%02u:%02u:%02u:%04u]", LOG_TIMESTAMP, 0, 256 );
 
         Helper::appleSentrySetExtraString( "Log Timestamp", LOG_TIMESTAMP );
         Helper::appleSentrySetExtraBoolean( "Engine Stop", false );

@@ -30,7 +30,7 @@ namespace Mengine
     void AppleSentryLoggerCapture::log( const LoggerMessage & _message )
     {
         Char timestamp[256] = {'\0'};
-        size_t timestampSize = Helper::makeLoggerTimestamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 256 );
+        size_t timestampSize = Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
         m_message.append( timestamp, timestampSize );
         m_message.append( " ", 1 );
 

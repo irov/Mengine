@@ -61,7 +61,7 @@ namespace Mengine
             {
                 uint8_t d = data_u8[i];
 
-                MENGINE_SNPRINTF( c, 2, "%02x", d );
+                MENGINE_SNPRINTF( c, 3, "%02x", d );
 
                 c += 2;
             }

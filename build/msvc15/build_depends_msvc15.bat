@@ -13,5 +13,4 @@ set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 
 @call %~dp0../build_depends.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "VERBOSITY=minimal"
 
-@pause
 @exit /b %errorlevel%

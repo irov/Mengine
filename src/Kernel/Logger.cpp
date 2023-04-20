@@ -26,7 +26,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, ELoggerFlag _flag )
+    LoggerOperator::LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, uint32_t _flag )
         : m_category( _category )
         , m_level( _level )
         , m_filter( _filter )
@@ -41,7 +41,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const LoggerOperator & LoggerOperator::operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 )
+    const LoggerOperator & LoggerOperator::operator()( const Char * _format, ... ) const
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );

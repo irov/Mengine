@@ -64,7 +64,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
 
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "xls" ), m_level, LFILTER_NONE, m_color, nullptr, 0, ELF_FLAG_NONE ).operator()( "%s", m_messageCache.c_str() );
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "xls" ), m_level, LFILTER_NONE, m_color, nullptr, 0, LFLAG_SHORT ).operator()( "%s", m_messageCache.c_str() );
         
         m_messageCache.clear();
 

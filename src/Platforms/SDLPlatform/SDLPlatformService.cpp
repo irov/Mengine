@@ -470,7 +470,7 @@ namespace Mengine
             ELoggerLevel level = Detail::SDL_GetLoggerLevel( priority );
             const Char * category_str = Detail::SDL_GetLoggerCategoryString( category );
 
-            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "sdl" ), level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("SDL [%s]: %s"
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "sdl" ), level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("[%s] %s"
                 , category_str
                 , message
                 );

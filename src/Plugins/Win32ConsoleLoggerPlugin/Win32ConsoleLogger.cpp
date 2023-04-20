@@ -197,7 +197,7 @@ namespace Mengine
 
         DWORD dWritten;
 
-        if( _message.flag & ELF_FLAG_FUNCTIONSTAMP )
+        if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
             size_t functionstampSize = Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%u]", functionstamp, 0, MENGINE_MAX_PATH );
@@ -205,7 +205,7 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & ELF_FLAG_TIMESTAMP )
+        if( _message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
             size_t timestampSize = Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
@@ -213,7 +213,7 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & ELF_FLAG_THREADSTAMP )
+        if( _message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
             size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
@@ -221,7 +221,7 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & ELF_FLAG_SYMBOL )
+        if( _message.flag & LFLAG_SYMBOL )
         {
             ELoggerLevel level = _message.level;
 
@@ -230,7 +230,7 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & ELF_FLAG_CATEGORY )
+        if( _message.flag & LFLAG_CATEGORY )
         {
             const Char * category_str = _message.category.c_str();
             size_t category_size = _message.category.size();

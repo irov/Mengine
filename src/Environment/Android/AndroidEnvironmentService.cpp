@@ -219,7 +219,7 @@ extern "C"
                 break;
         }
 
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), level, Mengine::LFILTER_NONE, color, nullptr, 0, Mengine::ELF_FLAG_NONE )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), level, Mengine::LFILTER_NONE, color, nullptr, 0, Mengine::LFLAG_SHORT )("%s"
             , msg_str
         );
 

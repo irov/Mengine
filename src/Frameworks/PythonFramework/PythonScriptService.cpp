@@ -59,7 +59,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _user );
 
-            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "pybind" ), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("%s"
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "pybind" ), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("%s"
                 , _msg
                 );
         }
@@ -213,7 +213,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "script" ), LM_WARNING, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "script" ), LM_WARNING, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -223,7 +223,7 @@ namespace Mengine
                 Char traceback[4096] = {'\0'};
                 _kernel->get_traceback( traceback, 4095 );
 
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "script" ), LM_WARNING, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("traceback:\n%s"
+                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "script" ), LM_WARNING, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("traceback:\n%s"
                     , traceback
                     );
             }

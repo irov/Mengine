@@ -832,7 +832,7 @@ namespace Mengine
                 msg.level = _level;
                 msg.filter = _filter;
                 msg.color = _color;
-                msg.flag = ELF_FLAG_NONE;
+                msg.flag = LFLAG_SHORT;
                 msg.file = "";
                 msg.line = 0;
                 msg.data = _message;

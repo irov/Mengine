@@ -33,7 +33,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool OpenGLRenderErrorCheck( const Char * _file, uint32_t _line )
         {
-            GLenum err = glGetError();
+            GLenum err = glGetError();  
 
             if( err == GL_NO_ERROR )
             {
@@ -42,9 +42,7 @@ namespace Mengine
 
             const Char * err_str = glGetErrorString( err );
 
-            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "opengl" ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, ELF_FLAG_NONE )("%s:[%d] error %s:%d"
-                , _file
-                , _line
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "opengl" ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("error %s:%d"
                 , err_str
                 , err
                 );

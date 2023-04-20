@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32OutputDebugLogger::log( const LoggerMessage & _message )
     {
-        if( _message.flag & ELF_FLAG_FUNCTIONSTAMP )
+        if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
             Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%u]", functionstamp, 0, MENGINE_MAX_PATH );
@@ -27,7 +27,7 @@ namespace Mengine
             ::OutputDebugStringA( " " );
         }
 
-        if( _message.flag & ELF_FLAG_TIMESTAMP )
+        if( _message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
             Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
@@ -35,7 +35,7 @@ namespace Mengine
             ::OutputDebugStringA( " " );
         }
 
-        if( _message.flag & ELF_FLAG_THREADSTAMP )
+        if( _message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
             Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
@@ -43,7 +43,7 @@ namespace Mengine
             ::OutputDebugStringA( " " );
         }
 
-        if( _message.flag & ELF_FLAG_SYMBOL )
+        if( _message.flag & LFLAG_SYMBOL )
         {
             ELoggerLevel level = _message.level;
 
@@ -53,7 +53,7 @@ namespace Mengine
             ::OutputDebugStringA( " " );
         }
 
-        if( _message.flag & ELF_FLAG_CATEGORY )
+        if( _message.flag & LFLAG_CATEGORY )
         {
             const Char * category_str = _message.category.c_str();
 

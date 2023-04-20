@@ -169,7 +169,7 @@ namespace Mengine
         msg.category = ConstString::none();
         msg.dateTime = dateTime;
         msg.level = LM_MESSAGE;
-        msg.flag = ELF_FLAG_NONE;
+        msg.flag = LFLAG_SHORT;
         msg.filter = 0;
         msg.color = LCOLOR_GREEN;
         msg.file = "";

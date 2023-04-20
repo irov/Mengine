@@ -12,7 +12,7 @@ namespace Mengine
         ConstString category;
         PlatformDateTime dateTime;
         ELoggerLevel level;
-        ELoggerFlag flag;
+        uint32_t flag;
         uint32_t filter;
         uint32_t color;
         const Char * file;

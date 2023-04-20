@@ -69,11 +69,11 @@ namespace Mengine
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, 256, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "python" ), level, LFILTER_NONE, color, function, lineno, ELF_FLAG_NONE )( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "python" ), level, LFILTER_NONE, color, function, lineno, LFLAG_SHORT )( "%s", m_messageCache.c_str() );
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "python" ), level, LFILTER_NONE, color, nullptr, 0, ELF_FLAG_NONE )( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "python" ), level, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )( "%s", m_messageCache.c_str() );
         }
 
         m_messageCache.clear();

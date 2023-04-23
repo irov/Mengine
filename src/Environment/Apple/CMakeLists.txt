@@ -10,6 +10,9 @@ src
     AppleErrorHelper.mm
     AppleString.h
     AppleString.mm
+    
+    AppleAnalytics.h
+    AppleAnalytics.mm
 )
 
 ADD_MENGINE_LIBRARY(Environment)

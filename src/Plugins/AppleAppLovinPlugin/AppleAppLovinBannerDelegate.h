@@ -19,6 +19,8 @@
 - (void) show;
 - (void) hide;
 
+- (void) loadAd;
+
 - (UIViewController* _Nullable) rootViewController;
 
 @property (nonatomic, assign) AppleAppLovinAnalyticsService * _Nonnull m_analytics;

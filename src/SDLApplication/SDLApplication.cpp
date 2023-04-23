@@ -292,13 +292,18 @@ namespace Mengine
         if( TEXT_SERVICE()
             ->hasTextEntry( APPLICATION_TITLE, &entry ) == false )
         {
-            LOGGER_INFO( "application", "Application not setup title '%s'"
+            LOGGER_MESSAGE( "application not setup title '%s'"
                 , APPLICATION_TITLE.c_str()
             );
         }
         else
         {
             projectTitle = entry->getValue( &projectTitleLen );
+            
+            LOGGER_INFO( "application", "project title '%.*s'"
+                , (int32_t)projectTitleLen
+                , projectTitle
+            );
         }
 
         PLATFORM_SERVICE()

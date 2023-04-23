@@ -15,15 +15,14 @@
     self.m_rewardedAd.delegate = self;
     self.m_rewardedAd.revenueDelegate = self;
     
+    self.m_retryAttempt = 0;
+    self.m_enumeratorRequest = 0;
+    self.m_requestId = 0;
+    
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-    if( [amazonSlotId length] != 0 ) {
-        self.m_amazonLoader = [[AppleAppLovinRewardedAmazonLoader alloc] initWithSlotId: amazonSlotId rewardedAd: self.m_rewardedAd];
-    }else{
-        // Load the first ad
-        [self.m_rewardedAd loadAd];
-    }
+    self.m_amazonLoader = [[AppleAppLovinRewardedAmazonLoader alloc] initWithSlotId: amazonSlotId rewardedAd: self.m_rewardedAd];
 #else
-    [self.m_rewardedAd loadAd];
+    [self loadAd];
 #endif
     
     return self;
@@ -31,7 +30,8 @@
 
 - (void) dealloc {
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-    if( self.m_amazonLoader != nil ) {
+    if( self.m_amazonLoader != nil )
+    {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
@@ -42,58 +42,79 @@
     [super dealloc];
 }
 
-- (BOOL) hasLoaded {
-    return [self.m_rewardedAd isReady];
+- (BOOL) canOffer {
+    BOOL ready = [self.m_rewardedAd isReady];
+    
+    return ready;
+}
+
+- (BOOL) canYouShow {
+    BOOL ready = [self.m_rewardedAd isReady];
+    
+    return ready;
 }
 
 - (BOOL) show {
-    if( self.hasLoaded == true ) {
-        [self.m_rewardedAd showAd];
-
-        return YES;
+    BOOL ready = [self.m_rewardedAd isReady];
+    
+    if( ready == NO )
+    {
+        return NO;
     }
+    
+    [self.m_rewardedAd showAd];
 
-    return NO;
+    return YES;
+}
+
+- (void) loadAd {
+    if( self.m_rewardedAd == nil )
+    {
+        return;
+    }
+    
+    self.m_requestId = self.m_enumeratorRequest++;
+    
+    [self.m_rewardedAd loadAd];
 }
 
 #pragma mark - MAAdDelegate Protocol
 
 - (void) didLoadAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "rewarded didLoadAd" );
+    LOGGER_MESSAGE( "rewarded didLoadAd" );
     
-    // Reset retry attempt
     self.m_retryAttempt = 0;
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
-    LOGGER_INFO( "applovin", "rewarded didFailToLoadAdForAdUnitIdentifier" );
+    LOGGER_MESSAGE( "rewarded didFailToLoadAdForAdUnitIdentifier" );
     
     self.m_retryAttempt++;
 
     NSInteger delaySec = pow(2, MIN(6, self.m_retryAttempt));
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delaySec * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [self.m_rewardedAd loadAd];
+        [self loadAd];
     });
 }
 
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "rewarded didDisplayAd" );
+    LOGGER_MESSAGE( "rewarded didDisplayAd" );
 }
 
 - (void) didClickAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "rewarded didClickAd" );
+    LOGGER_MESSAGE( "rewarded didClickAd" );
 }
 
 - (void) didHideAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "rewarded didHideAd" );
+    LOGGER_MESSAGE( "rewarded didHideAd" );
     
     // Rewarded ad is hidden. Pre-load the next ad
     [self.m_rewardedAd loadAd];
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    LOGGER_INFO( "applovin", "rewarded didFailToDisplayAd" );
+    LOGGER_MESSAGE( "rewarded didFailToDisplayAd" );
         
     [self.m_rewardedAd loadAd];
 }
@@ -101,21 +122,21 @@
 #pragma mark - MARewardedAdDelegate Protocol
 
 - (void) didStartRewardedVideoForAd:(MAAd *)ad {
-    LOGGER_INFO( "applovin", "rewarded didStartRewardedVideoForAd" );
+    LOGGER_MESSAGE( "rewarded didStartRewardedVideoForAd" );
 }
 
 - (void) didCompleteRewardedVideoForAd:(MAAd *)ad {
-    LOGGER_INFO( "applovin", "rewarded didCompleteRewardedVideoForAd" );
+    LOGGER_MESSAGE( "rewarded didCompleteRewardedVideoForAd" );
 }
 
 - (void) didRewardUserForAd:(MAAd *) ad withReward:(MAReward *) reward {
-    LOGGER_INFO( "applovin", "rewarded didRewardUserForAd" );
+    LOGGER_MESSAGE( "rewarded didRewardUserForAd" );
 }
 
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
-    LOGGER_INFO( "applovin", "rewarded didPayRevenueForAd" );
+    LOGGER_MESSAGE( "rewarded didPayRevenueForAd" );
         
     [self.m_analytics eventRevenuePaid:ad];
 }

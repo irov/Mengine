@@ -20,20 +20,14 @@
 
     self.m_adView.frame = rect;
 
-    // Set background or background color for banners to be fully functional
     self.m_adView.backgroundColor = UIColor.blackColor;
 
     [self.rootViewController.view addSubview: self.m_adView];
     
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-    if( [amazonSlotId length] != 0 ) {
-        self.m_amazonLoader = [[AppleAppLovinBannerAmazonLoader alloc] initWithSlotId: amazonSlotId adView: self.m_adView rect: rect];
-    } else {
-        // Load the ad
-        [self.m_adView loadAd];
-    }
+    self.m_amazonLoader = [[AppleAppLovinBannerAmazonLoader alloc] initWithSlotId:amazonSlotId adView:self.m_adView rect:rect];
 #else
-    [self.m_adView loadAd];
+    [self loadAd];
 #endif
     
     return self;
@@ -41,7 +35,8 @@
 
 - (void) dealloc {
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-    if( self.m_amazonLoader != nil ) {
+    if( self.m_amazonLoader != nil )
+    {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
@@ -64,6 +59,10 @@
     [self.m_adView stopAutoRefresh];
 }
 
+- (void) loadAd {
+    [self.m_adView loadAd];
+}
+
 - (UIViewController* _Nullable) rootViewController {
     UIViewController * rootViewController = Mengine::Helper::iOSGetRootViewController();
     
@@ -77,48 +76,46 @@
     CGFloat widthDp = adViewSize.width;
     CGFloat heightDp = adViewSize.height;
 
-    LOGGER_INFO( "applovin", "Banner didLoadAd" );
+    LOGGER_MESSAGE( "banner didLoadAd" );
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
-    LOGGER_INFO( "applovin", "Banner didFailToLoadAdForAdUnitIdentifier" );
+    LOGGER_MESSAGE( "banner didFailToLoadAdForAdUnitIdentifier" );
 }
 
 - (void) didClickAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "Banner didClickAd" );
+    LOGGER_MESSAGE( "banner didClickAd" );
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    LOGGER_INFO( "applovin", "Banner didFailToDisplayAd" );
+    LOGGER_MESSAGE( "banner didFailToDisplayAd" );
 }
 
 
 #pragma mark - MAAdViewAdDelegate Protocol
 
 - (void) didExpandAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "Banner didExpandAd" );
+    LOGGER_MESSAGE( "banner didExpandAd" );
 }
 
 - (void) didCollapseAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "Banner didCollapseAd" );
+    LOGGER_MESSAGE( "banner didCollapseAd" );
 }
 
 #pragma mark - Deprecated Callbacks
 
-/* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "Banner didDisplayAd" );
+    LOGGER_MESSAGE( "banner didDisplayAd" );
 }
 
 - (void) didHideAd:(MAAd *) ad {
-    LOGGER_INFO( "applovin", "Banner didHideAd" );
+    LOGGER_MESSAGE( "banner didHideAd" );
 }
-/* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */
     
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
-    LOGGER_INFO( "applovin", "Banner didPayRevenueForAd" );
+    LOGGER_MESSAGE( "banner didPayRevenueForAd" );
 }
 
 @end

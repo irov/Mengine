@@ -10,15 +10,20 @@ namespace Mengine
         SERVICE_DECLARE( "AppleAppLovinService" )
 
     public:
-        virtual void initBanner() = 0;
-        virtual void initInterstitial() = 0;
-        virtual void initRewarded() = 0;
+        virtual void initBanner( const ConstString & _bannerAdUnit ) = 0;
         
     public:
-        virtual bool hasLoadedInterstitial() const = 0;
+        virtual void initInterstitial( const ConstString & _interstitialAdUnit ) = 0;
+        
+    public:
+        virtual bool canYouShowInterstitial() const = 0;
         virtual bool showInterstitial() = 0;
+        
+    public:
+        virtual void initRewarded( const ConstString & _rewardedAdUnit ) = 0;
 
-        virtual bool hasLoadedRewarded() const = 0;
+        virtual bool canOfferRewarded() const = 0;
+        virtual bool canYouShowRewarded() const = 0;
         virtual bool showRewarded() = 0;
 
     public:

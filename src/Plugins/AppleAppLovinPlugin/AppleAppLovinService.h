@@ -26,15 +26,21 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        void initBanner() override;
-        void initInterstitial() override;
-        void initRewarded() override;
-
+        void initBanner( const ConstString & _bannerAdUnit ) override;
+        
     public:
-        bool hasLoadedInterstitial() const override;
+        void initInterstitial( const ConstString & _interstitialAdUnit ) override;
+        
+    public:
+        bool canYouShowInterstitial() const override;
         bool showInterstitial() override;
 
-        bool hasLoadedRewarded() const override;
+    public:
+        void initRewarded( const ConstString & _rewardedAdUnit ) override;
+        
+    public:
+        bool canOfferRewarded() const override;
+        bool canYouShowRewarded() const override;
         bool showRewarded() override;
 
     public:

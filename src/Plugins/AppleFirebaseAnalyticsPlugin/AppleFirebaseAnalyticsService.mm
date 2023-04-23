@@ -79,7 +79,7 @@ namespace Mengine
         {
             id value = _parameters[key];
             
-            LOGGER_MESSAGE( "key: %s value: %s]"
+            LOGGER_MESSAGE( "key: %s value: %s"
                 , [key UTF8String]
                 , [[value description] UTF8String]
             );

@@ -208,7 +208,7 @@ namespace Mengine
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compile"
+            LOGGER_ERROR( "sound '%s' not compile"
                 , this->getName().c_str()
             );
 

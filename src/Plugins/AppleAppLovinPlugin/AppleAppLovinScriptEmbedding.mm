@@ -19,28 +19,28 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void s_appleAppLovin_initBanner()
+        static void s_appleAppLovin_initBanner( const ConstString & _bannerAdUnit )
         {
             APPLE_APPLOVIN_SERVICE()
-                ->initBanner();
+                ->initBanner( _bannerAdUnit );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_appleAppLovin_initInterstitial()
+        static void s_appleAppLovin_initInterstitial( const ConstString & _interstitialAdUnit )
         {
             APPLE_APPLOVIN_SERVICE()
-                ->initInterstitial();
+                ->initInterstitial( _interstitialAdUnit );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_appleAppLovin_initRewarded()
+        static void s_appleAppLovin_initRewarded( const ConstString & _rewardedAdUnit )
         {
             APPLE_APPLOVIN_SERVICE()
-                ->initRewarded();
+                ->initRewarded( _rewardedAdUnit );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_hasLoadedinterstitial()
+        static bool s_appleAppLovin_canYouShowInterstitial()
         {
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->hasLoadedInterstitial();
+                ->canYouShowInterstitial();
             
             return result;
         }
@@ -53,10 +53,18 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_hasLoadedRewarded()
+        static bool s_appleAppLovin_canOfferRewarded()
         {
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->hasLoadedRewarded();
+                ->canOfferRewarded();
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_appleAppLovin_canYouShowRewarded()
+        {
+            bool result = APPLE_APPLOVIN_SERVICE()
+                ->canYouShowRewarded();
 
             return result;
         }
@@ -105,9 +113,10 @@ namespace Mengine
         pybind::def_function( _kernel, "appleAppLovinInitBanner", &Detail::s_appleAppLovin_initBanner );
         pybind::def_function( _kernel, "appleAppLovinInitInterstitial", &Detail::s_appleAppLovin_initInterstitial );
         pybind::def_function( _kernel, "appleAppLovinInitRewarded", &Detail::s_appleAppLovin_initRewarded );
-        pybind::def_function( _kernel, "appleAppLovinHasLoadedinterstitial", &Detail::s_appleAppLovin_hasLoadedinterstitial );
+        pybind::def_function( _kernel, "appleAppLovinCanYouShowInterstitial", &Detail::s_appleAppLovin_canYouShowInterstitial );
         pybind::def_function( _kernel, "appleAppLovinShowInterstitial", &Detail::s_appleAppLovin_showInterstitial );
-        pybind::def_function( _kernel, "appleAppLovinHasLoadedRewarded", &Detail::s_appleAppLovin_hasLoadedRewarded );
+        pybind::def_function( _kernel, "appleAppLovinCanOfferRewarded", &Detail::s_appleAppLovin_canOfferRewarded );
+        pybind::def_function( _kernel, "appleAppLovinCanYouShowRewarded", &Detail::s_appleAppLovin_canYouShowRewarded );
         pybind::def_function( _kernel, "appleAppLovinShowRewarded", &Detail::s_appleAppLovin_showRewarded );
         pybind::def_function( _kernel, "appleAppLovinShowBanner", &Detail::s_appleAppLovin_showBanner );
         pybind::def_function( _kernel, "appleAppLovinHideBanner", &Detail::s_appleAppLovin_hideBanner );

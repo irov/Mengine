@@ -38,9 +38,8 @@ namespace Mengine
     bool AppleAppLovinService::_initializeService()
     {
         bool OPTION_applovinverbose = HAS_OPTION( "applovinverbose" );
-        bool AppLovinPlugin_VerboseLogging = CONFIG_VALUE( "AppLovinPlugin", "VerboseLogging", false );
         
-        if( OPTION_applovinverbose == true || AppLovinPlugin_VerboseLogging == true )
+        if( OPTION_applovinverbose == true )
         {
             [ALSdk shared].settings.verboseLoggingEnabled = YES;
         }
@@ -123,17 +122,13 @@ namespace Mengine
         }
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::initBanner()
+    void AppleAppLovinService::initBanner( const ConstString & _bannerAdUnit )
     {
-        const Char * AppLovinPlugin_BannerAdUnit = CONFIG_VALUE( "AppLovinPlugin", "BannerAdUnit", "" );
-
-        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_BannerAdUnit, "" ) == 0 );
-
-        LOGGER_INFO( "applovin", "Banner AdUnit '%s'"
-            , AppLovinPlugin_BannerAdUnit
+        LOGGER_MESSAGE( "init banner AdUnit '%s'"
+            , _bannerAdUnit.c_str()
         );
 
-        NSString * bannerAdUnit = [NSString stringWithUTF8String:AppLovinPlugin_BannerAdUnit];
+        NSString * bannerAdUnit = [NSString stringWithUTF8String:_bannerAdUnit.c_str()];
 
         // Banner height on iPhone and iPad is 50 and 90, respectively
         CGFloat height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
@@ -153,17 +148,13 @@ namespace Mengine
                                                                 analyticsService:m_analyticsService];
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::initInterstitial()
+    void AppleAppLovinService::initInterstitial( const ConstString & _interstitialAdUnit )
     {
-        const Char * AppLovinPlugin_InterstitialAdUnit = CONFIG_VALUE( "AppLovinPlugin", "InterstitialAdUnit", "" );
-        
-        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_InterstitialAdUnit, "" ) == 0 );
-        
-        LOGGER_INFO( "applovin", "Interstitial AdUnit '%s'"
-            , AppLovinPlugin_InterstitialAdUnit
+        LOGGER_MESSAGE( "init interstitial AdUnit '%s'"
+            , _interstitialAdUnit.c_str()
         );
         
-        NSString * interstitialAdUnit = [NSString stringWithUTF8String:AppLovinPlugin_InterstitialAdUnit];
+        NSString * interstitialAdUnit = [NSString stringWithUTF8String:_interstitialAdUnit.c_str()];
         
         NSString * amazonInterstitialSlotId = nil;
         
@@ -176,17 +167,13 @@ namespace Mengine
                                                                             analyticsService:m_analyticsService];
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::initRewarded()
+    void AppleAppLovinService::initRewarded( const ConstString & _rewardedAdUnit )
     {
-        const Char * AppLovinPlugin_RewardedAdUnit = CONFIG_VALUE( "AppLovinPlugin", "RewardedAdUnit", "" );
-        
-        MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_RewardedAdUnit, "" ) == 0 );
-
-        LOGGER_INFO( "applovin", "Rewarded AdUnit '%s'"
-            , AppLovinPlugin_RewardedAdUnit
+        LOGGER_MESSAGE( "init rewarded AdUnit '%s'"
+            , _rewardedAdUnit.c_str()
         );
 
-        NSString * rewardedAdUnit = [NSString stringWithUTF8String:AppLovinPlugin_RewardedAdUnit];
+        NSString * rewardedAdUnit = [NSString stringWithUTF8String:_rewardedAdUnit.c_str()];
         
         NSString * amazonRewardedSlotId = nil;
         
@@ -199,9 +186,9 @@ namespace Mengine
                                                                     analyticsService: m_analyticsService];
     }
     /////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::hasLoadedInterstitial() const
+    bool AppleAppLovinService::canYouShowInterstitial() const
     {
-        BOOL result = [m_interstitial hasLoaded];
+        BOOL result = [m_interstitial canYouShow];
         
         return result;
     }
@@ -213,9 +200,16 @@ namespace Mengine
         return result;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::hasLoadedRewarded() const
+    bool AppleAppLovinService::canOfferRewarded() const
     {
-        BOOL result = [m_rewarded hasLoaded];
+        BOOL result = [m_rewarded canOffer];
+        
+        return result;
+    }
+    ////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::canYouShowRewarded() const
+    {
+        BOOL result = [m_rewarded canYouShow];
         
         return result;
     }

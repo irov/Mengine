@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxAdRequestListener, MaxRewardedAdListener, MaxAdRevenueListener {
     private MaxRewardedAd m_rewardedAd;
 
-    private int m_retryAttemptRewarded;
+    private int m_retryAttempt;
 
     private int m_enumeratorRequest;
     private int m_requestId;
@@ -24,7 +24,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public MengineAppLovinRewarded(MengineAppLovinPlugin plugin, String adUnitId) {
         super(plugin);
 
-        m_retryAttemptRewarded = 0;
+        m_retryAttempt = 0;
         m_enumeratorRequest = 0;
         m_requestId = 0;
 
@@ -192,7 +192,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_retryAttemptRewarded = 0;
+        m_retryAttempt = 0;
 
         m_plugin.pythonCall("onApplovinRewardedOnAdLoaded");
     }
@@ -248,9 +248,9 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             .addParameterInteger( "error_code", error.getCode())
             .log();
 
-        m_retryAttemptRewarded++;
+        m_retryAttempt++;
 
-        long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttemptRewarded)));
+        long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttempt)));
 
         MengineUtils.performOnMainThreadDelayed(() -> {
             this.loadAd();

@@ -192,6 +192,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     public void initBanner(String adUnitId) {
+        if (m_banner != null) {
+            throw new RuntimeException("[AppLovin] already init banner");
+        }
+
         m_banner = new MengineAppLovinBanner(this, adUnitId);
     }
 
@@ -200,6 +204,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     public void initInterstitial(String adUnitId) {
+        if (m_interstitial != null) {
+            throw new RuntimeException("[AppLovin] already init interstitial");
+        }
+
         m_interstitial = new MengineAppLovinInterstitial(this, adUnitId);
     }
 
@@ -212,6 +220,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     public void initRewarded(String adUnitId) {
+        if (m_rewarded != null) {
+            throw new RuntimeException("[AppLovin] already init rewarded");
+        }
+
         m_rewarded = new MengineAppLovinRewarded(this, adUnitId);
     }
 

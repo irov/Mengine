@@ -841,6 +841,8 @@ Core
     ConfigHelper.h
     OptionHelper.h
     
+    AnalyticsHelper.h
+    
     ResolutionHelper.cpp
     ResolutionHelper.h
     

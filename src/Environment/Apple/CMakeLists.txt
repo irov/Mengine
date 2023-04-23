@@ -13,6 +13,12 @@ src
     
     AppleAnalytics.h
     AppleAnalytics.mm
+    
+    AppleEnvironmentService.h
+    AppleEnvironmentService.mm
+    
+    ConstStringHolderNSString.h
+    ConstStringHolderNSString.mm
 )
 
 ADD_MENGINE_LIBRARY(Environment)

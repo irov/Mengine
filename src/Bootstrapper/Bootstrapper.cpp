@@ -19,6 +19,10 @@
 #   include "Interface/AndroidEnvironmentServiceInterface.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_APPLE)
+#   include "Interface/AppleEnvironmentServiceInterface.h"
+#endif
+
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/DocumentHelper.h"
@@ -108,6 +112,10 @@ SERVICE_EXTERN( ChronometerService );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
 SERVICE_EXTERN( AndroidEnvironmentService );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_APPLE)
+SERVICE_EXTERN( AppleEnvironmentService );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_EXTERNAL_SOURCE)
@@ -839,6 +847,11 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_ANDROID)
         MENGINE_ADD_SERVICE( AndroidEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
+
+#if defined(MENGINE_PLATFORM_APPLE)
+        MENGINE_ADD_SERVICE( AppleEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
 
         MENGINE_ADD_SERVICE( PlatformService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1916,6 +1929,10 @@ namespace Mengine
         SERVICE_FINALIZE( AndroidEnvironmentService );
 #endif
 
+#if defined(MENGINE_PLATFORM_APPLE)
+        SERVICE_FINALIZE( AppleEnvironmentService );
+#endif
+
         SERVICE_FINALIZE( AnalyticsService );
         SERVICE_FINALIZE( StatisticService );
 
@@ -1983,6 +2000,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         SERVICE_DESTROY( AndroidEnvironmentService );
+#endif
+
+#if defined(MENGINE_PLATFORM_APPLE)
+        SERVICE_DESTROY( AppleEnvironmentService );
 #endif
 
         SERVICE_DESTROY( PlatformService );

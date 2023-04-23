@@ -1062,16 +1062,17 @@ namespace Mengine
         return available;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptService::stringize( PyObject * _object, ConstString * const _cstr )
+    void PythonScriptService::stringize( PyObject * _object, ConstString * const _cstr )
     {
 #if defined(MENGINE_DEBUG)
         if( m_kernel->string_check( _object ) == false )
         {
-            LOGGER_ERROR( "invalid stringize object '%s'"
+            LOGGER_FATAL( "invalid stringize object '%s' not string type '%s'"
                 , m_kernel->object_repr( _object ).c_str()
+                , m_kernel->object_repr_type( _object ).c_str()
             );
 
-            return false;
+            return;
         }
 #endif
 
@@ -1079,7 +1080,7 @@ namespace Mengine
         {
             *_cstr = ConstString::none();
 
-            return true;
+            return;
         }
 
         ConstStringHolderPythonString * holder = m_poolPythonString.createT();
@@ -1090,13 +1091,11 @@ namespace Mengine
             ->stringizeExternal( holder, _cstr ) == false )
         {
             m_poolPythonString.destroyT( holder );
-        }
-        else
-        {
-            m_holdersPythonString.push_back( holder );
+
+            return;
         }
 
-        return true;
+        m_holdersPythonString.push_back( holder );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::setTracebackOffset( uint32_t _tracebackOffset )

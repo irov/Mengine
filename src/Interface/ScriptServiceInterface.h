@@ -71,7 +71,7 @@ namespace Mengine
         virtual EventablePtr eventableEntity( const pybind::object & _type ) = 0;
 
     public:
-        virtual bool stringize( PyObject * _object, ConstString * const _str ) = 0;
+        virtual void stringize( PyObject * _object, ConstString * const _str ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

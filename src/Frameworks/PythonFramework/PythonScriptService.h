@@ -74,7 +74,7 @@ namespace Mengine
         bool initializeModule_( const ScriptModulePackage & _pack );
 
     public:
-        bool stringize( PyObject * _object, ConstString * const _str ) override;
+        void stringize( PyObject * _object, ConstString * const _str ) override;
 
     public:
         void setTracebackOffset( uint32_t _tracebackOffset );

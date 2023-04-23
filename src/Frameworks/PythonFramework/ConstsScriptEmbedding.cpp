@@ -74,11 +74,8 @@ namespace Mengine
 
             if( _kernel->string_check( _obj ) == true )
             {
-                if( SCRIPT_SERVICE()
-                    ->stringize( _obj, cstr ) == false )
-                {
-                    return false;
-                }
+                SCRIPT_SERVICE()
+                    ->stringize( _obj, cstr );
 
                 return true;
             }
@@ -156,11 +153,8 @@ namespace Mengine
 
             if( _kernel->string_check( _obj ) == true )
             {
-                if( SCRIPT_SERVICE()
-                    ->stringize( _obj, cstr ) == false )
-                {
-                    return false;
-                }
+                SCRIPT_SERVICE()
+                    ->stringize( _obj, cstr );
 
                 return true;
             }

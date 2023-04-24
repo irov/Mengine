@@ -50,10 +50,17 @@
 - (BOOL) canYouShow {
     BOOL ready = [self.m_interstitialAd isReady];
     
+    LOGGER_MESSAGE("canYouShow interstitial ready: %d request: %ld attempt: %ld"
+        , ready
+        , self.m_requestId
+        , self.m_retryAttempt
+        );
+    
     if( ready == NO )
     {
         [AppleAnalytics name:@"ad_interstitial_show" params:@{
             @"request_id": @(self.m_requestId),
+            @"attempt": @(self.m_retryAttempt)
             @"ready": @(NO),
         }];
         
@@ -66,13 +73,15 @@
 - (BOOL) show {
     BOOL ready = [self.m_interstitialAd isReady];
     
-    LOGGER_MESSAGE("show interstitial request: %ld ready: %d"
-        , self.m_requestId
+    LOGGER_MESSAGE("show interstitial ready: %d request: %ld attempt: %ld"
         , ready
+        , self.m_requestId
+        , self.m_retryAttempt
         );
     
     [AppleAnalytics name:@"ad_interstitial_show" params:@{
         @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt)
         @"ready": @(ready),
     }];
     
@@ -91,13 +100,17 @@
     {
         return;
     }
-    
-    LOGGER_MESSAGE( "load interstitial" );
-    
+
     self.m_requestId = self.m_enumeratorRequest++;
+    
+    LOGGER_MESSAGE( "load interstitial request: %ld attempt: %ld"
+        , self.m_requestId
+        , self.m_retryAttempt
+    );
     
     [AppleAnalytics name:@"ad_interstitial_load" params:@{
         @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt)
     }];
     
     [self.m_interstitialAd loadAd];
@@ -106,7 +119,7 @@
 #pragma mark - MAAdRequestDelegate Protocol
 
 - (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
-    LOGGER_MESSAGE( "interstitial didStartAdRequestForAdUnitIdentifier: %s request: %ld attempt %ld"
+    LOGGER_MESSAGE( "interstitial didStartAdRequestForAdUnitIdentifier: %s request: %ld attempt: %ld"
         , [adUnitIdentifier UTF8String]
         , self.m_requestId
         , self.m_retryAttempt

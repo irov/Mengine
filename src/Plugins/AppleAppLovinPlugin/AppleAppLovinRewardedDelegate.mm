@@ -48,17 +48,58 @@
 - (BOOL) canOffer {
     BOOL ready = [self.m_rewardedAd isReady];
     
+    LOGGER_MESSAGE("canOffer rewarded ready: %d request: %ld attempt: %ld"
+        , ready
+        , self.m_requestId
+        , self.m_retryAttempt
+        );
+    
+    [AppleAnalytics name:@"ad_rewarded_offer" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt)
+        @"ready": @(ready),
+    }];
+    
     return ready;
 }
 
 - (BOOL) canYouShow {
     BOOL ready = [self.m_rewardedAd isReady];
+
+    LOGGER_MESSAGE("canYouShow rewarded ready: %d request: %ld attempt: %ld"
+        , ready
+        , self.m_requestId
+        , self.m_retryAttempt
+    );
+
+    if( ready == NO )
+    {
+        [AppleAnalytics name:@"ad_rewarded_show" params:@{
+            @"request_id": @(self.m_requestId),
+            @"attempt": @(self.m_retryAttempt)
+            @"ready": @(NO),
+        }];
+        
+        return NO;
+    }
     
-    return ready;
+    return YES;
 }
 
 - (BOOL) show {
     BOOL ready = [self.m_rewardedAd isReady];
+    
+    LOGGER_MESSAGE("show rewarded ready: %d request: %ld attempt: %ld"
+        , ready
+        , self.m_requestId
+        , self.m_retryAttempt
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_show" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt)
+        @"ready": @(ready),
+    }];
     
     if( ready == NO )
     {
@@ -78,20 +119,31 @@
     
     self.m_requestId = self.m_enumeratorRequest++;
     
+    LOGGER_MESSAGE( "load rewarded request: %ld attempt: %ld"
+        , self.m_requestId
+        , self.m_retryAttempt
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_load" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt)
+    }];
+    
     [self.m_rewardedAd loadAd];
 }
 
 #pragma mark - MAAdRequestDelegate Protocol
 
 - (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
-    LOGGER_MESSAGE( "rewarded didStartAdRequestForAdUnitIdentifier: %s request: %ld"
+    LOGGER_MESSAGE( "rewarded didStartAdRequestForAdUnitIdentifier: %s request: %ld attempt: %ld"
         , [adUnitIdentifier UTF8String]
         , self.m_requestId
+        , self.m_retryAttempt
     );
     
     [AppleAnalytics name:@"ad_rewarded_request_started" params:@{
         @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
         @"unit_id": adUnitIdentifier
     }];
 }
@@ -100,7 +152,7 @@
 #pragma mark - MAAdDelegate Protocol
 
 - (void) didLoadAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "rewarded didLoadAd: %s request: %ld attempt %ld"
+    LOGGER_MESSAGE( "rewarded didLoadAd: %s request: %ld attempt: %ld"
         , [[self getMAAdParams:ad] UTF8String]
         , self.m_requestId
         , self.m_retryAttempt

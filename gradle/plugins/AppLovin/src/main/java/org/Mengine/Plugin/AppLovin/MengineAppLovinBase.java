@@ -105,7 +105,7 @@ public class MengineAppLovinBase {
     protected void logMaxAd(String type, String callback, MaxAd ad) {
         StringBuilder sb = new StringBuilder(512);
 
-        sb.append("AppLovin: type: " + type + " callback: " + callback + "\n");
+        sb.append("[" + type + "] callback: " + callback + "\n");
 
         MaxAdWaterfallInfo waterfall = ad.getWaterfall();
 
@@ -126,7 +126,7 @@ public class MengineAppLovinBase {
         int mediatedNetworkErrorCode = error.getMediatedNetworkErrorCode();
         String mediatedNetworkErrorMessage = error.getMediatedNetworkErrorMessage();
 
-        sb.append("AppLovin: type: " + type + " callback: " + callback + "\n");
+        sb.append("[" + type + "] callback: " + callback + "\n");
         sb.append("MaxError: code: " + errorCode + " message: " + errorMessage + "\n");
         sb.append("MediatedNetwork: code: " + mediatedNetworkErrorCode + " message: " + mediatedNetworkErrorMessage + "\n");
 

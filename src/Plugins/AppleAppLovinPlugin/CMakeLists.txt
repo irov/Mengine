@@ -6,6 +6,9 @@ src
     AppleAppLovinPlugin.mm
 
     AppleAppLovinInterface.h
+    
+    AppleAppLovinBaseDelegate.h
+    AppleAppLovinBaseDelegate.mm
 
     AppleAppLovinInterstitialDelegate.h
     AppleAppLovinInterstitialDelegate.mm

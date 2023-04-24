@@ -47,6 +47,40 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         MARPlatform.getInstance().init(activity, this);
     }
 
+    public long getNetworkTime() {
+        long networkTime = MARSDK.getInstance().getNetworkTime();
+
+        return networkTime;
+    }
+
+    public void setSeverUserID(String userID) {
+        this.logMessage("setSeverUserID userID: %s"
+            , userID
+        );
+
+        MARSDK.getInstance().setSeverUserID(userID);
+    }
+
+    public String getSeverUserID() {
+        String severUserID = MARSDK.getInstance().getSeverUserID();
+
+        return severUserID;
+    }
+
+    public void setServerToken(String token) {
+        this.logMessage("setServerToken token: %s"
+            , token
+        );
+
+        MARSDK.getInstance().setServerToken(token);
+    }
+
+    public String getServerToken() {
+        String serverToken = MARSDK.getInstance().getServerToken();
+
+        return serverToken;
+    }
+
     public void login() {
         this.logMessage("login");
 

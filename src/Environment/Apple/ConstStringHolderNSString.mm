@@ -20,7 +20,7 @@ namespace Mengine
 		}
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderNSString::setNSString( NSString * _value )
+    void ConstStringHolderNSString::setNSString( const NSString * _value )
     {
         if( m_value != nil )
 		{
@@ -35,8 +35,8 @@ namespace Mengine
             [m_value retain];
 
             const char * data = [m_value UTF8String];
-            uint32_t size = MENGINE_STRLEN( data );
-            int64_t hash = Helper::makeHash( _str, _size );
+            size_t size = MENGINE_STRLEN( data );
+            int64_t hash = Helper::makeHash( data, size );
 
             this->setup( data, (ConstStringHolder::size_type)size, (ConstStringHolder::hash_type)hash );
         }

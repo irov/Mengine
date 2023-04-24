@@ -1,6 +1,10 @@
 #import "AppleAppLovinInterstitialDelegate.h"
 
+#include "Environment/Apple/AppleString.h"
+#include "Environment/Apple/AppleAnalytics.h"
+
 #include "Kernel/Logger.h"
+#include "Kernel/AnalyticsHelper.h"
 
 @implementation AppleAppLovinInterstitialDelegate
 
@@ -14,6 +18,7 @@
     self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_interstitialAd.delegate = self;
     self.m_interstitialAd.revenueDelegate = self;
+    self.m_interstitialAd.requestDelegate = self;
     
     self.m_retryAttempt = 0;
     self.m_enumeratorRequest = 0;
@@ -45,7 +50,17 @@
 - (BOOL) canYouShow {
     BOOL ready = [self.m_interstitialAd isReady];
     
-    return ready;
+    if( ready == NO )
+    {
+        [AppleAnalytics name:@"ad_interstitial_show" params:@{
+            @"request_id": @(self.m_requestId),
+            @"ready": @(NO),
+        }];
+        
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (BOOL) show {
@@ -55,6 +70,11 @@
         , self.m_requestId
         , ready
         );
+    
+    [AppleAnalytics name:@"ad_interstitial_show" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ready": @(ready),
+    }];
     
     if( ready == NO )
     {
@@ -76,19 +96,62 @@
     
     self.m_requestId = self.m_enumeratorRequest++;
     
+    [AppleAnalytics name:@"ad_interstitial_load" params:@{
+        @"request_id": @(self.m_requestId),
+    }];
+    
     [self.m_interstitialAd loadAd];
+}
+
+#pragma mark - MAAdRequestDelegate Protocol
+
+- (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
+    LOGGER_MESSAGE( "interstitial didStartAdRequestForAdUnitIdentifier: %s request: %ld attempt %ld"
+        , [adUnitIdentifier UTF8String]
+        , self.m_requestId
+        , self.m_retryAttempt
+    );
+    
+    [AppleAnalytics name:@"ad_interstitial_request_started" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
+        @"unit_id": adUnitIdentifier
+    }];
 }
 
 #pragma mark - MAAdDelegate Protocol
 
 - (void) didLoadAd:(MAAd *) ad {
-    self.m_retryAttempt = 0;
+    LOGGER_MESSAGE( "interstitial didLoadAd: %s request: %ld attempt: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+        , self.m_retryAttempt
+    );
     
-    LOGGER_MESSAGE( "interstitial didLoadAd" );
+    [AppleAnalytics name:@"ad_interstitial_loaded" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
+        @"ad": [self getMAAdParams:ad]
+    }];
+    
+    self.m_retryAttempt = 0;
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
-    LOGGER_MESSAGE( "interstitial didFailToLoadAdForAdUnitIdentifier" );
+    LOGGER_MESSAGE( "interstitial didFailToLoadAdForAdUnitIdentifier: %s request: %ld attempt: %ld error: %s"
+        , [adUnitIdentifier UTF8String]
+        , self.m_requestId
+        , self.m_retryAttempt
+        , [[self getMAErrorParams:error] UTF8String]
+    );
+    
+    [AppleAnalytics name:@"ad_interstitial_load_failed" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
+        @"unit_id": adUnitIdentifier,
+        @"error": [self getMAErrorParams:error],
+        @"error_code": @(error.code)
+    }];
     
     self.m_retryAttempt++;
     
@@ -100,21 +163,54 @@
 }
 
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "interstitial didDisplayAd" );
+    LOGGER_MESSAGE( "interstitial didDisplayAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_interstitial_displayed" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
 }
 
 - (void) didClickAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "interstitial didClickAd" );
+    LOGGER_MESSAGE( "interstitial didClickAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_interstitial_clicked" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
 }
 
 - (void) didHideAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "interstitial didHideAd" );
+    LOGGER_MESSAGE( "interstitial didHideAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_interstitial_hidden" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
     
     [self loadAd];
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    LOGGER_MESSAGE( "interstitial didFailToDisplayAd" );
+    LOGGER_MESSAGE( "interstitial didFailToDisplayAd: %s request: %ld error: %s"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+        , [[self getMAErrorParams:error] UTF8String]
+    );
+    
+    [AppleAnalytics name:@"ad_interstitial_display_failed" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
     
     [self loadAd];
 }
@@ -122,7 +218,15 @@
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
-    LOGGER_MESSAGE( "interstitial didPayRevenueForAd" );
+    LOGGER_MESSAGE( "interstitial didPayRevenueForAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_interstitial_revenue_paid" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
 }
 
 @end

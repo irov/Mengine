@@ -22,7 +22,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void stringize( NSString * _value, ConstString * const _cstr ) const override;
+        void stringize( const NSString * _value, ConstString * const _cstr ) override;
 
     protected:
         typedef Pool<ConstStringHolderNSString, 256> PoolConstStringHolderNSString;

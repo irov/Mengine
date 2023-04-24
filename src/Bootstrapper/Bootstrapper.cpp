@@ -15,14 +15,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Interface/AndroidEnvironmentServiceInterface.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_APPLE)
-#   include "Interface/AppleEnvironmentServiceInterface.h"
-#endif
-
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/DocumentHelper.h"

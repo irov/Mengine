@@ -1,13 +1,15 @@
 #pragma once
 
-#include "AppleAppLovinInterface.h"
+#import "AppleAppLovinAnalyticsService.h"
 
 #import <AppLovinSDK/AppLovinSDK.h>
 #import <Foundation/Foundation.h>
 
 @interface AppleAppLovinBaseDelegate : NSObject
 
-- (NSString *) getMAAdParams:(MAAd *) ad;
+- (NSString * _Nonnull) getMAAdParams:(MAAd * _Nonnull) ad;
+- (NSString * _Nonnull) getMAErrorParams:(MAError * _Nonnull) error;
+- (NSString * _Nonnull) getMARewardParams:(MAReward * _Nonnull) reward;
 
 @property (nonatomic, assign) AppleAppLovinAnalyticsService * _Nonnull m_analytics;
 

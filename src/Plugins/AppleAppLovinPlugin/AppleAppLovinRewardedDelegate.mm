@@ -1,5 +1,7 @@
 #import "AppleAppLovinRewardedDelegate.h"
 
+#include "Environment/Apple/AppleAnalytics.h"
+
 #include "Kernel/Logger.h"
 
 @implementation AppleAppLovinRewardedDelegate
@@ -13,6 +15,7 @@
     
     self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitIdentifier];
     self.m_rewardedAd.delegate = self;
+    self.m_rewardedAd.requestDelegate = self;
     self.m_rewardedAd.revenueDelegate = self;
     
     self.m_retryAttempt = 0;
@@ -78,16 +81,55 @@
     [self.m_rewardedAd loadAd];
 }
 
+#pragma mark - MAAdRequestDelegate Protocol
+
+- (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
+    LOGGER_MESSAGE( "rewarded didStartAdRequestForAdUnitIdentifier: %s request: %ld"
+        , [adUnitIdentifier UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_request_started" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_requestId),
+        @"unit_id": adUnitIdentifier
+    }];
+}
+
+
 #pragma mark - MAAdDelegate Protocol
 
 - (void) didLoadAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "rewarded didLoadAd" );
+    LOGGER_MESSAGE( "rewarded didLoadAd: %s request: %ld attempt %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+        , self.m_retryAttempt
+    );
+    
+    [AppleAnalytics name:@"ad_interstitial_loaded" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
+        @"ad": [self getMAAdParams:ad]
+    }];
     
     self.m_retryAttempt = 0;
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
-    LOGGER_MESSAGE( "rewarded didFailToLoadAdForAdUnitIdentifier" );
+    LOGGER_MESSAGE( "rewarded didFailToLoadAdForAdUnitIdentifier: %s request: %ld attempt: %ld error: %s"
+        , [adUnitIdentifier UTF8String]
+        , self.m_requestId
+        , self.m_retryAttempt
+        , [[self getMAErrorParams:error] UTF8String]
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_load_failed" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
+        @"unit_id": adUnitIdentifier,
+        @"error": [self getMAErrorParams:error],
+        @"error_code": @(error.code)
+    }];
     
     self.m_retryAttempt++;
 
@@ -99,44 +141,101 @@
 }
 
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "rewarded didDisplayAd" );
+    LOGGER_MESSAGE( "rewarded didDisplayAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_displayed" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
 }
 
 - (void) didClickAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "rewarded didClickAd" );
+    LOGGER_MESSAGE( "rewarded didClickAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_clicked" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
 }
 
 - (void) didHideAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "rewarded didHideAd" );
+    LOGGER_MESSAGE( "rewarded didHideAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
     
-    // Rewarded ad is hidden. Pre-load the next ad
-    [self.m_rewardedAd loadAd];
+    [AppleAnalytics name:@"ad_rewarded_hidden" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
+    
+    [self loadAd];
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    LOGGER_MESSAGE( "rewarded didFailToDisplayAd" );
-        
-    [self.m_rewardedAd loadAd];
+    LOGGER_MESSAGE( "rewarded didFailToDisplayAd: %s request: %ld error: %s"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+        , [[self getMAErrorParams:error] UTF8String]
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_display_failed" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
+    
+    [self loadAd];
 }
 
 #pragma mark - MARewardedAdDelegate Protocol
 
 - (void) didStartRewardedVideoForAd:(MAAd *)ad {
-    LOGGER_MESSAGE( "rewarded didStartRewardedVideoForAd" );
+    LOGGER_MESSAGE( "rewarded didStartRewardedVideoForAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
 }
 
 - (void) didCompleteRewardedVideoForAd:(MAAd *)ad {
-    LOGGER_MESSAGE( "rewarded didCompleteRewardedVideoForAd" );
+    LOGGER_MESSAGE( "rewarded didCompleteRewardedVideoForAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
 }
 
 - (void) didRewardUserForAd:(MAAd *) ad withReward:(MAReward *) reward {
-    LOGGER_MESSAGE( "rewarded didRewardUserForAd" );
+    LOGGER_MESSAGE( "rewarded didRewardUserForAd: %s reward: %s requst: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , [[self getMARewardParams:reward] UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_reward_user" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad],
+        @"label": reward.label,
+        @"amount": @(reward.amount)
+    }];
 }
 
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
-    LOGGER_MESSAGE( "rewarded didPayRevenueForAd" );
+    LOGGER_MESSAGE( "rewarded didPayRevenueForAd: %s request: %ld"
+        , [[self getMAAdParams:ad] UTF8String]
+        , self.m_requestId
+    );
+    
+    [AppleAnalytics name:@"ad_rewarded_revenue_paid" params:@{
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
         
     [self.m_analytics eventRevenuePaid:ad];
 }

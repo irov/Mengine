@@ -1,6 +1,6 @@
 #pragma once
 
-#import "AppleAppLovinAnalyticsService.h"
+#import "AppleAppLovinBaseDelegate.h"
 
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
@@ -9,7 +9,7 @@
 #import "AppleAppLovinInterstitialAmazonLoader.h"
 #endif
 
-@interface AppleAppLovinInterstitialDelegate : NSObject<MAAdDelegate, MAAdRevenueDelegate>
+@interface AppleAppLovinInterstitialDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdDelegate, MAAdRevenueDelegate>
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
@@ -20,7 +20,6 @@
 
 - (void) loadAd;
 
-@property (nonatomic, assign) AppleAppLovinAnalyticsService * _Nonnull m_analytics;
 @property (nonatomic, strong) MAInterstitialAd * _Nullable m_interstitialAd;
 @property (nonatomic, assign) NSInteger m_retryAttempt;
 @property (nonatomic, assign) NSInteger m_enumeratorRequest;

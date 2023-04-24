@@ -4,4 +4,8 @@
 
 #import <Foundation/Foundation.h>
 
-- (void)appleAnalyticsEvent:(NSString*)eventName params:(NSDictionary<NSString*, id> *)params;
+@interface AppleAnalytics : NSObject
+
++ (void)name:(NSString*)eventName params:(NSDictionary<NSString*, id> *)params;
+
+@end

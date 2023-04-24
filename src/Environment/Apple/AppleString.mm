@@ -1,5 +1,7 @@
 #include "AppleString.h"
 
+#include "Interface/AppleEnvironmentServiceInterface.h"
+
 #include "Kernel/ConstStringHelper.h"
 
 #include "Config/StdString.h"
@@ -22,11 +24,11 @@ namespace Mengine
         /////////////////////////////////////////////////////////////////////////
         ConstString NSStringToConstString( const NSString * _value )
         {
-            const Char * value_str = [_value UTF8String];
+            ConstString value_cstr;
+            APPLE_ENVIRONMENT_SERVICE()
+                ->stringize( _value, &value_cstr );
             
-            ConstString value_cs = Helper::stringizeString( value_str );
-            
-            return value_cs;
+            return value_cstr;
         }
         /////////////////////////////////////////////////////////////////////////
         String NSStringToString( const NSString * _value )

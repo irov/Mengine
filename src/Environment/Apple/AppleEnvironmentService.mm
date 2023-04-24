@@ -1,5 +1,7 @@
 #include "AppleEnvironmentService.h"
 
+#include "Interface/StringizeServiceInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleEnvironmentService, Mengine::AppleEnvironmentService );
 //////////////////////////////////////////////////////////////////////////
@@ -39,7 +41,7 @@ namespace Mengine
         m_poolNSString.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleEnvironmentService::stringize( NSString * _value, ConstString * const _cstr ) const
+    void AppleEnvironmentService::stringize( const NSString * _value, ConstString * const _cstr )
     {
         if( [_value length] == 0 )
         {
@@ -60,7 +62,7 @@ namespace Mengine
             return;
         }
 
-        m_holdersPythonString.push_back( holder );
+        m_holdersNSString.push_back( holder );
     }
     //////////////////////////////////////////////////////////////////////////    
 }

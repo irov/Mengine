@@ -18,9 +18,9 @@ namespace Mengine
         ~ConstStringHolderNSString();
 
     public:
-        void setNSString( NSString * _value );
+        void setNSString( const NSString * _value );
 
     protected:
-        NSString * m_value;
+        const NSString * m_value;
     };
 }

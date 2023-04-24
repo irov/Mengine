@@ -741,7 +741,7 @@ namespace Mengine
 
         jobject jplugin;
         jmethodID jmethodID_method;
-        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "F", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "D", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
         {
             return 0.f;
         }

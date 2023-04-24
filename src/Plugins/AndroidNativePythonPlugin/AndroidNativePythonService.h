@@ -49,9 +49,10 @@ namespace Mengine
     public:
         void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         bool androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
-        int32_t androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
-        int64_t androidInteger64Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
+        int32_t androidIntegerMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
+        int64_t androidLongMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         float androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
+        double androidDoubleMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         String androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         PyObject * androidConfigMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
 

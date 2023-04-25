@@ -110,9 +110,10 @@ namespace Mengine
         pybind::def_functor( kernel, "setAndroidCallback", this, &AndroidNativePythonService::setAndroidCallback );
         pybind::def_functor_args( kernel, "androidMethod", this, &AndroidNativePythonService::androidMethod );
         pybind::def_functor_args( kernel, "androidBooleanMethod", this, &AndroidNativePythonService::androidBooleanMethod );
-        pybind::def_functor_args( kernel, "androidInteger32Method", this, &AndroidNativePythonService::androidInteger32Method );
-        pybind::def_functor_args( kernel, "androidInteger64Method", this, &AndroidNativePythonService::androidInteger64Method );
+        pybind::def_functor_args( kernel, "androidIntegerMethod", this, &AndroidNativePythonService::androidIntegerMethod );
+        pybind::def_functor_args( kernel, "androidLongMethod", this, &AndroidNativePythonService::androidLongMethod );
         pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonService::androidFloatMethod );
+        pybind::def_functor_args( kernel, "androidDoubleMethod", this, &AndroidNativePythonService::androidDoubleMethod );
         pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonService::androidStringMethod );
         pybind::def_functor_args( kernel, "androidConfigMethod", this, &AndroidNativePythonService::androidConfigMethod );
 
@@ -610,7 +611,7 @@ namespace Mengine
         return (bool)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t AndroidNativePythonService::androidInteger32Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    int32_t AndroidNativePythonService::androidIntegerMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [int]"
             , _plugin.c_str()
@@ -648,7 +649,7 @@ namespace Mengine
         return (int32_t)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    int64_t AndroidNativePythonService::androidInteger64Method( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    int64_t AndroidNativePythonService::androidLongMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [long]"
             , _plugin.c_str()
@@ -722,6 +723,44 @@ namespace Mengine
             ->invokeAndroidEventations();
 
         return (float)jresult;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    double AndroidNativePythonService::androidDoubleMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    {
+        LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [double]"
+            , _plugin.c_str()
+            , _method.c_str()
+            , m_kernel->object_repr( _args.ptr() ).c_str()
+        );
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        jvalue jargs[32];
+        jobject jfree[32];
+        uint32_t freeCount;
+
+        jobject jplugin;
+        jmethodID jmethodID_method;
+        if( this->getAndroidMethod( jenv, _plugin, _method, _args, "D", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
+        {
+            return 0.f;
+        }
+
+        jdouble jresult = jenv->CallDoubleMethodA( jplugin, jmethodID_method, jargs );
+
+        Helper::jEnvExceptionCheck( jenv );
+
+        for( uint32_t index = 0; index != freeCount; ++index )
+        {
+            jobject j = jfree[index];
+
+            jenv->DeleteLocalRef( j );
+        }
+
+        ANDROID_ENVIRONMENT_SERVICE()
+                ->invokeAndroidEventations();
+
+        return (double)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
     String AndroidNativePythonService::androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const

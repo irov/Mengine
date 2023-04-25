@@ -2,6 +2,7 @@
 
 #include "Environment/iOS/iOSDetail.h"
 #include "Environment/Apple/AppleString.h"
+#include "Environment/Apple/AppleDetail.h"
 #include "Environment/Apple/AppleErrorHelper.h"
 
 #include "Kernel/Logger.h"
@@ -33,6 +34,9 @@ namespace Mengine
         [[MARSDK sharedInstance] setDelegate:m_delegate];
         
         m_adRewardedDelegate = [[AppleMARSDKAdRewardedDelegate alloc] initWithService:this];
+        
+        NSDictionary * MARSDKConfig = Mengine::Helper::AppleGetBundlePluginConfig(@"MARSDK");
+        [[MARSDK sharedInstance] initWithParams:MARSDKConfig];
         
         return true;
     }

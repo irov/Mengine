@@ -9,9 +9,6 @@
 #pragma mark - UIKitProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSDictionary * MARSDKConfig = Mengine::Helper::AppleGetBundlePluginConfig(@"MARSDK");
-    [[MARSDK sharedInstance] initWithParams:MARSDKConfig];
-    
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
     
     return YES;

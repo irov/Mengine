@@ -173,13 +173,14 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1log )(JNIEnv * env, jclass cls, jint _level, jstring _msg)
+    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1log )(JNIEnv * env, jclass cls, jint _level, jstring _tag, jstring _msg)
     {
         if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
         {
             return;
         }
 
+        const Mengine::Char * tag_str = env->GetStringUTFChars( _tag, nullptr );
         const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
 
         Mengine::ELoggerLevel level;
@@ -220,10 +221,12 @@ extern "C"
                 break;
         }
 
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), level, Mengine::LFILTER_NONE, color, nullptr, 0, Mengine::LFLAG_SHORT )("%s"
+        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), level, Mengine::LFILTER_NONE, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
+            , tag_str
             , msg_str
         );
 
+        env->ReleaseStringUTFChars( _msg, tag_str );
         env->ReleaseStringUTFChars( _msg, msg_str );
     }
     //////////////////////////////////////////////////////////////////////////

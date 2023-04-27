@@ -167,11 +167,13 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         m_plugin.pythonCall("onApplovinRewardedOnAdRequestStarted");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onRewardedVideoStarted(MaxAd ad) {
         this.logMaxAd("Rewarded", "onRewardedVideoStarted", ad);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onRewardedVideoCompleted(MaxAd ad) {
         this.logMaxAd("Rewarded", "onRewardedVideoCompleted", ad);

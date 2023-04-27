@@ -462,7 +462,7 @@ public class MengineApplication extends Application {
     }
 
     public void showToast(String format, Object ... args) {
-        String message = MengineLog.buildTotalMsg(null, format, args);
+        String message = MengineLog.buildTotalMsg(format, args);
 
         Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
 
@@ -470,7 +470,7 @@ public class MengineApplication extends Application {
     }
 
     public void showAlertDialog(String format, Object ... args) {
-        String message = MengineLog.buildTotalMsg(null, format, args);
+        String message = MengineLog.buildTotalMsg(format, args);
 
         MengineLog.logInfo(TAG, "show alert dialog: %s"
             , message

@@ -6,7 +6,7 @@ import java.util.Formatter;
 import java.util.IllegalFormatException;
 
 public class MengineLog {
-    private static native void AndroidEnvironmentService_log(int level, String msg);
+    private static native void AndroidEnvironmentService_log(int level, String tag, String msg);
 
     public final static int LM_SILENT = 0;
     public final static int LM_FATAL = 1;
@@ -35,7 +35,7 @@ public class MengineLog {
     }
 
     public static String log(int level, String tag, String format, Object ... args) {
-        String totalMsg = MengineLog.buildTotalMsg(tag, format, args);
+        String totalMsg = MengineLog.buildTotalMsg(format, args);
 
         switch (level) {
             case LM_SILENT:
@@ -68,13 +68,11 @@ public class MengineLog {
 
         if( MengineLog.m_initializeBaseServices == true ) {
             synchronized (MengineLog.m_lock) {
-                AndroidEnvironmentService_log(level, totalMsg);
+                AndroidEnvironmentService_log(level, tag, totalMsg);
             }
         } else {
             if (MengineLog.m_application != null) {
-                String msg = MengineLog.buildTotalMsg(null, format, args);
-
-                MengineLog.m_application.onMengineLogger(tag, level, 0, 0, msg);
+                MengineLog.m_application.onMengineLogger(tag, level, 0, 0, totalMsg);
             }
         }
 
@@ -105,7 +103,7 @@ public class MengineLog {
         return MengineLog.log(LM_ERROR, tag, format, args);
     }
 
-    public static String buildTotalMsg(String tag, String format, Object ... args) {
+    public static String buildTotalMsg(String format, Object ... args) {
         StringBuilder sb = new StringBuilder();
 
         String msg;
@@ -120,12 +118,6 @@ public class MengineLog {
             return error;
         }
 
-        if (tag == null) {
-            return msg;
-        }
-
-        String totalMsg = "[" + tag + "] " + msg;
-
-        return totalMsg;
+        return msg;
     }
 }

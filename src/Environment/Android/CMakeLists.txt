@@ -19,6 +19,9 @@ src
     AndroidEnvironmentService.h
     AndroidEnvironmentService.cpp
     
+    ConstStringHolderJString.h
+    ConstStringHolderJString.cpp
+    
     AndroidProxyLogger.h
     AndroidProxyLogger.cpp
 )

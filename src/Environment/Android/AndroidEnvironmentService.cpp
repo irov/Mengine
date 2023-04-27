@@ -5,6 +5,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidAssetFile.h"
@@ -438,6 +439,23 @@ namespace Mengine
 
         m_androidEventationHub->finalize();
         m_androidEventationHub = nullptr;
+
+        for( IntrusiveListConstStringHolderJString::iterator
+             it = m_holdersJString.begin();
+             it != m_holdersJString.end(); )
+        {
+            IntrusiveListConstStringHolderJString::iterator it_erase = it;
+
+            ConstStringHolderJString * holder = *it;
+            ++it;
+
+            m_holdersJString.erase( it_erase );
+
+            m_poolJString.destroyT( holder );
+        }
+
+        m_holdersJString.clear();
+        m_poolJString.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
@@ -619,6 +637,32 @@ namespace Mengine
         jenv->DeleteLocalRef( jReturnValue );
 
         return jStringLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr )
+    {
+        jsize value_length = _jenv->GetStringLength( _value );
+
+        if( value_length == 0 )
+        {
+            *_cstr = ConstString::none();
+
+            return;
+        }
+
+        ConstStringHolderJString * holder = m_poolJString.createT();
+
+        holder->setJString( _jenv, _value );
+
+        if( STRINGIZE_SERVICE()
+            ->stringizeExternal( holder, _cstr ) == false )
+        {
+            m_poolJString.destroyT( holder );
+
+            return;
+        }
+
+        m_holdersJString.push_back( holder );
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t AndroidEnvironmentService::androidOpenAssetFile( const Char * _path )

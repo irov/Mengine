@@ -1,5 +1,7 @@
 #include "AndroidHelper.h"
 
+#include "Interface/AndroidEnvironmentServiceInterface.h"
+
 #include "Kernel/Assertion.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
@@ -147,22 +149,20 @@ namespace Mengine
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
-        Mengine::ConstString makeConstStringFromJString( JNIEnv * _jenv, jstring _value )
+        ConstString makeConstStringFromJString( JNIEnv * _jenv, jstring _value )
         {
-            const Mengine::Char * value_str = _jenv->GetStringUTFChars( _value, nullptr );
-
-            Mengine::ConstString value_cstr = Mengine::Helper::stringizeString( value_str );
-
-            _jenv->ReleaseStringUTFChars( _value, value_str );
+            ConstString value_cstr;
+            ANDROID_ENVIRONMENT_SERVICE()
+                ->stringize( _jenv, _value, &value_cstr );
 
             return value_cstr;
         }
         //////////////////////////////////////////////////////////////////////////
-        Mengine::String makeStringFromJString( JNIEnv * _jenv, jstring _value )
+        String makeStringFromJString( JNIEnv * _jenv, jstring _value )
         {
-            const Mengine::Char * value_str = _jenv->GetStringUTFChars( _value, nullptr );
+            const Char * value_str = _jenv->GetStringUTFChars( _value, nullptr );
 
-            Mengine::String value_string( value_str );
+            String value_string( value_str );
 
             _jenv->ReleaseStringUTFChars( _value, value_str );
 

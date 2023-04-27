@@ -7,6 +7,7 @@
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidEnv.h"
+#   include "Environment/Android/AndroidHelper.h"
 #endif
 
 #include "DevToDebugTab.h"
@@ -49,17 +50,13 @@ extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1createDevTab )(JNIEnv * env, jclass cls, jstring _tab)
     {
-        const Mengine::Char * tab_str = env->GetStringUTFChars( _tab, nullptr );
-
-        Mengine::ConstString tab = Mengine::Helper::stringizeString( tab_str );
-
-        env->ReleaseStringUTFChars( _tab, tab_str );
+        Mengine::ConstString tab_cstr = Mengine::Helper::makeConstStringFromJString( env, _tab );
 
         if( DEVTODEBUG_SERVICE()
-            ->hasTab( tab ) == false )
+            ->hasTab( tab_cstr ) == false )
         {
             LOGGER_ERROR( "invalid create dev tab has already exist '%s'"
-                , tab.c_str()
+                , tab_cstr.c_str()
             );
 
             return JNI_FALSE;
@@ -76,17 +73,9 @@ extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1addDevButton )(JNIEnv * env, jclass cls, jstring _tab, jstring _id, jstring _title, jobject _cb)
     {
-        const Mengine::Char * tab_str = env->GetStringUTFChars( _tab, nullptr );
-        const Mengine::Char * id_str = env->GetStringUTFChars( _id, nullptr );
-        const Mengine::Char * title_str = env->GetStringUTFChars( _title, nullptr );
-
-        Mengine::ConstString tab = Mengine::Helper::stringizeString( tab_str );
-        Mengine::ConstString id = Mengine::Helper::stringizeString( id_str );
-        Mengine::String title = title_str;
-
-        env->ReleaseStringUTFChars( _tab, tab_str );
-        env->ReleaseStringUTFChars( _id, id_str );
-        env->ReleaseStringUTFChars( _title, title_str );
+        Mengine::ConstString tab = Mengine::Helper::makeConstStringFromJString( env, _tab );
+        Mengine::ConstString id = Mengine::Helper::makeConstStringFromJString( env, _id );
+        Mengine::String title = Mengine::Helper::makeStringFromJString( env, _title );
 
         const Mengine::DevToDebugTabInterfacePtr & t = DEVTODEBUG_SERVICE()
             ->getTab( tab );

@@ -75,24 +75,24 @@ public class MenginePlugin {
         throw new MenginePluginInvalidInitializeException(m_pluginName);
     }
 
-    public void log(int level, String format, Object ... args) {
-        MengineLog.log(level, m_pluginName, format, args);
+    public String log(int level, String format, Object ... args) {
+        return MengineLog.log(level, m_pluginName, format, args);
     }
 
-    public void logInfo(String format, Object ... args) {
-        MengineLog.logInfo(m_pluginName, format, args);
+    public String logInfo(String format, Object ... args) {
+        return MengineLog.logInfo(m_pluginName, format, args);
     }
 
-    public void logMessage(String format, Object ... args) {
-        MengineLog.logMessage(m_pluginName, format, args);
+    public String logMessage(String format, Object ... args) {
+        return MengineLog.logMessage(m_pluginName, format, args);
     }
 
-    public void logWarning(String format, Object ... args) {
-        MengineLog.logWarning(m_pluginName, format, args);
+    public String logWarning(String format, Object ... args) {
+        return MengineLog.logWarning(m_pluginName, format, args);
     }
 
-    public void logError(String format, Object ... args) {
-        MengineLog.logError(m_pluginName, format, args);
+    public String logError(String format, Object ... args) {
+        return MengineLog.logError(m_pluginName, format, args);
     }
 
     public MengineAnalyticsEventBuilder buildEvent(String name) {

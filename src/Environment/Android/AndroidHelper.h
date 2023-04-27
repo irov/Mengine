@@ -18,8 +18,8 @@ namespace Mengine
         jobject makeJObjectString( JNIEnv * _jenv, const Char * _value );
         jobject makeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
         //////////////////////////////////////////////////////////////////////////
-        Mengine::ConstString makeConstStringFromJString( JNIEnv * _jenv, jstring _value );
-        Mengine::String makeStringFromJString( JNIEnv * _jenv, jstring _value );
+        ConstString makeConstStringFromJString( JNIEnv * _jenv, jstring _value );
+        String makeStringFromJString( JNIEnv * _jenv, jstring _value );
         //////////////////////////////////////////////////////////////////////////
         void jEnvExceptionCheck( JNIEnv * _jenv );
         //////////////////////////////////////////////////////////////////////////

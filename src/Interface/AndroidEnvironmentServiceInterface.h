@@ -34,6 +34,9 @@ namespace Mengine
         virtual size_t getAndroidPackageName( Char * _androidId, size_t _capacity ) const = 0;
 
     public:
+        virtual void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) = 0;
+
+    public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
         virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body ) = 0;
 

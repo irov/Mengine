@@ -34,12 +34,12 @@ public class MengineLog {
         MengineLog.m_initializeBaseServices = false;
     }
 
-    public static void log(int level, String tag, String format, Object ... args) {
+    public static String log(int level, String tag, String format, Object ... args) {
         String totalMsg = MengineLog.buildTotalMsg(tag, format, args);
 
         switch (level) {
             case LM_SILENT:
-                return;
+                return totalMsg;
             case LM_FATAL:
                 Log.wtf(tag, totalMsg);
                 break;
@@ -77,30 +77,32 @@ public class MengineLog {
                 MengineLog.m_application.onMengineLogger(tag, level, 0, 0, msg);
             }
         }
+
+        return totalMsg;
     }
 
-    public static void logInfo(String tag, String format, Object ... args) {
-        MengineLog.log(LM_INFO, tag, format, args);
+    public static String logInfo(String tag, String format, Object ... args) {
+        return MengineLog.log(LM_INFO, tag, format, args);
     }
 
-    public static void logMessage(String tag, String format, Object ... args) {
-        MengineLog.log(LM_MESSAGE, tag, format, args);
+    public static String logMessage(String tag, String format, Object ... args) {
+        return MengineLog.log(LM_MESSAGE, tag, format, args);
     }
 
-    public static void logWarning(String tag, String format, Object ... args) {
-        MengineLog.log(LM_WARNING, tag, format, args);
+    public static String logWarning(String tag, String format, Object ... args) {
+        return MengineLog.log(LM_WARNING, tag, format, args);
     }
 
-    public static void logFatal(String tag, String format, Object ... args) {
-        MengineLog.log(LM_FATAL, tag, format, args);
+    public static String logFatal(String tag, String format, Object ... args) {
+        return MengineLog.log(LM_FATAL, tag, format, args);
     }
 
-    public static void logMessageRelease(String tag, String format, Object ... args) {
-        MengineLog.log(LM_MESSAGE_RELEASE, tag, format, args);
+    public static String logMessageRelease(String tag, String format, Object ... args) {
+        return MengineLog.log(LM_MESSAGE_RELEASE, tag, format, args);
     }
 
-    public static void logError(String tag, String format, Object ... args) {
-        MengineLog.log(LM_ERROR, tag, format, args);
+    public static String logError(String tag, String format, Object ... args) {
+        return MengineLog.log(LM_ERROR, tag, format, args);
     }
 
     public static String buildTotalMsg(String tag, String format, Object ... args) {

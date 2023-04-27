@@ -647,8 +647,8 @@ public class MengineApplication extends Application {
     }
 
     private void invalidInitialize(String format, Object ... args) {
-        MengineLog.logError(TAG, format, args);
+        String msg = MengineLog.logError(TAG, format, args);
 
-        System.exit(EXIT_FAILURE);
+        throw new RuntimeException(msg);
     }
 }

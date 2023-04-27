@@ -4,7 +4,11 @@
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 
+#include "ConstStringHolderJString.h"
+
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Pool.h"
+#include "Kernel/IntrusiveList.h"
 
 namespace Mengine
 {
@@ -44,6 +48,9 @@ namespace Mengine
         size_t getAndroidPackageName( Char * _packageName, size_t _capacity ) const override;
 
     public:
+        void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) override;
+
+    public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
 
@@ -77,6 +84,12 @@ namespace Mengine
 
     protected:
         AndroidEventationHubPtr m_androidEventationHub;
+
+        typedef Pool<ConstStringHolderJString, 256> PoolConstStringHolderJString;
+        PoolConstStringHolderJString m_poolJString;
+
+        typedef IntrusiveList<ConstStringHolderJString> IntrusiveListConstStringHolderJString;
+        IntrusiveListConstStringHolderJString m_holdersJString;
 
         LoggerInterfacePtr m_proxyLogger;
     };

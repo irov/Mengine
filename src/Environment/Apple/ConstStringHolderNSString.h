@@ -15,7 +15,7 @@ namespace Mengine
     {
     public:
         ConstStringHolderNSString();
-        ~ConstStringHolderNSString();
+        ~ConstStringHolderNSString() override;
 
     public:
         void setNSString( const NSString * _value );

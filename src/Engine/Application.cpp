@@ -346,7 +346,9 @@ namespace Mengine
 
         LOGGER_MESSAGE( "build Info: %s %s %s %s [%" MENGINE_PRIu64 "]", buildVersion, buildUserName, buildTimestamp, buildProjectName, buildNumber );
 
-        if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
+        bool Debug_ShowHotspots = CONFIG_VALUE( "Debug", "ShowHotspots", false );
+
+        if( Debug_ShowHotspots == true )
         {
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
         }

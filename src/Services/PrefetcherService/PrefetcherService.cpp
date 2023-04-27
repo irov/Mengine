@@ -37,7 +37,12 @@ namespace Mengine
     {
         bool Engine_PrefetcherServiceAvailable = CONFIG_VALUE( "Engine", "PrefetcherServiceAvailable", true );
 
-        return Engine_PrefetcherServiceAvailable;
+        if( Engine_PrefetcherServiceAvailable == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::_initializeService()

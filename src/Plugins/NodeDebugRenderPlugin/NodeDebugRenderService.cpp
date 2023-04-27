@@ -42,7 +42,7 @@ namespace Mengine
         : m_fps( 0 )
         , m_showDebugText( 0 )
         , m_globalKeyHandlerF9( INVALID_UNIQUE_ID )
-        , m_timerFPS( 0 )
+        , m_timerFPS( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ namespace Mengine
             return false;
         }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::_dependencyService()
@@ -100,18 +100,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::_stopService()
     {
-        const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-            ->getGlobalInputHandler();
+        if( m_globalKeyHandlerF9 != INVALID_UNIQUE_ID )
+        {
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
-        globalHandleSystem->removeGlobalHandler( m_globalKeyHandlerF9 );
-        m_globalKeyHandlerF9 = INVALID_UNIQUE_ID;
+            globalHandleSystem->removeGlobalHandler( m_globalKeyHandlerF9 );
+            m_globalKeyHandlerF9 = INVALID_UNIQUE_ID;
+        }
 
-        if( m_timerFPS != 0 )
+        if( m_timerFPS != INVALID_UNIQUE_ID )
         {
             PLATFORM_SERVICE()
                 ->removeTimer( m_timerFPS );
 
-            m_timerFPS = 0;
+            m_timerFPS = INVALID_UNIQUE_ID;
         }
     }
     //////////////////////////////////////////////////////////////////////////

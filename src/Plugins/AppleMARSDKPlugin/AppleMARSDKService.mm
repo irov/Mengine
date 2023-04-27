@@ -10,6 +10,7 @@
 #include "Config/Algorithm.h"
 
 #import "MARSDKCore/MARSDKCore.h"
+#import "EPSDK/EP_AppStorePay.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleMARSDKService, Mengine::AppleMARSDKService );
@@ -165,6 +166,26 @@ namespace Mengine
             }
                 
             m_provider->onPropComplete( copy_orderId );
+        }];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleMARSDKService::requestNonConsumablePurchased()
+    {
+        LOGGER_MESSAGE( "requestNonConsumablePurchased");
+        
+        [[EP_AppStorePay sharedInstance] setPurchasedNonConsumableArray:^(NSArray * _Nonnull purchasedNonConsumableArray) {
+            LOGGER_MESSAGE( "onPurchasedNonConsumable: %s"
+                , [[NSString stringWithFormat:@"%@", purchasedNonConsumableArray] UTF8String]
+            );
+
+            VectorConstString purchased;
+            for( NSString * purchase in purchasedNonConsumableArray) {
+                ConstString purchase_cstr = Helper::NSStringToConstString( purchase );
+                
+                purchased.emplace_back( purchase_cstr );
+            }
+            
+            m_provider->onPurchasedNonConsumable( purchased );
         }];
     }
     //////////////////////////////////////////////////////////////////////////

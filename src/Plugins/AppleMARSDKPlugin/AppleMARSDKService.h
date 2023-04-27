@@ -30,9 +30,14 @@ namespace Mengine
         bool logout() override;
         bool switchAccount() override;
         
+    public:
+        void requestNonConsumablePurchased() override;;
+        
+    public:
         void submitExtendedData( const Char * _data ) override;
         void submitPaymentData( const Char * _data ) override;
         
+    public:
         void propComplete( const ConstString & _productId ) override;
         
     public:

@@ -4,6 +4,7 @@
 #include "Interface/ServantInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/VectorConstString.h"
 #include "Kernel/Map.h"
 #include "Kernel/String.h"
 
@@ -31,6 +32,9 @@ namespace Mengine
         virtual void onPropError( const ConstString & _orderId ) = 0;
         
     public:
+        virtual void onPurchasedNonConsumable( const VectorConstString & _purchased ) = 0;
+        
+    public:
         virtual void onAdRewardedDidFailed() = 0;
         virtual void onAdRewardedDidLoaded() = 0;
         virtual void onAdRewardedDidShow() = 0;
@@ -56,11 +60,16 @@ namespace Mengine
         virtual bool logout() = 0;
         virtual bool switchAccount() = 0;
         
+    public:
+        virtual void requestNonConsumablePurchased() = 0;
+        
+    public:
         virtual void submitExtendedData( const Char * _data ) = 0;
         virtual void submitPaymentData( const Char * _data ) = 0;
         
         virtual void propComplete( const ConstString & _productId ) = 0;
         
+    public:
         virtual void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

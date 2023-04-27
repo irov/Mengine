@@ -154,6 +154,19 @@ namespace Mengine
             }
             
         protected:
+            void onPurchasedNonConsumable( const VectorConstString & _purchased ) override
+            {
+                pybind::object cb = m_cbs["onPurchasedNonConsumable"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _purchased, m_args );
+            }
+            
+        protected:
             void onAdRewardedDidFailed() override
             {
                 pybind::object cb = m_cbs["onAdRewardedDidFailed"];
@@ -291,6 +304,12 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        static void s_AppleMARSDK_requestNonConsumablePurchased()
+        {
+            APPLE_MARSDK_SERVICE()
+                ->requestNonConsumablePurchased();
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void s_AppleMARSDK_submitExtendedData( const Char * _data )
         {
             APPLE_MARSDK_SERVICE()
@@ -334,6 +353,7 @@ namespace Mengine
         pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::s_AppleMARSDK_login );
         pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::s_AppleMARSDK_logout );
         pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );
+        pybind::def_function( _kernel, "appleMARSDKRequestNonConsumablePurchased", &Detail::s_AppleMARSDK_requestNonConsumablePurchased );        
         pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_AppleMARSDK_submitExtendedData );
         pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::s_AppleMARSDK_submitPaymentData );
         pybind::def_function( _kernel, "appleMARSDKPropComplete", &Detail::s_AppleMARSDK_propComplete );

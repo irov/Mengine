@@ -40,7 +40,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
 
         boolean tablet = AppLovinSdkUtils.isTablet(activity);
-        AppLovinAdSize size = tablet ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER;
+        AppLovinAdSize size = tablet == true ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER;
         int tablet_size_height = size.getHeight();
         int heightPx = AppLovinSdkUtils.dpToPx(activity, tablet_size_height);
 
@@ -50,8 +50,9 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         Window window = activity.getWindow();
         View view = window.getDecorView();
         int window_view_height = view.getHeight();
+        int translationY = window_view_height - heightPx;
 
-        adView.setTranslationY(window_view_height - heightPx);
+        adView.setTranslationY(translationY);
 
         ViewGroup rootView = view.findViewById(android.R.id.content);
         rootView.addView(adView);
@@ -90,7 +91,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        m_plugin.logInfo("[Banner] loadAd");
+        m_plugin.logMessage("[Banner] loadAd");
 
         m_requestId = m_enumeratorRequest++;
 
@@ -117,7 +118,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logInfo("[Banner] onAdRequestStarted %s"
+        m_plugin.logMessage("[Banner] onAdRequestStarted %s"
             , adUnitId
         );
 

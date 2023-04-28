@@ -297,7 +297,7 @@ namespace Mengine
 
             jsize list_size = _jenv->GetArrayLength( list_elementData );
 
-            PyObject * py_list = m_kernel->tuple_new( list_size );
+            PyObject * py_list = m_kernel->list_new( list_size );
 
             for( jsize index = 0; index != list_size; ++index )
             {
@@ -307,7 +307,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_FATAL( py_obj != nullptr );
 
-                m_kernel->tuple_setitem( py_list, index, py_obj );
+                m_kernel->list_setitem( py_list, index, py_obj );
 
                 m_kernel->decref( py_obj );
 
@@ -632,7 +632,7 @@ namespace Mengine
             return 0;
         }
 
-        jint jresult = jenv->CallBooleanMethodA( jplugin, jmethodID_method, jargs );
+        jint jresult = jenv->CallIntMethodA( jplugin, jmethodID_method, jargs );
 
         Helper::jEnvExceptionCheck( jenv );
 
@@ -670,7 +670,7 @@ namespace Mengine
             return 0;
         }
 
-        jlong jresult = jenv->CallBooleanMethodA( jplugin, jmethodID_method, jargs );
+        jlong jresult = jenv->CallLongMethodA( jplugin, jmethodID_method, jargs );
 
         Helper::jEnvExceptionCheck( jenv );
 
@@ -1004,7 +1004,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_FATAL( jmethodID_List_constructor != nullptr, "invalid get android method 'java/lang/ArrayList [<init>] (I)V'" );
 
-                jobject jlist = _jenv->NewObject( jclass_ArrayList, jmethodID_List_constructor, s);
+                jobject jlist = _jenv->NewObject( jclass_ArrayList, jmethodID_List_constructor, (jint)s);
 
                 uint32_t index = 0;
                 for( const pybind::object & o : l )

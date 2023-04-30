@@ -750,7 +750,7 @@ namespace Mengine
 
         jobject parameters_jobject = Helper::makeJObjectHashMap( jenv, countParameters );
 
-        _event->foreachParameters( [this, parameters_jobject, jenv]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
+        _event->foreachParameters( [parameters_jobject, jenv]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
            {
                const Char * name_str = _name.c_str();
 

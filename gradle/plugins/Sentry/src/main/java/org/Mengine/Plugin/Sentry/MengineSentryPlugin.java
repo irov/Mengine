@@ -28,7 +28,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             return;
         }
 
-        MengineSentryPlugin.this.logInfo("Sentry DNS: %s"
+        MengineSentryPlugin.this.logInfo("DNS: %s"
             , MengineSentryPlugin_DSN
         );
 

@@ -186,7 +186,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         String label = reward.getLabel();
         int amount = reward.getAmount();
 
-        m_plugin.logInfo("rewarded %s [%d]"
+        m_plugin.logInfo("MaxReward %s [%d]"
             , label
             , amount
         );

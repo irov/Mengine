@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -230,13 +230,6 @@ Android_SetScreenResolution(int surfaceWidth, int surfaceHeight, int deviceWidth
     Android_DeviceWidth   = deviceWidth;
     Android_DeviceHeight  = deviceHeight;
     Android_ScreenRate    = (int)rate;
-
-    if (Android_Window) {
-        Android_Window->fullscreen_mode.format = Android_ScreenFormat;
-        Android_Window->fullscreen_mode.w = Android_DeviceWidth;
-        Android_Window->fullscreen_mode.h = Android_DeviceHeight;
-        Android_Window->fullscreen_mode.refresh_rate = Android_ScreenRate;
-    }
 }
 
 static

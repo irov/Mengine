@@ -166,6 +166,11 @@ public class MenginePlugin {
     public void onExtensionInitialize(MengineActivity activity) throws MenginePluginInvalidInitializeException {
         Class<?> c = this.getClass();
         Package p = c.getPackage();
+
+        if (p == null) {
+            return;
+        }
+
         Class<?> buildConfig = MengineUtils.getPackageBuildConfig(m_pluginName, p);
 
         Field f;
@@ -187,6 +192,10 @@ public class MenginePlugin {
         } catch (IllegalArgumentException e) {
             return;
         } catch (IllegalAccessException e) {
+            return;
+        }
+
+        if (MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS == null) {
             return;
         }
 

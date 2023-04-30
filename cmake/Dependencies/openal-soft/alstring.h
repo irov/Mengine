@@ -4,8 +4,6 @@
 #include <cstddef>
 #include <cstring>
 
-#undef strcasecmp
-#undef strncasecmp
 
 namespace al {
 

@@ -16,6 +16,8 @@
 
 #include <windows.h>
 
+#include <werapi.h>
+
 #include <signal.h>
 #include <stdint.h>
 #include <string.h>
@@ -776,8 +778,17 @@ bool CrashpadClient::RegisterWerModule(const std::wstring& path) {
     LOG(ERROR) << "not connected";
     return false;
   }
-  LOG(ERROR) << "not supported";
-  return false;
+  // We cannot point (*context).exception_pointers to our pointers yet as it
+  // might get used for other non-crash dumps.
+  g_wer_registration.crashpad_exception_info =
+      &g_non_crash_exception_information;
+  // we can point these as we are the only users.
+  g_wer_registration.pointers.ExceptionRecord = &g_wer_registration.exception;
+  g_wer_registration.pointers.ContextRecord = &g_wer_registration.context;
+
+  HRESULT res =
+      WerRegisterRuntimeExceptionModule(path.c_str(), &g_wer_registration);
+  return res == S_OK;
 }
 
 // static

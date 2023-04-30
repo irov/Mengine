@@ -30,8 +30,6 @@ import java.util.UUID;
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
 
-    private static final int EXIT_FAILURE = 1;
-
     private static native void AndroidEnvironmentService_setMengineAndroidApplicationJNI(Object activity);
     private static native void AndroidEnvironmentService_removeMengineAndroidApplicationJNI();
 

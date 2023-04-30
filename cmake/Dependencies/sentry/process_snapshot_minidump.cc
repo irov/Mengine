@@ -1,4 +1,4 @@
-// Copyright 2015 The Crashpad Authors. All rights reserved.
+// Copyright 2015 The Crashpad Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -266,7 +266,10 @@ bool ProcessSnapshotMinidump::InitializeCrashpadInfo() {
     return true;
   }
 
-  if (stream_it->second->DataSize < sizeof(crashpad_info_)) {
+  constexpr size_t crashpad_info_min_size =
+      offsetof(decltype(crashpad_info_), reserved);
+  size_t remaining_data_size = stream_it->second->DataSize;
+  if (remaining_data_size < crashpad_info_min_size) {
     LOG(ERROR) << "crashpad_info size mismatch";
     return false;
   }
@@ -275,8 +278,33 @@ bool ProcessSnapshotMinidump::InitializeCrashpadInfo() {
     return false;
   }
 
-  if (!file_reader_->ReadExactly(&crashpad_info_, sizeof(crashpad_info_))) {
+  if (!file_reader_->ReadExactly(&crashpad_info_, crashpad_info_min_size)) {
     return false;
+  }
+  remaining_data_size -= crashpad_info_min_size;
+
+  // Read `reserved` if available.
+  size_t crashpad_reserved_size = sizeof(crashpad_info_.reserved);
+  if (remaining_data_size >= crashpad_reserved_size) {
+    if (!file_reader_->ReadExactly(&crashpad_info_.reserved,
+                                   crashpad_reserved_size)) {
+      return false;
+    }
+    remaining_data_size -= crashpad_reserved_size;
+  } else {
+    crashpad_info_.reserved = 0;
+  }
+
+  // Read `address_mask` if available.
+  size_t crashpad_address_mask_size = sizeof(crashpad_info_.address_mask);
+  if (remaining_data_size >= crashpad_address_mask_size) {
+    if (!file_reader_->ReadExactly(&crashpad_info_.address_mask,
+                                   crashpad_address_mask_size)) {
+      return false;
+    }
+    remaining_data_size -= crashpad_address_mask_size;
+  } else {
+    crashpad_info_.address_mask = 0;
   }
 
   if (crashpad_info_.version != MinidumpCrashpadInfo::kVersion) {
@@ -646,18 +674,8 @@ bool ProcessSnapshotMinidump::InitializeThreadNames() {
       return false;
     }
 
-    // XXX sentry maintainers:
-    //    the upstream line
-    //
-    //    thread_names_.emplace(minidump_thread_name.ThreadId, std::move(name));
-    //
-    //    fails to compile on GCC (which is untested/-supported by the crashpad
-    //    maintainers). emplace() takes its parameters as rvalue-references
-    //    which is illegal when referencing a bitfield (or packed struct).
-    //
-    //    Creating an explicit copy by-passes the issue, trading for more
-    //    (typically two) instructions per thread-name.
-    uint32_t thread_id = minidump_thread_name.ThreadId;
+    // See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=36566
+    const uint32_t thread_id = minidump_thread_name.ThreadId;
     thread_names_.emplace(thread_id, std::move(name));
   }
 #endif

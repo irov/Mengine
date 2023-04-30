@@ -642,7 +642,7 @@ public class MengineActivity extends SDLActivity {
      **********************************************************************************************/
 
     public void pythonInitializePlugins() {
-        MengineLog.logInfo(TAG, "Python initialize");
+        MengineLog.logInfo(TAG, "python initialize");
 
         m_initializePython = true;
 

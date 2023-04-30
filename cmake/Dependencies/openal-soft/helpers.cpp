@@ -34,8 +34,7 @@ bool AllowRTTimeLimit{true};
 
 #ifdef _WIN32
 
-#include <Windows.h>
-#include <ShlObj.h>
+#include <shlobj.h>
 
 const PathNamePair &GetProcBinary()
 {
@@ -150,7 +149,6 @@ al::vector<std::string> SearchDataFiles(const char *ext, const char *subdir)
     std::replace(path.begin(), path.end(), '/', '\\');
     DirectorySearch(path.c_str(), ext, &results);
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
     /* Search the local and global data dirs. */
     static const int ids[2]{ CSIDL_APPDATA, CSIDL_COMMON_APPDATA };
     for(int id : ids)
@@ -167,7 +165,6 @@ al::vector<std::string> SearchDataFiles(const char *ext, const char *subdir)
 
         DirectorySearch(path.c_str(), ext, &results);
     }
-#endif
 
     return results;
 }

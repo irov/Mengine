@@ -11,6 +11,14 @@ public class MengineUtils {
     public static Class<?> getClazz(String TAG, String name, boolean required) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
 
+        if (cl == null) {
+            if (required == true) {
+                Log.e(TAG, "invalid create new instance: " + name + " ClassLoader is null");
+            }
+
+            return null;
+        }
+
         try {
             Class<?> clazz = cl.loadClass(name);
 

@@ -12,11 +12,7 @@
 void *LoadLib(const char *name)
 {
     std::wstring wname{utf8_to_wstr(name)};
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
     return LoadLibraryW(wname.c_str());
-#else
-    return LoadPackagedLibrary(wname.c_str(), 0);
-#endif
 }
 void CloseLib(void *handle)
 { FreeLibrary(static_cast<HMODULE>(handle)); }

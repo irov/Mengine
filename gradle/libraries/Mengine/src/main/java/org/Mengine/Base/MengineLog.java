@@ -2,6 +2,7 @@ package org.Mengine.Base;
 
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
 
@@ -113,7 +114,7 @@ public class MengineLog {
 
             msg = formatter.format(format, args).toString();
         } catch (IllegalFormatException e) {
-            String error = "Catch illegal format: '" + format + "' args: '" + args + "' exception: " + e.getLocalizedMessage();
+            String error = "Catch illegal format: '" + format + "' args: '" + Arrays.toString(args) + "' exception: " + e.getLocalizedMessage();
 
             return error;
         }

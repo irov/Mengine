@@ -2,6 +2,7 @@ package org.Mengine.Plugin.DevDebugger;
 
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import android.os.Bundle;
 

@@ -19,6 +19,59 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        class PythonAppleStoreInAppPurchasePaymentQueueProvider
+            : public AppleStoreInAppPurchasePaymentQueueProviderInterface
+            , public Factorable
+        {
+        public:
+            PythonAppleStoreInAppPurchasePaymentQueueProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : m_cbs( _cbs )
+                , m_args( _args )
+            {
+            }
+            
+            ~PythonAppleStoreInAppPurchasePaymentQueueProvider() override
+            {
+            }
+
+        protected:
+            void onPaymentQueueShouldContinueTransaction( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
+            {
+                pybind::object cb = m_cbs["onPaymentQueueShouldContinueTransaction"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( _transaction, m_args );
+            }
+            
+            void onPaymentQueueShouldShowPriceConsent() override
+            {
+                pybind::object cb = m_cbs["onPaymentQueueShouldShowPriceConsent"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+
+        protected:
+            pybind::dict m_cbs;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static void s_AppleStoreInAppPurchase_setPaymentQueueProvider( const pybind::dict & _cbs, const pybind::args & _args )
+        {
+            AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleStoreInAppPurchasePaymentQueueProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+
+            APPLE_STOREINAPPPURCHASE_SERVICE()
+                ->setPaymentQueueProvider( provider );
+        }
+        //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchasePaymentTransactionProvider
             : public AppleStoreInAppPurchasePaymentTransactionProviderInterface
             , public Factorable
@@ -35,9 +88,9 @@ namespace Mengine
             }
 
         protected:
-            void onPaymentUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
+            void onPaymentQueueUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentUpdatedTransactionPurchasing"];
+                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionPurchasing"];
                 
                 if( cb.is_none() == true )
                 {
@@ -47,9 +100,9 @@ namespace Mengine
                 cb.call_args( _transaction, m_args );
             }
             
-            void onPaymentUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
+            void onPaymentQueueUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentUpdatedTransactionPurchased"];
+                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionPurchased"];
                 
                 if( cb.is_none() == true )
                 {
@@ -59,9 +112,9 @@ namespace Mengine
                 cb.call_args( _transaction, m_args );
             }
             
-            void onPaymentUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
+            void onPaymentQueueUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentUpdatedTransactionFailed"];
+                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionFailed"];
                 
                 if( cb.is_none() == true )
                 {
@@ -71,9 +124,9 @@ namespace Mengine
                 cb.call_args( _transaction, m_args );
             }
             
-            void onPaymentUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
+            void onPaymentQueueUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentUpdatedTransactionRestored"];
+                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionRestored"];
                 
                 if( cb.is_none() == true )
                 {
@@ -83,9 +136,9 @@ namespace Mengine
                 cb.call_args( _transaction, m_args );
             }
             
-            void onPaymentUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
+            void onPaymentQueueUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentUpdatedTransactionDeferred"];
+                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionDeferred"];
                 
                 if( cb.is_none() == true )
                 {

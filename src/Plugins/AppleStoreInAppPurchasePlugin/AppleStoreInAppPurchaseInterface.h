@@ -61,22 +61,36 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onPaymentUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
-        virtual void onPaymentUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
-        virtual void onPaymentUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
-        virtual void onPaymentUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
-        virtual void onPaymentUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
+        virtual void onPaymentQueueUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
+        virtual void onPaymentQueueUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
+        virtual void onPaymentQueueUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
+        virtual void onPaymentQueueUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
+        virtual void onPaymentQueueUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchasePaymentTransactionProviderInterface> AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class AppleStoreInAppPurchasePaymentQueueProviderInterface
+        : public Interface
+    {
+    public:
+        virtual void onPaymentQueueShouldContinueTransaction( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
+        virtual void onPaymentQueueShouldShowPriceConsent() = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<AppleStoreInAppPurchasePaymentQueueProviderInterface> AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchaseServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE( "AppleStoreInAppPurchaseService" )
-            
+        
     public:
-        virtual void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider ) = 0;
+        virtual void setPaymentQueueProvider( const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & _paymentQueueProvider ) = 0;
+        virtual const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & getPaymentQueueProvider() const = 0;
+        
+    public:
+        virtual void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _paymentTransactionProvider ) = 0;
         virtual const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & getPaymentTransactionProvider() const = 0;
         
     public:

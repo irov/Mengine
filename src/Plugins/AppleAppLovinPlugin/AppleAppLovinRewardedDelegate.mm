@@ -56,8 +56,8 @@
     
     [AppleAnalytics name:@"ad_rewarded_offer" params:@{
         @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt)
-        @"ready": @(ready),
+        @"attempt": @(self.m_retryAttempt),
+        @"ready": @(ready)
     }];
     
     return ready;
@@ -76,8 +76,8 @@
     {
         [AppleAnalytics name:@"ad_rewarded_show" params:@{
             @"request_id": @(self.m_requestId),
-            @"attempt": @(self.m_retryAttempt)
-            @"ready": @(NO),
+            @"attempt": @(self.m_retryAttempt),
+            @"ready": @(NO)
         }];
         
         return NO;
@@ -97,8 +97,8 @@
     
     [AppleAnalytics name:@"ad_rewarded_show" params:@{
         @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt)
-        @"ready": @(ready),
+        @"attempt": @(self.m_retryAttempt),
+        @"ready": @(ready)
     }];
     
     if( ready == NO )

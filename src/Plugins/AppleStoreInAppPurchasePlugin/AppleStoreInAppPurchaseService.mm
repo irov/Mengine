@@ -19,7 +19,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchaseService::AppleStoreInAppPurchaseService()
-        : m_transactionObserver( nil )
+        : m_paymentTransactionObserver( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,17 +33,31 @@ namespace Mengine
         m_factoryProduct = Helper::makeFactoryPool<AppleStoreInAppPurchaseProduct, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryProductsRequest = Helper::makeFactoryPool<AppleStoreInAppPurchaseProductsRequest, 16>( MENGINE_DOCUMENT_FACTORABLE );
         
-        m_transactionObserver = [[AppleStoreInAppPurchasePaymentTransactionObserver alloc] initWithFactory:this service:this];
+        if (@available(iOS 13.0, *)) {
+            m_paymentQueueDelegate = [[AppleStoreInAppPurchasePaymentQueueDelegate alloc] initWithFactory:this service:this];
+            
+            [[SKPaymentQueue defaultQueue] setDelegate:m_paymentQueueDelegate];
+        }
         
-        [[SKPaymentQueue defaultQueue] addTransactionObserver:m_transactionObserver];
+        m_paymentTransactionObserver = [[AppleStoreInAppPurchasePaymentTransactionObserver alloc] initWithFactory:this service:this];
+        
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:m_paymentTransactionObserver];
         
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseService::_finalizeService()
     {
-        [[SKPaymentQueue defaultQueue] removeTransactionObserver:m_transactionObserver];
-        m_transactionObserver = nil;
+        if (@available(iOS 13.0, *)) {
+            [[SKPaymentQueue defaultQueue] setDelegate:nil];
+            m_paymentQueueDelegate = nil;
+        }
+        
+        [[SKPaymentQueue defaultQueue] removeTransactionObserver:m_paymentTransactionObserver];
+        m_paymentTransactionObserver = nil;
+        
+        m_paymentQueueProvider = nullptr;
+        m_paymentTransactionProvider = nullptr;
         
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPaymentTransaction );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProduct );
@@ -54,14 +68,24 @@ namespace Mengine
         m_factoryProductsRequest = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleStoreInAppPurchaseService::setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider )
+    void AppleStoreInAppPurchaseService::setPaymentQueueProvider( const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & _paymentQueueProvider )
     {
-        m_provider = _provider;
+        m_paymentQueueProvider = _paymentQueueProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & AppleStoreInAppPurchaseService::getPaymentQueueProvider() const
+    {
+        return m_paymentQueueProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleStoreInAppPurchaseService::setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _paymentTransactionProvider )
+    {
+        m_paymentTransactionProvider = _paymentTransactionProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & AppleStoreInAppPurchaseService::getPaymentTransactionProvider() const
     {
-        return m_provider;
+        return m_paymentTransactionProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleStoreInAppPurchaseService::canMakePayments() const

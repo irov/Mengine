@@ -7,7 +7,16 @@
 #pragma mark - UIKitProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [FIRApp configure];
+    @try {
+        [FIRApp configure];
+    } @catch (NSException * ex) {
+        NSLog( @"firebase configure caught exception [%@]: %@"
+              , ex.name
+              , ex.reason
+        );
+        
+        return NO;
+    }
     
     return YES;
 }

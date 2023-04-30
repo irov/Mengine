@@ -7,6 +7,7 @@
 
 #include "Kernel/ServiceBase.h"
 
+#import "AppleStoreInAppPurchasePaymentQueueDelegate.h"
 #import "AppleStoreInAppPurchaseProductsRequestDelegate.h"
 #import "AppleStoreInAppPurchasePaymentTransactionObserver.h"
 
@@ -28,7 +29,11 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _provider ) override;
+        void setPaymentQueueProvider( const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & _paymentQueueProvider ) override;
+        const AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & getPaymentQueueProvider() const override;
+        
+    public:
+        void setPaymentTransactionProvider( const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & _paymentTransactionProvider ) override;
         const AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & getPaymentTransactionProvider() const override;
         
     public:
@@ -43,12 +48,14 @@ namespace Mengine
         AppleStoreInAppPurchasePaymentTransactionInterfacePtr makePaymentTransaction( SKPaymentTransaction * _skPaymentTransaction ) override;
         
     protected:
-        AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr m_provider;
+        AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr m_paymentQueueProvider;
+        AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr m_paymentTransactionProvider;
         
         FactoryInterfacePtr m_factoryPaymentTransaction;
         FactoryInterfacePtr m_factoryProduct;
         FactoryInterfacePtr m_factoryProductsRequest;
         
-        AppleStoreInAppPurchasePaymentTransactionObserver * m_transactionObserver;
+        AppleStoreInAppPurchasePaymentQueueDelegate * m_paymentQueueDelegate;
+        AppleStoreInAppPurchasePaymentTransactionObserver * m_paymentTransactionObserver;
     };
 }

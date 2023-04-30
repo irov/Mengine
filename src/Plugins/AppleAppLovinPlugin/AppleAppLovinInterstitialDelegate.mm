@@ -60,8 +60,8 @@
     {
         [AppleAnalytics name:@"ad_interstitial_show" params:@{
             @"request_id": @(self.m_requestId),
-            @"attempt": @(self.m_retryAttempt)
-            @"ready": @(NO),
+            @"attempt": @(self.m_retryAttempt),
+            @"ready": @(NO)
         }];
         
         return NO;
@@ -81,8 +81,8 @@
     
     [AppleAnalytics name:@"ad_interstitial_show" params:@{
         @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt)
-        @"ready": @(ready),
+        @"attempt": @(self.m_retryAttempt),
+        @"ready": @(ready)
     }];
     
     if( ready == NO )

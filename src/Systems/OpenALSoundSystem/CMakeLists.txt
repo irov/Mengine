@@ -43,5 +43,5 @@ IF(MENGINE_TARGET_ANDROID)
         SET(CMAKE_BUILD_TYPE_CORRECT ${CMAKE_BUILD_TYPE})
     ENDIF()
 
-    ADD_LIBRARY_IMPORTED(OPENAL_IMPORTED "${MENGINE_REPOSITORY}/gradle/libraries/OpenAL32/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libopenal.so")
+    ADD_LIBRARY_IMPORTED(OPENAL_IMPORTED "${MENGINE_REPOSITORY}/gradle/libraries/OpenAL32/build/intermediates/library_jni/${CMAKE_BUILD_TYPE_CORRECT}/jni/${ANDROID_ABI}/libopenal.so")
 ENDIF()

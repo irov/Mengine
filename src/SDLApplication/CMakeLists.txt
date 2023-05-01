@@ -440,7 +440,7 @@ IF(MENGINE_TARGET_ANDROID)
         SET(CMAKE_BUILD_TYPE_CORRECT ${CMAKE_BUILD_TYPE})
     ENDIF()
 
-    ADD_LIBRARY_IMPORTED(SDL_IMPORTED "${MENGINE_REPOSITORY}/gradle/libraries/SDL/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libSDL2.so")
+    ADD_LIBRARY_IMPORTED(SDL_IMPORTED "${MENGINE_REPOSITORY}/gradle/libraries/SDL/build/intermediates/library_jni/${CMAKE_BUILD_TYPE_CORRECT}/jni/${ANDROID_ABI}/libSDL2.so")
     
     target_link_libraries(${PROJECT_NAME}
         stdc++

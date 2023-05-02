@@ -1,6 +1,8 @@
 package org.Mengine.Plugin.Advertising;
 
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Base.MengineActivity;
@@ -16,28 +18,29 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import java.io.IOException;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-public class MengineAdvertisingPlugin extends MenginePlugin {
+public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "Advertising";
 
     private String m_advertisingId;
     private boolean m_advertisingLimitTrackingEnabled;
 
-    private ExecutorService m_executor;
-
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        m_executor = Executors.newSingleThreadExecutor();
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        m_executor.execute(() -> {
-            final Context context = activity.getApplicationContext();
-
-            AdvertisingIdClient.Info adInfo = null;
+        Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
+            final Context context = application.getApplicationContext();
 
             try {
-                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+                AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+
+                return adInfo;
             } catch (IOException e) {
                 MengineAdvertisingPlugin.this.logError("invalid get advertising id info IOException: %s"
                     , e.getLocalizedMessage()
@@ -56,35 +59,52 @@ public class MengineAdvertisingPlugin extends MenginePlugin {
                 );
             }
 
-            MengineAdvertisingPlugin.this.onPostAdInfo(activity, adInfo);
+            return null;
         });
+
+        try {
+            AdvertisingIdClient.Info adInfo = future.get();
+
+            MengineAdvertisingPlugin.this.onPostAdInfo(application, adInfo);
+        } catch (CancellationException ex) {
+            this.logError("invalid get advertising id CancellationException: %s"
+                , ex.getLocalizedMessage()
+            );
+        } catch (InterruptedException ex) {
+            this.logError("invalid get advertising id InterruptedException: %s"
+                , ex.getLocalizedMessage()
+            );
+        } catch (ExecutionException ex) {
+            this.logError("invalid get advertising id ExecutionException: %s"
+                , ex.getLocalizedMessage()
+            );
+        }
     }
 
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        m_executor.shutdown();
-        m_executor = null;
-    }
+    public void onPostAdInfo(MengineApplication application, AdvertisingIdClient.Info adInfo) {
+        if (adInfo == null ) {
+            MengineAdvertisingPlugin.this.m_advertisingId = "00000000-0000-0000-0000-000000000000";
+            MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = true;
+        } else if( adInfo.isLimitAdTrackingEnabled() == true) {
+            MengineAdvertisingPlugin.this.m_advertisingId = "00000000-0000-0000-0000-000000000000";
+            MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = true;
+        } else {
+            String advertisingId = adInfo.getId();
 
-    public void onPostAdInfo(MengineActivity activity, AdvertisingIdClient.Info adInfo) {
-        MengineUtils.performOnMainThread(() -> {
-            if (adInfo == null ) {
-                MengineAdvertisingPlugin.this.m_advertisingId = "00000000-0000-0000-0000-000000000000";
-                MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = true;
-            } else if( adInfo.isLimitAdTrackingEnabled() == true) {
+            if (advertisingId.equals("00000000-0000-0000-0000-000000000000") == true) {
                 MengineAdvertisingPlugin.this.m_advertisingId = "00000000-0000-0000-0000-000000000000";
                 MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = true;
             } else {
-                MengineAdvertisingPlugin.this.m_advertisingId = adInfo.getId();
+                MengineAdvertisingPlugin.this.m_advertisingId = advertisingId;
                 MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = false;
             }
+        }
 
-            MengineAdvertisingPlugin.this.logMessage("AdvertisingId: %s limit: %s"
-                , MengineAdvertisingPlugin.this.m_advertisingId
-                , MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled == true ? "true" : "false"
-            );
+        MengineAdvertisingPlugin.this.logMessage("AdvertisingId: %s limit: %s"
+            , MengineAdvertisingPlugin.this.m_advertisingId
+            , MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled == true ? "true" : "false"
+        );
 
-            activity.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, MengineAdvertisingPlugin.this.m_advertisingId, MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled);
-        });
+        application.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, MengineAdvertisingPlugin.this.m_advertisingId, MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled);
     }
 }

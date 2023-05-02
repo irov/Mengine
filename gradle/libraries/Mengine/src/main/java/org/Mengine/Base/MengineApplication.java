@@ -492,6 +492,14 @@ public class MengineApplication extends Application {
         alert.show();
     }
 
+    public void sendEvent(MengineEvent event, Object ... args) {
+        ArrayList<MenginePlugin> plugins = this.getPlugins();
+
+        for (MenginePlugin p : plugins) {
+            p.onEvent(this, event, args);
+        }
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

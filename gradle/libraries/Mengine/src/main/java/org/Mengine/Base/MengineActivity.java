@@ -186,11 +186,9 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+        MengineApplication application = this.getMengineApplication();
 
-        for (MenginePlugin p : plugins) {
-            p.onEvent(this, event, args);
-        }
+        application.sendEvent(event, args);
     }
 
     public boolean hasMetaData(String name) {

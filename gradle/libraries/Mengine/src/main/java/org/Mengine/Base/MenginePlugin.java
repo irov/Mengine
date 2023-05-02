@@ -133,7 +133,7 @@ public class MenginePlugin {
         m_activity.waitSemaphore(name, cb);
     }
 
-    public void onEvent(MengineActivity activity, MengineEvent event, Object ... args) {
+    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
         //Empty
     }
 

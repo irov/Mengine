@@ -28,11 +28,11 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
      */
 
     @Override
-    public void onEvent(MengineActivity activity, MengineEvent event, Object ... args) {
+    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
         if (event == MengineEvent.EVENT_PUSH_TOKEN) {
-            String token = (String)args[0];
+            final String token = (String)args[0];
 
-            final Context context = activity.getApplicationContext();
+            final Context context = application.getApplicationContext();
 
             Adjust.setPushToken(token, context);
         }

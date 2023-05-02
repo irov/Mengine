@@ -80,9 +80,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     private ArrayList<MengineAppLovinAnalyticsListener> m_analytics = new ArrayList<>();
 
     @Override
-    public void onEvent(MengineActivity activity, MengineEvent event, Object ... args) {
+    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
         if (event == MengineEvent.EVENT_ADVERTISING_ID) {
-            final Context context = activity.getBaseContext();
+            final Context context = application.getApplicationContext();
 
             String advertisingId = (String)args[0];
             boolean advertisingLimitTrackingEnabled = (boolean)args[1];

@@ -214,7 +214,7 @@ namespace Mengine
 
                 const Char * object_modulePath = doc->getModulePath();
 
-                if( MENGINE_STRCMP( MENGINE_LIBRARY_NAME, object_modulePath ) != 0 )
+                if( MENGINE_STRCMP( MENGINE_CODE_LIBRARY, object_modulePath ) != 0 )
                 {
                     return;
                 }

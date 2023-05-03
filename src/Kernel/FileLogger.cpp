@@ -114,11 +114,10 @@ namespace Mengine
 
         if( _message.flag & LFLAG_CATEGORY )
         {
-            const Char * category_str = _message.category.c_str();
-            size_t category_size = _message.category.size();
+            size_t category_size = MENGINE_STRLEN( _message.category );
 
             m_stream->write( "[", 1 );
-            m_stream->write( category_str, category_size );
+            m_stream->write( _message.category, category_size );
             m_stream->write( "]", 1 );
             m_stream->write( " ", 1 );
         }

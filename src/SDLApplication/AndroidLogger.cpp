@@ -58,8 +58,7 @@ namespace Mengine
 
         Char symbol = Helper::getLoggerLevelSymbol( level );
 
-        const Char * category_str = _message.category.c_str();
-
+        const Char * category = _message.category;
         const Char * data = _message.data;
         size_t size = _message.size;
 
@@ -68,7 +67,7 @@ namespace Mengine
             , (int32_t)timestampSize, timestamp
             , (int32_t)threadstampSize, threadstamp
             , symbol
-            , category_str
+            , category
             , (int32_t)size, data
         );
     }

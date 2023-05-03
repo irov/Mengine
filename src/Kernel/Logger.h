@@ -39,13 +39,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        bool loggerValidMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter );
+        bool loggerValidMessage( const Char * _category, ELoggerLevel _level, uint32_t _filter );
     }
     //////////////////////////////////////////////////////////////////////////
     class LoggerOperator
     {
     public:
-        LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, uint32_t _flag );
+        LoggerOperator( const Char * _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, uint32_t _flag );
         ~LoggerOperator();
 
     public:
@@ -58,7 +58,7 @@ namespace Mengine
         void logMessage( uint32_t _color, const Char * _data, size_t _size ) const;
 
     protected:
-        ConstString m_category;
+        const Char * m_category;
 
         ELoggerLevel m_level;
         uint32_t m_filter;
@@ -75,7 +75,7 @@ namespace Mengine
     if( Mengine::Detail::loggerValidMessage(CATEGORY, LEVEL, FILTER) == false) {} else Mengine::LoggerOperator(CATEGORY, (LEVEL), (FILTER), (COLOR), (FILE), (LINE), (FLAG))
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_CATEGORY_VERBOSE_LEVEL( LEVEL, FILTER, COLOR, FILE, LINE, FLAG )\
-    LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL_I(MENGINE_LIBRARY_NAME), (LEVEL), (FILTER), (COLOR), (FILE), (LINE), (FLAG) )
+    LOGGER_VERBOSE_LEVEL( MENGINE_CODE_LIBRARY, (LEVEL), (FILTER), (COLOR), (FILE), (LINE), (FLAG) )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_FATAL( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_FATAL, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, Mengine::LFLAG_FULL )( __VA_ARGS__ )
 #define LOGGER_ERROR( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, Mengine::LFLAG_FULL )( __VA_ARGS__ )
@@ -88,10 +88,10 @@ namespace Mengine
 #define LOGGER_MESSAGE_ERROR( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_LOGGER_INFO_ENABLE)
-#   define LOGGER_INFO( Category, ... ) LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL(Category), Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#   define LOGGER_INFO_PROTECTED( Category, ... ) LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL(Category), Mengine::LM_INFO, Mengine::LFILTER_PROTECTED, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#   define LOGGER_DEBUG( Category, ... ) LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL(Category), Mengine::LM_DEBUG, Mengine::LFILTER_NONE, Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#   define LOGGER_VERBOSE( Category, ... ) LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL(Category), Mengine::LM_VERBOSE, Mengine::LFILTER_NONE, Mengine::LCOLOR_NONE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_INFO( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_INFO_PROTECTED( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_INFO, Mengine::LFILTER_PROTECTED, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_DEBUG( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_DEBUG, Mengine::LFILTER_NONE, Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_VERBOSE( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_VERBOSE, Mengine::LFILTER_NONE, Mengine::LCOLOR_NONE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
 #else
 #   define LOGGER_INFO( Category, ... )
 #   define LOGGER_INFO_PROTECTED( Category, ... )

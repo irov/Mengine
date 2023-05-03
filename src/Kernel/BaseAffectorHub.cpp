@@ -101,10 +101,14 @@ namespace Mengine
 
             it.next_shuffle();
 
-            if( affector->getAffectorType() == _type )
+            EAffectorType affectorType = affector->getAffectorType();
+
+            if( affectorType != _type )
             {
-                affector->stop();
+                continue;
             }
+
+            affector->stop();
         }
 
         switch( _type )

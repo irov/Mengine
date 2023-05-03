@@ -21,8 +21,8 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        void notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message );
-        void notifyError_( EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message );
+        void notifyAssertion_( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message );
+        void notifyError_( const Char * _category, EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message );
         void notifyBootstrapperCreateApplication_();
         void notifyEngineStop_();
 

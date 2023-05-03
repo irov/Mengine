@@ -72,7 +72,7 @@ namespace Mengine
 
         const Char * message = Helper::getDX11ErrorMessage( _hr );
 
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "dx11" ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("call '%s' get error: %s (hr:%x)"
+        LOGGER_VERBOSE_LEVEL( "dx11", LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("call '%s' get error: %s (hr:%x)"
             , m_method
             , message
             , (uint32_t)_hr

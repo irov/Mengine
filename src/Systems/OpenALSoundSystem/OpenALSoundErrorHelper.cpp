@@ -20,7 +20,7 @@ namespace Mengine
 
             const Char * message = alGetString( error );
 
-            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "openal" ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("OpenAL Error: method '%s' (%s[%u]) %d:%s"
+            LOGGER_VERBOSE_LEVEL( "openal", LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("OpenAL Error: method '%s' (%s[%u]) %d:%s"
                 , _method
                 , _file
                 , _line

@@ -166,7 +166,7 @@ namespace Mengine
             ->getLocalDateTime( &dateTime );
 
         LoggerMessage msg;
-        msg.category = ConstString::none();
+        msg.category = MENGINE_CODE_LIBRARY;
         msg.dateTime = dateTime;
         msg.level = LM_MESSAGE;
         msg.flag = LFLAG_SHORT;
@@ -268,7 +268,22 @@ namespace Mengine
         m_history.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerService::validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const
+    bool LoggerService::hasVerbose( const Char * _category ) const
+    {
+        for( const ConstString & verbose : m_verboses )
+        {
+            if( verbose == _category )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerService::validMessage( const Char * _category, ELoggerLevel _level, uint32_t _filter ) const
     {
         MENGINE_UNUSED( _category );
 
@@ -279,12 +294,7 @@ namespace Mengine
 
         if( m_verboseLevel < _level )
         {
-            if( _category == ConstString::none() )
-            {
-                return false;
-            }
-
-            if( Algorithm::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
+            if( this->hasVerbose( _category ) == false )
             {
                 return false;
             }

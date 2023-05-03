@@ -57,7 +57,7 @@ namespace Mengine
         struct MessageDesc
         {
             String timestamp;
-            ConstString tag;
+            const Char * tag;
             const Char * file;
             uint32_t line;
             ConstString threadName;

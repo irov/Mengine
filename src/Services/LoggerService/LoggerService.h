@@ -46,8 +46,8 @@ namespace Mengine
     public:
         void clearHistory() override;
 
-    public:
-        bool validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const override;
+    public:        
+        bool validMessage( const Char * _category, ELoggerLevel _level, uint32_t _filter ) const override;
 
     public:
         void logMessage( const LoggerMessage & _message ) override;
@@ -63,6 +63,9 @@ namespace Mengine
     public:
         bool registerLogger( const LoggerInterfacePtr & _logger ) override;
         bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
+
+    protected:
+        bool hasVerbose( const Char * _category ) const;
 
     protected:
         void logHistory_( const LoggerMessage & _message );
@@ -88,7 +91,7 @@ namespace Mengine
 
         struct HistoryRecord
         {
-            ConstString category;
+            const Char * category;
             PlatformDateTime dateTime;
             ELoggerLevel level;
             uint32_t flag;

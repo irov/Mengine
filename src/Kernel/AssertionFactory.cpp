@@ -11,7 +11,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionFactoryEmpty( const FactoryInterfacePtr & _factory, const Char * _file, uint32_t _line )
+        void assertionFactoryEmpty( const Char * _category, const FactoryInterfacePtr & _factory, const Char * _file, uint32_t _line )
         {
             if( _factory->isEmptyObjects() == true )
             {
@@ -51,7 +51,7 @@ namespace Mengine
             } );
 #   endif
 
-            Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Factory Empty" );
+            Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Factory Empty" );
         }
     }
 }

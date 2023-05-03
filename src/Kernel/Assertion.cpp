@@ -34,8 +34,9 @@ namespace Mengine
             return Assertion_NotDebugBreak;
         }
         //////////////////////////////////////////////////////////////////////////
-        AssertionOperator::AssertionOperator( EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line )
-            : m_level( _level )
+        AssertionOperator::AssertionOperator( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, uint32_t _line )
+            : m_category( _category )
+            , m_level( _level )
             , m_test( _test )
             , m_file( _file )
             , m_line( _line )
@@ -48,7 +49,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const AssertionOperator & AssertionOperator::operator()() const
         {
-            Helper::Assertion( m_level, m_test, m_file, m_line );
+            Helper::Assertion( m_category, m_level, m_test, m_file, m_line );
 
             return *this;
         }
@@ -65,17 +66,17 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( argList );
 
-            Helper::Assertion( m_level, m_test, m_file, m_line, "%s", str_info );
+            Helper::Assertion( m_category, m_level, m_test, m_file, m_line, "%s", str_info );
 
             return *this;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line )
+        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line )
         {
-            Helper::Assertion( _level, _test, _file, _line, "Unknown" );
+            Helper::Assertion( _category, _level, _test, _file, _line, "Unknown" );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
+        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
         {
             Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
 
@@ -88,14 +89,15 @@ namespace Mengine
             MENGINE_VA_LIST_END( argList );
 
             Char assertion_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
-            MENGINE_SNPRINTF( assertion_info, MENGINE_ASSERTION_MAX_MESSAGE, "File %s [line:%d] Assertion [%s]: %s"
+            MENGINE_SNPRINTF( assertion_info, MENGINE_ASSERTION_MAX_MESSAGE, "File %s [line:%d] Assertion [%s] [%s]: %s"
                 , _file
                 , _line
                 , _test
+                , _category
                 , str_info
             );
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _level, _test, _file, _line, str_info );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _category, _level, _test, _file, _line, str_info );
             
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {
@@ -115,7 +117,7 @@ namespace Mengine
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
-                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_FULL )("%s"
+                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_FULL )("%s"
                     , assertion_info
                     );
             }

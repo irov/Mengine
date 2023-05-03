@@ -39,9 +39,7 @@ namespace Mengine
         jmethodID jmethodID_onMengineLogger = ANDROID_ENVIRONMENT_SERVICE()
             ->getApplicationMethodID( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
 
-        const Char * category_str = _message.category.c_str();
-
-        jstring category_jstring = jenv->NewStringUTF( category_str );
+        jstring category_jstring = jenv->NewStringUTF( _message.category );
 
         ELoggerLevel level = _message.level;
         uint32_t filter = _message.filter;

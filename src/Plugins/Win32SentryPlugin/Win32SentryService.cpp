@@ -76,7 +76,7 @@ namespace Mengine
                 return;
             }
 
-            LoggerOperator( STRINGIZE_STRING_LOCAL( "sentry" ), level, 0, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT ).logMessageArgs( _format, _args );
+            LoggerOperator( "sentry", level, 0, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT ).logMessageArgs( _format, _args );
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -269,8 +269,10 @@ namespace Mengine
         sentry_close();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32SentryService::notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
+    void Win32SentryService::notifyAssertion_( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
     {
+        MENGINE_UNUSED( _category );
+
         if( _level < ASSERTION_LEVEL_FATAL )
         {
             return;
@@ -285,8 +287,10 @@ namespace Mengine
         sentry_capture_event( event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32SentryService::notifyError_( EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
+    void Win32SentryService::notifyError_( const Char * _category, EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
     {
+        MENGINE_UNUSED( _category );
+
         sentry_set_extra( "Error Level", sentry_value_new_int32( _level ) );
         sentry_set_extra( "Error Function", sentry_value_new_string( _file ) );
         sentry_set_extra( "Error Line", sentry_value_new_int32( _line ) );

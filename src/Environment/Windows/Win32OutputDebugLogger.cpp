@@ -55,10 +55,8 @@ namespace Mengine
 
         if( _message.flag & LFLAG_CATEGORY )
         {
-            const Char * category_str = _message.category.c_str();
-
             ::OutputDebugStringA( "[" );
-            ::OutputDebugStringA( category_str );
+            ::OutputDebugStringA( _message.category );
             ::OutputDebugStringA( "]" );
             ::OutputDebugStringA( " " );
         }

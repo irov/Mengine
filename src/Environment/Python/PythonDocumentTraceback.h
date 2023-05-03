@@ -21,7 +21,7 @@
         Mengine::Char traceback[8192] = {'\0'}; \
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()->getKernel(); \
         kernel->get_traceback(traceback, 8192); \
-        Mengine::DocumentPtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, MENGINE_LIBRARY_NAME, _file, _function, _line, "traceback: %s", traceback); \
+        Mengine::DocumentPtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _function, _line, "traceback: %s", traceback); \
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE)
 #else

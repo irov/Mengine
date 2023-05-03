@@ -232,11 +232,10 @@ namespace Mengine
 
         if( _message.flag & LFLAG_CATEGORY )
         {
-            const Char * category_str = _message.category.c_str();
-            size_t category_size = _message.category.size();
+            size_t category_size = MENGINE_STRLEN( _message.category );
 
             ::WriteConsoleA( output_handle, "[", 1, &dWritten, NULL );
-            ::WriteConsoleA( output_handle, category_str, (DWORD)category_size, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, _message.category, (DWORD)category_size, &dWritten, NULL );
             ::WriteConsoleA( output_handle, "]", 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }

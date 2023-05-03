@@ -59,7 +59,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _user );
 
-            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "pybind" ), Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("%s"
+            LOGGER_VERBOSE_LEVEL( "pybind", Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("%s"
                 , _msg
                 );
         }
@@ -213,7 +213,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "script" ), LM_WARNING, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -223,7 +223,7 @@ namespace Mengine
                 Char traceback[4096] = {'\0'};
                 _kernel->get_traceback( traceback, 4095 );
 
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "script" ), LM_WARNING, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("traceback:\n%s"
+                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("traceback:\n%s"
                     , traceback
                     );
             }
@@ -1108,8 +1108,9 @@ namespace Mengine
         return m_tracebackOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
+    void PythonScriptService::notifyAssertion_( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
     {
+        MENGINE_UNUSED( _category );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _test );
         MENGINE_UNUSED( _file );
@@ -1127,15 +1128,13 @@ namespace Mengine
             return;
         }
 
-        Char traceback[4096] = {'\0'};
-        if( m_kernel->get_traceback( traceback, 4095 ) == false )
+        Char traceback[8192] = {'\0'};
+        if( m_kernel->get_traceback( traceback, 8192 ) == false )
         {
             return;
         }
 
-        LOGGER_MESSAGE_RELEASE( "traceback:\n%s"
-            , traceback
-        );
+        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::LFLAG_SHORT )("traceback:\n%s", traceback);
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)

@@ -64,7 +64,7 @@ namespace Mengine
                 break;
             }
 
-            LoggerOperator( STRINGIZE_STRING_LOCAL( "gameanalytics" ), level, 0, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("%s", _message);
+            LoggerOperator( "gameanalytics", level, 0, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("%s", _message);
         }
         //////////////////////////////////////////////////////////////////////////
     }

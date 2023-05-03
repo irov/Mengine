@@ -16,6 +16,7 @@ namespace Mengine
         , m_updataterId( INVALID_UPDATABLE_ID )
         , m_speedFactor( 1.f )
         , m_freeze( false )
+        , m_affecting( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -107,7 +108,10 @@ namespace Mengine
     void Affector::update( const UpdateContext * _context )
     {
         float used = 0.f;
+
+        m_affecting = true;
         bool finish = this->_affect( _context, &used );
+        m_affecting = false;
 
         if( finish == true )
         {
@@ -140,6 +144,10 @@ namespace Mengine
     void Affector::complete( bool _isEnd )
     {
         MENGINE_UNUSED( _isEnd );
+
+        MENGINE_ASSERTION_FATAL( m_affecting == false, "affector '%u' can not completed or removing in _affect (please return true if you want complete)"
+            , this->getId()
+        );
 
         UPDATE_SERVICE()
             ->removeUpdatater( m_updataterId );

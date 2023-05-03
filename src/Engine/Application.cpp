@@ -1511,14 +1511,14 @@ namespace Mengine
         {
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open %s%s"
                     , _folder
                     , _filePath
                     );
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming %s%s"
                     , _folder
                     , _filePath
                     );
@@ -1531,7 +1531,7 @@ namespace Mengine
 
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open [multithread:%" MENGINE_PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open [multithread:%" MENGINE_PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1539,7 +1539,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming [multithread:%" MENGINE_PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming [multithread:%" MENGINE_PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1550,7 +1550,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugResourceCompile_( Resource * _resource )
     {
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("compile %s type %s"
+        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("compile %s type %s"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             );
@@ -1558,7 +1558,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugResourceRelease_( Resource * _resource )
     {
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "debug" ), LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("release %s type %s"
+        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("release %s type %s"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             );

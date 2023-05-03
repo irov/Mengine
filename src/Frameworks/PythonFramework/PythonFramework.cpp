@@ -16,6 +16,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -31,6 +32,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::_initializeFramework()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

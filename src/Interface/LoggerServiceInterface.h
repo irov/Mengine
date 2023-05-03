@@ -36,7 +36,7 @@ namespace Mengine
         virtual void clearHistory() = 0;
 
     public:
-        virtual bool validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter ) const = 0;
+        virtual bool validMessage( const Char * _category, ELoggerLevel _level, uint32_t _filter ) const = 0;
 
     public:
         virtual void logMessage( const LoggerMessage & _message ) = 0;

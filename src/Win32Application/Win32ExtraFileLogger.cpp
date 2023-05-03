@@ -89,10 +89,8 @@ namespace Mengine
 
         if( _message.flag & LFLAG_CATEGORY )
         {
-            const Char * category_str = _message.category.c_str();
-
             this->writeMessage_( "[" );
-            this->writeMessage_( category_str );
+            this->writeMessage_( _message.category );
             this->writeMessage_( "]" );
             this->writeMessage_( " " );
         }

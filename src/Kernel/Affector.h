@@ -84,6 +84,7 @@ namespace Mengine
         float m_speedFactor;
 
         bool m_freeze;
+        bool m_affecting;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Affector> AffectorPtr;

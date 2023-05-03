@@ -221,7 +221,7 @@ extern "C"
                 break;
         }
 
-        LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "android" ), level, Mengine::LFILTER_NONE, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
+        LOGGER_VERBOSE_LEVEL( "android", level, Mengine::LFILTER_NONE, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
             , tag_str
             , msg_str
         );

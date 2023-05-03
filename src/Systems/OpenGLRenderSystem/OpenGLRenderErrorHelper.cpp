@@ -42,7 +42,7 @@ namespace Mengine
 
             const Char * err_str = glGetErrorString( err );
 
-            LOGGER_VERBOSE_LEVEL( STRINGIZE_STRING_LOCAL( "opengl" ), LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("error %s:%d"
+            LOGGER_VERBOSE_LEVEL( "opengl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("error %s:%d"
                 , err_str
                 , err
                 );

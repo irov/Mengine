@@ -16,7 +16,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        bool loggerValidMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _filter )
+        bool loggerValidMessage( const Char * _category, ELoggerLevel _level, uint32_t _filter )
         {
             bool result = LOGGER_SERVICE()
                 ->validMessage( _category, _level, _filter );
@@ -26,7 +26,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( const ConstString & _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, uint32_t _flag )
+    LoggerOperator::LoggerOperator( const Char * _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, uint32_t _flag )
         : m_category( _category )
         , m_level( _level )
         , m_filter( _filter )

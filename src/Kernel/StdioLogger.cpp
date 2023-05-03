@@ -2,6 +2,8 @@
 
 #include "Kernel/LoggerHelper.h"
 
+#include "Config/StdString.h"
+
 #include <iostream>
 
 namespace Mengine
@@ -52,11 +54,10 @@ namespace Mengine
 
         if( _message.flag & LFLAG_CATEGORY )
         {
-            const Char * category_str = _message.category.c_str();
-            size_t category_size = _message.category.size();
+            size_t category_size = MENGINE_STRLEN( _message.category );
 
             std::cout.write( "[", 1 );
-            std::cout.write( category_str, category_size );
+            std::cout.write( _message.category, category_size );
             std::cout.write( "]", 1 );
             std::cout.write( " ", 1 );
         }

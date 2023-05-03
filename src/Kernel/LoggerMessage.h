@@ -9,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct LoggerMessage
     {
-        ConstString category;
+        const Char * category;
         PlatformDateTime dateTime;
         ELoggerLevel level;
         uint32_t flag;

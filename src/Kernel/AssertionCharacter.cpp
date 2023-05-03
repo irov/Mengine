@@ -12,7 +12,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        void assertionStandardCharacterSet( const Char * _value, size_t _len, const Char * _file, uint32_t _line )
+        void assertionStandardCharacterSet( const Char * _category, const Char * _value, size_t _len, const Char * _file, uint32_t _line )
         {
             for( const Char * ch = _value; ch != _value + _len; ++ch )
             {
@@ -28,7 +28,7 @@ namespace Mengine
                     , (uint32_t)*ch
                 );
 
-                Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );
+                Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );
             }
         }
     }

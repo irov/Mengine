@@ -826,7 +826,7 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
-                msg.category = STRINGIZE_STRING_LOCAL( "python" );
+                msg.category = "python";
                 DATETIME_SYSTEM()
                     ->getLocalDateTime( &msg.dateTime );
                 msg.level = _level;

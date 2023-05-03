@@ -227,9 +227,6 @@ endif(PNG_HARDWARE_OPTIMIZATIONS)
 # Set PNG_LIB_NAME.
 set(PNG_LIB_NAME png${PNGLIB_MAJOR}${PNGLIB_MINOR})
 
-# Distinguish between debug and release builds.
-set(CMAKE_DEBUG_POSTFIX "d")
-
 include(CheckCSourceCompiles)
 option(ld-version-script "Enable linker version script" ON)
 if(ld-version-script AND NOT ANDROID AND NOT APPLE)
@@ -383,11 +380,6 @@ if(PNG_SHARED)
   set(PNG_LIB_TARGETS png)
   set_target_properties(png PROPERTIES OUTPUT_NAME ${PNG_LIB_NAME})
   add_dependencies(png genfiles)
-  if(MSVC)
-    # MVC does not append 'lib'. Do it here, to have consistent name.
-    set_target_properties(png PROPERTIES PREFIX "lib")
-    set_target_properties(png PROPERTIES IMPORT_PREFIX "lib")
-  endif()
   target_link_libraries(png ${ZLIB_LIBRARIES} ${M_LIBRARY})
 
   if(UNIX AND AWK)
@@ -411,18 +403,14 @@ if(PNG_STATIC)
   # for all other platforms.
   if(NOT MSVC)
     set_target_properties(png_static PROPERTIES
-                          OUTPUT_NAME "${PNG_LIB_NAME}"
+                          OUTPUT_NAME "png"
                           CLEAN_DIRECT_OUTPUT 1)
   else()
     set_target_properties(png_static PROPERTIES
-                          OUTPUT_NAME "${PNG_LIB_NAME}_static"
+                          OUTPUT_NAME "png"
                           CLEAN_DIRECT_OUTPUT 1)
   endif()
   list(APPEND PNG_LIB_TARGETS png_static)
-  if(MSVC)
-    # MSVC does not append 'lib'. Do it here, to have consistent name.
-    set_target_properties(png_static PROPERTIES PREFIX "lib")
-  endif()
   target_link_libraries(png_static ${ZLIB_LIBRARIES} ${M_LIBRARY})
 endif()
 

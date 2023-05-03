@@ -281,7 +281,7 @@ if(MENGINE_DEPENDENCE_WEBP)
     
     set(PNG_PNG_INCLUDE_DIR ${PNG_INCLUDE_DIRS} CACHE STRING "PNG_PNG_INCLUDE_DIR" FORCE)
     
-    set(WEBP_LINK_STATIC_DEFAULT ON CACHE BOOL "Link using static libraries. If OFF, use dynamic libraries." FORCE)
+    set(WEBP_LINK_STATIC ON CACHE BOOL "Link using static libraries. If OFF, use dynamic libraries." FORCE)
     set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
     set(WEBP_BUILD_ANIM_UTILS OFF CACHE BOOL "WEBP_BUILD_ANIM_UTILS" FORCE)
     set(WEBP_BUILD_CWEBP OFF CACHE BOOL "Build the cwebp command line tool." FORCE)
@@ -495,6 +495,7 @@ if(MENGINE_DEPENDENCE_CURL)
     
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/CMakeLists.txt ${THIRDPARTY_DIR}/curl/CMakeLists.txt COPYONLY)
     
+    set(LIBCURL_OUTPUT_NAME curl CACHE STRING "Basename of the curl library" FORCE)
     set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
     if(MENGINE_TOOLCHAIN_MSVC)
         set(CURL_STATIC_CRT ${MENGINE_STATIC_CRT} CACHE BOOL "Set to ON to build libcurl with static CRT on Windows (/MT)." FORCE)

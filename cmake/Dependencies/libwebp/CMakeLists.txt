@@ -142,14 +142,6 @@ endif()
 set(PTHREAD_LIBS ${CMAKE_THREAD_LIBS_INIT})
 set(INSTALLED_LIBRARIES)
 
-if(MSVC)
-  # match the naming convention used by nmake
-  set(webp_libname_prefix "lib")
-  set(CMAKE_SHARED_LIBRARY_PREFIX "${webp_libname_prefix}")
-  set(CMAKE_IMPORT_LIBRARY_PREFIX "${webp_libname_prefix}")
-  set(CMAKE_STATIC_LIBRARY_PREFIX "${webp_libname_prefix}")
-endif()
-
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 
 # ##############################################################################

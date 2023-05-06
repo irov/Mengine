@@ -10,6 +10,9 @@ src
     
     AppleStoreInAppPurchaseService.h
     AppleStoreInAppPurchaseService.mm
+    
+    AppleStoreInAppPurchaseApplicationDelegate.h
+    AppleStoreInAppPurchaseApplicationDelegate.mm
 
     AppleStoreInAppPurchasePaymentQueueDelegate.h
     AppleStoreInAppPurchasePaymentQueueDelegate.mm

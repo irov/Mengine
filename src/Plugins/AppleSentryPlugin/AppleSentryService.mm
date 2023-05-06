@@ -239,8 +239,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleSentryService::notifyAssertion_( EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
+    void AppleSentryService::notifyAssertion_( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
     {
+        MENGINE_UNUSED( _category );
+        
         if( _level < ASSERTION_LEVEL_FATAL )
         {
             return;
@@ -253,8 +255,10 @@ namespace Mengine
         Helper::appleSentryCapture( _message, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleSentryService::notifyError_( EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
+    void AppleSentryService::notifyError_( const Char * _category, EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
     {
+        MENGINE_UNUSED( _category );
+        
         Helper::appleSentrySetExtraInteger( "Error Level", _level );
         Helper::appleSentrySetExtraString( "Error Function", _file );
         Helper::appleSentrySetExtraInteger( "Error Line", _line );

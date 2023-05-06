@@ -34,14 +34,8 @@ namespace Mengine
         m_message.append( timestamp, timestampSize );
         m_message.append( " ", 1 );
 
-        if( _message.category.empty() == false )
-        {
-            const Char * category_str = _message.category.c_str();
-            size_t category_size = _message.category.size();
-
-            m_message.append( category_str, category_size );
-            m_message.append( " ", 1 );
-        }
+        m_message.append( _message.category );
+        m_message.append( " ", 1 );
         
         const Char * data_str = _message.data;
         size_t data_size = _message.size;

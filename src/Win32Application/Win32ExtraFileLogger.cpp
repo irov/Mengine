@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdIO.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {

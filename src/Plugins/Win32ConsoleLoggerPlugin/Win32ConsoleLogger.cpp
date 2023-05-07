@@ -8,6 +8,8 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/LoggerHelper.h"
 
+#include "Config/StdString.h"
+
 #include <clocale>
 #include <iostream>
 

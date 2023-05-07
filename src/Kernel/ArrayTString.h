@@ -4,7 +4,6 @@
 #include "Kernel/StringLength.h"
 
 #include "Config/Char.h"
-#include "Config/StdString.h"
 #include "Config/StdInt.h"
 
 namespace Mengine

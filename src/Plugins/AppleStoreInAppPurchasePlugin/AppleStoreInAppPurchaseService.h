@@ -56,6 +56,5 @@ namespace Mengine
         FactoryInterfacePtr m_factoryProductsRequest;
         
         AppleStoreInAppPurchasePaymentQueueDelegate * m_paymentQueueDelegate;
-        AppleStoreInAppPurchasePaymentTransactionObserver * m_paymentTransactionObserver;
     };
 }

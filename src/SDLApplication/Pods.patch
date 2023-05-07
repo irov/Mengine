@@ -9,6 +9,7 @@ post_install do |installer|
 
         build_settings = Hash[*File.read(xcconfig_path).lines.map{|x| x.split(/\s*=\s*/, 2)}.flatten]
         build_settings['FRAMEWORK_SEARCH_PATHS'] = "#{build_settings['FRAMEWORK_SEARCH_PATHS'][0...-1]} ${PODS_CONFIGURATION_BUILD_DIR}\n"
+		build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
 
         File.open(xcconfig_path, "w") do |file|
             build_settings.each do |key,value|
@@ -23,9 +24,7 @@ post_install do |installer|
 
         File.open(sh_path, "w") do |file|
             file << lines
-        end
-
+        end        
     end
-    
   end
 end

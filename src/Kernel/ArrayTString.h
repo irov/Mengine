@@ -88,8 +88,8 @@ namespace Mengine
             m_buffer[m_pos] = Helper::stringTerminalChar<T>();
         }
 
-        template<class T>
-        void append( const T & _value )
+        template<class StringView>
+        void append( const StringView & _value )
         {
             const value_type * value_str = _value.c_str();
             size_type value_size = (size_type)_value.size();
@@ -137,8 +137,8 @@ namespace Mengine
             m_buffer[m_pos] = Helper::stringTerminalChar<T>();
         }
 
-        template<class T>
-        void assign( const T & _value )
+        template<class StringView>
+        void assign( const StringView & _value )
         {
             const value_type * value_str = _value.c_str();
             size_type value_size = (size_type)_value.size();
@@ -195,15 +195,15 @@ namespace Mengine
             this->append( _value );
         }
 
-        template<class T>
-        void operator = ( const T & _value )
+        template<class StringView>
+        void operator = ( const StringView & _value )
         {
             this->clear();
             this->append( _value );
         }
 
-        template<class T>
-        void operator += ( const T & _value )
+        template<class StringView>
+        void operator += ( const StringView & _value )
         {
             this->append( _value );
         }

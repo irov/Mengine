@@ -6,6 +6,8 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/LoggerHelper.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

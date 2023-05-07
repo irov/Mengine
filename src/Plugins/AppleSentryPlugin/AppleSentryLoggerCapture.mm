@@ -61,7 +61,7 @@ namespace Mengine
             String total_message;
             total_message += begin_message;
             total_message += "\n";
-            total_message += "\n";
+            
             total_message += "...\n";
             total_message += "...\n";
             total_message += "...\n";

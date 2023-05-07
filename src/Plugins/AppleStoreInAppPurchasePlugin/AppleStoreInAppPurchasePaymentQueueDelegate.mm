@@ -22,7 +22,7 @@
 #pragma mark - SKPaymentQueueDelegate
 
 // Sent when the storefront changes while a payment is processing.
-- (BOOL)paymentQueue:(SKPaymentQueue *)paymentQueue shouldContinueTransaction:(SKPaymentTransaction *)transaction inStorefront:(SKStorefront *)newStorefront {
+- (BOOL)paymentQueue:(SKPaymentQueue *)paymentQueue shouldContinueTransaction:(SKPaymentTransaction *)transaction inStorefront:(SKStorefront *)newStorefront API_AVAILABLE(ios(13.0), macos(10.15), watchos(6.2)) {
     LOGGER_MESSAGE( "SKPaymentQueueDelegate paymentQueue shouldContinueTransaction" );
     
     const Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & provider = m_service->getPaymentQueueProvider();

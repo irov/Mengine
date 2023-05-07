@@ -19,7 +19,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchaseService::AppleStoreInAppPurchaseService()
-        : m_paymentTransactionObserver( nil )
+        : m_paymentQueueDelegate( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -39,10 +39,8 @@ namespace Mengine
             [[SKPaymentQueue defaultQueue] setDelegate:m_paymentQueueDelegate];
         }
         
-        m_paymentTransactionObserver = [[AppleStoreInAppPurchasePaymentTransactionObserver alloc] initWithFactory:this service:this];
-        
-        [[SKPaymentQueue defaultQueue] addTransactionObserver:m_paymentTransactionObserver];
-        
+        [[AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance] setupWithFactory:this service:this];
+                
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
@@ -52,9 +50,6 @@ namespace Mengine
             [[SKPaymentQueue defaultQueue] setDelegate:nil];
             m_paymentQueueDelegate = nil;
         }
-        
-        [[SKPaymentQueue defaultQueue] removeTransactionObserver:m_paymentTransactionObserver];
-        m_paymentTransactionObserver = nil;
         
         m_paymentQueueProvider = nullptr;
         m_paymentTransactionProvider = nullptr;

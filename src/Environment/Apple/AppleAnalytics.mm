@@ -6,7 +6,7 @@
 
 @implementation AppleAnalytics
 
-+ (void)appleAnalyticsEvent:(NSString*)eventName params:(NSDictionary<NSString*, id> *)params {
++ (void)name:(NSString*)eventName params:(NSDictionary<NSString*, id> *)params {
     Mengine::AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
         ->buildEvent( Mengine::Helper::NSStringToConstString(eventName) );
     

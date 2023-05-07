@@ -4,6 +4,7 @@ ADD_FILTER(
 Containers
     StlAllocator.h
     Array.h
+    ArrayTString.h
     ArrayString.h
     ArrayWString.h
     Bitset.h
@@ -584,7 +585,11 @@ Core
     
     MemoryAllocator.h
     
+    StringLength.h
+    StringLength.cpp
+    
     MemoryCopy.h
+    MemoryCopy.cpp
     
     MemoryStreamHelper.h
     MemoryStreamHelper.cpp

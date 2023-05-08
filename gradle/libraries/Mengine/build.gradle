@@ -59,7 +59,4 @@ android {
 dependencies {
     implementation project(':libraries:SDL')
     implementation project(':libraries:OpenAL32')
-
-    implementation "androidx.lifecycle:lifecycle-process:2.6.1"
-    implementation "androidx.lifecycle:lifecycle-common:2.6.1"
 }

@@ -1,8 +1,17 @@
+import com.Mengine.Utils
+
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE", "1.10.0")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION", "1.6.0")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX", "2.0.1")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT", "2.1.4")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE", "1.2.0")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT", "1.6.1")
+
 dependencies {
-    implementation 'androidx.core:core:1.10.0'
-    implementation 'androidx.annotation:annotation:1.6.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.preference:preference:1.2.0"
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation "androidx.core:core:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE"
+    implementation "androidx.annotation:annotation:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION"
+    implementation "androidx.multidex:multidex:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX"
+    implementation "androidx.constraintlayout:constraintlayout:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT"
+    implementation "androidx.preference:preference:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE"
+    implementation "androidx.appcompat:appcompat:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT"
 }

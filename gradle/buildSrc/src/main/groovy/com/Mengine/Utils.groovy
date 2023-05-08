@@ -61,6 +61,10 @@ class Utils {
         }
     }
 
+    static void logString(String name, String value) {
+        println "\u001b[33m" + name + ": " + value + "\u001b[0m"
+    }
+
     static void logInteger(String name, int value) {
         println "\u001b[33m" + name + ": " + value + "\u001b[0m"
     }

@@ -3653,8 +3653,8 @@ namespace Mengine
                     /* You will get this when your app is paused and iOS wants more memory.
                        Release as much memory as possible.
                     */
-
-                    //TODO
+                    
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_IOS_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
                 }break;
             case SDL_APP_WILLENTERBACKGROUND:
                 {

@@ -16,4 +16,5 @@ dependencies {
     implementation "androidx.preference:preference:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE"
     implementation "androidx.appcompat:appcompat:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT"
     implementation "androidx.window:window:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW"
+    implementation "androidx.window:window-extensions:1.0.0-alpha01"
 }

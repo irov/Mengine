@@ -14,6 +14,8 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
@@ -29,43 +31,57 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
 
     private String m_advertisingId;
     private boolean m_advertisingLimitTrackingEnabled;
+    private Future<AdvertisingIdClient.Info> m_advertisingFuture;
 
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 
-        Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
-            final Context context = application.getApplicationContext();
+        final Context context = application.getApplicationContext();
+        final int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
 
-            try {
-                AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+        if (resultCode == ConnectionResult.SUCCESS) {
+            ExecutorService executor = Executors.newSingleThreadExecutor();
 
-                return adInfo;
-            } catch (IOException e) {
-                MengineAdvertisingPlugin.this.logError("invalid get advertising id info IOException: %s"
-                    , e.getLocalizedMessage()
-                );
-            } catch (IllegalStateException e) {
-                MengineAdvertisingPlugin.this.logError("invalid get advertising id info IllegalStateException: %s"
-                    , e.getLocalizedMessage()
-                );
-            } catch (GooglePlayServicesNotAvailableException e) {
-                MengineAdvertisingPlugin.this.logError("invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
-                    , e.getLocalizedMessage()
-                );
-            } catch (GooglePlayServicesRepairableException e) {
-                MengineAdvertisingPlugin.this.logError("invalid get advertising id info GooglePlayServicesRepairableException: %s"
-                    , e.getLocalizedMessage()
-                );
-            }
+            Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
+                try {
+                    AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
 
-            return null;
-        });
+                    return adInfo;
+                } catch (IOException e) {
+                    MengineAdvertisingPlugin.this.logError("invalid get advertising id info IOException: %s"
+                        , e.getLocalizedMessage()
+                    );
+                } catch (IllegalStateException e) {
+                    MengineAdvertisingPlugin.this.logError("invalid get advertising id info IllegalStateException: %s"
+                        , e.getLocalizedMessage()
+                    );
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    MengineAdvertisingPlugin.this.logError("invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
+                        , e.getLocalizedMessage()
+                    );
+                } catch (GooglePlayServicesRepairableException e) {
+                    MengineAdvertisingPlugin.this.logError("invalid get advertising id info GooglePlayServicesRepairableException: %s"
+                        , e.getLocalizedMessage()
+                    );
+                }
+
+                return null;
+            });
+
+            m_advertisingFuture = future;
+        }
+    }
+
+    public void onMengineInitializeBaseServices(MengineActivity activity) {
+        if (m_advertisingFuture == null) {
+            return;
+        }
+
+        AdvertisingIdClient.Info adInfo = null;
 
         try {
-            AdvertisingIdClient.Info adInfo = future.get();
-
-            MengineAdvertisingPlugin.this.onPostAdInfo(application, adInfo);
+            adInfo = m_advertisingFuture.get();
         } catch (CancellationException ex) {
             this.logError("invalid get advertising id CancellationException: %s"
                 , ex.getLocalizedMessage()
@@ -79,32 +95,38 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
                 , ex.getLocalizedMessage()
             );
         }
+
+        m_advertisingFuture = null;
+
+        if (adInfo != null) {
+            this.postAdInfo(activity, adInfo);
+        }
     }
 
-    public void onPostAdInfo(MengineApplication application, AdvertisingIdClient.Info adInfo) {
+    public void postAdInfo(MengineActivity activity, AdvertisingIdClient.Info adInfo) {
         if (adInfo == null ) {
-            MengineAdvertisingPlugin.this.m_advertisingId = "00000000-0000-0000-0000-000000000000";
-            MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = true;
+            m_advertisingId = "00000000-0000-0000-0000-000000000000";
+            m_advertisingLimitTrackingEnabled = true;
         } else if( adInfo.isLimitAdTrackingEnabled() == true) {
-            MengineAdvertisingPlugin.this.m_advertisingId = "00000000-0000-0000-0000-000000000000";
-            MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = true;
+            m_advertisingId = "00000000-0000-0000-0000-000000000000";
+            m_advertisingLimitTrackingEnabled = true;
         } else {
             String advertisingId = adInfo.getId();
 
             if (advertisingId.equals("00000000-0000-0000-0000-000000000000") == true) {
-                MengineAdvertisingPlugin.this.m_advertisingId = "00000000-0000-0000-0000-000000000000";
-                MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = true;
+                m_advertisingId = "00000000-0000-0000-0000-000000000000";
+                m_advertisingLimitTrackingEnabled = true;
             } else {
-                MengineAdvertisingPlugin.this.m_advertisingId = advertisingId;
-                MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled = false;
+                m_advertisingId = advertisingId;
+                m_advertisingLimitTrackingEnabled = false;
             }
         }
 
-        MengineAdvertisingPlugin.this.logMessage("AdvertisingId: %s limit: %s"
-            , MengineAdvertisingPlugin.this.m_advertisingId
-            , MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled == true ? "true" : "false"
+        this.logMessage("AdvertisingId: %s limit: %s"
+            , m_advertisingId
+            , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
         );
 
-        application.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, MengineAdvertisingPlugin.this.m_advertisingId, MengineAdvertisingPlugin.this.m_advertisingLimitTrackingEnabled);
+        activity.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, m_advertisingId, m_advertisingLimitTrackingEnabled);
     }
 }

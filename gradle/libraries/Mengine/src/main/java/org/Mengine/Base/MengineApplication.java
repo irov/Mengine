@@ -531,7 +531,7 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onCreate");
 
-        if (this.getMetaDataBoolean("mengine.secure.android_id", true) == true) {
+        if (this.getMetaDataBoolean("mengine.secure.allow_android_id", true) == true) {
             m_androidId = this.getSecureAndroidId();
         } else {
             m_androidId = "0000000000000000";

@@ -7,6 +7,18 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
 
 android {
+    sourceSets {
+        main {
+            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
+            } else {
+                println 'ANDROID_APP_ASSETS_RES_DIR: res [Default]'
+
+                res.srcDirs += ['../../app/res']
+            }
+        }
+    }
+
     externalNativeBuild {
         cmake {
             version project.cmakeVersion

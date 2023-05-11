@@ -7,18 +7,6 @@ def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty(project, "ANDROID_APP_B
 def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)
 
 android {
-    sourceSets {
-        main {
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
-                res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
-            } else {
-                println 'ANDROID_APP_ASSETS_RES_DIR: res [Default]'
-
-                res.srcDirs += ['../../app/res']
-            }
-        }
-    }
-
     externalNativeBuild {
         cmake {
             path "../../../cmake/Android_SDL/CMakeLists.txt"

@@ -6,7 +6,7 @@ android {
     sourceSets {
         main {
             if (project.hasProperty("MENGINE_APP_PLUGIN_MAR_RES_DIR")) {
-                print "MENGINE_APP_PLUGIN_MAR_RES_DIR: $MENGINE_APP_PLUGIN_MAR_RES_DIR"
+                println "MENGINE_APP_PLUGIN_MAR_RES_DIR: $MENGINE_APP_PLUGIN_MAR_RES_DIR"
 
                 def f = new File(MENGINE_APP_PLUGIN_MAR_RES_DIR)
 
@@ -22,7 +22,7 @@ android {
             }
 
             if (project.hasProperty("MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR")) {
-                print "MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR: $MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR"
+                println "MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR: $MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR"
 
                 def f = new File(MENGINE_APP_PLUGIN_MAR_ASSETS_SRC_DIR)
 

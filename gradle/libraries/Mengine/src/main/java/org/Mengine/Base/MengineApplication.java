@@ -241,6 +241,15 @@ public class MengineApplication extends Application {
         return versionCode;
     }
 
+    private String getSecureAndroidId() {
+        Context applicationContext = this.getApplicationContext();
+
+        ContentResolver resolver = applicationContext.getContentResolver();
+        String androidId = Settings.Secure.getString(resolver, Settings.Secure.ANDROID_ID);
+
+        return androidId;
+    }
+
     public ArrayList<MenginePlugin> getPlugins() {
         return m_plugins;
     }
@@ -522,10 +531,11 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onCreate");
 
-        Context applicationContext = this.getApplicationContext();
-
-        ContentResolver resolver = applicationContext.getContentResolver();
-        m_androidId = Settings.Secure.getString(resolver, Settings.Secure.ANDROID_ID);
+        if (this.getMetaDataBoolean("mengine.secure.android_id", true) == true) {
+            m_androidId = this.getSecureAndroidId();
+        } else {
+            m_androidId = "0000000000000000";
+        }
 
         SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
 

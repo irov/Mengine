@@ -6,6 +6,7 @@
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/LoggerHelper.h"
+#include "Kernel/Error.h"
 
 #include "Config/StdString.h"
 
@@ -35,6 +36,13 @@ namespace Mengine
     void AndroidProxyLogger::log( const LoggerMessage & _message )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return;
+        }
 
         jmethodID jmethodID_onMengineLogger = ANDROID_ENVIRONMENT_SERVICE()
             ->getApplicationMethodID( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );

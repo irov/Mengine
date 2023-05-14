@@ -11,6 +11,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/Error.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
@@ -140,6 +141,13 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return false;
+        }
+
         jmethodID jmethodID_initializePlugins = ANDROID_ENVIRONMENT_SERVICE()
                 ->getActivityMethodID(jenv, "pythonInitializePlugins", "()V");
 
@@ -155,6 +163,13 @@ namespace Mengine
     void AndroidNativePythonService::_finalizeService()
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return;
+        }
 
         jmethodID jmethodID_pythonFinalizePlugins = ANDROID_ENVIRONMENT_SERVICE()
                 ->getActivityMethodID(jenv, "pythonFinalizePlugins", "()V");
@@ -370,6 +385,13 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return;
+        }
+
         ConstString plugin_c = Helper::stringizeString( _plugin );
         ConstString method_c = Helper::stringizeString( _method );
 
@@ -542,10 +564,17 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [void]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr( _args.ptr() ).c_str()
+            , _args.repr().c_str()
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return;
+        }
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -578,10 +607,17 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [boolean]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr( _args.ptr() ).c_str()
+            , _args.repr().c_str()
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return false;
+        }
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -616,10 +652,17 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [int]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr( _args.ptr() ).c_str()
+            , _args.repr().c_str()
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return 0;
+        }
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -654,10 +697,17 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [long]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr( _args.ptr() ).c_str()
+            , _args.repr().c_str()
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return 0ULL;
+        }
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -667,7 +717,7 @@ namespace Mengine
         jmethodID jmethodID_method;
         if( this->getAndroidMethod( jenv, _plugin, _method, _args, "J", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
         {
-            return 0;
+            return 0ULL;
         }
 
         jlong jresult = jenv->CallLongMethodA( jplugin, jmethodID_method, jargs );
@@ -692,10 +742,17 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [float]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr( _args.ptr() ).c_str()
+            , _args.repr().c_str()
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return 0.f;
+        }
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -730,10 +787,17 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [double]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr( _args.ptr() ).c_str()
+            , _args.repr().c_str()
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return 0.0;
+        }
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -743,7 +807,7 @@ namespace Mengine
         jmethodID jmethodID_method;
         if( this->getAndroidMethod( jenv, _plugin, _method, _args, "D", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
         {
-            return 0.f;
+            return 0.0;
         }
 
         jdouble jresult = jenv->CallDoubleMethodA( jplugin, jmethodID_method, jargs );
@@ -768,10 +832,17 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [string]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr( _args.ptr() ).c_str()
+            , _args.repr().c_str()
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return String();
+        }
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -810,10 +881,17 @@ namespace Mengine
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [config]"
             , _plugin.c_str()
             , _method.c_str()
-            , m_kernel->object_repr( _args.ptr() ).c_str()
+            , _args.repr().c_str()
         );
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return m_kernel->ret_none();
+        }
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -912,7 +990,7 @@ namespace Mengine
             LOGGER_ERROR( "android not register plugin '%s' (call method '%s' args '%s')"
                 , _plugin.c_str()
                 , _method.c_str()
-                , m_kernel->object_repr( _args.ptr() ).c_str()
+                , _args.repr().c_str()
             );
 
             return false;
@@ -929,7 +1007,7 @@ namespace Mengine
             LOGGER_ERROR( "android not found java plugin '%s' (call method '%s' args '%s')"
                 , _plugin.c_str()
                 , _method.c_str()
-                , m_kernel->object_repr( _args.ptr() ).c_str()
+                , _args.repr().c_str()
             );
 
             return false;
@@ -1041,7 +1119,7 @@ namespace Mengine
                     , _plugin.c_str()
                     , _method.c_str()
                     , index_args
-                    , m_kernel->object_repr_type( arg.ptr() ).c_str()
+                    , arg.repr().c_str()
                 );
 
                 return false;
@@ -1079,6 +1157,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
     {
+        LOGGER_INFO( "android", "wait android semaphore '%s' cb '%s' args '%s'"
+            , _name.c_str()
+            , _cb.repr().c_str()
+            , _args.repr().c_str()
+        );
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return;
+        }
+
         AndroidSemaphoreListenerDesc desc;
         desc.name = _name;
         desc.cb = _cb;
@@ -1086,17 +1179,15 @@ namespace Mengine
 
         m_semaphoreListeners.emplace_back( desc );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
         jmethodID jmethodID_waitAndroidSemaphore = ANDROID_ENVIRONMENT_SERVICE()
-                ->getActivityMethodID(jenv, "waitAndroidSemaphore", "(Ljava/lang/String;)V");
+                ->getActivityMethodID( jenv, "waitAndroidSemaphore", "(Ljava/lang/String;)V" );
 
         const Char * name_str = _name.c_str();
 
         jstring name_jvalue = jenv->NewStringUTF( name_str );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod(jenv, jmethodID_waitAndroidSemaphore, name_jvalue);
+                ->callVoidActivityMethod( jenv, jmethodID_waitAndroidSemaphore, name_jvalue );
 
         jenv->DeleteLocalRef( name_jvalue );
 

@@ -33,7 +33,7 @@
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Stringstream.h"
+#include "Kernel/Error.h"
 
 #include "Config/Algorithm.h"
 
@@ -53,7 +53,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
         //////////////////////////////////////////////////////////////////////////
-        static bool getAndroidBuildConfigOptions( JNIEnv * _jenv, String * const _options )
+        static bool getAndroidBuildConfigOptions( JNIEnv * _jenv, const ArgumentsInterfacePtr & _arguments )
         {
             jclass jclass_BuildConfig = _jenv->FindClass( "org/Mengine/Project/BuildConfig" );
 
@@ -91,7 +91,7 @@ namespace Mengine
 
             const Char * MENGINE_APP_OPTIONS_str = _jenv->GetStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, nullptr );
 
-            *_options = MENGINE_APP_OPTIONS_str;
+            _arguments->addArguments( MENGINE_APP_OPTIONS_str );
 
             _jenv->ReleaseStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, MENGINE_APP_OPTIONS_str );
             _jenv->DeleteLocalRef( j_MENGINE_APP_OPTIONS );
@@ -119,19 +119,14 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_ANDROID)
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        String options;
-        if( Detail::getAndroidBuildConfigOptions( jenv, &options ) == true )
+        if( jenv == nullptr )
         {
-            IStringstream iss( options, IStringstream::in );
+            MENGINE_ERROR_FATAL("invalid get jenv");
 
-            String option;
-            while( iss >> option )
-            {
-                const Char * arg = option.c_str();
-
-                arguments->addArgument( arg );
-            }
+            return false;
         }
+
+        Detail::getAndroidBuildConfigOptions( jenv, arguments );
 #endif
 
 #if defined(MENGINE_PLATFORM_APPLE) && !defined(MENGINE_BUILD_PUBLISH)

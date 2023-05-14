@@ -64,12 +64,28 @@ namespace Mengine
         this->removeGlobalScene();
     }
     //////////////////////////////////////////////////////////////////////////
+    void SceneService::addCurrentSceneProvider( const CurrentSceneProviderInterfacePtr & _currentSceneProvider )
+    {
+        m_currentSceneProviders.emplace_back( _currentSceneProvider );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneService::removeCurrentSceneProvider( const CurrentSceneProviderInterfacePtr & _currentSceneProvider )
+    {
+        VectorCurrentSceneProviders::iterator it_found = Algorithm::find( m_currentSceneProviders.begin(), m_currentSceneProviders.end(), _currentSceneProvider );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_currentSceneProviders.end(), "not found current scene providers" );
+
+        m_currentSceneProviders.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SceneService::setCurrentScene( const ScenePtr & _scene, bool _immediately, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb )
     {
         if( this->isInitializeService() == false )
         {
             return false;
         }
+
+        MENGINE_ASSERTION_MEMORY_PANIC( _scene, "scene == nullptr" );
 
         LOGGER_INFO( "scene", "set current scene '%s' immediately [%s] destroy old [%s]"
             , _scene->getName().c_str()
@@ -80,9 +96,7 @@ namespace Mengine
         if( m_commands.empty() == false )
         {
             return false;
-        }
-
-        MENGINE_ASSERTION_MEMORY_PANIC( _scene, "scene == nullptr" );
+        }        
 
         SceneCommandDesc desc;
         desc.type = ESCT_SET_CURRENT_SCENE;
@@ -229,6 +243,11 @@ namespace Mengine
             _desc.cb->onSceneChange( m_currentScene, true, false, false );
         }
 
+        for( const CurrentSceneProviderInterfacePtr & provider : m_sceneProviders )
+        {
+            provider->onCurrentSceneChange( m_currentScene );
+        }
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_COMPLETE, m_currentScene );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -326,6 +345,11 @@ namespace Mengine
         if( _desc.cb != nullptr )
         {
             _desc.cb->onSceneChange( nullptr, false, _remove, false );
+        }
+
+        for( const CurrentSceneProviderInterfacePtr & provider : m_sceneProviders )
+        {
+            provider->onCurrentSceneChange( nullptr );
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_COMPLETE );

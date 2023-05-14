@@ -106,9 +106,5 @@ allprojects {
         if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE") == true) {
             maven { url "https://verve.jfrog.io/artifactory/verve-gradle-release" }
         }
-
-        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YAHOO") == true) {
-            maven { url "https://artifactory.yahooinc.com/artifactory/maven" }
-        }
     }
 }

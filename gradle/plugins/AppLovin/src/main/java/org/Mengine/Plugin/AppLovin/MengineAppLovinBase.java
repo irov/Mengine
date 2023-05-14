@@ -2,9 +2,7 @@ package org.Mengine.Plugin.AppLovin;
 
 import android.os.Bundle;
 
-import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
-import org.Mengine.Base.MengineLog;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdWaterfallInfo;

@@ -60,6 +60,8 @@ namespace Mengine
             return _kernel->ret_none();
         }
 
+        const Char * message = m_messageCache.c_str();
+
         ELoggerLevel level = this->getVerboseLevel();
         uint32_t color = this->getColor();
 
@@ -69,11 +71,11 @@ namespace Mengine
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, 256, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( "python", level, LFILTER_NONE, color, function, lineno, LFLAG_SHORT )( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( "python", level, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )( "%s", message );
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( "python", level, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( "python", level, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )( "%s", message );
         }
 
         m_messageCache.clear();

@@ -176,24 +176,19 @@ namespace Mengine
                 return;
             }
 
-            // Get our exception
             jthrowable jExcept = _jenv->ExceptionOccurred();
 
-            // Clear the exception so we can call JNI again
             _jenv->ExceptionClear();
 
-            // Get our exception message
             jclass jExceptClass = _jenv->GetObjectClass( jExcept );
             jmethodID jMessageMethod = _jenv->GetMethodID( jExceptClass, "getMessage", "()Ljava/lang/String;" );
             jstring jMessage = (jstring)( _jenv->CallObjectMethod( jExcept, jMessageMethod ) );
             const Char * pszMessage = _jenv->GetStringUTFChars( jMessage, NULL );
 
-            // ...and log it.
             LOGGER_ERROR( "Java threw an exception: %s"
                 , pszMessage
             );
 
-            // Cleanup
             _jenv->ReleaseStringUTFChars( jMessage, pszMessage );
             _jenv->DeleteLocalRef( jMessage );
             _jenv->DeleteLocalRef( jExceptClass );

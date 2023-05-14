@@ -20,6 +20,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        void addCurrentSceneProvider( const CurrentSceneProviderInterfacePtr & _currentSceneProvider ) override;
+        void removeCurrentSceneProvider( const CurrentSceneProviderInterfacePtr & _currentSceneProvider ) override;
+
+    public:
         bool setCurrentScene( const ScenePtr & _scene, bool _immediately, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) override;
         bool restartCurrentScene( bool _immediately, const SceneChangeCallbackInterfacePtr & _cb ) override;
         bool removeCurrentScene( bool _immediately, const SceneChangeCallbackInterfacePtr & _cb ) override;
@@ -39,6 +43,9 @@ namespace Mengine
         bool isProcess() const override;
 
     protected:
+        typedef Vector<CurrentSceneProviderInterfacePtr> VectorCurrentSceneProviders;
+        VectorCurrentSceneProviders m_currentSceneProviders;
+
         enum ESceneCommandType
         {
             ESCT_SET_CURRENT_SCENE,

@@ -30,6 +30,7 @@ namespace internal {
 
 namespace {
 #if defined(ARCH_CPU_X86_64) && !defined(__MINGW64__)
+
 XSAVE_CET_U_FORMAT* LocateXStateCetU(CONTEXT* context) {
   // GetEnabledXStateFeatures needs Windows 7 SP1.
   static auto locate_xstate_feature = []() {

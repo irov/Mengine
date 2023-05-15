@@ -33,7 +33,7 @@ extern "C" {
 #include "client/crashpad_info.h"
 #include "client/prune_crash_reports.h"
 #include "client/settings.h"
-#if defined(_MSC_VER) || defined(__MINGW64__)
+#if defined(_WIN32) || defined(__MINGW64__)
 #    include "util/win/termination_codes.h"
 #endif
 
@@ -311,7 +311,8 @@ sentry__crashpad_backend_startup(
     data->db = crashpad::CrashReportDatabase::Initialize(database).release();
 
     crashpad::CrashpadClient client;
-    char *minidump_url = sentry__dsn_get_minidump_url(options->dsn);
+    char *minidump_url
+        = sentry__dsn_get_minidump_url(options->dsn, options->user_agent);
     SENTRY_TRACEF("using minidump url \"%s\"", minidump_url);
     std::string url = minidump_url ? std::string(minidump_url) : std::string();
     sentry_free(minidump_url);

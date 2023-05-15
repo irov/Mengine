@@ -243,7 +243,7 @@ namespace Mengine
             _desc.cb->onSceneChange( m_currentScene, true, false, false );
         }
 
-        for( const CurrentSceneProviderInterfacePtr & provider : m_sceneProviders )
+        for( const CurrentSceneProviderInterfacePtr & provider : m_currentSceneProviders )
         {
             provider->onCurrentSceneChange( m_currentScene );
         }
@@ -347,7 +347,7 @@ namespace Mengine
             _desc.cb->onSceneChange( nullptr, false, _remove, false );
         }
 
-        for( const CurrentSceneProviderInterfacePtr & provider : m_sceneProviders )
+        for( const CurrentSceneProviderInterfacePtr & provider : m_currentSceneProviders )
         {
             provider->onCurrentSceneChange( nullptr );
         }

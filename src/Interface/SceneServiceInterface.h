@@ -12,7 +12,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual bool onCurrentSceneChange( const ScenePtr & _scene ) = 0;
+        virtual void onCurrentSceneChange( const ScenePtr & _scene ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<CurrentSceneProviderInterface> CurrentSceneProviderInterfacePtr;

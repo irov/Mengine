@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/SceneServiceInterface.h"
+
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidEventation.h"
 
@@ -17,6 +19,7 @@ namespace Mengine
     class AndroidNativePythonService
         : public ServiceBase<AndroidNativePythonServiceInterface>
         , public AndroidNativePythonEventHandlerInterface
+        , public CurrentSceneProviderInterface
     {
     public:
         AndroidNativePythonService();
@@ -61,6 +64,9 @@ namespace Mengine
 
     protected:
         bool getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
+
+    protected:
+        void onCurrentSceneChange( const ScenePtr & _scene ) override;
 
     protected:
         pybind::kernel_interface * m_kernel;

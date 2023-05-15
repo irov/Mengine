@@ -139,6 +139,9 @@ namespace Mengine
         ANDROID_ENVIRONMENT_SERVICE()
             ->addAndroidEventation( m_eventation );
 
+        SCENE_SERVICE()
+            ->addCurrentSceneProvider( CurrentSceneProviderInterfacePtr::from(this) );
+
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )
@@ -149,10 +152,10 @@ namespace Mengine
         }
 
         jmethodID jmethodID_initializePlugins = ANDROID_ENVIRONMENT_SERVICE()
-                ->getActivityMethodID(jenv, "pythonInitializePlugins", "()V");
+            ->getActivityMethodID(jenv, "pythonInitializePlugins", "()V");
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod(jenv, jmethodID_initializePlugins);
+            ->callVoidActivityMethod(jenv, jmethodID_initializePlugins);
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->invokeAndroidEventations();
@@ -172,15 +175,18 @@ namespace Mengine
         }
 
         jmethodID jmethodID_pythonFinalizePlugins = ANDROID_ENVIRONMENT_SERVICE()
-                ->getActivityMethodID(jenv, "pythonFinalizePlugins", "()V");
+            ->getActivityMethodID( jenv, "pythonFinalizePlugins", "()V" );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod(jenv, jmethodID_pythonFinalizePlugins);
+            ->callVoidActivityMethod( jenv, jmethodID_pythonFinalizePlugins );
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->invokeAndroidEventations();
 
         s_androidNativePythonService = nullptr;
+
+        SCENE_SERVICE()
+            ->removeCurrentSceneProvider( CurrentSceneProviderInterfacePtr::from(this) );
 
         m_semaphoreListeners.clear();
         m_callbacks.clear();
@@ -1153,6 +1159,35 @@ namespace Mengine
         *_jmethodId = jmethodId;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonService::onCurrentSceneChange( const ScenePtr & _scene )
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return;
+        }
+
+        jmethodID jmethodID_onMengineCurrentSceneChange = ANDROID_ENVIRONMENT_SERVICE()
+                ->getActivityMethodID( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V" );
+
+        const ConstString & sceneName = _scene->getName();
+
+        const Char * sceneName_str = sceneName.c_str();
+
+        jstring sceneName_jvalue = jenv->NewStringUTF( sceneName_str );
+
+        ANDROID_ENVIRONMENT_SERVICE()
+                ->callVoidActivityMethod( jenv, jmethodID_onMengineCurrentSceneChange, sceneName_jvalue );
+
+        jenv->DeleteLocalRef( sceneName_jvalue );
+
+        ANDROID_ENVIRONMENT_SERVICE()
+                ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )

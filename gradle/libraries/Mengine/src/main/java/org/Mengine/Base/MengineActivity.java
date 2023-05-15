@@ -359,6 +359,18 @@ public class MengineActivity extends SDLActivity {
         m_initializeBaseServices = false;
     }
 
+    public void onMengineCurrentSceneChange(String name) {
+        MengineLog.logInfo(TAG, "onMengineCurrentSceneChange [%s]"
+            , name
+        );
+
+        ArrayList<MenginePlugin> plugins = this.getPlugins();
+
+        for (MenginePlugin p : plugins) {
+            p.onMengineCurrentSceneChange(this, name);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -240,6 +240,10 @@ public class MenginePlugin {
         //Empty
     }
 
+    public void onMengineCurrentSceneChange(MengineActivity activity, String name) {
+        //Empty
+    }
+
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }

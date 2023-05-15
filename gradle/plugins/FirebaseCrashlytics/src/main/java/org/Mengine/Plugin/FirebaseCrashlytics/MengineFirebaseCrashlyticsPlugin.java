@@ -51,6 +51,12 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         FirebaseCrashlytics.getInstance().setCustomKey("onCreate", false);
         FirebaseCrashlytics.getInstance().setCustomKey("onDestroy", false);
         FirebaseCrashlytics.getInstance().setCustomKey("onPause", false);
+        FirebaseCrashlytics.getInstance().setCustomKey("CurrentScene", "");
+    }
+
+    @Override
+    public void onMengineCurrentSceneChange(MengineActivity activity, String name) {
+        FirebaseCrashlytics.getInstance().setCustomKey("CurrentScene", name);
     }
 
     @Override

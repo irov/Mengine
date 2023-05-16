@@ -414,8 +414,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     @AnyThread
-    private void handleAcknowledgedPurchase(@Nullable Purchase purchase) {
-        this.logMessage("handleAcknowledgedPurchase purchase: %s"
+    private void handleUnacknowledgedPurchase(@Nullable Purchase purchase) {
+        this.logMessage("handleUnacknowledgedPurchase purchase: %s"
             , purchase
         );
 
@@ -457,8 +457,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     @AnyThread
-    private void handleUnacknowledgedPurchase(@Nullable Purchase purchase) {
-        this.logMessage("handleUnacknowledgedPurchase purchase: %s"
+    private void handleAcknowledgedPurchase(@Nullable Purchase purchase) {
+        this.logMessage("handleAcknowledgedPurchase purchase: %s"
             , purchase
         );
 

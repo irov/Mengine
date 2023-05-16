@@ -1,5 +1,7 @@
 #include "Kernel/MemoryCopy.h"
 
+#include "Config/StdInt.h"
+
 namespace Mengine
 {
     namespace Helper

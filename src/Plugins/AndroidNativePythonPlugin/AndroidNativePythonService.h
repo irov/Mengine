@@ -38,7 +38,7 @@ namespace Mengine
         void addCommand( const LambdaPythonEventHandler & _command );
 
     protected:
-        PyObject * makePythonAttribute( JNIEnv * _jenv, jobject _obj );
+        PyObject * makePythonAttribute( JNIEnv * _jenv, jobject _obj ) const;
 
     public:
         void pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args ) override;
@@ -57,7 +57,7 @@ namespace Mengine
         float androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         double androidDoubleMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         String androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
-        PyObject * androidConfigMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
+        PyObject * androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
 
     public:
         void waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args ) override;

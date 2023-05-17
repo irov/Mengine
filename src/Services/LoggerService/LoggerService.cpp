@@ -272,7 +272,7 @@ namespace Mengine
     {
         for( const ConstString & verbose : m_verboses )
         {
-            if( verbose == _category )
+            if( verbose != _category )
             {
                 continue;
             }

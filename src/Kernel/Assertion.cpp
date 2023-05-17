@@ -79,26 +79,34 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
         {
-            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+            Char message_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
 
-            MENGINE_VA_LIST_TYPE argList;
-            MENGINE_VA_LIST_START( argList, _format );
-
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
-            MENGINE_UNUSED( size_vsnprintf );
-
-            MENGINE_VA_LIST_END( argList );
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _format );
+            MENGINE_VSNPRINTF( message_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, args );            
+            MENGINE_VA_LIST_END( args );
 
             Char assertion_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
-            MENGINE_SNPRINTF( assertion_info, MENGINE_ASSERTION_MAX_MESSAGE, "File %s [line:%d] Assertion [%s] [%s]: %s"
+            MENGINE_SNPRINTF( assertion_info, MENGINE_ASSERTION_MAX_MESSAGE, "%s[%d] Assertion [%s] [%s]: %s"
                 , _file
                 , _line
                 , _test
                 , _category
-                , str_info
+                , message_info
             );
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _category, _level, _test, _file, _line, str_info );
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
+            {
+                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_NONE )("%s"
+                    , assertion_info
+                    );
+            }
+            else
+            {
+                Helper::PlatformLogMessage( assertion_info );
+            }
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _category, _level, _test, _file, _line, message_info );
             
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {
@@ -114,22 +122,6 @@ namespace Mengine
                 );
                 
                 return;
-            }
-
-            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
-            {
-                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_FULL )("%s"
-                    , assertion_info
-                    );
-            }
-            else
-            {
-                Helper::PlatformLogFormat( "|Assertion| %s:%u [%s] %s"
-                    , _file
-                    , _line
-                    , _category
-                    , assertion_info
-                );
             }
 
             if( _level == ASSERTION_LEVEL_FATAL )

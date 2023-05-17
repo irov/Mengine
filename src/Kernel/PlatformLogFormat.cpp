@@ -14,6 +14,18 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        void PlatformLogMessage( const Char * _message )
+        {
+#if defined(MENGINE_PLATFORM_APPLE)
+            Helper::ApplePrintMessage( _format, args );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "%s", _message );
+#else
+            ::printf( "%s", _message );
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
         void PlatformLogFormat( const Char * _format, ... )
         {
             MENGINE_VA_LIST_TYPE args;

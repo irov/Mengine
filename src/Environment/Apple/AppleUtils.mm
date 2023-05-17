@@ -15,7 +15,12 @@ namespace Mengine
     namespace Helper
     {
         /////////////////////////////////////////////////////////////////////////
-        void ApplePrintFormat( const Char * _format, ... )
+        void AppleLogMessage( const Char * _message )
+        {
+            NSLog( @"%s", @(_message) );
+        }
+        /////////////////////////////////////////////////////////////////////////
+        void AppleLogFormat( const Char * _format, ... )
         {
 			Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 			MENGINE_VA_LIST_TYPE args;
@@ -24,7 +29,7 @@ namespace Mengine
 			MENGINE_VA_LIST_END( args );
         }
         /////////////////////////////////////////////////////////////////////////
-        void ApplePrintFormatV( const Char * _format, MENGINE_VA_LIST_TYPE _va )
+        void AppleLogFormatV( const Char * _format, MENGINE_VA_LIST_TYPE _va )
         {
             NSLogv( @(_format), _va );
         }

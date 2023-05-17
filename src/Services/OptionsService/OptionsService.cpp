@@ -231,7 +231,9 @@ namespace Mengine
                 continue;
             }
 
-            return op.value[0].c_str();
+            const Char * value_str = op.value[0].c_str();
+
+            return value_str;
         }
 
         return _default;

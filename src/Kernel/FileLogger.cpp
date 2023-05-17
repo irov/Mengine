@@ -84,7 +84,7 @@ namespace Mengine
         if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%u]", functionstamp, 0, MENGINE_MAX_PATH );
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             m_stream->write( functionstamp, functionstampSize );
             m_stream->write( " ", 1 );
         }

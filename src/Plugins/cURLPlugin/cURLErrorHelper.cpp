@@ -19,9 +19,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_VERBOSE_LEVEL( "curl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("[cURL] file '%s[%u]' call '%s' get error '%s' [%u]"
-            , m_file
-            , m_line
+        LOGGER_VERBOSE_LEVEL( "curl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, LFLAG_FULL )("call '%s' get error '%s' [%u]"
             , m_method
             , curl_easy_strerror( _code )
             , _code

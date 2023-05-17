@@ -274,16 +274,16 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
                     Map<String, Object> desc_offer = new HashMap<>();
 
-                    ProductDetails.OneTimePurchaseOfferDetails offer = product.getOneTimePurchaseOfferDetails();
-                    long priceAmountMicros = offer.getPriceAmountMicros();
-                    String formattedPrice = offer.getFormattedPrice();
-                    String priceCurrencyCode = offer.getPriceCurrencyCode();
+                    ProductDetails.OneTimePurchaseOfferDetails oneTimePurchaseOfferDetails = product.getOneTimePurchaseOfferDetails();
+                    long priceAmountMicros = oneTimePurchaseOfferDetails.getPriceAmountMicros();
+                    String formattedPrice = oneTimePurchaseOfferDetails.getFormattedPrice();
+                    String priceCurrencyCode = oneTimePurchaseOfferDetails.getPriceCurrencyCode();
 
                     desc_offer.put("priceAmountMicros", priceAmountMicros);
                     desc_offer.put("formattedPrice", formattedPrice);
                     desc_offer.put("priceCurrencyCode", priceCurrencyCode);
 
-                    desc_product.put("offer", desc_offer);
+                    desc_product.put("oneTimePurchaseOfferDetails", desc_offer);
 
                     String description = product.getDescription();
                     String name = product.getName();

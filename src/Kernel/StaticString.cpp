@@ -107,14 +107,19 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticStringCopy( const Char * _buffer, size_t _capacity, Char * _value )
         {
-            MENGINE_UNUSED( _capacity );
-
-            MENGINE_STRCPY( _value, _buffer );
+            MENGINE_STRNCPY( _value, _buffer, _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
         int32_t staticStringCompare( const Char * _buffer, size_t _capacity, const Char * _value )
         {
             MENGINE_ASSERTION_FATAL( _value != nullptr );
+
+            size_t value_size = MENGINE_STRLEN( _value );
+
+            if( value_size >= _capacity )
+            {
+                return 1;
+            }
 
             int32_t result = MENGINE_STRNCMP( _buffer, _value, _capacity );
 

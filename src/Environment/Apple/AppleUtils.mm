@@ -15,6 +15,20 @@ namespace Mengine
     namespace Helper
     {
         /////////////////////////////////////////////////////////////////////////
+        void ApplePrintFormat( const Char * _format, ... )
+        {
+			Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+			MENGINE_VA_LIST_TYPE args;
+			MENGINE_VA_LIST_START( args, _format );
+			NSLogv( @(_format), args );
+			MENGINE_VA_LIST_END( args );
+        }
+        /////////////////////////////////////////////////////////////////////////
+        void ApplePrintFormatV( const Char * _format, MENGINE_VA_LIST_TYPE _va )
+        {
+            NSLogv( @(_format), _va );
+        }
+        /////////////////////////////////////////////////////////////////////////
         bool AppleOpenUrlInDefaultBrowser( const Char * _url )
         {
             NSString * url = [NSString stringWithUTF8String: _url];

@@ -8,6 +8,7 @@
 #include "Kernel/Abort.h"
 #include "Kernel/DebugBreak.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PlatformLogFormat.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"
@@ -120,6 +121,15 @@ namespace Mengine
                 LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_FULL )("%s"
                     , assertion_info
                     );
+            }
+            else
+            {
+                Helper::PlatformLogFormat( "|Assertion| %s:%u [%s] %s"
+                    , _file
+                    , _line
+                    , _category
+                    , assertion_info
+                );
             }
 
             if( _level == ASSERTION_LEVEL_FATAL )

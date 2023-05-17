@@ -53,7 +53,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
         //////////////////////////////////////////////////////////////////////////
-        static bool getAndroidBuildConfigOptions( JNIEnv * _jenv, const ArgumentsInterfacePtr & _arguments )
+        static bool addAndroidBuildConfigOptions( JNIEnv * _jenv, const Char * _buildConfig, const ArgumentsInterfacePtr & _arguments )
         {
             jclass jclass_BuildConfig = _jenv->FindClass( "org/Mengine/Project/BuildConfig" );
 
@@ -62,7 +62,7 @@ namespace Mengine
                 return false;
             }
 
-            jfieldID jfield_MENGINE_APP_OPTIONS = _jenv->GetStaticFieldID( jclass_BuildConfig, "MENGINE_APP_OPTIONS", "Ljava/lang/String;" );
+            jfieldID jfield_MENGINE_APP_OPTIONS = _jenv->GetStaticFieldID( jclass_BuildConfig, _buildConfig, "Ljava/lang/String;" );
 
             if( _jenv->ExceptionCheck() == true )
             {
@@ -126,7 +126,7 @@ namespace Mengine
             return false;
         }
 
-        Detail::getAndroidBuildConfigOptions( jenv, arguments );
+        Detail::addAndroidBuildConfigOptions( jenv, "MENGINE_APP_OPTIONS", arguments );
 #endif
 
 #if defined(MENGINE_PLATFORM_APPLE) && !defined(MENGINE_BUILD_PUBLISH)

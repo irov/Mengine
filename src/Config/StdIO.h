@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Char.h"
+#include "Config/StdInt.h"
 #include "Config/StdArg.h"
 
 #include <cstdio>
@@ -15,7 +17,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE int32_t __mengine_VSPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, va_list _argList )
+        MENGINE_INLINE int32_t __mengine_VSPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, MENGINE_VA_LIST_TYPE _argList )
         {
             int32_t size_vsnprintf = std::vsnprintf( _buffer, _bufferCount, _format, _argList );
 
@@ -48,7 +50,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE int32_t __mengine_VSNCOUNTF( Char const * const _format, va_list _argList )
+        MENGINE_INLINE int32_t __mengine_VSNCOUNTF( Char const * const _format, MENGINE_VA_LIST_TYPE _argList )
         {
             int32_t size_vsnprintf = std::vsnprintf( nullptr, 0, _format, _argList );
 

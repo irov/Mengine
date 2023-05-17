@@ -5,10 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Abort.h"
 #include "Kernel/DebugBreak.h"
-
-#if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Environment/Windows/WindowsIncluder.h"
-#endif
+#include "Kernel/PlatformLogFormat.h"
 
 #include "Kernel/NotificationHelper.h"
 
@@ -35,24 +32,31 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void ErrorOperator::operator () ( const Char * _format, ... ) const
         {
-            Char str_info[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+            Char error_info[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
 
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_LOGGER_MAX_MESSAGE - 2, _format, args );
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( error_info, MENGINE_LOGGER_MAX_MESSAGE - 2, _format, args );
 
             MENGINE_VA_LIST_END( args );
 
             if( size_vsnprintf >= 0 )
             {
-                str_info[size_vsnprintf + 0] = '\n';
-                str_info[size_vsnprintf + 1] = '\0';
+                error_info[size_vsnprintf + 0] = '\n';
+                error_info[size_vsnprintf + 1] = '\0';
 
-                LoggerOperator( m_category, LM_ERROR, 0, LCOLOR_RED, m_file, m_line, LFLAG_FULL )("%s", str_info);
+                LoggerOperator( m_category, LM_ERROR, 0, LCOLOR_RED, m_file, m_line, LFLAG_FULL )("%s", error_info);
             }
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_category, m_level, m_file, m_line, str_info );
+            Helper::PlatformLogFormat( "|Error| %s:%u [%s] %s"
+                , m_file
+                , m_line
+                , m_category
+                , error_info
+            );
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_category, m_level, m_file, m_line, error_info );
 
             switch( m_level )
             {
@@ -62,7 +66,7 @@ namespace Mengine
                 }break;
             case ERROR_LEVEL_FATAL:
                 {
-                    Helper::abort( str_info );
+                    Helper::abort( error_info );
                 }break;
             }
 

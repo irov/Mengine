@@ -88,6 +88,8 @@ src
     StdIO.h
     StdLib.h
     StdString.h
+    StdLocale.h
+    StdCType.h
     StdMath.h
     Limits.h
     UInt32ToPointer.h

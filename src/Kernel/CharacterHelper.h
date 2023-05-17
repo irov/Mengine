@@ -7,5 +7,7 @@ namespace Mengine
     namespace Helper
     {
         bool isStandardCharacterSet( Char _ch );
+        bool isLowerCharacterSet( Char _ch );
+        bool isUpperCharacterSet( Char _ch );
     }
 }

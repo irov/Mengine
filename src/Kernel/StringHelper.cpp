@@ -9,6 +9,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
+#include "Config/StdCType.h"
 
 #include "Config/Algorithm.h"
 

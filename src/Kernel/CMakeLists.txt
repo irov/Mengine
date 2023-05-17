@@ -567,6 +567,9 @@ Core
     FileLogger.cpp
     FileLogger.h
     
+    PlatformLogFormat.cpp
+    PlatformLogFormat.h
+    
     InputServiceHelper.cpp
     InputServiceHelper.h
     

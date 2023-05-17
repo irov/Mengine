@@ -1,9 +1,12 @@
 #include "CharacterHelper.h"
 
+#include "Config/StdCType.h"
+
 namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         bool isStandardCharacterSet( Char _ch )
         {
             if( _ch < 32 || _ch > 127 )
@@ -13,5 +16,20 @@ namespace Mengine
 
             return true;
         }
+        //////////////////////////////////////////////////////////////////////////
+        bool isLowerCharacterSet( Char _ch )
+        {
+            bool result = MENGINE_ISLOWER( _ch );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isUpperCharacterSet( Char _ch )
+        {
+            bool result = MENGINE_ISUPPER( _ch );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

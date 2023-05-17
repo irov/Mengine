@@ -29,6 +29,8 @@ import java.util.concurrent.Future;
 public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "Advertising";
 
+    private static final String LIMIT_ADVERTISING_ID = "00000000-0000-0000-0000-000000000000";
+
     private String m_advertisingId;
     private boolean m_advertisingLimitTrackingEnabled;
     private Future<AdvertisingIdClient.Info> m_advertisingFuture;
@@ -103,16 +105,16 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
 
     public void postAdInfo(MengineActivity activity, AdvertisingIdClient.Info adInfo) {
         if (adInfo == null ) {
-            m_advertisingId = "00000000-0000-0000-0000-000000000000";
+            m_advertisingId = LIMIT_ADVERTISING_ID;
             m_advertisingLimitTrackingEnabled = true;
         } else if( adInfo.isLimitAdTrackingEnabled() == true) {
-            m_advertisingId = "00000000-0000-0000-0000-000000000000";
+            m_advertisingId = LIMIT_ADVERTISING_ID;
             m_advertisingLimitTrackingEnabled = true;
         } else {
             String advertisingId = adInfo.getId();
 
-            if (advertisingId.equals("00000000-0000-0000-0000-000000000000") == true) {
-                m_advertisingId = "00000000-0000-0000-0000-000000000000";
+            if (advertisingId.equals(LIMIT_ADVERTISING_ID) == true) {
+                m_advertisingId = LIMIT_ADVERTISING_ID;
                 m_advertisingLimitTrackingEnabled = true;
             } else {
                 m_advertisingId = advertisingId;

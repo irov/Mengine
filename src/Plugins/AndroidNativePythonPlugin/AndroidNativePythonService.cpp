@@ -108,7 +108,7 @@ namespace Mengine
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
             ->getKernel();
 
-        pybind::def_functor( kernel, "setAndroidCallback", this, &AndroidNativePythonService::setAndroidCallback );
+        pybind::def_functor_args( kernel, "setAndroidCallback", this, &AndroidNativePythonService::setAndroidCallback );
         pybind::def_functor_args( kernel, "androidMethod", this, &AndroidNativePythonService::androidMethod );
         pybind::def_functor_args( kernel, "androidBooleanMethod", this, &AndroidNativePythonService::androidBooleanMethod );
         pybind::def_functor_args( kernel, "androidIntegerMethod", this, &AndroidNativePythonService::androidIntegerMethod );
@@ -416,9 +416,13 @@ namespace Mengine
             return;
         }
 
+        const AndroidPythonCallbackDesc & desc = it_found->second;
+
+        uint32_t cb_args_size = m_kernel->tuple_size( desc.args );
+
         jsize args_size = jenv->GetArrayLength( _args );
 
-        PyObject * py_args = m_kernel->tuple_new( args_size );
+        PyObject * py_args = m_kernel->tuple_new( args_size + cb_args_size );
 
         for( jsize index = 0; index != args_size; ++index )
         {
@@ -441,7 +445,18 @@ namespace Mengine
 
         jenv->DeleteGlobalRef( _args );
 
-        const pybind::object & cb = it_found->second;
+        const pybind::args & cb_args = desc.args;
+
+        for( uint32_t index = 0; index != cb_args_size; ++index )
+        {
+            PyObject * cb_arg = cb_args[index];
+
+            m_kernel->tuple_setitem( py_args, args_size + index, cb_arg );
+
+            m_kernel->decref( cb_arg );
+        }
+
+        const pybind::object & cb = desc.cb;
 
         pybind::object py_result = cb.call_native( pybind::tuple( m_kernel, py_args, pybind::borrowed ) );
 
@@ -485,14 +500,18 @@ namespace Mengine
         m_plugins.emplace( Helper::stringizeString( _name ), _plugin );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
+    void AndroidNativePythonService::setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
     {
         MENGINE_ASSERTION_FATAL( m_callbacks.find( Helper::makePair( _plugin, _method ) ) == m_callbacks.end(), "invalid add plugin '%s' callback '%s' [double]"
             , _plugin.c_str()
             , _method.c_str()
         );
 
-        m_callbacks.emplace( Helper::makePair( _plugin, _method ), _cb );
+        AndroidPythonCallbackDesc desc;
+        desc.cb = _cb;
+        desc.args = _args;
+
+        m_callbacks.emplace( Helper::makePair( _plugin, _method ), desc );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::androidResponse( JNIEnv * _jenv, int32_t _id, const pybind::object & _result ) const

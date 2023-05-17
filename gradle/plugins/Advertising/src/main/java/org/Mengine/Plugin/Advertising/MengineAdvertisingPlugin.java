@@ -98,9 +98,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
 
         m_advertisingFuture = null;
 
-        if (adInfo != null) {
-            this.postAdInfo(activity, adInfo);
-        }
+        this.postAdInfo(activity, adInfo);
     }
 
     public void postAdInfo(MengineActivity activity, AdvertisingIdClient.Info adInfo) {

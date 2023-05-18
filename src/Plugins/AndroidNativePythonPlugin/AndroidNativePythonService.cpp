@@ -12,9 +12,14 @@
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/Error.h"
+#include "Kernel/AssertionFactory.h"
+#include "Kernel/FactoryPool.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
+
+#include "AndroidNativePythonCallback.h"
+#include "AndroidNativePythonScriptEmbedding.h"
 
 #include "Config/StdString.h"
 
@@ -24,7 +29,7 @@ static Mengine::AndroidNativePythonService * s_androidNativePythonService = null
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, int _id, jobjectArray _args)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobject _cb, jobjectArray _args)
     {
         Mengine::String plugin = Mengine::Helper::makeStringFromJString( env, _plugin );
         Mengine::String method = Mengine::Helper::makeStringFromJString( env, _method );
@@ -39,11 +44,12 @@ extern "C"
             return;
         }
 
+        jobject new_cb = (_cb != nullptr) ? env->NewGlobalRef( _cb ) : nullptr;
         jobjectArray new_args = (jobjectArray)env->NewGlobalRef( _args );
 
-        s_androidNativePythonService->addCommand([plugin, method, _id, new_args]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
+        s_androidNativePythonService->addCommand([plugin, method, new_cb, new_args]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
         {
-            _handler->pythonMethod( plugin, method, _id, new_args );
+            _handler->pythonMethod( plugin, method, new_cb, new_args );
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -105,22 +111,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::_initializeService()
     {
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
+        {
+            SCRIPT_SERVICE()
+                    ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AndroidNativePythonScriptEmbedding" ), Helper::makeFactorableUnique<AndroidNativePythonScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
+        {
+            SCRIPT_SERVICE()
+                    ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AndroidNativePythonScriptEmbedding" ) );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
             ->getKernel();
 
-        pybind::def_functor_args( kernel, "setAndroidCallback", this, &AndroidNativePythonService::setAndroidCallback );
-        pybind::def_functor_args( kernel, "androidMethod", this, &AndroidNativePythonService::androidMethod );
-        pybind::def_functor_args( kernel, "androidBooleanMethod", this, &AndroidNativePythonService::androidBooleanMethod );
-        pybind::def_functor_args( kernel, "androidIntegerMethod", this, &AndroidNativePythonService::androidIntegerMethod );
-        pybind::def_functor_args( kernel, "androidLongMethod", this, &AndroidNativePythonService::androidLongMethod );
-        pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonService::androidFloatMethod );
-        pybind::def_functor_args( kernel, "androidDoubleMethod", this, &AndroidNativePythonService::androidDoubleMethod );
-        pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonService::androidStringMethod );
-        pybind::def_functor_args( kernel, "androidObjectMethod", this, &AndroidNativePythonService::androidObjectMethod );
-
-        pybind::def_functor_args( kernel, "waitAndroidSemaphore", this, &AndroidNativePythonService::waitAndroidSemaphore );
-
         m_kernel = kernel;
+
+        m_factoryAndroidNativePythonCallback = Helper::makeFactoryPool<AndroidNativePythonCallback, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -203,6 +211,10 @@ namespace Mengine
 
         m_eventation->finalize();
         m_eventation = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonCallback );
+
+        m_factoryAndroidNativePythonCallback = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::addCommand( const LambdaPythonEventHandler & _command )
@@ -360,16 +372,24 @@ namespace Mengine
             jmethodID jmethodID_MapEntry_getValue = _jenv->GetMethodID( jclass_MapEntry, "getValue", "()Ljava/lang/Object;" );
 
             jobject jset = _jenv->CallObjectMethod( _obj, jmethodID_Map_entrySet );
+            Helper::jEnvExceptionCheck( _jenv );
+
             jobject jset_iterator = _jenv->CallObjectMethod( jset, jmethodID_Set_iterator );
+            Helper::jEnvExceptionCheck( _jenv );
 
             jboolean hasNext = _jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
+            Helper::jEnvExceptionCheck( _jenv );
 
             while( hasNext == JNI_TRUE )
             {
-                jobject jentry = _jenv->CallObjectMethod(jset_iterator, jmethodID_Iterator_next );
+                jobject jentry = _jenv->CallObjectMethod( jset_iterator, jmethodID_Iterator_next );
+                Helper::jEnvExceptionCheck( _jenv );
 
                 jobject jkey = _jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getKey );
+                Helper::jEnvExceptionCheck( _jenv );
+
                 jobject jvalue = (jstring)_jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getValue );
+                Helper::jEnvExceptionCheck( _jenv );
 
                 PyObject * py_key = this->makePythonAttribute( _jenv, jkey );
                 PyObject * py_value = this->makePythonAttribute( _jenv, jvalue );
@@ -384,6 +404,7 @@ namespace Mengine
                 _jenv->DeleteLocalRef( jentry );
 
                 hasNext = _jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
+                Helper::jEnvExceptionCheck( _jenv );
             }
 
             _jenv->DeleteLocalRef( jset_iterator );
@@ -446,7 +467,7 @@ namespace Mengine
         return py_value;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args )
+    void AndroidNativePythonService::pythonMethod( const String & _plugin, const String & _method, jobject _cb, jobjectArray _args )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -481,7 +502,27 @@ namespace Mengine
 
         jsize args_size = jenv->GetArrayLength( _args );
 
-        PyObject * py_args = m_kernel->tuple_new( args_size + cb_args_size );
+        jsize callback_size = 0;
+
+        if( _cb != nullptr )
+        {
+            callback_size = 1;
+        }
+
+        PyObject * py_args = m_kernel->tuple_new( callback_size + args_size + cb_args_size );
+
+        if( _cb != nullptr )
+        {
+            AndroidNativePythonCallbackPtr responseCb = m_factoryAndroidNativePythonCallback->createObject(MENGINE_DOCUMENT_FACTORABLE );
+
+            responseCb->setResponseCb( _cb );
+
+            PyObject * py_responseCb = pybind::ptr( m_kernel, responseCb );
+
+            m_kernel->tuple_setitem( py_args, 0, py_responseCb );
+
+            m_kernel->decref( py_responseCb );
+        }
 
         for( jsize index = 0; index != args_size; ++index )
         {
@@ -489,13 +530,22 @@ namespace Mengine
 
             PyObject * py_arg = this->makePythonAttribute( jenv, obj );
 
-            MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' id '%d' invalid arg"
-                , _plugin.c_str()
-                , _method.c_str()
-                , _id
-            );
+            if( _cb == nullptr )
+            {
+                MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' invalid arg"
+                    , _plugin.c_str()
+                    , _method.c_str()
+                );
+            }
+            else
+            {
+                MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' invalid arg"
+                    , _plugin.c_str()
+                    , _method.c_str()
+                );
+            }
 
-            m_kernel->tuple_setitem( py_args, index, py_arg );
+            m_kernel->tuple_setitem( py_args, callback_size + index, py_arg );
 
             m_kernel->decref( py_arg );
 
@@ -510,7 +560,7 @@ namespace Mengine
         {
             PyObject * cb_arg = cb_args[index];
 
-            m_kernel->tuple_setitem( py_args, args_size + index, cb_arg );
+            m_kernel->tuple_setitem( py_args, callback_size + args_size + index, cb_arg );
 
             m_kernel->decref( cb_arg );
         }
@@ -519,32 +569,12 @@ namespace Mengine
 
         pybind::object py_result = cb.call_native( pybind::tuple( m_kernel, py_args, pybind::borrowed ) );
 
-        MENGINE_ASSERTION_FATAL( py_result != nullptr, "android plugin '%s' method '%s' id '%d' invalid call"
+        MENGINE_ASSERTION_FATAL( py_result != nullptr, "android plugin '%s' method '%s' invalid call"
             , _plugin.c_str()
             , _method.c_str()
-            , _id
-        );
-
-        MENGINE_ASSERTION_FATAL( !(py_result.is_none() == true && _id != 0), "android plugin '%s' method '%s' return 'None' but have callback '%d'"
-            , _plugin.c_str()
-            , _method.c_str()
-            , _id
-        );
-
-        MENGINE_ASSERTION_FATAL( !(py_result.is_none() == false && _id == 0), "android plugin '%s' method '%s' return '%s' but not setup callback"
-            , _plugin.c_str()
-            , _method.c_str()
-            , py_result.str().c_str()
         );
 
         m_kernel->decref( py_args );
-
-        if( _id == 0 )
-        {
-            return;
-        }
-
-        this->androidResponse( jenv, _id, py_result );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::addPlugin( const String & _name, jobject _plugin )
@@ -911,7 +941,7 @@ namespace Mengine
         return (double)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    String AndroidNativePythonService::androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    PyObject * AndroidNativePythonService::androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [string]"
             , _plugin.c_str()
@@ -925,7 +955,7 @@ namespace Mengine
         {
             MENGINE_ERROR_FATAL("invalid get jenv");
 
-            return String();
+            return m_kernel->ret_none();
         }
 
         jvalue jargs[32];
@@ -936,7 +966,7 @@ namespace Mengine
         jmethodID jmethodID_method;
         if( this->getAndroidMethod( jenv, _plugin, _method, _args, "Ljava/lang/String;", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
         {
-            return String();
+            return m_kernel->ret_none();
         }
 
         jstring jresult = (jstring)jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
@@ -950,14 +980,18 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        Mengine::String result = Helper::makeStringFromJString( jenv, jresult );
+        const Char * jresult_str = jenv->GetStringUTFChars( jresult, nullptr );
+
+        PyObject * py_value = m_kernel->string_from_char( jresult_str );
+
+        jenv->ReleaseStringUTFChars( jresult, jresult_str );
 
         jenv->DeleteLocalRef( jresult );
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->invokeAndroidEventations();
 
-        return result;
+        return py_value;
     }
     //////////////////////////////////////////////////////////////////////////
     PyObject * AndroidNativePythonService::androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const

@@ -42,7 +42,7 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidEnvironmentService_getBuildVersion();
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, int responseId, Object args[]);
+    private static native void AndroidNativePython_call(String plugin, String method, MengineCallbackInterface responseId, Object args[]);
     private static native void AndroidNativePython_activateSemaphore(String name);
 
     private boolean m_initializeBaseServices;
@@ -56,14 +56,6 @@ public class MengineActivity extends SDLActivity {
 
     private Map<String, Integer> m_requestCodes;
 
-    class CallbackResponse {
-        public Integer id;
-        public MengineCallbackInterface cb;
-    };
-
-    private ArrayList<CallbackResponse> m_callbackResponses;
-    private int m_callbackResponseEnumerator;
-
     public MengineActivity() {
         m_initializeBaseServices = false;
         m_initializePython = false;
@@ -75,9 +67,6 @@ public class MengineActivity extends SDLActivity {
         m_semaphores = new HashMap<>();
 
         m_requestCodes = new HashMap<>();
-
-        m_callbackResponses = new ArrayList<>();
-        m_callbackResponseEnumerator = 0;
     }
 
     @Override
@@ -530,7 +519,6 @@ public class MengineActivity extends SDLActivity {
         m_openFiles = null;
         m_semaphores = null;
         m_requestCodes = null;
-        m_callbackResponses = null;
 
         AndroidEnvironmentService_removeMengineAndroidActivityJNI();
 
@@ -704,21 +692,7 @@ public class MengineActivity extends SDLActivity {
             );
         }
 
-        AndroidNativePython_call(plugin, method, 0, args);
-    }
-
-    protected int pythonCallResponseCreate(MengineCallbackInterface cb) {
-        m_callbackResponseEnumerator++;
-
-        int id = m_callbackResponseEnumerator;
-
-        CallbackResponse cr = new CallbackResponse();
-        cr.id = id;
-        cr.cb = cb;
-
-        m_callbackResponses.add(cr);
-
-        return id;
+        AndroidNativePython_call(plugin, method, null, args);
     }
 
     public void pythonCallCb(String plugin, String method, MengineCallbackInterface cb, Object ... args) {
@@ -732,61 +706,16 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        int id = this.pythonCallResponseCreate(cb);
-
         if (BuildConfig.DEBUG) {
-            MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] response [%d] args [%s]"
+            MengineLog.logInfo(TAG, "python call plugin [%s] method [%s] response [%s] args [%s]"
                 , plugin
                 , method
-                , id
+                , cb
                 , args
             );
         }
 
-        AndroidNativePython_call(plugin, method, id, args);
-    }
-
-    protected CallbackResponse pythonCallResponseGet(int id) {
-        Iterator<CallbackResponse> itr = m_callbackResponses.iterator();
-
-        CallbackResponse response;
-
-        while(itr.hasNext() == true)
-        {
-            response = itr.next();
-
-            if( response.id != id )
-            {
-                continue;
-            }
-
-            itr.remove();
-
-            return response;
-        }
-
-        return null;
-    }
-
-    public void pythonCallResponse(int id, Object result) {
-        if (BuildConfig.DEBUG) {
-            MengineLog.logInfo(TAG, "pythonCallResponse [%d] result [%s]"
-                , id
-                , result
-            );
-        }
-
-        CallbackResponse response = this.pythonCallResponseGet(id);
-
-        if (response == null) {
-            MengineLog.logError(TAG, "responceCall [%d] not found"
-                , id
-            );
-
-            return;
-        }
-
-        response.cb.callback(result);
+        AndroidNativePython_call(plugin, method, cb, args);
     }
 
     public void addPythonPlugin(String name, Object plugin) {

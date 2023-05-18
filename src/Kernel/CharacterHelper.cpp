@@ -31,5 +31,12 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool isDigitCharacterSet( Char _ch )
+        {
+            bool result = MENGINE_ISDIGIT( _ch );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

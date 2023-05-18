@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidEventation.h"
@@ -41,7 +42,7 @@ namespace Mengine
         PyObject * makePythonAttribute( JNIEnv * _jenv, jobject _obj ) const;
 
     public:
-        void pythonMethod( const String & _plugin, const String & _method, int32_t _id, jobjectArray _args ) override;
+        void pythonMethod( const String & _plugin, const String & _method, jobject _cb, jobjectArray _args ) override;
         void addPlugin( const String & _name, jobject _plugin ) override;
         void activateSemaphore( const String & _name ) override;
 
@@ -56,7 +57,7 @@ namespace Mengine
         int64_t androidLongMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         float androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         double androidDoubleMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
-        String androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
+        PyObject * androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         PyObject * androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
 
     public:
@@ -70,6 +71,8 @@ namespace Mengine
 
     protected:
         pybind::kernel_interface * m_kernel;
+
+        FactoryInterfacePtr m_factoryAndroidNativePythonCallback;
 
         struct AndroidPythonCallbackDesc
         {

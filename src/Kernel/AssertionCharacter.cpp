@@ -24,6 +24,11 @@ namespace Mengine
                     continue;
                 }
 
+                if( Helper::isDigitCharacterSet( ch ) == true )
+                {
+                    continue;
+                }
+
                 Char msg[1024] = {'\0'};
                 MENGINE_SNPRINTF( msg, 1024, "[Assert] string '%.*s' has non standard char '%c' code: %u"
                     , (int32_t)_len
@@ -47,6 +52,11 @@ namespace Mengine
                     continue;
                 }
 
+                if( Helper::isDigitCharacterSet( ch ) == true )
+                {
+                    continue;
+                }
+
                 Char msg[1024] = {'\0'};
                 MENGINE_SNPRINTF( msg, 1024, "[Assert] string '%.*s' has non lower char '%c' code: %u"
                     , (int32_t)_len
@@ -66,6 +76,11 @@ namespace Mengine
                 Char ch = *ch_iterator;
 
                 if( Helper::isUpperCharacterSet( ch ) == true )
+                {
+                    continue;
+                }
+
+                if( Helper::isDigitCharacterSet( ch ) == true )
                 {
                     continue;
                 }

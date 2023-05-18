@@ -9,5 +9,6 @@ namespace Mengine
         bool isStandardCharacterSet( Char _ch );
         bool isLowerCharacterSet( Char _ch );
         bool isUpperCharacterSet( Char _ch );
+        bool isDigitCharacterSet( Char _ch );
     }
 }

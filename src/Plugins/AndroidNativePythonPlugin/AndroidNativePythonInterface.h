@@ -28,7 +28,7 @@ namespace Mengine
         virtual float androidFloatMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
         virtual double androidDoubleMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
         virtual String androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
-        virtual PyObject * androidConfigMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
+        virtual PyObject * androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
 
     public:
         virtual void waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args ) = 0;

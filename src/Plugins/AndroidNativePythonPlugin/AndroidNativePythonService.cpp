@@ -116,7 +116,7 @@ namespace Mengine
         pybind::def_functor_args( kernel, "androidFloatMethod", this, &AndroidNativePythonService::androidFloatMethod );
         pybind::def_functor_args( kernel, "androidDoubleMethod", this, &AndroidNativePythonService::androidDoubleMethod );
         pybind::def_functor_args( kernel, "androidStringMethod", this, &AndroidNativePythonService::androidStringMethod );
-        pybind::def_functor_args( kernel, "androidConfigMethod", this, &AndroidNativePythonService::androidConfigMethod );
+        pybind::def_functor_args( kernel, "androidObjectMethod", this, &AndroidNativePythonService::androidObjectMethod );
 
         pybind::def_functor_args( kernel, "waitAndroidSemaphore", this, &AndroidNativePythonService::waitAndroidSemaphore );
 
@@ -210,7 +210,7 @@ namespace Mengine
         m_eventation->addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * AndroidNativePythonService::makePythonAttribute( JNIEnv * _jenv, jobject _obj )
+    PyObject * AndroidNativePythonService::makePythonAttribute( JNIEnv * _jenv, jobject _obj ) const
     {
         PyObject * py_value = nullptr;
 
@@ -221,7 +221,9 @@ namespace Mengine
         jclass jclass_Float = _jenv->FindClass( "java/lang/Float" );
         jclass jclass_Double = _jenv->FindClass( "java/lang/Double" );
         jclass jclass_String = _jenv->FindClass( "java/lang/String" );
-        jclass jclass_ArrayList = _jenv->FindClass( "java/util/ArrayList" );
+        jclass jclass_List = _jenv->FindClass( "java/util/List" );
+        jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
+        jclass jclass_Set = _jenv->FindClass( "java/util/Set" );
 
         if( _obj == nullptr )
         {
@@ -308,21 +310,27 @@ namespace Mengine
 
             _jenv->ReleaseStringUTFChars( (jstring)_obj, obj_str );
         }
-        else if( _jenv->IsInstanceOf( _obj, jclass_ArrayList ) == JNI_TRUE )
+        else if( _jenv->IsInstanceOf( _obj, jclass_List ) == JNI_TRUE )
         {
-            jfieldID fieldElementData = _jenv->GetFieldID( jclass_ArrayList, "elementData", "[Ljava/lang/Object;" );
+            jmethodID List_size = _jenv->GetMethodID(jclass_List, "size", "()I");
 
-            MENGINE_ASSERTION_FATAL( fieldElementData != nullptr );
+            MENGINE_ASSERTION_FATAL( List_size != nullptr, "invalid get android method 'java/lang/List [size] ()I'" );
 
-            jobjectArray list_elementData = (jobjectArray)_jenv->GetObjectField( _obj, fieldElementData );
+            jmethodID List_get = _jenv->GetMethodID(jclass_List, "get", "(I)Ljava/lang/Object;");
 
-            jsize list_size = _jenv->GetArrayLength( list_elementData );
+            MENGINE_ASSERTION_FATAL( List_get != nullptr, "invalid get android method 'java/lang/List [get] (I)Ljava/lang/Object;'" );
+
+            int list_size = _jenv->CallIntMethod( _obj, List_size );
+
+            Helper::jEnvExceptionCheck( _jenv );
 
             PyObject * py_list = m_kernel->list_new( list_size );
 
             for( jsize index = 0; index != list_size; ++index )
             {
-                jobject list_obj = _jenv->GetObjectArrayElement( list_elementData, index );
+                jobject list_obj = _jenv->CallObjectMethod( _obj, List_get, index );
+
+                Helper::jEnvExceptionCheck( _jenv );
 
                 PyObject * py_obj = this->makePythonAttribute( _jenv, list_obj );
 
@@ -335,9 +343,58 @@ namespace Mengine
                 _jenv->DeleteLocalRef( list_obj );
             }
 
-            _jenv->DeleteLocalRef( list_elementData );
-
             py_value = py_list;
+        }
+        else if( _jenv->IsInstanceOf( _obj, jclass_Map ) == JNI_TRUE )
+        {
+            PyObject * py_dict = m_kernel->dict_new();
+
+            jclass jclass_Iterator = _jenv->FindClass( "java/util/Iterator" );
+            jclass jclass_MapEntry = _jenv->FindClass( "java/util/Map$Entry" );
+
+            jmethodID jmethodID_Map_entrySet = _jenv->GetMethodID( jclass_Map, "entrySet", "()Ljava/util/Set;" );
+            jmethodID jmethodID_Set_iterator = _jenv->GetMethodID( jclass_Set, "iterator", "()Ljava/util/Iterator;" );
+            jmethodID jmethodID_Iterator_hasNext = _jenv->GetMethodID( jclass_Iterator, "hasNext", "()Z" );
+            jmethodID jmethodID_Iterator_next = _jenv->GetMethodID( jclass_Iterator, "next", "()Ljava/lang/Object;" );
+            jmethodID jmethodID_MapEntry_getKey = _jenv->GetMethodID( jclass_MapEntry, "getKey", "()Ljava/lang/Object;" );
+            jmethodID jmethodID_MapEntry_getValue = _jenv->GetMethodID( jclass_MapEntry, "getValue", "()Ljava/lang/Object;" );
+
+            jobject jset = _jenv->CallObjectMethod( _obj, jmethodID_Map_entrySet );
+            jobject jset_iterator = _jenv->CallObjectMethod( jset, jmethodID_Set_iterator );
+
+            jboolean hasNext = _jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
+
+            while( hasNext == JNI_TRUE )
+            {
+                jobject jentry = _jenv->CallObjectMethod(jset_iterator, jmethodID_Iterator_next );
+
+                jobject jkey = _jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getKey );
+                jobject jvalue = (jstring)_jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getValue );
+
+                PyObject * py_key = this->makePythonAttribute( _jenv, jkey );
+                PyObject * py_value = this->makePythonAttribute( _jenv, jvalue );
+
+                m_kernel->dict_set( py_dict, py_key, py_value );
+
+                m_kernel->decref( py_key );
+                m_kernel->decref( py_value );
+
+                _jenv->DeleteLocalRef( jkey );
+                _jenv->DeleteLocalRef( jvalue );
+                _jenv->DeleteLocalRef( jentry );
+
+                hasNext = _jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
+            }
+
+            _jenv->DeleteLocalRef( jset_iterator );
+            _jenv->DeleteLocalRef( jset );
+
+            _jenv->DeleteLocalRef( jclass_Iterator );
+            _jenv->DeleteLocalRef( jclass_MapEntry );
+
+            Helper::jEnvExceptionCheck( _jenv );
+
+            py_value = py_dict;
         }
         else
         {
@@ -382,7 +439,9 @@ namespace Mengine
         _jenv->DeleteLocalRef( jclass_Float );
         _jenv->DeleteLocalRef( jclass_Double );
         _jenv->DeleteLocalRef( jclass_String );
-        _jenv->DeleteLocalRef( jclass_ArrayList );
+        _jenv->DeleteLocalRef( jclass_List );
+        _jenv->DeleteLocalRef( jclass_Map );
+        _jenv->DeleteLocalRef( jclass_Set );
 
         return py_value;
     }
@@ -901,7 +960,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * AndroidNativePythonService::androidConfigMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
+    PyObject * AndroidNativePythonService::androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
     {
         LOGGER_INFO( "android", "call android plugin '%s' method '%s' args '%s' [config]"
             , _plugin.c_str()
@@ -940,59 +999,7 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        PyObject * pyresult = m_kernel->dict_new();
-
-        jclass jclass_Map = jenv->FindClass( "java/util/Map" );
-        jclass jclass_Set = jenv->FindClass( "java/util/Set" );
-        jclass jclass_Iterator = jenv->FindClass( "java/util/Iterator" );
-        jclass jclass_MapEntry = jenv->FindClass( "java/util/Map$Entry" );
-
-        jmethodID jmethodID_Map_entrySet = jenv->GetMethodID( jclass_Map, "entrySet", "()Ljava/util/Set;" );
-        jmethodID jmethodID_Set_iterator = jenv->GetMethodID( jclass_Set, "iterator", "()Ljava/util/Iterator;" );
-        jmethodID jmethodID_Iterator_hasNext = jenv->GetMethodID( jclass_Iterator, "hasNext", "()Z" );
-        jmethodID jmethodID_Iterator_next = jenv->GetMethodID( jclass_Iterator, "next", "()Ljava/lang/Object;" );
-        jmethodID jmethodID_MapEntry_getKey = jenv->GetMethodID( jclass_MapEntry, "getKey", "()Ljava/lang/Object;" );
-        jmethodID jmethodID_MapEntry_getValue = jenv->GetMethodID( jclass_MapEntry, "getValue", "()Ljava/lang/Object;" );
-
-        jobject jset = jenv->CallObjectMethod( jresult, jmethodID_Map_entrySet );
-        jobject jset_iterator = jenv->CallObjectMethod( jset, jmethodID_Set_iterator );
-
-        jboolean hasNext = jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
-
-        while( hasNext == JNI_TRUE )
-        {
-            jobject jentry = jenv->CallObjectMethod(jset_iterator, jmethodID_Iterator_next );
-
-            jstring jkey = (jstring)jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getKey );
-            jstring jvalue = (jstring)jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getValue );
-
-            const Char * key_str = jenv->GetStringUTFChars( jkey, 0 );
-            const Char * value_str = jenv->GetStringUTFChars( jvalue, 0 );
-
-            PyObject * pyvalue_str = m_kernel->string_from_char( value_str );
-            m_kernel->dict_setstring( pyresult, key_str, pyvalue_str );
-            m_kernel->decref( pyvalue_str );
-
-            jenv->ReleaseStringUTFChars( jkey, key_str );
-            jenv->ReleaseStringUTFChars( jvalue, value_str );
-
-            jenv->DeleteLocalRef( jkey );
-            jenv->DeleteLocalRef( jvalue );
-            jenv->DeleteLocalRef( jentry );
-
-            hasNext = jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
-        }
-
-        jenv->DeleteLocalRef( jset_iterator );
-        jenv->DeleteLocalRef( jset );
-        jenv->DeleteLocalRef( jresult );
-
-        jenv->DeleteLocalRef( jclass_Map );
-        jenv->DeleteLocalRef( jclass_Set );
-        jenv->DeleteLocalRef( jclass_Iterator );
-        jenv->DeleteLocalRef( jclass_MapEntry );
-
-        Helper::jEnvExceptionCheck( jenv );
+        PyObject * pyresult = this->makePythonAttribute( jenv, jresult );
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->invokeAndroidEventations();

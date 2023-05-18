@@ -1,6 +1,6 @@
 #include "Error.h"
 
-#include "Interface/LoggerInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Abort.h"
@@ -32,31 +32,33 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void ErrorOperator::operator () ( const Char * _format, ... ) const
         {
-            Char error_info[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+            Char message_info[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
-
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( error_info, MENGINE_LOGGER_MAX_MESSAGE - 2, _format, args );
-
+            MENGINE_VSNPRINTF( message_info, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
             MENGINE_VA_LIST_END( args );
 
-            if( size_vsnprintf >= 0 )
-            {
-                error_info[size_vsnprintf + 0] = '\n';
-                error_info[size_vsnprintf + 1] = '\0';
-
-                LoggerOperator( m_category, LM_ERROR, 0, LCOLOR_RED, m_file, m_line, LFLAG_FULL )("%s", error_info);
-            }
-
-            Helper::PlatformLogFormat( "|Error| %s:%u [%s] %s"
+            Char error_info[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+            MENGINE_SNPRINTF( error_info, MENGINE_LOGGER_MAX_MESSAGE, "%s[%d] Error [%s]: %s"
                 , m_file
                 , m_line
                 , m_category
-                , error_info
+                , message_info
             );
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_category, m_level, m_file, m_line, error_info );
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
+            {
+                LOGGER_VERBOSE_LEVEL( m_category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, LFLAG_NONE )("%s"
+                    , error_info
+                    );
+            }
+            else
+            {
+                Helper::PlatformLogMessage( error_info );
+            }
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_category, m_level, m_file, m_line, message_info );
 
             switch( m_level )
             {
@@ -66,7 +68,7 @@ namespace Mengine
                 }break;
             case ERROR_LEVEL_FATAL:
                 {
-                    Helper::abort( error_info );
+                    Helper::abort( message_info );
                 }break;
             }
 

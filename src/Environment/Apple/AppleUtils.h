@@ -2,7 +2,8 @@
 
 #include "Config/Char.h"
 #include "Config/StdDef.h"
- 
+#include "Config/StdArg.h"
+
 namespace Mengine
 {
     namespace Helper

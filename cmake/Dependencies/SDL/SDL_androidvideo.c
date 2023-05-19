@@ -230,6 +230,14 @@ Android_SetScreenResolution(int surfaceWidth, int surfaceHeight, int deviceWidth
     Android_DeviceWidth   = deviceWidth;
     Android_DeviceHeight  = deviceHeight;
     Android_ScreenRate    = (int)rate;
+
+    if( Android_Window )
+    {
+        Android_Window->fullscreen_mode.format = Android_ScreenFormat;
+        Android_Window->fullscreen_mode.w = Android_DeviceWidth;
+        Android_Window->fullscreen_mode.h = Android_DeviceHeight;
+        Android_Window->fullscreen_mode.refresh_rate = Android_ScreenRate;
+    }
 }
 
 static

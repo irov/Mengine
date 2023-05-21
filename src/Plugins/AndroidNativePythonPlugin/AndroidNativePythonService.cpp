@@ -18,7 +18,7 @@
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
 
-#include "AndroidNativePythonCallback.h"
+#include "AndroidNativePythonRunnable.h"
 #include "AndroidNativePythonScriptEmbedding.h"
 
 #include "Config/StdString.h"
@@ -29,7 +29,7 @@ static Mengine::AndroidNativePythonService * s_androidNativePythonService = null
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobject _cb, jobjectArray _args)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
     {
         Mengine::String plugin = Mengine::Helper::makeStringFromJString( env, _plugin );
         Mengine::String method = Mengine::Helper::makeStringFromJString( env, _method );
@@ -44,12 +44,11 @@ extern "C"
             return;
         }
 
-        jobject new_cb = (_cb != nullptr) ? env->NewGlobalRef( _cb ) : nullptr;
         jobjectArray new_args = (jobjectArray)env->NewGlobalRef( _args );
 
-        s_androidNativePythonService->addCommand([plugin, method, new_cb, new_args]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
+        s_androidNativePythonService->addCommand([plugin, method, new_args]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
         {
-            _handler->pythonMethod( plugin, method, new_cb, new_args );
+            _handler->pythonMethod( plugin, method, new_args );
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -128,7 +127,7 @@ namespace Mengine
 
         m_kernel = kernel;
 
-        m_factoryAndroidNativePythonCallback = Helper::makeFactoryPool<AndroidNativePythonCallback, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAndroidNativePythonRunnable = Helper::makeFactoryPool<AndroidNativePythonRunnable, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -212,9 +211,9 @@ namespace Mengine
         m_eventation->finalize();
         m_eventation = nullptr;
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonCallback );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonRunnable );
 
-        m_factoryAndroidNativePythonCallback = nullptr;
+        m_factoryAndroidNativePythonRunnable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::addCommand( const LambdaPythonEventHandler & _command )
@@ -236,6 +235,7 @@ namespace Mengine
         jclass jclass_List = _jenv->FindClass( "java/util/List" );
         jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
         jclass jclass_Set = _jenv->FindClass( "java/util/Set" );
+        jclass jclass_Runnable = _jenv->FindClass( "java/lang/Runnable" );
 
         if( _obj == nullptr )
         {
@@ -417,6 +417,16 @@ namespace Mengine
 
             py_value = py_dict;
         }
+        else if ( _jenv->IsInstanceOf( _obj, jclass_Runnable ) == JNI_TRUE )
+        {
+            AndroidNativePythonRunnablePtr runnable = m_factoryAndroidNativePythonRunnable->createObject(MENGINE_DOCUMENT_FACTORABLE );
+
+            runnable->setResponseCb( _obj );
+
+            PyObject * py_responseCb = pybind::ptr( m_kernel, runnable );
+
+            py_value = py_responseCb;
+        }
         else
         {
             jclass cls_obj = _jenv->GetObjectClass( _obj );
@@ -467,7 +477,7 @@ namespace Mengine
         return py_value;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::pythonMethod( const String & _plugin, const String & _method, jobject _cb, jobjectArray _args )
+    void AndroidNativePythonService::pythonMethod( const String & _plugin, const String & _method, jobjectArray _args )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -502,27 +512,7 @@ namespace Mengine
 
         jsize args_size = jenv->GetArrayLength( _args );
 
-        jsize callback_size = 0;
-
-        if( _cb != nullptr )
-        {
-            callback_size = 1;
-        }
-
-        PyObject * py_args = m_kernel->tuple_new( callback_size + args_size + cb_args_size );
-
-        if( _cb != nullptr )
-        {
-            AndroidNativePythonCallbackPtr responseCb = m_factoryAndroidNativePythonCallback->createObject(MENGINE_DOCUMENT_FACTORABLE );
-
-            responseCb->setResponseCb( _cb );
-
-            PyObject * py_responseCb = pybind::ptr( m_kernel, responseCb );
-
-            m_kernel->tuple_setitem( py_args, 0, py_responseCb );
-
-            m_kernel->decref( py_responseCb );
-        }
+        PyObject * py_args = m_kernel->tuple_new( args_size + cb_args_size );
 
         for( jsize index = 0; index != args_size; ++index )
         {
@@ -530,22 +520,12 @@ namespace Mengine
 
             PyObject * py_arg = this->makePythonAttribute( jenv, obj );
 
-            if( _cb == nullptr )
-            {
-                MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' invalid arg"
-                    , _plugin.c_str()
-                    , _method.c_str()
-                );
-            }
-            else
-            {
-                MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' invalid arg"
-                    , _plugin.c_str()
-                    , _method.c_str()
-                );
-            }
+            MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' invalid arg"
+                , _plugin.c_str()
+                , _method.c_str()
+            );
 
-            m_kernel->tuple_setitem( py_args, callback_size + index, py_arg );
+            m_kernel->tuple_setitem( py_args, index, py_arg );
 
             m_kernel->decref( py_arg );
 
@@ -560,7 +540,7 @@ namespace Mengine
         {
             PyObject * cb_arg = cb_args[index];
 
-            m_kernel->tuple_setitem( py_args, callback_size + args_size + index, cb_arg );
+            m_kernel->tuple_setitem( py_args, args_size + index, cb_arg );
 
             m_kernel->decref( cb_arg );
         }

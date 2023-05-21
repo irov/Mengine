@@ -42,7 +42,7 @@ namespace Mengine
         PyObject * makePythonAttribute( JNIEnv * _jenv, jobject _obj ) const;
 
     public:
-        void pythonMethod( const String & _plugin, const String & _method, jobject _cb, jobjectArray _args ) override;
+        void pythonMethod( const String & _plugin, const String & _method, jobjectArray _args ) override;
         void addPlugin( const String & _name, jobject _plugin ) override;
         void activateSemaphore( const String & _name ) override;
 
@@ -72,7 +72,7 @@ namespace Mengine
     protected:
         pybind::kernel_interface * m_kernel;
 
-        FactoryInterfacePtr m_factoryAndroidNativePythonCallback;
+        FactoryInterfacePtr m_factoryAndroidNativePythonRunnable;
 
         struct AndroidPythonCallbackDesc
         {

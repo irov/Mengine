@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class MenginePlugin {
     private MengineApplication m_application;
@@ -109,14 +110,6 @@ public class MenginePlugin {
         m_activity.pythonCall(m_pluginName, method, args);
     }
 
-    public void pythonCallCb(String method, MengineCallbackInterface cb, Object ... args) {
-        if (m_activity == null) {
-            return;
-        }
-
-        m_activity.pythonCallCb(m_pluginName, method, cb, args);
-    }
-
     public void activateSemaphore(String name) {
         if (m_activity == null) {
             return;
@@ -125,7 +118,7 @@ public class MenginePlugin {
         m_activity.activateSemaphore(name);
     }
 
-    public void waitSemaphore(String name, MengineCallbackInterface cb) {
+    public void waitSemaphore(String name, Runnable cb) {
         if (m_activity == null) {
             return;
         }

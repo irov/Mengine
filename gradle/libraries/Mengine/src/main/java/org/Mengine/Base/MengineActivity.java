@@ -7,19 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
+import java.util.function.Consumer;
 
 import android.content.*;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -42,7 +37,7 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidEnvironmentService_getBuildVersion();
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, MengineCallbackInterface responseId, Object args[]);
+    private static native void AndroidNativePython_call(String plugin, String method, Object args[]);
     private static native void AndroidNativePython_activateSemaphore(String name);
 
     private boolean m_initializeBaseServices;
@@ -692,30 +687,7 @@ public class MengineActivity extends SDLActivity {
             );
         }
 
-        AndroidNativePython_call(plugin, method, null, args);
-    }
-
-    public void pythonCallCb(String plugin, String method, MengineCallbackInterface cb, Object ... args) {
-        if (m_initializePython == false) {
-            MengineLog.logError(TAG, "invalid python plugin [%s] method [%s] args [%s] call before embedding"
-                , plugin
-                , method
-                , args
-            );
-
-            return;
-        }
-
-        if (BuildConfig.DEBUG) {
-            MengineLog.logInfo(TAG, "python call plugin [%s] method [%s] response [%s] args [%s]"
-                , plugin
-                , method
-                , cb
-                , args
-            );
-        }
-
-        AndroidNativePython_call(plugin, method, cb, args);
+        AndroidNativePython_call(plugin, method, args);
     }
 
     public void addPythonPlugin(String name, Object plugin) {
@@ -757,7 +729,7 @@ public class MengineActivity extends SDLActivity {
         semaphore.activate();
     }
 
-    public void waitSemaphore(String name, MengineCallbackInterface cb) {
+    public void waitSemaphore(String name, Runnable cb) {
         MengineSemaphore semaphore = m_semaphores.get(name);
 
         if (semaphore == null) {
@@ -778,11 +750,11 @@ public class MengineActivity extends SDLActivity {
             , name
         );
 
-        MengineCallbackInterface cb = (Object) -> {
+        Runnable runnable = () -> {
             AndroidNativePython_activateSemaphore(name);
         };
 
-        this.waitSemaphore(name, cb);
+        this.waitSemaphore(name, runnable);
     }
 
     /***********************************************************************************************

@@ -12,7 +12,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void pythonMethod( const String & _plugin, const String & _method, jobject _cb, jobjectArray _args ) = 0;
+        virtual void pythonMethod( const String & _plugin, const String & _method, jobjectArray _args ) = 0;
         virtual void addPlugin( const String & _name, jobject _plugin ) = 0;
         virtual void activateSemaphore( const String & _name ) = 0;
     };

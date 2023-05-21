@@ -11,11 +11,11 @@ src
     AndroidNativePythonService.h
     AndroidNativePythonService.cpp
     
-    AndroidNativePythonCallback.h
-    AndroidNativePythonCallback.cpp
-    
     AndroidNativePythonScriptEmbedding.h
     AndroidNativePythonScriptEmbedding.cpp
+    
+    AndroidNativePythonRunnable.h
+    AndroidNativePythonRunnable.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

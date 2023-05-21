@@ -1,7 +1,11 @@
 #include "AndroidNativePythonScriptEmbedding.h"
 
+#include "Environment/Python/PythonScriptWrapper.h"
+
 #include "AndroidNativePythonInterface.h"
-#include "AndroidNativePythonCallback.h"
+#include "AndroidNativePythonRunnable.h"
+
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -93,16 +97,20 @@ namespace Mengine
 
         pybind::def_function_args( _kernel, "waitAndroidSemaphore", &Detail::AndroidNativePythonService_waitAndroidSemaphore );
 
-        pybind::interface_<AndroidNativePythonCallback, pybind::bases<Mixin>>( _kernel, "AndroidNativePythonCallback" )
-            .def_call( &AndroidNativePythonCallback::callback )
+        pybind::interface_<AndroidNativePythonRunnable, pybind::bases<Scriptable>>( _kernel, "AndroidNativePythonRunnable" )
+            .def_call( &AndroidNativePythonRunnable::run )
             ;
+
+        Helper::registerScriptWrapping<AndroidNativePythonRunnable>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonRunnable" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        MENGINE_UNUSED( _kernel );
+        _kernel->remove_scope<AndroidNativePythonRunnable>();
+
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AndroidNativePythonRunnable" ) );
     }
 }
 

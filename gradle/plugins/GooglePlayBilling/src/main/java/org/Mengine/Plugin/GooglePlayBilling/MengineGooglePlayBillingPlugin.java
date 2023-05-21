@@ -22,7 +22,6 @@ import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineCallbackInterface;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
@@ -30,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.lang.Runnable;
 
 public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     public static final String PLUGIN_NAME = "GooglePlayBilling";
@@ -422,7 +423,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         List<String> products = purchase.getProducts();
         String token = purchase.getPurchaseToken();
 
-        MengineCallbackInterface cb = (Object result) -> {
+        Runnable cb = () -> {
             AcknowledgePurchaseParams.Builder acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                 .setPurchaseToken(token);
 
@@ -453,7 +454,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             });
         };
 
-        this.pythonCallCb("onGooglePlayBillingPurchasesAcknowledge", cb, products);
+        this.pythonCall("onGooglePlayBillingPurchasesAcknowledge", cb, products);
     }
 
     @AnyThread

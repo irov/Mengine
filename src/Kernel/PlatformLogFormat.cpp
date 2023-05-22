@@ -18,7 +18,7 @@ namespace Mengine
         void PlatformLogMessage( const Char * _message )
         {
 #if defined(MENGINE_PLATFORM_APPLE)
-            Helper::ApplePrintMessage( _format, args );
+            Helper::AppleLogMessage( _message );
 #elif defined(MENGINE_PLATFORM_ANDROID)
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "%s", _message );
 #else
@@ -31,7 +31,7 @@ namespace Mengine
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );            
 #if defined(MENGINE_PLATFORM_APPLE)
-            Helper::ApplePrintFormatV( _format, args );
+            Helper::AppleLogFormatV( _format, args );
 #elif defined(MENGINE_PLATFORM_ANDROID)
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", _format, args );
 #else

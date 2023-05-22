@@ -57,7 +57,7 @@
     provider->onRealName( result_params );
 }
 
-- (void) OnEventWithCode: (int)code msg: (NSString*)msg {
+- (void) OnEventWithCode:(int)code msg: (NSString*)msg {
     LOGGER_MESSAGE( "OnEventWithCode code:%d msg:%s"
         , code
         , [msg UTF8String]

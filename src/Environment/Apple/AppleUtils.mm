@@ -17,14 +17,14 @@ namespace Mengine
         /////////////////////////////////////////////////////////////////////////
         void AppleLogMessage( const Char * _message )
         {
-            NSLog( @"%s", @(_message) );
+            NSLog( @"%s", _message );
         }
         /////////////////////////////////////////////////////////////////////////
         void AppleLogFormat( const Char * _format, ... )
         {
 			MENGINE_VA_LIST_TYPE args;
 			MENGINE_VA_LIST_START( args, _format );
-            Helper::ApplePrintFormatV( _format, args );
+            Helper::AppleLogFormatV( _format, args );
 			MENGINE_VA_LIST_END( args );
         }
         /////////////////////////////////////////////////////////////////////////

@@ -60,7 +60,8 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
      * - onGooglePlayBillingBuyInAppSuccess(String productId)
      * <p>
      * на оба метода падают все каллбеки - в зависимости от ситуации)
-     * - onGooglePlayBillingPurchasesAcknowledge(cb, List<String> products)
+     * - onGooglePlayBillingPurchaseIsConsumable(List<String> products, cb)
+     * - onGooglePlayBillingPurchaseAcknowledged(List<String> products)
      * - onGooglePlayBillingPurchasesAcknowledgeFailed(List<String> products)
      * - onGooglePlayBillingPurchasesAcknowledgeSuccessful(List<String> products)
      * - onGooglePlayBillingPurchasesOnConsumeFailed(List<String> products)
@@ -314,12 +315,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
         this.logMessage("queryPurchases");
 
         QueryPurchasesParams purchasesParams = QueryPurchasesParams.newBuilder()
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build();
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build();
 
         m_billingClient.queryPurchasesAsync(purchasesParams, new PurchasesResponseListener() {
             @Override
-            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchasesList) {
+            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
                 int responseCode = billingResult.getResponseCode();
 
                 if (responseCode != BillingClient.BillingResponseCode.OK) {
@@ -333,11 +334,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                     return;
                 }
 
-                MengineGooglePlayBillingPlugin.this.logMessage("billing successful query purchases: %s"
+                MengineGooglePlayBillingPlugin.this.logMessage("billing successful query message: %s purchases: %s"
                     , billingResult.getDebugMessage()
+                    , purchases
                 );
 
-                for (Purchase purchase : purchasesList) {
+                for (Purchase purchase : purchases) {
                     MengineGooglePlayBillingPlugin.this.handlePurchase(purchase);
                 }
 
@@ -415,51 +417,47 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     @AnyThread
-    private void handleUnacknowledgedPurchase(@Nullable Purchase purchase) {
-        this.logMessage("handleUnacknowledgedPurchase purchase: %s"
+    private void handleNonConsumablePurchase(@Nullable Purchase purchase) {
+        this.logMessage("handleNonConsumablePurchase purchase: %s"
             , purchase
         );
 
         List<String> products = purchase.getProducts();
         String token = purchase.getPurchaseToken();
 
-        Runnable cb = () -> {
-            AcknowledgePurchaseParams.Builder acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                .setPurchaseToken(token);
+        AcknowledgePurchaseParams.Builder acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+            .setPurchaseToken(token);
 
-            m_billingClient.acknowledgePurchase(acknowledgePurchaseParams.build(), billingResult -> {
-                MengineGooglePlayBillingPlugin.this.logMessage("acknowledgePurchase responseCode: %d debugMessage: %s"
-                    , billingResult.getResponseCode()
+        m_billingClient.acknowledgePurchase(acknowledgePurchaseParams.build(), billingResult -> {
+            this.logMessage("acknowledgePurchase responseCode: %d debugMessage: %s"
+                , billingResult.getResponseCode()
+                , billingResult.getDebugMessage()
+            );
+
+            int responseCode = billingResult.getResponseCode();
+
+            if (responseCode != BillingClient.BillingResponseCode.OK) {
+                this.logError("billing invalid acknowledge purchase code: %d message: %s"
+                    , responseCode
                     , billingResult.getDebugMessage()
                 );
 
-                int responseCode = billingResult.getResponseCode();
+                this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeFailed", products);
 
-                if (responseCode != BillingClient.BillingResponseCode.OK) {
-                    MengineGooglePlayBillingPlugin.this.logError("billing invalid acknowledge purchase code: %d message: %s"
-                        , responseCode
-                        , billingResult.getDebugMessage()
-                    );
+                return;
+            }
 
-                    MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeFailed", products);
+            this.logMessage("billing success acknowledge purchase: %s"
+                , billingResult.getDebugMessage()
+            );
 
-                    return;
-                }
-
-                MengineGooglePlayBillingPlugin.this.logMessage("billing success acknowledge purchase: %s"
-                    , billingResult.getDebugMessage()
-                );
-
-                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeSuccessful", products);
-            });
-        };
-
-        this.pythonCall("onGooglePlayBillingPurchasesAcknowledge", cb, products);
+            this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeSuccessful", products);
+        });
     }
 
     @AnyThread
-    private void handleAcknowledgedPurchase(@Nullable Purchase purchase) {
-        this.logMessage("handleAcknowledgedPurchase purchase: %s"
+    private void handleConsumablePurchase(@Nullable Purchase purchase) {
+        this.logMessage("handleConsumablePurchase purchase: %s"
             , purchase
         );
 
@@ -511,10 +509,30 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             return;
         }
 
-        if (purchase.isAcknowledged() == true) {
-            this.handleAcknowledgedPurchase(purchase);
-        } else {
-            this.handleUnacknowledgedPurchase(purchase);
-        }
+        List<String> products = purchase.getProducts();
+
+        Runnable cb = (boolean isConsumable) -> {
+            boolean acknowledged = purchase.isAcknowledged();
+
+            MengineGooglePlayBillingPlugin.this.logMessage("handlePurchase Acknowledged: %s product: %s consumable: %s"
+                , acknowledged
+                , products
+                , isConsumable
+            );
+
+            if (acknowledged == true) {
+                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchaseAcknowledged", products);
+
+                return;
+            }
+
+            if (isConsumable == true) {
+                MengineGooglePlayBillingPlugin.this.handleConsumablePurchase(purchase);
+            } else {
+                MengineGooglePlayBillingPlugin.this.handleNonConsumablePurchase(purchase);
+            }
+        };
+
+        this.pythonCall("onGooglePlayBillingPurchaseIsConsumable", products, cb);
     }
 }

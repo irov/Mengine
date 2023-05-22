@@ -14,8 +14,12 @@ src
     AndroidNativePythonScriptEmbedding.h
     AndroidNativePythonScriptEmbedding.cpp
     
-    AndroidNativePythonRunnable.h
-    AndroidNativePythonRunnable.cpp
+    AndroidNativePythonFunctor.h
+    AndroidNativePythonFunctor.cpp
+    AndroidNativePythonFunctorVoid.h
+    AndroidNativePythonFunctorVoid.cpp
+    AndroidNativePythonFunctorBoolean.h
+    AndroidNativePythonFunctorBoolean.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

@@ -118,7 +118,7 @@ public class MenginePlugin {
         m_activity.activateSemaphore(name);
     }
 
-    public void waitSemaphore(String name, Runnable cb) {
+    public void waitSemaphore(String name, MengineFunctorVoid cb) {
         if (m_activity == null) {
             return;
         }

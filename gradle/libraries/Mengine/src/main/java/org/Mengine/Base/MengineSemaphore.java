@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class MengineSemaphore {
     protected boolean m_activate;
-    protected ArrayList<Runnable> m_listeners;
+    protected ArrayList<MengineFunctorVoid> m_listeners;
 
     MengineSemaphore(boolean _activate) {
         m_activate = _activate;
@@ -21,16 +21,16 @@ public class MengineSemaphore {
 
         m_activate = true;
 
-        for (Runnable cb : m_listeners) {
-            cb.run();
+        for (MengineFunctorVoid cb : m_listeners) {
+            cb.call();
         }
 
         m_listeners = null;
     }
 
-    public boolean addListener(Runnable cb) {
+    public boolean addListener(MengineFunctorVoid cb) {
         if (m_activate == true) {
-            cb.run();
+            cb.call();
 
             return false;
         }

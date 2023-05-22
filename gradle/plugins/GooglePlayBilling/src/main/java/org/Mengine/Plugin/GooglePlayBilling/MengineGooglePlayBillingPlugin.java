@@ -22,6 +22,7 @@ import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineFunctorBoolean;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
@@ -29,8 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.lang.Runnable;
 
 public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     public static final String PLUGIN_NAME = "GooglePlayBilling";
@@ -511,7 +510,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
         List<String> products = purchase.getProducts();
 
-        Runnable cb = (boolean isConsumable) -> {
+        MengineFunctorBoolean cb = (Boolean isConsumable) -> {
             boolean acknowledged = purchase.isAcknowledged();
 
             MengineGooglePlayBillingPlugin.this.logMessage("handlePurchase Acknowledged: %s product: %s consumable: %s"

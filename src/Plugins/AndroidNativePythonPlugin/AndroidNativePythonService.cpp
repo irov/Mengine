@@ -18,7 +18,8 @@
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
 
-#include "AndroidNativePythonRunnable.h"
+#include "AndroidNativePythonFunctorVoid.h"
+#include "AndroidNativePythonFunctorBoolean.h"
 #include "AndroidNativePythonScriptEmbedding.h"
 
 #include "Config/StdString.h"
@@ -127,7 +128,8 @@ namespace Mengine
 
         m_kernel = kernel;
 
-        m_factoryAndroidNativePythonRunnable = Helper::makeFactoryPool<AndroidNativePythonRunnable, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAndroidNativePythonFunctorVoid = Helper::makeFactoryPool<AndroidNativePythonFunctorVoid, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryAndroidNativePythonFunctorBoolean = Helper::makeFactoryPool<AndroidNativePythonFunctorBoolean, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -211,9 +213,11 @@ namespace Mengine
         m_eventation->finalize();
         m_eventation = nullptr;
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonRunnable );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonFunctorVoid );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonFunctorBoolean );
 
-        m_factoryAndroidNativePythonRunnable = nullptr;
+        m_factoryAndroidNativePythonFunctorVoid = nullptr;
+        m_factoryAndroidNativePythonFunctorBoolean = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::addCommand( const LambdaPythonEventHandler & _command )
@@ -235,7 +239,8 @@ namespace Mengine
         jclass jclass_List = _jenv->FindClass( "java/util/List" );
         jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
         jclass jclass_Set = _jenv->FindClass( "java/util/Set" );
-        jclass jclass_Runnable = _jenv->FindClass( "java/lang/Runnable" );
+        jclass jclass_MengineFunctorVoid = _jenv->FindClass( "org/Mengine/Base/MengineFunctorVoid" );
+        jclass jclass_MengineFunctorBoolean = _jenv->FindClass( "org/Mengine/Base/MengineFunctorBoolean" );
 
         if( _obj == nullptr )
         {
@@ -417,15 +422,25 @@ namespace Mengine
 
             py_value = py_dict;
         }
-        else if ( _jenv->IsInstanceOf( _obj, jclass_Runnable ) == JNI_TRUE )
+        else if ( _jenv->IsInstanceOf( _obj, jclass_MengineFunctorVoid ) == JNI_TRUE )
         {
-            AndroidNativePythonRunnablePtr runnable = m_factoryAndroidNativePythonRunnable->createObject(MENGINE_DOCUMENT_FACTORABLE );
+            AndroidNativePythonFunctorVoidPtr functor = m_factoryAndroidNativePythonFunctorVoid->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-            runnable->setResponseCb( _obj );
+            functor->setJavaFunctor( _obj );
 
-            PyObject * py_responseCb = pybind::ptr( m_kernel, runnable );
+            PyObject * py_functor = pybind::ptr( m_kernel, functor );
 
-            py_value = py_responseCb;
+            py_value = py_functor;
+        }
+        else if ( _jenv->IsInstanceOf( _obj, jclass_MengineFunctorBoolean ) == JNI_TRUE )
+        {
+            AndroidNativePythonFunctorBooleanPtr functor = m_factoryAndroidNativePythonFunctorBoolean->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+            functor->setJavaFunctor( _obj );
+
+            PyObject * py_functor = pybind::ptr( m_kernel, functor );
+
+            py_value = py_functor;
         }
         else
         {

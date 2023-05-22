@@ -729,7 +729,7 @@ public class MengineActivity extends SDLActivity {
         semaphore.activate();
     }
 
-    public void waitSemaphore(String name, Runnable cb) {
+    public void waitSemaphore(String name, MengineFunctorVoid cb) {
         MengineSemaphore semaphore = m_semaphores.get(name);
 
         if (semaphore == null) {
@@ -750,11 +750,11 @@ public class MengineActivity extends SDLActivity {
             , name
         );
 
-        Runnable runnable = () -> {
+        MengineFunctorVoid cb = () -> {
             AndroidNativePython_activateSemaphore(name);
         };
 
-        this.waitSemaphore(name, runnable);
+        this.waitSemaphore(name, cb);
     }
 
     /***********************************************************************************************

@@ -4,14 +4,13 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
+#include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {

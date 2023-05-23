@@ -5,6 +5,7 @@
 
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidEventation.h"
+#include "Environment/Python/PythonIncluder.h"
 
 #include "AndroidNativePythonInterface.h"
 #include "AndroidNativePythonEventHandlerInterface.h"
@@ -12,8 +13,6 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Map.h"
 #include "Kernel/Pair.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {
@@ -38,9 +37,6 @@ namespace Mengine
     public:
         void addCommand( const LambdaPythonEventHandler & _command );
 
-    protected:
-        PyObject * makePythonAttribute( JNIEnv * _jenv, jobject _obj ) const;
-
     public:
         void pythonMethod( const String & _plugin, const String & _method, jobjectArray _args ) override;
         void addPlugin( const String & _name, jobject _plugin ) override;
@@ -48,7 +44,6 @@ namespace Mengine
 
     public:
         void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) override;
-        bool androidResponse( JNIEnv * _jenv, int32_t _id, const pybind::object & _result ) const override;
 
     public:
         void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;

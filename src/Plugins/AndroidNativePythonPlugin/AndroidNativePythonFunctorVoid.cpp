@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * AndroidNativePythonFunctorVoid::call( PyObject * _args, PyObject * _kwds )
+    void AndroidNativePythonFunctorVoid::call()
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -28,7 +28,7 @@ namespace Mengine
         {
             MENGINE_ERROR_FATAL( "invalid get jenv" );
 
-            return m_kernel->ret_none();
+            return;
         }
 
         jobject functor = this->getJavaFunctor();
@@ -42,8 +42,6 @@ namespace Mengine
         Helper::jEnvExceptionCheck( jenv );
 
         jenv->DeleteLocalRef( jclass_Functor );
-
-        return m_kernel->ret_none();
     }
     //////////////////////////////////////////////////////////////////////////
 }

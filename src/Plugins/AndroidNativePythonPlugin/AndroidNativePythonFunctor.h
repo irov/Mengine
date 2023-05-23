@@ -29,9 +29,6 @@ namespace Mengine
         void setJavaFunctor( jobject _functor );
         jobject getJavaFunctor() const;
 
-    public:
-        virtual PyObject * call( PyObject * _args, PyObject * _kwds ) = 0;
-
     protected:
         pybind::kernel_interface * m_kernel;
         jobject m_functor;

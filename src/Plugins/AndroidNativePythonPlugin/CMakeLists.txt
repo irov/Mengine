@@ -11,6 +11,9 @@ src
     AndroidNativePythonService.h
     AndroidNativePythonService.cpp
     
+    AndroidNativePythonHelper.h
+    AndroidNativePythonHelper.cpp
+    
     AndroidNativePythonScriptEmbedding.h
     AndroidNativePythonScriptEmbedding.cpp
     

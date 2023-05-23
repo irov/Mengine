@@ -3,11 +3,10 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
+#include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/String.h"
 #include "Kernel/ConstString.h"
-
-#include "pybind/pybind.hpp"
 
 namespace Mengine
 {
@@ -18,7 +17,6 @@ namespace Mengine
 
     public:
         virtual void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) = 0;
-        virtual bool androidResponse( JNIEnv * _jenv, int32_t _id, const pybind::object & _result ) const = 0;
 
     public:
         virtual void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;

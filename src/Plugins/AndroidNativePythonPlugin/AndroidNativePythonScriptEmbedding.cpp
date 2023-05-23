@@ -99,28 +99,30 @@ namespace Mengine
         pybind::def_function_args( _kernel, "waitAndroidSemaphore", &Detail::AndroidNativePythonService_waitAndroidSemaphore );
 
         pybind::interface_<AndroidNativePythonFunctor, pybind::bases<Scriptable>>( _kernel, "AndroidNativePythonFunctor" )
-            .def_call_native( &AndroidNativePythonFunctor::call )
-            ;
-
-        pybind::interface_<AndroidNativePythonFunctorBoolean, pybind::bases<AndroidNativePythonFunctor>>( _kernel, "AndroidNativePythonFunctorBoolean" )
             ;
 
         pybind::interface_<AndroidNativePythonFunctorVoid, pybind::bases<AndroidNativePythonFunctor>>( _kernel, "AndroidNativePythonFunctorVoid" )
+            .def( "call", &AndroidNativePythonFunctorVoid::call )
             ;
 
-        Helper::registerScriptWrapping<AndroidNativePythonFunctorBoolean>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), MENGINE_DOCUMENT_FACTORABLE );
+        pybind::interface_<AndroidNativePythonFunctorBoolean, pybind::bases<AndroidNativePythonFunctor>>( _kernel, "AndroidNativePythonFunctorBoolean" )
+            .def( "call", &AndroidNativePythonFunctorBoolean::call )
+            ;
+
         Helper::registerScriptWrapping<AndroidNativePythonFunctorVoid>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<AndroidNativePythonFunctorBoolean>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_scope<AndroidNativePythonFunctorBoolean>();
         _kernel->remove_scope<AndroidNativePythonFunctorVoid>();
+        _kernel->remove_scope<AndroidNativePythonFunctorBoolean>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 

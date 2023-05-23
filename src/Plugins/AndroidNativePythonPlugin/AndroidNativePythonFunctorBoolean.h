@@ -15,7 +15,7 @@ namespace Mengine
         ~AndroidNativePythonFunctorBoolean() override;
 
     public:
-        PyObject * call( PyObject * _args, PyObject * _kwds ) override;
+        void call( bool _result );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidNativePythonFunctorBoolean, AndroidNativePythonFunctor> AndroidNativePythonFunctorBooleanPtr;

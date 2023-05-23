@@ -510,7 +510,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
         List<String> products = purchase.getProducts();
 
-        MengineFunctorBoolean cb = (Boolean isConsumable) -> {
+        MengineFunctorBoolean cb = (boolean isConsumable) -> {
             boolean acknowledged = purchase.isAcknowledged();
 
             MengineGooglePlayBillingPlugin.this.logMessage("handlePurchase Acknowledged: %s product: %s consumable: %s"

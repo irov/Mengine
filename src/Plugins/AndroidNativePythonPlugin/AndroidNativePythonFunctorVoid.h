@@ -15,7 +15,7 @@ namespace Mengine
         ~AndroidNativePythonFunctorVoid() override;
 
     public:
-        PyObject * call( PyObject * _args, PyObject * _kwds ) override;
+        void call();
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidNativePythonFunctorVoid, AndroidNativePythonFunctor> AndroidNativePythonFunctorVoidPtr;

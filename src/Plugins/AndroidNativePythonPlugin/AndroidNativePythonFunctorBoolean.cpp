@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * AndroidNativePythonFunctorBoolean::call( PyObject * _args, PyObject * _kwds )
+    void AndroidNativePythonFunctorBoolean::call( bool _result )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -28,22 +28,20 @@ namespace Mengine
         {
             MENGINE_ERROR_FATAL( "invalid get jenv" );
 
-            return m_kernel->ret_none();
+            return;
         }
 
         jobject functor = this->getJavaFunctor();
 
         jclass jclass_FunctorBoolean = jenv->GetObjectClass( functor );
 
-        jmethodID jmethodID_FunctorBoolean_call = jenv->GetMethodID( jclass_FunctorBoolean, "call", "(java/lang/Boolean)V" );
+        jmethodID jmethodID_FunctorBoolean_call = jenv->GetMethodID( jclass_FunctorBoolean, "call", "(Z)V" );
 
-        jenv->CallVoidMethod( functor, jmethodID_FunctorBoolean_call );
+        jenv->CallVoidMethod( functor, jmethodID_FunctorBoolean_call, _result );
 
         Helper::jEnvExceptionCheck( jenv );
 
         jenv->DeleteLocalRef( jclass_FunctorBoolean );
-
-        return m_kernel->ret_none();
     }
     //////////////////////////////////////////////////////////////////////////
 }

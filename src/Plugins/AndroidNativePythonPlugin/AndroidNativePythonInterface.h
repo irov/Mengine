@@ -5,7 +5,6 @@
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Python/PythonIncluder.h"
 
-#include "Kernel/String.h"
 #include "Kernel/ConstString.h"
 
 namespace Mengine

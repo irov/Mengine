@@ -2483,8 +2483,11 @@ namespace Mengine
         {
             m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 
+            const WChar * windowClassName_str = m_windowClassName.c_str();
+            const WChar * projectTitle_str = m_projectTitle.c_str();
+
             bool stop;
-            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, m_windowClassName.c_str(), m_projectTitle.c_str(), &stop ) == false )
+            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, windowClassName_str, projectTitle_str, &stop ) == false )
             {
                 LOGGER_ERROR( "invalid initialize already running monitor" );
 

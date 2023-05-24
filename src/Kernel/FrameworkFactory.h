@@ -62,8 +62,6 @@ namespace Mengine
         template<class T>
         FrameworkFactoryInterfacePtr makeFrameworkFactory( const DocumentPtr & _doc )
         {
-            MENGINE_UNUSED( _doc );
-
             FrameworkFactoryInterfacePtr factory = Helper::makeFactorableUnique<FrameworkFactory<T>>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );

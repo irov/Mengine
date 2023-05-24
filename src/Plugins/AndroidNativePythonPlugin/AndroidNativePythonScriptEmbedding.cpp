@@ -105,11 +105,11 @@ namespace Mengine
             ;
 
         pybind::interface_<AndroidNativePythonFunctorVoid, pybind::bases<AndroidNativePythonFunctor>>( _kernel, "AndroidNativePythonFunctorVoid" )
-            .def( "call", &AndroidNativePythonFunctorVoid::call )
+            .def_call( &AndroidNativePythonFunctorVoid::call )
             ;
 
         pybind::interface_<AndroidNativePythonFunctorBoolean, pybind::bases<AndroidNativePythonFunctor>>( _kernel, "AndroidNativePythonFunctorBoolean" )
-            .def( "call", &AndroidNativePythonFunctorBoolean::call )
+            .def_call( &AndroidNativePythonFunctorBoolean::call )
             ;
 
         Helper::registerScriptWrapping<AndroidNativePythonFunctorVoid>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), MENGINE_DOCUMENT_FACTORABLE );

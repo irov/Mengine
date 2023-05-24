@@ -22,6 +22,10 @@ namespace Mengine
         const Char * getBuildTimestamp();
         const Char * getBuildUsername();
         const Char * getBuildVersion();
+        uint32_t getBuildVersionMajor();
+        uint32_t getBuildVersionMinor();
+        uint32_t getBuildVersionPatch();
+        uint32_t getBuildVersionNumber();
         uint64_t getBuildNumber();
     }
 }

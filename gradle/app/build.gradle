@@ -142,10 +142,10 @@ android {
             versionCode = 300000000 + buildNumber
         }
 
-        if (project.hasProperty("ANDROID_APP_VERSION_NAME")) {
-            versionName ANDROID_APP_VERSION_NAME
+        if (project.hasProperty("ANDROID_APP_BUILD_VERSION")) {
+            versionName ANDROID_APP_BUILD_VERSION
         } else {
-            versionName "v." + buildNumber as String
+            versionName "0.0.0"
         }
 
         println "versionCode: $versionCode"

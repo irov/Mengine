@@ -297,6 +297,19 @@ namespace Mengine
         const Char * contentCommit = Helper::getContentCommit();
         this->addGlobalModuleT( "_CONTENT_COMMIT", contentCommit );
 
+        bool publish = MENGINE_BUILD_PUBLISH_VALUE( true, false );
+
+        if( publish == true )
+        {
+            this->addGlobalModuleT( "_BUILD_MODE", "publish" );
+        }
+        else
+        {
+            const Char * buildMode = MENGINE_MASTER_RELEASE_VALUE( "alpha", "develop" );
+
+            this->addGlobalModuleT( "_BUILD_MODE", buildMode );
+        }
+        
         const Char * buildProjectName = Helper::getBuildProjectName();
         this->addGlobalModuleT( "_BUILD_PROJECTNAME", buildProjectName );
 
@@ -308,6 +321,18 @@ namespace Mengine
 
         const Char * buildVersion = Helper::getBuildVersion();
         this->addGlobalModuleT( "_BUILD_VERSION", buildVersion );
+
+        uint32_t buildVersionMajor = Helper::getBuildVersionMajor();
+        this->addGlobalModuleT( "_BUILD_VERSION_MAJOR", buildVersionMajor );
+
+        uint32_t buildVersionMinor = Helper::getBuildVersionMinor();
+        this->addGlobalModuleT( "_BUILD_VERSION_MINOR", buildVersionMinor );
+
+        uint32_t buildVersionPatch = Helper::getBuildVersionPatch();
+        this->addGlobalModuleT( "_BUILD_VERSION_PATCH", buildVersionPatch );
+
+        uint32_t buildVersionNumber = Helper::getBuildVersionNumber();
+        this->addGlobalModuleT( "_BUILD_VERSION_NUMBER", buildVersionNumber );
 
         uint64_t buildNumber = Helper::getBuildNumber();
         this->addGlobalModuleT( "_BUILD_NUMBER", buildNumber );

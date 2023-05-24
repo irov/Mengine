@@ -192,7 +192,6 @@ namespace Mengine
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
 
         const Char * BUILD_VERSION = Helper::getBuildVersion();
-
         sentry_options_set_release( options, BUILD_VERSION );
 
         Char environment[128] = {'\0'};

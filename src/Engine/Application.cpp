@@ -333,6 +333,7 @@ namespace Mengine
         LOGGER_INFO( "system", "content commit: %s", contentCommit );
 
         const Char * buildVersion = Helper::getBuildVersion();
+        uint32_t buildVersionNumber = Helper::getBuildVersionNumber();
         const Char * buildUserName = Helper::getBuildUsername();
         const Char * buildTimestamp = Helper::getBuildTimestamp();
         const Char * buildProjectName = Helper::getBuildProjectName();
@@ -341,10 +342,24 @@ namespace Mengine
         if( HAS_OPTION( "buildinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build info: %s %s %s %s [%" MENGINE_PRIu64 "]", buildVersion, buildUserName, buildTimestamp, buildProjectName, buildNumber );
+                ->messageBox( "Mengine", "build version: %s [0x%08x] user: %s timestamp: %s project: %s build: %" MENGINE_PRIu64 ""
+                    , buildVersion
+                    , buildVersionNumber
+                    , buildUserName
+                    , buildTimestamp
+                    , buildProjectName
+                    , buildNumber 
+                );
         }
 
-        LOGGER_MESSAGE( "build Info: %s %s %s %s [%" MENGINE_PRIu64 "]", buildVersion, buildUserName, buildTimestamp, buildProjectName, buildNumber );
+        LOGGER_MESSAGE( "build version: %s [0x%08x] user: %s timestamp: %s project: %s build: %" MENGINE_PRIu64 ""
+            , buildVersion
+            , buildVersionNumber
+            , buildUserName
+            , buildTimestamp
+            , buildProjectName
+            , buildNumber 
+        );
 
         bool Debug_ShowHotspots = CONFIG_VALUE( "Debug", "ShowHotspots", false );
 

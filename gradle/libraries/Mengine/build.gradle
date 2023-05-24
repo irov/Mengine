@@ -3,6 +3,7 @@ import com.Mengine.Utils
 apply from: rootProject.projectDir.getAbsolutePath() + '/libraries/library.gradle'
 
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
+def ANDROID_APP_BUILD_VERSION = Utils.getStringProperty(project, "ANDROID_APP_BUILD_VERSION", "0.0.0")
 def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false)
 def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)
 
@@ -24,7 +25,8 @@ android {
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
-                            "-DMENGINE_BUILD_VERSION:STRING=" + ANDROID_APP_BUILD_NUMBER,
+                            "-DMENGINE_BUILD_NUMBER:STRING=" + ANDROID_APP_BUILD_NUMBER,
+                            "-DMENGINE_BUILD_VERSION:STRING=" + ANDROID_APP_BUILD_VERSION,
                             "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (ANDROID_APP_BUILD_PUBLISH ? "ON" : "OFF"),
                             "-DMENGINE_BUILD_MENGINE_LOGGER_LEVEL_FORCE_VERBOSE=" + (ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE ? "ON" : "OFF"),
                             "-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=OFF",
@@ -44,7 +46,8 @@ android {
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
-                            "-DMENGINE_BUILD_VERSION:STRING=" + ANDROID_APP_BUILD_NUMBER,
+                            "-DMENGINE_BUILD_NUMBER:STRING=" + ANDROID_APP_BUILD_NUMBER,
+                            "-DMENGINE_BUILD_VERSION:STRING=" + ANDROID_APP_BUILD_VERSION,
                             "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (ANDROID_APP_BUILD_PUBLISH ? "ON" : "OFF"),
                             "-DMENGINE_BUILD_MENGINE_LOGGER_LEVEL_FORCE_VERBOSE=" + (ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE ? "ON" : "OFF"),
                             "-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=ON",

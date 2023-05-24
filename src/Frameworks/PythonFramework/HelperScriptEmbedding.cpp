@@ -1644,48 +1644,6 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PythonAccountSettingProvider> PyAccountSettingProviderPtr;
             //////////////////////////////////////////////////////////////////////////
-            const Char * s_getBuildVersion()
-            {
-                const Char * buildVersion = Helper::getBuildVersion();
-
-                return buildVersion;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            uint64_t s_getBuildNumber()
-            {
-                uint64_t buildNumber = Helper::getBuildNumber();
-
-                return buildNumber;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            const Char * s_getEngineGitSHA1()
-            {
-                const Char * engineGitSHA1 = Helper::getEngineGITSHA1();
-
-                return engineGitSHA1;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            const Char * s_getContentCommit()
-            {
-                const Char * contentCommit = Helper::getContentCommit();
-
-                return contentCommit;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            const Char * s_getBuildMode()
-            {
-                bool publish = MENGINE_BUILD_PUBLISH_VALUE( true, false );
-
-                if( publish == true )
-                {
-                    return "publish";
-                }
-
-                const Char * mode = MENGINE_MASTER_RELEASE_VALUE( "alpha", "develop" );
-
-                return mode;
-            }
-            //////////////////////////////////////////////////////////////////////////
             bool s_addAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
             {
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
@@ -3940,12 +3898,6 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "projectionPointToLine", helperScriptMethod, &HelperScriptMethod::s_projectionPointToLine );
         pybind::def_functor( _kernel, "isPointInsidePolygon", helperScriptMethod, &HelperScriptMethod::s_isPointInsidePolygon );
-
-        pybind::def_functor( _kernel, "getBuildMode", helperScriptMethod, &HelperScriptMethod::s_getBuildMode );
-        pybind::def_functor( _kernel, "getBuildVersion", helperScriptMethod, &HelperScriptMethod::s_getBuildVersion );
-        pybind::def_functor( _kernel, "getBuildNumber", helperScriptMethod, &HelperScriptMethod::s_getBuildNumber );
-        pybind::def_functor( _kernel, "getEngineGitSHA1", helperScriptMethod, &HelperScriptMethod::s_getEngineGitSHA1 );
-        pybind::def_functor( _kernel, "getContentCommit", helperScriptMethod, &HelperScriptMethod::s_getContentCommit );
 
         pybind::def_functor( _kernel, "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );

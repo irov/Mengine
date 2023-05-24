@@ -144,6 +144,34 @@ namespace Mengine
             return BUILD_VERSION;
         }
         //////////////////////////////////////////////////////////////////////////
+        uint32_t getBuildVersionMajor()
+        {
+            uint32_t buildVersionMajor = MENGINE_BUILD_VERSION_MAJOR;
+
+            return buildVersionMajor;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t getBuildVersionMinor()
+        {
+            uint32_t buildVersionMinor = MENGINE_BUILD_VERSION_MINOR;
+
+            return buildVersionMinor;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t getBuildVersionPatch()
+        {
+            uint32_t buildVersionPatch = MENGINE_BUILD_VERSION_PATCH;
+
+            return buildVersionPatch;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t getBuildVersionNumber()
+        {
+            uint32_t buildVersionNumber = MENGINE_BUILD_VERSION_NUMBER;
+
+            return buildVersionNumber;
+        }
+        //////////////////////////////////////////////////////////////////////////
         uint64_t getBuildNumber()
         {
             uint64_t BUILD_NUMBER = MENGINE_BUILD_NUMBER;

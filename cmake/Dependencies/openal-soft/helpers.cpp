@@ -34,7 +34,7 @@ bool AllowRTTimeLimit{true};
 
 #ifdef _WIN32
 
-#include <shlobj.h>
+#include <Windows.h>
 
 const PathNamePair &GetProcBinary()
 {
@@ -115,6 +115,8 @@ al::vector<std::string> SearchDataFiles(const char *ext, const char *subdir)
 
     /* If the path is absolute, use it directly. */
     al::vector<std::string> results;
+
+#if defined(MENGINE_PLATFORM_WINDOWS_FAMILY_DESKTOP)
     if(isalpha(subdir[0]) && subdir[1] == ':' && is_slash(subdir[2]))
     {
         std::string path{subdir};
@@ -165,6 +167,7 @@ al::vector<std::string> SearchDataFiles(const char *ext, const char *subdir)
 
         DirectorySearch(path.c_str(), ext, &results);
     }
+#endif    
 
     return results;
 }

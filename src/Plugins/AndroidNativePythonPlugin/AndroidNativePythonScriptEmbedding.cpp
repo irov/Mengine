@@ -1,5 +1,7 @@
 #include "AndroidNativePythonScriptEmbedding.h"
 
+#include "Interface/PrototypeServiceInterface.h"
+
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "AndroidNativePythonInterface.h"
@@ -7,6 +9,7 @@
 #include "AndroidNativePythonFunctorBoolean.h"
 
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ScriptablePrototypeGenerator.h"
 
 namespace Mengine
 {
@@ -112,6 +115,18 @@ namespace Mengine
         Helper::registerScriptWrapping<AndroidNativePythonFunctorVoid>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<AndroidNativePythonFunctorBoolean>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), MENGINE_DOCUMENT_FACTORABLE );
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<AndroidNativePythonFunctorVoid, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<AndroidNativePythonFunctorBoolean, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -122,6 +137,12 @@ namespace Mengine
 
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

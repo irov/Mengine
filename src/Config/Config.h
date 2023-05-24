@@ -60,7 +60,7 @@
 #   else
 #       define MENGINE_PLATFORM_WINDOWS32
 #   endif
-#   include "winapifamily.h"
+#   include <winapifamily.h>
 #   if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_PC_APP)
 #       define MENGINE_PLATFORM_WINDOWS_FAMILY_PC_APP
 #   endif
@@ -87,7 +87,7 @@
 #   define MENGINE_PLATFORM_DESKTOP
 #elif defined(__APPLE__)
 #   define MENGINE_PLATFORM_APPLE
-#   include "TargetConditionals.h"
+#   include <TargetConditionals.h>
 #   if TARGET_OS_OSX
 #       define MENGINE_PLATFORM_MACOS
 #       define MENGINE_PLATFORM_DESKTOP

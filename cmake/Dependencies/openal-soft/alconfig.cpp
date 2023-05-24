@@ -327,8 +327,12 @@ const char *GetConfigValue(const char *devName, const char *blockName, const cha
 
 
 #ifdef _WIN32
+
+#include <Windows.h>
+
 void ReadALConfig()
 {
+#if defined(MENGINE_PLATFORM_WINDOWS_FAMILY_DESKTOP)
     WCHAR buffer[MAX_PATH];
     if(SHGetSpecialFolderPathW(nullptr, buffer, CSIDL_APPDATA, FALSE) != FALSE)
     {
@@ -358,6 +362,7 @@ void ReadALConfig()
         if(f.is_open())
             LoadConfigFromFile(f);
     }
+#endif
 }
 
 #else

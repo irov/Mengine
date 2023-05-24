@@ -1,9 +1,10 @@
 #include "AndroidNativePythonHelper.h"
 
+#include "Interface/PrototypeServiceInterface.h"
+
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
-
 #include "Environment/Python/PythonIncluder.h"
 
 #include "AndroidNativePythonFunctorVoid.h"
@@ -216,8 +217,10 @@ namespace Mengine
             }
             else if ( _jenv->IsInstanceOf( _obj, jclass_MengineFunctorVoid ) == JNI_TRUE )
             {
-                AndroidNativePythonFunctorVoidPtr functor = Helper::makeFactorableUnique<AndroidNativePythonFunctorVoid>( _doc );
+                AndroidNativePythonFunctorVoidPtr functor = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), _doc );
 
+                functor->setKernel( _kernel );
                 functor->setJavaFunctor( _obj );
 
                 PyObject * py_functor = pybind::ptr( _kernel, functor );
@@ -226,8 +229,10 @@ namespace Mengine
             }
             else if ( _jenv->IsInstanceOf( _obj, jclass_MengineFunctorBoolean ) == JNI_TRUE )
             {
-                AndroidNativePythonFunctorBooleanPtr functor = Helper::makeFactorableUnique<AndroidNativePythonFunctorBoolean>( _doc );
+                AndroidNativePythonFunctorBooleanPtr functor = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), _doc );
 
+                functor->setKernel( _kernel );
                 functor->setJavaFunctor( _obj );
 
                 PyObject * py_functor = pybind::ptr( _kernel, functor );
@@ -280,6 +285,8 @@ namespace Mengine
             _jenv->DeleteLocalRef( jclass_List );
             _jenv->DeleteLocalRef( jclass_Map );
             _jenv->DeleteLocalRef( jclass_Set );
+            _jenv->DeleteLocalRef( jclass_MengineFunctorVoid );
+            _jenv->DeleteLocalRef( jclass_MengineFunctorBoolean );
 
             return py_value;
         }

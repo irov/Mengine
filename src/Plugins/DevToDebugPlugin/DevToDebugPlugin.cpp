@@ -27,22 +27,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugPlugin::_availablePlugin() const
     {
-        if( Helper::isBuildPublish() == true )
-        {
-            return false;
-        }
-        
-        if( Helper::isDebugMode() == false )
-        {
-            return false;
-        }
-
         if( HAS_OPTION( "devtodebug" ) == true )
         {
             return true;
         }
 
         if( HAS_OPTION( "nodevtodebug" ) == true )
+        {
+            return false;
+        }
+
+        if( Helper::isBuildPublish() == true )
+        {
+            return false;
+        }
+        
+        if( Helper::isDebugMode() == false )
         {
             return false;
         }

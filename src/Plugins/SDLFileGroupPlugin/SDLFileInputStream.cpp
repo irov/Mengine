@@ -307,9 +307,11 @@ namespace Mengine
         }
         else
         {
-            Sint64 result = SDL_RWseek( m_rwops, static_cast<Sint64>(m_offset + _pos), RW_SEEK_SET );
+            Sint64 seek_pos = static_cast<Sint64>(m_offset + _pos);
 
-            if( 0 > result )
+            Sint64 result = SDL_RWseek( m_rwops, seek_pos, RW_SEEK_SET );
+
+            if( result < 0 )
             {
                 LOGGER_ERROR( "seek %zu:%zu get [error: %s]"
                     , _pos

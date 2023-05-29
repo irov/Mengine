@@ -20,6 +20,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/String.h"
+#include "Kernel/StaticString.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"

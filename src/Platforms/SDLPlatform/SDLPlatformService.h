@@ -31,7 +31,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/SHA1.h"
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -71,7 +71,7 @@ namespace Mengine
         bool getSleepMode() const override;
 
     public:
-        TimeMilliseconds getPlatfomTime() const override;
+        Timestamp getPlatfomTime() const override;
 
     public:
         void setProjectTitle( const Char * _projectTitle ) override;
@@ -229,7 +229,7 @@ namespace Mengine
         void finalizeFileService_();
 
     protected:
-        TimeMilliseconds m_beginTime;
+        Timestamp m_beginTime;
 
         Tags m_platformTags;
 
@@ -293,7 +293,7 @@ namespace Mengine
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
         StaticString<MENGINE_SHA1_HEX_COUNT + 1> m_fingerprint; //SHA1
 
-        TimeMilliseconds m_prevTime;
+        Timestamp m_prevTime;
 
         float m_pauseUpdatingTime;
 

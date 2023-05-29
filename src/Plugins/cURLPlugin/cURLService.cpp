@@ -30,7 +30,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ThreadMutexScope.h"
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -307,7 +307,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_GET_MESSAGE;
-        desc.timestamp = Helper::getTimeMilliseconds();
+        desc.timestamp = Helper::getTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -372,7 +372,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_POST_MESSAGE;
-        desc.timestamp = Helper::getTimeMilliseconds();
+        desc.timestamp = Helper::getTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -437,7 +437,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_POST_MESSAGE;
-        desc.timestamp = Helper::getTimeMilliseconds();
+        desc.timestamp = Helper::getTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -502,7 +502,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_HEADER_DATA;
-        desc.timestamp = Helper::getTimeMilliseconds();
+        desc.timestamp = Helper::getTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -573,7 +573,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_DOWNLOAD_ASSET;
-        desc.timestamp = Helper::getTimeMilliseconds();
+        desc.timestamp = Helper::getTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 

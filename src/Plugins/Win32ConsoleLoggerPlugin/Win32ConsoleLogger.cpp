@@ -223,7 +223,7 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & LFLAG_SYMBOL )
+        if( _message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = _message.level;
 
@@ -232,7 +232,7 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & LFLAG_CATEGORY )
+        if( _message.flag & LFLAG_CATEGORYSTAMP )
         {
             size_t category_size = MENGINE_STRLEN( _message.category );
 

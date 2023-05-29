@@ -8,6 +8,7 @@
 #include "Kernel/ContainerWriter.h"
 #include "Kernel/Ravingcode.h"
 #include "Kernel/Hexadecimal.h"
+#include "Kernel/StaticString.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"

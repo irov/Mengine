@@ -3,6 +3,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/PluginBase.h"
+#include "Kernel/StaticString.h"
 
 namespace Mengine
 {    

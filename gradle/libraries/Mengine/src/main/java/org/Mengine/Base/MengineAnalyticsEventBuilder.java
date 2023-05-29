@@ -1,44 +1,54 @@
 package org.Mengine.Base;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MengineAnalyticsEventBuilder {
-    private static native void AndroidAnalyticsService_addEventBuilderParameterBoolean(Object ptr, String name, boolean value);
-    private static native void AndroidAnalyticsService_addEventBuilderParameterString(Object ptr, String name, String value);
-    private static native void AndroidAnalyticsService_addEventBuilderParameterInteger(Object ptr, String name, long value);
-    private static native void AndroidAnalyticsService_addEventBuilderParameterDouble(Object ptr, String name, double value);
-    private static native void AndroidAnalyticsService_logEventBuilder(Object ptr);
+    private static native long AndroidAnalyticsService_logEventBuilder(String name, Map<String, Object> parameters);
 
-    private Object m_ptr;
+    private MengineApplication m_application;
 
-    MengineAnalyticsEventBuilder(Object ptr) {
-m_ptr = ptr;
+    private Object m_lock;
+    private String m_name;
+    private Map<String, Object> m_parameters = new HashMap<>();
+
+    MengineAnalyticsEventBuilder(MengineApplication application, Object lock, String name) {
+        m_application = application;
+        m_lock = lock;
+        m_name = name;
     }
 
     public MengineAnalyticsEventBuilder addParameterBoolean(String name, boolean value) {
-        AndroidAnalyticsService_addEventBuilderParameterBoolean(m_ptr, name, value);
+        m_parameters.put(name, value);
 
         return this;
     }
 
     public MengineAnalyticsEventBuilder addParameterString(String name, String value) {
-        AndroidAnalyticsService_addEventBuilderParameterString(m_ptr, name, value);
+        m_parameters.put(name, value);
 
         return this;
     }
 
-    public MengineAnalyticsEventBuilder addParameterInteger(String name, long value) {
-        AndroidAnalyticsService_addEventBuilderParameterInteger(m_ptr, name, value);
+    public MengineAnalyticsEventBuilder addParameterLong(String name, long value) {
+        m_parameters.put(name, value);
 
         return this;
     }
 
     public MengineAnalyticsEventBuilder addParameterDouble(String name, double value) {
-        AndroidAnalyticsService_addEventBuilderParameterDouble(m_ptr, name, value);
+        m_parameters.put(name, value);
 
         return this;
     }
 
-    public void log() {
-        AndroidAnalyticsService_logEventBuilder(m_ptr);
-        m_ptr = null;
+    public long log() {
+        long log_timestamp = MengineUtils.getTimestamp();
+
+        synchronized (this.m_lock) {
+            m_application.onMengineAnalyticsEvent(MengineAnalytics.EAET_CUSTOM, m_name, log_timestamp, m_parameters);
+        }
+
+        return log_timestamp;
     }
 }

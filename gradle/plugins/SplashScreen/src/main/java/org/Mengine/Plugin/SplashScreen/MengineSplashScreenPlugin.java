@@ -60,7 +60,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     @Override
-    public void onMengineApplicationReady(MengineActivity activity) {
+    public void onMenginePlatformReady(MengineActivity activity) {
         this.hideSplash(activity);
     }
 

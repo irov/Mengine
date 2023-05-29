@@ -2,7 +2,14 @@
 
 #include "Kernel/LoggerHelper.h"
 
+#include "Config/StdIO.h"
+#include "Config/StdString.h"
+
 #include <android/log.h>
+
+#ifndef MENGINE_ANDROID_LOG_MAX_MESSAGE
+#define MENGINE_ANDROID_LOG_MAX_MESSAGE 1000
+#endif
 
 namespace Mengine
 {
@@ -47,29 +54,90 @@ namespace Mengine
             break;
         }
 
-        Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-        size_t functionstampSize = Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
-        Char timestamp[256] = {'\0'};
-        size_t timestampSize = Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+        if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
 
-        Char threadstamp[256] = {'\0'};
-        size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+            const Char * file = _message.file;
+            int32_t line = _message.line;
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( file, line, "%s[%d] ", functionstamp, 0, MENGINE_MAX_PATH );
 
-        Char symbol = Helper::getLoggerLevelSymbol( level );
+            MENGINE_STRCAT( message, functionstamp );
+        }
 
-        const Char * category = _message.category;
+        if( _message.flag & LFLAG_TIMESTAMP )
+        {
+            Char timestamp[256] = {'\0'};
+
+            const PlatformDateTime & dateTime = _message.dateTime;
+            size_t timestampSize = Helper::makeLoggerTimeStamp( dateTime, "[%02u:%02u:%02u:%04u] ", timestamp, 0, 256 );
+
+            MENGINE_STRCAT( message, timestamp );
+        }
+
+        if( _message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s| ", threadstamp, 0, 256 );
+
+            MENGINE_STRCAT( message, threadstamp );
+        }
+
+        if(_message.flag & LFLAG_CATEGORYSTAMP )
+        {
+            Char categorystamp[256] = {'\0'};
+
+            const Char * category = _message.category;
+            MENGINE_SPRINTF( categorystamp, "[%s] ", category );
+
+            MENGINE_STRCAT( message, categorystamp );
+        }
+
         const Char * data = _message.data;
         size_t size = _message.size;
 
-        __android_log_print( prio, "Mengine", "%.*s %.*s %.*s %c [%s] %.*s"
-            , (int32_t)functionstampSize, functionstamp
-            , (int32_t)timestampSize, timestamp
-            , (int32_t)threadstampSize, threadstamp
-            , symbol
-            , category
-            , (int32_t)size, data
-        );
+        size_t message_stamplen = MENGINE_STRLEN( message );
+
+        if( size + message_stamplen >= MENGINE_LOGGER_MAX_MESSAGE )
+        {
+            size = MENGINE_LOGGER_MAX_MESSAGE - message_stamplen - 1;
+        }
+
+        MENGINE_STRNCAT( message, data, size );
+
+        size_t message_len = MENGINE_STRLEN( message );
+
+        size_t message_packages = message_len / MENGINE_ANDROID_LOG_MAX_MESSAGE;
+        size_t message_tail = message_len % MENGINE_ANDROID_LOG_MAX_MESSAGE;
+
+        if( message_packages != 0 )
+        {
+            __android_log_print( prio, "Mengine", "%.*s <<<"
+                    , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, data
+            );
+
+            for( size_t package = 1; package != message_packages; ++package )
+            {
+                __android_log_print( prio, "Mengine", ">>>  %.*s"
+                    , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, data + package * MENGINE_ANDROID_LOG_MAX_MESSAGE
+                );
+            }
+
+            if( message_tail != 0 )
+            {
+                __android_log_print( prio, "Mengine", ">>>  %s"
+                    , data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
+                );
+            }
+        }
+        else
+        {
+            __android_log_print( prio, "Mengine", "%s"
+                , data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidLogger::flush()

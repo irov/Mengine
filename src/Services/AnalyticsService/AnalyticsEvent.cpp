@@ -43,12 +43,12 @@ namespace Mengine
         return m_context;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsEvent::setTimestamp( TimeMilliseconds _timestamp )
+    void AnalyticsEvent::setTimestamp( Timestamp _timestamp )
     {
         m_timestamp = _timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
-    TimeMilliseconds AnalyticsEvent::getTimestamp() const
+    Timestamp AnalyticsEvent::getTimestamp() const
     {
         return m_timestamp;
     }

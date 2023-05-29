@@ -6,7 +6,6 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/ConstString.h"
-#include "Kernel/StaticString.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Magic.h"

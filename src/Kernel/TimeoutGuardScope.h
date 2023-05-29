@@ -4,7 +4,7 @@
 
 #include "Kernel/Document.h"
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 #include "Config/Char.h"
 #include "Config/Atomic.h"
 
@@ -13,7 +13,7 @@ namespace Mengine
     class TimeoutGuardScope
     {
     public:
-        TimeoutGuardScope( TimeMilliseconds _timeout, const DocumentPtr & _doc, const Char * _format, ... );
+        TimeoutGuardScope( Timestamp _timeout, const DocumentPtr & _doc, const Char * _format, ... );
         ~TimeoutGuardScope();
 
     public:

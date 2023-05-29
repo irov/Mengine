@@ -8,7 +8,7 @@
 
 #include "Kernel/ServiceBase.h"
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -83,7 +83,7 @@ namespace Mengine
         {
             uint32_t id;
             EReceiverType type;
-            TimeMilliseconds timestamp;
+            Timestamp timestamp;
             ThreadTaskInterfacePtr task;
             cURLReceiverInterfacePtr receiver;
 

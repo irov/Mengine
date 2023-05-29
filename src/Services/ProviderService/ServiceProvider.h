@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceProviderInterface.h"
 
+#include "Kernel/StaticString.h"
+
 #ifndef MENGINE_SERVICE_PROVIDER_MAX_REQUIRED
 #define MENGINE_SERVICE_PROVIDER_MAX_REQUIRED 16
 #endif

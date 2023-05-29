@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.res.Configuration;
 
 public interface MenginePluginApplicationListener {
+    default void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        //Empty
+    }
+
     void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException;
 
     default void onAppTerminate(MengineApplication application) {

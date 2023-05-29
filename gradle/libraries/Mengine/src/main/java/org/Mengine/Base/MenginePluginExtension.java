@@ -4,9 +4,13 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 
 public class MenginePluginExtension {
+    MengineApplication m_application;
     MengineActivity m_activity;
     MenginePlugin m_plugin;
 
+    public MengineApplication getApplication() {
+        return m_application;
+    }
     public MengineActivity getActivity() {
         return m_activity;
     }
@@ -15,7 +19,8 @@ public class MenginePluginExtension {
         return m_plugin;
     }
 
-    public boolean onPluginExtensionInitialize(MengineActivity activity, MenginePlugin plugin) {
+    public boolean onPluginExtensionInitialize(MengineApplication application, MengineActivity activity, MenginePlugin plugin) {
+        m_application = application;
         m_activity = activity;
         m_plugin = plugin;
 

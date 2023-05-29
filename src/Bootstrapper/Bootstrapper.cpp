@@ -14,6 +14,7 @@
 #include "Interface/FrameworkServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/AnalyticsServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
@@ -33,6 +34,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH
@@ -522,6 +524,10 @@ namespace Mengine
             return false;
         }
 
+        ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_run_frameworks" ) )
+            ->log();
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_FRAMEWORKS );
 
         LOGGER_INFO( "bootstrapper", "bootstrapper initialize game" );
@@ -554,6 +560,10 @@ namespace Mengine
 
         LOGGER_SERVICE()
             ->clearHistory();
+
+        ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_run_complete" ) )
+            ->log();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
 
@@ -922,6 +932,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
         MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
+
+        ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_initialize_base_services" ) )
+            ->log();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
 
@@ -1505,12 +1519,21 @@ namespace Mengine
     {
         LOGGER_INFO( "bootstrapper", "create application..." );
 
+        Timestamp bootstrapper_create_application_start_timestamp = ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_create_application_start" ) )
+            ->log();
+
         if( SERVICE_CREATE_SAFE( Application, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+
+        ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_create_application_completed" ) )
+            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( bootstrapper_create_application_start_timestamp ) )
+            ->log();
 
         return true;
     }

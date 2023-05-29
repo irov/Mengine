@@ -405,10 +405,10 @@ namespace Mengine
             return false;
         }
 
-        TimeMilliseconds runPlatformTimeMilliseconds = PLATFORM_SERVICE()
+        Timestamp runPlatformTimeMilliseconds = PLATFORM_SERVICE()
             ->getPlatfomTime();
 
-        TimeMilliseconds runPlatformTimeSeconds = runPlatformTimeMilliseconds / 1000;
+        Timestamp runPlatformTimeSeconds = runPlatformTimeMilliseconds / 1000;
 
         LOGGER_INFO( "system", "run platform time: %" MENGINE_PRIu64 " seconds"
             , runPlatformTimeSeconds

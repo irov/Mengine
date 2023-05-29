@@ -7,7 +7,7 @@
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 #include "Kernel/ColorHelper.h"
 #include "Kernel/Logger.h"
 
@@ -72,7 +72,7 @@ namespace Mengine
         {
             Char buffer[64];
             MENGINE_SNPRINTF( buffer, 64, "Bye Bye! %" MENGINE_PRIu64 ""
-                , Helper::getTimeMilliseconds()
+                , Helper::getTimestamp()
             );
 
             unknown_text1_content->setValue( buffer );

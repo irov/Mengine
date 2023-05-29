@@ -30,8 +30,8 @@ namespace Mengine
         const AnalyticsContextInterfacePtr & getContext() const override;
 
     public:
-        void setTimestamp( TimeMilliseconds _timestamp ) override;
-        TimeMilliseconds getTimestamp() const override;
+        void setTimestamp( Timestamp _timestamp ) override;
+        Timestamp getTimestamp() const override;
 
     public:
         void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter ) override;
@@ -44,7 +44,7 @@ namespace Mengine
 
         AnalyticsContextInterfacePtr m_context;
 
-        TimeMilliseconds m_timestamp;
+        Timestamp m_timestamp;
 
         struct AnalyticsEventParameterDesc
         {

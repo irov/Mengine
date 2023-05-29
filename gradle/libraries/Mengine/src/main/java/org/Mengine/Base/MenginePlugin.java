@@ -76,10 +76,6 @@ public class MenginePlugin {
         throw new MenginePluginInvalidInitializeException(m_pluginName);
     }
 
-    public String log(int level, String format, Object ... args) {
-        return MengineLog.log(level, m_pluginName, format, args);
-    }
-
     public String logInfo(String format, Object ... args) {
         return MengineLog.logInfo(m_pluginName, format, args);
     }
@@ -221,15 +217,15 @@ public class MenginePlugin {
         //Empty
     }
 
-    public void onMengineApplicationRun(MengineActivity activity) {
+    public void onMenginePlatformRun(MengineActivity activity) {
         //Empty
     }
 
-    public void onMengineApplicationReady(MengineActivity activity) {
+    public void onMenginePlatformReady(MengineActivity activity) {
         //Empty
     }
 
-    public void onMengineApplicationStop(MengineActivity activity) {
+    public void onMenginePlatformStop(MengineActivity activity) {
         //Empty
     }
 

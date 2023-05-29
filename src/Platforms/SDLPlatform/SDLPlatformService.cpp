@@ -55,7 +55,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/RandomDevice.h"
 #include "Kernel/OptionHelper.h"
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
@@ -480,7 +480,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::_initializeService()
     {
-        m_beginTime = Helper::getTimeMilliseconds();
+        m_beginTime = Helper::getTimestamp();
 
 #if defined(MENGINE_SETLOCALE_ENABLE)
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
@@ -1025,7 +1025,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::runPlatform()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_RUN );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
         return true;
     }
@@ -1147,7 +1147,7 @@ namespace Mengine
     {
         this->setActive_( true );
 
-        m_prevTime = Helper::getTimeMilliseconds();
+        m_prevTime = Helper::getTimestamp();
 
         bool firstTickEnd = false;
 
@@ -1158,7 +1158,7 @@ namespace Mengine
                 break;
             }
 
-            TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
+            Timestamp currentTime = Helper::getTimestamp();
 
             float frameTime = (float)(currentTime - m_prevTime);
 
@@ -1173,7 +1173,7 @@ namespace Mengine
             {
                 firstTickEnd = true;
 
-                NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_READY );
+                NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_READY );
             }
         }
     }
@@ -1269,7 +1269,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::stopPlatform()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_STOP );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
         if( m_sdlWindow != nullptr )
         {
@@ -1362,11 +1362,11 @@ namespace Mengine
         return m_sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    TimeMilliseconds SDLPlatformService::getPlatfomTime() const
+    Timestamp SDLPlatformService::getPlatfomTime() const
     {
-        TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
+        Timestamp currentTime = Helper::getTimestamp();
 
-        TimeMilliseconds platformTime = currentTime - m_beginTime;
+        Timestamp platformTime = currentTime - m_beginTime;
 
         return platformTime;
     }

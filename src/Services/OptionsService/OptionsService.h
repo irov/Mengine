@@ -3,6 +3,7 @@
 #include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/StaticString.h"
 #include "Kernel/Vector.h"
 
 //////////////////////////////////////////////////////////////////////////

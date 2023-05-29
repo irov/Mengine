@@ -18,7 +18,7 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
 }
 
 fun includePlugin(name: String, d: Boolean, path: String) {
-    if (getBooleanProperty(name, d) == false) {
+    if (getBooleanProperty("MENGINE_APP_PLUGIN_ALL", false) == false && getBooleanProperty(name, d) == false) {
         println("\u001b[31m" + "[-] Exclude plugin: $path" + "\u001b[0m")
 
         return;

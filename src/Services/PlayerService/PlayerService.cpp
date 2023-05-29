@@ -47,7 +47,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -106,7 +106,7 @@ namespace Mengine
         }
         else
         {
-            TimeMilliseconds milliseconds = Helper::getTimeMilliseconds();
+            Timestamp milliseconds = Helper::getTimestamp();
 
             uint32_t randomSeed = (uint32_t)milliseconds;
 

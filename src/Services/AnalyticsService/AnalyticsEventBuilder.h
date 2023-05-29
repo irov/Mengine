@@ -44,7 +44,7 @@ namespace Mengine
         AnalyticsEventBuilderInterface * addParameterDouble( const ConstString & _name, double _value ) override;
 
     public:
-        void log() override;
+        Timestamp log() override;
 
     protected:
         AnalyticsFactoryInterfacePtr m_analyticsFactory;

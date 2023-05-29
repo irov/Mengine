@@ -292,86 +292,75 @@ extern "C"
         context->addParameterDouble( name_cstr, (double)_value );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jobject JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1buildEvent )(JNIEnv * env, jclass cls, jstring _name)
+    JNIEXPORT jlong JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1logEventBuilder )(JNIEnv * _jenv, jclass cls, jstring _jname, jobject _jparameters)
     {
         if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
         {
-            return nullptr;
+            return 0;
         }
 
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
+        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( _jenv, _jname );
 
-        Mengine::AnalyticsEventBuilderInterfacePtr analyticsEventBuilder = ANALYTICS_SERVICE()
+        Mengine::AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
             ->buildEvent( name_cstr );
 
-        Mengine::Factorable * factorable = analyticsEventBuilder.getT<Mengine::Factorable *>();
+        Mengine::Helper::foreachJavaMap( _jenv, _jparameters, [_jenv, builder]( jobject _jkey, jobject _jvalue )
+        {
+            jclass jclass_Boolean = _jenv->FindClass( "java/lang/Boolean" );
+            jclass jclass_Integer = _jenv->FindClass( "java/lang/Integer" );
+            jclass jclass_Long = _jenv->FindClass( "java/lang/Long" );
+            jclass jclass_Float = _jenv->FindClass( "java/lang/Float" );
+            jclass jclass_Double = _jenv->FindClass( "java/lang/Double" );
+            jclass jclass_String = _jenv->FindClass( "java/lang/String" );
 
-        Mengine::Factorable::intrusive_ptr_add_ref( factorable );
+            Mengine::ConstString key = Mengine::Helper::makeConstStringFromJString( _jenv, (jstring)_jkey );
 
-        jobject jptr = env->NewDirectByteBuffer( factorable, 0 );
+            if( _jenv->IsInstanceOf(_jvalue, jclass_Boolean ) == JNI_TRUE )
+            {
+                jboolean value = Mengine::Helper::getJavaObjectValueBoolean( _jenv, _jvalue );
 
-        return jptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addEventBuilderParameterBoolean )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jboolean _value)
-    {
-        void * ptr = env->GetDirectBufferAddress( _jptr );
-        Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
+                builder->addParameterBoolean( key, value );
+            }
+            else if ( _jenv->IsInstanceOf( _jvalue, jclass_Integer ) == JNI_TRUE )
+            {
+                jint value = Mengine::Helper::getJavaObjectValueInteger( _jenv, _jvalue );
 
-        Mengine::AnalyticsEventBuilderInterface * eventBuilder = static_cast<Mengine::AnalyticsEventBuilderInterface *>(factorable);
+                builder->addParameterInteger( key, value );
+            }
+            else if ( _jenv->IsInstanceOf( _jvalue, jclass_Long ) == JNI_TRUE )
+            {
+                jlong value = Mengine::Helper::getJavaObjectValueLong( _jenv, _jvalue );
 
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
+                builder->addParameterInteger( key, value );
+            }
+            else if ( _jenv->IsInstanceOf( _jvalue, jclass_Float ) == JNI_TRUE )
+            {
+                jfloat value = Mengine::Helper::getJavaObjectValueFloat( _jenv, _jvalue );
 
-        eventBuilder->addParameterBoolean( name_cstr, (bool)_value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addEventBuilderParameterString )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jstring _value)
-    {
-        void * ptr = env->GetDirectBufferAddress( _jptr );
-        Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
+                builder->addParameterDouble( key, value );
+            }
+            else if ( _jenv->IsInstanceOf( _jvalue, jclass_String ) == JNI_TRUE )
+            {
+                Mengine::String value = Mengine::Helper::makeStringFromJString( _jenv, (jstring)_jvalue );
 
-        Mengine::AnalyticsEventBuilderInterface * eventBuilder = static_cast<Mengine::AnalyticsEventBuilderInterface *>(factorable);
+                builder->addParameterString( key, value );
+            }
+            else
+            {
+                jclass value_jclass = _jenv->GetObjectClass( _jvalue );
 
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
-        Mengine::String value_string = Mengine::Helper::makeStringFromJString( env, _value );
+                LOGGER_ERROR("unsupport type for analytics builder key: %s value type: '%s'"
+                    , key.c_str()
+                    , Mengine::Helper::getJavaClassName( _jenv, value_jclass ).c_str()
+                );
 
-        eventBuilder->addParameterString( name_cstr, value_string );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addEventBuilderParameterInteger )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jlong _value)
-    {
-        void * ptr = env->GetDirectBufferAddress( _jptr );
-        Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
+                _jenv->DeleteLocalRef( value_jclass );
+            }
+        } );
 
-        Mengine::AnalyticsEventBuilderInterface * eventBuilder = static_cast<Mengine::AnalyticsEventBuilderInterface *>(factorable);
+        Mengine::Timestamp timestamp = builder->log();
 
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
-
-        eventBuilder->addParameterInteger( name_cstr, (int64_t)_value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1addEventBuilderParameterDouble )(JNIEnv * env, jclass cls, jobject _jptr, jstring _name, jdouble _value)
-    {
-        void * ptr = env->GetDirectBufferAddress( _jptr );
-        Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
-
-        Mengine::AnalyticsEventBuilderInterface * eventBuilder = static_cast<Mengine::AnalyticsEventBuilderInterface *>(factorable);
-
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
-
-        eventBuilder->addParameterDouble( name_cstr, (double)_value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1logEventBuilder )(JNIEnv * env, jclass cls, jobject _jptr)
-    {
-        void * ptr = env->GetDirectBufferAddress( _jptr );
-        Mengine::Factorable * factorable = reinterpret_cast<Mengine::Factorable *>( ptr );
-
-        Mengine::AnalyticsEventBuilderInterface * eventBuilder = static_cast<Mengine::AnalyticsEventBuilderInterface *>(factorable);
-
-        eventBuilder->log();
-
-        Mengine::Factorable::intrusive_ptr_dec_ref( factorable );
+        return (jlong)timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
 }
@@ -410,11 +399,11 @@ namespace Mengine
 
         m_proxyLogger = proxyLogger;
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_APPLICATION_RUN, &AndroidEnvironmentService::notifyApplicationRun_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_APPLICATION_READY, &AndroidEnvironmentService::notifyApplicationReady_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_APPLICATION_STOP, &AndroidEnvironmentService::notifyApplicationStop_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidEnvironmentService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS(NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidEnvironmentService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_RUN, &AndroidEnvironmentService::notifyPlatformRun_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_READY, &AndroidEnvironmentService::notifyPlatformReady_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_STOP, &AndroidEnvironmentService::notifyPlatformStop_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidEnvironmentService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidEnvironmentService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE, &AndroidEnvironmentService::notifyApplicationBeginUpdate_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_END_UPDATE, &AndroidEnvironmentService::notifyApplicationEndUpdate_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -423,9 +412,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_RUN );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_READY );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_STOP );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_RUN );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_READY );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_STOP );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
@@ -834,7 +823,7 @@ namespace Mengine
 
         jobject eventName_jobject = Helper::makeJObjectString( jenv, eventName_str );
 
-        TimeMilliseconds eventTimestamp = _event->getTimestamp();
+        Timestamp eventTimestamp = _event->getTimestamp();
 
         uint32_t countParameters = _event->getCountParameters();
 
@@ -914,7 +903,7 @@ namespace Mengine
         jenv->DeleteLocalRef( parameters_jobject );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::notifyApplicationRun_()
+    void AndroidEnvironmentService::notifyPlatformRun_()
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -925,14 +914,14 @@ namespace Mengine
             return;
         }
 
-        jmethodID jmethodID_onMengineApplicationRun = this->getActivityMethodID( jenv, "onMengineApplicationRun", "()V" );
+        jmethodID jmethodID_onMenginePlatformRun = this->getActivityMethodID( jenv, "onMenginePlatformRun", "()V" );
 
-        this->callVoidActivityMethod( jenv, jmethodID_onMengineApplicationRun );
+        this->callVoidActivityMethod( jenv, jmethodID_onMenginePlatformRun );
 
         m_androidEventationHub->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::notifyApplicationReady_()
+    void AndroidEnvironmentService::notifyPlatformReady_()
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -943,14 +932,14 @@ namespace Mengine
             return;
         }
 
-        jmethodID jmethodID_onMengineApplicationReady = this->getActivityMethodID( jenv, "onMengineApplicationReady", "()V" );
+        jmethodID jmethodID_onMenginePlatformReady = this->getActivityMethodID( jenv, "onMenginePlatformReady", "()V" );
 
-        this->callVoidActivityMethod( jenv, jmethodID_onMengineApplicationReady );
+        this->callVoidActivityMethod( jenv, jmethodID_onMenginePlatformReady );
 
         m_androidEventationHub->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::notifyApplicationStop_()
+    void AndroidEnvironmentService::notifyPlatformStop_()
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -961,9 +950,9 @@ namespace Mengine
             return;
         }
 
-        jmethodID jmethodID_onMengineApplicationStop = this->getActivityMethodID( jenv, "onMengineApplicationStop", "()V" );
+        jmethodID jmethodID_onMenginePlatformStop = this->getActivityMethodID( jenv, "onMenginePlatformStop", "()V" );
 
-        this->callVoidActivityMethod( jenv, jmethodID_onMengineApplicationStop );
+        this->callVoidActivityMethod( jenv, jmethodID_onMenginePlatformStop );
 
         m_androidEventationHub->invoke();
     }

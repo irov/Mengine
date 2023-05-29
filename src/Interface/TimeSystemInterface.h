@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -12,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "TimeSystem" );
 
     public:
-        virtual TimeMilliseconds getTimeMilliseconds() = 0;
+        virtual Timestamp getTimestamp() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

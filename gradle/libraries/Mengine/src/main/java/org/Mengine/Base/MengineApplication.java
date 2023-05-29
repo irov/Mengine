@@ -408,7 +408,7 @@ public class MengineApplication extends Application {
             return null;
         }
 
-        if (extension.onPluginExtensionInitialize(activity, plugin) == false) {
+        if (extension.onPluginExtensionInitialize(this, activity, plugin) == false) {
             return null;
         }
 
@@ -433,20 +433,20 @@ public class MengineApplication extends Application {
         //Empty
     }
 
-    public void onMengineApplicationRun(MengineActivity activity) {
-        MengineLog.logInfo(TAG, "onMengineApplicationRun");
+    public void onMenginePlatformRun(MengineActivity activity) {
+        MengineLog.logInfo(TAG, "onMenginePlatformRun");
 
         //Empty
     }
 
-    public void onMengineApplicationReady(MengineActivity activity) {
-        MengineLog.logInfo(TAG, "onMengineApplicationReady");
+    public void onMenginePlatformReady(MengineActivity activity) {
+        MengineLog.logInfo(TAG, "onMenginePlatformReady");
 
         //Empty
     }
 
-    public void onMengineApplicationStop(MengineActivity activity) {
-        MengineLog.logInfo(TAG, "onMengineApplicationStop");
+    public void onMenginePlatformStop(MengineActivity activity) {
+        MengineLog.logInfo(TAG, "onMenginePlatformStop");
 
         for (MenginePlugin p : m_plugins) {
             p.onFinalize(this);
@@ -528,6 +528,7 @@ public class MengineApplication extends Application {
         AndroidEnvironmentService_setMengineAndroidApplicationJNI(this);
 
         MengineLog.setMengineApplication(this);
+        MengineAnalytics.setMengineApplication(this);
 
         MengineLog.logInfo(TAG, "onCreate");
 
@@ -547,14 +548,14 @@ public class MengineApplication extends Application {
         SharedPreferences.Editor editor = settings.edit();
 
         if (installKey == null) {
-            installKey = UUID.randomUUID().toString();
-            installKeyTimestamp = System.currentTimeMillis();
+            installKey = MengineUtils.getRandomUUIDString();
+            installKeyTimestamp = MengineUtils.getTimestamp();
             editor.putString("install_key", installKey);
             editor.putLong("install_key_timestamp", installKeyTimestamp);
         }
 
         if (installRND == -1) {
-            installRND = java.util.concurrent.ThreadLocalRandom.current().nextLong();
+            installRND = MengineUtils.getRandomNumber();
 
             if (installRND == 0) {
                 installRND = 1;
@@ -577,6 +578,19 @@ public class MengineApplication extends Application {
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
+                l.onAppPrepare(this);
+            } catch (MenginePluginInvalidInitializeException e) {
+                this.invalidInitialize("invalid onAppCreate plugin: %s"
+                    , e.getPluginName()
+                );
+            }
+        }
+
+        long app_init_start_timestamp = MengineAnalytics.buildEvent("app_init_start")
+            .log();
+
+        for (MenginePluginApplicationListener l : applicationListeners) {
+            try {
                 l.onAppCreate(this);
             } catch (MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("invalid onAppCreate plugin: %s"
@@ -584,6 +598,10 @@ public class MengineApplication extends Application {
                 );
             }
         }
+
+        MengineAnalytics.buildEvent("app_init_completed")
+            .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_start_timestamp))
+            .log();
     }
 
     @Override

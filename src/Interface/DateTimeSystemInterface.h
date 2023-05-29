@@ -4,7 +4,7 @@
 
 #include "Kernel/DateTime.h"
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -17,10 +17,10 @@ namespace Mengine
         virtual void getLocalDateTime( PlatformDateTime * const _dateTime ) const = 0;
 
     public:
-        virtual TimeMilliseconds getLocalDateTimeMilliseconds() const = 0;
+        virtual Timestamp getLocalDateTimeMilliseconds() const = 0;
 
     public:
-        virtual void getLocalDateTimeFromMilliseconds( TimeMilliseconds _time, PlatformDateTime * const _dateTime ) const = 0;
+        virtual void getLocalDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const = 0;
 
     public:
         virtual int32_t getTimeZoneOffset() const = 0;

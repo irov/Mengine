@@ -7,7 +7,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -133,8 +133,8 @@ namespace Mengine
         virtual const AnalyticsContextInterfacePtr & getContext() const = 0;
 
     public:
-        virtual void setTimestamp( TimeMilliseconds _timestamp ) = 0;
-        virtual TimeMilliseconds getTimestamp() const = 0;
+        virtual void setTimestamp( Timestamp _time ) = 0;
+        virtual Timestamp getTimestamp() const = 0;
 
     public:
         virtual void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter ) = 0;
@@ -167,7 +167,7 @@ namespace Mengine
         virtual AnalyticsEventBuilderInterface * addParameterConstString( const ConstString & _name, const ConstString & _value ) = 0;
 
     public:
-        virtual void log() = 0;
+        virtual Timestamp log() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AnalyticsEventBuilderInterface> AnalyticsEventBuilderInterfacePtr;

@@ -18,6 +18,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        TimeMilliseconds getTimeMilliseconds() override;
+        Timestamp getTimestamp() const override;
     };
 };

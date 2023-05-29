@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 public class MengineUtils {
     public static Class<?> getClazz(String TAG, String name, boolean required) {
@@ -93,5 +94,31 @@ public class MengineUtils {
         } else {
             return release;
         }
+    }
+
+    public static long getTimestamp() {
+        long timestamp = System.currentTimeMillis();
+
+        return timestamp;
+    }
+
+    public static long getDurationTimestamp( long begin ) {
+        long timestamp = MengineUtils.getTimestamp();
+
+        long duration = timestamp - begin;
+
+        return duration;
+    }
+
+    public static long getRandomNumber() {
+        long randomNumber = java.util.concurrent.ThreadLocalRandom.current().nextLong();
+
+        return randomNumber;
+    }
+
+    public static String getRandomUUIDString() {
+        String uuid = UUID.randomUUID().toString();
+
+        return uuid;
     }
 }

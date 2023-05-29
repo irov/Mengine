@@ -1,11 +1,22 @@
 package org.Mengine.Base;
 
 public class MengineAnalytics {
-    private static native Object AndroidAnalyticsService_buildEvent(String name);
     private static native void AndroidAnalyticsService_addContextParameterBoolean(String name, boolean value);
     private static native void AndroidAnalyticsService_addContextParameterString(String name, String value);
     private static native void AndroidAnalyticsService_addContextParameterInteger(String name, long value);
     private static native void AndroidAnalyticsService_addContextParameterDouble(String name, double value);
+
+    public final static int EAET_CUSTOM = 0;
+    public final static int EAET_EARN_VIRTUAL_CURRENCY = 1;
+    public final static int EAET_SPEND_VIRTUAL_CURRENCY = 2;
+    public final static int EAET_UNLOCK_ACHIEVEMENT = 3;
+
+    private static MengineApplication m_application;
+    private static final Object m_lock = new Object();
+
+    public static void setMengineApplication(MengineApplication application) {
+        MengineAnalytics.m_application = application;
+    }
 
     static public void addContextParameterBoolean(String name, boolean value) {
         AndroidAnalyticsService_addContextParameterBoolean(name, value);
@@ -24,9 +35,7 @@ public class MengineAnalytics {
     }
 
     static public MengineAnalyticsEventBuilder buildEvent(String name) {
-        Object ptr = AndroidAnalyticsService_buildEvent(name);
-
-        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(ptr);
+        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(MengineAnalytics.m_application, MengineAnalytics.m_lock, name);
 
         return eventBuilder;
     }

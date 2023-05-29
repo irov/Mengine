@@ -29,7 +29,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     FirebaseAnalytics m_firebaseAnalytics;
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
         String installKey = application.getInstallKey();
@@ -40,6 +40,11 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
 
         long sessionIndex = application.getSessionIndex();
         m_firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
+    }
+
+    @Override
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        //Empty
     }
 
     @Override

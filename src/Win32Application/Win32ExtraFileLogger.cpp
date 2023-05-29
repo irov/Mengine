@@ -78,7 +78,7 @@ namespace Mengine
             this->writeMessage_( " " );
         }
 
-        if( _message.flag & LFLAG_SYMBOL )
+        if( _message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = _message.level;
 
@@ -88,7 +88,7 @@ namespace Mengine
             this->writeMessage_( " " );
         }
 
-        if( _message.flag & LFLAG_CATEGORY )
+        if( _message.flag & LFLAG_CATEGORYSTAMP )
         {
             this->writeMessage_( "[" );
             this->writeMessage_( _message.category );

@@ -1,6 +1,6 @@
 #include "AnalyticsEventBuilder.h"
 
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 namespace Mengine
 {
@@ -108,7 +108,7 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsEventBuilder::log()
+    Timestamp AnalyticsEventBuilder::log()
     {
         AnalyticsEventInterfacePtr event = m_analyticsFactory->makeAnalyticsEvent( m_eventType, m_eventName );
 
@@ -126,7 +126,7 @@ namespace Mengine
 
         event->setContext( resolve_context );
 
-        TimeMilliseconds timestamp = Helper::getTimeMilliseconds();
+        Timestamp timestamp = Helper::getTimestamp();
         event->setTimestamp( timestamp );
 
         m_analyticsFactory = nullptr;
@@ -134,6 +134,8 @@ namespace Mengine
 
         ANALYTICS_SERVICE()
             ->logEvent( event );
+
+        return timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
 }

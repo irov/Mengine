@@ -41,9 +41,9 @@ namespace Mengine
         LFLAG_FUNCTIONSTAMP = 1 << 0,
         LFLAG_TIMESTAMP = 1 << 1,
         LFLAG_THREADSTAMP = 1 << 2,
-        LFLAG_SYMBOL = 1 << 3,
-        LFLAG_CATEGORY = 1 << 4,
-        LFLAG_SHORT = LFLAG_TIMESTAMP | LFLAG_SYMBOL | LFLAG_CATEGORY,
+        LFLAG_SYMBOLSTAMP = 1 << 3,
+        LFLAG_CATEGORYSTAMP = 1 << 4,
+        LFLAG_SHORT = LFLAG_TIMESTAMP | LFLAG_SYMBOLSTAMP | LFLAG_CATEGORYSTAMP,
         LFLAG_FULL = 0xFFFFFFFF
     };
     //////////////////////////////////////////////////////////////////////////

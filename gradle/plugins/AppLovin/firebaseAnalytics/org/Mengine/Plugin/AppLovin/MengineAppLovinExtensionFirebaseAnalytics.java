@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.AppLovin;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 
@@ -16,8 +17,8 @@ public class MengineAppLovinExtensionFirebaseAnalytics extends MenginePluginExte
     private MengineFirebaseAnalyticsPlugin m_firebaseAnalyticsPlugin;
 
     @Override
-    public boolean onPluginExtensionInitialize(MengineActivity activity, MenginePlugin plugin) {
-        super.onPluginExtensionInitialize(activity, plugin);
+    public boolean onPluginExtensionInitialize(MengineApplication application, MengineActivity activity, MenginePlugin plugin) {
+        super.onPluginExtensionInitialize(application, activity, plugin);
 
         MengineFirebaseAnalyticsPlugin firebaseAnalyticsPlugin = activity.getPlugin(MengineFirebaseAnalyticsPlugin.class);
 

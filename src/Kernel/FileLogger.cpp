@@ -105,7 +105,7 @@ namespace Mengine
             m_stream->write( " ", 1 );
         }
 
-        if( _message.flag & LFLAG_SYMBOL )
+        if(_message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = _message.level;
 
@@ -114,7 +114,7 @@ namespace Mengine
             m_stream->write( " ", 1 );
         }
 
-        if( _message.flag & LFLAG_CATEGORY )
+        if(_message.flag & LFLAG_CATEGORYSTAMP )
         {
             size_t category_size = MENGINE_STRLEN( _message.category );
 

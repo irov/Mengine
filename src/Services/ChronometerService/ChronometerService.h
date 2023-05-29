@@ -9,7 +9,7 @@
 #   include "Kernel/Document.h"
 #endif
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -32,7 +32,7 @@ namespace Mengine
         bool removeChronometer( UniqueId _id ) override;
 
     protected:
-        TimeMilliseconds m_oldTime;
+        Timestamp m_oldTime;
 
         struct ChronometerDesc
         {

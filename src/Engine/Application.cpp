@@ -31,8 +31,8 @@
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/AnalyticsServiceInterface.h"
 
-// All Node type
 #include "Isometric.h"
 #include "HotSpot.h"
 #include "HotSpotPolygon.h"
@@ -121,7 +121,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/Stringstream.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -923,10 +923,19 @@ namespace Mengine
 
         m_initailizeGame = true;
 
+        Timestamp bootstrapper_initialize_game_timestamp = ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_initialize_game" ) )
+            ->log();
+
         if( NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME ) == false )
         {
             return false;
         }
+
+        ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_initialize_game_completed" ) )
+            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( bootstrapper_initialize_game_timestamp ) )
+            ->log();
 
         return true;
     }

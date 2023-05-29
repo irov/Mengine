@@ -4,7 +4,7 @@
 
 #include "Kernel/Factorable.h"
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -43,8 +43,8 @@ namespace Mengine
     public:
         SoundDecoderInterfacePtr m_soundDecoder;
 
-        TimeMilliseconds m_playTime;
-        TimeMilliseconds m_pauseTime;
+        Timestamp m_playTime;
+        Timestamp m_pauseTime;
 
         int32_t m_frequency;
         int32_t m_channels;

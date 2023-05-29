@@ -865,8 +865,8 @@ Core
     ExecutorHelper.h
     PrototypeHelper.h
     
-    TimeHelper.cpp
-    TimeHelper.h
+    TimestampHelper.cpp
+    TimestampHelper.h
     
     EnumeratorHelper.cpp
     EnumeratorHelper.h

@@ -74,8 +74,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         );
 
         this.buildEvent("ad_interstitial_load")
-            .addParameterInteger("request_id", m_requestId)
-            .addParameterInteger("attempt", m_retryAttempt)
+            .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .log();
 
         m_interstitialAd.loadAd();
@@ -92,8 +92,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         if (ready == false) {
             this.buildEvent("ad_interstitial_show")
-                .addParameterInteger("request_id", m_requestId)
-                .addParameterInteger("attempt", m_retryAttempt)
+                .addParameterLong("request_id", m_requestId)
+                .addParameterLong("attempt", m_retryAttempt)
                 .addParameterBoolean("ready", false)
                 .log();
 
@@ -113,8 +113,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         );
 
         this.buildEvent("ad_interstitial_show")
-            .addParameterInteger("request_id", m_requestId)
-            .addParameterInteger("attempt", m_retryAttempt)
+            .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .addParameterBoolean("ready", ready)
             .log();
 
@@ -136,8 +136,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         );
 
         this.buildEvent("ad_interstitial_request_started")
-            .addParameterInteger("request_id", m_requestId)
-            .addParameterInteger("attempt", m_retryAttempt)
+            .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .addParameterString("unit_id", adUnitId)
             .log();
 
@@ -149,8 +149,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.logMaxAd("Interstitial", "onAdLoaded", ad);
 
         this.buildEvent("ad_interstitial_loaded")
-            .addParameterInteger("request_id", m_requestId)
-            .addParameterInteger("attempt", m_retryAttempt)
+            .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .addParameterString( "ad", this.getMAAdParams(ad))
             .log();
 
@@ -164,7 +164,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.logMaxAd("Interstitial", "onAdDisplayed", ad);
 
         this.buildEvent("ad_interstitial_displayed")
-            .addParameterInteger("request_id", m_requestId)
+            .addParameterLong("request_id", m_requestId)
             .addParameterString( "ad", this.getMAAdParams(ad))
             .log();
 
@@ -176,7 +176,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.logMaxAd("Interstitial", "onAdHidden", ad);
 
         this.buildEvent("ad_interstitial_hidden")
-            .addParameterInteger("request_id", m_requestId)
+            .addParameterLong("request_id", m_requestId)
             .addParameterString( "ad", this.getMAAdParams(ad))
             .log();
 
@@ -192,7 +192,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.logMaxAd("Interstitial", "onAdClicked", ad);
 
         this.buildEvent("ad_interstitial_clicked")
-            .addParameterInteger("request_id", m_requestId)
+            .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
@@ -204,11 +204,11 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.logMaxError("Interstitial", "onAdLoadFailed", error);
 
         this.buildEvent("ad_interstitial_load_failed")
-            .addParameterInteger("request_id", m_requestId)
-            .addParameterInteger("attempt", m_retryAttempt)
+            .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .addParameterString("unit_id", adUnitId)
             .addParameterString("error", this.getMaxErrorParams(error))
-            .addParameterInteger("error_code", error.getCode())
+            .addParameterLong("error_code", error.getCode())
             .log();
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdLoadFailed");
@@ -227,10 +227,10 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.logMaxError("Interstitial", "onAdDisplayFailed", error);
 
         this.buildEvent("ad_interstitial_display_failed")
-            .addParameterInteger("request_id", m_requestId)
+            .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .addParameterString("error", this.getMaxErrorParams(error))
-            .addParameterInteger("error_code", error.getCode())
+            .addParameterLong("error_code", error.getCode())
             .log();
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdDisplayFailed");
@@ -245,7 +245,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.logMaxAd("Interstitial", "onAdRevenuePaid", ad);
 
         this.buildEvent("ad_interstitial_revenue_paid")
-            .addParameterInteger("request_id", m_requestId)
+            .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 

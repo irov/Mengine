@@ -17,7 +17,7 @@
 #include "Kernel/Unknowable.h"
 
 #include "Config/UniqueId.h"
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
@@ -61,7 +61,7 @@ namespace Mengine
         virtual bool getSleepMode() const = 0;
 
     public:
-        virtual TimeMilliseconds getPlatfomTime() const = 0;
+        virtual Timestamp getPlatfomTime() const = 0;
 
     public:
         virtual void setProjectTitle( const Char * _projectTitle ) = 0;

@@ -3,6 +3,7 @@
 #include "Interface/PluginServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/StaticString.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine

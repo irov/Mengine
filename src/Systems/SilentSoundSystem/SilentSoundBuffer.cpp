@@ -2,7 +2,7 @@
 
 #include "Interface/SoundCodecInterface.h"
 
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 namespace Mengine
 {
@@ -82,7 +82,7 @@ namespace Mengine
         MENGINE_UNUSED( _looped );
         MENGINE_UNUSED( _pos );
 
-        TimeMilliseconds time = Helper::getTimeMilliseconds();
+        Timestamp time = Helper::getTimestamp();
 
         m_playTime = time;
         m_pauseTime = 0UL;
@@ -92,9 +92,9 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        TimeMilliseconds time = Helper::getTimeMilliseconds();
+        Timestamp time = Helper::getTimestamp();
 
-        TimeMilliseconds deltha = m_pauseTime - m_playTime;
+        Timestamp deltha = m_pauseTime - m_playTime;
 
         m_playTime = time - deltha;
         m_pauseTime = 0UL;
@@ -106,7 +106,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        TimeMilliseconds time = Helper::getTimeMilliseconds();
+        Timestamp time = Helper::getTimestamp();
 
         m_pauseTime = time;
     }
@@ -130,9 +130,9 @@ namespace Mengine
             return (float)timePos;
         }
 
-        TimeMilliseconds time = Helper::getTimeMilliseconds();
+        Timestamp time = Helper::getTimestamp();
 
-        TimeMilliseconds timePos = time - m_playTime;
+        Timestamp timePos = time - m_playTime;
 
         return float( timePos );
     }

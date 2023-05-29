@@ -71,9 +71,9 @@ namespace Mengine
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
 
     protected:
-        void notifyApplicationRun_();
-        void notifyApplicationReady_();
-        void notifyApplicationStop_();
+        void notifyPlatformRun_();
+        void notifyPlatformReady_();
+        void notifyPlatformStop_();
         void notifyApplicationBeginUpdate_();
         void notifyApplicationEndUpdate_();
         void notifyBootstrapperInitializeBaseServices_();

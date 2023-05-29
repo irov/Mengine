@@ -37,7 +37,7 @@ namespace Mengine
         _dateTime->milliseconds = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    TimeMilliseconds POSIXDateTimeSystem::getLocalDateTimeMilliseconds() const
+    Timestamp POSIXDateTimeSystem::getLocalDateTimeMilliseconds() const
     {
         PlatformDateTime date;
         this->getLocalDateTime( &date );
@@ -57,7 +57,7 @@ namespace Mengine
         uint64_t milliseconds_minute64 = minute64 * MILLISECONDS_MINUTE64;
         uint64_t milliseconds_second64 = second64 * MILLISECONDS_SECOND64;
 
-        TimeMilliseconds time = milliseconds
+        Timestamp time = milliseconds
             + milliseconds_second64
             + milliseconds_minute64
             + milliseconds_hour64
@@ -68,7 +68,7 @@ namespace Mengine
         return time;
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXDateTimeSystem::getLocalDateTimeFromMilliseconds( TimeMilliseconds _time, PlatformDateTime * const _dateTime ) const
+    void POSIXDateTimeSystem::getLocalDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const
     {
         PlatformDateTime date;
         date.year = (uint32_t)(_time / MILLISECONDS_YEAR64);

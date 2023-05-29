@@ -17,7 +17,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TimeoutGuardScope::TimeoutGuardScope( TimeMilliseconds _timeout, const DocumentPtr & _doc, const Char * _format, ... )
+    TimeoutGuardScope::TimeoutGuardScope( Timestamp _timeout, const DocumentPtr & _doc, const Char * _format, ... )
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
@@ -29,8 +29,8 @@ namespace Mengine
 
         String message_str( message );
 
-        TimeMilliseconds start = TIME_SYSTEM()
-            ->getTimeMilliseconds();
+        Timestamp start = TIME_SYSTEM()
+            ->getTimestamp();
 
         ThreadIdentityInterfacePtr threadIdentity = THREAD_SERVICE()
             ->createThreadIdentity( STRINGIZE_STRING_LOCAL( "TimeoutGuardScope" ), ETP_NORMAL, _doc );
@@ -39,10 +39,10 @@ namespace Mengine
         {
             for( ;; )
             {
-                TimeMilliseconds current = TIME_SYSTEM()
-                    ->getTimeMilliseconds();
+                Timestamp current = TIME_SYSTEM()
+                    ->getTimestamp();
 
-                TimeMilliseconds offset = current - start;
+                Timestamp offset = current - start;
 
                 if( offset > _timeout )
                 {

@@ -43,7 +43,7 @@ namespace Mengine
             ::OutputDebugStringA( " " );
         }
 
-        if( _message.flag & LFLAG_SYMBOL )
+        if( _message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = _message.level;
 
@@ -53,7 +53,7 @@ namespace Mengine
             ::OutputDebugStringA( " " );
         }
 
-        if( _message.flag & LFLAG_CATEGORY )
+        if( _message.flag & LFLAG_CATEGORYSTAMP )
         {
             ::OutputDebugStringA( "[" );
             ::OutputDebugStringA( _message.category );

@@ -26,14 +26,14 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    TimeMilliseconds C11TimeSystem::getTimeMilliseconds()
+    Timestamp C11TimeSystem::getTimestamp() const
     {
         std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
         std::chrono::system_clock::time_point::duration epoch = tp.time_since_epoch();
 
         std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
 
-        TimeMilliseconds ms64 = (TimeMilliseconds)ms.count();
+        Timestamp ms64 = (Timestamp)ms.count();
 
         return ms64;
     }

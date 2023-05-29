@@ -14,7 +14,7 @@
 #include "Kernel/StaticWString.h"
 #include "Kernel/SHA1.h"
 
-#include "Config/Time.h"
+#include "Config/Timestamp.h"
 #include "Config/UniqueId.h"
 
 namespace Mengine
@@ -48,7 +48,7 @@ namespace Mengine
         bool getSleepMode() const override;
 
     public:
-        TimeMilliseconds getPlatfomTime() const override;
+        Timestamp getPlatfomTime() const override;
 
     public:
         bool runPlatform() override;
@@ -228,7 +228,7 @@ namespace Mengine
         void updateWndMessage_();
 
     protected:
-        TimeMilliseconds m_beginTime;
+        Timestamp m_beginTime;
 
         StaticWString<MENGINE_MAX_PATH> m_windowClassName;
         
@@ -291,7 +291,7 @@ namespace Mengine
         HICON m_hIcon;
         StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
-        TimeMilliseconds m_prevTime;
+        Timestamp m_prevTime;
 
         Tags m_platformTags;
         Resolution m_windowResolution;

@@ -1,7 +1,7 @@
 #include "ChronometerService.h"
 
 #include "Kernel/EnumeratorHelper.h"
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ChronometerService::update()
     {
-        TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
+        Timestamp currentTime = Helper::getTimestamp();
 
         if( m_oldTime == 0 || currentTime - m_oldTime >= 1000 )
         {

@@ -4,5 +4,5 @@
 
 namespace Mengine
 {
-    typedef uint64_t TimeMilliseconds;
+    typedef uint64_t Timestamp;
 }

@@ -31,11 +31,11 @@ public class MengineLog {
         MengineLog.m_initializeBaseServices = true;
     }
 
-    public static void onMengineApplicationStop(MengineActivity activity) {
+    public static void onMenginePlatformStop(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = false;
     }
 
-    public static String log(int level, String tag, String format, Object ... args) {
+    private static String log(int level, String tag, String format, Object ... args) {
         String totalMsg = MengineLog.buildTotalMsg(format, args);
 
         switch (level) {
@@ -80,7 +80,27 @@ public class MengineLog {
         return totalMsg;
     }
 
+    public static String logVerbose(String tag, String format, Object ... args) {
+        if (BuildConfig.DEBUG == false) {
+            return "";
+        }
+
+        return MengineLog.log(LM_VERBOSE, tag, format, args);
+    }
+
+    public static String logDebug(String tag, String format, Object ... args) {
+        if (BuildConfig.DEBUG == false) {
+            return "";
+        }
+
+        return MengineLog.log(LM_DEBUG, tag, format, args);
+    }
+
     public static String logInfo(String tag, String format, Object ... args) {
+        if (BuildConfig.DEBUG == false) {
+            return "";
+        }
+
         return MengineLog.log(LM_INFO, tag, format, args);
     }
 

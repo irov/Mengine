@@ -47,7 +47,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ExecutorHelper.h"
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -138,7 +138,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::_initializeService()
     {
-        m_beginTime = Helper::getTimeMilliseconds();
+        m_beginTime = Helper::getTimestamp();
 
 #if defined(MENGINE_SETLOCALE_ENABLE)
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
@@ -916,11 +916,11 @@ namespace Mengine
         desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    TimeMilliseconds Win32PlatformService::getPlatfomTime() const
+    Timestamp Win32PlatformService::getPlatfomTime() const
     {
-        TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
+        Timestamp currentTime = Helper::getTimestamp();
 
-        TimeMilliseconds platformTime = currentTime - m_beginTime;
+        Timestamp platformTime = currentTime - m_beginTime;
 
         return platformTime;
     }
@@ -1069,7 +1069,7 @@ namespace Mengine
 
         this->setActive_( true );
 
-        m_prevTime = Helper::getTimeMilliseconds();
+        m_prevTime = Helper::getTimestamp();
 
         while( m_close == false )
         {
@@ -1082,7 +1082,7 @@ namespace Mengine
                 break;
             }
 
-            TimeMilliseconds currentTime = Helper::getTimeMilliseconds();
+            Timestamp currentTime = Helper::getTimestamp();
 
             float frameTime = (float)(currentTime - m_prevTime);
 

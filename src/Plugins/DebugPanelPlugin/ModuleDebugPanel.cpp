@@ -3,7 +3,7 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 
 #include "Kernel/StatisticHelper.h"
-#include "Kernel/TimeHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
@@ -85,11 +85,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _focus );
 
-        static TimeMilliseconds old_Time = Helper::getTimeMilliseconds();
+        static Timestamp old_Time = Helper::getTimestamp();
 
-        TimeMilliseconds current_Time = Helper::getTimeMilliseconds();
+        Timestamp current_Time = Helper::getTimestamp();
 
-        TimeMilliseconds deltha_Time = current_Time - old_Time;
+        Timestamp deltha_Time = current_Time - old_Time;
 
         if( deltha_Time > 1000 )
         {

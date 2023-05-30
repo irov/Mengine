@@ -22,5 +22,5 @@ android {
 }
 
 dependencies {
-    implementation 'io.sentry:sentry-android:6.17.0'
+    implementation 'io.sentry:sentry-android:6.20.0'
 }

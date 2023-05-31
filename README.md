@@ -5,30 +5,33 @@ Mengine is an multiple platforms engine for creating and running graphical games
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/w9l085j2o2qn3ua5?svg=true)](https://ci.appveyor.com/project/irov/mengine) [![Travis-CI](https://app.travis-ci.com/irov/Mengine.svg?branch=master)](https://app.travis-ci.com/github/irov/Mengine) [![CircleCI](https://circleci.com/gh/irov/Mengine.svg?style=svg)](https://app.circleci.com/pipelines/github/irov/Mengine)
 
 
-Проект использует [CMake](https://cmake.org/) в качестве cистемы сборки проекта
+The project uses [CMake](https://cmake.org/) as its build system.
 
 ## Windows
-Для начала работы нужно скачать исходники библиотек зависимостей
+
+To get started, you need to download the source files of the dependency libraries
 
 `Mengine\build\downloads\downloads.bat`
     
-Дальше мы можем собрать например дебаг для Visual Studio 15 2017
+Next, we can build, for example, a debug for [Visual Studio 17 2022](https://visualstudio.microsoft.com/downloads/)
 
-`Mengine\build\msvc15\build_depends_msvc15_debug.bat`
+`Mengine\build\msvc17\build_depends_msvc17_debug.bat`
 
-и сформировать солюшен
+And generate the solution
 
-`Mengine\build\msvc15\make_solution_msvc15_debug.bat`
+`Mengine\build\msvc17\make_solution_msvc17_debug.bat`
     
-который мы сможем найти в папке
+Which we can find in the folder
 
-`Mengine\solutions\solution_msvc15_debug\Mengine_WIN32.sln`
+`Mengine\solutions\solution_msvc17_debug\Mengine_WIN32.sln`
     
-Где мы найдем основной проект `Win32Application`
+Here, we will find the main project `Win32Application`
 
-Удачи в сборке, и использованию!
+Good luck with the build and usage!
 
-Для того что бы начал работать [cppcheck](http://cppcheck.sourceforge.net/) нужно в .git/config добавить 
+-------
+
+To get [cppcheck](http://cppcheck.sourceforge.net/) working, you need to add the following to .git/config
 
 ```
 [include]
@@ -37,7 +40,7 @@ Mengine is an multiple platforms engine for creating and running graphical games
 
 ## Projects
 
-Игры которые разрабатываются или были выпущены на данном игровом движке
+Games that are being developed or have been released on this engine
 
 Mobile
 -------
@@ -54,6 +57,12 @@ Desktop
 [Christmas Adventures: A Winter Night's Dream](https://store.steampowered.com/app/1490790/Christmas_Adventures_A_Winter_Nights_Dream) Shiny snowflakes, jingling bells and magic in the air… All this might not happen, because dark forces want to destroy our Christmas celebrations… again. We need your help!
 
 [The Wisbey Mystery](https://store.steampowered.com/app/575960/The_Wisbey_Mystery) For many years locals have avoided the manor by the woodside. Its dark and dilapidated walls keep a terrible secret about the unsolved murder of the sheriff and his wife. The mystery continues when a young journalist, writing a story about the incident, disappears under murky circumstances. Maybe the maniac’s diary he found earlier has something to do with it… Solve the manor’s mystery and save the journalist before it’s too late!
+
+[Camelot 2: The Holy Grail](https://www.bigfishgames.com/us/en/games/18632/camelot-2-the-holy-grail-ce) When Guinevere, the queen of Camelot, is stricken with a mysterious illness, King Arthur turns to the court magician to find a cure. It's soon discovered that the healing power of the legendary Holy Grail may be the only way to save the queen's life, but the Grail has been lost somewhere in the vast expanses of Avalon, a dangerous realm full of mystery. As the king's trusted magician, it's up to you to make your way into Avalon, locate the Grail, and return to the queen before it's too late! Seize this chance to be the kingdom's hero in this legendary Hidden-Object adventure!
+
+[Camelot: Wrath of the Green Knight](https://www.bigfishgames.com/us/en/games/18535/camelot-wrath-of-the-green-knight-ce) Dark clouds hover over Camelot. The Lady of the Lake is missing, and her husband, the Green Knight, blames King Arthur, which threatens to ruin the peace that Arthur’s court has worked so hard to achieve. As Merlin’s apprentice, your job is to prove your King’s innocence and perhaps find the real culprit behind this dastardly kidnapping. It’s time to prove yourself as a prospective court mage by finding the traitor who plotted to bring down the King and preventing all-out war! Step into a world of nobility and intrigue in this exciting new Hidden-Object Puzzle Adventure game!
+
+[Pride and Prejudice: Blood Ties](https://www.bigfishgames.com/us/en/games/14825/pride-and-prejudice-blood-ties-ce) Recently some odd, dark rumors surround Rosings Park, Lady Catherine’s grand estate. But things get serious when you get a letter from your beloved Mr. Darcy saying that your younger sister Lydia is missing and was last seen at Rosings! What’s more, your beloved has broken up with you and forbids you to visit! Are you strong enough to fight for your love and your missing sister? You’ll need courage and heart to save the day in this eerie version of the classic love story turned Hidden-Object Puzzle Adventure!
 
 [Amulet of Dreams](https://store.steampowered.com/app/476920/Amulet_of_Dreams) Alison’s sudden illness was a shock to everyone. Doctors do not understand what was happening to her, and what caused her illness. Family and doctors are desperate, and only faithful friend never lost hope. Faithful friendfriend. An ordinary little boy named Aiden. Aiden – it’s you.
 

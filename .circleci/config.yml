@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  android: circleci/android@2.0.0
+  android: circleci/android@2.3.0
 
 jobs:
   build:
@@ -39,7 +39,7 @@ jobs:
       - run:
           name: sdkmanager cmake
           command: |
-            yes | sdkmanager "cmake;3.10.2.4988404"
+            yes | sdkmanager "cmake;3.22.1"
           shell: /bin/bash -e
           
       - run:

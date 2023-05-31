@@ -17,7 +17,7 @@ jobs:
       - android/accept-licenses
       
       - android/install-ndk:
-          version: 22.0.7026061
+          version: 25.1.8937393
       
       - run:
           name: install cmake

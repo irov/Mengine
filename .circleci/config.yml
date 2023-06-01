@@ -43,6 +43,13 @@ jobs:
           shell: /bin/bash -e
           
       - run:
+          name: download dependencies
+          command: |
+            pushd build/downloads
+            sudo bash downloads_unix.bash
+            popd
+            
+      - run:
           name: build dependencies
           command: |
             pushd build/unix_android_sdl

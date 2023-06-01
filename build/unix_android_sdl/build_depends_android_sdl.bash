@@ -16,6 +16,10 @@ CMAKE_EXE=$CMAKE_PATH/bin/cmake
 CMAKE_MAKE_PROGRAM=$CMAKE_PATH/bin/ninja
 CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
 
+( cd $HOME/android-sdk/ndk/$ANDROID_NDK_VERSION; ls )
+
+( cd $ANDROID_SDK; ls )
+
 if [ -d "$ANDROID_NDK" ]; then
     echo "Exist: $ANDROID_NDK"
 fi

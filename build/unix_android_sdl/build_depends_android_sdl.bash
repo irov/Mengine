@@ -9,7 +9,7 @@ ANDROID_CMAKE_VERSION=3.22.1
 
 ANDROID_PLATFORM=android-21
 ANDROID_SDK=/opt/android/sdk
-ANDROID_NDK=/opt/android/$ANDROID_NDK_VERSION
+ANDROID_NDK=$ANDROID_SDK/ndk/$ANDROID_NDK_VERSION
 CMAKE_GENERATOR="Ninja"
 CMAKE_PATH=$ANDROID_SDK/cmake/$ANDROID_CMAKE_VERSION
 CMAKE_EXE=$CMAKE_PATH/bin/cmake
@@ -18,7 +18,11 @@ CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
 
 ( cd $HOME/android-sdk/ndk/$ANDROID_NDK_VERSION; ls )
 
+echo "ANDROID_SDK:"
 ( cd $ANDROID_SDK; ls )
+
+echo "ANDROID_SDK/ndk:"
+( cd $ANDROID_SDK/ndk; ls )
 
 if [ -d "$ANDROID_NDK" ]; then
     echo "Exist: $ANDROID_NDK"

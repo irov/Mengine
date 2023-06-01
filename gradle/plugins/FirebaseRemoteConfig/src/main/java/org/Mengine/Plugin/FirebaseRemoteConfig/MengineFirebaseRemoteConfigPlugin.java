@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 

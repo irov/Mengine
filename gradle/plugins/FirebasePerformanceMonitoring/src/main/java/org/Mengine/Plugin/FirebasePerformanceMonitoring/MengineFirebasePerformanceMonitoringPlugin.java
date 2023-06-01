@@ -13,7 +13,8 @@ public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin im
     public static final String PLUGIN_NAME = "FirebasePerformanceMonitoring";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    private String STARTUP_TRACE = "startup_trace";
+    private static final String STARTUP_TRACE = "startup_trace";
+
     private Trace m_startupTrace;
 
     @Override

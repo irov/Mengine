@@ -1,26 +1,27 @@
 package org.Mengine.Plugin.Sentry;
 
-import android.os.Bundle;
+import android.content.Context;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 
 import io.sentry.Sentry;
-import io.sentry.SentryLevel;
 import io.sentry.android.core.SentryAndroid;
 
-public class MengineSentryPlugin extends MenginePlugin implements MenginePluginLoggerListener {
+public class MengineSentryPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "Sentry";
+    public static final boolean PLUGIN_EMBEDDING = true;
 
     private String m_logMessage = "";
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        String MengineSentryPlugin_DSN = activity.getMetaDataString("mengine.sentry.dsn");
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        String MengineSentryPlugin_DSN = application.getMetaDataString("mengine.sentry.dsn");
 
         if (MengineSentryPlugin_DSN == null) {
             this.invalidInitialize("invalid setup meta data [mengine.sentry.dsn]");
@@ -32,11 +33,23 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             , MengineSentryPlugin_DSN
         );
 
-        SentryAndroid.init(activity, options -> {
-            options.setDsn(MengineSentryPlugin_DSN);
+        Context context = application.getApplicationContext();
 
-            String buildVersion = activity.getBuildVersion();
-            options.setRelease(buildVersion);
+        SentryAndroid.init(context, options -> {
+            options.setDsn(MengineSentryPlugin_DSN);
+            options.setEnableAutoSessionTracking(false);
+
+            if (application.isBuildPublish() == false) {
+                options.setEnvironment("dev");
+            } else {
+                options.setEnvironment("publish");
+            }
+
+            String versionName = application.getVersionName();
+            options.setRelease(versionName);
+
+            int VERSION_CODE = application.getVersionCode();
+            options.setTag("build", String.valueOf(VERSION_CODE));
 
             options.setAttachStacktrace(false);
             options.setAttachThreads(false);
@@ -99,6 +112,14 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             total_message += end_message;
 
             Sentry.setExtra("Log", total_message);
+        }
+    }
+
+    public void testException(String message) {
+        try {
+            throw new Exception(message);
+        } catch (Exception e) {
+            Sentry.captureException(e);
         }
     }
 }

@@ -17,8 +17,20 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
     return d;
 }
 
-fun includePlugin(name: String, d: Boolean, path: String) {
-    if (getBooleanProperty("MENGINE_APP_PLUGIN_ALL", false) == false && getBooleanProperty(name, d) == false) {
+fun includeLibrary(name: String, path: String) {
+    if (getBooleanProperty("MENGINE_APP_LIBRARY_ALL", false) == false && getBooleanProperty(name, true) == false) {
+        println("\u001b[31m" + "[-] Exclude library: $path" + "\u001b[0m")
+
+        return;
+    }
+
+    println("\u001b[32m" + "[+] Include library: $path" + "\u001b[0m")
+
+    include(path)
+}
+
+fun includePlugin(name: String, path: String) {
+    if (getBooleanProperty("MENGINE_APP_PLUGIN_ALL", false) == false && getBooleanProperty(name, false) == false) {
         println("\u001b[31m" + "[-] Exclude plugin: $path" + "\u001b[0m")
 
         return;
@@ -29,6 +41,7 @@ fun includePlugin(name: String, d: Boolean, path: String) {
     include(path)
 }
 
+println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
 println("\u001b[32m" + "[+] Include :app" + "\u001b[0m")
 include(":app")
 
@@ -63,9 +76,9 @@ if (ANDROID_APP_ENABLE_DELIVERY_PACKAGE == true) {
     }
 }
 
-includePlugin("MENGINE_APP_PLUGIN_MENGINE", true, ":libraries:Mengine")
-includePlugin("MENGINE_APP_PLUGIN_OPENAL32", true, ":libraries:OpenAL32")
-includePlugin("MENGINE_APP_PLUGIN_SDL", true, ":libraries:SDL")
+includeLibrary("MENGINE_APP_LIBRARY_MENGINE", ":libraries:Mengine")
+includeLibrary("MENGINE_APP_LIBRARY_OPENAL32", ":libraries:OpenAL32")
+includeLibrary("MENGINE_APP_LIBRARY_SDL", ":libraries:SDL")
 
 
 /*****************************************************************************
@@ -92,29 +105,29 @@ includePlugin("MENGINE_APP_PLUGIN_SDL", true, ":libraries:SDL")
 DataDog
 *****************************************************************************/
 
-includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", false, ":plugins:SplashScreen")
-includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", false, ":plugins:LocalNotifications")
-includePlugin("MENGINE_APP_PLUGIN_ADVERTISING", false, ":plugins:Advertising")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", false, ":plugins:GoogleService")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", false, ":plugins:GooglePlayBilling")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", false, ":plugins:GoogleGameSocial")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", false, ":plugins:GoogleInAppReviews")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE", false,":plugins:Firebase")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", false,":plugins:FirebaseAnalytics")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", false,":plugins:FirebaseCrashlytics")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", false,":plugins:FirebaseMessaging")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", false,":plugins:FirebaseRemoteConfig")
-includePlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", false,":plugins:FirebasePerformanceMonitoring")
-includePlugin("MENGINE_APP_PLUGIN_AMAZON", false, ":plugins:Amazon")
-includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", false, ":plugins:AppLovin")
-includePlugin("MENGINE_APP_PLUGIN_SENTRY", false, ":plugins:Sentry")
-includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", false,":plugins:Facebook")
-includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", false, ":plugins:DevToDev")
-includePlugin("MENGINE_APP_PLUGIN_MAR", false, ":plugins:MAR")
-includePlugin("MENGINE_APP_PLUGIN_ADJUST", false, ":plugins:Adjust")
-includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", false, ":plugins:Helpshift")
-includePlugin("MENGINE_APP_PLUGIN_ONESIGNAL", false, ":plugins:OneSignal")
-includePlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER", false, ":plugins:DevDebugger")
-includePlugin("MENGINE_APP_PLUGIN_DATADOG", false, ":plugins:DataDog")
+includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", ":plugins:SplashScreen")
+includePlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", ":plugins:LocalNotifications")
+includePlugin("MENGINE_APP_PLUGIN_ADVERTISING", ":plugins:Advertising")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", ":plugins:GoogleService")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", ":plugins:GooglePlayBilling")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", ":plugins:GoogleGameSocial")
+includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", ":plugins:GoogleInAppReviews")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE", ":plugins:Firebase")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", ":plugins:FirebaseAnalytics")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", ":plugins:FirebaseCrashlytics")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", ":plugins:FirebaseMessaging")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", ":plugins:FirebaseRemoteConfig")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", ":plugins:FirebasePerformanceMonitoring")
+includePlugin("MENGINE_APP_PLUGIN_AMAZON", ":plugins:Amazon")
+includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", ":plugins:AppLovin")
+includePlugin("MENGINE_APP_PLUGIN_SENTRY", ":plugins:Sentry")
+includePlugin("MENGINE_APP_PLUGIN_FACEBOOK", ":plugins:Facebook")
+includePlugin("MENGINE_APP_PLUGIN_DEVTODEV", ":plugins:DevToDev")
+includePlugin("MENGINE_APP_PLUGIN_MAR", ":plugins:MAR")
+includePlugin("MENGINE_APP_PLUGIN_ADJUST", ":plugins:Adjust")
+includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", ":plugins:Helpshift")
+includePlugin("MENGINE_APP_PLUGIN_ONESIGNAL", ":plugins:OneSignal")
+includePlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER", ":plugins:DevDebugger")
+includePlugin("MENGINE_APP_PLUGIN_DATADOG", ":plugins:DataDog")
 
 println("Mengine complete settings")

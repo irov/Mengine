@@ -1,7 +1,5 @@
 package org.Mengine.Plugin.FirebaseAnalytics;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;

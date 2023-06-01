@@ -39,6 +39,26 @@ class Utils {
         return v
     }
 
+    static Boolean existAppLibrary(Project project, String name) {
+        def pall = project.getProperties().get("MENGINE_APP_LIBRARY_ALL", null);
+
+        if (pall != null && pall as Integer == 1) {
+            return true
+        }
+
+        def p = project.getProperties().get(name, null)
+
+        if (p == null) {
+            return true
+        }
+
+        if (p as Integer == 0) {
+            return false
+        }
+
+        return true
+    }
+
     static Boolean existAppPlugin(Project project, String name) {
         def pall = project.getProperties().get("MENGINE_APP_PLUGIN_ALL", null);
 

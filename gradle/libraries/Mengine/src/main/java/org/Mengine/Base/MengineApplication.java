@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
@@ -59,6 +58,10 @@ public class MengineApplication extends Application {
 
     public String getApplicationId() {
         return "";
+    }
+
+    public boolean isBuildPublish() {
+        return false;
     }
 
     public int getVersionCode() {

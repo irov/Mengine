@@ -1,8 +1,5 @@
 package org.Mengine.Plugin.Firebase;
 
-import android.content.Context;
-import android.content.res.Configuration;
-
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;

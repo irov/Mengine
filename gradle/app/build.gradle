@@ -13,6 +13,10 @@ def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SP
 def ANDROID_APP_ENABLE_DELIVERY_PACKAGE = Utils.getBooleanProperty(project, "ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false)
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
 
+def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
+def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_OPENAL32")
+def MENGINE_APP_LIBRARY_SDL = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_SDL")
+
 def MENGINE_APP_PLUGIN_SPLASHSCREEN = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SPLASHSCREEN")
 def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS")
 def MENGINE_APP_PLUGIN_ADVERTISING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ADVERTISING")
@@ -289,10 +293,28 @@ if (ANDROID_APP_SPLIT_ENABLE == true) {
     }
 }
 
-dependencies {
-    implementation project(':libraries:SDL')
-    implementation project(':libraries:OpenAL32')
-    implementation project(':libraries:Mengine')
+Utils.logAvailable("MENGINE_APP_LIBRARY_SDL", MENGINE_APP_LIBRARY_SDL)
+
+if (MENGINE_APP_LIBRARY_SDL == true) {
+    dependencies {
+        implementation project(':libraries:SDL')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_LIBRARY_OPENAL32", MENGINE_APP_LIBRARY_OPENAL32)
+
+if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
+    dependencies {
+        implementation project(':libraries:OpenAL32')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_LIBRARY_MENGINE", MENGINE_APP_LIBRARY_MENGINE)
+
+if (MENGINE_APP_LIBRARY_MENGINE == true) {
+    dependencies {
+        implementation project(':libraries:Mengine')
+    }
 }
 
 Utils.logAvailable("MENGINE_APP_PLUGIN_SPLASHSCREEN", MENGINE_APP_PLUGIN_SPLASHSCREEN)
@@ -586,8 +608,7 @@ if (project.hasProperty("MENGINE_APP_OPTIONS")) {
 
 android {
     defaultConfig {
-        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {
-            "\"${it}\""
-        }.join(",") + '}'
+        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {"\"${it}\""}.join(",") + '}'
+        buildConfigField "boolean", "MENGINE_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH.toString()
     }
 }

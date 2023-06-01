@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class MenginePlugin {
     private MengineApplication m_application;
@@ -55,7 +54,7 @@ public class MenginePlugin {
     }
 
     public void setPrivateSettingString(String name, String value) {
-        SharedPreferences settings = m_application.getPrivateSharedPreferences(m_pluginName);
+        SharedPreferences settings = this.getPrivateSharedPreferences();
 
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(name, value);
@@ -63,7 +62,7 @@ public class MenginePlugin {
     }
 
     public String getPrivateSettingString(String name, String defaultValue) {
-        SharedPreferences settings = m_application.getPrivateSharedPreferences(m_pluginName);
+        SharedPreferences settings = this.getPrivateSharedPreferences();
 
         String value = settings.getString(name, defaultValue);
 

@@ -4,14 +4,10 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MengineUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
@@ -31,8 +27,6 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
 
     private static final String LIMIT_ADVERTISING_ID = "00000000-0000-0000-0000-000000000000";
 
-    private String m_advertisingId;
-    private boolean m_advertisingLimitTrackingEnabled;
     private Future<AdvertisingIdClient.Info> m_advertisingFuture;
 
     @Override
@@ -104,29 +98,32 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
     }
 
     public void postAdInfo(MengineActivity activity, AdvertisingIdClient.Info adInfo) {
-        if (adInfo == null ) {
-            m_advertisingId = LIMIT_ADVERTISING_ID;
-            m_advertisingLimitTrackingEnabled = true;
-        } else if( adInfo.isLimitAdTrackingEnabled() == true) {
-            m_advertisingId = LIMIT_ADVERTISING_ID;
-            m_advertisingLimitTrackingEnabled = true;
-        } else {
-            String advertisingId = adInfo.getId();
+        String advertisingId;
+        boolean advertisingLimitTrackingEnabled;
 
-            if (advertisingId.equals(LIMIT_ADVERTISING_ID) == true) {
-                m_advertisingId = LIMIT_ADVERTISING_ID;
-                m_advertisingLimitTrackingEnabled = true;
+        if (adInfo == null) {
+            advertisingId = LIMIT_ADVERTISING_ID;
+            advertisingLimitTrackingEnabled = true;
+        } else if (adInfo.isLimitAdTrackingEnabled() == true) {
+            advertisingId = LIMIT_ADVERTISING_ID;
+            advertisingLimitTrackingEnabled = true;
+        } else {
+            String adInfoAdvertisingId = adInfo.getId();
+
+            if (adInfoAdvertisingId.equals(LIMIT_ADVERTISING_ID) == true) {
+                advertisingId = LIMIT_ADVERTISING_ID;
+                advertisingLimitTrackingEnabled = true;
             } else {
-                m_advertisingId = advertisingId;
-                m_advertisingLimitTrackingEnabled = false;
+                advertisingId = adInfoAdvertisingId;
+                advertisingLimitTrackingEnabled = false;
             }
         }
 
         this.logMessage("AdvertisingId: %s limit: %s"
-            , m_advertisingId
-            , m_advertisingLimitTrackingEnabled == true ? "true" : "false"
+            , advertisingId
+            , advertisingLimitTrackingEnabled == true ? "true" : "false"
         );
 
-        activity.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, m_advertisingId, m_advertisingLimitTrackingEnabled);
+        activity.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, advertisingId, advertisingLimitTrackingEnabled);
     }
 }

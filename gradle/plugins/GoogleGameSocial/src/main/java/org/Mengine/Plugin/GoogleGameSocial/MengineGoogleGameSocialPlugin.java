@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -201,7 +200,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         }
     }
 
-    private void signInCallback(@NonNull GoogleSignInAccount account) {
+    private void signInCallback(GoogleSignInAccount account) {
         this.logMessage("account sign in");
 
         if (account == null) {

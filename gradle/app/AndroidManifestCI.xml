@@ -31,7 +31,7 @@
         <activity
             android:name="org.Mengine.Base.MengineActivity"
             android:label="MengineApplicationCI"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout"
             android:clearTaskOnLaunch="true"
             android:exported="true"
             android:launchMode="singleTop"

@@ -18,6 +18,14 @@ jobs:
       
       - android/install-ndk:
           version: 25.1.8937393
+          
+      - run:
+          name: install OpenJDK 17
+          command: |
+            sudo apt-get update && sudo apt-get install openjdk-17-jdk
+            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+            java -version
       
       - run:
           name: install cmake
@@ -63,5 +71,6 @@ jobs:
             sudo chown -R circleci:circleci /home/circleci/project
             pushd gradle
             sudo chmod +x gradlew
-            ./gradlew assembleDebug -PANDROID_APP_ASSETS_JAVA_NO_SRC_DIR -PANDROID_APP_ARCH_86_64_ENABLE=0 -PANDROID_APP_ENABLE_MAR=0 -PANDROID_APP_ENABLE_UNITYADS=0 -PANDROID_APP_ENABLE_DEVTODEV=0 -PANDROID_APP_ENABLE_FACEBOOK=0 -PANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS=0 -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_ENABLE_SENTRY=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PANDROID_APP_MANIFEST_SRC_FILE="AndroidManifestCI.xml" --stacktrace
+            ./gradlew --version
+            ./gradlew assembleDebug -PANDROID_APP_MANIFEST_SRC_FILE="AndroidManifestCI.xml"
             popd

@@ -3,6 +3,10 @@ version: 2.1
 orbs:
   android: circleci/android@2.3.0
 
+machine:
+    environment:
+        JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+
 jobs:
   build:
     executor:

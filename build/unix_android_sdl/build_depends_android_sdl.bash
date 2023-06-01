@@ -4,12 +4,12 @@ BUILD_TYPE=$1
 
 echo Starting dependencies build $BUILD_TYPE configuration...
 
-ANDROID_NDK_VERSION=android-ndk-r25b
+ANDROID_NDK_VERSION=25.1.8937393
 ANDROID_CMAKE_VERSION=3.22.1
 
 ANDROID_PLATFORM=android-21
 ANDROID_SDK=/opt/android/sdk
-ANDROID_NDK=/opt/android/$ANDROID_NDK_VERSION
+ANDROID_NDK=$ANDROID_SDK/ndk/$ANDROID_NDK_VERSION
 CMAKE_GENERATOR="Ninja"
 CMAKE_PATH=$ANDROID_SDK/cmake/$ANDROID_CMAKE_VERSION
 CMAKE_EXE=$CMAKE_PATH/bin/cmake
@@ -17,7 +17,7 @@ CMAKE_MAKE_PROGRAM=$CMAKE_PATH/bin/ninja
 CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
 
 CMAKELIST_PATH=$PWD/../../cmake/Depends_Android_SDL
-SOLUTION_DIR=$PWD/../../solutions/dependencies_android_sdl
+SOLUTION_DIR=$PWD/../../solutions/dependencies_unix_android_sdl
 
 function build_dependencies {
     NEON=$1

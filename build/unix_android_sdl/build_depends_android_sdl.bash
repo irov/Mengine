@@ -20,7 +20,7 @@ if [ -d "$ANDROID_NDK" ]; then
     echo "Exist: $ANDROID_NDK"
 fi
 
-for entry in "$ANDROID_NDK"/*
+for entry in "$ANDROID_NDK/*"
 do
   echo "$entry"
 done
@@ -29,7 +29,7 @@ if [ -d "$ANDROID_NDK/build" ]; then
     echo "Exist: $ANDROID_NDK/build"
 fi
 
-for entry in "$ANDROID_NDK/build"/*
+for entry in "$ANDROID_NDK/build/*"
 do
   echo "$entry"
 done
@@ -38,7 +38,7 @@ if [ -d "$ANDROID_NDK/build/cmake" ]; then
     echo "Exist: $ANDROID_NDK/build/cmake"
 fi
 
-for entry in "$ANDROID_NDK/build/cmake"/*
+for entry in "$ANDROID_NDK/build/cmake/*"
 do
   echo "$entry"
 done

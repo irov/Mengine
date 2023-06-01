@@ -51,7 +51,7 @@ allprojects {
         targetSdkVersion = ANDROID_APP_TARGET_SDK_VERSION
         compileSdkVersion = ANDROID_APP_COMPILE_SDK_VERSION
 
-        javaVersion = JavaVersion.VERSION_11
+        javaVersion = JavaVersion.VERSION_17
     }
 
     gradle.projectsEvaluated {

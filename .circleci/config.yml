@@ -3,10 +3,6 @@ version: 2.1
 orbs:
   android: circleci/android@2.3.0
 
-machine:
-    environment:
-        JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-
 jobs:
   build:
     executor:
@@ -72,10 +68,9 @@ jobs:
           name: assemble
           no_output_timeout: 1h
           command: |
-            echo "JAVA_HOME: $JAVA_HOME"
             sudo chown -R circleci:circleci /home/circleci/project
             pushd gradle
             sudo chmod +x gradlew
             ./gradlew --version
-            ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME -PANDROID_APP_MANIFEST_SRC_FILE="AndroidManifestCI.xml"
+            ./gradlew assembleDebug -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64 -PANDROID_APP_MANIFEST_SRC_FILE="AndroidManifestCI.xml"
             popd

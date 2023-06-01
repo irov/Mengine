@@ -16,6 +16,37 @@ CMAKE_EXE=$CMAKE_PATH/bin/cmake
 CMAKE_MAKE_PROGRAM=$CMAKE_PATH/bin/ninja
 CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
 
+if [ -d "$ANDROID_NDK" ]; then
+    echo "Exist: $ANDROID_NDK"
+fi
+
+for entry in "$ANDROID_NDK"/*
+do
+  echo "$entry"
+done
+
+if [ -d "$ANDROID_NDK/build" ]; then
+    echo "Exist: $ANDROID_NDK/build"
+fi
+
+for entry in "$ANDROID_NDK/build"/*
+do
+  echo "$entry"
+done
+
+if [ -d "$ANDROID_NDK/build/cmake" ]; then
+    echo "Exist: $ANDROID_NDK/build/cmake"
+fi
+
+for entry in "$ANDROID_NDK/build/cmake"/*
+do
+  echo "$entry"
+done
+
+if [ -f "$ANDROID_NDK/build/cmake/android.toolchain.cmake" ]; then
+    echo "Exist: $ANDROID_NDK/build/cmake/android.toolchain.cmake"
+fi
+
 CMAKELIST_PATH=$PWD/../../cmake/Depends_Android_SDL
 SOLUTION_DIR=$PWD/../../solutions/dependencies_unix_android_sdl
 

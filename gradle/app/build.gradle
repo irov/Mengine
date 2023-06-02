@@ -8,6 +8,7 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
 
 def ANDROID_APP_MANIFEST_CI = Utils.getBooleanProperty(project, "ANDROID_APP_MANIFEST_CI", false)
+def ANDROID_APP_ASSETS_RES_CI = Utils.getBooleanProperty(project, "ANDROID_APP_ASSETS_RES_CI", false)
 def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty(project, "ANDROID_APP_BUILD_PUBLISH", false)
 def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)
 def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false)
@@ -204,7 +205,11 @@ android {
 
             java.srcDirs += ['src']
 
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+            if (ANDROID_APP_ASSETS_RES_CI == true) {
+                println 'ANDROID_APP_ASSETS_RES_DIR: res_ci [CI]'
+
+                res.srcDirs += ['res_ci']
+            } else if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
                 println "ANDROID_APP_ASSETS_RES_DIR: $ANDROID_APP_ASSETS_RES_DIR"
 
                 def f = new File(ANDROID_APP_ASSETS_RES_DIR)

@@ -231,8 +231,7 @@ android {
 
                 assets.srcDirs += [ANDROID_APP_ASSETS_SRC_DIR]
             } else {
-                print 'ANDROID_APP_ASSETS_SRC_DIR: '
-                println 'data'
+                println 'ANDROID_APP_ASSETS_SRC_DIR: data [Default]'
 
                 assets.srcDirs += ['data']
             }

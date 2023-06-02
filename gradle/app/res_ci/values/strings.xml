@@ -1,0 +1,3 @@
+<resources>
+    <bool name="mengine_secure_allow_android_id" translatable="false">true</bool>
+</resources>

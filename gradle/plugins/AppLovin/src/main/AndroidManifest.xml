@@ -12,13 +12,5 @@
         <meta-data
             android:name="applovin.sdk.key"
             android:value="@string/mengine_applovin_sdk_key" />
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/mengine_google_ads_app_id"/>
-
-        <meta-data
-            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-            android:value="@bool/mengine_google_ads_enable_manager_app"/>
     </application>
 </manifest>

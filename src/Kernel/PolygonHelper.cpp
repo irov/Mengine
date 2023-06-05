@@ -263,7 +263,7 @@ namespace Mengine
                 const mt::vec2f & v1 = _polygon[(index + 1) % polygon_size];
 
                 mt::vec2f projection;
-                mt::segment2_projection_point( mt::segment2( v0, v1 ), _point, projection );
+                mt::segment2_projection_point( mt::segment2( v0, v1 ), _point, &projection );
 
                 mt::vec2f dp = _point - projection;
 
@@ -283,7 +283,6 @@ namespace Mengine
             mt::vec2f centroid_point( 0.f, 0.f );
             float centroid_area = 0.f;
 
-            // For all vertices except last
             const VectorPoints & polygon_vertices = _polygon.getPoints();
             Polygon::size_type polygon_count = _polygon.size();
 
@@ -328,11 +327,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool triangulate( const Polygon & _polygon, VectorPoints * const _result )
         {
-            /* allocate and initialize list of Vertices in polygon */
             const VectorPoints & polygon_points = _polygon.getPoints();
             uint32_t polygon_size = _polygon.size();
 
-            --polygon_size; // for correct polygon
+            --polygon_size;
 
             if( polygon_size < 3 )
             {
@@ -511,20 +509,32 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool intersects( const Polygon & _polygon, const mt::vec2f & _p0, const mt::vec2f & _p1 )
-        {
-            Detail::BoostPolygon bpolygon;
-            Detail::makeBoostPolygon( &bpolygon, _polygon );
-
-            Detail::BoostSegment boost_segment( _p0, _p1 );
-
-            bool successful = boost::geometry::intersects( bpolygon, boost_segment );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
         bool intersects( const Polygon & _lhs, const Polygon & _rhs )
         {
+            //mt::box2f bb_lhs;
+            //_lhs.to_box2f( &bb_lhs );
+
+            //mt::box2f bb_rhs;
+            //_rhs.to_box2f( &bb_rhs );
+
+            //if( mt::is_intersect( bb_lhs, bb_rhs ) == false )
+            //{
+            //    return false;
+            //}
+
+            //for( Polygon::size_type index = 1, index_end = _lhs.size(); index != index_end; ++index )
+            //{
+
+            //}
+
+            //for( const mt::vec2f & point : _lhs )
+            //{
+            //    if( mt::is_point_inside_box( point, bb_rhs ) == true )
+            //    {
+            //        return true;
+            //    }
+            //}
+
             Detail::BoostPolygon blhs;
             Detail::makeBoostPolygon( &blhs, _lhs );
 

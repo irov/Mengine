@@ -749,12 +749,12 @@ namespace Mengine
         this->restoreRenderFrameStates_();
 
         mt::mat4f viewMatrix;
-        mt::ident_m4( viewMatrix );
+        mt::ident_m4( &viewMatrix );
 
         m_renderSystem->setViewMatrix( viewMatrix );
 
         mt::mat4f projectionMatrix;
-        mt::ident_m4( projectionMatrix );
+        mt::ident_m4( &projectionMatrix );
 
         m_renderSystem->setProjectionMatrix( projectionMatrix );
 
@@ -969,12 +969,12 @@ namespace Mengine
             if( m_currentRenderContext.camera != nullptr )
             {
                 mt::mat4f viewMatrix;
-                mt::ident_m4( viewMatrix );
+                mt::ident_m4( &viewMatrix );
 
                 m_renderSystem->setViewMatrix( viewMatrix );
 
                 mt::mat4f projectionMatrix;
-                mt::ident_m4( projectionMatrix );
+                mt::ident_m4( &projectionMatrix );
 
                 m_renderSystem->setProjectionMatrix( projectionMatrix );
 

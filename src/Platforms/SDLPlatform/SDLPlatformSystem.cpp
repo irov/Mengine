@@ -41,7 +41,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLPlatformSystem::SDLPlatformSystem()        
+    SDLPlatformSystem::SDLPlatformSystem()
 #if !defined(MENGINE_PLATFORM_UWP)
         : m_old_SDL_malloc_func( nullptr )
         , m_old_SDL_calloc_func( nullptr )

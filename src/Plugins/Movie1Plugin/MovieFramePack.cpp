@@ -247,7 +247,7 @@ namespace Mengine
         { \
             const mt::vec3f & value0 = layer.Member[ _frameIndex + 0 ]; \
             const mt::vec3f & value1 = layer.Member[ _frameIndex + 1 ]; \
-            mt::linerp_v3( _frame->Member, value0, value1, _t ); \
+            mt::linerp_v3( &_frame->Member, value0, value1, _t ); \
         }
 
         MOVIE_FRAME_SETUP_F3( anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
@@ -283,7 +283,7 @@ namespace Mengine
 
             float correct_rotate_from;
             float correct_rotate_to;
-            mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
+            mt::angle_correct_interpolate_from_to( value0, value1, &correct_rotate_from, &correct_rotate_to );
 
             _frame->rotation.x = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
         }
@@ -299,7 +299,7 @@ namespace Mengine
 
             float correct_rotate_from;
             float correct_rotate_to;
-            mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
+            mt::angle_correct_interpolate_from_to( value0, value1, &correct_rotate_from, &correct_rotate_to );
 
             _frame->rotation.y = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
         }
@@ -315,7 +315,7 @@ namespace Mengine
 
             float correct_rotate_from;
             float correct_rotate_to;
-            mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
+            mt::angle_correct_interpolate_from_to( value0, value1, &correct_rotate_from, &correct_rotate_to );
 
             _frame->rotation.z = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
         }

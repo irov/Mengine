@@ -409,7 +409,7 @@ namespace Mengine
             uv_mask.w *= atlas_height_inv;
 
             mt::uv4f uv;
-            mt::uv4_from_mask( uv, uv_mask );
+            mt::uv4_from_mask( &uv, uv_mask );
 
             resourceImage->setUVImage( uv );
             resourceImage->setUVAlpha( uv );

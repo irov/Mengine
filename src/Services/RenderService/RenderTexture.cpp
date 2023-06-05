@@ -43,7 +43,7 @@ namespace Mengine
         float u = float( m_width ) / float( HWWidth );
         float v = float( m_height ) / float( HWHeight );
 
-        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
+        mt::uv4_from_mask( &m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
 
         m_pow2 = Helper::isTexturePow2( m_width ) == true && Helper::isTexturePow2( m_height ) == true;
     }

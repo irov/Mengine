@@ -27,14 +27,14 @@ namespace Mengine
         const mt::mat4f & wm = transformation->getWorldMatrix();
 
         mt::box2f bb;
-        mt::insideout_box( bb );
+        mt::insideout_box( &bb );
 
         for( const mt::vec2f & v : points )
         {
             mt::vec2f wmp_it;
-            mt::mul_v2_v2_m4( wmp_it, v, wm );
+            mt::mul_v2_v2_m4( &wmp_it, v, wm );
 
-            mt::add_internal_point( bb, wmp_it );
+            mt::add_internal_point( &bb, wmp_it );
         }
 
         *_bb = bb;

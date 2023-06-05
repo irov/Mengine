@@ -69,7 +69,7 @@ namespace Mengine
             const mt::mat4f & wm = transformation->getWorldMatrix();
 
             mt::vec3f wap;
-            mt::mul_v3_v3_m4( wap, ap, wm );
+            mt::mul_v3_v3_m4( &wap, ap, wm );
 
             return wap;
         }
@@ -588,7 +588,7 @@ namespace Mengine
                 framePack->getLayerFrame( layer->index, i, &frame );
 
                 mt::vec3f pos;
-                mt::mul_v3_v3_m4( pos, frame.position, wm );
+                mt::mul_v3_v3_m4( &pos, frame.position, wm );
 
                 pos.y *= mt::constant::sqrt2;
 
@@ -652,7 +652,7 @@ namespace Mengine
                 framePack->getLayerFrame( layer->index, i, &frame );
 
                 mt::vec3f pos;
-                mt::mul_v3_v3_m4( pos, frame.position, wm );
+                mt::mul_v3_v3_m4( &pos, frame.position, wm );
 
                 py_path[i] = pos;
             }
@@ -713,7 +713,7 @@ namespace Mengine
             const mt::mat4f & wm = movieTransformation->getWorldMatrix();
 
             mt::vec3f wap;
-            mt::mul_v3_v3_m4( wap, ap, wm );
+            mt::mul_v3_v3_m4( &wap, ap, wm );
 
             const TransformationInterface * nodeTransformation = node->getTransformation();
 

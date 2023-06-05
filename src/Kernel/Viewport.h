@@ -35,7 +35,7 @@ namespace Mengine
         float getIntersectionSquareBBox( const mt::box2f & _bbox ) const;
         float getSquare() const;
 
-        void toBBox( mt::box2f & _box ) const;
+        void toBBox( mt::box2f * const _box ) const;
 
     public:
         void parallax( const mt::vec2f & _factor );
@@ -44,7 +44,7 @@ namespace Mengine
         void translate( const mt::vec2f & _value );
         void clamp( const mt::vec2f & _begin, const mt::vec2f & _right );
         void clamp( const Viewport & _vp );
-        void multiply( Viewport & _viewport, const mt::mat4f & _wm ) const;
+        void multiply( Viewport * const _viewport, const mt::mat4f & _wm ) const;
 
     public:
         float getWidth() const;
@@ -56,10 +56,10 @@ namespace Mengine
         mt::vec2f size() const;
 
     public:
-        void calcSize( mt::vec2f & _size ) const;
-        void calcInvSize( mt::vec2f & _size ) const;
+        void calcSize( mt::vec2f * const _size ) const;
+        void calcInvSize( mt::vec2f * const _size ) const;
         void centerize( const mt::vec2f & _center );
-        void getCenter( mt::vec2f & _point ) const;
+        void getCenter( mt::vec2f * const _point ) const;
 
     public:
         mt::vec2f begin;

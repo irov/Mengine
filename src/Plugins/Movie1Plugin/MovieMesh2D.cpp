@@ -127,11 +127,11 @@ namespace Mengine
 
         const RenderVertex2D * vertices = this->getVerticesWM();
 
-        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         for( uint32_t i = 1; i != m_vertexCount; ++i )
         {
-            mt::add_internal_point( *_boundingBox, vertices[i].position.x, vertices[i].position.y );
+            mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
         }
 
         *_boundingBoxCurrent = _boundingBox;
@@ -241,7 +241,7 @@ namespace Mengine
             const mt::vec2f & pos = m_shape->pos[i];
 
             mt::vec3f & wm_pos = m_verticesWM[i].position;
-            mt::mul_v3_v2_m4( wm_pos, pos, wm );
+            mt::mul_v3_v2_m4( &wm_pos, pos, wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////

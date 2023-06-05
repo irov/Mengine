@@ -103,7 +103,7 @@ namespace Mengine
         const mt::vec3f & position = transformation->getLocalPosition();
 
         mt::vec3f dir;
-        mt::dir_v3_v3( dir, position, m_to );
+        mt::dir_v3_v3( &dir, position, m_to );
 
         mt::vec3f deltha = dir * m_speed;
 

@@ -106,7 +106,7 @@ namespace Mengine
             return false;
         }
 
-        mt::uv4_from_mask( _glyph->uv, ch->uv );
+        mt::uv4_from_mask( &_glyph->uv, ch->uv );
         _glyph->offset = ch->offset;
         _glyph->size = ch->size;
         _glyph->advance = ch->advance;

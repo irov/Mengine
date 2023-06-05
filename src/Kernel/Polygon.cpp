@@ -80,7 +80,7 @@ namespace Mengine
         for( const mt::vec2f & v : m_points )
         {
             mt::vec2f v_wm;
-            mt::mul_v2_v2_m4( v_wm, v, _wm );
+            mt::mul_v2_v2_m4( &v_wm, v, _wm );
 
             _out->append( v_wm );
         }
@@ -95,7 +95,7 @@ namespace Mengine
         for( const mt::vec2f & v : m_points )
         {
             mt::vec2f v_wm;
-            mt::mul_v2_v2_m4( v_wm, v, _wm );
+            mt::mul_v2_v2_m4( &v_wm, v, _wm );
             v_wm += _pos;
 
             _out->append( v_wm );
@@ -111,7 +111,7 @@ namespace Mengine
         for( const mt::vec2f & v : m_points )
         {
             mt::vec2f v_transpose;
-            mt::add_v2_v2( v_transpose, v, _pos );
+            mt::add_v2_v2( &v_transpose, v, _pos );
 
             _out->append( v_transpose );
         }
@@ -126,32 +126,25 @@ namespace Mengine
         for( const mt::vec2f & v : m_points )
         {
             mt::vec2f v_transpose;
-            mt::add_v2_v2( v_transpose, v, _pos );
+            mt::add_v2_v2( &v_transpose, v, _pos );
 
             mt::vec2f v_transpose_scale;
-            mt::mul_v2_v2( v_transpose_scale, v_transpose, _scale );
+            mt::mul_v2_v2( &v_transpose_scale, v_transpose, _scale );
 
             _out->append( v_transpose_scale );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Polygon::to_box2f( mt::box2f * const _box2f ) const
+    void Polygon::to_box2f( mt::box2f * const _box2f ) const
     {
-        if( this->empty() == true )
-        {
-            return false;
-        }
-
         const mt::vec2f & base_v = m_points.front();
 
-        mt::reset( *_box2f, base_v );
+        mt::reset( _box2f, base_v );
 
         for( const mt::vec2f & v : m_points )
         {
-            mt::add_internal_point( *_box2f, v );
+            mt::add_internal_point( _box2f, v );
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     mt::vec2f & Polygon::operator [] ( size_type _index )

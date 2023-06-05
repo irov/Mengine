@@ -45,7 +45,7 @@ namespace Mengine
             {
                 const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
 
-                mt::mul_m4_m4( *_wm, m_localMatrix, relationMatrix );
+                mt::mul_m4_m4( _wm, m_localMatrix, relationMatrix );
             }
             else
             {

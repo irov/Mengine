@@ -166,15 +166,15 @@ namespace Mengine
         point_norm.y = 1.f - point_vp.y * 2.f;
 
         mt::vec2f pointIn1;
-        mt::mul_v2_v2_m4( pointIn1, point_norm, vpm_inv );
+        mt::mul_v2_v2_m4( &pointIn1, point_norm, vpm_inv );
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
         mt::mat4f invWM;
-        mt::inv_m4_m4( invWM, wm );
+        mt::inv_m4_m4( &invWM, wm );
 
         mt::vec2f pointIn2;
-        mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
+        mt::mul_v2_v2_m4( &pointIn2, pointIn1, invWM );
 
         bool result = m_resourceTestPick->testPoint( pointIn2, m_alphaTest );
 
@@ -227,15 +227,15 @@ namespace Mengine
         point_norm.y = 1.f - point_vp.y * 2.f;
 
         mt::vec2f pointIn1;
-        mt::mul_v2_v2_m4( pointIn1, point_norm, vpm_inv );
+        mt::mul_v2_v2_m4( &pointIn1, point_norm, vpm_inv );
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
         mt::mat4f invWM;
-        mt::inv_m4_m4( invWM, wm );
+        mt::inv_m4_m4( &invWM, wm );
 
         mt::vec2f pointIn2;
-        mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
+        mt::mul_v2_v2_m4( &pointIn2, pointIn1, invWM );
 
         bool result = m_resourceTestPick->testRadius( pointIn2, _radius, m_alphaTest );
 
@@ -266,7 +266,7 @@ namespace Mengine
         mt::box2f bb_polygon_screen;
         Helper::worldToScreenBox( _context, _contentResolution, bb_polygon, &bb_polygon_screen );
 
-        transpose_box( bb_polygon_screen, _point );
+        mt::transpose_box( &bb_polygon_screen, _point );
 
         if( mt::is_intersect( bb_screen, bb_polygon_screen ) == false )
         {
@@ -287,13 +287,13 @@ namespace Mengine
         mt::vec2f maximal( hs_width, hs_height );
 
         mt::vec2f minimal_wm;
-        mt::mul_v2_v2_m4( minimal_wm, minimal, wm );
+        mt::mul_v2_v2_m4( &minimal_wm, minimal, wm );
 
         mt::vec2f maximal_wm;
-        mt::mul_v2_v2_m4( maximal_wm, maximal, wm );
+        mt::mul_v2_v2_m4( &maximal_wm, maximal, wm );
 
         mt::box2f bb;
-        mt::set_box_from_two_point( bb, minimal_wm, maximal_wm );
+        mt::set_box_from_two_point( &bb, minimal_wm, maximal_wm );
 
         *_bb = bb;
     }

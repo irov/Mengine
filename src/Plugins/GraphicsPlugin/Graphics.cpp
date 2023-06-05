@@ -377,7 +377,7 @@ namespace Mengine
         for( RenderVertex2D & vertex : m_renderVertex2D )
         {
             mt::vec3f pwm;
-            mt::mul_v3_v3_m4( pwm, vertex.position, wm );
+            mt::mul_v3_v3_m4( &pwm, vertex.position, wm );
 
             vertex.position = pwm;
         }

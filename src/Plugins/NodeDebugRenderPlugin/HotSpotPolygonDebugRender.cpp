@@ -55,7 +55,7 @@ namespace Mengine
             uint32_t j = (i + 1) % numpoints;
 
             mt::vec3f trP0;
-            mt::mul_v3_v2_m4( trP0, ring[i], wm );
+            mt::mul_v3_v2_m4( &trP0, ring[i], wm );
 
             RenderVertex2D & v0 = vertices[i * 2 + 0];
 
@@ -70,7 +70,7 @@ namespace Mengine
             }
 
             mt::vec3f trP1;
-            mt::mul_v3_v2_m4( trP1, ring[j], wm );
+            mt::mul_v3_v2_m4( &trP1, ring[j], wm );
 
             RenderVertex2D & v1 = vertices[i * 2 + 1];
 

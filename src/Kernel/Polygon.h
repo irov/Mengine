@@ -56,7 +56,7 @@ namespace Mengine
         void transpose( Polygon * const _out, const mt::vec2f & _pos ) const;
         void transpose_and_scale( Polygon * const _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const;
 
-        bool to_box2f( mt::box2f * const _box2f ) const;
+        void to_box2f( mt::box2f * const _box2f ) const;
 
     public:
         void append( const mt::vec2f & _v );

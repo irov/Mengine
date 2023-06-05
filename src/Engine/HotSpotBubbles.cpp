@@ -48,7 +48,7 @@ namespace Mengine
         const mt::mat4f & vm_inv = _context->camera->getCameraViewMatrixInv();
 
         mt::vec2f pointIn1;
-        mt::mul_v2_v2_m4( pointIn1, _point, vm_inv );
+        mt::mul_v2_v2_m4( &pointIn1, _point, vm_inv );
 
         this->updateBubbleWM_();
 
@@ -81,7 +81,7 @@ namespace Mengine
         const mt::mat4f & vm_inv = _context->camera->getCameraViewMatrixInv();
 
         mt::vec2f pointIn1;
-        mt::mul_v2_v2_m4( pointIn1, _point, vm_inv );
+        mt::mul_v2_v2_m4( &pointIn1, _point, vm_inv );
 
         this->updateBubbleWM_();
 
@@ -142,7 +142,7 @@ namespace Mengine
 
         for( const Bubble & b : m_bubbles )
         {
-            mt::mul_v2_v2_m4( b.pos_wm, b.pos, wm );
+            mt::mul_v2_v2_m4( &b.pos_wm, b.pos, wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////

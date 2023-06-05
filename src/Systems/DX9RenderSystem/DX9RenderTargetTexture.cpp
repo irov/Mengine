@@ -67,7 +67,7 @@ namespace Mengine
         float u = float( m_width ) / float( m_hwWidth );
         float v = float( m_height ) / float( m_hwHeight );
 
-        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
+        mt::uv4_from_mask( &m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
 
         if( this->_initialize() == false )
         {

@@ -58,19 +58,19 @@ namespace Mengine
         const mt::mat4f & wm = this->getWorldMatrix();
 
         mt::vec3f fromWM;
-        mt::mul_v3_v3_m4( fromWM, m_from, wm );
+        mt::mul_v3_v3_m4( &fromWM, m_from, wm );
 
         mt::vec3f toWM;
-        mt::mul_v3_v3_m4( toWM, m_to, wm );
+        mt::mul_v3_v3_m4( &toWM, m_to, wm );
 
         mt::vec3f dir;
-        mt::sub_v3_v3( dir, toWM, fromWM );
+        mt::sub_v3_v3( &dir, toWM, fromWM );
 
         mt::vec3f dir_norm;
-        mt::norm_v3_v3( dir_norm, dir );
+        mt::norm_v3_v3( &dir_norm, dir );
 
         mt::vec2f perp;
-        mt::perp_v2( perp, mt::vec2f( dir_norm.x, dir_norm.y ) );
+        mt::perp_v2( &perp, mt::vec2f( dir_norm.x, dir_norm.y ) );
 
         m_vertices[0].position.x = fromWM.x + perp.x * m_weight;
         m_vertices[0].position.y = fromWM.y + perp.y * m_weight;

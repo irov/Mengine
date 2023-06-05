@@ -56,8 +56,8 @@ namespace Mengine
         const mt::mat4f & vm = this->getCameraViewMatrix();
         const mt::mat4f & pm = this->getCameraProjectionMatrix();
 
-        mt::mul_m4_m4( m_viewProjectionMatrix, vm, pm );
-        mt::inv_m4_m4( m_viewProjectionMatrixInv, m_viewProjectionMatrix );
+        mt::mul_m4_m4( &m_viewProjectionMatrix, vm, pm );
+        mt::inv_m4_m4( &m_viewProjectionMatrixInv, m_viewProjectionMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCamera::notifyChangeWindowResolution_( bool _fullscreen, const Resolution & _resolution )

@@ -88,7 +88,7 @@ namespace Mengine
             const mt::vec2f & pos = m_positions[i];
 
             mt::vec3f & wm_pos = m_verticesWM[i].position;
-            mt::mul_v3_v2_m4( wm_pos, pos, wm );
+            mt::mul_v3_v2_m4( &wm_pos, pos, wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -135,13 +135,13 @@ namespace Mengine
         uint32_t vertexCount;
         const RenderVertex2D * vertices = this->getVerticesWM( &vertexCount );
 
-        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         for( uint32_t index = 1; index != vertexCount; ++index )
         {
             const RenderVertex2D & v = vertices[index];
 
-            mt::add_internal_point( *_boundingBox, v.position.x, v.position.y );
+            mt::add_internal_point( _boundingBox, v.position.x, v.position.y );
         }
 
         *_boundingBoxCurrent = _boundingBox;

@@ -83,10 +83,10 @@ namespace Mengine
         , m_supportR8G8B8( false )
         , m_supportNonPow2( false )
     {
-        mt::ident_m4( m_projectionMatrix );
-        mt::ident_m4( m_modelViewMatrix );
-        mt::ident_m4( m_worldMatrix );
-        mt::ident_m4( m_totalWVPInvMatrix );
+        mt::ident_m4( &m_projectionMatrix );
+        mt::ident_m4( &m_modelViewMatrix );
+        mt::ident_m4( &m_worldMatrix );
+        mt::ident_m4( &m_totalWVPInvMatrix );
 
         Algorithm::fill_n( m_textureEnable, MENGINE_MAX_TEXTURE_STAGES, false );
     }
@@ -608,9 +608,9 @@ namespace Mengine
         float perfect_y = DirectX9_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
         mt::mat4f vmperfect;
-        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
+        mt::make_translation_m4( &vmperfect, perfect_x, perfect_y, 0.f );
 
-        mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
+        mt::mul_m4_m4( &m_projectionMatrix, _projectionMatrix, vmperfect );
 
         this->updateWVPInvMatrix_();
     }
@@ -1012,13 +1012,13 @@ namespace Mengine
     void DX9RenderSystem::setScissor( const Viewport & _viewport )
     {
         mt::mat4f pm;
-        mt::mul_m4_m4( pm, m_projectionMatrix, m_modelViewMatrix );
+        mt::mul_m4_m4( &pm, m_projectionMatrix, m_modelViewMatrix );
 
         mt::vec2f b;
-        mt::mul_v2_v2_m4( b, _viewport.begin, pm );
+        mt::mul_v2_v2_m4( &b, _viewport.begin, pm );
 
         mt::vec2f e;
-        mt::mul_v2_v2_m4( e, _viewport.end, pm );
+        mt::mul_v2_v2_m4( &e, _viewport.end, pm );
 
         mt::vec2f vs = m_viewport.size();
 
@@ -2059,7 +2059,7 @@ namespace Mengine
     {
         mt::mat4f totalWVPMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
 
-        mt::transpose_m4_m4( m_totalWVPInvMatrix, totalWVPMatrix );
+        mt::transpose_m4_m4( &m_totalWVPInvMatrix, totalWVPMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
 }

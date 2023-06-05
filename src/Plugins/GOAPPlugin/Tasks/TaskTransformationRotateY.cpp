@@ -39,7 +39,7 @@ namespace Mengine
 
         float correct_rotate_from;
         float correct_rotate_to;
-        mt::angle_correct_interpolate_from_to( orientationY, m_to, correct_rotate_from, correct_rotate_to );
+        mt::angle_correct_interpolate_from_to( orientationY, m_to, &correct_rotate_from, &correct_rotate_to );
 
         LambdaAffectorTransformationRotate transformCb = Helper::delegate( transformation, &TransformationInterface::setLocalOrientationY );
 

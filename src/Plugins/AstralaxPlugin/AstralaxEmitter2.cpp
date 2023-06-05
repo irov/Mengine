@@ -63,7 +63,7 @@ namespace Mengine
             return false;
         }
 
-        mt::infinity_box( m_box );
+        mt::infinity_box( &m_box );
 
         return true;
     }
@@ -682,22 +682,22 @@ namespace Mengine
                 }
 
                 mt::mat4f vm;
-                mt::make_lookat_m4( vm, pc.pos, pc.dir, -pc.up, -1.f );
+                mt::make_lookat_m4( &vm, pc.pos, pc.dir, -pc.up, -1.f );
 
                 mt::mat4f pm;
-                mt::make_projection_fov_m4( pm, pc.fov, pc.aspect, pc.znear, pc.zfar );
+                mt::make_projection_fov_m4( &pm, pc.fov, pc.aspect, pc.znear, pc.zfar );
 
-                mt::mul_m4_m4( vpm, vm, pm );
+                mt::mul_m4_m4( &vpm, vm, pm );
             }
             else
             {
                 mt::mat4f vm;
-                mt::ident_m4( vm );
+                mt::ident_m4( &vm );
 
                 mt::mat4f pm;
-                mt::make_projection_ortho_lh_m4( pm, m_rect.x, m_rect.z, m_rect.w, m_rect.y, -1024.f, 1024.f );
+                mt::make_projection_ortho_lh_m4( &pm, m_rect.x, m_rect.z, m_rect.w, m_rect.y, -1024.f, 1024.f );
 
-                mt::mul_m4_m4( vpm, vm, pm );
+                mt::mul_m4_m4( &vpm, vm, pm );
             }
 
             float half_width = (m_rect.z - m_rect.x) * 0.5f;
@@ -709,7 +709,7 @@ namespace Mengine
             for( ; vertices_iterator != vertices_end; ++vertices_iterator )
             {
                 mt::vec3f v_vpm;
-                mt::mul_v3_v3_m4_homogenize( v_vpm, vertices_iterator->position, vpm );
+                mt::mul_v3_v3_m4_homogenize( &v_vpm, vertices_iterator->position, vpm );
 
                 mt::vec3f v_new;
                 v_new.x = (1.f + v_vpm.x) * half_width;

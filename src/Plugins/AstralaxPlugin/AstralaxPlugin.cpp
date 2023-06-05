@@ -25,6 +25,7 @@
 
 #include "ResourceAstralaxValidator.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NotificationHelper.h"
@@ -49,6 +50,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxPlugin::~AstralaxPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxPlugin::_availablePlugin() const
+    {
+        bool AstralaxPlugin_Available = CONFIG_VALUE( "AstralaxPlugin", "Available", true );
+
+        return AstralaxPlugin_Available;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxPlugin::_initializePlugin()

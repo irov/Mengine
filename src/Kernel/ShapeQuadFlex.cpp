@@ -217,16 +217,16 @@ namespace Mengine
         m_verticesLocal[3].y = visOffset.y + percent_size.w;
 
         mt::uv4f uv_percentVisibility;
-        uv4_from_mask( uv_percentVisibility, m_percentVisibility );
+        uv4_from_mask( &uv_percentVisibility, m_percentVisibility );
 
         if( m_flipX == true )
         {
-            mt::uv4_swap_u( uv_percentVisibility );
+            mt::uv4_swap_u( &uv_percentVisibility );
         }
 
         if( m_flipY == true )
         {
-            mt::uv4_swap_v( uv_percentVisibility );
+            mt::uv4_swap_v( &uv_percentVisibility );
         }
 
         uint32_t uvCount = m_surface->getUVCount();

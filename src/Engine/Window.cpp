@@ -381,33 +381,33 @@ namespace Mengine
                 const mt::uv4f & uv_image = image->getUVTextureImage();
                 const mt::uv4f & uv_alpha = image->getUVTextureAlpha();
 
-                mt::uv4_scale( uv1, uv_image, uvs[i] );
-                mt::uv4_scale( uv2, uv_alpha, uvs[i] );
+                mt::uv4_scale( &uv1, uv_image, uvs[i] );
+                mt::uv4_scale( &uv2, uv_alpha, uvs[i] );
             }
 
             const WindowQuad & quad = quads[i];
 
             RenderVertex2D & v0 = _vertices[i * 4 + 0];
-            mt::mul_v3_v3_m4( v0.position, mt::vec3f( quad.a, 0.f ), worldMatrix );
+            mt::mul_v3_v3_m4( &v0.position, mt::vec3f( quad.a, 0.f ), worldMatrix );
 
             v0.uv[0] = uv1[0];
             v0.uv[1] = uv2[0];
 
             RenderVertex2D & v1 = _vertices[i * 4 + 1];
-            mt::mul_v3_v3_m4( v1.position, mt::vec3f( quad.b, 0.f ), worldMatrix );
+            mt::mul_v3_v3_m4( &v1.position, mt::vec3f( quad.b, 0.f ), worldMatrix );
 
             v1.uv[0] = uv1[1];
             v1.uv[1] = uv2[1];
 
 
             RenderVertex2D & v2 = _vertices[i * 4 + 2];
-            mt::mul_v3_v3_m4( v2.position, mt::vec3f( quad.c, 0.f ), worldMatrix );
+            mt::mul_v3_v3_m4( &v2.position, mt::vec3f( quad.c, 0.f ), worldMatrix );
 
             v2.uv[0] = uv1[2];
             v2.uv[1] = uv2[2];
 
             RenderVertex2D & v3 = _vertices[i * 4 + 3];
-            mt::mul_v3_v3_m4( v3.position, mt::vec3f( quad.d, 0.f ), worldMatrix );
+            mt::mul_v3_v3_m4( &v3.position, mt::vec3f( quad.d, 0.f ), worldMatrix );
 
             v3.uv[0] = uv1[3];
             v3.uv[1] = uv2[3];
@@ -434,11 +434,11 @@ namespace Mengine
     {
         const RenderVertex2D * vertices = this->getVertices();
 
-        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         for( uint32_t i = 1; i != 4; ++i )
         {
-            mt::add_internal_point( *_boundingBox, vertices[i].position.x, vertices[i].position.y );
+            mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
         }
 
         *_boundingBoxCurrent = _boundingBox;

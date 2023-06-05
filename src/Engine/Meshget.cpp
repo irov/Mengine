@@ -141,7 +141,7 @@ namespace Mengine
 
         const VectorRenderVertex2D & vertices = this->getVerticesWM();
 
-        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         VectorPositions::size_type vertexCount = m_positions.size();
 
@@ -149,7 +149,7 @@ namespace Mengine
         {
             const mt::vec3f & v = m_positions[i];
 
-            mt::add_internal_point( *_boundingBox, v.x, v.y );
+            mt::add_internal_point( _boundingBox, v.x, v.y );
         }
 
         *_boundingBoxCurrent = _boundingBox;
@@ -216,7 +216,7 @@ namespace Mengine
             const mt::vec2f & uv = m_uvs[i];
 
             mt::vec3f & wm_pos = m_verticesWM[i].position;
-            mt::mul_v3_v3_m4( wm_pos, pos, wm );
+            mt::mul_v3_v3_m4( &wm_pos, pos, wm );
 
             m_surface->correctUV( 0, uv, m_verticesWM[i].uv + 0 );
             m_surface->correctUV( 1, uv, m_verticesWM[i].uv + 1 );

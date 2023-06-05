@@ -161,7 +161,7 @@ namespace Mengine
         contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f viewportSize;
-        viewport.calcSize( viewportSize );
+        viewport.calcSize( &viewportSize );
 
         mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
         //mt::vec2f vp_end = viewport.end / contentResolutionSize;
@@ -177,14 +177,14 @@ namespace Mengine
         p1.y = -p1.y;
 
         mt::vec2f p_pm;
-        mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
+        mt::mul_v2_v2_m4( &p_pm, p1, pm_inv );
 
         const mt::mat4f & vm_inv = renderCamera->getCameraViewMatrixInv();
 
         mt::vec2f p = p_pm;
 
         mt::vec2f p_vm;
-        mt::mul_v2_v2_m4( p_vm, p, vm_inv );
+        mt::mul_v2_v2_m4( &p_vm, p, vm_inv );
 
         *_worldPoint = p_vm;
     }
@@ -243,7 +243,7 @@ namespace Mengine
         mt::vec2f p = _worldPoint;
 
         mt::vec2f p_vm;
-        mt::mul_v2_v2_m4( p_vm, p, vm );
+        mt::mul_v2_v2_m4( &p_vm, p, vm );
 
         const RenderViewportInterface * renderViewport = _context->viewport;
 
@@ -253,7 +253,7 @@ namespace Mengine
         const mt::mat4f & pm = renderCamera->getCameraProjectionMatrix();
 
         mt::vec2f p_vm_pm;
-        mt::mul_v2_v2_m4( p_vm_pm, p_vm, pm );
+        mt::mul_v2_v2_m4( &p_vm_pm, p_vm, pm );
 
         p_vm_pm.y = -p_vm_pm.y;
 
@@ -266,7 +266,7 @@ namespace Mengine
         contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f viewportSize;
-        viewport.calcSize( viewportSize );
+        viewport.calcSize( &viewportSize );
 
         mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
         //mt::vec2f vp_end = viewport.end / contentResolutionSize;

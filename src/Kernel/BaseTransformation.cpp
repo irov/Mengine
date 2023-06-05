@@ -22,8 +22,8 @@ namespace Mengine
         , m_invalidateLocalMatrix( false )
         , m_invalidateWorldMatrix( false )
     {
-        mt::ident_m4( m_localMatrix );
-        mt::ident_m4( m_worldMatrix );
+        mt::ident_m4( &m_localMatrix );
+        mt::ident_m4( &m_worldMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     BaseTransformation::~BaseTransformation()
@@ -411,7 +411,7 @@ namespace Mengine
 
                 if( _transformationFlag != 0 )
                 {
-                    mt::mul_m4_m4_r( *_wm, localMatrix, relationMatrix );
+                    mt::mul_m4_m4_r( _wm, localMatrix, relationMatrix );
                 }
                 else
                 {
@@ -426,7 +426,7 @@ namespace Mengine
                 }
                 else
                 {
-                    mt::ident_m4( *_wm );
+                    mt::ident_m4( _wm );
                 }
             }
         }
@@ -471,10 +471,10 @@ namespace Mengine
     void BaseTransformation::setDirection( const mt::vec3f & _direction, const mt::vec3f & _up )
     {
         mt::mat4f mr;
-        mt::make_rotate_m4_direction( mr, _direction, _up );
+        mt::make_rotate_m4_direction( &mr, _direction, _up );
 
         mt::vec3f orientation;
-        mt::make_euler_angles( orientation, mr );
+        mt::make_euler_angles( &orientation, mr );
 
         this->setLocalOrientation( orientation );
     }
@@ -482,10 +482,10 @@ namespace Mengine
     void BaseTransformation::setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal )
     {
         mt::mat4f mr;
-        mt::make_rotate_m4_fixed_up( mr, _direction, _normal );
+        mt::make_rotate_m4_fixed_up( &mr, _direction, _normal );
 
         mt::vec3f orientation;
-        mt::make_euler_angles( orientation, mr );
+        mt::make_euler_angles( &orientation, mr );
 
         this->setLocalOrientation( orientation );
     }
@@ -495,10 +495,10 @@ namespace Mengine
         mt::vec3f dir = _at - _position;
 
         mt::mat4f mr;
-        mt::make_rotate_m4_fixed_up( mr, dir, _normal );
+        mt::make_rotate_m4_fixed_up( &mr, dir, _normal );
 
         mt::vec3f orientation;
-        mt::make_euler_angles( orientation, mr );
+        mt::make_euler_angles( &orientation, mr );
 
         this->setLocalOrientation( orientation );
 
@@ -508,10 +508,10 @@ namespace Mengine
     void BaseTransformation::setAxes( const mt::vec3f & _direction, const mt::vec3f & _left, const mt::vec3f & _up )
     {
         mt::mat4f mr;
-        mt::make_rotate_m4_axes( mr, _direction, _left, _up );
+        mt::make_rotate_m4_axes( &mr, _direction, _left, _up );
 
         mt::vec3f orientation;
-        mt::make_euler_angles( orientation, mr );
+        mt::make_euler_angles( &orientation, mr );
 
         this->setLocalOrientation( orientation );
     }
@@ -521,10 +521,10 @@ namespace Mengine
         mt::vec3f dir = _at - _position;
 
         mt::mat4f mr;
-        mt::make_rotate_m4_direction( mr, dir, _up );
+        mt::make_rotate_m4_direction( &mr, dir, _up );
 
         mt::vec3f orientation;
-        mt::make_euler_angles( orientation, mr );
+        mt::make_euler_angles( &orientation, mr );
 
         this->setLocalOrientation( orientation );
 
@@ -534,7 +534,7 @@ namespace Mengine
     mt::vec3f BaseTransformation::getAxisDirection() const
     {
         mt::mat4f mat_rot;
-        mt::make_rotate_m4_euler( mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
+        mt::make_rotate_m4_euler( &mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
 
         mt::vec3f axis = mat_rot.v0.to_vec3f();
 
@@ -544,7 +544,7 @@ namespace Mengine
     mt::vec3f BaseTransformation::getAxisLeft() const
     {
         mt::mat4f mat_rot;
-        mt::make_rotate_m4_euler( mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
+        mt::make_rotate_m4_euler( &mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
 
         mt::vec3f axis = mat_rot.v1.to_vec3f();
 
@@ -554,7 +554,7 @@ namespace Mengine
     mt::vec3f BaseTransformation::getAxisUp() const
     {
         mt::mat4f mat_rot;
-        mt::make_rotate_m4_euler( mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
+        mt::make_rotate_m4_euler( &mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
 
         mt::vec3f axis = mat_rot.v2.to_vec3f();
 
@@ -568,49 +568,49 @@ namespace Mengine
         BaseTransformation::makeLocalMatrix( &m_localMatrix, m_transformationFlag, m_position, m_origin, m_scale, m_skew, m_orientation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseTransformation::makeLocalMatrix( mt::mat4f * _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation )
+    void BaseTransformation::makeLocalMatrix( mt::mat4f * const _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation )
     {
         switch( _transformationFlag )
         {
         case TRANSFORMATION_INVALIDATE_IDENTITY:
             {
-                mt::ident_m4( *_lm );
+                mt::ident_m4( _lm );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_POSITION:
             {
-                mt::make_translation_m4( *_lm, _position.x, _position.y, _position.z );
+                mt::make_translation_m4( _lm, _position.x, _position.y, _position.z );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_ORIGIN:
             {
-                mt::make_translation_m4( *_lm, -_origin.x, -_origin.y, -_origin.z );
+                mt::make_translation_m4( _lm, -_origin.x, -_origin.y, -_origin.z );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_SCALE:
             {
-                mt::make_scale_m4( *_lm, _scale.x, _scale.y, _scale.z );
+                mt::make_scale_m4( _lm, _scale.x, _scale.y, _scale.z );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_SKEW:
             {
-                mt::make_skew_m4( *_lm, _skew.x, _skew.y );
+                mt::make_skew_m4( _lm, _skew.x, _skew.y );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_ORIENTATION_X:
             {
-                mt::make_rotate_z_axis_m4( *_lm, _orientation.x );
+                mt::make_rotate_z_axis_m4( _lm, _orientation.x );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_POSITION | TRANSFORMATION_INVALIDATE_ORIGIN:
             {
-                mt::make_translation_m4( *_lm, _position.x - _origin.x, _position.y - _origin.y, _position.z - _origin.z );
+                mt::make_translation_m4( _lm, _position.x - _origin.x, _position.y - _origin.y, _position.z - _origin.z );
 
                 return;
             }break;
@@ -652,16 +652,16 @@ namespace Mengine
         if( _transformationFlag & TRANSFORMATION_INVALIDATE_ORIENTATION_YZ )
         {
             mt::mat4f mat_rot;
-            mt::make_rotate_m4_euler( mat_rot, _orientation.x, _orientation.y, _orientation.z );
+            mt::make_rotate_m4_euler( &mat_rot, _orientation.x, _orientation.y, _orientation.z );
 
-            mt::mul_m4_m4_r( *_lm, mat_base, mat_rot );
+            mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
         }
         else if( _transformationFlag & TRANSFORMATION_INVALIDATE_ORIENTATION_X )
         {
             mt::mat4f mat_rot;
-            mt::make_rotate_z_axis_m4( mat_rot, _orientation.x );
+            mt::make_rotate_z_axis_m4( &mat_rot, _orientation.x );
 
-            mt::mul_m4_m4_r( *_lm, mat_base, mat_rot );
+            mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
         }
         else
         {
@@ -702,7 +702,7 @@ namespace Mengine
                 {
                     const mt::mat4f & localMatrix = this->getLocalMatrix();
 
-                    mt::mul_m4_m4_r( m_worldMatrix, localMatrix, relationMatrix );
+                    mt::mul_m4_m4_r( &m_worldMatrix, localMatrix, relationMatrix );
                 }
                 else
                 {
@@ -723,7 +723,7 @@ namespace Mengine
                 }
                 else
                 {
-                    mt::ident_m4( m_worldMatrix );
+                    mt::ident_m4( &m_worldMatrix );
 
                     m_identityWorldMatrix = true;
                 }
@@ -738,21 +738,21 @@ namespace Mengine
             const mt::mat4f & rwm = m_relationTransformation->getWorldMatrix();
 
             mt::mat4f rwm_inv;
-            mt::inv_m4_m4( rwm_inv, rwm );
+            mt::inv_m4_m4( &rwm_inv, rwm );
 
             mt::vec3f new_lp;
-            mt::mul_v3_v3_m4( new_lp, _pos, rwm_inv );
+            mt::mul_v3_v3_m4( &new_lp, _pos, rwm_inv );
 
             const mt::mat4f & lm = this->getLocalMatrix();
 
             mt::mat4f lm_inv;
-            mt::inv_m4_m4( lm_inv, lm );
+            mt::inv_m4_m4( &lm_inv, lm );
 
             mt::vec3f pp;
-            mt::mul_v3_v3_m4( pp, new_lp, lm_inv );
+            mt::mul_v3_v3_m4( &pp, new_lp, lm_inv );
 
             mt::vec3f pp2;
-            mt::mul_v3_v3_m4_r( pp2, pp, lm );
+            mt::mul_v3_v3_m4_r( &pp2, pp, lm );
 
             this->translate( pp2 );
         }
@@ -761,13 +761,13 @@ namespace Mengine
             const mt::mat4f & lm = this->getLocalMatrix();
 
             mt::mat4f lm_inv;
-            mt::inv_m4_m4( lm_inv, lm );
+            mt::inv_m4_m4( &lm_inv, lm );
 
             mt::vec3f pp;
-            mt::mul_v3_v3_m4( pp, _pos, lm_inv );
+            mt::mul_v3_v3_m4( &pp, _pos, lm_inv );
 
             mt::vec3f pp2;
-            mt::mul_v3_v3_m4_r( pp2, pp, lm );
+            mt::mul_v3_v3_m4_r( &pp2, pp, lm );
 
             this->translate( pp2 );
         }
@@ -802,10 +802,10 @@ namespace Mengine
         const mt::mat4f & wm = this->getWorldMatrix();
 
         mt::quatf q;
-        mt::q_from_rot_m4( q, wm );
+        mt::q_from_rot_m4( &q, wm );
 
         mt::vec3f wo;
-        mt::quat_to_euler( q, wo );
+        mt::quat_to_euler( q, &wo );
 
         return wo;
     }

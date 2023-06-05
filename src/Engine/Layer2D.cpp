@@ -321,10 +321,10 @@ namespace Mengine
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        mt::mul_v3_v2_m4( m_verticesImageMaskWM[0].position, mt::vec2f( 0.f, 0.f ), wm );
-        mt::mul_v3_v2_m4( m_verticesImageMaskWM[1].position, mt::vec2f( m_size.x, 0.f ), wm );
-        mt::mul_v3_v2_m4( m_verticesImageMaskWM[2].position, mt::vec2f( m_size.x, m_size.y ), wm );
-        mt::mul_v3_v2_m4( m_verticesImageMaskWM[3].position, mt::vec2f( 0.f, m_size.y ), wm );
+        mt::mul_v3_v2_m4( &m_verticesImageMaskWM[0].position, mt::vec2f( 0.f, 0.f ), wm );
+        mt::mul_v3_v2_m4( &m_verticesImageMaskWM[1].position, mt::vec2f( m_size.x, 0.f ), wm );
+        mt::mul_v3_v2_m4( &m_verticesImageMaskWM[2].position, mt::vec2f( m_size.x, m_size.y ), wm );
+        mt::mul_v3_v2_m4( &m_verticesImageMaskWM[3].position, mt::vec2f( 0.f, m_size.y ), wm );
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::updateVerticesImageMaskColor() const

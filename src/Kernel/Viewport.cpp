@@ -82,10 +82,10 @@ namespace Mengine
         end.y = mt::clamp( _begin.y, end.y, _end.y );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Viewport::multiply( Viewport & _viewport, const mt::mat4f & _wm ) const
+    void Viewport::multiply( Viewport * const _viewport, const mt::mat4f & _wm ) const
     {
-        mt::mul_v2_v2_m4( _viewport.begin, this->begin, _wm );
-        mt::mul_v2_v2_m4( _viewport.end, this->end, _wm );
+        mt::mul_v2_v2_m4( &_viewport->begin, this->begin, _wm );
+        mt::mul_v2_v2_m4( &_viewport->end, this->end, _wm );
     }
     //////////////////////////////////////////////////////////////////////////
     void Viewport::clamp( const Viewport & _vp )
@@ -108,19 +108,19 @@ namespace Mengine
         return end - begin;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Viewport::calcSize( mt::vec2f & _size ) const
+    void Viewport::calcSize( mt::vec2f * const _size ) const
     {
-        _size = end - begin;
+        *_size = end - begin;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Viewport::calcInvSize( mt::vec2f & _size ) const
+    void Viewport::calcInvSize( mt::vec2f * const _size ) const
     {
-        _size = mt::vec2f( 1.f, 1.f ) / (end - begin);
+        *_size = mt::vec2f( 1.f, 1.f ) / (end - begin);
     }
     //////////////////////////////////////////////////////////////////////////
-    void Viewport::getCenter( mt::vec2f & _point ) const
+    void Viewport::getCenter( mt::vec2f * const _point ) const
     {
-        _point = (begin + end) * 0.5f;
+        *_point = (begin + end) * 0.5f;
     }
     //////////////////////////////////////////////////////////////////////////
     void Viewport::centerize( const mt::vec2f & _center )
@@ -197,7 +197,7 @@ namespace Mengine
         return this->existRectangle( _bbox.minimum, _bbox.maximum );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Viewport::toBBox( mt::box2f & _box ) const
+    void Viewport::toBBox( mt::box2f * const _box ) const
     {
         mt::set_box_from_min_max( _box, begin, end );
     }

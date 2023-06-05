@@ -133,7 +133,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _index );
 
-        mt::uv4_quad_point( *_out, m_uv, _in );
+        mt::uv4_quad_point( _out, m_uv, _in );
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceMockupVideo::getColor() const

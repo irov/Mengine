@@ -432,7 +432,7 @@ namespace Mengine
                     mt::vec3f v1 = _path[i - 0];
 
                     mt::vec3f vt;
-                    float d = mt::project_to_line_v3_v3( vt, v0, v1, _position );
+                    float d = mt::project_to_line_v3_v3( &vt, v0, v1, _position );
 
                     if( d < 0.f )
                     {
@@ -639,7 +639,7 @@ namespace Mengine
             mt::box2f s_getHotSpotPolygonBoundingBox( const HotSpotPolygonPtr & _hotspotPolygon )
             {
                 mt::box2f bb;
-                mt::insideout_box( bb );
+                mt::insideout_box( &bb );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, "hotspot is nullptr" );
 
@@ -659,9 +659,9 @@ namespace Mengine
                 for( const mt::vec2f & v : points )
                 {
                     mt::vec2f wmp_it;
-                    mt::mul_v2_v2_m4( wmp_it, v, wm );
+                    mt::mul_v2_v2_m4( &wmp_it, v, wm );
 
-                    mt::add_internal_point( bb, wmp_it );
+                    mt::add_internal_point( &bb, wmp_it );
                 }
 
                 return bb;
@@ -1104,7 +1104,7 @@ namespace Mengine
             mt::vec2f s_direction_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
             {
                 mt::vec2f direction;
-                mt::dir_v2_v2( direction, _to, _from );
+                mt::dir_v2_v2( &direction, _to, _from );
 
                 return direction;
             }
@@ -1112,7 +1112,7 @@ namespace Mengine
             mt::vec3f s_direction_v3_v3( const mt::vec3f & _from, const mt::vec3f & _to )
             {
                 mt::vec3f direction;
-                mt::dir_v3_v3( direction, _from, _to );
+                mt::dir_v3_v3( &direction, _from, _to );
 
                 return direction;
             }
@@ -1120,10 +1120,10 @@ namespace Mengine
             float s_angle_from_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
             {
                 mt::vec2f direction;
-                mt::sub_v2_v2( direction, _from, _to );
+                mt::sub_v2_v2( &direction, _from, _to );
 
                 mt::vec2f direction_n;
-                mt::norm_v2_v2( direction_n, direction );
+                mt::norm_v2_v2( &direction_n, direction );
 
                 float angle = mt::signed_angle( direction_n );
 
@@ -1133,7 +1133,7 @@ namespace Mengine
             mt::vec2f s_norm_v2( const mt::vec2f & _vec )
             {
                 mt::vec2f v_n;
-                mt::norm_v2_v2( v_n, _vec );
+                mt::norm_v2_v2( &v_n, _vec );
 
                 return v_n;
             }
@@ -1141,7 +1141,7 @@ namespace Mengine
             mt::vec3f s_norm_v3( const mt::vec3f & _vec )
             {
                 mt::vec3f v_n;
-                mt::norm_v3_v3( v_n, _vec );
+                mt::norm_v3_v3( &v_n, _vec );
 
                 return v_n;
             }
@@ -1182,7 +1182,7 @@ namespace Mengine
                 }
 
                 mt::vec2f dir_norm;
-                float dir_length = mt::norm_v2_f( dir_norm, dir );
+                float dir_length = mt::norm_v2_f( &dir_norm, dir );
 
                 mt::vec2f dir_point = _point - _v0;
 
@@ -1207,7 +1207,7 @@ namespace Mengine
                 float correct_angle_from;
                 float correct_angle_to;
 
-                mt::angle_correct_interpolate_from_to( _from, _to, correct_angle_from, correct_angle_to );
+                mt::angle_correct_interpolate_from_to( _from, _to, &correct_angle_from, &correct_angle_to );
 
                 pybind::tuple py_result = pybind::make_tuple_t( _kernel, correct_angle_from, correct_angle_to );
 
@@ -1217,10 +1217,10 @@ namespace Mengine
             float s_angle_between_two_vectors( const mt::vec2f & _v1, const mt::vec2f & _v2 )
             {
                 mt::vec2f v1_norm;
-                mt::norm_v2_v2( v1_norm, _v1 );
+                mt::norm_v2_v2( &v1_norm, _v1 );
 
                 mt::vec2f v2_norm;
-                mt::norm_v2_v2( v2_norm, _v2 );
+                mt::norm_v2_v2( &v2_norm, _v2 );
 
                 float cos_v = mt::dot_v2_v2( v1_norm, v2_norm );
 
@@ -3269,7 +3269,7 @@ namespace Mengine
                     ->getRenderCamera();
 
                 mt::mat4f wm;
-                mt::make_translation_m4_v3( wm, _wp );
+                mt::make_translation_m4_v3( &wm, _wp );
 
                 mt::vec2f screen;
                 camera->fromWorldToScreenPosition( wm, &screen );

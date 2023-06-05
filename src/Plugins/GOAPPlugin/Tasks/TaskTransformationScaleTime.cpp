@@ -52,11 +52,11 @@ namespace Mengine
                     {
                         float t_easing = easing->easing( t );
 
-                        mt::linerp_v3( scale, m_from, m_to, t_easing );
+                        mt::linerp_v3( &scale, m_from, m_to, t_easing );
                     }
                     else
                     {
-                        mt::linerp_v3( scale, m_from, m_to, t );
+                        mt::linerp_v3( &scale, m_from, m_to, t );
                     }
 
                     transformation->setLocalScale( scale );

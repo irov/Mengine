@@ -45,7 +45,7 @@ namespace Mengine
             const Viewport & vp = renderViewport->getViewport();
 
             mt::vec2f vp_size;
-            vp.calcSize( vp_size );
+            vp.calcSize( &vp_size );
 
             mt::vec2f contentResolutionInvSize;
             _contentResolution.calcInvSize( &contentResolutionInvSize );
@@ -53,7 +53,7 @@ namespace Mengine
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
             mt::vec2f v_screen;
-            mt::mul_v2_v2_m4_homogenize( v_screen, _worldPosition, vpm );
+            mt::mul_v2_v2_m4_homogenize( &v_screen, _worldPosition, vpm );
 
             *_screenPosition = (vp.begin + v_screen * vp_size) * contentResolutionInvSize;
         }
@@ -70,7 +70,7 @@ namespace Mengine
             const Viewport & vp = renderViewport->getViewport();
 
             mt::vec2f vp_size;
-            vp.calcSize( vp_size );
+            vp.calcSize( &vp_size );
 
             mt::vec2f contentResolutionInvSize;
             _contentResolution.calcInvSize( &contentResolutionInvSize );
@@ -78,7 +78,7 @@ namespace Mengine
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
             mt::vec2f v_screen0;
-            mt::mul_v2_v2z_m4_homogenize( v_screen0, vpm );
+            mt::mul_v2_v2z_m4_homogenize( &v_screen0, vpm );
 
             v_screen0.x += 1.f;
             v_screen0.y = 1.f - v_screen0.y;
@@ -86,7 +86,7 @@ namespace Mengine
             v_screen0 *= mt::vec2f( 0.5f, 0.5f );
 
             mt::vec2f v_screen;
-            mt::mul_v2_v2_m4_homogenize( v_screen, _worldDelta, vpm );
+            mt::mul_v2_v2_m4_homogenize( &v_screen, _worldDelta, vpm );
 
             v_screen.x += 1.f;
             v_screen.y = 1.f - v_screen.y;
@@ -108,7 +108,7 @@ namespace Mengine
             const Viewport & vp = renderViewport->getViewport();
 
             mt::vec2f vp_size;
-            vp.calcSize( vp_size );
+            vp.calcSize( &vp_size );
 
             mt::vec2f contentResolutionInvSize;
             _contentResolution.calcInvSize( &contentResolutionInvSize );
@@ -116,11 +116,11 @@ namespace Mengine
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
             mt::box2f bb_screen;
-            mt::set_box_homogenize( bb_screen, _worldBox.minimum, _worldBox.maximum, vpm );
+            mt::set_box_homogenize( &bb_screen, _worldBox.minimum, _worldBox.maximum, vpm );
 
-            mt::scale_box( bb_screen, vp_size );
-            mt::transpose_box( bb_screen, vp.begin );
-            mt::scale_box( bb_screen, contentResolutionInvSize );
+            mt::scale_box( &bb_screen, vp_size );
+            mt::transpose_box( &bb_screen, vp.begin );
+            mt::scale_box( &bb_screen, contentResolutionInvSize );
 
             *_screenBox = bb_screen;
         }

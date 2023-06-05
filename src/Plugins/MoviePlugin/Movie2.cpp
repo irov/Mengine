@@ -262,7 +262,7 @@ namespace Mengine
         const mt::mat4f & wm = this->getWorldMatrix();
 
         mt::box2f bbwm;
-        mt::insideout_box( bbwm );
+        mt::insideout_box( &bbwm );
 
         ae_uint32_t compute_movie_mesh_iterator = 0;
 
@@ -289,7 +289,7 @@ namespace Mengine
 
                         if( bb != nullptr )
                         {
-                            mt::merge_box( bbwm, *bb );
+                            mt::merge_box( &bbwm, *bb );
 
                             successful = true;
                         }
@@ -304,7 +304,7 @@ namespace Mengine
 
                         if( bb != nullptr )
                         {
-                            mt::merge_box( bbwm, *bb );
+                            mt::merge_box( &bbwm, *bb );
 
                             successful = true;
                         }
@@ -337,9 +337,9 @@ namespace Mengine
                             p.from_f3( mesh.position[index] );
 
                             mt::vec2f pwm;
-                            mt::mul_v2_v3_m4( pwm, p, wm );
+                            mt::mul_v2_v3_m4( &pwm, p, wm );
 
-                            mt::add_internal_point( bbwm, pwm );
+                            mt::add_internal_point( &bbwm, pwm );
                         }
 
                         successful = true;
@@ -366,9 +366,9 @@ namespace Mengine
                             p.from_f3( mesh.position[index] );
 
                             mt::vec2f pwm;
-                            mt::mul_v2_v3_m4( pwm, p, wm );
+                            mt::mul_v2_v3_m4( &pwm, p, wm );
 
-                            mt::add_internal_point( bbwm, pwm );
+                            mt::add_internal_point( &bbwm, pwm );
                         }
 
                         successful = true;
@@ -1098,7 +1098,7 @@ namespace Mengine
         cameraPosition.from_f3( _callbackData->position );
 
         mt::vec3f cameraDirection;
-        mt::norm_v3_v3( cameraDirection, cameraTarget - cameraPosition );
+        mt::norm_v3_v3( &cameraDirection, cameraTarget - cameraPosition );
 
         float aspect = _callbackData->width / _callbackData->height;
 
@@ -1150,7 +1150,7 @@ namespace Mengine
         cameraPosition.from_f3( _callbackData->position );
 
         mt::vec3f cameraDirection;
-        mt::norm_v3_v3( cameraDirection, cameraTarget - cameraPosition );
+        mt::norm_v3_v3( &cameraDirection, cameraTarget - cameraPosition );
 
         camera->projection->setCameraPosition( cameraPosition );
         camera->projection->setCameraDirection( cameraDirection );
@@ -2691,7 +2691,7 @@ namespace Mengine
                             mt::vec3f vp;
                             vp.from_f3( p );
 
-                            mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( &v.position, vp, wm );
 
                             v.color = total_mesh_color;
                         }
@@ -2734,7 +2734,7 @@ namespace Mengine
                             mt::vec3f vp;
                             vp.from_f3( p );
 
-                            mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( &v.position, vp, wm );
 
                             v.color = total_mesh_color;
                         }
@@ -2793,7 +2793,7 @@ namespace Mengine
                             mt::vec3f vp;
                             vp.from_f3( p );
 
-                            mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( &v.position, vp, wm );
 
                             v.color = total_mesh_color;
                         }
@@ -2958,7 +2958,7 @@ namespace Mengine
                             mt::vec3f vp;
                             vp.from_f3( p );
 
-                            mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( &v.position, vp, wm );
 
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
@@ -3023,7 +3023,7 @@ namespace Mengine
                             mt::vec3f vp;
                             vp.from_f3( p );
 
-                            mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( &v.position, vp, wm );
 
                             const float * uv = mesh.uv[index];
 
@@ -3032,10 +3032,16 @@ namespace Mengine
 
                             resourceImage->correctUVImage( vuv, v.uv + 0 );
 
-                            mt::vec2f uv_track_matte = mt::calc_point_uv(
-                                mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
-                                mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
-                                vp.to_vec2f()
+                            mt::vec2f uv_track_matte;
+                            mt::calc_point_uv(
+                                mt::vec2f( track_matte_mesh->position[0] ), 
+                                mt::vec2f( track_matte_mesh->position[1] ), 
+                                mt::vec2f( track_matte_mesh->position[2] ),
+                                mt::vec2f( track_matte_mesh->uv[0] ), 
+                                mt::vec2f( track_matte_mesh->uv[1] ), 
+                                mt::vec2f( track_matte_mesh->uv[2] ),
+                                vp.to_vec2f(),
+                                &uv_track_matte
                             );
 
                             resourceTrackMatteImage->correctUVAlpha( uv_track_matte, v.uv + 1 );
@@ -3142,7 +3148,7 @@ namespace Mengine
                             mt::vec3f vp;
                             vp.from_f3( p );
 
-                            mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( &v.position, vp, wm );
 
                             const float * uv = mesh.uv[index];
 
@@ -3151,10 +3157,16 @@ namespace Mengine
 
                             resourceImage->correctUVImage( vuv, v.uv + 0 );
 
-                            mt::vec2f uv_track_matte = mt::calc_point_uv(
-                                mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
-                                mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
-                                vp.to_vec2f()
+                            mt::vec2f uv_track_matte;
+                            mt::calc_point_uv(
+                                mt::vec2f( track_matte_mesh->position[0] ), 
+                                mt::vec2f( track_matte_mesh->position[1] ), 
+                                mt::vec2f( track_matte_mesh->position[2] ),
+                                mt::vec2f( track_matte_mesh->uv[0] ), 
+                                mt::vec2f( track_matte_mesh->uv[1] ), 
+                                mt::vec2f( track_matte_mesh->uv[2] ),
+                                vp.to_vec2f(),
+                                &uv_track_matte
                             );
 
                             resourceTrackMatteImage->correctUVAlpha( uv_track_matte, v.uv + 1 );

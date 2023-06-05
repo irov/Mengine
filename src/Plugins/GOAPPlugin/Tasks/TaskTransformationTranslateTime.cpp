@@ -59,7 +59,7 @@ namespace Mengine
                     }
 
                     mt::vec3f position;
-                    mt::linerp_v3( position, m_from, m_to, t_easing );
+                    mt::linerp_v3( &position, m_from, m_to, t_easing );
 
                     transformation->setLocalPosition( position );
 

@@ -270,7 +270,7 @@ namespace Mengine
                 if( bb == nullptr )
                 {
                     mt::box2f infinity_bb;
-                    mt::infinity_box( infinity_bb );
+                    mt::infinity_box( &infinity_bb );
 
                     return infinity_bb;
                 }
@@ -305,7 +305,7 @@ namespace Mengine
                 polygon.to_box2f( &bb );
 
                 mt::vec2f c;
-                mt::get_center_box( bb, c );
+                mt::get_center_box( bb, &c );
 
                 return c;
             }
@@ -315,7 +315,7 @@ namespace Mengine
                 const Polygon & polygon = _hs->getPolygon();
 
                 mt::box2f bb;
-                mt::insideout_box( bb );
+                mt::insideout_box( &bb );
 
                 const TransformationInterface * transformation = _hs->getTransformation();
 
@@ -324,13 +324,13 @@ namespace Mengine
                 for( const mt::vec2f & v : polygon )
                 {
                     mt::vec2f v_wm;
-                    mt::mul_v2_v2_m4( v_wm, v, wm );
+                    mt::mul_v2_v2_m4( &v_wm, v, wm );
 
-                    mt::add_internal_point( bb, v_wm );
+                    mt::add_internal_point( &bb, v_wm );
                 }
 
                 mt::vec2f c;
-                mt::get_center_box( bb, c );
+                mt::get_center_box( bb, &c );
 
                 return c;
             }
@@ -361,7 +361,7 @@ namespace Mengine
                 _hs->getScreenPolygon( &context, contentResolution, &b1, nullptr );
 
                 mt::vec2f c;
-                mt::get_center_box( b1, c );
+                mt::get_center_box( b1, &c );
 
                 return c;
             }
@@ -418,7 +418,7 @@ namespace Mengine
                 const mt::mat4f & wm = transformation->getWorldMatrix();
 
                 mt::vec2f imageCenter_wm;
-                mt::mul_v2_v2_m4( imageCenter_wm, imageCenter, wm );
+                mt::mul_v2_v2_m4( &imageCenter_wm, imageCenter, wm );
 
                 return imageCenter_wm;
             }

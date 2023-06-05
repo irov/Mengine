@@ -377,15 +377,15 @@ namespace Mengine
                 meta_frame3d.get_Volume( &frame.volume );
 
                 mt::quatf qo;
-                mt::make_quat_from_euler( qo, orientation );
+                mt::make_quat_from_euler( &qo, orientation );
 
                 mt::quatf qr;
-                mt::make_quat_from_euler( qr, rotation );
+                mt::make_quat_from_euler( &qr, rotation );
 
                 mt::quatf qor;
-                mt::mul_q_q( qor, qo, qr );
+                mt::mul_q_q( &qor, qo, qr );
 
-                mt::quat_to_euler( qor, frame.rotation );
+                mt::quat_to_euler( qor, &frame.rotation );
 
                 if( frameLayer.immutable == 0 )
                 {

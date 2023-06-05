@@ -2893,7 +2893,7 @@ namespace Mengine
                 const mt::mat4f & vm = _camera->getCameraViewMatrix();
 
                 mt::vec3f wp_screen;
-                mt::mul_v3_v3_m4( wp_screen, wp, vm );
+                mt::mul_v3_v3_m4( &wp_screen, wp, vm );
 
                 return wp_screen;
             }

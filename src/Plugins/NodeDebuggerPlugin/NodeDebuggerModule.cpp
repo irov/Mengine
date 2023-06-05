@@ -479,7 +479,7 @@ namespace Mengine
         bool successul = false;
 
         mt::box2f absorb_bb;
-        mt::insideout_box( absorb_bb );
+        mt::insideout_box( &absorb_bb );
 
         const ConstString & type = _node->getType();
 
@@ -490,7 +490,7 @@ namespace Mengine
             mt::box2f bbox;
             if( boundingBox->getBoundingBox( _node, &bbox ) == true )
             {
-                mt::merge_box( absorb_bb, bbox );
+                mt::merge_box( &absorb_bb, bbox );
 
                 successul = true;
             }
@@ -505,7 +505,7 @@ namespace Mengine
 
                 if( rbbox != nullptr )
                 {
-                    mt::merge_box( absorb_bb, *rbbox );
+                    mt::merge_box( &absorb_bb, *rbbox );
 
                     successul = true;
                 }
@@ -517,7 +517,7 @@ namespace Mengine
             mt::box2f child_bb;
             if( s_absorbBoundingBox( _child, &child_bb ) == true )
             {
-                mt::merge_box( absorb_bb, child_bb );
+                mt::merge_box( &absorb_bb, child_bb );
 
                 successul = true;
             }
@@ -571,10 +571,10 @@ namespace Mengine
         const mt::mat4f & vpminv = camera->getCameraViewProjectionMatrixInv();
 
         mt::box2f bcrop;
-        mt::mul_v2_v2_m4( bcrop.minimum, mt::vec2f( -1.f, 1.f ), vpminv );
-        mt::mul_v2_v2_m4( bcrop.maximum, mt::vec2f( 1.f, -1.f ), vpminv );
+        mt::mul_v2_v2_m4( &bcrop.minimum, mt::vec2f( -1.f, 1.f ), vpminv );
+        mt::mul_v2_v2_m4( &bcrop.maximum, mt::vec2f( 1.f, -1.f ), vpminv );
 
-        mt::crop_box( bbox, bcrop );
+        mt::crop_box( &bbox, bcrop );
 
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
             ->getDebugTriangleMaterial();
@@ -2404,16 +2404,16 @@ namespace Mengine
         point_norm.y = 1.f - point_vp.y * 2.f;
 
         mt::vec2f pointIn1;
-        mt::mul_v2_v2_m4( pointIn1, point_norm, vpm_inv );
+        mt::mul_v2_v2_m4( &pointIn1, point_norm, vpm_inv );
 
         TransformationInterface * currentNodeTransformation = _currentNode->getTransformation();
         const mt::mat4f & wm = currentNodeTransformation->getWorldMatrix();
 
         mt::mat4f invWM;
-        mt::inv_m4_m4( invWM, wm );
+        mt::inv_m4_m4( &invWM, wm );
 
         mt::vec2f pointIn2;
-        mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
+        mt::mul_v2_v2_m4( &pointIn2, pointIn1, invWM );
 
         if( pointIn2.x < 0.f || pointIn2.y < 0.f )
         {
@@ -2485,13 +2485,13 @@ namespace Mengine
         mt::vec2f maximal( hs_width, hs_height );
 
         mt::vec2f minimal_wm;
-        mt::mul_v2_v2_m4( minimal_wm, minimal, worldMatrix );
+        mt::mul_v2_v2_m4( &minimal_wm, minimal, worldMatrix );
 
         mt::vec2f maximal_wm;
-        mt::mul_v2_v2_m4( maximal_wm, maximal, worldMatrix );
+        mt::mul_v2_v2_m4( &maximal_wm, maximal, worldMatrix );
 
         mt::box2f bb;
-        mt::set_box_from_two_point( bb, minimal_wm, maximal_wm );
+        mt::set_box_from_two_point( &bb, minimal_wm, maximal_wm );
 
         *_bb = bb;
     }

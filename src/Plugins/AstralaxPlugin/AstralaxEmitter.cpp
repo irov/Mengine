@@ -441,7 +441,7 @@ namespace Mengine
             RenderVertex2D & r = _vertices[it];
 
             mt::vec3f wm_pos;
-            mt::mul_v3_v3_m4( wm_pos, r.position, wm );
+            mt::mul_v3_v3_m4( &wm_pos, r.position, wm );
 
             r.position = wm_pos;
         }

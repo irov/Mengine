@@ -376,13 +376,13 @@ namespace Mengine
             const Viewport & vp = viewport->getViewport();
 
             mt::box2f bb_homogenize;
-            mt::set_box_homogenize( bb_homogenize, bb.minimum, bb.maximum, vpm );
+            mt::set_box_homogenize( &bb_homogenize, bb.minimum, bb.maximum, vpm );
 
             mt::vec2f vp_scale;
-            vp.calcSize( vp_scale );
+            vp.calcSize( &vp_scale );
 
-            mt::scale_box( bb_homogenize, vp_scale );
-            mt::transpose_box( bb_homogenize, vp.begin );
+            mt::scale_box( &bb_homogenize, vp_scale );
+            mt::transpose_box( &bb_homogenize, vp.begin );
 
             ro.bb = bb_homogenize;
         }

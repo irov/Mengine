@@ -39,10 +39,10 @@ namespace Mengine
         , m_counterFragmentShader( 0 )
         , m_counterVertexShader( 0 )
     {
-        mt::ident_m4( m_worldMatrix );
-        mt::ident_m4( m_viewMatrix );
-        mt::ident_m4( m_projectionMatrix );
-        mt::ident_m4( m_totalWVPMatrix );
+        mt::ident_m4( &m_worldMatrix );
+        mt::ident_m4( &m_viewMatrix );
+        mt::ident_m4( &m_projectionMatrix );
+        mt::ident_m4( &m_totalWVPMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::~OpenGLRenderSystem()
@@ -250,13 +250,13 @@ namespace Mengine
     void OpenGLRenderSystem::setScissor( const Viewport & _viewport )
     {
         mt::mat4f pm;
-        mt::mul_m4_m4( pm, m_projectionMatrix, m_viewMatrix );
+        mt::mul_m4_m4( &pm, m_projectionMatrix, m_viewMatrix );
 
         mt::vec2f b;
-        mt::mul_v2_v2_m4( b, _viewport.begin, pm );
+        mt::mul_v2_v2_m4( &b, _viewport.begin, pm );
 
         mt::vec2f e;
-        mt::mul_v2_v2_m4( e, _viewport.end, pm );
+        mt::mul_v2_v2_m4( &e, _viewport.end, pm );
 
         mt::vec2f vs = m_viewport.size();
 
@@ -326,9 +326,9 @@ namespace Mengine
             float perfect_y = OpenGL_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
             mt::mat4f vmperfect;
-            mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
+            mt::make_translation_m4( &vmperfect, perfect_x, perfect_y, 0.f );
 
-            mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
+            mt::mul_m4_m4( &m_projectionMatrix, _projectionMatrix, vmperfect );
         }
         else
         {

@@ -63,7 +63,7 @@ namespace Mengine
 
         float getLength() const
         {
-            float length = mt::length( m_follow, m_value );
+            float length = mt::length_f( m_follow, m_value );
 
             return length;
         }

@@ -30,10 +30,10 @@ namespace Mengine
                 ->getDebugRenderVertex2D( 4 );
 
             mt::vec3f p0_wm;
-            mt::mul_v3_v2_m4( p0_wm, _startPoint, _wm );
+            mt::mul_v3_v2_m4( &p0_wm, _startPoint, _wm );
 
             mt::vec3f p1_wm;
-            mt::mul_v3_v2_m4( p1_wm, _finishPoint, _wm );
+            mt::mul_v3_v2_m4( &p1_wm, _finishPoint, _wm );
 
             vertices[0].position = p0_wm;
             vertices[0].color = _color;
@@ -67,7 +67,7 @@ namespace Mengine
                 uint32_t j = (i + 1) % numpoints;
 
                 mt::vec3f trP0;
-                mt::mul_v3_v2_m4( trP0, ring[i], _wm );
+                mt::mul_v3_v2_m4( &trP0, ring[i], _wm );
 
                 RenderVertex2D & v0 = vertices[i * 2 + 0];
 
@@ -82,7 +82,7 @@ namespace Mengine
                 }
 
                 mt::vec3f trP1;
-                mt::mul_v3_v2_m4( trP1, ring[j], _wm );
+                mt::mul_v3_v2_m4( &trP1, ring[j], _wm );
 
                 RenderVertex2D & v1 = vertices[i * 2 + 1];
 
@@ -121,7 +121,7 @@ namespace Mengine
                 uint32_t j = (i + 1) % numpoints;
 
                 mt::vec3f trP0;
-                mt::mul_v3_v2_m4( trP0, points[i], _wm );
+                mt::mul_v3_v2_m4( &trP0, points[i], _wm );
 
                 RenderVertex2D & v0 = vertices[i * 2 + 0];
 
@@ -136,7 +136,7 @@ namespace Mengine
                 }
 
                 mt::vec3f trP1;
-                mt::mul_v3_v2_m4( trP1, points[j], _wm );
+                mt::mul_v3_v2_m4( &trP1, points[j], _wm );
 
                 RenderVertex2D & v1 = vertices[i * 2 + 1];
 
@@ -160,16 +160,16 @@ namespace Mengine
                 ->getDebugRenderVertex2D( 4 );
 
             mt::vec3f p0_wm;
-            mt::mul_v3_v2_m4( p0_wm, _point + mt::vec2f( 0.f, -_length ), _wm );
+            mt::mul_v3_v2_m4( &p0_wm, _point + mt::vec2f( 0.f, -_length ), _wm );
 
             mt::vec3f p1_wm;
-            mt::mul_v3_v2_m4( p1_wm, _point + mt::vec2f( 0.f, _length ), _wm );
+            mt::mul_v3_v2_m4( &p1_wm, _point + mt::vec2f( 0.f, _length ), _wm );
 
             mt::vec3f p2_wm;
-            mt::mul_v3_v2_m4( p2_wm, _point + mt::vec2f( -_length, 0.f ), _wm );
+            mt::mul_v3_v2_m4( &p2_wm, _point + mt::vec2f( -_length, 0.f ), _wm );
 
             mt::vec3f p3_wm;
-            mt::mul_v3_v2_m4( p3_wm, _point + mt::vec2f( _length, 0.f ), _wm );
+            mt::mul_v3_v2_m4( &p3_wm, _point + mt::vec2f( _length, 0.f ), _wm );
 
             vertices[0].position = p0_wm;
             vertices[0].color = _color;

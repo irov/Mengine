@@ -81,11 +81,11 @@ namespace Mengine
 
         if( m_uvImageRotate == false )
         {
-            mt::uv4_quad_point( *_out, m_uvTextureImage, _in );
+            mt::uv4_quad_point( _out, m_uvTextureImage, _in );
         }
         else
         {
-            mt::uv4_quad_point_rotate( *_out, m_uvTextureImage, _in );
+            mt::uv4_quad_point_rotate( _out, m_uvTextureImage, _in );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -98,11 +98,11 @@ namespace Mengine
 
         if( m_uvAlphaRotate == false )
         {
-            mt::uv4_quad_point( *_out, m_uvTextureAlpha, _in );
+            mt::uv4_quad_point( _out, m_uvTextureAlpha, _in );
         }
         else
         {
-            mt::uv4_quad_point_rotate( *_out, m_uvTextureImage, _in );
+            mt::uv4_quad_point_rotate( _out, m_uvTextureImage, _in );
         }
     }
     //////////////////////////////////////////////////////////////////////////

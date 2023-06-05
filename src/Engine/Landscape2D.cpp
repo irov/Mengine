@@ -92,14 +92,14 @@ namespace Mengine
         for( const Landscape2DElement & el : elementsWM )
         {
             mt::vec2f v_wvp_minimum;
-            mt::mul_v2_v2_m4_homogenize( v_wvp_minimum, el.bb_wm.minimum, vpm );
+            mt::mul_v2_v2_m4_homogenize( &v_wvp_minimum, el.bb_wm.minimum, vpm );
 
             mt::vec2f v_wvp_minimum_norm;
             v_wvp_minimum_norm.x = (1.f + v_wvp_minimum.x) * 0.5f;
             v_wvp_minimum_norm.y = (1.f - v_wvp_minimum.y) * 0.5f;
 
             mt::vec2f v_wvp_maximum;
-            mt::mul_v2_v2_m4_homogenize( v_wvp_maximum, el.bb_wm.maximum, vpm );
+            mt::mul_v2_v2_m4_homogenize( &v_wvp_maximum, el.bb_wm.maximum, vpm );
 
             mt::vec2f v_wvp_maximum_norm;
             v_wvp_maximum_norm.x = (1.f + v_wvp_maximum.x) * 0.5f;
@@ -204,10 +204,10 @@ namespace Mengine
             p4.x = (i + 0) * m_elementWidth;
             p4.y = (j + 1) * m_elementHeight;
 
-            mt::reset( el.bb, p1 );
-            mt::add_internal_point( el.bb, p2 );
-            mt::add_internal_point( el.bb, p3 );
-            mt::add_internal_point( el.bb, p4 );
+            mt::reset( &el.bb, p1 );
+            mt::add_internal_point( &el.bb, p2 );
+            mt::add_internal_point( &el.bb, p3 );
+            mt::add_internal_point( &el.bb, p4 );
 
             el.i = i;
             el.j = j;
@@ -254,7 +254,7 @@ namespace Mengine
                 p.y = (el.j + coeff_y[i]) * m_elementHeight;
                 p.z = 0.f;
 
-                mt::mul_v3_v3_m4( v.position, p, wm );
+                mt::mul_v3_v3_m4( &v.position, p, wm );
             }
 
             vertex_offset += 4;
@@ -269,8 +269,8 @@ namespace Mengine
 
         for( const Landscape2DElement & el : m_elements )
         {
-            mt::mul_v2_v2_m4( el.bb_wm.minimum, el.bb.minimum, wm );
-            mt::mul_v2_v2_m4( el.bb_wm.maximum, el.bb.maximum, wm );
+            mt::mul_v2_v2_m4( &el.bb_wm.minimum, el.bb.minimum, wm );
+            mt::mul_v2_v2_m4( &el.bb_wm.maximum, el.bb.maximum, wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////

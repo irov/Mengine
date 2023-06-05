@@ -50,11 +50,11 @@ namespace Mengine
         const Viewport & camera_vp = m_camera->getOrthogonalViewport();
 
         Viewport camera_vpwm;
-        mt::mul_v2_v2_m4( camera_vpwm.begin, camera_vp.begin, camera_wm );
-        mt::mul_v2_v2_m4( camera_vpwm.end, camera_vp.end, camera_wm );
+        mt::mul_v2_v2_m4( &camera_vpwm.begin, camera_vp.begin, camera_wm );
+        mt::mul_v2_v2_m4( &camera_vpwm.end, camera_vp.end, camera_wm );
 
         mt::vec2f camera_vpwm_center;
-        camera_vpwm.getCenter( camera_vpwm_center );
+        camera_vpwm.getCenter( &camera_vpwm_center );
 
         mt::vec3f target_wp = this->getWorldPosition();
 
@@ -78,7 +78,7 @@ namespace Mengine
         }
 
         mt::vec2f dir;
-        mt::norm_v2_v2( dir, target2d_wp - camera_vpwm_center );
+        mt::norm_v2_v2( &dir, target2d_wp - camera_vpwm_center );
 
         float way_length = m_speed * _context->time;
 

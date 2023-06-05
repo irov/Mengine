@@ -309,7 +309,7 @@ namespace Mengine
                 quad.size.x = 0.f;
                 quad.size.y = 0.f;
 
-                mt::uv4_identity( quad.uv );
+                mt::uv4_identity( &quad.uv );
                 quad.texture = nullptr;
             }
 

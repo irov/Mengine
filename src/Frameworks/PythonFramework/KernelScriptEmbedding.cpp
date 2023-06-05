@@ -236,7 +236,7 @@ namespace Mengine
                 if( bb == nullptr )
                 {
                     mt::box2f infinity_bb;
-                    mt::infinity_box( infinity_bb );
+                    mt::infinity_box( &infinity_bb );
 
                     return infinity_bb;
                 }
@@ -1158,7 +1158,7 @@ namespace Mengine
                     m_interpolator.step( 100.f, &next_position );
 
                     mt::vec3f dir;
-                    mt::dir_v3_v3( dir, start_position, next_position );
+                    mt::dir_v3_v3( &dir, start_position, next_position );
 
                     m_prevDir = dir;
                     m_currentDir = dir;
@@ -1200,7 +1200,7 @@ namespace Mengine
 
                     if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::constant::eps )
                     {
-                        mt::dir_v3_v3( m_targetDir, prev_position, _position );
+                        mt::dir_v3_v3( &m_targetDir, prev_position, _position );
                     }
 
                     float length = mt::length_v3_v3( m_targetDir, m_currentDir );
@@ -1410,18 +1410,18 @@ namespace Mengine
                         mt::vec3f direction = follow_position - node_position;
 
                         mt::mat4f mr;
-                        mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
+                        mt::make_rotate_m4_direction( &mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
 
                         mt::vec3f target_orientation;
-                        mt::make_euler_angles( target_orientation, mr );
+                        mt::make_euler_angles( &target_orientation, mr );
 
                         const mt::vec3f & node_orientation = m_node->getTransformation()->getLocalOrientation();
 
                         mt::vec3f correct_rotate_from;
                         mt::vec3f correct_rotate_to;
-                        mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
-                        mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
-                        mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
+                        mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, &correct_rotate_from.x, &correct_rotate_to.x );
+                        mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, &correct_rotate_from.y, &correct_rotate_to.y );
+                        mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, &correct_rotate_from.z, &correct_rotate_to.z );
 
                         float roatationSpeedStep = m_rotationAcceleration * _context->time;
 
@@ -1435,7 +1435,7 @@ namespace Mengine
                         }
 
                         mt::vec3f new_orientation;
-                        mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _context->time );
+                        mt::follow_v3( &new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _context->time );
 
                         m_node->getTransformation()->setLocalOrientation( new_orientation );
 
@@ -1443,7 +1443,7 @@ namespace Mengine
                     }
                     else
                     {
-                        mt::dir_v3_v3( current_direction, node_position, follow_position );
+                        mt::dir_v3_v3( &current_direction, node_position, follow_position );
                     }
 
                     float directionSpeedStep = m_moveAcceleration * _context->time;
@@ -1663,8 +1663,7 @@ namespace Mengine
                     mt::vec3f follow_position = m_target->getTransformation()->getWorldPosition();
 
                     mt::vec3f current_direction;
-
-                    mt::dir_v3_v3( current_direction, node_position, follow_position );
+                    mt::dir_v3_v3( &current_direction, node_position, follow_position );
 
                     float directionSpeedStep = m_moveAcceleration * _context->time;
 

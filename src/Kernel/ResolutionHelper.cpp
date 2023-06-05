@@ -16,7 +16,7 @@ namespace Mengine
                 ->getCurrentResolution();
 
             mt::vec2f renderViewportSize;
-            renderViewport.calcSize( renderViewportSize );
+            renderViewport.calcSize( &renderViewportSize );
 
             mt::vec2f currentResolutionSize;
             currentResolution.calcSize( &currentResolutionSize );
@@ -38,7 +38,7 @@ namespace Mengine
                 ->getCurrentResolution();
 
             mt::vec2f renderViewportSize;
-            renderViewport.calcSize( renderViewportSize );
+            renderViewport.calcSize( &renderViewportSize );
 
             mt::vec2f currentResolutionSize;
             currentResolution.calcSize( &currentResolutionSize );
@@ -57,7 +57,7 @@ namespace Mengine
                 ->getCurrentResolution();
 
             mt::vec2f renderViewportSize;
-            renderViewport.calcSize( renderViewportSize );
+            renderViewport.calcSize( &renderViewportSize );
 
             mt::vec2f currentResolutionSize;
             currentResolution.calcSize( &currentResolutionSize );

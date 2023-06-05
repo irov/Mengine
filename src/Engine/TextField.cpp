@@ -813,11 +813,11 @@ namespace Mengine
         }
 
         mt::box2f box;
-        mt::insideout_box( box );
+        mt::insideout_box( &box );
 
         for( const RenderVertex2D & vertex : textVertices )
         {
-            mt::add_internal_point( box, vertex.position.x, vertex.position.y );
+            mt::add_internal_point( &box, vertex.position.x, vertex.position.y );
         }
 
         _viewport->begin = box.minimum;
@@ -2399,7 +2399,7 @@ namespace Mengine
 
                 RenderVertex2D & vertex_w = *it_w;
 
-                mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
+                mt::mul_v3_v3_m4( &vertex_w.position, vertex.position, wm );
             }
         }
         else
@@ -2412,7 +2412,7 @@ namespace Mengine
 
                 RenderVertex2D & vertex_w = *it_w;
 
-                mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
+                mt::mul_v3_v3_m4( &vertex_w.position, vertex.position, wm );
             }
         }
     }

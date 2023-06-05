@@ -9,7 +9,6 @@
 #include "Kernel/ColorHelper.h"
 
 #include "math/box2.h"
-#include "math/clamp.h"
 
 namespace Mengine
 {
@@ -285,7 +284,7 @@ namespace Mengine
 
             RenderVertex2D & vertex_w = *it_w;
 
-            mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
+            mt::mul_v3_v3_m4( &vertex_w.position, vertex.position, wm );
 
             Color vertex_color( color );
             vertex_color *= Helper::makeColorARGB( vertex.color );
@@ -311,12 +310,12 @@ namespace Mengine
         mt::vec2f maximal( m_width, m_height );
 
         mt::vec2f minimal_wm;
-        mt::mul_v2_v2_m4( minimal_wm, minimal, wm );
+        mt::mul_v2_v2_m4( &minimal_wm, minimal, wm );
 
         mt::vec2f maximal_wm;
-        mt::mul_v2_v2_m4( maximal_wm, maximal, wm );
+        mt::mul_v2_v2_m4( &maximal_wm, maximal, wm );
 
-        mt::set_box_from_two_point( *_boundingBox, minimal_wm, maximal_wm );
+        mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
 
         *_boundingBoxCurrent = _boundingBox;
     }

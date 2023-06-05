@@ -53,10 +53,10 @@ namespace Mengine
         const mt::mat4f & vpm = _context->camera->getCameraViewProjectionMatrix();
 
         mt::mat4f wvpm;
-        mt::mul_m4_m4( wvpm, wm, vpm );
+        mt::mul_m4_m4( &wvpm, wm, vpm );
 
         mt::vec2f v_wvp;
-        mt::mul_v2_v2z_m4_homogenize( v_wvp, wvpm );
+        mt::mul_v2_v2z_m4_homogenize( &v_wvp, wvpm );
 
         mt::vec2f v_wvpn;
         v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
@@ -72,7 +72,7 @@ namespace Mengine
         float v_sqrlength = v.sqrlength();
 
         mt::vec2f r;
-        mt::mul_v2_v2_m4_r( r, mt::vec2f( m_radius, m_radius ), wm );
+        mt::mul_v2_v2_m4_r( &r, mt::vec2f( m_radius, m_radius ), wm );
 
         float r_sqrlength = r.sqrlength();
 
@@ -98,10 +98,10 @@ namespace Mengine
         const mt::mat4f & vpm = _context->camera->getCameraViewProjectionMatrix();
 
         mt::mat4f wvpm;
-        mt::mul_m4_m4( wvpm, wm, vpm );
+        mt::mul_m4_m4( &wvpm, wm, vpm );
 
         mt::vec2f v_wvp;
-        mt::mul_v2_v2z_m4_homogenize( v_wvp, wvpm );
+        mt::mul_v2_v2z_m4_homogenize( &v_wvp, wvpm );
 
         mt::vec2f v_wvpn;
         v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
@@ -117,7 +117,7 @@ namespace Mengine
         float v_sqrlength = v.sqrlength();
 
         mt::vec2f r;
-        mt::mul_v2_v2_m4_r( r, mt::vec2f( m_radius, m_radius ), wm );
+        mt::mul_v2_v2_m4_r( &r, mt::vec2f( m_radius, m_radius ), wm );
 
         if( v_sqrlength < (r.x + _radius) * (r.y + _radius) )
         {

@@ -101,13 +101,13 @@ namespace Mengine
         mt::vec2f maximal( total_offset.x + size.x, total_offset.y + size.y );
 
         mt::vec2f minimal_wm;
-        mt::mul_v2_v2_m4( minimal_wm, minimal, wm );
+        mt::mul_v2_v2_m4( &minimal_wm, minimal, wm );
 
         mt::vec2f maximal_wm;
-        mt::mul_v2_v2_m4( maximal_wm, maximal, wm );
+        mt::mul_v2_v2_m4( &maximal_wm, maximal, wm );
 
         mt::box2f bb;
-        mt::set_box_from_two_point( bb, minimal_wm, maximal_wm );
+        mt::set_box_from_two_point( &bb, minimal_wm, maximal_wm );
 
         *_bb = bb;
     }

@@ -53,7 +53,7 @@ namespace Mengine
         {
         case ETRANSFORMATION_ROTATE_MODE_INTERPOLATE:
             {
-                mt::angle_correct_interpolate_from_to( m_from, m_to, m_from, m_to );
+                mt::angle_correct_interpolate_from_to( m_from, m_to, &m_from, &m_to );
 
                 return true;
             } break;

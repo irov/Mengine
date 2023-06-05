@@ -58,7 +58,7 @@ namespace Mengine
             const mt::mat4f & wm = transformation->getWorldMatrix();
 
             mt::box2f boundsWM;
-            mt::mul_box2_m4( boundsWM, bounds, wm );
+            mt::mul_box2_m4( &boundsWM, bounds, wm );
 
             return boundsWM;
         }

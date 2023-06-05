@@ -171,7 +171,7 @@ namespace Mengine
         }
 
         mt::box2f bb;
-        mt::insideout_box( bb );
+        mt::insideout_box( &bb );
 
         int slotCount = m_skeleton->slotsCount;
 
@@ -221,13 +221,13 @@ namespace Mengine
             {
                 const mt::vec2f & v = attachment_vertices[index_vertex];
 
-                mt::add_internal_point( bb, v );
+                mt::add_internal_point( &bb, v );
             }
         }
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        mt::mul_box2_m4( *_box, bb, wm );
+        mt::mul_box2_m4( _box, bb, wm );
 
         return true;
     }
@@ -577,7 +577,7 @@ namespace Mengine
 
             RenderVertex2D & vertex = _vertices2D[i];
 
-            mt::mul_v3_v2_m4( vertex.position, v, _wm );
+            mt::mul_v3_v2_m4( &vertex.position, v, _wm );
 
             float uv_x = _uv[index_x];
             float uv_y = _uv[index_y];

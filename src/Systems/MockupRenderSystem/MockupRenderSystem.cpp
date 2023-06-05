@@ -49,10 +49,10 @@ namespace Mengine
         , m_indexBufferEnable( false )
         , m_waitForVSync( false )
     {
-        mt::ident_m4( m_projectionMatrix );
-        mt::ident_m4( m_modelViewMatrix );
-        mt::ident_m4( m_worldMatrix );
-        mt::ident_m4( m_totalWVPInvMatrix );
+        mt::ident_m4( &m_projectionMatrix );
+        mt::ident_m4( &m_modelViewMatrix );
+        mt::ident_m4( &m_worldMatrix );
+        mt::ident_m4( &m_totalWVPInvMatrix );
 
         Algorithm::fill_n( m_textureEnable, MENGINE_MAX_TEXTURE_STAGES, false );
     }
@@ -826,7 +826,7 @@ namespace Mengine
     {
         mt::mat4f totalWVPMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
 
-        mt::transpose_m4_m4( m_totalWVPInvMatrix, totalWVPMatrix );
+        mt::transpose_m4_m4( &m_totalWVPInvMatrix, totalWVPMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
 }

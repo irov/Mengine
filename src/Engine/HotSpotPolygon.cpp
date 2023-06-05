@@ -141,7 +141,7 @@ namespace Mengine
 
         if( _bb != nullptr )
         {
-            mt::insideout_box( *_bb );
+            mt::insideout_box( _bb );
         }
 
         if( _screen != nullptr )
@@ -154,12 +154,12 @@ namespace Mengine
         const mt::mat4f & vpm = _context->camera->getCameraViewProjectionMatrix();
 
         mt::mat4f wvpm;
-        mt::mul_m4_m4( wvpm, wm, vpm );
+        mt::mul_m4_m4( &wvpm, wm, vpm );
 
         const Viewport & vp = _context->viewport->getViewport();
 
         mt::vec2f vp_size;
-        vp.calcSize( vp_size );
+        vp.calcSize( &vp_size );
 
         mt::vec2f contentResolutionInvSize;
         _contentResolution.calcInvSize( &contentResolutionInvSize );
@@ -171,7 +171,7 @@ namespace Mengine
         for( const mt::vec2f & v : points )
         {
             mt::vec2f v_wvp;
-            mt::mul_v2_v2_m4_homogenize( v_wvp, v, wvpm );
+            mt::mul_v2_v2_m4_homogenize( &v_wvp, v, wvpm );
 
             mt::vec2f v_wvpn;
             v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
@@ -181,7 +181,7 @@ namespace Mengine
 
             if( _bb != nullptr )
             {
-                mt::add_internal_point( *_bb, v_screen );
+                mt::add_internal_point( _bb, v_screen );
             }
 
             if( _screen != nullptr )

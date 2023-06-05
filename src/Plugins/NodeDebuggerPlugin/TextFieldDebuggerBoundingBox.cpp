@@ -24,7 +24,7 @@ namespace Mengine
         const mt::mat4f & wm = transformation->getWorldMatrix();
 
         Viewport vpwm;
-        vp.multiply( vpwm, wm );
+        vp.multiply( &vpwm, wm );
 
         _bb->minimum = vpwm.begin;
         _bb->maximum = vpwm.end;

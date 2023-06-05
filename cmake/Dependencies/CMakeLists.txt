@@ -92,6 +92,7 @@ message("============@@##START##@@============")
 if(MENGINE_DEPENDENCE_ZLIB)
     message("================zlib================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/gzguts.h ${THIRDPARTY_DIR}/zlib/gzguts.h COPYONLY)
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${CMAKE_TEMP_DIR}/zlib)
     

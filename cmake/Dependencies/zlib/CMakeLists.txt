@@ -62,12 +62,12 @@ if(MSVC)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
-set(ZLIB_PC ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/zlib.pc)
+set(ZLIB_PC ${THIRDPARTY_CONFIG_DIR}/zlib/zlib.pc)
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
 		${ZLIB_PC} @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
-		${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/zconf.h @ONLY)
-include_directories(${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME} ${CMAKE_SOURCE_DIR})
+		${THIRDPARTY_CONFIG_DIR}/zlib/zconf.h @ONLY)
+include_directories(${THIRDPARTY_CONFIG_DIR}/zlib ${CMAKE_SOURCE_DIR})
 
 
 #============================================================================
@@ -75,7 +75,7 @@ include_directories(${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME} ${CMAKE_SOURCE_DIR}
 #============================================================================
 
 set(ZLIB_PUBLIC_HDRS
-    ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/zconf.h
+    ${THIRDPARTY_CONFIG_DIR}/zlib/zconf.h
     zlib.h
 )
 set(ZLIB_PRIVATE_HDRS

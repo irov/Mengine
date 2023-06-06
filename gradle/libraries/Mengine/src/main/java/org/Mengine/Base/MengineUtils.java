@@ -1,5 +1,8 @@
 package org.Mengine.Base;
 
+import android.app.ActivityManager;
+import android.content.Context;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -102,7 +105,7 @@ public class MengineUtils {
         return timestamp;
     }
 
-    public static long getDurationTimestamp( long begin ) {
+    public static long getDurationTimestamp(long begin) {
         long timestamp = MengineUtils.getTimestamp();
 
         long duration = timestamp - begin;
@@ -120,5 +123,86 @@ public class MengineUtils {
         String uuid = UUID.randomUUID().toString();
 
         return uuid;
+    }
+
+    public static int getBatteryLevel(Context context) {
+        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+
+        int batteryLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+
+        return batteryLevel;
+    }
+
+    public static boolean isBatteryCharging(Context context) {
+        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+
+        int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+
+        if (batteryStatus != BatteryManager.BATTERY_STATUS_CHARGING) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isBatteryDischarging(Context context) {
+        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+
+        int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+
+        if (batteryStatus != BatteryManager.BATTERY_STATUS_DISCHARGING) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isBatteryNotCharging(Context context) {
+        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+
+        int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+
+        if (batteryStatus != BatteryManager.BATTERY_STATUS_NOT_CHARGING) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isBatteryFull(Context context) {
+        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+
+        int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+
+        if (batteryStatus != BatteryManager.BATTERY_STATUS_FULL) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static long getRamTotal(Context context) {
+        ActivityManager actManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+        actManager.getMemoryInfo(memInfo);
+
+        long totalMemory = memInfo.totalMem;
+
+        return totalMemory;
+    }
+
+    public static long getRamUsage(Context context) {
+        ActivityManager actManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+        actManager.getMemoryInfo(memInfo);
+
+        long totalMemory = memInfo.totalMem;
+        long availMemory = memInfo.availMem;
+
+        long usageMemory = totalMemory - availMemory;
+
+        return usageMemory;
     }
 }

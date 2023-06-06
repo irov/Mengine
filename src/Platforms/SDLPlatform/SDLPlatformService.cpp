@@ -2791,8 +2791,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::sleep( uint32_t _ms )
     {
-        MENGINE_UNUSED( _ms );
-
         SDL_Delay( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2823,21 +2821,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::setClipboardText( const Char * _value ) const
     {
-        MENGINE_UNUSED( _value );
+        if( SDL_SetClipboardText( _value ) != 0 )
+        {
+            LOGGER_WARNING( "set clipboard text [%s] error: %s"
+                , _value
+                , SDL_GetError()
+            );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            return false;
+        }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
     {
-        MENGINE_UNUSED( _value );
-        MENGINE_UNUSED( _capacity );
+        char * text = SDL_GetClipboardText();
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        if( text == nullptr )
+        {
+            return false;
+        }
 
-        return false;
+        MENGINE_STRNCPY( _value, text, _capacity );
+
+        SDL_free( text );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     SDL_Window * SDLPlatformService::getWindow() const

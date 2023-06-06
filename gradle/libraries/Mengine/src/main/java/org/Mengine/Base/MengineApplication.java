@@ -216,34 +216,6 @@ public class MengineApplication extends Application {
         return packageInfo;
     }
 
-    @SuppressWarnings("deprecation")
-    private long getPackageInfoVersionCode(PackageInfo packageInfo) {
-        long versionCode = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            versionCode = packageInfo.getLongVersionCode();
-        } else {
-            versionCode = packageInfo.versionCode;
-        }
-
-        return versionCode;
-    }
-
-    public long getAndroidVersionCode() {
-        Context context = this.getApplicationContext();
-        PackageManager manager = context.getPackageManager();
-        String packageName = context.getPackageName();
-
-        PackageInfo packageInfo = this.getPackageInfo(manager, packageName);
-
-        if (packageInfo == null) {
-            return 0;
-        }
-
-        long versionCode = this.getPackageInfoVersionCode(packageInfo);
-
-        return versionCode;
-    }
-
     private String getSecureAndroidId() {
         Context applicationContext = this.getApplicationContext();
 

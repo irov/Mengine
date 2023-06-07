@@ -102,7 +102,6 @@ includeLibrary("MENGINE_APP_LIBRARY_SDL", ":libraries:SDL")
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
 / * - MENGINE_APP_PLUGIN_ONESIGNAL [https://onesignal.com]
 / * - MENGINE_APP_PLUGIN_DATADOG [https://www.datadoghq.com]
-DataDog
 *****************************************************************************/
 
 includePlugin("MENGINE_APP_PLUGIN_SPLASHSCREEN", ":plugins:SplashScreen")

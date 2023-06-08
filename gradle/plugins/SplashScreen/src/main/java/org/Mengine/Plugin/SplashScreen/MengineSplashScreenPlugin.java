@@ -43,6 +43,8 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+        this.setState("splashscreen", "init");
+
         ImageView image = new ImageView(activity);
         Context context = MengineActivity.getContext();
         Drawable mengine_splashscreen = this.getDrawableSplashScreen(context);
@@ -65,6 +67,8 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     private void showSplash(@NonNull MengineActivity activity) {
+        this.setState("splashscreen", "show");
+
         AlphaAnimation showAnimation = new AlphaAnimation(0.f, 1.f);
         long durationMillis = MengineActivity.getContext().getResources().getInteger(R.integer.mengine_splashscreen_show_duration);
         showAnimation.setDuration(durationMillis);
@@ -90,6 +94,8 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     private void hideSplash(@NonNull MengineActivity activity) {
+        this.setState("splashscreen", "hide");
+
         Animation showAnimation = m_image.getAnimation();
 
         float alphaFrom = 1.f;
@@ -133,5 +139,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
         view.removeView(m_image);
 
         m_image = null;
+
+        this.setState("splashscreen", "remove");
     }
 }

@@ -140,7 +140,7 @@ namespace Mengine
         virtual bool beginScene() = 0;
         virtual void endScene() = 0;
         virtual void swapBuffers() = 0;
-        virtual void clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil ) = 0;
+        virtual void clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil ) = 0;
 
         virtual void setScissor( const Viewport & _viewport ) = 0;
         virtual void removeScissor() = 0;

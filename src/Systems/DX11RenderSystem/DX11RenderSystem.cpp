@@ -77,10 +77,10 @@ namespace Mengine
         , m_waitForVSync( false )
         , m_invalidateRasterizerState( true )
     {
-        mt::ident_m4( m_projectionMatrix );
-        mt::ident_m4( m_modelViewMatrix );
-        mt::ident_m4( m_worldMatrix );
-        mt::ident_m4( m_totalWVPInvMatrix );
+        mt::ident_m4( &m_projectionMatrix );
+        mt::ident_m4( &m_modelViewMatrix );
+        mt::ident_m4( &m_worldMatrix );
+        mt::ident_m4( &m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     DX11RenderSystem::~DX11RenderSystem()
@@ -388,9 +388,9 @@ namespace Mengine
         float perfect_y = DirectX11_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
         mt::mat4f vmperfect;
-        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
+        mt::make_translation_m4( &vmperfect, perfect_x, perfect_y, 0.f );
 
-        mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
+        mt::mul_m4_m4( &m_projectionMatrix, _projectionMatrix, vmperfect );
 
         this->updateWVPInvMatrix_();
     }
@@ -677,7 +677,7 @@ namespace Mengine
         ++m_frames;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
+    void DX11RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil )
     {
         MENGINE_UNUSED( _frameBufferTypes );
 
@@ -691,11 +691,11 @@ namespace Mengine
         color[2] = _color.getB();
         color[3] = _color.getA();
 
-        // Clear the back buffer.
         m_pD3DDeviceContext->ClearRenderTargetView( m_renderTargetView.Get(), color );
 
-        // Clear the depth buffer.
-        m_pD3DDeviceContext->ClearDepthStencilView( m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, _depth, (UINT8)_stencil );
+        float d3d_depthf = (float)_depth;
+        
+        m_pD3DDeviceContext->ClearDepthStencilView( m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, d3d_depthf, (UINT8)_stencil );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setScissor( const Viewport & _viewport )
@@ -703,13 +703,13 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
 
         mt::mat4f pm;
-        mt::mul_m4_m4( pm, m_projectionMatrix, m_modelViewMatrix );
+        mt::mul_m4_m4( &pm, m_projectionMatrix, m_modelViewMatrix );
 
         mt::vec2f b;
-        mt::mul_v2_v2_m4( b, _viewport.begin, pm );
+        mt::mul_v2_v2_m4( &b, _viewport.begin, pm );
 
         mt::vec2f e;
-        mt::mul_v2_v2_m4( e, _viewport.end, pm );
+        mt::mul_v2_v2_m4( &e, _viewport.end, pm );
 
         mt::vec2f vs = m_viewport.size();
 
@@ -1843,7 +1843,7 @@ namespace Mengine
     {
         mt::mat4f totalWVPMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
 
-        mt::transpose_m4_m4( m_totalWVPInvMatrix, totalWVPMatrix );
+        mt::transpose_m4_m4( &m_totalWVPInvMatrix, totalWVPMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
 }

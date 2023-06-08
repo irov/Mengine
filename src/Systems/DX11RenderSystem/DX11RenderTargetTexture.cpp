@@ -57,7 +57,7 @@ namespace Mengine
         float u = float( _width ) / float( m_textureDesc.Width );
         float v = float( _height ) / float( m_textureDesc.Height );
 
-        mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
+        mt::uv4_from_mask( &m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
 
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 

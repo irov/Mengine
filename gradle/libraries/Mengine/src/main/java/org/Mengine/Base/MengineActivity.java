@@ -164,6 +164,16 @@ public class MengineActivity extends SDLActivity {
         return plugin;
     }
 
+    public void setState(String name, Object value) {
+        if (m_destroy == true) {
+            return;
+        }
+
+        MengineApplication app = this.getMengineApplication();
+
+        app.setState(name, value);
+    }
+
     public void sendEvent(MengineEvent event, Object ... args) {
         if (m_destroy == true) {
             return;
@@ -220,10 +230,15 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.setState("activity.lifecycle", "create");
+        this.setState("activity.init", "start");
+
         long activity_init_start_timestamp = MengineAnalytics.buildEvent("activity_init_start")
             .log();
 
         super.onCreate(savedInstanceState);
+
+        this.setState("activity.init", "create");
 
         MengineLog.logInfo(TAG, "onCreate");
 
@@ -260,6 +275,8 @@ public class MengineActivity extends SDLActivity {
                 .log();
         }
 
+        this.setState("activity.init", "plugin_create");
+
         for (MenginePlugin p : plugins) {
             try {
                 p.onExtensionInitialize(this);
@@ -271,6 +288,8 @@ public class MengineActivity extends SDLActivity {
                 this.finish();
             }
         }
+
+        this.setState("activity.init", "completed");
 
         MengineAnalytics.buildEvent("activity_init_completed")
             .addParameterLong("time", MengineUtils.getDurationTimestamp(activity_init_start_timestamp))
@@ -393,6 +412,8 @@ public class MengineActivity extends SDLActivity {
     public void onStart(){
         super.onStart();
 
+        this.setState("activity.lifecycle", "start");
+
         MengineLog.logInfo(TAG, "onStart");
 
         if (mBrokenLibraries == true) {
@@ -415,6 +436,8 @@ public class MengineActivity extends SDLActivity {
     @Override
     protected void onStop() {
         super.onStop();
+
+        this.setState("activity.lifecycle", "stop");
 
         MengineLog.logInfo(TAG, "onStop");
 
@@ -439,6 +462,8 @@ public class MengineActivity extends SDLActivity {
     public void onPause() {
         super.onPause();
 
+        this.setState("activity.lifecycle", "pause");
+
         MengineLog.logInfo(TAG, "onPause");
 
         if (mBrokenLibraries == true) {
@@ -461,6 +486,8 @@ public class MengineActivity extends SDLActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        this.setState("activity.lifecycle", "resume");
 
         MengineLog.logInfo(TAG, "onResume");
 
@@ -503,6 +530,8 @@ public class MengineActivity extends SDLActivity {
     @Override
     public void onDestroy() {
         MengineLog.logInfo(TAG, "onDestroy");
+
+        this.setState("activity.lifecycle", "destroy");
 
         if (mBrokenLibraries == true) {
             MengineLog.logError(TAG, "onDestroy: broken libraries");

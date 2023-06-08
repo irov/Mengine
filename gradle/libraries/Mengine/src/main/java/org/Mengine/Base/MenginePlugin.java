@@ -75,6 +75,10 @@ public class MenginePlugin {
         throw new MenginePluginInvalidInitializeException(m_pluginName);
     }
 
+    public void setState(String name, Object value) {
+        m_application.setState(name, value);
+    }
+
     public String logInfo(String format, Object ... args) {
         return MengineLog.logInfo(m_pluginName, format, args);
     }
@@ -122,6 +126,10 @@ public class MenginePlugin {
     }
 
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
+        //Empty
+    }
+
+    public void onState(MengineApplication application, String name, Object value) {
         //Empty
     }
 

@@ -30,6 +30,10 @@ namespace Mengine
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
+#if !defined(MENGINE_RENDER_OPENGL_ES)
+        , m_clearDepth( 1.0 )
+#endif
+        , m_clearStencil( 0 )
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         , m_vertexArrayId( 0 )
 #endif
@@ -216,6 +220,19 @@ namespace Mengine
 
         MENGINE_GLCALL( glDepthMask, (GL_FALSE) );
         MENGINE_GLCALL( glDepthFunc, (GL_LESS) );
+
+        GLfloat r = m_clearColor.getR();
+        GLfloat g = m_clearColor.getG();
+        GLfloat b = m_clearColor.getB();
+        GLfloat a = m_clearColor.getA();
+
+        MENGINE_GLCALL( glClearColor, (r, g, b, a) );
+
+#ifndef MENGINE_RENDER_OPENGL_ES
+        MENGINE_GLCALL( glClearDepth, (m_clearDepth) );
+#endif
+
+        MENGINE_GLCALL( glClearStencil, (m_clearStencil) );
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint vertexArrayId = 0;
@@ -915,7 +932,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
+    void OpenGLRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil )
     {
         MENGINE_UNUSED( _depth );
 
@@ -929,10 +946,10 @@ namespace Mengine
             {
                 m_clearColor = _color;
 
-                GLclampf r = m_clearColor.getR();
-                GLclampf g = m_clearColor.getG();
-                GLclampf b = m_clearColor.getB();
-                GLclampf a = m_clearColor.getA();
+                GLclampf r = _color.getR();
+                GLclampf g = _color.getG();
+                GLclampf b = _color.getB();
+                GLclampf a = _color.getA();
 
                 MENGINE_GLCALL( glClearColor, (r, g, b, a) );
             }
@@ -950,15 +967,25 @@ namespace Mengine
 #ifndef MENGINE_RENDER_OPENGL_ES
             GLclampd depth = static_cast<GLclampd>(_depth);
 
-            MENGINE_GLCALL( glClearDepth, (depth) );
-#endif          
+            if( m_clearDepth != depth )
+            {
+                m_clearDepth = depth;
+
+                MENGINE_GLCALL( glClearDepth, (m_clearDepth) );
+            }
+#endif
         }
 
         if( (_frameBufferTypes & FBT_STENCIL) != 0 )
         {
             frameBufferFlags |= GL_STENCIL_BUFFER_BIT;
 
-            MENGINE_GLCALL( glClearStencil, (_stencil) );
+            if( m_clearStencil != _stencil )
+            {
+                m_clearStencil = _stencil;
+
+                MENGINE_GLCALL( glClearStencil, (_stencil) );
+            }
         }
 
         MENGINE_GLCALL( glClear, (frameBufferFlags) );

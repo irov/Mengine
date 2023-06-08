@@ -101,7 +101,7 @@ namespace Mengine
         bool beginScene() override;
         void endScene() override;
         void swapBuffers() override;
-        void clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil ) override;
+        void clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil ) override;
 
         void setScissor( const Viewport & _viewport ) override;
         void removeScissor() override;
@@ -201,6 +201,12 @@ namespace Mengine
         bool m_depthMask;
 
         Color m_clearColor;
+
+#ifndef MENGINE_RENDER_OPENGL_ES
+        GLclampd m_clearDepth;
+#endif
+
+        GLint m_clearStencil;
 
         FactoryInterfacePtr m_factoryRenderVertexBuffer;
         FactoryInterfacePtr m_factoryRenderIndexBuffer;

@@ -47,36 +47,16 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
                 }
             });
         }
-
-        FirebaseCrashlytics.getInstance().setCustomKey("onCreate", false);
-        FirebaseCrashlytics.getInstance().setCustomKey("onDestroy", false);
-        FirebaseCrashlytics.getInstance().setCustomKey("onPause", false);
-        FirebaseCrashlytics.getInstance().setCustomKey("CurrentScene", "");
     }
 
     @Override
     public void onMengineCurrentSceneChange(MengineActivity activity, String name) {
-        FirebaseCrashlytics.getInstance().setCustomKey("CurrentScene", name);
+        FirebaseCrashlytics.getInstance().setCustomKey("current.scene", name);
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        FirebaseCrashlytics.getInstance().setCustomKey("onCreate", true);
-    }
-
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        FirebaseCrashlytics.getInstance().setCustomKey("onDestroy", true);
-    }
-
-    @Override
-    public void onPause(MengineActivity activity) {
-        FirebaseCrashlytics.getInstance().setCustomKey("onPause", true);
-    }
-
-    @Override
-    public void onResume(MengineActivity activity) {
-        FirebaseCrashlytics.getInstance().setCustomKey("onPause", false);
+    public void onState(MengineApplication application, String name, Object value) {
+        this.setCustomKey(name, value);
     }
 
     public void recordException(Throwable throwable) {

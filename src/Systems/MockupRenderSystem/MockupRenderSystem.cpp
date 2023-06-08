@@ -270,7 +270,7 @@ namespace Mengine
         ++m_frames;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
+    void MockupRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil )
     {
         MENGINE_UNUSED( _frameBufferTypes );
         MENGINE_UNUSED( _color );

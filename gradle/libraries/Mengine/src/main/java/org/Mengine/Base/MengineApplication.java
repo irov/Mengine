@@ -40,6 +40,7 @@ public class MengineApplication extends Application {
 
     private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
     private Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
+    private Map<String, Object> m_states = new HashMap<>();
 
     private ArrayList<MenginePluginLoggerListener> m_loggerListeners = new ArrayList<>();
     private ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners = new ArrayList<>();
@@ -223,6 +224,20 @@ public class MengineApplication extends Application {
         String androidId = Settings.Secure.getString(resolver, Settings.Secure.ANDROID_ID);
 
         return androidId;
+    }
+
+    public void setState(String name, Object value) {
+        m_states.put(name, value);
+
+        ArrayList<MenginePlugin> plugins = this.getPlugins();
+
+        for (MenginePlugin p : plugins) {
+            p.onState(this, name, value);
+        }
+    }
+
+    public Map<String, Object> getStates() {
+        return m_states;
     }
 
     public ArrayList<MenginePlugin> getPlugins() {
@@ -486,7 +501,11 @@ public class MengineApplication extends Application {
 
     @Override
     public void onCreate() {
+        this.setState("application.init", "started");
+
         super.onCreate();
+
+        this.setState("application.init", "create");
 
         try {
             SDL.loadLibrary("SDLApplication");
@@ -499,6 +518,8 @@ public class MengineApplication extends Application {
                 , e.getLocalizedMessage()
             );
         }
+
+        this.setState("application.init", "sdl_init");
 
         AndroidEnvironmentService_setMengineAndroidApplicationJNI(this);
 
@@ -549,6 +570,8 @@ public class MengineApplication extends Application {
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
 
+        this.setState("application.init", "load");
+
         ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
@@ -560,6 +583,8 @@ public class MengineApplication extends Application {
                 );
             }
         }
+
+        this.setState("application.init", "plugins_prerare");
 
         long app_init_start_timestamp = MengineAnalytics.buildEvent("app_init_start")
             .log();
@@ -573,6 +598,8 @@ public class MengineApplication extends Application {
                 );
             }
         }
+
+        this.setState("application.init", "completed");
 
         MengineAnalytics.buildEvent("app_init_completed")
             .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_start_timestamp))

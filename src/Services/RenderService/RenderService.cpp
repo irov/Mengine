@@ -453,7 +453,7 @@ namespace Mengine
                 frameBufferTypes |= FBT_DEPTH;
             }
 
-            m_renderSystem->clearFrameBuffer( frameBufferTypes, argb, 1.f, 0x00000000 );
+            m_renderSystem->clearFrameBuffer( frameBufferTypes, argb, 1.0, 0x00000000 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

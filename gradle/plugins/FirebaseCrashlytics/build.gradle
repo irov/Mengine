@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-crashlytics:18.3.6'
+    implementation 'com.google.firebase:firebase-crashlytics:18.3.7'
 }

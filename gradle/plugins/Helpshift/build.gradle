@@ -29,5 +29,5 @@ if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
 }
 
 dependencies {
-    implementation 'com.helpshift:helpshift-sdkx:10.2.0'
+    implementation 'com.helpshift:helpshift-sdkx:10.2.2'
 }

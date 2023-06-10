@@ -119,6 +119,12 @@ namespace Mengine
         EAET_EARN_VIRTUAL_CURRENCY = 1,
         EAET_SPEND_VIRTUAL_CURRENCY = 2,
         EAET_UNLOCK_ACHIEVEMENT = 3,
+        EAET_LEVEL_UP = 4,
+        EAET_LEVEL_START = 5,
+        EAET_LEVEL_END = 6,
+        EAET_SELECT_ITEM = 7,
+        EAET_TUTORIAL_BEGIN = 8,
+        EAET_TUTORIAL_COMPLETE = 9
     };
     //////////////////////////////////////////////////////////////////////////
     class AnalyticsEventInterface
@@ -188,6 +194,12 @@ namespace Mengine
         virtual void logEarnVirtualCurrency( const ConstString & _currencyName, double _value ) = 0;
         virtual void logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value ) = 0;
         virtual void logUnlockAchievement( const ConstString & _achievementId ) = 0;
+        virtual void logLevelUp( const ConstString & _character, int64_t _level ) = 0;
+        virtual void logLevelStart( const ConstString & _name ) = 0;
+        virtual void logLevelEnd( const ConstString & _name, bool _successful ) = 0;
+        virtual void logSelectItem( const ConstString & _category, const ConstString & _itemId ) = 0;
+        virtual void logTutorialBegin() = 0;
+        virtual void logTutorialComplete() = 0;
 
     public:
         virtual AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName ) = 0;

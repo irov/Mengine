@@ -82,11 +82,11 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             case EAET_EARN_VIRTUAL_CURRENCY: {
                 Bundle params = new Bundle();
 
-                String virtualCurrencyName = (String)parameters.get("@INTERNAL_VIRTUAL_CURRENCY_NAME");
-                Double value = (Double)parameters.get("@INTERNAL_VALUE");
+                String VIRTUAL_CURRENCY_NAME = (String)parameters.get("@VIRTUAL_CURRENCY_NAME");
+                Double VALUE = (Double)parameters.get("@VALUE");
 
-                params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
-                params.putDouble(FirebaseAnalytics.Param.VALUE, value);
+                params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, VIRTUAL_CURRENCY_NAME);
+                params.putDouble(FirebaseAnalytics.Param.VALUE, VALUE);
 
                 this.logInfo("logEvent [EARN_VIRTUAL_CURRENCY] eventName: %s params: %s"
                     , eventName
@@ -98,13 +98,13 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             case EAET_SPEND_VIRTUAL_CURRENCY: {
                 Bundle params = new Bundle();
 
-                String itemName = (String)parameters.get("@INTERNAL_ITEM_NAME");
-                String virtualCurrencyName = (String)parameters.get("@INTERNAL_VIRTUAL_CURRENCY_NAME");
-                Double value = (Double)parameters.get("@INTERNAL_VALUE");
+                String ITEM_NAME = (String)parameters.get("@ITEM_NAME");
+                String VIRTUAL_CURRENCY_NAME = (String)parameters.get("@VIRTUAL_CURRENCY_NAME");
+                Double VALUE = (Double)parameters.get("@VALUE");
 
-                params.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName);
-                params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, virtualCurrencyName);
-                params.putDouble(FirebaseAnalytics.Param.VALUE, value);
+                params.putString(FirebaseAnalytics.Param.ITEM_NAME, ITEM_NAME);
+                params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, VIRTUAL_CURRENCY_NAME);
+                params.putDouble(FirebaseAnalytics.Param.VALUE, VALUE);
 
                 this.logInfo("logEvent [SPEND_VIRTUAL_CURRENCY] eventName: %s params: %s"
                     , eventName
@@ -116,9 +116,9 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             case EAET_UNLOCK_ACHIEVEMENT: {
                 Bundle params = new Bundle();
 
-                String achievementId = (String)parameters.get("@INTERNAL_ACHIEVEMENT_ID");
+                String ACHIEVEMENT_ID = (String)parameters.get("@ACHIEVEMENT_ID");
 
-                params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, achievementId);
+                params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, ACHIEVEMENT_ID);
 
                 this.logInfo("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
                     , eventName
@@ -126,6 +126,88 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 );
 
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.UNLOCK_ACHIEVEMENT, params);
+            } break;
+            case EAET_LEVEL_UP: {
+                Bundle params = new Bundle();
+
+                String CHARACTER = (String)parameters.get("@CHARACTER");
+                Long LEVEL = (Long)parameters.get("@LEVEL");
+
+                params.putString(FirebaseAnalytics.Param.CHARACTER, CHARACTER);
+                params.putLong(FirebaseAnalytics.Param.LEVEL, LEVEL);
+
+                this.logInfo("logEvent [LEVEL_UP] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_UP, params);
+            } break;
+            case EAET_LEVEL_START: {
+                Bundle params = new Bundle();
+
+                String LEVEL_NAME = (String)parameters.get("@LEVEL_NAME");
+
+                params.putString(FirebaseAnalytics.Param.LEVEL_NAME, LEVEL_NAME);
+
+                this.logInfo("logEvent [LEVEL_START] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_START, params);
+            } break;
+            case EAET_LEVEL_END: {
+                Bundle params = new Bundle();
+
+                String LEVEL_NAME = (String)parameters.get("@LEVEL_NAME");
+                Boolean SUCCESS = (Boolean)parameters.get("@SUCCESS");
+
+                params.putString(FirebaseAnalytics.Param.LEVEL_NAME, LEVEL_NAME);
+                params.putBoolean(FirebaseAnalytics.Param.SUCCESS, SUCCESS);
+
+                this.logInfo("logEvent [LEVEL_END] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_END, params);
+            } break;
+            case EAET_SELECT_ITEM: {
+                Bundle params = new Bundle();
+
+                String ITEM_LIST_ID = (String)parameters.get("@ITEM_LIST_ID");
+                String ITEM_LIST_NAME = (String)parameters.get("@ITEM_LIST_NAME");
+
+                params.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, ITEM_LIST_ID);
+                params.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ITEM_LIST_NAME);
+
+                this.logInfo("logEvent [SELECT_ITEM] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, params);
+            } break;
+            case EAET_TUTORIAL_BEGIN: {
+                Bundle params = new Bundle();
+
+                this.logInfo("logEvent [TUTORIAL_BEGIN] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, params);
+            } break;
+            case EAET_TUTORIAL_COMPLETE: {
+                Bundle params = new Bundle();
+
+                this.logInfo("logEvent [TUTORIAL_COMPLETE] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE, params);
             } break;
             default: {
                 this.logWarning("event: %s unknown type: %d"

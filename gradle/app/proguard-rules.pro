@@ -12,3 +12,8 @@
     native <methods>;
     public <methods>;
 }
+
+-keep public class org.Mengine.Base.MengineApplication {
+    native <methods>;
+    public <methods>;
+}

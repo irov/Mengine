@@ -85,8 +85,8 @@ namespace Mengine
         builder->setGlobalContext( m_analyticsGlobalContext );
         builder->setEventType( EAET_EARN_VIRTUAL_CURRENCY );
         
-        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@INTERNAL_VIRTUAL_CURRENCY_NAME" ), _currencyName );
-        builder->addParameterDouble( STRINGIZE_STRING_LOCAL( "@INTERNAL_VALUE" ), _value );
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@VIRTUAL_CURRENCY_NAME" ), _currencyName );
+        builder->addParameterDouble( STRINGIZE_STRING_LOCAL( "@VALUE" ), _value );
 
         builder->log();
     }
@@ -99,9 +99,9 @@ namespace Mengine
         builder->setGlobalContext( m_analyticsGlobalContext );
         builder->setEventType( EAET_SPEND_VIRTUAL_CURRENCY );
         
-        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@INTERNAL_ITEM_NAME" ), _itemName );
-        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@INTERNAL_VIRTUAL_CURRENCY_NAME" ), _currencyName );
-        builder->addParameterDouble( STRINGIZE_STRING_LOCAL( "@INTERNAL_VALUE" ), _value );
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@ITEM_NAME" ), _itemName );
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@VIRTUAL_CURRENCY_NAME" ), _currencyName );
+        builder->addParameterDouble( STRINGIZE_STRING_LOCAL( "@VALUE" ), _value );
 
         builder->log();
     }
@@ -114,7 +114,84 @@ namespace Mengine
         builder->setGlobalContext( m_analyticsGlobalContext );
         builder->setEventType( EAET_UNLOCK_ACHIEVEMENT );
 
-        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@INTERNAL_ACHIEVEMENT_ID" ), _achievementId );
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@ACHIEVEMENT_ID" ), _achievementId );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logLevelUp( const ConstString & _character, int64_t _level )
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_LEVEL_UP );
+
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@CHARACTER" ), _character );
+        builder->addParameterInteger( STRINGIZE_STRING_LOCAL( "@LEVEL" ), _level );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logLevelStart( const ConstString & _name )
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_LEVEL_START );
+
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@LEVEL_NAME" ), _name );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logLevelEnd( const ConstString & _name, bool _successful )
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_LEVEL_END );
+
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@LEVEL_NAME" ), _name );
+        builder->addParameterBoolean( STRINGIZE_STRING_LOCAL( "@SUCCESS" ), _successful );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logSelectItem( const ConstString & _category, const ConstString & _itemId )
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_SELECT_ITEM );
+
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@ITEM_LIST_ID" ), _category );
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@ITEM_LIST_NAME" ), _itemId );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logTutorialBegin()
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_TUTORIAL_BEGIN );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logTutorialComplete()
+    {
+        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_TUTORIAL_COMPLETE );
 
         builder->log();
     }

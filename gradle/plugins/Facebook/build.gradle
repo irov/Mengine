@@ -29,5 +29,5 @@ if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
 }
 
 dependencies {
-    implementation 'com.facebook.android:facebook-android-sdk:15.2.0'
+    implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
 }

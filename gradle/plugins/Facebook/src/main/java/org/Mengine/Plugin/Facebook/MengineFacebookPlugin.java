@@ -257,7 +257,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             case EAET_UNLOCK_ACHIEVEMENT: {
                 Bundle params = new Bundle();
 
-                String achievementId = (String)parameters.get("@INTERNAL_ACHIEVEMENT_ID");
+                String achievementId = (String)parameters.get("@ACHIEVEMENT_ID");
 
                 params.putString(AppEventsConstants.EVENT_PARAM_DESCRIPTION, achievementId);
 

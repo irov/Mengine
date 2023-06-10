@@ -10,8 +10,6 @@ android {
 }
 
 dependencies {
-    //implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-
     implementation 'com.devtodev:android-google:1.0.0'
-    implementation 'com.devtodev:android-analytics:2.3.0'
+    implementation 'com.devtodev:android-analytics:2.3.4'
 }

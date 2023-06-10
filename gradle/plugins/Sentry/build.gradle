@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.sentry:sentry-android-gradle-plugin:3.5.0'
+        classpath 'io.sentry:sentry-android-gradle-plugin:3.10.0'
     }
 }
 
@@ -22,5 +22,5 @@ android {
 }
 
 dependencies {
-    implementation 'io.sentry:sentry-android:6.20.0'
+    implementation 'io.sentry:sentry-android:6.22.0'
 }

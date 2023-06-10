@@ -1723,33 +1723,14 @@ namespace Mengine
                 }
 
                 builder->log();
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsEarnVirtualCurrencyEvent( const ConstString & _currencyName, double _value )
-            {
-                ANALYTICS_SERVICE()
-                    ->logEarnVirtualCurrency( _currencyName, _value );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsSpendVirtualCurrencyEvent( const ConstString & _itemName, const ConstString & _currencyName, double _value )
-            {
-                ANALYTICS_SERVICE()
-                    ->logSpendVirtualCurrency( _itemName, _currencyName, _value );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsUnlockAchievementEvent( const ConstString & _achievementId )
-            {
-                ANALYTICS_SERVICE()
-                    ->logUnlockAchievement( _achievementId );
-            }
+            }           
             //////////////////////////////////////////////////////////////////////////
             bool s_mountResourcePackage( const ConstString & _fileGroupName
                 , const ConstString & _name
                 , const ConstString & _type
                 , const ConstString & _category
                 , const FilePath & _path
-                , const FilePath & _descriptionPath
-            )
+                , const FilePath & _descriptionPath )
             {
                 FileGroupInterfacePtr fileGroup;
                 if( FILE_SERVICE()
@@ -4408,10 +4389,15 @@ namespace Mengine
 
         pybind::def_functor_deprecated( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent, "use 'analyticsCustomEvent'" );
         pybind::def_functor( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent );
-        pybind::def_functor( _kernel, "analyticsEarnVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEarnVirtualCurrencyEvent );
-        pybind::def_functor( _kernel, "analyticsSpendVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsSpendVirtualCurrencyEvent );
-        pybind::def_functor( _kernel, "analyticsUnlockAchievementEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsUnlockAchievementEvent );
-
+        pybind::def_functor( _kernel, "analyticsEarnVirtualCurrencyEvent", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logEarnVirtualCurrency );
+        pybind::def_functor( _kernel, "analyticsSpendVirtualCurrencyEvent", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logSpendVirtualCurrency );
+        pybind::def_functor( _kernel, "analyticsUnlockAchievementEvent", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logUnlockAchievement );
+        pybind::def_functor( _kernel, "analyticsLevelUp", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logLevelUp );
+        pybind::def_functor( _kernel, "analyticsLevelStart", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logLevelStart );
+        pybind::def_functor( _kernel, "analyticsLevelEnd", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logLevelEnd );
+        pybind::def_functor( _kernel, "analyticsSelectItem", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logSelectItem );
+        pybind::def_functor( _kernel, "analyticsTutorialBegin", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logTutorialBegin );
+        pybind::def_functor( _kernel, "analyticsTutorialComplete", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logTutorialComplete );
 
         pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
         pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );

@@ -1,19 +1,19 @@
 #pragma once
 
-#include "Interface/TextFontConfigLoaderInterface.h"
+#include "Interface/FontConfigLoaderInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class BitmapFontConfigLoader
-        : public TextFontConfigLoaderInterface
+        : public FontConfigLoaderInterface
     {
     public:
         BitmapFontConfigLoader();
         ~BitmapFontConfigLoader() override;
 
     protected:
-        bool load( const TextFontInterfacePtr & _font, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) override;
+        bool load( const FontInterfacePtr & _font, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<BitmapFontConfigLoader> BitmapFontConfigLoaderPtr;

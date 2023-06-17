@@ -1,4 +1,4 @@
-#include "FETextFontEffectBase.h"
+#include "FEFontEffectBase.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
@@ -6,60 +6,60 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    FETextFontEffectBase::FETextFontEffectBase()
+    FEFontEffectBase::FEFontEffectBase()
         : m_effectSample( 1 )
         , m_effectSampleInv( 1.f )
         , m_layoutCount( 1 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FETextFontEffectBase::~FETextFontEffectBase()
+    FEFontEffectBase::~FEFontEffectBase()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void FETextFontEffectBase::setContent( const ContentInterfacePtr & _content )
+    void FEFontEffectBase::setContent( const ContentInterfacePtr & _content )
     {
         m_content = _content;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ContentInterfacePtr & FETextFontEffectBase::getContent() const
+    const ContentInterfacePtr & FEFontEffectBase::getContent() const
     {
         return m_content;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FETextFontEffectBase::setEffectName( const ConstString & _effectName )
+    void FEFontEffectBase::setEffectName( const ConstString & _effectName )
     {
         m_effectName = _effectName;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & FETextFontEffectBase::getEffectName() const
+    const ConstString & FEFontEffectBase::getEffectName() const
     {
         return m_effectName;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FETextFontEffectBase::setEffectSample( uint32_t _effectSample )
+    void FEFontEffectBase::setEffectSample( uint32_t _effectSample )
     {
         m_effectSample = _effectSample;
 
         m_effectSampleInv = 1.f / (float)m_effectSample;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t FETextFontEffectBase::getEffectSample() const
+    uint32_t FEFontEffectBase::getEffectSample() const
     {
         return m_effectSample;
     }
     //////////////////////////////////////////////////////////////////////////
-    float FETextFontEffectBase::getEffectSampleInv() const
+    float FEFontEffectBase::getEffectSampleInv() const
     {
         return m_effectSampleInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t FETextFontEffectBase::getLayoutCount() const
+    uint32_t FEFontEffectBase::getLayoutCount() const
     {
         return m_layoutCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectBase::compileFEBundle( fe_bundle * _bundle )
+    bool FEFontEffectBase::compileFEBundle( fe_bundle * _bundle )
     {
         fe_effect * effect = fe_bundle_get_effect_by_name( _bundle, m_effectName.c_str() );
 
@@ -101,7 +101,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectBase::apply( uint32_t _width, uint32_t _rows, uint32_t _pitch, const void * _buffer, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider )
+    bool FEFontEffectBase::apply( uint32_t _width, uint32_t _rows, uint32_t _pitch, const void * _buffer, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider )
     {
         MENGINE_PROFILER_CATEGORY();
 
@@ -178,21 +178,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectBase::prefetch( const PrefetcherObserverInterfacePtr & _observer )
+    bool FEFontEffectBase::prefetch( const PrefetcherObserverInterfacePtr & _observer )
     {
         bool successful = this->_prefetch( _observer );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectBase::unfetch()
+    bool FEFontEffectBase::unfetch()
     {
         bool successful = this->_unfetch();
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectBase::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
+    bool FEFontEffectBase::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
     {
         _observer->onPrefetchPreparation();
         _observer->onPrefetchComplete( true );
@@ -200,7 +200,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectBase::_unfetch()
+    bool FEFontEffectBase::_unfetch()
     {
         //Empty
 

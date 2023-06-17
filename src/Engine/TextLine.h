@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/TextFontInterface.h"
+#include "Interface/FontInterface.h"
 
 #include "TextChar.h"
 
@@ -43,7 +43,7 @@ namespace Mengine
         ~TextLine();
 
     public:
-        bool initialize( uint32_t _fontId, const TextFontInterfacePtr & _font, const U32String & _text );
+        bool initialize( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text );
 
     public:
         const VectorCharData & getCharsData() const;

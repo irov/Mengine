@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/TextFontInterface.h"
+#include "Interface/FontInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/CompilableReference.h"
@@ -9,7 +9,7 @@
 namespace Mengine
 {
     class FontBase
-        : public TextFontInterface
+        : public FontInterface
         , public CompilableReference
     {
     public:

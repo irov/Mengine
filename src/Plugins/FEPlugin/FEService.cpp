@@ -1,7 +1,7 @@
 #include "FEService.h"
 
-#include "FETextFontEffectFile.h"
-#include "FETextFontEffectCustom.h"
+#include "FEFontEffectFile.h"
+#include "FEFontEffectCustom.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -20,36 +20,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FEService::_initializeService()
     {
-        m_factoryFETextFontEffectFile = Helper::makeFactoryPool<FETextFontEffectFile, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryFETextFontEffectCustom = Helper::makeFactoryPool<FETextFontEffectCustom, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryFEFontEffectFile = Helper::makeFactoryPool<FEFontEffectFile, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryFEFontEffectCustom = Helper::makeFactoryPool<FEFontEffectCustom, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FEService::_finalizeService()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFETextFontEffectFile );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFETextFontEffectCustom );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFEFontEffectFile );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFEFontEffectCustom );
 
-        m_factoryFETextFontEffectFile = nullptr;
-        m_factoryFETextFontEffectCustom = nullptr;
+        m_factoryFEFontEffectFile = nullptr;
+        m_factoryFEFontEffectCustom = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    TextFontEffectInterfacePtr FEService::createTextFontEffect( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _name, uint32_t _sample )
+    FontEffectInterfacePtr FEService::createFontEffect( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _name, uint32_t _sample )
     {
-        FETextFontEffectFilePtr textFontEffet = m_factoryFETextFontEffectFile->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        FEFontEffectFilePtr fontEffet = m_factoryFEFontEffectFile->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textFontEffet );
+        MENGINE_ASSERTION_MEMORY_PANIC( fontEffet );
 
-        const ContentInterfacePtr & content = textFontEffet->getContent();
+        const ContentInterfacePtr & content = fontEffet->getContent();
 
         content->setFileGroup( _fileGroup );
         content->setFilePath( _filePath );
 
-        textFontEffet->setEffectName( _name );
-        textFontEffet->setEffectSample( _sample );
+        fontEffet->setEffectName( _name );
+        fontEffet->setEffectSample( _sample );
 
-        return textFontEffet;
+        return fontEffet;
     }
     //////////////////////////////////////////////////////////////////////////
 }

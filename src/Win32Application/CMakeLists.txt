@@ -16,7 +16,6 @@ endif()
     
 ADD_FILTER(
 Win32Application
-    
     Win32Application.cpp
     Win32Application.h
     Win32ExtraFileLogger.h
@@ -63,15 +62,19 @@ if(MENGINE_PLUGIN_MENGINE_STATIC)
     endif()
 endif()
 
-if(NOT MSVC)
+if(NOT MENGINE_TOOLCHAIN_MSVC)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} libole32.a)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} atomic)
 endif()
 
-if(MSVC)
+if(MENGINE_TOOLCHAIN_MSVC)
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib")
 endif()
 
 if(MINGW)
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map")
+endif()
+
+if(MENGINE_TOOLCHAIN_MSVC)
+    set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif()

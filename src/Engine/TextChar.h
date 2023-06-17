@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/TextFontInterface.h"
+#include "Interface/FontInterface.h"
 
 #include "Kernel/Vector.h"
 #include "Kernel/VectorString.h"
@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct CacheFont
     {
-        TextFontInterfacePtr font;
+        FontInterfacePtr font;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<TextLineChunk> VectorTextLineChunks;

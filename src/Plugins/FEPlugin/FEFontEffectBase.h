@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/TextFontEffectInterface.h"
+#include "Interface/FontEffectInterface.h"
 
 #include "FEInterface.h"
 #include "FEDataInterface.h"
@@ -10,13 +10,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class FETextFontEffectBase
-        : public TextFontEffectInterface
+    class FEFontEffectBase
+        : public FontEffectInterface
         , virtual public UnknownFEInterface
     {
     public:
-        FETextFontEffectBase();
-        ~FETextFontEffectBase() override;
+        FEFontEffectBase();
+        ~FEFontEffectBase() override;
 
     public:
         void setContent( const ContentInterfacePtr & _content ) override;
@@ -59,6 +59,6 @@ namespace Mengine
         const fe_node * m_effectNodes[FE_MAX_PINS] = {nullptr};
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FETextFontEffectBase, TextFontEffectInterface> FETextFontEffectBasePtr;
+    typedef IntrusivePtr<FEFontEffectBase, FontEffectInterface> FEFontEffectBasePtr;
     //////////////////////////////////////////////////////////////////////////
 }

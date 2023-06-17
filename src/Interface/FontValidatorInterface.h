@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
-#include "Interface/TextFontInterface.h"
+#include "Interface/FontInterface.h"
 
 namespace Mengine
 {
@@ -10,7 +10,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual bool validate( const TextFontInterfacePtr & _textFont ) const = 0;
+        virtual bool validate( const FontInterfacePtr & _font ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FontValidatorInterface> FontValidatorInterfacePtr;

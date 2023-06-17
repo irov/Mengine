@@ -1754,6 +1754,27 @@ namespace Mengine
     bool SDLPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
 #if !defined(MENGINE_PLATFORM_IOS)
+
+#endif
+
+        uint32_t width;
+        uint32_t height;
+
+#if defined(MENGINE_PLATFORM_IOS)
+        int drawable_width;
+        int drawable_height;
+        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
+
+        width = (uint32_t)drawable_width;
+        height = (uint32_t)drawable_height;
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        int drawable_width;
+        int drawable_height;
+        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
+
+        width = (uint32_t)drawable_width;
+        height = (uint32_t)drawable_height;
+#else
         int displayIndex;
 
         if( m_sdlWindow == nullptr )
@@ -1773,32 +1794,7 @@ namespace Mengine
                 return false;
             }
         }
-#endif
 
-        uint32_t width;
-        uint32_t height;
-
-#if defined(MENGINE_PLATFORM_IOS)
-        int drawable_width;
-        int drawable_height;
-        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
-
-        width = (uint32_t)drawable_width;
-        height = (uint32_t)drawable_height;
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        SDL_Rect rect;
-        if( SDL_GetDisplayBounds( displayIndex, &rect ) != 0 )
-        {
-            LOGGER_ERROR( "invalid get desktop resolution error: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        width = (uint32_t)rect.w;
-        height = (uint32_t)rect.h;
-#else
         SDL_DisplayMode dm;
         if( SDL_GetDesktopDisplayMode( displayIndex, &dm ) != 0 )
         {
@@ -3257,6 +3253,16 @@ namespace Mengine
         MENGINE_UNUSED( _windowResolution );
         MENGINE_UNUSED( _fullscreen );
 
+#if defined(MENGINE_PLATFORM_IOS)
+        SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
+#elif defined(MENGINE_PLATFORM_UWP)
+       //Empty
+#else
+        SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
+#endif
+
         Uint32 windowFlags = 0;
 
 #if defined(MENGINE_PLATFORM_IOS)
@@ -3399,25 +3405,36 @@ namespace Mengine
         {
             switch( _eventId )
             {
+                /* Application events */
                 MENGINE_MESSAGE_CASE( SDL_QUIT, "User - requested quit" );
+
+                /* These application events have special meaning on iOS, see README-ios.md for details */
                 MENGINE_MESSAGE_CASE( SDL_APP_TERMINATING, "The application is being terminated by the OS Called on iOS in applicationWillTerminate Called on Android in onDestroy" );
                 MENGINE_MESSAGE_CASE( SDL_APP_LOWMEMORY, "The application is low on memory, free memory if possible.Called on iOS in applicationDidReceiveMemoryWarning Called on Android in onLowMemory" );
                 MENGINE_MESSAGE_CASE( SDL_APP_WILLENTERBACKGROUND, "The application is about to enter the background Called on iOS in applicationWillResignActive Called on Android in onPause" );
                 MENGINE_MESSAGE_CASE( SDL_APP_DIDENTERBACKGROUND, "The application did enter the background and may not get CPU for some time Called on iOS in applicationDidEnterBackground Called on Android in onPause" );
                 MENGINE_MESSAGE_CASE( SDL_APP_WILLENTERFOREGROUND, "The application is about to enter the foreground Called on iOS in applicationWillEnterForeground Called on Android in onResume" );
                 MENGINE_MESSAGE_CASE( SDL_APP_DIDENTERFOREGROUND, "The application is now interactive Called on iOS in applicationDidBecomeActive Called on Android in onResume" );
+                
                 MENGINE_MESSAGE_CASE( SDL_LOCALECHANGED, "The user's locale preferences have changed." );
 
+                /* Display events */
                 MENGINE_MESSAGE_CASE( SDL_DISPLAYEVENT, "Display state change" );
+
+                /* Window events */
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT, "Window state change" );
                 MENGINE_MESSAGE_CASE( SDL_SYSWMEVENT, "System specific event" );
 
                 /* Keyboard events */
                 MENGINE_MESSAGE_CASE( SDL_KEYDOWN, "Key pressed" );
                 MENGINE_MESSAGE_CASE( SDL_KEYUP, "Key released" );
-                MENGINE_MESSAGE_CASE( SDL_TEXTEDITING, "Keyboard text editing( composition )" );
+                MENGINE_MESSAGE_CASE( SDL_TEXTEDITING, "Keyboard text editing (composition)" );
                 MENGINE_MESSAGE_CASE( SDL_TEXTINPUT, "Keyboard text input" );
                 MENGINE_MESSAGE_CASE( SDL_KEYMAPCHANGED, "Keymap changed due to a system event such as an input language or keyboard layout change." );
+
+                MENGINE_MESSAGE_CASE( SDL_TEXTEDITING_EXT, "Extended keyboard text editing (composition)" );
+
+                /* Mouse events */
                 MENGINE_MESSAGE_CASE( SDL_MOUSEMOTION, "Mouse moved" );
                 MENGINE_MESSAGE_CASE( SDL_MOUSEBUTTONDOWN, "Mouse button pressed" );
                 MENGINE_MESSAGE_CASE( SDL_MOUSEBUTTONUP, "Mouse button released" );

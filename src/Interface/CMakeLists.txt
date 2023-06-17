@@ -38,9 +38,9 @@ Common
     ImageCodecInterface.h
     PickCodecInterface.h
     SoundCodecInterface.h
-    TextFontInterface.h
-    TextFontEffectInterface.h
-    TextFontConfigLoaderInterface.h
+    FontInterface.h
+    FontEffectInterface.h
+    FontConfigLoaderInterface.h
     TextEntryInterface.h
     TextServiceInterface.h
     FontValidatorInterface.h

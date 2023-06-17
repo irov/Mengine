@@ -64,7 +64,7 @@ namespace Mengine
             ->foreachTextEntry( [&successful]( const TextEntryInterfacePtr & _textEntry )
         {
             const ConstString & textId = _textEntry->getKey();
-            const TextFontInterfacePtr & font = _textEntry->getFont();
+            const FontInterfacePtr & font = _textEntry->getFont();
 
             if( font == nullptr )
             {

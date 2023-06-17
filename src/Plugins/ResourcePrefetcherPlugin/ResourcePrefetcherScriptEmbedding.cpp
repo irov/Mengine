@@ -139,9 +139,9 @@ namespace Mengine
             PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
 
             FONT_SERVICE()
-                ->foreachFonts( [&observer]( const TextFontInterfacePtr & _textFont )
+                ->foreachFonts( [&observer]( const FontInterfacePtr & _font )
             {
-                _textFont->prefetch( observer );
+                _font->prefetch( observer );
             } );
 
             uint32_t count = observer->getCount();
@@ -164,7 +164,7 @@ namespace Mengine
         static void s_unfetchFonts()
         {
             FONT_SERVICE()
-                ->foreachFonts( []( const TextFontInterfacePtr & _font )
+                ->foreachFonts( []( const FontInterfacePtr & _font )
             {
                 _font->unfetch();
             } );

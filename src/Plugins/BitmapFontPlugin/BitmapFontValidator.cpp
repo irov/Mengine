@@ -8,9 +8,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFontValidator::validate( const TextFontInterfacePtr & _textFont ) const
+    bool BitmapFontValidator::validate( const FontInterfacePtr & _font ) const
     {
-        BitmapFontPtr bitmapFont = BitmapFontPtr::from( _textFont );
+        BitmapFontPtr bitmapFont = BitmapFontPtr::from( _font );
 
         const ContentInterfacePtr & content = bitmapFont->getContent();
 

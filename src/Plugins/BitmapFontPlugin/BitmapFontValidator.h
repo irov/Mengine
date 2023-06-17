@@ -8,6 +8,6 @@ namespace Mengine
         : public FontValidatorInterface
     {
     public:
-        bool validate( const TextFontInterfacePtr & _textFont ) const override;
+        bool validate( const FontInterfacePtr & _font ) const override;
     };
 }

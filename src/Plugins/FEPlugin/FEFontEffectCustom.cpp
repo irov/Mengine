@@ -1,4 +1,4 @@
-#include "FETextFontEffectCustom.h"
+#include "FEFontEffectCustom.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -6,33 +6,33 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    FETextFontEffectCustom::FETextFontEffectCustom()
+    FEFontEffectCustom::FEFontEffectCustom()
         : m_bundle( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FETextFontEffectCustom::~FETextFontEffectCustom()
+    FEFontEffectCustom::~FEFontEffectCustom()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void FETextFontEffectCustom::setFECustom( const MemoryInterfacePtr & _memory )
+    void FEFontEffectCustom::setFECustom( const MemoryInterfacePtr & _memory )
     {
         m_memory = _memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    const MemoryInterfacePtr & FETextFontEffectCustom::getFECustom() const
+    const MemoryInterfacePtr & FEFontEffectCustom::getFECustom() const
     {
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectCustom::isValid() const
+    bool FEFontEffectCustom::isValid() const
     {
         //ToDo
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectCustom::_compile()
+    bool FEFontEffectCustom::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_memory );
 
@@ -53,7 +53,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FETextFontEffectCustom::_release()
+    void FEFontEffectCustom::_release()
     {
         fe_bundle_free( m_bundle );
         m_bundle = nullptr;

@@ -999,7 +999,7 @@ namespace Mengine
             Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
         }
 
-        const TextFontInterfacePtr & defaultFont = FONT_SERVICE()
+        const FontInterfacePtr & defaultFont = FONT_SERVICE()
             ->getDefaultFont();
 
         Detail::serializeNodeProp( _textField->getFont() != nullptr ? _textField->getFont()->getName() : defaultFont->getName(), "FontName", xmlNode );
@@ -1964,7 +1964,7 @@ namespace Mengine
 
                 this->deserializeNodeProp<ConstString>( "FontName", typeNodeTextField, [textField]( const ConstString & _value )
                 {
-                    TextFontInterfacePtr font;
+                    FontInterfacePtr font;
 
                     if( FONT_SERVICE()
                         ->existFont( _value, &font ) == false )

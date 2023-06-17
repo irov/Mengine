@@ -25,16 +25,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void BitmapFont::setEffect( const TextFontEffectInterfacePtr & _effect )
+    void BitmapFont::setEffect( const FontEffectInterfacePtr & _effect )
     {
         MENGINE_UNUSED( _effect );
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextFontEffectInterfacePtr & BitmapFont::getEffect() const
+    const FontEffectInterfacePtr & BitmapFont::getEffect() const
     {
         //Empty
 
-        return TextFontEffectInterfacePtr::none();
+        return FontEffectInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::initialize()

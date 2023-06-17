@@ -65,12 +65,12 @@ namespace Mengine
         return m_ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TTFFont::setEffect( const TextFontEffectInterfacePtr & _effect )
+    void TTFFont::setEffect( const FontEffectInterfacePtr & _effect )
     {
         m_effect = _effect;
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextFontEffectInterfacePtr & TTFFont::getEffect() const
+    const FontEffectInterfacePtr & TTFFont::getEffect() const
     {
         return m_effect;
     }

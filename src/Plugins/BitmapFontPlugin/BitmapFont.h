@@ -18,8 +18,8 @@ namespace Mengine
         ~BitmapFont() override;
 
     public:
-        void setEffect( const TextFontEffectInterfacePtr & _effect ) override;
-        const TextFontEffectInterfacePtr & getEffect() const override;
+        void setEffect( const FontEffectInterfacePtr & _effect ) override;
+        const FontEffectInterfacePtr & getEffect() const override;
 
     protected:
         bool initialize() override;
@@ -61,6 +61,6 @@ namespace Mengine
         RenderTextureInterfacePtr m_textureOutline;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BitmapFont, TextFontInterface> BitmapFontPtr;
+    typedef IntrusivePtr<BitmapFont, FontInterface> BitmapFontPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -10,14 +10,12 @@ src
     FEService.h
     FEService.cpp
 
-    #FEBundle.h
-    #FEBundle.cpp
-    FETextFontEffectBase.h
-    FETextFontEffectBase.cpp
-    FETextFontEffectFile.h
-    FETextFontEffectFile.cpp
-    FETextFontEffectCustom.h
-    FETextFontEffectCustom.cpp
+    FEFontEffectBase.h
+    FEFontEffectBase.cpp
+    FEFontEffectFile.h
+    FEFontEffectFile.cpp
+    FEFontEffectCustom.h
+    FEFontEffectCustom.cpp
     FEInterface.h
     FEDataInterface.h
     FEData.h

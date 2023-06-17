@@ -4,7 +4,7 @@
 #include "TTFDataInterface.h"
 
 #include "Interface/MemoryInterface.h"
-#include "Interface/TextFontInterface.h"
+#include "Interface/FontInterface.h"
 
 #include "Kernel/Observable.h"
 #include "Kernel/String.h"
@@ -42,8 +42,8 @@ namespace Mengine
         FT_Library getFTLibrary() const;
 
     public:
-        void setEffect( const TextFontEffectInterfacePtr & _effect ) override;
-        const TextFontEffectInterfacePtr & getEffect() const override;
+        void setEffect( const FontEffectInterfacePtr & _effect ) override;
+        const FontEffectInterfacePtr & getEffect() const override;
 
     public:
         bool initialize() override;
@@ -99,7 +99,7 @@ namespace Mengine
         FT_Library m_ftlibrary;
         TTFDataInterfacePtr m_dataTTF;
 
-        TextFontEffectInterfacePtr m_effect;
+        FontEffectInterfacePtr m_effect;
 
         float m_ttfAscender;
         float m_ttfDescender;

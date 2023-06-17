@@ -638,7 +638,7 @@ namespace Mengine
             mt::vec2f scale;
             content.calcScale( resolution, &scale );
 
-            const TextFontInterfacePtr & font = FONT_SERVICE()
+            const FontInterfacePtr & font = FONT_SERVICE()
                 ->getFont( STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ) );
 
             Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, font, Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FORWARD, "%s"

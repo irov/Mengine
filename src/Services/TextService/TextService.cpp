@@ -7,7 +7,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/TextFontConfigLoaderInterface.h"
+#include "Interface/FontConfigLoaderInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 
@@ -388,7 +388,7 @@ namespace Mengine
                 );
             }
 
-            TextFontInterfacePtr font;
+            FontInterfacePtr font;
 
             if( fontName.empty() == false )
             {
@@ -578,7 +578,7 @@ namespace Mengine
         , const Char * _text
         , size_t _size
         , const Tags & _tags
-        , const TextFontInterfacePtr & _font
+        , const FontInterfacePtr & _font
         , const Color & _colorFont
         , float _lineOffset
         , float _charOffset
@@ -609,7 +609,7 @@ namespace Mengine
         , const Char * _text
         , size_t _size
         , const Tags & _tags
-        , const TextFontInterfacePtr & _font
+        , const FontInterfacePtr & _font
         , const Color & _colorFont
         , float _lineOffset
         , float _charOffset

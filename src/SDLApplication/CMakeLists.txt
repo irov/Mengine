@@ -120,37 +120,35 @@ if(MENGINE_TARGET_UWP)
         endif()
         
         if(MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS)
-            SET(APPX_VISUAL_ASSETS
-                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/LockScreenLogo.scale-200.png
-                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/SplashScreen.scale-200.png
-                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/Square44x44Logo.scale-200.png
-                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/Square44x44Logo.targetsize-24_altform-unplated.png
-                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/Square150x150Logo.scale-200.png
-                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/StoreLogo.scale-100.png
-                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/StoreLogo.scale-200.png
-                ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/Wide310x150Logo.scale-200.png
-            )
+            file(GLOB_RECURSE APPX_VISUAL_ASSETS ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS}/*)
+            
+            foreach(DATA ${APPX_VISUAL_ASSETS})
+                file(RELATIVE_PATH RELPATH ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS} ${DATA})
+                get_filename_component(RES_LOC ${RELPATH} PATH)
+                
+                string(REPLACE "/" "\\" ide_group_name "AppXVisualAssets/${RES_LOC}")
+                source_group(${ide_group_name} FILES ${DATA})
+            endforeach()
             
             set_source_files_properties(${APPX_VISUAL_ASSETS} PROPERTY VS_DEPLOYMENT_CONTENT 1)
-            #set_source_files_properties(${APPX_VISUAL_ASSETS} PROPERTY VS_DEPLOYMENT_LOCATION "VisualAssets")
+            set_source_files_properties(${APPX_VISUAL_ASSETS} PROPERTY VS_DEPLOYMENT_LOCATION "Assets")
             
             SET(SRC_FILES ${SRC_FILES} ${APPX_VISUAL_ASSETS})
         endif()
         
         if(MENGINE_APPLICATION_DEPLOY_DATA)
             file(GLOB_RECURSE APPX_DATA ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}/*)
+            
             foreach(DATA ${APPX_DATA})
                 file(RELATIVE_PATH RELPATH ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA} ${DATA})
                 get_filename_component(RES_LOC ${RELPATH} PATH)
                 
-                set_source_files_properties(${DATA} PROPERTY VS_DEPLOYMENT_CONTENT 1)
-                set_source_files_properties(${DATA} PROPERTY VS_DEPLOYMENT_LOCATION "${RES_LOC}")
-                #set_source_files_properties(${DATA} PROPERTY VS_TOOL_OVERRIDE  "None")
-                
                 string(REPLACE "/" "\\" ide_group_name "AppXData/${RES_LOC}")
-                MESSAGE("ide_group_name: ${ide_group_name} RES_LOC: ${RES_LOC} DATA: ${DATA}")
                 source_group(${ide_group_name} FILES ${DATA})
             endforeach()
+            
+            set_source_files_properties(${APPX_DATA} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+            set_source_files_properties(${APPX_DATA} PROPERTY VS_DEPLOYMENT_LOCATION "Data")
 
             SET(SRC_FILES ${SRC_FILES} ${APPX_DATA})
         endif()
@@ -162,7 +160,7 @@ if(MENGINE_TARGET_UWP)
         if(EXISTS "${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
             include("${MENGINE_DEPLOY_PATH}/project_deploy.cmake")
         endif()
-    endif()    
+    endif()
 endif()
 
 if(MENGINE_TARGET_UNIX)
@@ -477,6 +475,8 @@ endif()
 
 IF(MENGINE_TOOLCHAIN_MSVC)
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+    
+    set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 ENDIF()
 
 IF(MENGINE_TARGET_APPLE)

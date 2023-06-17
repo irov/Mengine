@@ -21,7 +21,7 @@ namespace Mengine
             , const Char * _text
             , size_t _size
             , const Tags & _tags
-            , const TextFontInterfacePtr & _font
+            , const FontInterfacePtr & _font
             , const Color & _colorFont
             , float _lineOffset
             , float _charOffset
@@ -37,7 +37,7 @@ namespace Mengine
             , const Char * _text
             , size_t _size
             , const Tags & _tags
-            , const TextFontInterfacePtr & _font
+            , const FontInterfacePtr & _font
             , const Color & _colorFont
             , float _lineOffset
             , float _charOffset

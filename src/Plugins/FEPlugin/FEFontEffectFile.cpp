@@ -1,4 +1,4 @@
-#include "FETextFontEffectFile.h"
+#include "FEFontEffectFile.h"
 
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
@@ -12,15 +12,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    FETextFontEffectFile::FETextFontEffectFile()
+    FEFontEffectFile::FEFontEffectFile()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FETextFontEffectFile::~FETextFontEffectFile()
+    FEFontEffectFile::~FEFontEffectFile()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectFile::_compile()
+    bool FEFontEffectFile::_compile()
     {
         DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
@@ -52,12 +52,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FETextFontEffectFile::_release()
+    void FEFontEffectFile::_release()
     {
         m_data = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectFile::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
+    bool FEFontEffectFile::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
     {
         DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
@@ -80,7 +80,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectFile::_unfetch()
+    bool FEFontEffectFile::_unfetch()
     {
         const ContentInterfacePtr & content = this->getContent();
 
@@ -96,7 +96,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectFile::isValid() const
+    bool FEFontEffectFile::isValid() const
     {
         DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 

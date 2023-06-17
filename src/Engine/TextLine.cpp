@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextLine::initialize( uint32_t _fontId, const TextFontInterfacePtr & _font, const U32String & _text )
+    bool TextLine::initialize( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text )
     {
         U32String::size_type text_size = _text.size();
         m_charsData.reserve( text_size );

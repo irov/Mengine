@@ -1887,7 +1887,7 @@ namespace Mengine
             void s_visitFonts( const pybind::object & _cb )
             {
                 FONT_SERVICE()
-                    ->foreachFonts( [_cb]( const TextFontInterfacePtr & _font )
+                    ->foreachFonts( [_cb]( const FontInterfacePtr & _font )
                 {
                     const ConstString & name = _font->getName();
 
@@ -1900,7 +1900,7 @@ namespace Mengine
                 pybind::list l( _kernel );
 
                 FONT_SERVICE()
-                    ->foreachFonts( [&l]( const TextFontInterfacePtr & _font )
+                    ->foreachFonts( [&l]( const FontInterfacePtr & _font )
                 {
                     const ConstString & name = _font->getName();
 
@@ -1912,7 +1912,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_hasFont( const ConstString & _fontName )
             {
-                TextFontInterfacePtr font;
+                FontInterfacePtr font;
                 bool has = FONT_SERVICE()
                     ->existFont( _fontName, &font );
 
@@ -1921,7 +1921,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_validateFont( const ConstString & _fontName, const String & _text )
             {
-                TextFontInterfacePtr font;
+                FontInterfacePtr font;
                 if( FONT_SERVICE()
                     ->existFont( _fontName, &font ) == false )
                 {
@@ -3961,7 +3961,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ConstString s_getDefaultResourceFontName()
             {
-                const TextFontInterfacePtr & defaultResourceFont = FONT_SERVICE()
+                const FontInterfacePtr & defaultResourceFont = FONT_SERVICE()
                     ->getDefaultFont();
 
                 const ConstString & defaultResourceFontName = defaultResourceFont->getName();

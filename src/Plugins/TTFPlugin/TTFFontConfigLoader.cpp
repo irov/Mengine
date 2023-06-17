@@ -24,7 +24,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFontConfigLoader::load( const TextFontInterfacePtr & _font, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    bool TTFFontConfigLoader::load( const FontInterfacePtr & _font, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
     {
         TTFFontPtr font = _font;
 
@@ -125,7 +125,7 @@ namespace Mengine
         FilePath FEPath;
         if( _config->hasValue( name.c_str(), "FEPath", FilePath::none(), &FEPath ) == true )
         {
-            TextFontEffectInterfacePtr textFontEffet = PROTOTYPE_SERVICE()
+            FontEffectInterfacePtr fontEffet = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), MENGINE_DOCUMENT_FACTORABLE );
 
             ContentInterfacePtr content = PROTOTYPE_SERVICE()
@@ -134,9 +134,9 @@ namespace Mengine
             content->setFilePath( FEPath );
             content->setFileGroup( _fileGroup );
 
-            textFontEffet->setContent( content );
+            fontEffet->setContent( content );
 
-            UnknownFEFileInterface * unknownFE = textFontEffet->getDynamicUnknown();
+            UnknownFEFileInterface * unknownFE = fontEffet->getDynamicUnknown();
 
             ConstString FEName;
             if( _config->hasValue( name.c_str(), "FEName", ConstString::none(), &FEName ) == false )
@@ -153,10 +153,10 @@ namespace Mengine
             uint32_t FESample;
             if( _config->hasValue( name.c_str(), "FESample", 0u, &FESample ) == true )
             {
-                textFontEffet->setEffectSample( FESample );
+                fontEffet->setEffectSample( FESample );
             }
 
-            _font->setEffect( textFontEffet );
+            _font->setEffect( fontEffet );
         }
 
         return true;

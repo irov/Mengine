@@ -11,11 +11,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFontValidator::validate( const TextFontInterfacePtr & _textFont ) const
+    bool TTFFontValidator::validate( const FontInterfacePtr & _font ) const
     {
-        TTFFontPtr ttfFont = TTFFontPtr::from( _textFont );
+        TTFFontPtr ttfFont = TTFFontPtr::from( _font );
 
-        const TextFontEffectInterfacePtr & effect = ttfFont->getEffect();
+        const FontEffectInterfacePtr & effect = ttfFont->getEffect();
 
         if( effect != nullptr )
         {

@@ -22,7 +22,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        static void drawTextDebug2( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, uint32_t _argb, const Char * _message, size_t _size, const DocumentPtr & _doc )
+        static void drawTextDebug2( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const FontInterfacePtr & _font, uint32_t _argb, const Char * _message, size_t _size, const DocumentPtr & _doc )
         {
             U32String cacheText;
             if( _font->prepareText( _message, _size, &cacheText ) == false )
@@ -145,7 +145,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, const Color & _color, const DocumentPtr & _doc, const Char * _format, ... )
+        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const FontInterfacePtr & _font, const Color & _color, const DocumentPtr & _doc, const Char * _format, ... )
         {
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
@@ -161,7 +161,7 @@ namespace Mengine
 
             ColorValue_ARGB argb = _color.getAsARGB();
 
-            TextFontInterfacePtr font = _font;
+            FontInterfacePtr font = _font;
 
             if( font == nullptr )
             {

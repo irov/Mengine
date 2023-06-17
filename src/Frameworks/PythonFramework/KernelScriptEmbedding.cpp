@@ -11,7 +11,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
-#include "Interface/TextFontInterface.h"
+#include "Interface/FontInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/AnimationInterface.h"

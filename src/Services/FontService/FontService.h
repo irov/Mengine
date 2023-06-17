@@ -23,29 +23,29 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        TextFontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc ) override;
+        FontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc ) override;
         bool removeFont( const ConstString & _fontName ) override;
         bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
         bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
-        bool existFont( const ConstString & _fontName, TextFontInterfacePtr * const _font ) const override;
-        const TextFontInterfacePtr & getFont( const ConstString & _fontName ) const override;
+        bool existFont( const ConstString & _fontName, FontInterfacePtr * const _font ) const override;
+        const FontInterfacePtr & getFont( const ConstString & _fontName ) const override;
 
     public:
-        void foreachFonts( const LambdaTextFont & _lambda ) override;
+        void foreachFonts( const LambdaFont & _lambda ) override;
 
     public:
-        const TextFontInterfacePtr & getDefaultFont() const override;
+        const FontInterfacePtr & getDefaultFont() const override;
 
     public:
         bool directFontCompile( const ConstString & _fontName ) override;
         bool directFontRelease( const ConstString & _fontName ) override;
 
     protected:
-        typedef Hashtable<ConstString, TextFontInterfacePtr> HashtableTextFont;
-        HashtableTextFont m_fonts;
+        typedef Hashtable<ConstString, FontInterfacePtr> HashtableFont;
+        HashtableFont m_fonts;
 
-        TextFontInterfacePtr m_defaultFont;
+        FontInterfacePtr m_defaultFont;
     };
 }

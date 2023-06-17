@@ -4,7 +4,7 @@
 
 #include "FEServiceInterface.h"
 
-#include "FETextFontEffectFile.h"
+#include "FEFontEffectFile.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable2.h"
@@ -23,13 +23,13 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        TextFontEffectInterfacePtr createTextFontEffect( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _name, uint32_t _sample ) override;
+        FontEffectInterfacePtr createFontEffect( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _name, uint32_t _sample ) override;
 
     protected:
-        typedef Hashtable2<ConstString, FilePath, FETextFontEffectFilePtr> HashtableTextFontEffects;
-        HashtableTextFontEffects m_textFontEffects;
+        typedef Hashtable2<ConstString, FilePath, FEFontEffectFilePtr> HashtableFontEffects;
+        HashtableFontEffects m_fontEffects;
 
-        FactoryInterfacePtr m_factoryFETextFontEffectFile;
-        FactoryInterfacePtr m_factoryFETextFontEffectCustom;
+        FactoryInterfacePtr m_factoryFEFontEffectFile;
+        FactoryInterfacePtr m_factoryFEFontEffectCustom;
     };
 }

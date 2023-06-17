@@ -11,7 +11,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
-#include "Interface/TextFontInterface.h"
+#include "Interface/FontInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
@@ -248,7 +248,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_TextField_setFontName( TextField * _textField, const ConstString & _fontName )
             {
-                const TextFontInterfacePtr & font = FONT_SERVICE()
+                const FontInterfacePtr & font = FONT_SERVICE()
                     ->getFont( _fontName );
 
                 _textField->setFont( font );
@@ -256,7 +256,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const ConstString & s_TextField_getFontName( TextField * _textField )
             {
-                const TextFontInterfacePtr & font = _textField->getFont();
+                const FontInterfacePtr & font = _textField->getFont();
 
                 const ConstString & fontName = font->getName();
 
@@ -828,27 +828,27 @@ namespace Mengine
                 .def( "getSurfaceSound", &SoundEmitter::getSurfaceSound )
                 ;
 
-            pybind::interface_<TextFontInterface, pybind::bases<ServantInterface>>( _kernel, "TextFontInterface" )
-                .def( "setName", &TextFontInterface::setName )
-                .def( "getName", &TextFontInterface::getName )
-                .def( "setType", &TextFontInterface::setType )
-                .def( "getType", &TextFontInterface::getType )
-                .def( "setHeight", &TextFontInterface::setHeight )
-                .def( "getHeight", &TextFontInterface::getHeight )
-                .def( "setFontColor", &TextFontInterface::setFontColor )
-                .def( "getFontColor", &TextFontInterface::getFontColor )
-                .def( "setLineOffset", &TextFontInterface::setLineOffset )
-                .def( "getLineOffset", &TextFontInterface::getLineOffset )
-                .def( "setCharOffset", &TextFontInterface::setCharOffset )
-                .def( "getCharOffset", &TextFontInterface::getCharOffset )
-                .def( "initialize", &TextFontInterface::initialize )
-                .def( "finalize", &TextFontInterface::finalize )
-                .def( "getFontAscent", &TextFontInterface::getFontAscent )
-                .def( "getFontDescent", &TextFontInterface::getFontDescent )
-                .def( "getFontHeight", &TextFontInterface::getFontHeight )
-                .def( "getFontBearingYA", &TextFontInterface::getFontBearingYA )
-                .def( "getFontSpacing", &TextFontInterface::getFontSpacing )
-                .def( "getFontPremultiply", &TextFontInterface::getFontPremultiply )
+            pybind::interface_<FontInterface, pybind::bases<ServantInterface>>( _kernel, "FontInterface" )
+                .def( "setName", &FontInterface::setName )
+                .def( "getName", &FontInterface::getName )
+                .def( "setType", &FontInterface::setType )
+                .def( "getType", &FontInterface::getType )
+                .def( "setHeight", &FontInterface::setHeight )
+                .def( "getHeight", &FontInterface::getHeight )
+                .def( "setFontColor", &FontInterface::setFontColor )
+                .def( "getFontColor", &FontInterface::getFontColor )
+                .def( "setLineOffset", &FontInterface::setLineOffset )
+                .def( "getLineOffset", &FontInterface::getLineOffset )
+                .def( "setCharOffset", &FontInterface::setCharOffset )
+                .def( "getCharOffset", &FontInterface::getCharOffset )
+                .def( "initialize", &FontInterface::initialize )
+                .def( "finalize", &FontInterface::finalize )
+                .def( "getFontAscent", &FontInterface::getFontAscent )
+                .def( "getFontDescent", &FontInterface::getFontDescent )
+                .def( "getFontHeight", &FontInterface::getFontHeight )
+                .def( "getFontBearingYA", &FontInterface::getFontBearingYA )
+                .def( "getFontSpacing", &FontInterface::getFontSpacing )
+                .def( "getFontPremultiply", &FontInterface::getFontPremultiply )
                 ;
 
             pybind::interface_<TextField, pybind::bases<Node>>( _kernel, "TextField", false )

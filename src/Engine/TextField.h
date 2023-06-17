@@ -103,8 +103,8 @@ namespace Mengine
         float getFontHeight() const;
 
     public:
-        void setFont( const TextFontInterfacePtr & _font );
-        const TextFontInterfacePtr & getFont() const;
+        void setFont( const FontInterfacePtr & _font );
+        const FontInterfacePtr & getFont() const;
 
     public:
         void setFontColor( const Color & _color );
@@ -198,18 +198,18 @@ namespace Mengine
         void notifyRenderDeviceLostPrepare_();
 
     protected:
-        void updateVertices_( const TextFontInterfacePtr & _font ) const;
+        void updateVertices_( const FontInterfacePtr & _font ) const;
         void invalidateVertices_() const;
 
-        void updateVerticesWM_( const TextFontInterfacePtr & _font ) const;
+        void updateVerticesWM_( const FontInterfacePtr & _font ) const;
         void updateVertexDataWM_( VectorRenderVertex2D * const _outVertex, const VectorRenderVertex2D & _fromVertex ) const;
 
         void invalidateVerticesWM_() const;
 
-        MENGINE_INLINE const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font ) const;
-        MENGINE_INLINE const VectorRenderVertex2D & getTextVerticesWM( const TextFontInterfacePtr & _font ) const;
+        MENGINE_INLINE const VectorRenderVertex2D & getTextVertices( const FontInterfacePtr & _font ) const;
+        MENGINE_INLINE const VectorRenderVertex2D & getTextVerticesWM( const FontInterfacePtr & _font ) const;
 
-        void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * const _vertexData ) const;
+        void updateVertexData_( const FontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * const _vertexData ) const;
 
     protected:
         void invalidateTextLines() const;
@@ -219,11 +219,11 @@ namespace Mengine
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
-        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, mt::vec2f * const _textOffset, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
+        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, mt::vec2f * const _textOffset, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
 
     public:
         MENGINE_INLINE const TextEntryInterfacePtr & getTotalTextEntry() const;
-        MENGINE_INLINE const TextFontInterfacePtr & getTotalFont() const;
+        MENGINE_INLINE const FontInterfacePtr & getTotalFont() const;
 
     protected:
         MENGINE_INLINE void invalidateFont() const;
@@ -234,7 +234,7 @@ namespace Mengine
         uint32_t getTextFieldParams() const;
 
     public:
-        const TextFontInterfacePtr & calcFont() const;
+        const FontInterfacePtr & calcFont() const;
         float calcLineOffset() const;
         float calcCharOffset() const;
         float calcMaxLength() const;
@@ -245,7 +245,7 @@ namespace Mengine
         ETextVerticalAlign calcVerticalAlign() const;
 
         float calcCharScale() const;
-        float calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const;
+        float calcLinesOffset( float _lineOffset, const FontInterfacePtr & _font ) const;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
@@ -268,7 +268,7 @@ namespace Mengine
         ETextHorizontAlign m_horizontAlign;
         ETextVerticalAlign m_verticalAlign;
 
-        mutable TextFontInterfacePtr m_totalFont;
+        mutable FontInterfacePtr m_totalFont;
         mutable bool m_invalidateFont;
 
         float m_extraThickness;
@@ -278,7 +278,7 @@ namespace Mengine
         float m_maxLength;
         mutable float m_autoScaleFactor;
 
-        TextFontInterfacePtr m_font;
+        FontInterfacePtr m_font;
 
         float m_lineOffset;
         float m_charOffset;
@@ -334,7 +334,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<TextField> TextFieldPtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const VectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font ) const
+    MENGINE_INLINE const VectorRenderVertex2D & TextField::getTextVertices( const FontInterfacePtr & _font ) const
     {
         if( m_invalidateVertices == true )
         {
@@ -344,7 +344,7 @@ namespace Mengine
         return m_vertexDataText;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const VectorRenderVertex2D & TextField::getTextVerticesWM( const TextFontInterfacePtr & _font ) const
+    MENGINE_INLINE const VectorRenderVertex2D & TextField::getTextVerticesWM( const FontInterfacePtr & _font ) const
     {
         if( m_invalidateVerticesWM == true )
         {
@@ -359,13 +359,13 @@ namespace Mengine
         return m_invalidateTextLines;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const TextFontInterfacePtr & TextField::getTotalFont() const
+    MENGINE_INLINE const FontInterfacePtr & TextField::getTotalFont() const
     {
         if( m_invalidateFont == true )
         {
             if( this->updateFont_() == false )
             {
-                return TextFontInterfacePtr::none();
+                return FontInterfacePtr::none();
             }
         }
 

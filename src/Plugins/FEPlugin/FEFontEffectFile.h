@@ -1,20 +1,20 @@
 #pragma once
 
-#include "FETextFontEffectBase.h"
+#include "FEFontEffectBase.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class FETextFontEffectFile
-        : public FETextFontEffectBase
+    class FEFontEffectFile
+        : public FEFontEffectBase
         , public UnknownFEFileInterface
     {
-        DECLARE_FACTORABLE( FETextFontEffectFile );
+        DECLARE_FACTORABLE( FEFontEffectFile );
         DECLARE_UNKNOWABLE();
 
     public:
-        FETextFontEffectFile();
-        ~FETextFontEffectFile() override;
+        FEFontEffectFile();
+        ~FEFontEffectFile() override;
 
     public:
         bool _compile() override;
@@ -31,6 +31,6 @@ namespace Mengine
         FEDataInterfacePtr m_data;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FETextFontEffectFile> FETextFontEffectFilePtr;
+    typedef IntrusivePtr<FEFontEffectFile, FontEffectInterface> FEFontEffectFilePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -14,8 +14,8 @@
 #include "Kernel/AssertionAllocator.h"
 
 #include "FEDataflow.h"
-#include "FETextFontEffectFile.h"
-#include "FETextFontEffectCustom.h"
+#include "FEFontEffectFile.h"
+#include "FEFontEffectCustom.h"
 
 #include "fe/fe.h"
 
@@ -56,13 +56,13 @@ namespace Mengine
     bool FEPlugin::_initializePlugin()
     {
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<FETextFontEffectFile, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<FEFontEffectFile, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FECustom" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<FETextFontEffectCustom, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FECustom" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<FEFontEffectCustom, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }

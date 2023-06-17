@@ -116,7 +116,7 @@ namespace Mengine
 
         for( const CacheFont & cache : m_cacheFonts )
         {
-            const TextFontInterfacePtr & font = cache.font;
+            const FontInterfacePtr & font = cache.font;
 
             font->releaseFont();
         }
@@ -151,7 +151,7 @@ namespace Mengine
 
         for( const CacheFont & cache : m_cacheFonts )
         {
-            const TextFontInterfacePtr & font = cache.font;
+            const FontInterfacePtr & font = cache.font;
 
             font->releaseFont();
         }
@@ -204,7 +204,7 @@ namespace Mengine
         this->invalidateVerticesWM_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * const _vertexData ) const
+    void TextField::updateVertexData_( const FontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * const _vertexData ) const
     {
         _vertexData->clear();
         m_chunks.clear();
@@ -288,7 +288,7 @@ namespace Mengine
         {
             CacheFont & cache = m_cacheFonts[index];
 
-            const TextFontInterfacePtr & font = cache.font;
+            const FontInterfacePtr & font = cache.font;
 
             const Color & fontColor = font->getFontColor();
             Color totalFontColor = fontColor * _color;
@@ -430,7 +430,7 @@ namespace Mengine
             return;
         }
 
-        const TextFontInterfacePtr & font = this->getTotalFont();
+        const FontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
         {
@@ -586,7 +586,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::getFontHeight() const
     {
-        const TextFontInterfacePtr & font = this->getTotalFont();
+        const FontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
         {
@@ -598,7 +598,7 @@ namespace Mengine
         return fontHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setFont( const TextFontInterfacePtr & _font )
+    void TextField::setFont( const FontInterfacePtr & _font )
     {
         if( m_font == _font )
         {
@@ -620,7 +620,7 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextFontInterfacePtr & TextField::getFont() const
+    const FontInterfacePtr & TextField::getFont() const
     {
         return m_font;
     }
@@ -796,7 +796,7 @@ namespace Mengine
             return false;
         }
 
-        const TextFontInterfacePtr & font = this->getTotalFont();
+        const FontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
         {
@@ -864,7 +864,7 @@ namespace Mengine
                 const U32String & text = textChunk.value;
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
 
-                const TextFontInterfacePtr & font = cache.font;
+                const FontInterfacePtr & font = cache.font;
 
                 VectorU32String words;
                 Helper::u32split2( &words, text, false, space_delims );
@@ -993,7 +993,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, mt::vec2f * const _textOffset, uint32_t * const _charCount, uint32_t * const _layoutCount ) const
+    bool TextField::updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, mt::vec2f * const _textOffset, uint32_t * const _charCount, uint32_t * const _layoutCount ) const
     {
         float charOffset = this->calcCharOffset();
         float lineOffset = this->calcLineOffset();
@@ -1006,7 +1006,7 @@ namespace Mengine
             {
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
 
-                const TextFontInterfacePtr & chunkFont = cache.font;
+                const FontInterfacePtr & chunkFont = cache.font;
 
                 uint32_t layoutCount = chunkFont->getLayoutCount();
 
@@ -1120,7 +1120,7 @@ namespace Mengine
             return true;
         }
 
-        const TextFontInterfacePtr & baseFont = this->getTotalFont();
+        const FontInterfacePtr & baseFont = this->getTotalFont();
 
         if( baseFont == nullptr )
         {
@@ -1142,7 +1142,7 @@ namespace Mengine
 
         for( const CacheFont & cache : m_cacheFonts )
         {
-            const TextFontInterfacePtr & font = cache.font;
+            const FontInterfacePtr & font = cache.font;
 
             font->releaseFont();
         }
@@ -1159,7 +1159,7 @@ namespace Mengine
 
         for( const CacheFont & cache : m_cacheFonts )
         {
-            const TextFontInterfacePtr & font = cache.font;
+            const FontInterfacePtr & font = cache.font;
 
             if( font->compileFont() == false )
             {
@@ -1173,7 +1173,7 @@ namespace Mengine
 
             const CacheFont & cache = m_cacheFonts[fontId];
 
-            const TextFontInterfacePtr & font = cache.font;
+            const FontInterfacePtr & font = cache.font;
 
             if( font->prepareGlyph( tc.value, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
@@ -1245,7 +1245,7 @@ namespace Mengine
 
                 const CacheFont & cache = m_cacheFonts[fontId];
 
-                const TextFontInterfacePtr & chunkFont = cache.font;
+                const FontInterfacePtr & chunkFont = cache.font;
 
                 uint32_t fontLayoutCount = chunkFont->getLayoutCount();
 
@@ -1280,7 +1280,7 @@ namespace Mengine
     {
         m_invalidateFont = false;
 
-        const TextFontInterfacePtr & font = this->calcFont();
+        const FontInterfacePtr & font = this->calcFont();
 
         if( m_totalFont != nullptr )
         {
@@ -1350,7 +1350,7 @@ namespace Mengine
         return m_textParams;
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextFontInterfacePtr & TextField::calcFont() const
+    const FontInterfacePtr & TextField::calcFont() const
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
@@ -1360,7 +1360,7 @@ namespace Mengine
 
             if( params & EFP_FONT )
             {
-                const TextFontInterfacePtr & font = textEntry->getFont();
+                const FontInterfacePtr & font = textEntry->getFont();
 
                 return font;
             }
@@ -1368,7 +1368,7 @@ namespace Mengine
 
         if( m_font == nullptr )
         {
-            const TextFontInterfacePtr & defaultFont = FONT_SERVICE()
+            const FontInterfacePtr & defaultFont = FONT_SERVICE()
                 ->getDefaultFont();
 
             return defaultFont;
@@ -1398,7 +1398,7 @@ namespace Mengine
             return m_lineOffset;
         }
 
-        const TextFontInterfacePtr & font = this->getTotalFont();
+        const FontInterfacePtr & font = this->getTotalFont();
 
         if( font != nullptr )
         {
@@ -1436,7 +1436,7 @@ namespace Mengine
             return m_charOffset;
         }
 
-        const TextFontInterfacePtr & font = this->getTotalFont();
+        const FontInterfacePtr & font = this->getTotalFont();
 
         if( font != nullptr )
         {
@@ -1493,7 +1493,7 @@ namespace Mengine
             return m_colorFont;
         }
 
-        const TextFontInterfacePtr & font = this->getTotalFont();
+        const FontInterfacePtr & font = this->getTotalFont();
 
         if( font != nullptr )
         {
@@ -1582,7 +1582,7 @@ namespace Mengine
         return 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    float TextField::calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const
+    float TextField::calcLinesOffset( float _lineOffset, const FontInterfacePtr & _font ) const
     {
         float fontAscent = _font->getFontAscent();
         //float fontDescent = _font->getFontDescent();
@@ -1737,7 +1737,7 @@ namespace Mengine
 
         for( const CacheFont & cache : m_cacheFonts )
         {
-            const TextFontInterfacePtr & font = cache.font;
+            const FontInterfacePtr & font = cache.font;
 
             font->releaseFont();
         }
@@ -2082,7 +2082,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextField::updateTextCache_( U32String * const _cacheText ) const
     {
-        const TextFontInterfacePtr & font = this->getTotalFont();
+        const FontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
         {
@@ -2366,7 +2366,7 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVerticesWM_( const TextFontInterfacePtr & _font ) const
+    void TextField::updateVerticesWM_( const FontInterfacePtr & _font ) const
     {
         m_invalidateVerticesWM = false;
 
@@ -2417,7 +2417,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertices_( const TextFontInterfacePtr & _font ) const
+    void TextField::updateVertices_( const FontInterfacePtr & _font ) const
     {
         m_invalidateVertices = false;
 

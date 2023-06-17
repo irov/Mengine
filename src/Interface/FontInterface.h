@@ -4,7 +4,7 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
-#include "Interface/TextFontEffectInterface.h"
+#include "Interface/FontEffectInterface.h"
 
 #include "Kernel/Unknowable.h"
 #include "Kernel/ConstString.h"
@@ -43,7 +43,7 @@ namespace Mengine
         RenderTextureInterfacePtr texture;
     };
     //////////////////////////////////////////////////////////////////////////
-    class TextFontInterface
+    class FontInterface
         : public ServantInterface
         , public Unknowable
     {
@@ -52,8 +52,8 @@ namespace Mengine
         virtual const ContentInterfacePtr & getContent() const = 0;
 
     public:
-        virtual void setEffect( const TextFontEffectInterfacePtr & _effect ) = 0;
-        virtual const TextFontEffectInterfacePtr & getEffect() const = 0;
+        virtual void setEffect( const FontEffectInterfacePtr & _effect ) = 0;
+        virtual const FontEffectInterfacePtr & getEffect() const = 0;
 
     public:
         virtual void setName( const ConstString & _name ) = 0;
@@ -120,6 +120,6 @@ namespace Mengine
         virtual bool getFontPremultiply() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TextFontInterface> TextFontInterfacePtr;
+    typedef IntrusivePtr<FontInterface> FontInterfacePtr;
     //////////////////////////////////////////////////////////////////////////   
 }

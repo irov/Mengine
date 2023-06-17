@@ -82,7 +82,7 @@ namespace Mengine
 
                 ConstString c_FontName = Helper::stringizeString( buffer_name );
 
-                const TextFontInterfacePtr & font = FONT_SERVICE()
+                const FontInterfacePtr & font = FONT_SERVICE()
                     ->getFont( c_FontName );
 
                 VectorCacheFonts::iterator it_found = Algorithm::find_if( _cacheFonts->begin(), _cacheFonts->end(), [&font]( const CacheFont & cache )

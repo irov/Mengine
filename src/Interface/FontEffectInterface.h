@@ -12,7 +12,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class TextFontEffectInterface
+    class FontEffectInterface
         : public ServantInterface
         , public CompilableReference
         , public Unknowable
@@ -42,6 +42,6 @@ namespace Mengine
         virtual bool isValid() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TextFontEffectInterface> TextFontEffectInterfacePtr;
+    typedef IntrusivePtr<FontEffectInterface> FontEffectInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

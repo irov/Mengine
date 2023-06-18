@@ -1753,10 +1753,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
-#if !defined(MENGINE_PLATFORM_IOS)
-
-#endif
-
         uint32_t width;
         uint32_t height;
 

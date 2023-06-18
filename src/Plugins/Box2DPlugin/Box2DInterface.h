@@ -54,8 +54,6 @@ namespace Mengine
         EVENT_BOX2DBODY_PRE_SOLVE,
         EVENT_BOX2DBODY_POST_SOLVE,
         EVENT_BOX2DBODY_UPDATE_CONTACT,
-
-        __EVENT_BOX2DBODY_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
     class Box2DBodyEventReceiverInterface
@@ -90,7 +88,7 @@ namespace Mengine
         virtual float getAngle() const = 0;
 
     public:
-        virtual mt::vec2f getWorldVector( const mt::vec2f & _localVector ) = 0;     
+        virtual mt::vec2f getWorldVector( const mt::vec2f & _localVector ) = 0;
 
     public:
         virtual float getMass() const = 0;

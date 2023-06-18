@@ -25,10 +25,10 @@ namespace Mengine
         virtual void converstationResolved() = 0;
         virtual void converstationReopen() = 0;
         
+    public:
         virtual void authenticationInvalidAuthToken() = 0;
         virtual void authenticationTokenNotProvided() = 0;
-        virtual void authenticationUnknownError() = 0;
-    
+        virtual void authenticationUnknownError() = 0;    
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleHelpshiftProviderInterface> AppleHelpshiftProviderInterfacePtr;
@@ -50,6 +50,7 @@ namespace Mengine
         virtual void showSingleFAQ( const Char * _faqId ) = 0;
         virtual void setLanguage( const Char * _language ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define APPLE_HELPSHIFT_SERVICE()\

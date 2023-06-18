@@ -36,5 +36,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define APPLE_APPLOVIN_SERVICE()\
-    ((AppleAppLovinServiceInterface *)SERVICE_GET(Mengine::AppleAppLovinServiceInterface))
+    ((Mengine::AppleAppLovinServiceInterface *)SERVICE_GET(Mengine::AppleAppLovinServiceInterface))
 //////////////////////////////////////////////////////////////////////////

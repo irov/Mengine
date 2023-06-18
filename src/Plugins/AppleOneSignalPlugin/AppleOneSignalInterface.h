@@ -14,5 +14,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define APPLE_ONESIGNALT_SERVICE()\
-    ((AppleOneSignalServiceInterface *)SERVICE_GET(Mengine::AppleOneSignalServiceInterface))
+    ((Mengine::AppleOneSignalServiceInterface *)SERVICE_GET(Mengine::AppleOneSignalServiceInterface))
 //////////////////////////////////////////////////////////////////////////

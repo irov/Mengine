@@ -12,6 +12,7 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
+#include "Environment/Windows/Win32FileHelper.h"
 
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
@@ -3370,151 +3371,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
-        {
-            {
-                WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WCSCPY( sPath, _dir );
-                MENGINE_WCSCAT( sPath, _path );
-                MENGINE_WCSCAT( sPath, _mask );
-
-                WIN32_FIND_DATA fdFile;
-                HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
-
-                if( hFind != INVALID_HANDLE_VALUE )
-                {
-                    do
-                    {
-                        if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0 ||
-                            MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
-                        {
-                            continue;
-                        }
-
-                        if( fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-                        {
-                            continue;
-                        }
-
-                        WChar sPath2[MENGINE_MAX_PATH] = {L'\0'};
-                        MENGINE_WCSCPY( sPath2, sPath );
-                        MENGINE_WCSCAT( sPath2, L"\0" );
-
-                        Helper::pathCorrectForwardslashW( sPath2 );
-
-                        ::PathRemoveFileSpec( sPath2 );
-
-                        WChar unicode_filepath[MENGINE_MAX_PATH] = {L'\0'};
-                        ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
-
-                        WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
-                        if( MENGINE_WCSLEN( _dir ) != 0 )
-                        {
-                            ::PathRelativePathTo( unicode_out,
-                                _dir,
-                                FILE_ATTRIBUTE_DIRECTORY,
-                                unicode_filepath,
-                                FILE_ATTRIBUTE_NORMAL );
-                        }
-                        else
-                        {
-                            MENGINE_WCSCPY( unicode_out, unicode_filepath );
-                        }
-
-                        Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
-                        if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
-                        {
-                            ::FindClose( hFind );
-
-                            return false;
-                        }
-
-                        FilePath fp = Helper::stringizeFilePath( utf8_filepath );
-
-                        if( _lambda( fp ) == false )
-                        {
-                            ::FindClose( hFind );
-
-                            *_stop = true;
-
-                            return true;
-                        }
-
-                    } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
-                }
-
-                ::FindClose( hFind );
-            }
-
-            {
-                WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WCSCPY( sPath, _dir );
-                MENGINE_WCSCAT( sPath, _path );
-                MENGINE_WCSCAT( sPath, L"*.*" );
-
-                WIN32_FIND_DATA fdFile;
-                HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
-
-                if( hFind == INVALID_HANDLE_VALUE )
-                {
-                    return true;
-                }
-
-                do
-                {
-                    if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0
-                        || MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
-                    {
-                        continue;
-                    }
-
-                    if( (fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-                    {
-                        continue;
-                    }
-
-                    WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-                    MENGINE_WCSCPY( currentPath, sPath );
-                    MENGINE_WCSCAT( currentPath, L"\0" );
-
-                    ::PathRemoveFileSpec( currentPath );
-
-                    WChar nextPath[MENGINE_MAX_PATH] = {L'\0'};
-                    ::PathCombine( nextPath, currentPath, fdFile.cFileName );
-
-                    ::PathAddBackslash( nextPath );
-
-                    bool stop;
-                    if( Detail::listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
-                    {
-                        ::FindClose( hFind );
-
-                        return false;
-                    }
-
-                    if( stop == true )
-                    {
-                        ::FindClose( hFind );
-
-                        *_stop = true;
-
-                        return true;
-                    }
-
-                } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
-
-                ::FindClose( hFind );
-            }
-
-            *_stop = false;
-
-            return true;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
         WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
@@ -3538,8 +3394,23 @@ namespace Mengine
         WChar unicode_fullbase[MENGINE_MAX_PATH] = {L'\0'};
         ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
+        Helper::LambdaListDirectoryFilePath lambda_listdirectory = [_lambda]( const WChar * _filePath )
+        {
+            Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
+            if( Helper::unicodeToUtf8( _filePath, utf8_filepath, MENGINE_MAX_PATH ) == false )
+            {
+                return false;
+            }
+
+            FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+
+            bool result = _lambda( fp );
+
+            return result;
+        };
+
         bool stop;
-        if( Detail::listDirectoryContents( unicode_fullbase, unicode_mask, unicode_path, _lambda, &stop ) == false )
+        if( Helper::Win32ListDirectory( unicode_fullbase, unicode_mask, unicode_path, lambda_listdirectory, &stop ) == false )
         {
             return false;
         }

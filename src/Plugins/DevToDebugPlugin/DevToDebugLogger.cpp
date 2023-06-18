@@ -183,19 +183,19 @@ namespace Mengine
 
         j.set( "logger", jlogger );
 
-        cURLHeaders headers;
+        HttpRequestHeaders headers;
         headers.push_back( "Content-Type:application/json" );
 
         String data;
         Helper::writeJSONStringCompact( j, &data );
 
-        HttpRequestID id = CURL_SERVICE()
-            ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+        HttpRequestId id = HTTP_SYSTEM()
+            ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::onHttpRequestComplete( const cURLResponseInterfacePtr & _response )
+    void DevToDebugLogger::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )
     {
         MENGINE_UNUSED( _response );
 

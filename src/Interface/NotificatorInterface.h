@@ -2,6 +2,7 @@
 
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderPipelineInterface.h"
+#include "Interface/HttpSystemInterface.h"
 #include "Interface/FactoryInterface.h"
 
 #include "Kernel/Tuple.h"
@@ -16,6 +17,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
+#include "Config/UniqueId.h"
 
 #ifndef MENGINE_NOTIFICATOR_MAX_COUNT
 #define MENGINE_NOTIFICATOR_MAX_COUNT 256
@@ -127,6 +129,9 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ACCOUNTS_LOAD );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_REQUEST, HttpRequestId, const String & );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_CANCEL, HttpRequestId );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_RESPONSE, const HttpResponseInterfacePtr & );
 
 #if defined(MENGINE_PLATFORM_IOS)
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE );

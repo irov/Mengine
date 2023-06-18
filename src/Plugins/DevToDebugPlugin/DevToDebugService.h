@@ -2,7 +2,8 @@
 
 #include "DevToDebugInterface.h"
 
-#include "Plugins/cURLPlugin/cURLInterface.h"
+#include "Interface/HttpSystemInterface.h"
+
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
 #include "DevToDebugLogger.h"
@@ -28,7 +29,7 @@ namespace Mengine
 
     class DevToDebugService
         : public ServiceBase<DevToDebugServiceInterface>
-        , public cURLReceiverInterface
+        , public HttpReceiverInterface
     {
     public:
         DevToDebugService();
@@ -52,7 +53,7 @@ namespace Mengine
         void stop();
 
     protected:
-        void onHttpRequestComplete( const cURLResponseInterfacePtr & _response ) override;
+        void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;
 
     protected:
         void notifyBootstrapperRunComplete_();

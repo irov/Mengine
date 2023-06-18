@@ -1,0 +1,34 @@
+MENGINE_PROJECT(GOAPFramework)
+
+ADD_FILTER(
+src   
+    HttpCook.h
+    HttpCook.cpp
+)
+
+ADD_FILTER(
+Tasks
+    TaskHttpReceiver.h
+    TaskHttpReceiver.cpp
+    TaskHttpBase.cpp
+    TaskHttpBase.h
+    TaskHttpGet.cpp
+    TaskHttpGet.h
+    TaskHttpDelete.cpp
+    TaskHttpDelete.h
+    TaskHttpHeaderData.cpp
+    TaskHttpHeaderData.h
+    TaskHttpPost.cpp
+    TaskHttpPost.h
+)
+
+INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_GOAP Frameworks)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}GOAP${MENGINE_LIB_SUFFIX})
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

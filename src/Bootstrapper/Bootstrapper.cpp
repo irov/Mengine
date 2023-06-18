@@ -37,10 +37,6 @@
 #include "Kernel/TimestampHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_APPLICATION_INI_PATH
-#define MENGINE_APPLICATION_INI_PATH "application.ini"
-#endif
-//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_JSON_PATH
 #define MENGINE_APPLICATION_JSON_PATH "application.json"
 #endif
@@ -595,21 +591,11 @@ namespace Mengine
     bool Bootstrapper::loadApplicationConfig_()
     {
         FilePath applicationJsonPath = Helper::stringizeFilePath( MENGINE_APPLICATION_JSON_PATH );
-        FilePath applicationIniPath = Helper::stringizeFilePath( MENGINE_APPLICATION_INI_PATH );
 
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
         ConfigInterfacePtr applicationConfig = Detail::loadApplicationConfig( defaultFileGroup, applicationJsonPath, MENGINE_DOCUMENT_FACTORABLE );
-
-        if( applicationConfig == nullptr )
-        {
-            LOGGER_INFO( "bootstrapper", "not exist application config '%s'"
-                , applicationJsonPath.c_str()
-            );
-
-            applicationConfig = Detail::loadApplicationConfig( defaultFileGroup, applicationIniPath, MENGINE_DOCUMENT_FACTORABLE );
-        }
 
         if( applicationConfig != nullptr )
         {
@@ -651,7 +637,7 @@ namespace Mengine
         else
         {
             LOGGER_INFO( "bootstrapper", "not exist application config '%s'"
-                , applicationIniPath.c_str()
+                , applicationJsonPath.c_str()
             );
         }
 
@@ -831,7 +817,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );        
-        MENGINE_ADD_SERVICE( PersistentSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PersistentSystem, MENGINE_DOCUMENT_FACTORABLE );        
         MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
@@ -958,7 +944,7 @@ namespace Mengine
 
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
-        BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );        
 
 #ifdef MENGINE_PLUGIN_ZIP_STATIC
         MENGINE_ADD_PLUGIN( Zip, "Plugin Zip...", MENGINE_DOCUMENT_FACTORABLE );

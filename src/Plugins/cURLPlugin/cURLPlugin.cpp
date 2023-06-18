@@ -5,7 +5,7 @@
 #include "Kernel/OptionHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( cURLService );
+SERVICE_EXTERN( HttpSystem );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( cURL, Mengine::cURLPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE( cURLService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( SERVICE_CREATE( HttpSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -54,12 +54,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( cURLService );
+        SERVICE_FINALIZE( HttpSystem );
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( cURLService );
+        SERVICE_DESTROY( HttpSystem );
 
         MENGINE_ASSERTION_ALLOCATOR( "curl" );
     }

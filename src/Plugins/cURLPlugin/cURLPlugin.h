@@ -1,7 +1,5 @@
 #pragma once
 
-#include "cURLInterface.h"
-
 #include "Kernel/PluginBase.h"
 
 namespace Mengine

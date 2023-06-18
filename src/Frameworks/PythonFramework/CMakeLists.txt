@@ -41,6 +41,12 @@ PythonHotSpotEventReceiver
 )
 
 ADD_FILTER(
+PyHttpReceiver
+    PyHttpReceiver.cpp
+    PyHttpReceiver.h
+)
+
+ADD_FILTER(
 PythonGameEventReceiver
     PythonGameEventReceiver.cpp
     PythonGameEventReceiver.h
@@ -56,7 +62,7 @@ PythonSchedule
     PythonScheduleEvent.h
     DelaySchedulePipe.cpp
     DelaySchedulePipe.h
-)   
+)
 
 ADD_FILTER(
 Wrapper
@@ -78,6 +84,8 @@ Wrapper
     ConstsScriptEmbedding.cpp
     GameScriptEmbedding.h
     GameScriptEmbedding.cpp
+    HttpSystemScriptEmbedding.h
+    HttpSystemScriptEmbedding.cpp
 )
 
 ADD_FILTER(

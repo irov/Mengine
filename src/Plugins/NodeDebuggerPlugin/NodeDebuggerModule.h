@@ -4,6 +4,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/DebuggerBoundingBoxInterface.h"
+#include "Interface/HttpSystemInterface.h"
 
 #include "Plugins/MoviePlugin/Movie2Interface.h"
 #include "Plugins/SpinePlugin/SpineInterface.h"
@@ -21,6 +22,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"
 #include "Kernel/ResourceImageSequence.h"
+#include "Kernel/List.h"
 
 #include "NodeDebuggerSerialization.h"
 #include "NodeDebuggerNetworkLogger.h"
@@ -48,6 +50,13 @@ namespace Mengine
     struct NodeDebuggerPacket
     {
         Blobject payload;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct NodeDebuggerRequestData
+    {
+        ConstString type;
+        HttpRequestId id;
+        String url;
     };
     //////////////////////////////////////////////////////////////////////////
     class NodeDebuggerModule
@@ -130,6 +139,15 @@ namespace Mengine
         void notifyChangeSceneDestroy( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
         void notifyIncrefFactoryGeneration( uint32_t _generator );
+        void notifyHttpRequest( HttpRequestId _id, const String & _url );
+        void notifyHttpResponse( const HttpResponseInterfacePtr & _response );
+
+    public:
+        typedef Lambda<void( const NodeDebuggerRequestData & data )> LambdaNodeDebuggerRequestData;
+        void foreachRequestData( const LambdaNodeDebuggerRequestData & _lambda );
+
+    protected:
+        void clearRequestDatas_();
 
     public:
         void setUpdateSceneFlag( bool _flag ) override;
@@ -184,8 +202,8 @@ namespace Mengine
         ArchivatorInterfacePtr m_archivator;
         String m_currentTab;
 
-        NodeDebuggerNetworkLoggerPtr m_networkLogger;
-        UniqueId m_requestListenerId;
+        typedef List<NodeDebuggerRequestData> ListNodeDebuggerRequestData;
+        ListNodeDebuggerRequestData m_requestDatas;
 
         mt::vec2f m_cursorAdaptScreenPosition;
         mt::vec2f m_cursorWorldPosition;

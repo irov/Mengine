@@ -136,7 +136,7 @@ namespace Mengine
     const ServiceRequiredList & DevToDebugService::requiredServices() const
     {
         static ServiceRequiredList required = {
-            cURLServiceInterface::getStaticServiceID()
+            HttpSystemInterface::getStaticServiceID()
             , ThreadSystemInterface::getStaticServiceID()
         };
 
@@ -448,7 +448,7 @@ namespace Mengine
             {
                 m_status = EDTDS_REGISTRATING;
 
-                cURLHeaders headers;
+                HttpRequestHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
                 jpp::object j = this->makeJsonRegistrationData();
@@ -456,8 +456,8 @@ namespace Mengine
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
-                HttpRequestID id = CURL_SERVICE()
-                    ->headerData( m_dsn, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                HttpRequestId id = HTTP_SYSTEM()
+                    ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
@@ -465,11 +465,11 @@ namespace Mengine
             {
                 m_status = EDTDS_WAITING;
 
-                cURLHeaders headers;
+                HttpRequestHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
-                HttpRequestID id = CURL_SERVICE()
-                    ->getMessage( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                HttpRequestId id = HTTP_SYSTEM()
+                    ->getMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
@@ -477,7 +477,7 @@ namespace Mengine
             {
                 m_status = EDTDS_CONNECTING;
 
-                cURLHeaders headers;
+                HttpRequestHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
                 jpp::object j = this->makeJsonConnectData();
@@ -485,14 +485,14 @@ namespace Mengine
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
-                HttpRequestID id = CURL_SERVICE()
-                    ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                HttpRequestId id = HTTP_SYSTEM()
+                    ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
         case EDTDS_CONNECT:
             {
-                cURLHeaders headers;
+                HttpRequestHeaders headers;
                 headers.push_back( "Content-Type:application/json" );
 
                 jpp::object j = this->makeJsonProcessData();
@@ -500,8 +500,8 @@ namespace Mengine
                 String data;
                 Helper::writeJSONStringCompact( j, &data );
 
-                HttpRequestID id = CURL_SERVICE()
-                    ->headerData( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, data, cURLReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                HttpRequestId id = HTTP_SYSTEM()
+                    ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
@@ -510,11 +510,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugService::onHttpRequestComplete( const cURLResponseInterfacePtr & _response )
+    void DevToDebugService::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )
     {
         bool responseSuccessful = _response->isSuccessful();
-        HttpRequestID requestId = _response->getRequestId();
-        uint32_t responseCode = _response->getCode();
+        HttpRequestId requestId = _response->getRequestId();
+        EHttpCode responseCode = _response->getCode();
         const String & responseError = _response->getError();
         const String & responseData = _response->getData();
 
@@ -929,10 +929,10 @@ namespace Mengine
             return;
         }
 
-        cURLHeaders headers;
+        HttpRequestHeaders headers;
 
-        CURL_SERVICE()
-            ->deleteMessage( m_workerURL, headers, MENGINE_CURL_TIMEOUT_INFINITY, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+        HTTP_SYSTEM()
+            ->deleteMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
 }

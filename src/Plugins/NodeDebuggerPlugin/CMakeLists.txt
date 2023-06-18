@@ -10,10 +10,7 @@ ADD_FILTER(
     NodeDebuggerModule.cpp
 
     NodeDebuggerSerialization.h
-    
-    NodeDebuggerNetworkLogger.h
-    NodeDebuggerNetworkLogger.cpp
-    
+
     SceneDataProviderInterface.h
 )
 

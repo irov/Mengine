@@ -228,7 +228,7 @@ namespace Mengine
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming, _share );
         
-        MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed open input file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -285,7 +285,7 @@ namespace Mengine
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, false, false );
 
-        MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed open input mutex file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -325,7 +325,7 @@ namespace Mengine
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _withTemp );
         
-        MENGINE_ASSERTION( result == true, "failed open file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed open output file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );

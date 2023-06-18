@@ -3,8 +3,8 @@
 #include "DevToDebugInterface.h"
 
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/HttpSystemInterface.h"
 
-#include "Plugins/cURLPlugin/cURLInterface.h"
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
 #include "Kernel/LoggerBase.h"
@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugLogger
         : public LoggerBase
-        , public cURLReceiverInterface
+        , public HttpReceiverInterface
     {
         DECLARE_FACTORABLE( DevToDebugTab );
 
@@ -45,7 +45,7 @@ namespace Mengine
         void process();
 
     protected:
-        void onHttpRequestComplete( const cURLResponseInterfacePtr & _response ) override;
+        void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;
 
     protected:
         String m_workerURL;

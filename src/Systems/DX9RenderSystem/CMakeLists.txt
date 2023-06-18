@@ -20,7 +20,7 @@ src
     DX9RenderVertexAttribute.h
     DX9RenderVertexAttribute.cpp
     DX9RenderIndexBuffer.h
-    DX9RenderIndexBuffer.cpp    
+    DX9RenderIndexBuffer.cpp
     DX9RenderFragmentShader.h
     DX9RenderFragmentShader.cpp
     DX9RenderVertexShader.h

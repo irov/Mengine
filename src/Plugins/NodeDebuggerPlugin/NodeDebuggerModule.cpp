@@ -73,7 +73,6 @@ namespace Mengine
         , m_workerId( INVALID_UNIQUE_ID )
         , m_globalKeyHandlerF2( INVALID_UNIQUE_ID )
         , m_globalKeyHandlerForSendingSelectedNode( INVALID_UNIQUE_ID )
-        , m_requestListenerId( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -92,6 +91,8 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE, &NodeDebuggerModule::notifyChangeSceneComplete, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY, &NodeDebuggerModule::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION, &NodeDebuggerModule::notifyIncrefFactoryGeneration, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_HTTP_REQUEST, &NodeDebuggerModule::notifyHttpRequest, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_HTTP_RESPONSE, &NodeDebuggerModule::notifyHttpResponse, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
         UniqueId globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
@@ -105,21 +106,6 @@ namespace Mengine
 
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
-
-        NodeDebuggerNetworkLoggerPtr networkLogger = Helper::makeFactorableUnique<NodeDebuggerNetworkLogger>( MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ASSERTION_FATAL( networkLogger != nullptr );
-
-        networkLogger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ) );
-
-        m_networkLogger = networkLogger;
-
-        if( SERVICE_IS_INITIALIZE( cURLServiceInterface ) == true )
-        {
-            m_requestListenerId = CURL_SERVICE()
-                ->addRequestListener( m_networkLogger, MENGINE_DOCUMENT_FACTORABLE );
-
-            MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALID_UNIQUE_ID );
-        }
 
         UniqueId idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseButtonCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
         {
@@ -169,6 +155,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_HTTP_REQUEST );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_HTTP_RESPONSE );
 
         if( m_threadJob != nullptr )
         {
@@ -207,19 +195,6 @@ namespace Mengine
         {
             Helper::removeGlobalHandler( m_globalKeyHandlerForSendingSelectedNode );
             m_globalKeyHandlerForSendingSelectedNode = INVALID_UNIQUE_ID;
-        }
-
-        if( m_networkLogger != nullptr )
-        {
-            m_networkLogger->setSceneDataProvider( nullptr );
-            m_networkLogger = nullptr;
-        }
-
-        if( SERVICE_IS_INITIALIZE( cURLServiceInterface ) == true )
-        {
-            CURL_SERVICE()
-                ->removeRequestListener( m_requestListenerId );
-            m_requestListenerId = INVALID_UNIQUE_ID;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1657,7 +1632,7 @@ namespace Mengine
 
         pugi::xml_node network_xml_objects = payloadNode.append_child( "Objects" );
 
-        m_networkLogger->foreachData( [&network_xml_objects]( const RequestData & _data )
+        this->foreachRequestData( [&network_xml_objects]( const NodeDebuggerRequestData & _data )
         {
             pugi::xml_node xml_object = network_xml_objects.append_child( "Object" );
 
@@ -2180,6 +2155,54 @@ namespace Mengine
         MENGINE_UNUSED( _generator );
 
         m_shouldUpdateScene = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::notifyHttpRequest( HttpRequestId _id, const String & _url )
+    {
+        NodeDebuggerRequestData requestData;
+
+        requestData.id = _id;
+        requestData.url = _url;
+        requestData.type = STRINGIZE_STRING_LOCAL( "Request" );
+
+        m_requestDatas.push_back( requestData );
+
+        this->setUpdateSceneFlag( true );
+
+        this->clearRequestDatas_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::notifyHttpResponse( const HttpResponseInterfacePtr & _response )
+    {
+        NodeDebuggerRequestData responseData;
+
+        responseData.id = _response->getRequestId();
+        responseData.url = _response->getData();
+        responseData.type = STRINGIZE_STRING_LOCAL( "Response" );
+
+        m_requestDatas.push_back( responseData );
+
+        this->setUpdateSceneFlag( true );
+
+        this->clearRequestDatas_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::foreachRequestData( const LambdaNodeDebuggerRequestData & _lambda )
+    {
+        for( const NodeDebuggerRequestData & data : m_requestDatas )
+        {
+            _lambda( data );
+        };
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::clearRequestDatas_()
+    {
+        if( m_requestDatas.size() <= 128 )
+        {
+            return;
+        }
+
+        m_requestDatas.pop_front();
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::setUpdateSceneFlag( bool _flag )

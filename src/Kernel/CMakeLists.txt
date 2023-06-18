@@ -784,6 +784,8 @@ Core
     WheelCode.h
     TouchCode.h
     
+    HttpCode.h
+    
     Document.h
     Document.cpp
     DocumentHelper.h

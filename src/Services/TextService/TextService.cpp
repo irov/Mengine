@@ -797,7 +797,8 @@ namespace Mengine
 
         if( it_found == m_aliases.end() )
         {
-            MENGINE_ASSERTION_FATAL( !(_alias.empty() == false && _alias.c_str()[0] == '$'), "not found alias '%s'"
+            MENGINE_ASSERTION_FATAL( !(_alias.empty() == false && _alias.c_str()[0] == '$'), "environment '%s' not found alias '%s'"
+                , _environment.c_str()
                 , _alias.c_str()
             );
 

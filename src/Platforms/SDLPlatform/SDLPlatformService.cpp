@@ -30,6 +30,7 @@
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/Win32Helper.h"
+#   include "Environment/Windows/Win32FileHelper.h"
 #endif
 
 #include "SDLDynamicLibrary.h"
@@ -2335,11 +2336,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
+        //////////////////////////////////////////////////////////////////////////
+        static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
         {
+            WChar sDir[MENGINE_MAX_PATH] = {L'\0'};
+            ::PathCanonicalizeW( sDir, _dir );
+
             {
                 WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WCSCPY( sPath, _dir );
+                MENGINE_WCSCPY( sPath, sDir );
                 MENGINE_WCSCAT( sPath, _path );
                 MENGINE_WCSCAT( sPath, _mask );
 
@@ -2350,8 +2355,8 @@ namespace Mengine
                 {
                     do
                     {
-                        if( ::wcscmp( fdFile.cFileName, L"." ) == 0
-                            || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
+                        if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0 ||
+                            MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
                         {
                             continue;
                         }
@@ -2373,10 +2378,10 @@ namespace Mengine
                         ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
                         WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
-                        if( MENGINE_WCSLEN( _dir ) != 0 )
+                        if( MENGINE_WCSLEN( sDir ) != 0 )
                         {
                             ::PathRelativePathTo( unicode_out,
-                                _dir,
+                                sDir,
                                 FILE_ATTRIBUTE_DIRECTORY,
                                 unicode_filepath,
                                 FILE_ATTRIBUTE_NORMAL );
@@ -2413,7 +2418,7 @@ namespace Mengine
 
             {
                 WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WCSCPY( sPath, _dir );
+                MENGINE_WCSCPY( sPath, sDir );
                 MENGINE_WCSCAT( sPath, _path );
                 MENGINE_WCSCAT( sPath, L"*.*" );
 
@@ -2450,7 +2455,7 @@ namespace Mengine
                     MENGINE_WCSCAT( nextPath, L"\\" );
 
                     bool stop;
-                    if( Detail::s_listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
+                    if( Detail::listDirectoryContents( sDir, _mask, nextPath, _lambda, &stop ) == false )
                     {
                         ::FindClose( hFind );
 
@@ -2503,8 +2508,26 @@ namespace Mengine
             return false;
         }
 
+        WChar unicode_fullbase[MENGINE_MAX_PATH] = {L'\0'};
+        ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
+
+        Helper::LambdaListDirectoryFilePath lambda_listdirectory = [_lambda]( const WChar * _filePath )
+        {
+            Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
+            if( Helper::unicodeToUtf8( _filePath, utf8_filepath, MENGINE_MAX_PATH ) == false )
+            {
+                return false;
+            }
+
+            FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+
+            bool result = _lambda( fp );
+
+            return result;
+        };
+
         bool stop;
-        if( Detail::s_listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda, &stop ) == false )
+        if( Helper::Win32ListDirectory( unicode_fullbase, unicode_mask, unicode_path, lambda_listdirectory, &stop ) == false )
         {
             return false;
         }

@@ -17,6 +17,7 @@
     self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: adUnitIdentifier];
     self.m_adView.delegate = self;
     self.m_adView.revenueDelegate = self;
+    self.m_adView.requestDelegate = self;
 
     self.m_adView.frame = rect;
 
@@ -67,6 +68,14 @@
     UIViewController * rootViewController = Mengine::Helper::iOSGetRootViewController();
     
     return rootViewController;
+}
+
+#pragma mark - MAAdRequestDelegate Protocol
+
+- (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
+    LOGGER_MESSAGE( "banner didStartAdRequestForAdUnitIdentifier: %s"
+        , [adUnitIdentifier UTF8String]
+    );
 }
 
 #pragma mark - MAAdDelegate Protocol

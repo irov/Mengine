@@ -9,7 +9,7 @@
 #import "AppleAppLovinBannerAmazonLoader.h"
 #endif
 
-@interface AppleAppLovinBannerDelegate : AppleAppLovinBaseDelegate<MAAdViewAdDelegate, MAAdRevenueDelegate>
+@interface AppleAppLovinBannerDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdViewAdDelegate, MAAdRevenueDelegate>
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) AdUnitIdentifier
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId

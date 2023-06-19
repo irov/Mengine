@@ -11,6 +11,6 @@
 - (NSString * _Nonnull) getMAErrorParams:(MAError * _Nonnull) error;
 - (NSString * _Nonnull) getMARewardParams:(MAReward * _Nonnull) reward;
 
-@property (nonatomic, assign) AppleAppLovinAnalyticsService * _Nonnull m_analytics;
+@property (nonatomic, strong) AppleAppLovinAnalyticsService * _Nonnull m_analytics;
 
 @end

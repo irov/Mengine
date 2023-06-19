@@ -10,6 +10,6 @@
 
 @property (assign) Mengine::AppleMARSDKServiceInterface * _Nonnull m_service;
 
-- (instancetype _Nonnull)initWithService:(Mengine::AppleMARSDKServiceInterface* _Nonnull)service;
+- (instancetype _Nonnull) initWithService:(Mengine::AppleMARSDKServiceInterface* _Nonnull)service;
 
 @end

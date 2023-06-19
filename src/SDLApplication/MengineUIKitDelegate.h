@@ -2,6 +2,6 @@
 
 @interface MengineUIKitDelegate : SDLUIKitDelegate
 
-@property (nonatomic,retain) NSMutableArray<id> * m_applicationDelegates;
+@property (nonatomic, strong) NSMutableArray<id> * m_applicationDelegates;
 
 @end

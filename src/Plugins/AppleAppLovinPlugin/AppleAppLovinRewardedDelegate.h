@@ -27,7 +27,7 @@
 @property (nonatomic, assign) NSInteger m_requestId;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-@property (nonatomic, assign) AppleAppLovinRewardedAmazonLoader * _Nullable m_amazonLoader;
+@property (nonatomic, strong) AppleAppLovinRewardedAmazonLoader * _Nullable m_amazonLoader;
 #endif
 
 @end

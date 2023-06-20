@@ -9,6 +9,7 @@
 #include "Kernel/SHA1.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/Ravingcode.h"
 
 #include "Config/StdString.h"
 
@@ -63,65 +64,14 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t SecureService::getSecureHash() const
+    void SecureService::protectData( const void * _in, size_t _size, void * const _out ) const
     {
-        return m_secureHash;
+        Helper::ravingcode( m_secureHash, _in, _size, _out );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureService::protectData( void * const _buffer, size_t _size ) const
+    void SecureService::unprotectData( const void * _in, size_t _size, void * const _out ) const
     {
-        size_t tail = _size % 8;
-        size_t head = _size - tail;
-
-        for( size_t index = 0; index != head; index += 8 )
-        {
-            *(uint64_t *)_buffer ^= m_secureHash;
-        }
-
-        if( tail != 0 )
-        {
-            union
-            {
-                uint8_t tail_buffer[8];
-                uint64_t tail64;
-            };
-
-            tail64 = 0;
-
-            MENGINE_MEMCPY( tail_buffer, (uint8_t *)_buffer + head, tail );
-
-            tail64 ^= m_secureHash;
-
-            MENGINE_MEMCPY( (uint8_t *)_buffer + head, tail_buffer, tail );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SecureService::unprotectData( void * const _buffer, size_t _size ) const
-    {
-        size_t tail = _size % 8;
-        size_t head = _size - tail;
-
-        for( size_t index = 0; index != head; index += 8 )
-        {
-            *(uint64_t *)_buffer ^= m_secureHash;
-        }
-
-        if( tail != 0 )
-        {
-            union
-            {
-                uint8_t tail_buffer[8];
-                uint64_t tail64;
-            };
-
-            tail64 = 0;
-
-            MENGINE_MEMCPY( tail_buffer, (uint8_t *)_buffer + head, tail );
-
-            tail64 ^= m_secureHash;
-
-            MENGINE_MEMCPY( (uint8_t *)_buffer + head, tail_buffer, tail );
-        }
+        Helper::ravingcode( m_secureHash, _in, _size, _out );
     }
     //////////////////////////////////////////////////////////////////////////
 }

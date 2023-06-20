@@ -10,40 +10,47 @@ android {
     }
 
     buildTypes {
+        List<String> cmake_arguments = new ArrayList<String>();
+        cmake_arguments.add("-DANDROID_PLATFORM=android-" + project.minSdkVersion)
+        cmake_arguments.add("-DANDROID_ARM_NEON=TRUE")
+        cmake_arguments.add("-DANDROID_STL=c++_shared")
+        cmake_arguments.add("-DANDROID_TOOLCHAIN=clang")
+        cmake_arguments.add("-DLIBTYPE=SHARED")
+        cmake_arguments.add("-DOPENAL_SHARED:BOOLEAN=ON")
+        cmake_arguments.add("-DALSOFT_DLOPEN:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_WERROR:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_UTILS:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_NO_CONFIG_UTIL:BOOLEAN=ON")
+        cmake_arguments.add("-DALSOFT_EXAMPLES:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_INSTALL:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_INSTALL_CONFIG:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_INSTALL_HRTF_DATA:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_INSTALL_AMBDEC_PRESETS:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_INSTALL_EXAMPLES:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_INSTALL_UTILS:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_UPDATE_BUILD_VERSION:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_BUILD_IMPORT_LIB:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_BUILD_ROUTER:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_OSX_FRAMEWORK:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_STATIC_LIBGCC:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_STATIC_STDCXX:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_BACKEND_WAVE:BOOLEAN=ON")
+        cmake_arguments.add("-DALSOFT_REQUIRE_SDL2:BOOLEAN=OFF")
+        cmake_arguments.add("-DALSOFT_REQUIRE_OPENSL:BOOLEAN=ON")
+        cmake_arguments.add("-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF")
+
         debug {
             externalNativeBuild {
                 cmake {
                     cFlags "-std=c11 -g -O0 -D_DEBUG"
                     cppFlags "-std=c++17 -frtti -fexceptions -g -O0 -D_DEBUG"
-                    arguments "-DANDROID_PLATFORM=android-" + project.minSdkVersion,
-                            "-DANDROID_ARM_NEON=TRUE",
-                            "-DANDROID_STL=c++_shared",
-                            "-DANDROID_TOOLCHAIN=clang",
-                            "-DCMAKE_BUILD_TYPE:STRING=Debug",
-                            "-DLIBTYPE=SHARED",
-                            "-DOPENAL_SHARED:BOOLEAN=ON",
-                            "-DALSOFT_DLOPEN:BOOLEAN=OFF",
-                            "-DALSOFT_WERROR:BOOLEAN=OFF",
-                            "-DALSOFT_UTILS:BOOLEAN=OFF",
-                            "-DALSOFT_NO_CONFIG_UTIL:BOOLEAN=ON",
-                            "-DALSOFT_EXAMPLES:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_CONFIG:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_HRTF_DATA:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_AMBDEC_PRESETS:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_EXAMPLES:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_UTILS:BOOLEAN=OFF",
-                            "-DALSOFT_UPDATE_BUILD_VERSION:BOOLEAN=OFF",
-                            "-DALSOFT_BUILD_IMPORT_LIB:BOOLEAN=OFF",
-                            "-DALSOFT_BUILD_ROUTER:BOOLEAN=OFF",
-                            "-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF",
-                            "-DALSOFT_OSX_FRAMEWORK:BOOLEAN=OFF",
-                            "-DALSOFT_STATIC_LIBGCC:BOOLEAN=OFF",
-                            "-DALSOFT_STATIC_STDCXX:BOOLEAN=OFF",
-                            "-DALSOFT_BACKEND_WAVE:BOOLEAN=ON",
-                            "-DALSOFT_REQUIRE_SDL2:BOOLEAN=OFF",
-                            "-DALSOFT_REQUIRE_OPENSL:BOOLEAN=ON",
-                            "-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF"
+
+                    for (String argument : cmake_arguments) {
+                        arguments.add(argument)
+                    }
+
+                    arguments.add("-DCMAKE_BUILD_TYPE:STRING=Debug")
                 }
             }
         }
@@ -53,35 +60,12 @@ android {
                 cmake {
                     cFlags "-std=c11 -O3 -DNDEBUG"
                     cppFlags "-std=c++17 -frtti -fexceptions -O3 -DNDEBUG"
-                    arguments "-DANDROID_PLATFORM=android-" + project.minSdkVersion,
-                            "-DANDROID_ARM_NEON=TRUE",
-                            "-DANDROID_STL=c++_shared",
-                            "-DANDROID_TOOLCHAIN=clang",
-                            "-DCMAKE_BUILD_TYPE:STRING=Release",
-                            "-DLIBTYPE=SHARED",
-                            "-DOPENAL_SHARED:BOOLEAN=ON",
-                            "-DALSOFT_DLOPEN:BOOLEAN=OFF",
-                            "-DALSOFT_WERROR:BOOLEAN=OFF",
-                            "-DALSOFT_UTILS:BOOLEAN=OFF",
-                            "-DALSOFT_NO_CONFIG_UTIL:BOOLEAN=ON",
-                            "-DALSOFT_EXAMPLES:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_CONFIG:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_HRTF_DATA:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_AMBDEC_PRESETS:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_EXAMPLES:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL_UTILS:BOOLEAN=OFF",
-                            "-DALSOFT_UPDATE_BUILD_VERSION:BOOLEAN=OFF",
-                            "-DALSOFT_BUILD_IMPORT_LIB:BOOLEAN=OFF",
-                            "-DALSOFT_BUILD_ROUTER:BOOLEAN=OFF",
-                            "-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF",
-                            "-DALSOFT_OSX_FRAMEWORK:BOOLEAN=OFF",
-                            "-DALSOFT_STATIC_LIBGCC:BOOLEAN=OFF",
-                            "-DALSOFT_STATIC_STDCXX:BOOLEAN=OFF",
-                            "-DALSOFT_BACKEND_WAVE:BOOLEAN=ON",
-                            "-DALSOFT_REQUIRE_SDL2:BOOLEAN=OFF",
-                            "-DALSOFT_REQUIRE_OPENSL:BOOLEAN=ON",
-                            "-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF"
+
+                    for (String argument : cmake_arguments) {
+                        arguments.add(argument)
+                    }
+
+                    arguments.add("-DCMAKE_BUILD_TYPE:STRING=Release")
                 }
             }
         }

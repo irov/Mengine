@@ -164,13 +164,11 @@ namespace Mengine
         writer.writeBuffer( m_value.c_str(), m_value.size() );
         writer.writeBuffer( m_buffer.c_str(), m_buffer.size() );
 
-        uint64_t secureHash = SECURE_SERVICE()
-            ->getSecureHash();
-
         Blobject blob_raving;
         blob_raving.resize( blob.size() );
 
-        Helper::ravingcode( secureHash, blob.data(), blob.size(), blob_raving.data() );
+        SECURE_SERVICE()
+            ->protectData( blob.data(), blob.size(), blob_raving.data() );
 
         _hexadecimal->resize( blob.size() * 2 );
 
@@ -208,13 +206,11 @@ namespace Mengine
 
         Blobject blob;
         blob.resize( blob_raving_size );
-
-        uint64_t secureHash = SECURE_SERVICE()
-            ->getSecureHash();
         
         void * blob_data = blob.data();
 
-        Helper::ravingcode( secureHash, blob_raving_data, blob_raving_size, blob_data );
+        SECURE_SERVICE()
+            ->unprotectData( blob_raving_data, blob_raving_size, blob_data );
 
         ContainerReader<Blobject> reader( blob );
         

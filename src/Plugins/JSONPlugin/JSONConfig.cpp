@@ -240,10 +240,8 @@ namespace Mengine
             memory_buffer += 4;
             size -= 4;
 
-            uint64_t secureHash = SECURE_SERVICE()
-                ->getSecureHash();
-
-            Helper::ravingcode( secureHash, memory_buffer, size, memory_buffer );
+            SECURE_SERVICE()
+                ->unprotectData( memory_buffer, size, memory_buffer );
         }
 
         jpp::object j = Helper::loadJSONStreamFromBuffer( memory_buffer, size, _doc );

@@ -60,10 +60,8 @@ namespace Mengine
             {
                 memory_buffer += 4;
 
-                uint64_t secureHash = SECURE_SERVICE()
-                    ->getSecureHash();
-
-                Helper::ravingcode( secureHash, memory_buffer, size - 4, memory_buffer );
+                SECURE_SERVICE()
+                    ->unprotectData( memory_buffer, size - 4, memory_buffer );
             }
 
             if( tinyini_load( &_ini.ini, memory_buffer ) == TINYINI_RESULT_FAILURE )

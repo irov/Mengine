@@ -18,11 +18,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        uint64_t getSecureHash() const override;
-
-    public:
-        void protectData( void * const _buffer, size_t _size ) const override;
-        void unprotectData( void * const _buffer, size_t _size ) const override;
+        void protectData( const void * _in, size_t _size, void * const _out ) const override;
+        void unprotectData( const void * _in, size_t _size, void * const _out ) const override;
 
     protected:
         uint64_t m_secureHash;

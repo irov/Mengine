@@ -10,11 +10,8 @@ namespace Mengine
         SERVICE_DECLARE( "SecureService" );
 
     public:
-        virtual uint64_t getSecureHash() const = 0;
-
-    public:
-        virtual void protectData( void * const _buffer, size_t _size ) const = 0;
-        virtual void unprotectData( void * const _buffer, size_t _size ) const = 0;
+        virtual void protectData( const void * _in, size_t _size, void * const _out ) const = 0;
+        virtual void unprotectData( const void * _in, size_t _size, void * const _out ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

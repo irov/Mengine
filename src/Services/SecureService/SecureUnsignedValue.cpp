@@ -209,13 +209,11 @@ namespace Mengine
         writer.writePOD( m_value );
         writer.writeBuffer( m_buffer.c_str(), m_buffer.capacity() );
 
-        uint64_t secureHash = SECURE_SERVICE()
-            ->getSecureHash();
-
         Blobject blob_raving;
         blob_raving.resize( blob.size() );
 
-        Helper::ravingcode( secureHash, blob.data(), blob.size(), blob_raving.data() );
+        SECURE_SERVICE()
+            ->protectData( blob.data(), blob.size(), blob_raving.data() );
 
         _hexadecimal->resize( blob.size() * 2 );
 
@@ -240,16 +238,19 @@ namespace Mengine
         Blobject blob_raving;
         blob_raving.resize( hexadecimal_size / 2 );
 
+        void * blob_raving_data = blob_raving.data();
+        Blobject::size_type blob_raving_capacity = blob_raving.size();
+
         size_t blob_raving_size;
-        Helper::decodeHexadecimal( hexadecimal_str, hexadecimal_size, blob_raving.data(), blob_raving.size(), &blob_raving_size );
+        Helper::decodeHexadecimal( hexadecimal_str, hexadecimal_size, blob_raving_data, blob_raving_capacity, &blob_raving_size );
 
         Blobject blob;
         blob.resize( blob_raving_size );
 
-        uint64_t secureHash = SECURE_SERVICE()
-            ->getSecureHash();
+        void * blob_data = blob.data();
 
-        Helper::ravingcode( secureHash, blob_raving.data(), blob_raving_size, blob.data() );
+        SECURE_SERVICE()
+            ->unprotectData( blob_raving_data, blob_raving_size, blob_data );
 
         uint32_t load_hash;
         uint32_t load_value;

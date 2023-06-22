@@ -219,10 +219,32 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
         switch (eventType) {
             case EAET_CUSTOM: {
                 Bundle params = new Bundle();
+
+                for (Map.Entry<String, Object> entry : context.entrySet()) {
+                    String name = entry.getKey();
+                    Object value = entry.getValue();
+
+                    if (value instanceof Boolean) {
+                        params.putBoolean(name, (Boolean)value);
+                    } else if (value instanceof Long) {
+                        params.putLong(name, (Long)value);
+                    } else if (value instanceof Double) {
+                        params.putDouble(name, (Double)value);
+                    } else if (value instanceof String) {
+                        params.putString(name, (String)value);
+                    } else {
+                        this.logError("unsupported parameter: %s class: %s"
+                            , value
+                            , value.getClass()
+                        );
+
+                        return;
+                    }
+                }
 
                 for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                     String name = entry.getKey();

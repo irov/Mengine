@@ -34,7 +34,7 @@ namespace Mengine
     const ServiceRequiredList & ConfigService::requiredServices() const
     {
         static ServiceRequiredList required = {
-            ThreadSystemInterface::getStaticServiceID()
+            SERVICE_ID( ThreadSystemInterface )
         };
 
         return required;

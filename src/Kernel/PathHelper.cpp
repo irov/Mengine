@@ -113,7 +113,7 @@ namespace Mengine
         {
             WChar * pch = MENGINE_WCSCHR( _filePath, L'\\' );
 
-            while( pch != NULL )
+            while( pch != nullptr )
             {
                 *pch = MENGINE_PATH_WDELIM;
 
@@ -139,7 +139,7 @@ namespace Mengine
         {
             WChar * pch = MENGINE_WCSCHR( _filePath, MENGINE_PATH_WDELIM );
 
-            while( pch != NULL )
+            while( pch != nullptr )
             {
                 *pch = L'\\';
 
@@ -151,7 +151,7 @@ namespace Mengine
         {
             Char * pch = MENGINE_STRCHR( _filePath, MENGINE_PATH_DELIM );
 
-            while( pch != NULL )
+            while( pch != nullptr )
             {
                 *pch = '\\';
 
@@ -212,7 +212,7 @@ namespace Mengine
         {
             Char * pch = MENGINE_STRCHR( _filePath, '\\' );
 
-            while( pch != NULL )
+            while( pch != nullptr )
             {
                 *pch = MENGINE_PATH_DELIM;
 

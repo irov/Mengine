@@ -38,7 +38,7 @@ namespace Mengine
     const ServiceRequiredList & SDLUnicodeSystem::requiredServices() const
     {
         static ServiceRequiredList required = {
-            ThreadSystemInterface::getStaticServiceID()
+            SERVICE_ID( ThreadSystemInterface )
         };
 
         return required;

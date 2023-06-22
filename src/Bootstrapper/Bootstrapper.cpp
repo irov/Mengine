@@ -713,7 +713,7 @@ namespace Mengine
             return true;
         }
 
-        Char filePathDate[1024] = {'\0'};
+        Char filePathDate[MENGINE_MAX_PATH] = {'\0'};
         Helper::makeFilePathDateTimestamp( filePathDate, MENGINE_MAX_PATH );
 
         WString unicode_date;

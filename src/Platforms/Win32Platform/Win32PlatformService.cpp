@@ -1376,7 +1376,7 @@ namespace Mengine
 
             Win32PlatformService * platform = (Win32PlatformService *)value;
 
-            if( platform == NULL )
+            if( platform == nullptr )
             {
                 LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 
@@ -2721,12 +2721,17 @@ namespace Mengine
     {
         m_cursorMode = _mode;
 
-        if( m_cursor == NULL )
+        if( m_cursorMode == true )
         {
-            m_cursor = ::LoadCursor( NULL, IDC_ARROW );
+            if( m_cursor == NULL )
+            {
+                m_cursor = ::LoadCursor( NULL, IDC_ARROW );
+            }            
+        } 
+        else 
+        {
+            m_cursor = NULL;
         }
-
-        m_cursor = m_cursorMode == true ? m_cursor : NULL;
 
         ::SetCursor( m_cursor );
     }
@@ -4767,6 +4772,17 @@ namespace Mengine
         }
 
         return currentPathLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
+    {
+        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
+
+        MENGINE_STRCPY( _folderName, Project_ExtraPreferencesFolderName );
+
+        size_t Project_ExtraPreferencesFolderNameLen = MENGINE_STRLEN( Project_ExtraPreferencesFolderName );
+
+        return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getUserName( Char * const _userName ) const

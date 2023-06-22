@@ -202,7 +202,7 @@ namespace Mengine
 
         Char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
 
-        size_t sdl_prefPathLen = MENGINE_STRLEN( sdl_prefPath );
+        size_t sdl_prefPathLen = MENGINE_STRLEN( _userPath );
 
         if( sdl_prefPathLen >= MENGINE_MAX_PATH )
         {
@@ -217,7 +217,29 @@ namespace Mengine
 
         SDL_free( sdl_prefPath );
 
-        return sdl_prefPathLen;
+        Char extraPreferencesFolderName[MENGINE_MAX_PATH] = {'\0'};
+        size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
+
+        if( ExtraPreferencesFolderNameLen != 0 )
+        {
+            MENGINE_STRCAT( _userPath, extraPreferencesFolderName );
+            MENGINE_STRCAT( _userPath, "/" );
+        }
+
+        size_t userPathLen = MENGINE_STRLEN( _userPath );
+
+        return userPathLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
+    {
+        const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
+
+        MENGINE_STRCPY( _folderName, Project_ExtraPreferencesFolderName );
+        
+        size_t Project_ExtraPreferencesFolderNameLen = MENGINE_STRLEN( Project_ExtraPreferencesFolderName );
+
+        return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatformService::getUserName( Char * const _userName ) const
@@ -1239,6 +1261,12 @@ namespace Mengine
         MENGINE_UNUSED( _subject );
         MENGINE_UNUSED( _body );
 
+        LOGGER_INFO( "platform", "open mail '%s' subject '%s' body '%s'"
+            , _email
+            , _subject
+            , _body
+        );
+
 #if defined(MENGINE_PLATFORM_APPLE)
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
@@ -1253,12 +1281,6 @@ namespace Mengine
 
             return false;
         }
-
-        LOGGER_INFO( "platform", "open mail '%s' subject '%s' body '%s'"
-            , _email
-            , _subject
-            , _body
-        );
 
         return true;
 #else

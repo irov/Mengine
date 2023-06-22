@@ -56,7 +56,7 @@ namespace Mengine
         , m_currentDepthBufferTestEnable( false )
         , m_currentDepthBufferWriteEnable( false )
     {
-        Algorithm::fill_n( m_currentTexturesID, MENGINE_MAX_TEXTURE_STAGES, 0u );
+        Algorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, 0u );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderService::~RenderService()
@@ -602,11 +602,11 @@ namespace Mengine
     void RenderService::updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture )
     {
         uint32_t texture_id = _texture->getId();
-        uint32_t current_texture_id = m_currentTexturesID[_stageId];
+        uint32_t current_texture_id = m_currentTexturesId[_stageId];
 
         if( texture_id != current_texture_id || current_texture_id == 0 )
         {
-            m_currentTexturesID[_stageId] = texture_id;
+            m_currentTexturesId[_stageId] = texture_id;
 
             const RenderImageInterfacePtr & image = _texture->getImage();
 
@@ -708,7 +708,7 @@ namespace Mengine
     {
         m_renderTextureStages[_stage] = m_defaultRenderTextureStage;
 
-        m_currentTexturesID[_stage] = 0;
+        m_currentTexturesId[_stage] = 0;
 
         m_renderSystem->setTexture( m_currentRenderProgram, _stage, nullptr );
 
@@ -799,7 +799,7 @@ namespace Mengine
             this->restoreTextureStage_( i );
         }
 
-        Algorithm::fill_n( m_currentTexturesID, MENGINE_MAX_TEXTURE_STAGES, 0 );
+        Algorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, 0 );
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;

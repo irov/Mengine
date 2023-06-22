@@ -78,7 +78,7 @@ namespace Mengine
         m_fileGroup = nullptr;
         m_archivator = nullptr;
 
-        m_currentAccountID.clear();
+        m_currentAccountId.clear();
 
         for( const HashtableAccounts::value_type & value : m_accounts )
         {
@@ -96,10 +96,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AccountService::stopAccounts()
     {
-        ConstString lastAccount = m_currentAccountID;
+        ConstString lastAccount = m_currentAccountId;
         this->unselectCurrentAccount_();
 
-        m_currentAccountID = lastAccount;
+        m_currentAccountId = lastAccount;
 
         this->saveAccounts();
     }
@@ -111,19 +111,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountService::createAccount( const DocumentPtr & _doc )
     {
-        uint32_t new_playerID = ++m_playerEnumerator;
+        uint32_t new_playerId = ++m_playerEnumerator;
 
-        Stringstream streamAccountID;
-        streamAccountID << "Player_" << new_playerID;
+        Stringstream streamAccountId;
+        streamAccountId << "Player_" << new_playerId;
 
-        ConstString accountID = Helper::stringizeString( streamAccountID.str() );
+        ConstString accountId = Helper::stringizeString( streamAccountId.str() );
 
-        AccountInterfacePtr account = this->createAccount_( accountID, _doc );
+        AccountInterfacePtr account = this->createAccount_( accountId, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 
         LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
-            , account->getID().c_str()
+            , account->getId().c_str()
             , account->getUID().data
         );
 
@@ -132,20 +132,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountService::createGlobalAccount( const DocumentPtr & _doc )
     {
-        uint32_t new_playerID = ++m_playerEnumerator;
+        uint32_t new_playerId = ++m_playerEnumerator;
 
-        Stringstream streamAccountID;
+        Stringstream streamAccountId;
 
-        streamAccountID << "Global_" << new_playerID;
+        streamAccountId << "Global_" << new_playerId;
 
-        ConstString accountID = Helper::stringizeString( streamAccountID.str() );
+        ConstString accountId = Helper::stringizeString( streamAccountId.str() );
 
-        AccountInterfacePtr account = this->createGlobalAccount_( accountID, _doc );
+        AccountInterfacePtr account = this->createGlobalAccount_( accountId, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 
         LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
-            , account->getID().c_str()
+            , account->getId().c_str()
             , account->getUID().data
         );
 
@@ -166,7 +166,7 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        m_currentAccountID = newAccount->getID();
+        m_currentAccountId = newAccount->getId();
 
         m_accounts.emplace( _accountId, newAccount );
 
@@ -206,7 +206,7 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        m_globalAccountID = newAccount->getID();
+        m_globalAccountId = newAccount->getId();
 
         m_accounts.emplace( _accountId, newAccount );
 
@@ -217,21 +217,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AccountService::unselectCurrentAccount_()
     {
-        if( m_currentAccountID.empty() == true )
+        if( m_currentAccountId.empty() == true )
         {
             return;
         }
 
-        ConstString currentAccount = m_currentAccountID;
+        ConstString currentAccount = m_currentAccountId;
 
         if( m_accountProvider != nullptr )
         {
             m_accountProvider->onUnselectAccount( currentAccount );
         }
 
-        if( m_currentAccountID == currentAccount )
+        if( m_currentAccountId == currentAccount )
         {
-            m_currentAccountID.clear();
+            m_currentAccountId.clear();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -287,16 +287,16 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        if( m_currentAccountID.empty() == false )
+        if( m_currentAccountId.empty() == false )
         {
-            if( m_currentAccountID == _accountId )
+            if( m_currentAccountId == _accountId )
             {
                 this->unselectCurrentAccount_();
             }
         }
 
         LOGGER_INFO( "account", "delete account '%s' UID '%.20s'"
-            , account->getID().c_str()
+            , account->getId().c_str()
             , account->getUID().data
         );
 
@@ -323,18 +323,18 @@ namespace Mengine
             return false;
         }
 
-        if( m_currentAccountID.empty() == false )
+        if( m_currentAccountId.empty() == false )
         {
-            if( m_currentAccountID != _accountId )
+            if( m_currentAccountId != _accountId )
             {
                 this->unselectCurrentAccount_();
             }
         }
 
-        m_currentAccountID = _accountId;
+        m_currentAccountId = _accountId;
 
         LOGGER_INFO( "account", "select account '%s' UID '%.20s'"
-            , account->getID().c_str()
+            , account->getId().c_str()
             , account->getUID().data
         );
 
@@ -352,12 +352,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::hasCurrentAccount() const
     {
-        return m_currentAccountID.empty() == false;
+        return m_currentAccountId.empty() == false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & AccountService::getCurrentAccountID() const
+    const ConstString & AccountService::getCurrentAccountId() const
     {
-        return m_currentAccountID;
+        return m_currentAccountId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AccountInterfacePtr & AccountService::getCurrentAccount() const
+    {
+        if( m_currentAccountId.empty() == true )
+        {
+            return AccountInterfacePtr::none();
+        }
+
+        const AccountInterfacePtr & account = m_accounts.find( m_currentAccountId );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( account, "current account with ID '%s' not found"
+            , m_currentAccountId.c_str()
+        );
+
+        return account;
     }
     //////////////////////////////////////////////////////////////////////////
     const AccountInterfacePtr & AccountService::getAccount( const ConstString & _accountId ) const
@@ -377,9 +393,9 @@ namespace Mengine
         {
             const AccountPtr & account = value.element;
 
-            const ConstString & accountID = account->getID();
+            const ConstString & accountId = account->getId();
 
-            if( accountID == m_globalAccountID )
+            if( accountId == m_globalAccountId )
             {
                 continue;
             }
@@ -390,34 +406,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AccountService::setDefaultAccount( const ConstString & _accountId )
     {
-        m_defaultAccountID = _accountId;
+        m_defaultAccountId = _accountId;
 
         m_invalidateAccounts = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & AccountService::getDefaultAccountID() const
+    const ConstString & AccountService::getDefaultAccountId() const
     {
-        return m_defaultAccountID;
+        return m_defaultAccountId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::isCurrentDefaultAccount() const
     {
-        if( m_defaultAccountID.empty() == true )
+        if( m_defaultAccountId.empty() == true )
         {
             return false;
         }
 
-        if( m_currentAccountID.empty() == true )
+        if( m_currentAccountId.empty() == true )
         {
             return false;
         }
 
-        return m_defaultAccountID == m_currentAccountID;
+        return m_defaultAccountId == m_currentAccountId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::hasDefaultAccount() const
     {
-        if( m_defaultAccountID.empty() == true )
+        if( m_defaultAccountId.empty() == true )
         {
             return false;
         }
@@ -431,19 +447,19 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        m_globalAccountID = _accountId;
+        m_globalAccountId = _accountId;
 
         m_invalidateAccounts = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & AccountService::getGlobalAccountID() const
+    const ConstString & AccountService::getGlobalAccountId() const
     {
-        return m_globalAccountID;
+        return m_globalAccountId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::hasGlobalAccount() const
     {
-        if( m_globalAccountID.empty() == true )
+        if( m_globalAccountId.empty() == true )
         {
             return false;
         }
@@ -453,15 +469,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::selectDefaultAccount()
     {
-        if( m_defaultAccountID.empty() == true )
+        if( m_defaultAccountId.empty() == true )
         {
             return false;
         }
 
-        if( this->selectAccount( m_defaultAccountID ) == false )
+        if( this->selectAccount( m_defaultAccountId ) == false )
         {
             LOGGER_ERROR( "invalid select account '%s'"
-                , m_defaultAccountID.c_str()
+                , m_defaultAccountId.c_str()
             );
 
             return false;
@@ -472,19 +488,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::loadAccount_( const AccountInterfacePtr & _account )
     {
-        const ConstString & accountID = _account->getID();
+        const ConstString & accountId = _account->getId();
 
         if( m_accountProvider != nullptr )
         {
-            m_currentAccountID = accountID;
-            m_accountProvider->onCreateAccount( accountID, m_globalAccountID == accountID );
-            m_currentAccountID.clear();
+            m_currentAccountId = accountId;
+            m_accountProvider->onCreateAccount( accountId, m_globalAccountId == accountId );
+            m_currentAccountId.clear();
         }
 
         if( _account->load() == false )
         {
             LOGGER_ERROR( "invalid load account '%s'"
-                , accountID.c_str()
+                , accountId.c_str()
             );
 
             return false;
@@ -516,18 +532,18 @@ namespace Mengine
             return false;
         }
 
-        if( config->hasValue( "SETTINGS", "GlobalAccountID", ConstString::none(), &m_globalAccountID ) == false )
+        if( config->hasValue( "SETTINGS", "GlobalAccountID", ConstString::none(), &m_globalAccountId ) == false )
         {
             LOGGER_ERROR( "get [SETTINGS] GlobalAccountID failed" );
         }
 
-        if( config->hasValue( "SETTINGS", "DefaultAccountID", ConstString::none(), &m_defaultAccountID ) == false )
+        if( config->hasValue( "SETTINGS", "DefaultAccountID", ConstString::none(), &m_defaultAccountId ) == false )
         {
             LOGGER_ERROR( "get [SETTINGS] DefaultAccountID failed" );
         }
 
-        ConstString selectAccountID;
-        if( config->hasValue( "SETTINGS", "SelectAccountID", ConstString::none(), &selectAccountID ) == false )
+        ConstString selectAccountId;
+        if( config->hasValue( "SETTINGS", "SelectAccountID", ConstString::none(), &selectAccountId ) == false )
         {
             LOGGER_ERROR( "get [SETTINGS] SelectAccountID failed" );
         }
@@ -537,22 +553,22 @@ namespace Mengine
 
         AccountInterfacePtr validAccount = nullptr;
 
-        for( const ConstString & accountID : values )
+        for( const ConstString & accountId : values )
         {
-            AccountInterfacePtr account = this->newAccount_( accountID, MENGINE_DOCUMENT_FACTORABLE );
+            AccountInterfacePtr account = this->newAccount_( accountId, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account '%s'"
-                , accountID.c_str()
+                , accountId.c_str()
             );
 
-            m_accounts.emplace( accountID, account );
+            m_accounts.emplace( accountId, account );
 
             if( this->loadAccount_( account ) == false )
             {
-                m_accounts.erase( accountID );
+                m_accounts.erase( accountId );
 
                 LOGGER_ERROR( "invalid load account '%s'"
-                    , accountID.c_str()
+                    , accountId.c_str()
                 );
 
                 continue;
@@ -561,46 +577,46 @@ namespace Mengine
             validAccount = account;
         }
 
-        if( this->hasAccount( selectAccountID ) == false )
+        if( this->hasAccount( selectAccountId ) == false )
         {
-            selectAccountID.clear();
+            selectAccountId.clear();
         }
 
-        if( this->hasAccount( m_defaultAccountID ) == false )
+        if( this->hasAccount( m_defaultAccountId ) == false )
         {
-            m_defaultAccountID.clear();
+            m_defaultAccountId.clear();
         }
 
-        if( this->hasAccount( m_globalAccountID ) == false )
+        if( this->hasAccount( m_globalAccountId ) == false )
         {
-            m_globalAccountID.clear();
+            m_globalAccountId.clear();
         }
 
-        if( selectAccountID.empty() == false )
+        if( selectAccountId.empty() == false )
         {
             LOGGER_INFO( "account", "select account '%s'"
-                , selectAccountID.c_str()
+                , selectAccountId.c_str()
             );
 
-            if( this->selectAccount( selectAccountID ) == false )
+            if( this->selectAccount( selectAccountId ) == false )
             {
                 LOGGER_ERROR( "invalid set select account '%s'"
-                    , selectAccountID.c_str()
+                    , selectAccountId.c_str()
                 );
 
                 return false;
             }
         }
-        else if( m_defaultAccountID.empty() == false )
+        else if( m_defaultAccountId.empty() == false )
         {
             LOGGER_INFO( "account", "set default account '%s'"
-                , m_defaultAccountID.c_str()
+                , m_defaultAccountId.c_str()
             );
 
-            if( this->selectAccount( m_defaultAccountID ) == false )
+            if( this->selectAccount( m_defaultAccountId ) == false )
             {
                 LOGGER_ERROR( "invalid set default account '%s'"
-                    , m_defaultAccountID.c_str()
+                    , m_defaultAccountId.c_str()
                 );
 
                 return false;
@@ -608,16 +624,16 @@ namespace Mengine
         }
         else if( validAccount != nullptr )
         {
-            const ConstString & accountID = validAccount->getID();
+            const ConstString & accountId = validAccount->getId();
 
             LOGGER_INFO( "account", "set valid account '%s'"
-                , accountID.c_str()
+                , accountId.c_str()
             );
 
-            if( this->selectAccount( accountID ) == false )
+            if( this->selectAccount( accountId ) == false )
             {
                 LOGGER_ERROR( "invalid set valid account '%s'"
-                    , accountID.c_str()
+                    , accountId.c_str()
                 );
 
                 return false;
@@ -704,19 +720,19 @@ namespace Mengine
 
         jpp::object j_settings = jpp::make_object();
 
-        if( m_globalAccountID.empty() == false )
+        if( m_globalAccountId.empty() == false )
         {
-            j_settings.set( "GlobalAccountID", m_globalAccountID.c_str() );
+            j_settings.set( "GlobalAccountID", m_globalAccountId );
         }
 
-        if( m_defaultAccountID.empty() == false )
+        if( m_defaultAccountId.empty() == false )
         {
-            j_settings.set( "DefaultAccountID", m_defaultAccountID.c_str() );
+            j_settings.set( "DefaultAccountID", m_defaultAccountId );
         }
 
-        if( m_currentAccountID.empty() == false )
+        if( m_currentAccountId.empty() == false )
         {
-            j_settings.set( "SelectAccountID", m_currentAccountID.c_str() );
+            j_settings.set( "SelectAccountID", m_currentAccountId );
         }
 
         j_settings.set( "AccountEnumerator", m_playerEnumerator );
@@ -726,9 +742,9 @@ namespace Mengine
         jpp::array j_list_account = jpp::make_array();
         for( const HashtableAccounts::value_type & value : m_accounts )
         {
-            const ConstString & accountID = value.key;
+            const ConstString & accountId = value.key;
             
-            j_list_account.push_back( accountID.c_str() );
+            j_list_account.push_back( accountId );
         }
 
         j_accounts.set( "Account", j_list_account );
@@ -753,8 +769,8 @@ namespace Mengine
             if( account->save() == false )
             {
                 LOGGER_ERROR( "invalid save account id '%s' folder '%s'"
-                    , account->getID().c_str()
-                    , account->getFolder().c_str()
+                    , account->getId().c_str()
+                    , account->getFolderName().c_str()
                 );
 
                 return false;

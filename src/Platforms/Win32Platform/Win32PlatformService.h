@@ -91,6 +91,7 @@ namespace Mengine
 
         size_t getCurrentPath( Char * const _currentPath ) const override;
         size_t getUserPath( Char * const _userPath ) const override;
+        size_t getExtraPreferencesFolderName( Char * const _folderName ) const override;
         size_t getUserName( Char * const _userName ) const override;
         size_t getDeviceLanguage( Char * const _deviceLanguage ) const override;
         size_t getFingerprint( Char * const _fingerprint ) const override;

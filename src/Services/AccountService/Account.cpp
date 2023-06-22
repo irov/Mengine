@@ -45,19 +45,19 @@ namespace Mengine
         m_id = _id;
         m_archivator = _archivator;
         m_fileGroup = _fileGroup;
-        m_folderPath = _folderPath;
+        m_folderName = _folderPath;
         m_projectVersion = _projectVersion;
 
         Helper::makeUID( 20, m_uid.data );
 
         PathString settingsJSONPath;
-        settingsJSONPath += m_folderPath;
+        settingsJSONPath += m_folderName;
         settingsJSONPath += MENGINE_ACCOUNT_SETTINGS_JSON_PATH;
 
         m_settingsJSONPath = Helper::stringizeFilePath( settingsJSONPath );
 
         PathString settingsINIPath;
-        settingsINIPath += m_folderPath;
+        settingsINIPath += m_folderName;
         settingsINIPath += MENGINE_ACCOUNT_SETTINGS_INI_PATH;
 
         m_settingsINIPath = Helper::stringizeFilePath( settingsINIPath );
@@ -73,7 +73,7 @@ namespace Mengine
         m_settings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Account::getID() const
+    const ConstString & Account::getId() const
     {
         return m_id;
     }
@@ -88,9 +88,9 @@ namespace Mengine
         return m_uid;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Account::getFolder() const
+    const FilePath & Account::getFolderName() const
     {
-        return m_folderPath;
+        return m_folderName;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Account::addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider )
@@ -380,7 +380,7 @@ namespace Mengine
     InputStreamInterfacePtr Account::openReadBinaryFile( const FilePath & _filePath )
     {
         PathString path;
-        path += m_folderPath;
+        path += m_folderName;
         path += _filePath;
 
         FilePath fullFilePath = Helper::stringizeFilePath( path );
@@ -403,7 +403,7 @@ namespace Mengine
     OutputStreamInterfacePtr Account::openWriteBinaryFile( const FilePath & _filePath )
     {
         PathString path;
-        path += m_folderPath;
+        path += m_folderName;
         path += _filePath;
 
         FilePath fullFilePath = Helper::stringizeFilePath( path );
@@ -514,7 +514,7 @@ namespace Mengine
     bool Account::hasBinaryFile( const FilePath & _filePath ) const
     {
         PathString path;
-        path += m_folderPath;
+        path += m_folderName;
         path += _filePath;
 
         FilePath fullpath = Helper::stringizeFilePath( path );

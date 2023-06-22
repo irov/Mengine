@@ -7,9 +7,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class MengineUtils {
     public static Class<?> getClazz(String TAG, String name, boolean required) {
@@ -133,10 +141,20 @@ public class MengineUtils {
         return batteryLevel;
     }
 
-    public static boolean isBatteryCharging(Context context) {
+    private static int getBatteryStatus(Context context) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+            return BatteryManager.BATTERY_STATUS_UNKNOWN;
+        }
+
         BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
 
         int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+
+        return batteryStatus;
+    }
+
+    public static boolean isBatteryCharging(Context context) {
+        int batteryStatus = MengineUtils.getBatteryStatus(context);
 
         if (batteryStatus != BatteryManager.BATTERY_STATUS_CHARGING) {
             return false;
@@ -146,9 +164,7 @@ public class MengineUtils {
     }
 
     public static boolean isBatteryDischarging(Context context) {
-        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
-
-        int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+        int batteryStatus = MengineUtils.getBatteryStatus(context);
 
         if (batteryStatus != BatteryManager.BATTERY_STATUS_DISCHARGING) {
             return false;
@@ -158,9 +174,7 @@ public class MengineUtils {
     }
 
     public static boolean isBatteryNotCharging(Context context) {
-        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
-
-        int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+        int batteryStatus = MengineUtils.getBatteryStatus(context);
 
         if (batteryStatus != BatteryManager.BATTERY_STATUS_NOT_CHARGING) {
             return false;
@@ -170,9 +184,7 @@ public class MengineUtils {
     }
 
     public static boolean isBatteryFull(Context context) {
-        BatteryManager bm = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
-
-        int batteryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+        int batteryStatus = MengineUtils.getBatteryStatus(context);
 
         if (batteryStatus != BatteryManager.BATTERY_STATUS_FULL) {
             return false;
@@ -204,5 +216,92 @@ public class MengineUtils {
         long usageMemory = totalMemory - availMemory;
 
         return usageMemory;
+    }
+
+    private static void zipFile(ZipOutputStream out, File file, int basePathLength) throws IOException {
+        MengineLog.logInfo("MengineUtils", "zip file: %s"
+            , file.getPath()
+        );
+
+        final int BUFFER = 2048;
+
+        byte data[] = new byte[BUFFER];
+        String unmodifiedFilePath = file.getPath();
+        String relativePath = unmodifiedFilePath.substring(basePathLength);
+        FileInputStream fi = new FileInputStream(unmodifiedFilePath);
+        BufferedInputStream origin = new BufferedInputStream(fi, BUFFER);
+        ZipEntry entry = new ZipEntry(relativePath);
+        long modified = file.lastModified();
+        entry.setTime(modified);
+        out.putNextEntry(entry);
+
+        int count;
+        while ((count = origin.read(data, 0, BUFFER)) != -1) {
+            out.write(data, 0, count);
+        }
+
+        origin.close();
+    }
+
+    private static void zipSubFolder(ZipOutputStream out, File folder, int basePathLength) throws IOException {
+        MengineLog.logInfo("MengineUtils", "zip folder: %s"
+            , folder.getPath()
+        );
+
+        File[] fileList = folder.listFiles();
+
+        for (File file : fileList) {
+            boolean isDirectory = file.isDirectory();
+
+            if (isDirectory == true) {
+                MengineUtils.zipSubFolder(out, file, basePathLength);
+            } else {
+                MengineUtils.zipFile(out, file, basePathLength);
+            }
+        }
+    }
+
+    public static boolean zipFiles(File sourceFile, File toLocation) {
+        MengineLog.logInfo("MengineUtils", "zip source '%s' to: %s"
+            , sourceFile.getPath()
+            , toLocation.getPath()
+        );
+
+        try {
+            FileOutputStream dest = new FileOutputStream(toLocation);
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+
+            int basePathLength = sourceFile.getParent().length();
+
+            boolean isDirectory = sourceFile.isDirectory();
+
+            if (isDirectory == true) {
+                MengineUtils.zipSubFolder(out, sourceFile, basePathLength);
+            } else {
+                MengineUtils.zipFile(out, sourceFile, basePathLength);
+            }
+
+            out.close();
+        } catch (Exception e) {
+            MengineLog.logError("MengineUtils", "zipFiles exception: %s"
+                , e.getLocalizedMessage()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public static String getLastPathComponent(String filePath) {
+        String[] segments = filePath.split("/");
+
+        if (segments.length == 0) {
+            return "";
+        }
+
+        String lastPathComponent = segments[segments.length - 1];
+
+        return lastPathComponent;
     }
 }

@@ -27,8 +27,8 @@ namespace Mengine
         void finalize();
 
     public:
-        const ConstString & getID() const override;
-        const FilePath & getFolder() const override;
+        const ConstString & getId() const override;
+        const FilePath & getFolderName() const override;
 
     public:
         void setUID( const AccountUID & _uid ) override;
@@ -69,7 +69,7 @@ namespace Mengine
         AccountUID m_uid;
         uint32_t m_projectVersion;
 
-        FilePath m_folderPath;
+        FilePath m_folderName;
         FilePath m_settingsINIPath;
         FilePath m_settingsJSONPath;
 

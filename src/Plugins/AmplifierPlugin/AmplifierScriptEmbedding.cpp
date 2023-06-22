@@ -26,7 +26,7 @@ namespace Mengine
         {
         public:
             AmplifierScriptMethod()
-                : m_affectorMusicID( INVALID_UNIQUE_ID )
+                : m_affectorMusicId( INVALID_UNIQUE_ID )
             {
             }
 
@@ -247,7 +247,7 @@ namespace Mengine
                 return callback;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId m_affectorMusicID;
+            UniqueId m_affectorMusicId;
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorMusic;
             //////////////////////////////////////////////////////////////////////////
@@ -276,17 +276,17 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
 
-                if( m_affectorMusicID != INVALID_UNIQUE_ID )
+                if( m_affectorMusicId != INVALID_UNIQUE_ID )
                 {
-                    if( affectorHub->hasAffector( m_affectorMusicID ) == true )
+                    if( affectorHub->hasAffector( m_affectorMusicId ) == true )
                     {
-                        affectorHub->stopAffector( m_affectorMusicID );
+                        affectorHub->stopAffector( m_affectorMusicId );
                     }
                 }
 
                 UniqueId id = affectorHub->addAffector( affector );
 
-                m_affectorMusicID = id;
+                m_affectorMusicId = id;
 
                 return id;
             }
@@ -331,17 +331,17 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
 
-                if( m_affectorMusicID != INVALID_UNIQUE_ID )
+                if( m_affectorMusicId != INVALID_UNIQUE_ID )
                 {
-                    if( affectorHub->hasAffector( m_affectorMusicID ) == true )
+                    if( affectorHub->hasAffector( m_affectorMusicId ) == true )
                     {
-                        affectorHub->stopAffector( m_affectorMusicID );
+                        affectorHub->stopAffector( m_affectorMusicId );
                     }
                 }
 
                 UniqueId id = affectorHub->addAffector( affector );
 
-                m_affectorMusicID = id;
+                m_affectorMusicId = id;
 
                 return id;
             }

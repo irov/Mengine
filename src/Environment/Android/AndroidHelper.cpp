@@ -316,6 +316,15 @@ namespace Mengine
             return value_cstr;
         }
         //////////////////////////////////////////////////////////////////////////
+        FilePath makeFilePathFromJString( JNIEnv * _jenv, jstring _value )
+        {
+            ConstString value_cstr;
+            ANDROID_ENVIRONMENT_SERVICE()
+                ->stringize( _jenv, _value, &value_cstr );
+
+            return FilePath( value_cstr );
+        }
+        //////////////////////////////////////////////////////////////////////////
         String makeStringFromJString( JNIEnv * _jenv, jstring _value )
         {
             const Char * value_str = _jenv->GetStringUTFChars( _value, nullptr );

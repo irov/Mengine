@@ -147,7 +147,7 @@ namespace Mengine
         uint32_t m_currentMaterialId;
         const RenderMaterialStage * m_currentRenderMaterialStage;
 
-        uint32_t m_currentTexturesID[MENGINE_MAX_TEXTURE_STAGES];
+        uint32_t m_currentTexturesId[MENGINE_MAX_TEXTURE_STAGES];
 
         EBlendFactor m_currentBlendSrc;
         EBlendFactor m_currentBlendDst;

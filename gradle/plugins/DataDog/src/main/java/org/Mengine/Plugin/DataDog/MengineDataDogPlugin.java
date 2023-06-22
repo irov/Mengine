@@ -100,6 +100,9 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
         String installKey = application.getInstallKey();
         loggerDataDog.addAttribute("install_key", installKey);
 
+        String sessionId = application.getSessionId();
+        loggerDataDog.addAttribute("session_id", sessionId);
+
         long sessionIndex = application.getSessionIndex();
         loggerDataDog.addAttribute("session_index", sessionIndex);
 

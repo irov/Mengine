@@ -35,8 +35,8 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual const ConstString & getID() const = 0;
-        virtual const FilePath & getFolder() const = 0;
+        virtual const ConstString & getId() const = 0;
+        virtual const FilePath & getFolderName() const = 0;
 
     public:
         virtual void setUID( const AccountUID & _uid ) = 0;

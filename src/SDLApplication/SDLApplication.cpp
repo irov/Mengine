@@ -242,7 +242,7 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_PROVIDER_GET()->waitService( "SDLApplication", OptionsServiceInterface::getStaticServiceID(), [this, _argc, _argv]()
+        SERVICE_PROVIDER_GET()->waitService( "SDLApplication", SERVICE_ID( OptionsServiceInterface ), [this, _argc, _argv]()
         {
             if( this->initializeOptionsService_( _argc, _argv ) == false )
             {

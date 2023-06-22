@@ -14,7 +14,7 @@ namespace Mengine
         LoggerBase();
         ~LoggerBase() override;
 
-    private:
+    public:
         bool initializeLogger() override;
         void finalizeLogger() override;
 

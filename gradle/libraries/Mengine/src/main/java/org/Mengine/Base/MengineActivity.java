@@ -3,11 +3,13 @@ package org.Mengine.Base;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import android.content.*;
@@ -17,6 +19,8 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 
+import androidx.core.content.FileProvider;
+
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
 
@@ -25,6 +29,10 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     private static native String AndroidEnvironmentService_getCompanyName();
     private static native String AndroidEnvironmentService_getProjectName();
+    private static native String AndroidEnvironmentService_getExtraPreferencesFolderName();
+    private static native boolean AndroidEnvironmentService_hasCurrentAccount();
+    private static native String AndroidEnvironmentService_getCurrentAccountFolderName();
+    private static native boolean AndroidEnvironmentService_writeLoggerHistoryToFile(String filePath);
     private static native int AndroidEnvironmentService_getProjectVersion();
     private static native boolean AndroidEnvironmentService_isDebugMode();
     private static native boolean AndroidEnvironmentService_isDevelopmentMode();
@@ -812,8 +820,13 @@ public class MengineActivity extends SDLActivity {
             , url
         );
 
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
-        this.startActivity(Intent.createChooser(intent, ""));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        Uri uri = Uri.parse(url);
+        intent.setData(uri);
+
+        Intent chooser = Intent.createChooser(intent, "");
+        this.startActivity(chooser);
 
         return true;
     }
@@ -825,11 +838,61 @@ public class MengineActivity extends SDLActivity {
             , body
         );
 
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(email));
-        this.startActivity(Intent.createChooser(intent, ""));
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_EMAIL, email);
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
-        this.startActivity(Intent.createChooser(intent, ""));
+
+        boolean hasAccount = AndroidEnvironmentService_hasCurrentAccount();
+
+        if (hasAccount == true) {
+            try {
+                intent.setType("application/zip");
+
+                Context context = this.getApplicationContext();
+                File filesDir = context.getFilesDir();
+                File cacheDir = context.getCacheDir();
+
+                String extraPreferencesFolderName = AndroidEnvironmentService_getExtraPreferencesFolderName();
+                String accountFolderName = AndroidEnvironmentService_getCurrentAccountFolderName();
+
+                File extraPreferencesFolder = new File(filesDir, extraPreferencesFolderName);
+                File accountFolder = new File(extraPreferencesFolder, accountFolderName);
+
+                File accountZIPFile = File.createTempFile("mengine_account_", ".zip", cacheDir);
+
+                String packageName = context.getPackageName();
+
+                if (MengineUtils.zipFiles(accountFolder, accountZIPFile) == true) {
+                    Uri accountZIPUri = FileProvider.getUriForFile(this, packageName + ".fileprovider", accountZIPFile);
+
+                    intent.putExtra(Intent.EXTRA_STREAM, accountZIPUri);
+                }
+
+                File logFile = File.createTempFile("mengine_log_", ".log", cacheDir);
+
+                String logFilePath = logFile.getCanonicalPath();
+
+                AndroidEnvironmentService_writeLoggerHistoryToFile(logFilePath);
+
+                Uri logFileUri = FileProvider.getUriForFile(this, packageName + ".fileprovider", logFile);
+
+                intent.putExtra(Intent.EXTRA_STREAM, logFileUri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } catch (IOException e) {
+                MengineLog.logError(TAG, "linking open mail [%s] subject [%s] body: %s ex: %s"
+                    , email
+                    , subject
+                    , body
+                    , e.getLocalizedMessage()
+                );
+            }
+        } else {
+            intent.setType("text/plain");
+        }
+
+        Intent chooser = Intent.createChooser(intent, "Send Email");
+        this.startActivity(chooser);
 
         return true;
     }

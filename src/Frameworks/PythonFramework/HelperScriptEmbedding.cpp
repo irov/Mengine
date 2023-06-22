@@ -512,7 +512,7 @@ namespace Mengine
                 return String( uid, _length );
             }
             //////////////////////////////////////////////////////////////////////////
-            const Char * s_getTextFromID( const ConstString & _textId )
+            const Char * s_getTextFromId( const ConstString & _textId )
             {
                 const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
                     ->getTextEntry( _textId );
@@ -1433,17 +1433,17 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             VectorConstString s_getAccounts()
             {
-                VectorConstString v_accounts;
+                VectorConstString accounts;
 
                 ACCOUNT_SERVICE()
-                    ->foreachAccounts( [&v_accounts]( const AccountInterfacePtr & _account )
+                    ->foreachAccounts( [&accounts]( const AccountInterfacePtr & _account )
                 {
-                    const ConstString & name = _account->getID();
+                    const ConstString & accountId = _account->getId();
 
-                    v_accounts.emplace_back( name );
+                    accounts.emplace_back( accountId );
                 } );
 
-                return v_accounts;
+                return accounts;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_addCurrentAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
@@ -1458,10 +1458,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                bool successful = s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
+                bool successful = s_addAccountSetting( _kernel, accountId, _setting, _defaultValue, _cb, _args );
 
                 return successful;
             }
@@ -1478,10 +1478,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                bool successful = s_changeAccountSetting( _kernel, accountID, _setting, _value );
+                bool successful = s_changeAccountSetting( _kernel, accountId, _setting, _value );
 
                 return successful;
             }
@@ -1498,10 +1498,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                bool successful = s_changeAccountSettingBool( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingBool( accountId, _setting, _value );
 
                 return successful;
             }
@@ -1518,10 +1518,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                bool successful = s_changeAccountSettingInt( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingInt( accountId, _setting, _value );
 
                 return successful;
             }
@@ -1538,10 +1538,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                bool successful = s_changeAccountSettingUInt( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingUInt( accountId, _setting, _value );
 
                 return successful;
             }
@@ -1558,10 +1558,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                bool successful = s_changeAccountSettingUInt64( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingUInt64( accountId, _setting, _value );
 
                 return successful;
             }
@@ -1578,10 +1578,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                bool successful = s_changeAccountSettingFloat( accountID, _setting, _value );
+                bool successful = s_changeAccountSettingFloat( accountId, _setting, _value );
 
                 return successful;
             }
@@ -1598,10 +1598,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_changeAccountSettingStrings( accountID, _setting, _values );
+                return s_changeAccountSettingStrings( accountId, _setting, _values );
             }
             //////////////////////////////////////////////////////////////////////////
             class PythonAccountSettingProvider
@@ -1931,10 +1931,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
+                return s_addAccountSetting( _kernel, accountId, _setting, _defaultValue, _cb, _args );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_hasGlobalSetting( const ConstString & _setting )
@@ -1947,10 +1947,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_hasAccountSetting( accountID, _setting );
+                return s_hasAccountSetting( accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
@@ -1963,10 +1963,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_changeAccountSetting( _kernel, accountID, _setting, _value );
+                return s_changeAccountSetting( _kernel, accountId, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeGlobalSettingBool( const ConstString & _setting, bool _value )
@@ -1979,10 +1979,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_changeAccountSettingBool( accountID, _setting, _value );
+                return s_changeAccountSettingBool( accountId, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeGlobalSettingInt( const ConstString & _setting, int32_t _value )
@@ -1995,10 +1995,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_changeAccountSettingInt( accountID, _setting, _value );
+                return s_changeAccountSettingInt( accountId, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeGlobalSettingUInt( const ConstString & _setting, uint32_t _value )
@@ -2011,10 +2011,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_changeAccountSettingUInt( accountID, _setting, _value );
+                return s_changeAccountSettingUInt( accountId, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeGlobalSettingUInt64( const ConstString & _setting, uint64_t _value )
@@ -2027,10 +2027,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_changeAccountSettingUInt64( accountID, _setting, _value );
+                return s_changeAccountSettingUInt64( accountId, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeGlobalSettingFloat( const ConstString & _setting, float _value )
@@ -2043,10 +2043,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_changeAccountSettingFloat( accountID, _setting, _value );
+                return s_changeAccountSettingFloat( accountId, _setting, _value );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_changeGlobalSettingStrings( const ConstString & _setting, const VectorWString & _values )
@@ -2059,10 +2059,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_changeAccountSettingStrings( accountID, _setting, _values );
+                return s_changeAccountSettingStrings( accountId, _setting, _values );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_hasCurrentAccountSetting( const ConstString & _setting )
@@ -2077,10 +2077,10 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_hasAccountSetting( accountID, _setting );
+                return s_hasAccountSetting( accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCurrentAccountUID( pybind::kernel_interface * _kernel )
@@ -2093,10 +2093,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountUID( _kernel, accountID );
+                return s_getAccountUID( _kernel, accountId );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCurrentAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2111,10 +2111,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountSetting( _kernel, accountID, _setting );
+                return s_getAccountSetting( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCurrentAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2129,10 +2129,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountSettingBool( _kernel, accountID, _setting );
+                return s_getAccountSettingBool( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCurrentAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2147,10 +2147,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountSettingInt( _kernel, accountID, _setting );
+                return s_getAccountSettingInt( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCurrentAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2165,10 +2165,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountSettingUInt( _kernel, accountID, _setting );
+                return s_getAccountSettingUInt( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCurrentAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2183,10 +2183,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountSettingUInt64( _kernel, accountID, _setting );
+                return s_getAccountSettingUInt64( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCurrentAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2201,10 +2201,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountSettingFloat( _kernel, accountID, _setting );
+                return s_getAccountSettingFloat( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCurrentAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2219,10 +2219,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountSettingStrings( _kernel, accountID, _setting );
+                return s_getAccountSettingStrings( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_getCurrentAccountSettingFloatDefault( const ConstString & _setting, float _default )
@@ -2237,10 +2237,10 @@ namespace Mengine
                     return _default;
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getCurrentAccountId();
 
-                return s_getAccountSettingFloatDefault( accountID, _setting, _default );
+                return s_getAccountSettingFloatDefault( accountId, _setting, _default );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_getConfigBool( const Char * _section, const Char * _key, bool _default )
@@ -2285,7 +2285,6 @@ namespace Mengine
                 config->hasValue( _section, _key, _default, &value );
 
                 return value;
-
             }
             //////////////////////////////////////////////////////////////////////////
             float s_getConfigFloat( const Char * _section, const Char * _key, float _default )
@@ -2297,7 +2296,6 @@ namespace Mengine
                 config->hasValue( _section, _key, _default, &value );
 
                 return value;
-
             }
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getConfigString( const Char * _section, const Char * _key, const Char * _default )
@@ -2320,9 +2318,9 @@ namespace Mengine
                     , _accountId.c_str()
                 );
 
-                const AccountUID & value = account->getUID();
+                const AccountUID & accountUID = account->getUID();
 
-                PyObject * py_value = _kernel->string_from_char_size( value.data, AccountUID::size_data );
+                PyObject * py_value = _kernel->string_from_char_size( accountUID.data, AccountUID::size_data );
 
                 return py_value;
             }
@@ -2653,10 +2651,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_getAccountUID( _kernel, accountID );
+                return s_getAccountUID( _kernel, accountId );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2669,10 +2667,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_getAccountSetting( _kernel, accountID, _setting );
+                return s_getAccountSetting( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getGlobalSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2687,10 +2685,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_getAccountSettingBool( _kernel, accountID, _setting );
+                return s_getAccountSettingBool( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getGlobalSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2703,10 +2701,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_getAccountSettingInt( _kernel, accountID, _setting );
+                return s_getAccountSettingInt( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getGlobalSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2719,10 +2717,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_getAccountSettingUInt( _kernel, accountID, _setting );
+                return s_getAccountSettingUInt( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getGlobalSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2735,10 +2733,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_getAccountSettingUInt64( _kernel, accountID, _setting );
+                return s_getAccountSettingUInt64( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getGlobalSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2751,10 +2749,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_getAccountSettingFloat( _kernel, accountID, _setting );
+                return s_getAccountSettingFloat( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getGlobalSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2767,10 +2765,10 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                const ConstString & accountID = ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                const ConstString & accountId = ACCOUNT_SERVICE()
+                    ->getGlobalAccountId();
 
-                return s_getAccountSettingStrings( _kernel, accountID, _setting );
+                return s_getAccountSettingStrings( _kernel, accountId, _setting );
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_createAccount( pybind::kernel_interface * _kernel )
@@ -2780,7 +2778,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account );
 
-                const ConstString & accountId = account->getID();
+                const ConstString & accountId = account->getId();
 
                 PyObject * py_value = pybind::ptr( _kernel, accountId );
 
@@ -2794,7 +2792,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account );
 
-                const ConstString & accountId = account->getID();
+                const ConstString & accountId = account->getId();
 
                 PyObject * py_value = pybind::ptr( _kernel, accountId );
 
@@ -2831,16 +2829,16 @@ namespace Mengine
                     ->hasGlobalAccount();
             }
             //////////////////////////////////////////////////////////////////////////
-            const ConstString & s_getGlobalAccountName()
+            const ConstString & s_getGlobalAccountId()
             {
                 return ACCOUNT_SERVICE()
-                    ->getGlobalAccountID();
+                    ->getGlobalAccountId();
             }
             //////////////////////////////////////////////////////////////////////////
             const ConstString & s_getDefaultAccount()
             {
                 return ACCOUNT_SERVICE()
-                    ->getDefaultAccountID();
+                    ->getDefaultAccountId();
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_hasDefaultAccount()
@@ -2894,7 +2892,7 @@ namespace Mengine
                 }
 
                 const ConstString & name = ACCOUNT_SERVICE()
-                    ->getCurrentAccountID();
+                    ->getCurrentAccountId();
 
                 return name;
             }
@@ -3996,10 +3994,11 @@ namespace Mengine
         pybind::def_functor( _kernel, "saveAccountsInfo", helperScriptMethod, &HelperScriptMethod::s_saveAccountsInfo );
         pybind::def_functor( _kernel, "hasCurrentAccount", helperScriptMethod, &HelperScriptMethod::s_hasCurrentAccount );
         pybind::def_functor( _kernel, "getCurrentAccountName", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountName );
+        pybind::def_functor( _kernel, "getCurrentAccountId", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountName );
 
         pybind::def_functor( _kernel, "setGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_setGlobalAccount );
         pybind::def_functor( _kernel, "hasGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_hasGlobalAccount );
-        pybind::def_functor( _kernel, "getGlobalAccountName", helperScriptMethod, &HelperScriptMethod::s_getGlobalAccountName );
+        pybind::def_functor( _kernel, "getGlobalAccountName", helperScriptMethod, &HelperScriptMethod::s_getGlobalAccountId );
 
         pybind::def_functor( _kernel, "setDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_setDefaultAccount );
         pybind::def_functor( _kernel, "getDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_getDefaultAccount );
@@ -4125,7 +4124,8 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
 
-        pybind::def_functor( _kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromID );
+        pybind::def_functor_deprecated( _kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromId, "use getTextFromId");
+        pybind::def_functor( _kernel, "getTextFromId", helperScriptMethod, &HelperScriptMethod::s_getTextFromId );
 
         pybind::def_functor( _kernel, "setTextAlias", helperScriptMethod, &HelperScriptMethod::s_setTextAlias );
         pybind::def_functor( _kernel, "removeTextAlias", helperScriptMethod, &HelperScriptMethod::s_removeTextAlias );

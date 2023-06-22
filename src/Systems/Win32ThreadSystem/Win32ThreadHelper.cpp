@@ -20,16 +20,16 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
 
-        void Win32SetThreadName( DWORD _dwThreadID, const Char * _threadName )
+        void Win32SetThreadName( DWORD _dwThreadId, const Char * _threadName )
         {
-            MENGINE_UNUSED( _dwThreadID );
+            MENGINE_UNUSED( _dwThreadId );
             MENGINE_UNUSED( _threadName );
 
 #if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
             THREADNAME_INFO info;
             info.dwType = 0x1000;
             info.szName = _threadName;
-            info.dwThreadID = _dwThreadID;
+            info.dwThreadID = _dwThreadId;
             info.dwFlags = 0;
 #pragma warning(push)
 #pragma warning(disable: 6320 6322)  

@@ -2,10 +2,12 @@
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/AccountServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidAssetFile.h"
@@ -20,6 +22,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/FileLogger.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -90,6 +94,67 @@ extern "C"
         jstring result = env->NewStringUTF( projectName );
 
         return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getExtraPreferencesFolderName )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Char extraPreferencesFolderName[MENGINE_MAX_PATH] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getExtraPreferencesFolderName( extraPreferencesFolderName );
+
+        jstring result = env->NewStringUTF( extraPreferencesFolderName );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1hasCurrentAccount )(JNIEnv * env, jclass cls)
+    {
+        bool result = ACCOUNT_SERVICE()
+            ->hasCurrentAccount();
+
+        return (jboolean)result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getCurrentAccountFolderName )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            ->getCurrentAccount();
+
+        if (account == nullptr) {
+            return env->NewStringUTF( "" );
+        }
+
+        const Mengine::ConstString & folderName = account->getFolderName();
+
+        jstring result = env->NewStringUTF( folderName.c_str() );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeLoggerHistoryToFile )(JNIEnv * env, jclass cls, jstring _filePath)
+    {
+        Mengine::FileLoggerPtr fileLog = Mengine::Helper::makeFactorableUnique<Mengine::FileLogger>( MENGINE_DOCUMENT_FUNCTION );
+
+        const Mengine::FileGroupInterfacePtr & fileGroupGlobal = FILE_SERVICE()
+            ->getGlobalFileGroup();
+
+        fileLog->setFileGroup( fileGroupGlobal );
+
+        Mengine::FilePath filePath = Mengine::Helper::makeFilePathFromJString( env, _filePath );
+        fileLog->setFilePath( filePath );
+
+        if( fileLog->initializeLogger() == false )
+        {
+            return JNI_FALSE;
+        }
+
+        LOGGER_SERVICE()
+            ->writeHistory( fileLog );
+
+        fileLog->flush();
+        fileLog = nullptr;
+
+        return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectVersion )(JNIEnv * env, jclass cls)
@@ -229,138 +294,6 @@ extern "C"
 
         env->ReleaseStringUTFChars( _msg, tag_str );
         env->ReleaseStringUTFChars( _msg, msg_str );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1addContextParameterBoolean )(JNIEnv * env, jclass cls, jstring _name, jboolean _value)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
-        {
-            return;
-        }
-
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
-
-        const Mengine::AnalyticsContextInterfacePtr & context = ANALYTICS_SERVICE()
-                ->getGlobalContext();
-
-        context->addParameterBoolean( name_cstr, (bool)_value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1addContextParameterString )(JNIEnv * env, jclass cls, jstring _name, jstring _value)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
-        {
-            return;
-        }
-
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
-        Mengine::String value_string = Mengine::Helper::makeStringFromJString( env, _value );
-
-        const Mengine::AnalyticsContextInterfacePtr & context = ANALYTICS_SERVICE()
-            ->getGlobalContext();
-
-        context->addParameterString( name_cstr, value_string );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1addContextParameterInteger )(JNIEnv * env, jclass cls, jstring _name, jlong _value)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
-        {
-            return;
-        }
-
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
-
-        const Mengine::AnalyticsContextInterfacePtr & context = ANALYTICS_SERVICE()
-                ->getGlobalContext();
-
-        context->addParameterInteger( name_cstr, (int64_t)_value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ANALYTICS_JAVA_INTERFACE( AndroidAnalyticsService_1addContextParameterDouble )(JNIEnv * env, jclass cls, jstring _name, jdouble _value)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
-        {
-            return;
-        }
-
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( env, _name );
-
-        const Mengine::AnalyticsContextInterfacePtr & context = ANALYTICS_SERVICE()
-                ->getGlobalContext();
-
-        context->addParameterDouble( name_cstr, (double)_value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jlong JNICALL MENGINE_ANALYTICSEVENTBUILDER_JAVA_INTERFACE( AndroidAnalyticsService_1logEventBuilder )(JNIEnv * _jenv, jclass cls, jstring _jname, jobject _jparameters)
-    {
-        if( SERVICE_IS_INITIALIZE(Mengine::AnalyticsServiceInterface) == false )
-        {
-            return 0;
-        }
-
-        Mengine::ConstString name_cstr = Mengine::Helper::makeConstStringFromJString( _jenv, _jname );
-
-        Mengine::AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
-            ->buildEvent( name_cstr );
-
-        Mengine::Helper::foreachJavaMap( _jenv, _jparameters, [_jenv, builder]( jobject _jkey, jobject _jvalue )
-        {
-            jclass jclass_Boolean = _jenv->FindClass( "java/lang/Boolean" );
-            jclass jclass_Integer = _jenv->FindClass( "java/lang/Integer" );
-            jclass jclass_Long = _jenv->FindClass( "java/lang/Long" );
-            jclass jclass_Float = _jenv->FindClass( "java/lang/Float" );
-            jclass jclass_Double = _jenv->FindClass( "java/lang/Double" );
-            jclass jclass_String = _jenv->FindClass( "java/lang/String" );
-
-            Mengine::ConstString key = Mengine::Helper::makeConstStringFromJString( _jenv, (jstring)_jkey );
-
-            if( _jenv->IsInstanceOf(_jvalue, jclass_Boolean ) == JNI_TRUE )
-            {
-                jboolean value = Mengine::Helper::getJavaObjectValueBoolean( _jenv, _jvalue );
-
-                builder->addParameterBoolean( key, value );
-            }
-            else if ( _jenv->IsInstanceOf( _jvalue, jclass_Integer ) == JNI_TRUE )
-            {
-                jint value = Mengine::Helper::getJavaObjectValueInteger( _jenv, _jvalue );
-
-                builder->addParameterInteger( key, value );
-            }
-            else if ( _jenv->IsInstanceOf( _jvalue, jclass_Long ) == JNI_TRUE )
-            {
-                jlong value = Mengine::Helper::getJavaObjectValueLong( _jenv, _jvalue );
-
-                builder->addParameterInteger( key, value );
-            }
-            else if ( _jenv->IsInstanceOf( _jvalue, jclass_Float ) == JNI_TRUE )
-            {
-                jfloat value = Mengine::Helper::getJavaObjectValueFloat( _jenv, _jvalue );
-
-                builder->addParameterDouble( key, value );
-            }
-            else if ( _jenv->IsInstanceOf( _jvalue, jclass_String ) == JNI_TRUE )
-            {
-                Mengine::String value = Mengine::Helper::makeStringFromJString( _jenv, (jstring)_jvalue );
-
-                builder->addParameterString( key, value );
-            }
-            else
-            {
-                jclass value_jclass = _jenv->GetObjectClass( _jvalue );
-
-                LOGGER_ERROR("unsupport type for analytics builder key: %s value type: '%s'"
-                    , key.c_str()
-                    , Mengine::Helper::getJavaClassName( _jenv, value_jclass ).c_str()
-                );
-
-                _jenv->DeleteLocalRef( value_jclass );
-            }
-        } );
-
-        Mengine::Timestamp timestamp = builder->log();
-
-        return (jlong)timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
 }

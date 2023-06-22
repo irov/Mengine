@@ -96,6 +96,13 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
                 AppLovinPrivacySettings.setHasUserConsent(true, context);
             }
+        } else if (event == MengineEvent.EVENT_SESSION_ID) {
+            Context context = application.getApplicationContext();
+            AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
+
+            String sessionId = (String)args[0];
+
+            appLovinSdk.setUserIdentifier(sessionId);
         }
     }
 
@@ -110,7 +117,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        final Context context = activity.getBaseContext();
+        final Context context = activity.getApplicationContext();
 
         MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
@@ -125,9 +132,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         appLovinSdk.setMediationProvider("max");
 
         MengineApplication application = activity.getMengineApplication();
-        String installKey = application.getInstallKey();
+        String sessionId = application.getSessionId();
 
-        appLovinSdk.setUserIdentifier(installKey);
+        appLovinSdk.setUserIdentifier(sessionId);
 
         boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, true);
 

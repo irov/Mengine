@@ -1016,7 +1016,7 @@ namespace Mengine
                     TextLine tl( layoutIndex, charOffset );
                     if( tl.initialize( textChunk.fontId, chunkFont, textChunk.value ) == false )
                     {
-                        LOGGER_ERROR( "'%s' textID '%s' text '%s' invalid setup line"
+                        LOGGER_ERROR( "'%s' textId '%s' text '%s' invalid setup line"
                             , this->getName().c_str()
                             , m_textId.c_str()
                             , m_text.c_str()
@@ -1255,7 +1255,7 @@ namespace Mengine
                     TextLine tl( layoutIndex, charOffset );
                     if( tl.initialize( fontId, chunkFont, textChunk.value ) == false )
                     {
-                        LOGGER_ERROR( "'%s' textID '%s' text '%s' invalid setup line"
+                        LOGGER_ERROR( "'%s' textId '%s' text '%s' invalid setup line"
                             , this->getName().c_str()
                             , m_textId.c_str()
                             , m_text.c_str()
@@ -1336,7 +1336,7 @@ namespace Mengine
         const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "text field '%s' can't find text ID '%s' (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "text field '%s' can't find textId '%s' (doc: %s)"
             , this->getName().c_str()
             , aliasTestId.c_str()
             , MENGINE_DOCUMENTABLE_STR( this, "TextField" )

@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.FirebaseAnalytics;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
@@ -26,11 +28,20 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     FirebaseAnalytics m_firebaseAnalytics;
 
     @Override
+    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
+        if (event == MengineEvent.EVENT_SESSION_ID) {
+            String sessionId = (String)args[0];
+
+            m_firebaseAnalytics.setUserId(sessionId);
+        }
+    }
+
+    @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
-        String installKey = application.getInstallKey();
-        m_firebaseAnalytics.setUserId(installKey);
+        String sessionId = application.getSessionId();
+        m_firebaseAnalytics.setUserId(sessionId);
 
         long installKeyTimestamp = application.getInstallKeyTimestamp();
         m_firebaseAnalytics.setUserProperty("install_key_timestamp", String.valueOf(installKeyTimestamp));
@@ -45,10 +56,32 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
         switch (eventType) {
             case EAET_CUSTOM: {
                 Bundle params = new Bundle();
+
+                for (Map.Entry<String, Object> entry : context.entrySet()) {
+                    String name = entry.getKey();
+                    Object value = entry.getValue();
+
+                    if (value instanceof Boolean) {
+                        params.putBoolean(name, (Boolean)value);
+                    } else if (value instanceof Long) {
+                        params.putLong(name, (Long)value);
+                    } else if (value instanceof Double) {
+                        params.putDouble(name, (Double)value);
+                    } else if (value instanceof String) {
+                        params.putString(name, (String)value);
+                    } else {
+                        this.logError("unsupported parameter: %s class: %s"
+                            , value
+                            , value.getClass()
+                        );
+
+                        return;
+                    }
+                }
 
                 for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                     String name = entry.getKey();

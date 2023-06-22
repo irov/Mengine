@@ -98,6 +98,7 @@ namespace Mengine
 
         virtual size_t getCurrentPath( Char * const _filePath ) const = 0;
         virtual size_t getUserPath( Char * const _filePath ) const = 0;
+        virtual size_t getExtraPreferencesFolderName( Char * const _folderName ) const = 0;
         virtual size_t getUserName( Char * const _userName ) const = 0;
         virtual size_t getDeviceLanguage( Char * const _deviceLanguage ) const = 0;
         virtual size_t getFingerprint( Char * const _fingerprint ) const = 0;

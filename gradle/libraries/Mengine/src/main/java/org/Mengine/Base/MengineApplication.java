@@ -37,6 +37,7 @@ public class MengineApplication extends Application {
     private long m_installKeyTimestamp = -1;
     private long m_installRND = -1;
     private long m_sessionIndex = -1;
+    private String m_sessionId;
 
     private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
     private Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
@@ -188,16 +189,47 @@ public class MengineApplication extends Application {
         return m_sessionIndex;
     }
 
+    public void setSessionId(String sessionId) {
+        if (m_sessionId == sessionId) {
+            return;
+        }
+
+        m_sessionId = sessionId;
+
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("session_id", m_sessionId);
+        editor.apply();
+
+        this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
+    }
+
+    public String getSessionId() {
+        return m_sessionId;
+    }
+
     public String getDeviceLanguage() {
         String language = Locale.getDefault().getLanguage();
 
         return language;
     }
 
-    public String getDeviceName() {
+    public String getDeviceModel() {
         String deviceName = android.os.Build.MODEL;
 
         return deviceName;
+    }
+
+    public int getSDKVersion() {
+        int SDKVersion = Build.VERSION.SDK_INT;
+
+        return SDKVersion;
+    }
+
+    public String getOSVersion() {
+        String OSVersion = Build.VERSION.RELEASE;
+
+        return OSVersion;
     }
 
     @SuppressWarnings("deprecation")
@@ -528,6 +560,8 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onCreate");
 
+        boolean mengine_session_use_install_key = this.getMetaDataBoolean("mengine.session.use_install_key", false);
+
         if (this.getMetaDataBoolean("mengine.secure.allow_android_id", true) == true) {
             m_androidId = this.getSecureAndroidId();
         } else {
@@ -540,6 +574,7 @@ public class MengineApplication extends Application {
         long installKeyTimestamp = settings.getLong("install_key_timestamp", 0);
         long installRND = settings.getLong("install_rnd", -1);
         long sessionIndex = settings.getLong("session_index", 0);
+        String sessionId = settings.getString("session_id", "");
 
         SharedPreferences.Editor editor = settings.edit();
 
@@ -548,6 +583,11 @@ public class MengineApplication extends Application {
             installKeyTimestamp = MengineUtils.getTimestamp();
             editor.putString("install_key", installKey);
             editor.putLong("install_key_timestamp", installKeyTimestamp);
+
+            if (mengine_session_use_install_key == true) {
+                sessionId = installKey;
+                editor.putString("session_id", sessionId);
+            }
         }
 
         if (installRND == -1) {
@@ -569,6 +609,7 @@ public class MengineApplication extends Application {
         m_installKeyTimestamp = installKeyTimestamp;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
+        m_sessionId = sessionId;
 
         this.setState("application.init", "load");
 
@@ -584,7 +625,15 @@ public class MengineApplication extends Application {
             }
         }
 
-        this.setState("application.init", "plugins_prerare");
+        this.setState("application.init", "plugins_prepare");
+
+        MengineAnalytics.addContextParameterString("install_key", this.m_installKey);
+        MengineAnalytics.addContextParameterLong("install_key_timestamp", this.m_installKeyTimestamp);
+        MengineAnalytics.addContextParameterLong("install_rnd", this.m_installRND);
+        MengineAnalytics.addContextParameterLong("session_index", this.m_sessionIndex);
+        MengineAnalytics.addContextGetterParameterString("session_id", () -> {
+            return this.m_sessionId;
+        });
 
         long app_init_start_timestamp = MengineAnalytics.buildEvent("app_init_start")
             .log();
@@ -667,18 +716,19 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
-        MengineLog.logInfo(TAG, "onMengineAnalyticsEvent [%d] %s %d [%s]"
+    public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
+        MengineLog.logInfo(TAG, "onMengineAnalyticsEvent [%d] %s %d context [%s] parameters [%s]"
             , eventType
             , eventName
             , timestamp
+            , context
             , parameters
         );
 
         ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
-            l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, parameters);
+            l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, context, parameters);
         }
     }
 

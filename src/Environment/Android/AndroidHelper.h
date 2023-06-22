@@ -3,6 +3,7 @@
 #include "Environment/Android/AndroidIncluder.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
 #include "Kernel/String.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/StaticString.h"
@@ -34,6 +35,7 @@ namespace Mengine
         jdouble getJavaObjectValueDouble( JNIEnv * _jenv, jobject _jobject );
         //////////////////////////////////////////////////////////////////////////
         ConstString makeConstStringFromJString( JNIEnv * _jenv, jstring _value );
+        FilePath makeFilePathFromJString( JNIEnv * _jenv, jstring _value );
         String makeStringFromJString( JNIEnv * _jenv, jstring _value );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<void( jobject key, jobject value)> LambdaJavaMapForeach;

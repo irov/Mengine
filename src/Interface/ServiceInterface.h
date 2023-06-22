@@ -17,7 +17,7 @@ namespace Mengine
         : public Factorable
     {
     public:
-        virtual const Char * getServiceID() const = 0;
+        virtual const Char * getServiceId() const = 0;
 
     public:
         virtual bool isAvailableService() const = 0;
@@ -52,7 +52,7 @@ namespace Mengine
                 MENGINE_UNUSED( _file );
                 MENGINE_UNUSED( _line );
 
-                const Char * serviceName = T::getStaticServiceID();
+                const Char * serviceName = T::getStaticServiceId();
 
                 ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
@@ -109,7 +109,7 @@ namespace Mengine
             static T * s_service = Detail::getService2<T>( _file, _line );
 
             MENGINE_ASSERTION_FATAL( s_service == nullptr || s_service->isInitializeService() == true, "service '%s' not initialized"
-                , T::getStaticServiceID()
+                , T::getStaticServiceId()
             );
 
             return s_service;
@@ -119,7 +119,7 @@ namespace Mengine
         bool isExistService()
         {
             static const bool * s_exist = SERVICE_PROVIDER_GET()
-                ->isExistServiceProvider( T::getStaticServiceID() );
+                ->isExistServiceProvider( T::getStaticServiceId() );
 
             return *s_exist;
         }
@@ -128,7 +128,7 @@ namespace Mengine
         bool isAvailableService()
         {
             static const bool * s_available = SERVICE_PROVIDER_GET()
-                ->isAvailableServiceProvider( T::getStaticServiceID() );
+                ->isAvailableServiceProvider( T::getStaticServiceId() );
 
             return *s_available;
         }
@@ -137,7 +137,7 @@ namespace Mengine
         bool isInitializeService()
         {
             static const bool * s_initialize = SERVICE_PROVIDER_GET()
-                ->isInitializeServiceProvider( T::getStaticServiceID() );
+                ->isInitializeServiceProvider( T::getStaticServiceId() );
 
             return *s_initialize;
         }
@@ -164,9 +164,12 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DECLARE( ID )\
     public:\
-        MENGINE_INLINE static const Mengine::Char * getStaticServiceID(){ return ID; };\
-        MENGINE_INLINE const Mengine::Char * getServiceID() const override { return ID; };\
+        MENGINE_INLINE static const Mengine::Char * getStaticServiceId(){ return ID; };\
+        MENGINE_INLINE const Mengine::Char * getServiceId() const override { return ID; };\
     protected:
+    //////////////////////////////////////////////////////////////////////////
+#define SERVICE_ID( Type )\
+    Type::getStaticServiceId()
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FACTORY( Name, Implement )\
     bool SERVICE_FUNCTION_CREATE(Name)(Mengine::ServiceInterface**_service){\
@@ -174,11 +177,11 @@ namespace Mengine
     try{*_service=new Implement();}catch(...){return false;}\
     return true;}\
     const Mengine::Char * SERVICE_FUNCTION_NOMINATION(Name)(){\
-    return Implement::getStaticServiceID();}\
+    return SERVICE_ID(Implement);}\
     struct __mengine_dummy_factory##Name{}
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DEPENDENCY( Type, Dependency )\
-    SERVICE_PROVIDER_GET()->dependencyService(Type::getStaticServiceID(), Dependency::getStaticServiceID())
+    SERVICE_PROVIDER_GET()->dependencyService(SERVICE_ID(Type), SERVICE_ID(Dependency))
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXTERN( Name )\
     extern bool SERVICE_FUNCTION_CREATE( Name )(Mengine::ServiceInterface**);\
@@ -197,23 +200,23 @@ namespace Mengine
     SERVICE_PROVIDER_GET()->destroyService(SERVICE_FUNCTION_NOMINATION(Name)())
 //////////////////////////////////////////////////////////////////////////
 #define UNKNOWN_SERVICE_WAIT( Owner, Type, Lambda )\
-    SERVICE_PROVIDER_GET()->waitService(#Owner, Type::getStaticServiceID(), Lambda)
+    SERVICE_PROVIDER_GET()->waitService(#Owner, SERVICE_ID(Type), Lambda)
 //////////////////////////////////////////////////////////////////////////
 #define UNKNOWN_SERVICE_LEAVE( Owner, Type, Lambda )\
-    SERVICE_PROVIDER_GET()->leaveService(#Owner, Type::getStaticServiceID(), Lambda)
+    SERVICE_PROVIDER_GET()->leaveService(#Owner, SERVICE_ID(Type), Lambda)
 //////////////////////////////////////////////////////////////////////////
 #define UNKNOWN_SERVICE_UNLINK( Owner )\
     SERVICE_PROVIDER_GET()->unlinkService(#Owner)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_WAIT( Type, Lambda )\
-    SERVICE_PROVIDER_GET()->waitService(this->getServiceID(), Type::getStaticServiceID(), Lambda)
+    SERVICE_PROVIDER_GET()->waitService(this->getServiceId(), SERVICE_ID(Type), Lambda)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_WAIT_METHOD( Type, Self, Method )\
-    SERVICE_PROVIDER_GET()->waitService(this->getServiceID(), Type::getStaticServiceID(), [Self](){return Self->Method();})
+    SERVICE_PROVIDER_GET()->waitService(this->getServiceId(), SERVICE_ID(Type), [Self](){return Self->Method();})
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_LEAVE( Type, Lambda )\
-    SERVICE_PROVIDER_GET()->leaveService(this->getServiceID(), Type::getStaticServiceID(), Lambda)
+    SERVICE_PROVIDER_GET()->leaveService(this->getServiceId(), SERVICE_ID(Type), Lambda)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_LEAVE_METHOD( Type, Self, Method )\
-    SERVICE_PROVIDER_GET()->leaveService(this->getServiceID(), Type::getStaticServiceID(), [Self](){Self->Method();})
+    SERVICE_PROVIDER_GET()->leaveService(this->getServiceId(), SERVICE_ID(Type), [Self](){Self->Method();})
 //////////////////////////////////////////////////////////////////////////

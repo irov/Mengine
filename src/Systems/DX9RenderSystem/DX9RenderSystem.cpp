@@ -151,13 +151,13 @@ namespace Mengine
         UINT AdapterCount = m_pD3D->GetAdapterCount();
         for( UINT Adapter = 0; Adapter != AdapterCount; ++Adapter )
         {
-            D3DADAPTER_IDENTIFIER9 Identifier;
-            if( m_pD3D->GetAdapterIdentifier( Adapter, 0, &Identifier ) != D3D_OK )
+            D3DADAPTER_IDENTIFIER9 AdapterId;
+            if( m_pD3D->GetAdapterIdentifier( Adapter, 0, &AdapterId ) != D3D_OK )
             {
                 continue;
             }
 
-            if( MENGINE_STRSTR( Identifier.Description, "PerfHUD" ) != 0 )
+            if( MENGINE_STRSTR( AdapterId.Description, "PerfHUD" ) != 0 )
             {
                 m_adapterToUse = Adapter;
                 m_deviceType = D3DDEVTYPE_REF;
@@ -177,29 +177,29 @@ namespace Mengine
         m_displayMode = Mode;
 
         // Get adapter info
-        D3DADAPTER_IDENTIFIER9 AdID;
-        MENGINE_IF_DXCALL( m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdID) )
+        D3DADAPTER_IDENTIFIER9 AdapterId;
+        MENGINE_IF_DXCALL( m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdapterId) )
         {
             LOGGER_ERROR( "can't determine adapter identifier" );
 
             return false;
         }
 
-        LOGGER_INFO( "render", "D3D Adapter Driver: %s", AdID.Driver );
-        LOGGER_INFO( "render", "D3D Adapter Description: %s", AdID.Description );
-        LOGGER_INFO( "render", "D3D Adapter DeviceName: %s", AdID.DeviceName );
+        LOGGER_INFO( "render", "D3D Adapter Driver: %s", AdapterId.Driver );
+        LOGGER_INFO( "render", "D3D Adapter Description: %s", AdapterId.Description );
+        LOGGER_INFO( "render", "D3D Adapter DeviceName: %s", AdapterId.DeviceName );
 
         LOGGER_INFO( "render", "D3D Adapter Version: %hu.%hu.%hu.%hu"
-            , HIWORD( AdID.DriverVersion.HighPart )
-            , LOWORD( AdID.DriverVersion.HighPart )
-            , HIWORD( AdID.DriverVersion.LowPart )
-            , LOWORD( AdID.DriverVersion.LowPart )
+            , HIWORD( AdapterId.DriverVersion.HighPart )
+            , LOWORD( AdapterId.DriverVersion.HighPart )
+            , HIWORD( AdapterId.DriverVersion.LowPart )
+            , LOWORD( AdapterId.DriverVersion.LowPart )
         );
 
-        LOGGER_INFO( "render", "D3D Adapter VendorId: %lu", AdID.VendorId );
-        LOGGER_INFO( "render", "D3D Adapter DeviceId: %lu", AdID.DeviceId );
-        LOGGER_INFO( "render", "D3D Adapter SubSysId: %lu", AdID.SubSysId );
-        LOGGER_INFO( "render", "D3D Adapter Revision: %lu", AdID.Revision );
+        LOGGER_INFO( "render", "D3D Adapter VendorId: %lu", AdapterId.VendorId );
+        LOGGER_INFO( "render", "D3D Adapter DeviceId: %lu", AdapterId.DeviceId );
+        LOGGER_INFO( "render", "D3D Adapter SubSysId: %lu", AdapterId.SubSysId );
+        LOGGER_INFO( "render", "D3D Adapter Revision: %lu", AdapterId.Revision );
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
 

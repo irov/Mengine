@@ -28,7 +28,7 @@ namespace Mengine
     const ServiceRequiredList & FileModifyHookService::requiredServices() const
     {
         static ServiceRequiredList required = {
-            ThreadServiceInterface::getStaticServiceID()
+            SERVICE_ID( ThreadServiceInterface )
         };
 
         return required;

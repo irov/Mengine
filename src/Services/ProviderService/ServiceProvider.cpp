@@ -74,13 +74,13 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( service->getServiceID() ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
-            , service->getServiceID()
-            , MENGINE_STRLEN( service->getServiceID() )
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( service->getServiceId() ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+            , service->getServiceId()
+            , MENGINE_STRLEN( service->getServiceId() )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
-        const Char * name = service->getServiceID();
+        const Char * name = service->getServiceId();
 
         for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
         {
@@ -143,7 +143,7 @@ namespace Mengine
         }
 
         MENGINE_THROW_EXCEPTION( "invalid allocate service name '%s' max count [%u] (doc: %s)"
-            , service->getServiceID()
+            , service->getServiceId()
             , MENGINE_SERVICE_PROVIDER_COUNT
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -158,7 +158,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr );
 
-        m_initializeServiceName = service->getServiceID();
+        m_initializeServiceName = service->getServiceId();
 #endif
 
         bool successful = false;
@@ -178,7 +178,7 @@ namespace Mengine
             *_result = false;
 
             MENGINE_ASSERTION_EXCEPTION( _desc.safe == true, "exception initialize service '%s' (doc: %s)\n%s"
-                , service->getServiceID()
+                , service->getServiceId()
                 , MENGINE_DOCUMENT_STR( _doc )
                 , ex.what()
             );
@@ -195,7 +195,7 @@ namespace Mengine
             *_result = false;
 
             MENGINE_ASSERTION_EXCEPTION( _desc.safe == true, "invalid initialize service '%s' (doc: %s)"
-                , service->getServiceID()
+                , service->getServiceId()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
             
@@ -209,7 +209,7 @@ namespace Mengine
             *_result = false;
 
             MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (waits) (doc: %s)"
-                , service->getServiceID()
+                , service->getServiceId()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
         }
@@ -219,7 +219,7 @@ namespace Mengine
             *_result = false;
 
             MENGINE_THROW_EXCEPTION( "invalid run service '%s' (waits) (doc: %s)"
-                , service->getServiceID()
+                , service->getServiceId()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
         }
@@ -453,7 +453,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::removeDependency_( const ServiceInterfacePtr & _service )
     {
-        const Char * name = _service->getServiceID();
+        const Char * name = _service->getServiceId();
 
         for( uint32_t index = 0; index != m_dependenciesCount; )
         {
@@ -482,7 +482,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::checkWaits_( const ServiceInterfacePtr & _service )
     {
-        const Char * name = _service->getServiceID();
+        const Char * name = _service->getServiceId();
 
         for( uint32_t index = 0; index != m_waitsCount; )
         {

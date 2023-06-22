@@ -29,10 +29,10 @@ namespace Mengine
     public:
         const OutputStreamInterfacePtr & getStream() const;
 
-    protected:
+    public:
         void log( const LoggerMessage & _message ) override;
 
-    protected:
+    public:
         void flush() override;
 
     protected:

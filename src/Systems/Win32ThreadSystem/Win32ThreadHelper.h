@@ -8,6 +8,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        void Win32SetThreadName( DWORD _dwThreadID, const Char * _threadName );
+        void Win32SetThreadName( DWORD _dwThreadId, const Char * _threadName );
     }
 }

@@ -47,7 +47,7 @@ namespace Mengine
 
     public:
         void setDefaultAccount( const ConstString & _accountId ) override;
-        const ConstString & getDefaultAccountID() const override;
+        const ConstString & getDefaultAccountId() const override;
 
         bool isCurrentDefaultAccount() const override;
 
@@ -57,13 +57,15 @@ namespace Mengine
 
     public:
         void setGlobalAccount( const ConstString & _accountId ) override;
-        const ConstString & getGlobalAccountID() const override;
+        const ConstString & getGlobalAccountId() const override;
 
         bool hasGlobalAccount() const override;
 
     public:
         bool hasCurrentAccount() const override;
-        const ConstString & getCurrentAccountID() const override;
+        const ConstString & getCurrentAccountId() const override;
+
+        const AccountInterfacePtr & getCurrentAccount() const override;
 
     public:
         const AccountInterfacePtr & getAccount( const ConstString & _accountId ) const override;
@@ -93,9 +95,9 @@ namespace Mengine
 
         FactoryInterfacePtr m_factoryAccounts;
 
-        ConstString m_currentAccountID;
-        ConstString m_globalAccountID;
-        ConstString m_defaultAccountID;
+        ConstString m_currentAccountId;
+        ConstString m_globalAccountId;
+        ConstString m_defaultAccountId;
 
         uint32_t m_playerEnumerator;
 

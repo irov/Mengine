@@ -14,5 +14,5 @@ public interface MenginePluginAnalyticsListener {
     int EAET_TUTORIAL_BEGIN = MengineAnalytics.EAET_TUTORIAL_BEGIN;
     int EAET_TUTORIAL_COMPLETE = MengineAnalytics.EAET_TUTORIAL_COMPLETE;
 
-    void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> parameters);
+    void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters);
 }

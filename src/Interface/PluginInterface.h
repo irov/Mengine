@@ -89,8 +89,8 @@ namespace Mengine
     }
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_SERVICE_WAIT( Type, Lambda )\
-    SERVICE_PROVIDER_GET()->waitService(this->getPluginName(), Type::getStaticServiceID(), Lambda)
+    SERVICE_PROVIDER_GET()->waitService(this->getPluginName(), SERVICE_ID(Type), Lambda)
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_SERVICE_LEAVE( Type, Lambda )\
-    SERVICE_PROVIDER_GET()->leaveService(this->getPluginName(), Type::getStaticServiceID(), Lambda)
+    SERVICE_PROVIDER_GET()->leaveService(this->getPluginName(), SERVICE_ID(Type), Lambda)
 //////////////////////////////////////////////////////////////////////////

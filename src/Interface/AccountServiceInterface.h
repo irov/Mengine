@@ -36,7 +36,7 @@ namespace Mengine
 
     public:
         virtual void setDefaultAccount( const ConstString & _accountId ) = 0;
-        virtual const ConstString & getDefaultAccountID() const = 0;
+        virtual const ConstString & getDefaultAccountId() const = 0;
         virtual bool isCurrentDefaultAccount() const = 0;
 
         virtual bool hasDefaultAccount() const = 0;
@@ -45,13 +45,15 @@ namespace Mengine
 
     public:
         virtual void setGlobalAccount( const ConstString & _accountId ) = 0;
-        virtual const ConstString & getGlobalAccountID() const = 0;
+        virtual const ConstString & getGlobalAccountId() const = 0;
 
         virtual bool hasGlobalAccount() const = 0;
 
     public:
         virtual bool hasCurrentAccount() const = 0;
-        virtual const ConstString & getCurrentAccountID() const = 0;
+        virtual const ConstString & getCurrentAccountId() const = 0;
+
+        virtual const AccountInterfacePtr & getCurrentAccount() const = 0;
 
     public:
         virtual const AccountInterfacePtr & getAccount( const ConstString & _accountId ) const = 0;

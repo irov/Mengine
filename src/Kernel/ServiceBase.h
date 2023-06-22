@@ -23,7 +23,7 @@ namespace Mengine
         ~ServiceBase() override
         {
             MENGINE_ASSERTION_OBSERVABLE( this, "service '%s'"
-                , T::getStaticServiceID()
+                , SERVICE_ID(T)
             );
         }
 
@@ -71,10 +71,10 @@ namespace Mengine
                 return;
             }
 
-            const Char * serviceID = this->getServiceID();
+            const Char * serviceId = this->getServiceId();
 
             SERVICE_PROVIDER_GET()
-                ->unlinkService( serviceID );
+                ->unlinkService( serviceId );
 
             m_initializeService = false;
 

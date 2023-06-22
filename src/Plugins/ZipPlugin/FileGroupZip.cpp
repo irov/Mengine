@@ -354,10 +354,10 @@ namespace Mengine
 
             if( header.extraFieldLen != 0 )
             {
-                uint16_t headerID;
+                uint16_t headerId;
                 uint16_t dataSize;
 
-                stream->read( &headerID, sizeof( headerID ) );
+                stream->read( &headerId, sizeof( headerId ) );
                 stream->read( &dataSize, sizeof( dataSize ) );
 
                 if( header.uncompressedSize == 0xffffffffU )

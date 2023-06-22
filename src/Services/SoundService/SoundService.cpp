@@ -46,7 +46,7 @@ namespace Mengine
     const ServiceRequiredList & SoundService::requiredServices() const
     {
         static ServiceRequiredList required = {
-            ThreadServiceInterface::getStaticServiceID()
+            SERVICE_ID( ThreadServiceInterface )
         };
 
         return required;

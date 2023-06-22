@@ -142,43 +142,66 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
         if (m_initializeSuccessful == false) {
             return;
         }
 
-        if (eventType != EAET_CUSTOM) {
-            return;
-        }
+        switch (eventType) {
+            case  EAET_CUSTOM: {
+                DTDCustomEventParameters params = new DTDCustomEventParameters();
 
-        DTDCustomEventParameters params = new DTDCustomEventParameters();
-        
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            String name = entry.getKey();
-            Object parameter = entry.getValue();
-            if (parameter instanceof Boolean) {
-                params.add(name, (Boolean)parameter);
-            } else if (parameter instanceof Long) {
-                params.add(name, (Long)parameter);
-            } else if (parameter instanceof Double) {
-                params.add(name, (Double)parameter);
-            } else if (parameter instanceof String) {
-                params.add(name, (String)parameter);
-            } else {
-                this.logError("customEvent unsupported parameter: %s class: %s"
-                    , parameter
-                    , parameter.getClass()
+                for (Map.Entry<String, Object> entry : context.entrySet()) {
+                    String name = entry.getKey();
+                    Object parameter = entry.getValue();
+
+                    if (parameter instanceof Boolean) {
+                        params.add(name, (Boolean)parameter);
+                    } else if (parameter instanceof Long) {
+                        params.add(name, (Long)parameter);
+                    } else if (parameter instanceof Double) {
+                        params.add(name, (Double)parameter);
+                    } else if (parameter instanceof String) {
+                        params.add(name, (String)parameter);
+                    } else {
+                        this.logError("customEvent unsupported parameter: %s class: %s"
+                            , parameter
+                            , parameter.getClass()
+                        );
+
+                        return;
+                    }
+                }
+
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    String name = entry.getKey();
+                    Object parameter = entry.getValue();
+
+                    if (parameter instanceof Boolean) {
+                        params.add(name, (Boolean)parameter);
+                    } else if (parameter instanceof Long) {
+                        params.add(name, (Long)parameter);
+                    } else if (parameter instanceof Double) {
+                        params.add(name, (Double)parameter);
+                    } else if (parameter instanceof String) {
+                        params.add(name, (String)parameter);
+                    } else {
+                        this.logError("customEvent unsupported parameter: %s class: %s"
+                            , parameter
+                            , parameter.getClass()
+                        );
+
+                        return;
+                    }
+                }
+
+                this.logInfo("customEvent params: %s"
+                    , params
                 );
 
-                return;
-            }
+                DTDAnalytics.INSTANCE.customEvent(eventName, params);
+            }break;
         }
-
-        this.logInfo("customEvent params: %s"
-            , params
-        );
-
-        DTDAnalytics.INSTANCE.customEvent(eventName, params);
     }
 
     public void logEvent(@NonNull String eventName, @NonNull DTDCustomEventParameters params) {

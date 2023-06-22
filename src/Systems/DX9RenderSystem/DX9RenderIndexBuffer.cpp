@@ -115,7 +115,7 @@ namespace Mengine
         uint32_t bufferSize = m_indexCapacity * m_indexSize;
 
         IDirect3DIndexBuffer9 * pD3DIndexBuffer = nullptr;
-        MENGINE_IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pD3DIndexBuffer, NULL) )
+        MENGINE_IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pD3DIndexBuffer, nullptr) )
         {
             return false;
         }

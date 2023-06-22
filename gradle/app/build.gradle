@@ -289,15 +289,14 @@ android {
 }
 
 if (ANDROID_APP_SPLIT_ENABLE == true) {
-    ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86_64": 4]
+    ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
 
     android.applicationVariants.all { variant ->
         variant.outputs.each { output ->
             def baseAbiVersionCode = project.ext.abiCodes.get(output.getFilter("ABI"))
 
             if (baseAbiVersionCode != null) {
-                output.versionCodeOverride =
-                        baseAbiVersionCode * 1000000 + variant.versionCode
+                output.versionCodeOverride = baseAbiVersionCode * 1000000 + variant.versionCode
             }
         }
     }

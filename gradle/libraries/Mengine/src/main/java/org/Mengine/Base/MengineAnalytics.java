@@ -25,14 +25,14 @@ public class MengineAnalytics {
     }
 
     static private void assertContext(String key) {
-        if (MengineAnalytics.m_context.containsKey(key)) {
+        if (MengineAnalytics.m_context.containsKey(key) == true) {
             String msg = String.format("global analytics context parameter '%s' already exist", key);
             throw new AssertionError(msg);
         }
     }
 
     static private void assertGetter(String key) {
-        if (MengineAnalytics.m_getter.containsKey(key)) {
+        if (MengineAnalytics.m_getter.containsKey(key) == true) {
             String msg = String.format("global analytics getter parameter '%s' already exist", key);
             throw new AssertionError(msg);
         }

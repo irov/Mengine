@@ -214,6 +214,12 @@ public class MengineApplication extends Application {
         return language;
     }
 
+    public String getDeviceName() {
+        String deviceModel = this.getDeviceModel();
+
+        return "Android " + deviceModel;
+    }
+
     public String getDeviceModel() {
         String deviceName = android.os.Build.MODEL;
 

@@ -10,7 +10,7 @@ src
     DX11RenderImageTarget.cpp
     DX11RenderImageLocked.h
     DX11RenderImageLocked.cpp
-    DX11RenderImageLockedFactoryStorage.h    
+    DX11RenderImageLockedFactoryStorage.h
     DX11RenderTargetTexture.h
     DX11RenderTargetTexture.cpp
     DX11RenderTargetOffscreen.h
@@ -20,7 +20,7 @@ src
     DX11RenderVertexAttribute.h
     DX11RenderVertexAttribute.cpp
     DX11RenderIndexBuffer.h
-    DX11RenderIndexBuffer.cpp    
+    DX11RenderIndexBuffer.cpp
     DX11RenderFragmentShader.h
     DX11RenderFragmentShader.cpp
     DX11RenderVertexShader.h
@@ -41,8 +41,9 @@ src
 )
 
 IF(MENGINE_PLATFORM_SDL)
-    INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL)
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL/include/include-config-$<LOWER_CASE:$<CONFIG>>)
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL/include)
+    INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL)
 ENDIF()
 
 ADD_MENGINE_LIBRARY(Systems)

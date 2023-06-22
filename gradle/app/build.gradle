@@ -250,12 +250,16 @@ android {
     }
 
     if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
+        var NativeLibsDir = "$rootDir/libraries/Mengine/build/intermediates/merged_native_libs/debug/out/lib/"
+
+        println "crashlytics native symbol upload: $NativeLibsDir"
+
         buildTypes {
             debug {
                 externalNativeBuild {
                     firebaseCrashlytics {
                         nativeSymbolUploadEnabled true
-                        unstrippedNativeLibsDir "$rootDir/libraries/Mengine/build/intermediates/merged_native_libs/debug/out/lib/"
+                        unstrippedNativeLibsDir NativeLibsDir
                     }
                 }
             }
@@ -264,19 +268,9 @@ android {
                 externalNativeBuild {
                     firebaseCrashlytics {
                         nativeSymbolUploadEnabled true
-                        unstrippedNativeLibsDir "$rootDir/libraries/Mengine/build/intermediates/merged_native_libs/release/out/lib/"
+                        unstrippedNativeLibsDir NativeLibsDir
                     }
                 }
-            }
-        }
-
-        afterEvaluate {
-            android.applicationVariants.all { variant ->
-                def variantName = variant.name.capitalize()
-                def task = tasks.findByName("assemble${variantName}")
-                def uploader = "uploadCrashlyticsSymbolFile${variantName}"
-
-                task?.finalizedBy(uploader)
             }
         }
     }

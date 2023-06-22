@@ -92,11 +92,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
                 int responseCode = billingResult.getResponseCode();
 
                 switch (responseCode) {
-                    case BillingClient.BillingResponseCode.SERVICE_TIMEOUT: {
-                        MengineGooglePlayBillingPlugin.this.logWarning("onPurchasesUpdated: Service timeout");
-
-                        MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesUpdatedServiceTimeout");
-                    }break;
                     case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED: {
                         MengineGooglePlayBillingPlugin.this.logWarning("onPurchasesUpdated: Feature not supported");
 

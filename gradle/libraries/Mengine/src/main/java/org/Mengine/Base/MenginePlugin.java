@@ -95,6 +95,12 @@ public class MenginePlugin {
         return MengineLog.logError(m_pluginName, format, args);
     }
 
+    public void assertionError(String format, Object ... args) {
+        String msg = String.format(format, args);
+
+        throw new AssertionError("[" + m_pluginName + "] " + msg);
+    }
+
     public MengineAnalyticsEventBuilder buildEvent(String name) {
         MengineAnalyticsEventBuilder eventBuilder = MengineAnalytics.buildEvent(name);
 

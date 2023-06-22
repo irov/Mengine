@@ -250,6 +250,10 @@ public class MengineUtils {
 
         File[] fileList = folder.listFiles();
 
+        if (fileList == null) {
+            return;
+        }
+
         for (File file : fileList) {
             boolean isDirectory = file.isDirectory();
 
@@ -271,7 +275,13 @@ public class MengineUtils {
             FileOutputStream dest = new FileOutputStream(toLocation);
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
 
-            int basePathLength = sourceFile.getParent().length();
+            String sourceFileParent = sourceFile.getParent();
+
+            if( sourceFileParent == null ) {
+                return false;
+            }
+
+            int basePathLength = sourceFileParent.length();
 
             boolean isDirectory = sourceFile.isDirectory();
 

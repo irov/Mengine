@@ -18,6 +18,8 @@ import android.content.Context;
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginExtensionListener {
     public static final String PLUGIN_NAME = "AppLovin";
@@ -32,9 +34,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
      * - onApplovinPluginOnSdkInitialized
      * <p>
      * установка Interstitial
-     * void initInterstitial()
-     * boolean canYouShowInterstitial()
-     * void showInterstitial()
+     * void initInterstitial(String adUnitId)
+     * boolean canYouShowInterstitial(String adUnitId)
+     * void showInterstitial(String adUnitId)
      * - onApplovinInterstitialOnAdLoaded
      * - onApplovinInterstitialOnAdDisplayed
      * - onApplovinInterstitialOnAdHidden
@@ -43,10 +45,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
      * - onApplovinInterstitialOnAdDisplayFailed
      * <p>
      * установка Rewarded
-     * void initRewarded()
-     * boolean canOfferRewarded()
-     * boolean canYouShowRewarded()
-     * void showRewarded()
+     * void initRewarded(String adUnitId)
+     * boolean canOfferRewarded(String adUnitId)
+     * boolean canYouShowRewarded(String adUnitId)
+     * void showRewarded(String adUnitId)
      * - onApplovinRewardedOnRewardedVideoStarted
      * - onApplovinRewardedOnRewardedVideoCompleted
      * - onApplovinRewardedOnUserRewarded
@@ -58,8 +60,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
      * - onApplovinRewardedOnAdDisplayFailed
      * <p>
      * установка Banner
-     * void initBanner()
-     * void bannerVisible(boolean show)
+     * void initBanner(String adUnitId)
+     * void bannerVisible(String adUnitId, boolean show)
      * - onApplovinBannerOnAdDisplayed
      * - onApplovinBannerOnAdHidden
      * - onApplovinBannerOnAdClicked
@@ -71,9 +73,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
      * void showMediationDebugger()
      */
 
-    private MengineAppLovinBanner m_banner;
-    private MengineAppLovinInterstitial m_interstitial;
-    private MengineAppLovinRewarded m_rewarded;
+    private Map<String, MengineAppLovinBanner> m_banners = new HashMap<>();
+    private Map<String, MengineAppLovinInterstitial> m_interstitials = new HashMap<>();
+    private Map<String, MengineAppLovinRewarded> m_rewardeds = new HashMap<>();
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
 
@@ -178,72 +180,133 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         m_analytics = null;
 
-        if (m_interstitial != null) {
-            m_interstitial.destroy();
-            m_interstitial = null;
+        for( MengineAppLovinBanner banner : m_banners.values() ) {
+            banner.destroy();
         }
 
-        if (m_rewarded != null) {
-            m_rewarded.destroy();
-            m_rewarded = null;
+        m_banners = null;
+
+        for( MengineAppLovinInterstitial interstitial : m_interstitials.values() ) {
+            interstitial.destroy();
         }
 
-        if (m_banner != null) {
-            m_banner.destroy();
-            m_banner = null;
+        m_interstitials = null;
+
+        for( MengineAppLovinRewarded rewarded : m_rewardeds.values() ) {
+            rewarded.destroy();
         }
+
+        m_rewardeds = null;
     }
 
     public MengineAppLovinMediationInterface getMediationAmazon() {
         return m_mediationAmazon;
     }
 
-    public void initBanner(String adUnitId) {
-        if (m_banner != null) {
-            throw new RuntimeException("[AppLovin] already init banner");
+    private void assertBanner(String adUnitId) {
+        if (m_banners.containsKey(adUnitId) == false) {
+            this.assertionError("not found banner: %s", adUnitId);
         }
-
-        m_banner = new MengineAppLovinBanner(this, adUnitId);
     }
 
-    public void bannerVisible(boolean show) {
-        m_banner.bannerVisible(show);
+    public void initBanner(String adUnitId) {
+        if (m_banners.containsKey(adUnitId) == false) {
+            this.assertionError("already exist banner: %s", adUnitId);
+        }
+
+        MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId);
+
+        m_banners.put(adUnitId, banner);
+    }
+
+    public void bannerVisible(String adUnitId, boolean show) {
+        this.assertBanner(adUnitId);
+
+        MengineAppLovinBanner banner = m_banners.get(adUnitId);
+
+        banner.bannerVisible(show);
+    }
+
+    private void assertInterstitial(String adUnitId) {
+        if (m_interstitials.containsKey(adUnitId) == false) {
+            this.assertionError("not found interstitial: %s", adUnitId);
+        }
     }
 
     public void initInterstitial(String adUnitId) {
-        if (m_interstitial != null) {
-            throw new RuntimeException("[AppLovin] already init interstitial");
+        if (m_interstitials.containsKey(adUnitId) == true) {
+            this.assertionError("already exist interstitial: %s", adUnitId);
         }
 
-        m_interstitial = new MengineAppLovinInterstitial(this, adUnitId);
+        MengineAppLovinInterstitial interstitial = new MengineAppLovinInterstitial(this, adUnitId);
+
+        m_interstitials.put(adUnitId, interstitial);
     }
 
-    public boolean canYouShowInterstitial() {
-        return m_interstitial.canYouShowInterstitial();
+    public boolean canYouShowInterstitial(String adUnitId) {
+        this.assertInterstitial(adUnitId);
+
+        MengineAppLovinInterstitial interstitial = m_interstitials.get(adUnitId);
+
+        boolean result = interstitial.canYouShowInterstitial();
+
+        return result;
     }
 
-    public boolean showInterstitial() {
-        return m_interstitial.showInterstitial();
+    public boolean showInterstitial(String adUnitId) {
+        this.assertInterstitial(adUnitId);
+
+        MengineAppLovinInterstitial interstitial = m_interstitials.get(adUnitId);
+
+        boolean result = interstitial.showInterstitial();
+
+        return result;
     }
 
     public void initRewarded(String adUnitId) {
-        if (m_rewarded != null) {
-            throw new RuntimeException("[AppLovin] already init rewarded");
+        if (m_rewardeds.containsKey(adUnitId) == true) {
+            this.assertionError("already init rewarded: %s", adUnitId);
         }
 
-        m_rewarded = new MengineAppLovinRewarded(this, adUnitId);
+        MengineAppLovinRewarded rewarded = new MengineAppLovinRewarded(this, adUnitId);
+
+        m_rewardeds.put(adUnitId, rewarded);
     }
 
-    public boolean canOfferRewarded() {
-        return m_rewarded.canOfferRewarded();
+    private void assertRewarded(String adUnitId) {
+        if (m_rewardeds.containsKey(adUnitId) == false) {
+            this.assertionError("not found rewarded: %s", adUnitId);
+        }
     }
 
-    public boolean canYouShowRewarded() {
-        return m_rewarded.canYouShowRewarded();
+    public boolean canOfferRewarded(String adUnitId) {
+        this.assertRewarded(adUnitId);
+
+        MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
+
+        boolean result = rewarded.canOfferRewarded();
+
+        return result;
     }
 
-    public boolean showRewarded() {
-        return m_rewarded.showRewarded();
+    public boolean canYouShowRewarded(String adUnitId) {
+        this.assertRewarded(adUnitId);
+
+        MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
+
+        boolean result = rewarded.canYouShowRewarded();
+
+        return result;
+    }
+
+    public boolean showRewarded(String adUnitId) {
+        this.assertRewarded(adUnitId);
+
+        MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
+
+        boolean result = rewarded.showRewarded();
+
+        return result;
     }
 
     public void onEventRevenuePaid(MaxAd ad) {

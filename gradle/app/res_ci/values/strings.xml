@@ -1,3 +1,4 @@
 <resources>
+    <bool name="mengine_session_use_install_key" translatable="false">false</bool>
     <bool name="mengine_secure_allow_android_id" translatable="false">true</bool>
 </resources>

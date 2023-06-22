@@ -758,6 +758,8 @@ namespace Mengine
 
         Timestamp eventTimestamp = _event->getTimestamp();
 
+        jobject context_jobject = Helper::makeJObjectHashMap( jenv, 0 );
+
         uint32_t countParameters = _event->getCountParameters();
 
         jobject parameters_jobject = Helper::makeJObjectHashMap( jenv, countParameters );
@@ -828,11 +830,12 @@ namespace Mengine
                jenv->DeleteLocalRef( jclass_Map );
            });
 
-        jmethodID jmethodID_onMengineAnalyticsEvent = this->getApplicationMethodID( jenv, "onMengineAnalyticsEvent", "(ILjava/lang/String;JLjava/util/Map;)V" );
+        jmethodID jmethodID_onMengineAnalyticsEvent = this->getApplicationMethodID( jenv, "onMengineAnalyticsEvent", "(ILjava/lang/String;JLjava/util/Map;Ljava/util/Map;)V" );
 
-        this->callVoidApplicationMethod( jenv, jmethodID_onMengineAnalyticsEvent, (jint)eventType, eventName_jobject, (jlong)eventTimestamp, parameters_jobject );
+        this->callVoidApplicationMethod( jenv, jmethodID_onMengineAnalyticsEvent, (jint)eventType, eventName_jobject, (jlong)eventTimestamp, context_jobject, parameters_jobject );
 
         jenv->DeleteLocalRef( eventName_jobject );
+        jenv->DeleteLocalRef( context_jobject );
         jenv->DeleteLocalRef( parameters_jobject );
     }
     //////////////////////////////////////////////////////////////////////////

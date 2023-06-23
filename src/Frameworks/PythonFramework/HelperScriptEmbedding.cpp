@@ -785,7 +785,7 @@ namespace Mengine
                 ANDROID_ENVIRONMENT_SERVICE()
                     ->getAndroidId( androidId, 128 );
 
-                return String(androidId);
+                return String( androidId );
             }
             //////////////////////////////////////////////////////////////////////////
 #endif
@@ -2307,6 +2307,17 @@ namespace Mengine
                 config->hasValue( _section, _key, _default, &value );
 
                 return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            VectorString s_getConfigStrings( const Char * _section, const Char * _key )
+            {
+                const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                    ->getDefaultConfig();
+
+                VectorString values;
+                config->getValues( _section, _key, &values );
+
+                return values;
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getAccountUID( pybind::kernel_interface * _kernel, const ConstString & _accountId )
@@ -3901,7 +3912,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
 
         pybind::def_functor_deprecated( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getTime, "use getTime" );
-        
+
         pybind::def_functor( _kernel, "getLocalDateTimeMs", helperScriptMethod, &HelperScriptMethod::s_getLocalDateTimeMs );
         pybind::def_functor_deprecated( _kernel, "getDateStruct", helperScriptMethod, &HelperScriptMethod::s_getLocalDateStruct, "use getLocalDateStruct" );
         pybind::def_functor( _kernel, "getLocalDateStruct", helperScriptMethod, &HelperScriptMethod::s_getLocalDateStruct );
@@ -3918,6 +3929,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getConfigUInt64", helperScriptMethod, &HelperScriptMethod::s_getConfigUInt64 );
         pybind::def_functor( _kernel, "getConfigFloat", helperScriptMethod, &HelperScriptMethod::s_getConfigFloat );
         pybind::def_functor( _kernel, "getConfigString", helperScriptMethod, &HelperScriptMethod::s_getConfigString );
+        pybind::def_functor( _kernel, "getConfigStrings", helperScriptMethod, &HelperScriptMethod::s_getConfigStrings );
 
         pybind::def_functor( _kernel, "getAccounts", helperScriptMethod, &HelperScriptMethod::s_getAccounts );
 
@@ -4124,7 +4136,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
 
-        pybind::def_functor_deprecated( _kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromId, "use getTextFromId");
+        pybind::def_functor_deprecated( _kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromId, "use getTextFromId" );
         pybind::def_functor( _kernel, "getTextFromId", helperScriptMethod, &HelperScriptMethod::s_getTextFromId );
 
         pybind::def_functor( _kernel, "setTextAlias", helperScriptMethod, &HelperScriptMethod::s_setTextAlias );

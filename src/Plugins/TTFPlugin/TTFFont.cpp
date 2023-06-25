@@ -24,12 +24,10 @@
 
 #include "Config/Algorithm.h"
 
-#include "utf8.h"
-
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FT_FLOOR(X) (((X) & -64) / 64)
-#define MENGINE_FT_CEIL(X)  MENGINE_FT_FLOOR((X) + 63)
-#define MENGINE_FT_CEILF(X)  ((float)MENGINE_FT_CEIL((X)))
+#define MENGINE_FT_CEIL(X) MENGINE_FT_FLOOR((X) + 63)
+#define MENGINE_FT_CEILF(X) ((float)MENGINE_FT_CEIL((X)))
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

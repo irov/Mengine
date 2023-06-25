@@ -29,8 +29,8 @@ namespace Mengine
                     continue;
                 }
 
-                Char msg[1024] = {'\0'};
-                MENGINE_SNPRINTF( msg, 1024, "[Assert] string '%.*s' has non standard char '%c' code: %u"
+                Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "[Assert] string '%.*s' has non standard char '%c' code: %u"
                     , (int32_t)_len
                     , _value
                     , ch
@@ -57,8 +57,8 @@ namespace Mengine
                     continue;
                 }
 
-                Char msg[1024] = {'\0'};
-                MENGINE_SNPRINTF( msg, 1024, "[Assert] string '%.*s' has non lower char '%c' code: %u"
+                Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "[Assert] string '%.*s' has non lower char '%c' code: %u"
                     , (int32_t)_len
                     , _value
                     , ch
@@ -85,8 +85,8 @@ namespace Mengine
                     continue;
                 }
 
-                Char msg[1024] = {'\0'};
-                MENGINE_SNPRINTF( msg, 1024, "[Assert] string '%.*s' has non upper char '%c' code: %u"
+                Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "[Assert] string '%.*s' has non upper char '%c' code: %u"
                     , (int32_t)_len
                     , _value
                     , ch
@@ -97,7 +97,6 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-
     }
 }
 #endif

@@ -1,8 +1,7 @@
 #include "FontBase.h"
 
 #include "Kernel/Logger.h"
-
-#include "utf8.h"
+#include "Kernel/Utf8Helper.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_TTF_METRICS_SYMBOL
@@ -172,12 +171,15 @@ namespace Mengine
             text_it != text_end;
             )
         {
-            uint32_t code = 0;
-            utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
-
-            if( err != utf8::internal::UTF8_OK )
+            uint32_t code;
+            if( Helper::Utf8GetCode( text_it, text_end, &code ) == false )
             {
-                continue;
+                LOGGER_ERROR( "text '%s' have invalid utf8 symbol '%s'"
+                    , _text
+                    , text_it 
+                );
+
+                return false;
             }
 
             bool control = false;
@@ -263,15 +265,12 @@ namespace Mengine
             text_it != text_end;
             )
         {
-            uint32_t code = 0;
-            utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
-
-            if( err != utf8::internal::UTF8_OK )
+            uint32_t code;
+            if( Helper::Utf8GetCode( text_it, text_end, &code ) == false )
             {
-                LOGGER_ERROR( "text '%.*s' invalid utf8 [%u]"
+                LOGGER_ERROR( "text '%.*s' invalid utf8"
                     , (int32_t)_size
                     , _text
-                    , err
                 );
 
                 return false;

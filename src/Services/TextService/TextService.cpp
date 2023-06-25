@@ -25,13 +25,13 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/Utf8Helper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
 
 #include "xmlsax/xmlsax.hpp"
-#include "utf8.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TextService, Mengine::TextService );
@@ -152,18 +152,20 @@ namespace Mengine
                     size_t str_value_size = MENGINE_STRLEN( str_value );
 
                     const xmlsax_char_t * str_value_end = str_value + str_value_size;
-                    const xmlsax_char_t * str_value_valid = utf8::find_invalid( str_value, str_value_end );
 
-                    if( str_value_valid != str_value_end )
+                    const xmlsax_char_t * str_value_invalid_utf8;
+                    if( Helper::Utf8Validate( str_value, str_value_end, &str_value_invalid_utf8 ) == false )
                     {
                         LOGGER_ERROR( "'%s' invalid read text key '%s' value |%s| invalid utf8 char |%s|"
                             , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , textKey.c_str()
                             , str_value
-                            , str_value_valid
+                            , str_value_invalid_utf8
                         );
 
-                        const Char * text_str_end = utf8::replace_invalid( str_value + 0, str_value + str_value_size, text_str_value.data() );
+                        Char * text_str_value_char = text_str_value.data();
+
+                        const Char * text_str_end = Helper::Utf8ReplaceInvalid( str_value + 0, str_value + str_value_size, text_str_value_char );
 
                         text_str_size = text_str_end - text_str_value.c_str();
 
@@ -338,7 +340,7 @@ namespace Mengine
                 }
                 else if( MENGINE_STRCMP( str_key, "CharScale" ) == 0 )
                 {
-                    float value = 0;
+                    float value = 0.f;
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "'%s' invalid read for text '%s' Scale '%s'"
@@ -377,6 +379,8 @@ namespace Mengine
                         , str_key
                         , textKey.c_str()
                     );
+
+                    this->setError();
                 }
             }
 
@@ -386,6 +390,8 @@ namespace Mengine
                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                     , textKey.c_str()
                 );
+
+                this->setError();
             }
 
             FontInterfacePtr font;

@@ -4,6 +4,7 @@
 
 #include "Environment/Android/AndroidEnv.h"
 
+#include "Kernel/AssertionUtf8.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/Error.h"
@@ -35,6 +36,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidProxyLogger::log( const LoggerMessage & _message )
     {
+        MENGINE_ASSERTION_VALIDATE_UTF8( _message.category, MENGINE_UNKNOWN_SIZE );
+        MENGINE_ASSERTION_VALIDATE_UTF8( _message.data, _message.size );
+
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )

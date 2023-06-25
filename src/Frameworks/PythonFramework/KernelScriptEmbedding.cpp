@@ -96,8 +96,6 @@
 #include "math/quat.h"
 #include "math/utils.h"
 
-#include "utf8.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

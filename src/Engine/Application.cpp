@@ -342,7 +342,7 @@ namespace Mengine
         if( HAS_OPTION( "buildinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build version: %s [0x%08x] user: %s timestamp: %s project: %s build: %" MENGINE_PRIu64 ""
+                ->messageBox( "Mengine", "build version: %s [0x%08x] user: %s timestamp: %s project: %s build number: %" MENGINE_PRIu64 ""
                     , buildVersion
                     , buildVersionNumber
                     , buildUserName
@@ -352,7 +352,7 @@ namespace Mengine
                 );
         }
 
-        LOGGER_MESSAGE_RELEASE( "build version: %s [0x%08x] user: %s timestamp: %s project: %s build: %" MENGINE_PRIu64 ""
+        LOGGER_MESSAGE_RELEASE( "build version: %s [0x%08x] user: %s timestamp: %s project: %s build number: %" MENGINE_PRIu64 ""
             , buildVersion
             , buildVersionNumber
             , buildUserName

@@ -5,8 +5,7 @@
 #include "Kernel/DateTime.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     struct LoggerMessage
     {
         const Char * category;

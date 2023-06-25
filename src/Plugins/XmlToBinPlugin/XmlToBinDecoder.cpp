@@ -13,6 +13,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
+#include "Kernel/Utf8Helper.h"
 
 #include "Metacode/Metacode.h"
 
@@ -24,8 +25,6 @@
 #include "Kernel/Blobject.h"
 
 #include "Config/StdString.h"
-
-#include "utf8.h"
 
 namespace Mengine
 {
@@ -62,10 +61,13 @@ namespace Mengine
 
             size_t len = MENGINE_STRLEN( _value );
             const char * text_it = _value;
-            const char * text_end = _value + len + 1;
+            const char * text_end = _value + len;
 
             uint32_t code;
-            utf8::internal::validate_next( text_it, text_end, code );
+            if( Helper::Utf8GetCode( text_it, text_end, &code ) == false )
+            {
+                return false;
+            }
 
             _metabuf->write( code );
 

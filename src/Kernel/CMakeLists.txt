@@ -473,6 +473,8 @@ Assertion
     AssertionJSONInvalid.h
     AssertionCharacter.cpp
     AssertionCharacter.h
+    AssertionUtf8.cpp
+    AssertionUtf8.h
     AssertionReferenceCount.h
     AssertionVSNPRINTF.cpp
     AssertionVSNPRINTF.h
@@ -850,6 +852,9 @@ Core
     
     ConfigHelper.h
     OptionHelper.h
+    
+    Utf8Helper.h
+    Utf8Helper.cpp
     
     AnalyticsHelper.h
     

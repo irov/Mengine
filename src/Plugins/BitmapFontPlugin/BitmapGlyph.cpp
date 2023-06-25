@@ -11,13 +11,12 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/Utf8Helper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
 #include "xmlsax/xmlsax.hpp"
-
-#include "utf8.h"
 
 namespace Mengine
 {
@@ -96,7 +95,7 @@ namespace Mengine
                 , m_fileGroup( _fileGroup )
                 , m_filePath( _filePath )
                 , m_glyphCode( 0 )
-                , m_valid( false )
+                , m_successful( false )
             {
             }
 
@@ -122,7 +121,7 @@ namespace Mengine
                         {
                             if( MENGINE_STRCMP( value, "GHL" ) == 0 )
                             {
-                                m_valid = true;
+                                m_successful = true;
                             }
                         }
                     }
@@ -143,6 +142,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
 
                             m_glyph->setSize( size );
@@ -165,6 +166,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
 
                             m_glyph->setAscender( ascender );
@@ -178,6 +181,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
 
                             m_glyph->setHeight( height );
@@ -191,6 +196,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
 
                             m_glyph->setDescender( descender );
@@ -213,6 +220,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
 
                             uint32_t width_pow2 = Helper::getTexturePow2( width );
@@ -228,6 +237,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
 
                             uint32_t height_pow2 = Helper::getTexturePow2( height );
@@ -256,6 +267,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
                         }
                         else if( MENGINE_STRCMP( key, "offset" ) == 0 )
@@ -266,6 +279,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
                         }
                         else if( MENGINE_STRCMP( key, "rect" ) == 0 )
@@ -276,6 +291,8 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
                         }
                         else if( MENGINE_STRCMP( key, "id" ) == 0 )
@@ -287,19 +304,30 @@ namespace Mengine
                     mt::vec4f uv( rect.x, rect.y, rect.x + rect.z, rect.y + rect.w );
                     mt::vec2f size( rect.z, rect.w );
 
-                    uint32_t cp = 0;
+                    uint32_t code = 0;
                     size_t code_length = MENGINE_STRLEN( id );
-                    utf8::internal::utf_error err_code = utf8::internal::validate_next( id, id + code_length, cp );
 
-                    if( cp == 0 || err_code != utf8::internal::UTF8_OK )
+                    if( Helper::Utf8GetCode( id, id + code_length, &code ) == false )
                     {
                         LOGGER_ERROR( "glyph '%s' invalid utf8 id '%s'"
                             , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                             , id
                         );
+
+                        this->setError();
                     }
 
-                    GlyphCode glyphCode = cp;
+                    if( code == 0 )
+                    {
+                        LOGGER_ERROR( "glyph '%s' null utf8 id '%s'"
+                            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
+                            , id
+                        );
+
+                        this->setError();
+                    }
+
+                    GlyphCode glyphCode = code;
 
                     offset.y = -offset.y;
 
@@ -325,25 +353,38 @@ namespace Mengine
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
                         }
                         else if( MENGINE_STRCMP( key, "id" ) == 0 )
                         {
                             const xmlsax_char_t * id = value;
 
-                            uint32_t cp = 0;
+                            uint32_t code;
                             size_t id_length = MENGINE_STRLEN( id );
-                            utf8::internal::utf_error err_code = utf8::internal::validate_next( id, id + id_length, cp );
 
-                            if( cp == 0 || err_code != utf8::internal::UTF8_OK )
+                            if( Helper::Utf8GetCode( id, id + id_length, &code ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s' invalid utf8 code '%s'"
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                                     , value
                                 );
+
+                                this->setError();
                             }
 
-                            nextCode = cp;
+                            if( code == 0 )
+                            {
+                                LOGGER_ERROR( "glyph '%s' utf8 code [%s] is zero"
+                                    , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
+                                    , value
+                                );
+
+                                this->setError();
+                            }
+
+                            nextCode = code;
                         }
                     }
 
@@ -353,7 +394,7 @@ namespace Mengine
                             , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
                         );
 
-                        return;
+                        this->setError();
                     }
 
                     m_glyph->addKerning( m_glyphCode, nextCode, advance );
@@ -361,9 +402,14 @@ namespace Mengine
             }
 
         public:
+            void setError()
+            {
+                m_successful = false;
+            }
+
             bool isValid() const
             {
-                return m_valid;
+                return m_successful;
             }
 
         protected:
@@ -373,7 +419,7 @@ namespace Mengine
             const FilePath & m_filePath;
 
             GlyphCode m_glyphCode;
-            bool m_valid;
+            bool m_successful;
         };
     }
     //////////////////////////////////////////////////////////////////////////

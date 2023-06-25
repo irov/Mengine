@@ -5,6 +5,10 @@
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
+#ifndef MENGINE_ASSERTION_MAX_MESSAGE
+#define MENGINE_ASSERTION_MAX_MESSAGE 8192
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

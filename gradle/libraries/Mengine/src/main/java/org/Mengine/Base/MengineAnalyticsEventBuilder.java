@@ -1,6 +1,5 @@
 package org.Mengine.Base;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class MengineAnalyticsEventBuilder {

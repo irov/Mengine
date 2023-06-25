@@ -182,26 +182,46 @@ public class MenginePlugin {
         } catch (NoSuchFieldException e) {
             return;
         } catch (NullPointerException e) {
-            return;
+            this.logError("plugin [%s] invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS exception: %s [NullPointerException]"
+                , m_pluginName
+                , e.getLocalizedMessage()
+            );
+
+            throw new MenginePluginInvalidInitializeException(m_pluginName);
         } catch (SecurityException e) {
-            return;
+            this.logError("plugin [%s] invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS exception: %s [SecurityException]"
+                , m_pluginName
+                , e.getLocalizedMessage()
+            );
+
+            throw new MenginePluginInvalidInitializeException(m_pluginName);
         }
 
-        Object MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS;
+        Object extension;
 
         try {
-            MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS = f.get(this);
+            extension = f.get(this);
         } catch (IllegalArgumentException e) {
-            return;
+            this.logError("plugin [%s] invalid get extension from this exception: %s [IllegalArgumentException]"
+                , m_pluginName
+                , e.getLocalizedMessage()
+            );
+
+            throw new MenginePluginInvalidInitializeException(m_pluginName);
         } catch (IllegalAccessException e) {
+            this.logError("plugin [%s] invalid get extension from this exception: %s [IllegalAccessException]"
+                , m_pluginName
+                , e.getLocalizedMessage()
+            );
+
+            throw new MenginePluginInvalidInitializeException(m_pluginName);
+        }
+
+        if (extension == null) {
             return;
         }
 
-        if (MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS == null) {
-            return;
-        }
-
-        for (String extensionName : (String[])MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS) {
+        for (String extensionName : (String[])extension) {
             if (this.createExtension(activity, extensionName) == false) {
                 throw new MenginePluginInvalidInitializeException(extensionName);
             }

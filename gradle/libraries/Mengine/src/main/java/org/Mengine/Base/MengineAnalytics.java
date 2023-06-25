@@ -18,7 +18,7 @@ public class MengineAnalytics {
     private static MengineApplication m_application;
     private static Map<String, Object> m_context = new HashMap<>();
     private static Map<String, Object> m_getter = new HashMap<>();
-    private static final Object m_lock = new Object();
+    private static Object m_lock = new Object();
 
     public static void setMengineApplication(MengineApplication application) {
         MengineAnalytics.m_application = application;
@@ -81,7 +81,7 @@ public class MengineAnalytics {
             Object value = getter.get();
 
             parameters.put(key, value);
-        };
+        }
     }
 
     static public MengineAnalyticsEventBuilder buildEvent(String name) {

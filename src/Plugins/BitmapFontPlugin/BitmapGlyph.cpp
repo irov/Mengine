@@ -307,7 +307,7 @@ namespace Mengine
                     uint32_t code = 0;
                     size_t code_length = MENGINE_STRLEN( id );
 
-                    if( Helper::Utf8GetCode( id, id + code_length, &code ) == false )
+                    if( Helper::Utf8NextCode( &id, id + code_length, &code ) == false )
                     {
                         LOGGER_ERROR( "glyph '%s' invalid utf8 id '%s'"
                             , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
@@ -364,7 +364,7 @@ namespace Mengine
                             uint32_t code;
                             size_t id_length = MENGINE_STRLEN( id );
 
-                            if( Helper::Utf8GetCode( id, id + id_length, &code ) == false )
+                            if( Helper::Utf8NextCode( &id, id + id_length, &code ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s' invalid utf8 code '%s'"
                                     , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )

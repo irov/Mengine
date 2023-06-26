@@ -64,7 +64,7 @@ namespace Mengine
             const char * text_end = _value + len;
 
             uint32_t code;
-            if( Helper::Utf8GetCode( text_it, text_end, &code ) == false )
+            if( Helper::Utf8NextCode( &text_it, text_end, &code ) == false )
             {
                 return false;
             }

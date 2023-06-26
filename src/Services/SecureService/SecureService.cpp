@@ -24,7 +24,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SecureService::SecureService()
-        : m_secureHash( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,7 +37,7 @@ namespace Mengine
 
         size_t secure_len = MENGINE_STRLEN( secure );
 
-        Helper::makeSHA1u64( secure, secure_len, &m_secureHash );
+        Helper::makeSHA1( secure, secure_len, reinterpret_cast<uint8_t *>(m_secureHash), sizeof( m_secureHash ) );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureUnsignedValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -64,14 +63,18 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureService::protectData( const void * _in, size_t _size, void * const _out ) const
+    void SecureService::protectData( uint32_t _complexity, const void * _in, size_t _size, void * const _out ) const
     {
-        Helper::ravingcode( m_secureHash, _in, _size, _out );
+        MENGINE_ASSERTION_FATAL( _complexity <= 1 );
+
+        Helper::ravingcode( m_secureHash, _complexity, _in, _size, _out );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureService::unprotectData( const void * _in, size_t _size, void * const _out ) const
+    void SecureService::unprotectData( uint32_t _complexity, const void * _in, size_t _size, void * const _out ) const
     {
-        Helper::ravingcode( m_secureHash, _in, _size, _out );
+        MENGINE_ASSERTION_FATAL( _complexity <= 1 );
+
+        Helper::ravingcode( m_secureHash, _complexity, _in, _size, _out );
     }
     //////////////////////////////////////////////////////////////////////////
 }

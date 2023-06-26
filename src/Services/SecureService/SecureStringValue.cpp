@@ -168,7 +168,7 @@ namespace Mengine
         blob_raving.resize( blob.size() );
 
         SECURE_SERVICE()
-            ->protectData( blob.data(), blob.size(), blob_raving.data() );
+            ->protectData( 1, blob.data(), blob.size(), blob_raving.data() );
 
         _hexadecimal->resize( blob.size() * 2 );
 
@@ -210,7 +210,7 @@ namespace Mengine
         void * blob_data = blob.data();
 
         SECURE_SERVICE()
-            ->unprotectData( blob_raving_data, blob_raving_size, blob_data );
+            ->unprotectData( 1, blob_raving_data, blob_raving_size, blob_data );
 
         ContainerReader<Blobject> reader( blob );
         

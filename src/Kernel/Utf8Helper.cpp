@@ -7,10 +7,10 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool Utf8GetCode( const Utf8 * _utf8, const Utf8 * _utf8End, uint32_t * const _utf8Code )
+        bool Utf8NextCode( const Utf8 ** _utf8, const Utf8 * _utf8End, uint32_t * const _utf8Code )
         {
             uint32_t code;
-            utf8::internal::utf_error err = utf8::internal::validate_next( _utf8, _utf8End, code );
+            utf8::internal::utf_error err = utf8::internal::validate_next( *_utf8, _utf8End, code );
 
             if( err != utf8::internal::UTF8_OK )
             {

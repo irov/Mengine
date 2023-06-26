@@ -172,7 +172,7 @@ namespace Mengine
             )
         {
             uint32_t code;
-            if( Helper::Utf8GetCode( text_it, text_end, &code ) == false )
+            if( Helper::Utf8NextCode( &text_it, text_end, &code ) == false )
             {
                 LOGGER_ERROR( "text '%s' have invalid utf8 symbol '%s'"
                     , _text
@@ -266,7 +266,7 @@ namespace Mengine
             )
         {
             uint32_t code;
-            if( Helper::Utf8GetCode( text_it, text_end, &code ) == false )
+            if( Helper::Utf8NextCode( &text_it, text_end, &code ) == false )
             {
                 LOGGER_ERROR( "text '%.*s' invalid utf8"
                     , (int32_t)_size

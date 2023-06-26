@@ -59,9 +59,10 @@ namespace Mengine
             if( memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
             {
                 memory_buffer += 4;
+                size -= 4;
 
                 SECURE_SERVICE()
-                    ->unprotectData( memory_buffer, size - 4, memory_buffer );
+                    ->unprotectData( 1, memory_buffer, size, memory_buffer );
             }
 
             if( tinyini_load( &_ini.ini, memory_buffer ) == TINYINI_RESULT_FAILURE )

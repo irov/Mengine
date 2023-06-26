@@ -6,8 +6,6 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
-#define SHA1_DIGEST_SIZE 20
-
 #define SHA1_ROLL Detail::SHA1_rotl32
 #define SHA1_BLK0(i) (block->l[i] = (SHA1_ROLL(block->l[i],24)&0xFF00FF00) | (SHA1_ROLL(block->l[i],8)&0x00FF00FF))
 #define SHA1_BLK(i) (block->l[i&15] = SHA1_ROLL(block->l[(i+13)&15]^block->l[(i+8)&15]^block->l[(i+2)&15]^block->l[i&15],1))
@@ -146,7 +144,7 @@ namespace Mengine
 
                 for( uint32_t i = 0; i != _size; i++ )
                 {
-                    digest[i] = (uint8_t)((context->state[i >> 2] >> ((3 - (i & 3)) * 8)) & 255);
+                    digest[i] = (uint8_t)((context->state[(i >> 2) % 5] >> ((3 - (i & 3)) * 8)) & 255);
                 }
 
                 MENGINE_MEMSET( context->buffer, 0, 64 * sizeof( uint8_t ) );
@@ -157,28 +155,19 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        void makeSHA1( const void * _buffer, size_t _size, uint8_t * const _sha1 )
+        void makeSHA1( const void * _buffer, size_t _size, uint8_t * const _sha1, size_t _digestSize )
         {
             Detail::SHA1_CTX context;
 
             Detail::SHA1_Init( &context );
             Detail::SHA1_Update( &context, (uint8_t *)_buffer, _size );
-            Detail::SHA1_Final( &context, _sha1, SHA1_DIGEST_SIZE );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void makeSHA1u64( const void * _buffer, size_t _size, uint64_t * const _u64 )
-        {
-            Detail::SHA1_CTX context;
-
-            Detail::SHA1_Init( &context );
-            Detail::SHA1_Update( &context, (uint8_t *)_buffer, _size );
-            Detail::SHA1_Final( &context, (uint8_t *)_u64, sizeof( uint64_t ) );
+            Detail::SHA1_Final( &context, _sha1, _digestSize );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1HEX( const void * _buffer, size_t _size, Char * const _hex )
         {
-            uint8_t sha1[SHA1_DIGEST_SIZE];
-            Helper::makeSHA1( _buffer, _size, sha1 );
+            uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
+            Helper::makeSHA1( _buffer, _size, sha1, MENGINE_SHA1_UINT8_COUNT );
 
             Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, nullptr );
         }
@@ -187,16 +176,16 @@ namespace Mengine
         {
             size_t len = MENGINE_STRLEN( _string );
 
-            uint8_t sha1[SHA1_DIGEST_SIZE];
-            Helper::makeSHA1( _string, len, sha1 );
+            uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
+            Helper::makeSHA1( _string, len, sha1, MENGINE_SHA1_UINT8_COUNT );
 
             Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1Base64( const void * _buffer, size_t _size, Char * const _base64 )
         {
-            uint8_t sha1[SHA1_DIGEST_SIZE];
-            Helper::makeSHA1( _buffer, _size, sha1 );
+            uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
+            Helper::makeSHA1( _buffer, _size, sha1, MENGINE_SHA1_UINT8_COUNT );
 
             Helper::encodeBase64( sha1, sizeof( sha1 ), true, _base64, ~0U, nullptr );
         }

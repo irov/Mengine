@@ -127,11 +127,11 @@ public class MengineLog {
     public static String buildTotalMsg(String format, Object ... args) {
         StringBuilder sb = new StringBuilder();
 
+        Formatter formatter = new Formatter(sb);
+
         String msg;
 
         try {
-            Formatter formatter = new Formatter(sb);
-
             msg = formatter.format(format, args).toString();
         } catch (IllegalFormatException e) {
             String error = "Catch illegal format: '" + format + "' args: '" + Arrays.toString(args) + "' exception: " + e.getLocalizedMessage();

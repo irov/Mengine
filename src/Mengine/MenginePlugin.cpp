@@ -76,7 +76,7 @@ extern "C"
         SERVICE_FINALIZE( AllocatorSystem );
         SERVICE_DESTROY( AllocatorSystem );
 
-        Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
+        Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_PUT();
         SERVICE_PROVIDER_FINALIZE( serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////

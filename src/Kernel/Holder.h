@@ -19,6 +19,24 @@ namespace Mengine
             return m_hostage;
         }
 
+        static T * put()
+        {
+            T * hostage = m_hostage;
+            m_hostage = nullptr;
+
+            return hostage;
+        }
+
+        static bool isKeep()
+        {
+            if( m_hostage == nullptr )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
     protected:
         static T * m_hostage;
     };

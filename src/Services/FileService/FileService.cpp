@@ -157,9 +157,14 @@ namespace Mengine
     {
         const FileGroupInterfacePtr & groupInterface = m_fileGroups.erase( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( groupInterface, "not mount '%s'"
-            , _name.c_str()
-        );
+        if( groupInterface == nullptr )
+        {
+            LOGGER_ERROR( "file group '%s' not mount"
+                , _name.c_str()
+            );
+            
+            return;
+        }
 
         groupInterface->finalize();
 

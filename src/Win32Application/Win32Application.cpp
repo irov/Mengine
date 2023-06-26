@@ -236,7 +236,9 @@ namespace Mengine
             return false;
         }
 
-        FARPROC dllInitializeMengine = ::GetProcAddress( hInstance, "initializeMengine" );
+        m_hInstance = hInstance;
+
+        FARPROC dllInitializeMengine = ::GetProcAddress( m_hInstance, "initializeMengine" );
 
         if( dllInitializeMengine == nullptr )
         {
@@ -253,8 +255,6 @@ namespace Mengine
 
             ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
 
-            ::FreeLibrary( hInstance );
-
             return false;
         }
 
@@ -264,8 +264,6 @@ namespace Mengine
 
         if( serviceProvider == nullptr )
         {
-            ::FreeLibrary( hInstance );
-
             return false;
         }
 #else
@@ -300,12 +298,10 @@ namespace Mengine
         } );
 
 #if defined(MENGINE_PLUGIN_MENGINE_DLL)
-        FARPROC dllBootstrapMengine = ::GetProcAddress( hInstance, "bootstrapMengine" );
+        FARPROC dllBootstrapMengine = ::GetProcAddress( m_hInstance, "bootstrapMengine" );
 
         if( dllBootstrapMengine == nullptr )
         {
-            ::FreeLibrary( hInstance );
-
             return false;
         }
 
@@ -313,12 +309,8 @@ namespace Mengine
 
         if( (*dlmengineBootstrap)() == false )
         {
-            ::FreeLibrary( hInstance );
-
             return false;
-        }
-
-        m_hInstance = hInstance;
+        }        
 #else
         if( bootstrapMengine() == false )
         {
@@ -425,29 +417,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalize()
     {
-        if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )
+        if( SERVICE_PROVIDER_EXIST() == true )
         {
-            PLATFORM_SERVICE()
-                ->stopPlatform();
-        }
+            if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )
+            {
+                PLATFORM_SERVICE()
+                    ->stopPlatform();
+            }
 
-        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
-        {
-            BOOTSTRAPPER_SERVICE()
-                ->stop();
+            if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
+            {
+                BOOTSTRAPPER_SERVICE()
+                    ->stop();
+            }
         }
 
 #if defined(MENGINE_PLUGIN_MENGINE_DLL)
         FARPROC dllFinalizeMengine = ::GetProcAddress( m_hInstance, "finalizeMengine" );
 
-        if( dllFinalizeMengine == nullptr )
+        if( dllFinalizeMengine != nullptr )
         {
-            return;
+            FMengineFinalize dlmengineFinalize = (FMengineFinalize)dllFinalizeMengine;
+
+            (*dlmengineFinalize)();
         }
-
-        FMengineFinalize dlmengineFinalize = (FMengineFinalize)dllFinalizeMengine;
-
-        (*dlmengineFinalize)();
 
         ::FreeLibrary( m_hInstance );
         m_hInstance = NULL;

@@ -1645,6 +1645,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stopModules_()
     {
+        if( SERVICE_IS_INITIALIZE( ModuleServiceInterface ) == false )
+        {
+            return;
+        }
+
         VectorConstString modules;
         CONFIG_VALUES( "Modules", "Name", &modules );
 
@@ -1686,6 +1691,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stopDevModules_()
     {
+        if( SERVICE_IS_INITIALIZE( ModuleServiceInterface ) == false )
+        {
+            return;
+        }
+
 #if defined(MENGINE_MASTER_RELEASE)
         bool devmodules = false;
 #else
@@ -1748,6 +1758,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::finalizeFrameworks_()
     {
+        if( SERVICE_IS_INITIALIZE( FrameworkServiceInterface ) == false )
+        {
+            return;
+        }
+
         VectorConstString frameworks;
         CONFIG_VALUES( "Frameworks", "Name", &frameworks );
 
@@ -1775,6 +1790,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stopFrameworks_()
     {
+        if( SERVICE_IS_INITIALIZE( FrameworkServiceInterface ) == false )
+        {
+            return;
+        }
+
         FRAMEWORK_SERVICE()
             ->stopFrameworks();
     }
@@ -1837,13 +1857,9 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_SERVICES );
         }
 
-        if( SERVICE_IS_INITIALIZE( FrameworkServiceInterface ) == true )
-        {
-            this->stopFrameworks_();
-
-            this->finalizeFrameworks_();
-        }
-
+        this->stopFrameworks_();
+        this->finalizeFrameworks_();
+        
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_THREADS );

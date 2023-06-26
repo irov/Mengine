@@ -163,9 +163,14 @@ namespace Mengine
 
         ConfigInterfacePtr config = this->loadConfig( _fileGroup, _filePath, _configType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load default config '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-        );
+        if( config == nullptr )
+        {
+            LOGGER_ERROR( "invalid load default config '%s'"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            );
+
+            return false;
+        }
 
         m_defaultConfig->addConfig( config );
 

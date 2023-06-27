@@ -578,6 +578,8 @@ public class MengineActivity extends SDLActivity {
     public void onRestart() {
         super.onRestart();
 
+        this.setState("activity.lifecycle", "restart");
+
         MengineLog.logInfo(TAG, "onRestart");
 
         if (mBrokenLibraries == true) {

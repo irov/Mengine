@@ -695,6 +695,9 @@ public class MengineActivity extends SDLActivity {
 
         AndroidNativePython_addPlugin("Activity", this);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+        AndroidNativePython_addPlugin("Application", application);
+
         ArrayList<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {

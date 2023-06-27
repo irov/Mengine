@@ -1623,6 +1623,24 @@ namespace Mengine
                     ->onEvent( _event, _params );
             }
             //////////////////////////////////////////////////////////////////////////
+            PyObject * s_getCompanyName( pybind::kernel_interface * _kernel )
+            {
+                Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
+                APPLICATION_SERVICE()
+                    ->getCompanyName( companyName );
+
+                return _kernel->string_from_char( companyName );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_getProjectName( pybind::kernel_interface * _kernel )
+            {
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
+                APPLICATION_SERVICE()
+                    ->getProjectName( projectName );
+
+                return _kernel->string_from_char( projectName );
+            }
+            //////////////////////////////////////////////////////////////////////////
             const ConstString & s_getProjectCodename()
             {
                 const ConstString & codename = APPLICATION_SERVICE()
@@ -2149,7 +2167,6 @@ namespace Mengine
             bool s_updateUserWallpaper( const String & _filePath )
             {
                 Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
-
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -2177,7 +2194,6 @@ namespace Mengine
                 }
 
                 Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
-
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -4375,6 +4391,8 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "platformEvent", nodeScriptMethod, &EngineScriptMethod::s_platformEvent );
 
+        pybind::def_functor_kernel( _kernel, "getCompanyName", nodeScriptMethod, &EngineScriptMethod::s_getCompanyName );
+        pybind::def_functor_kernel( _kernel, "getProjectName", nodeScriptMethod, &EngineScriptMethod::s_getProjectName );
         pybind::def_functor( _kernel, "getProjectCodename", nodeScriptMethod, &EngineScriptMethod::s_getProjectCodename );
 
         pybind::def_functor_kernel( _kernel, "getDeviceLanguage", nodeScriptMethod, &EngineScriptMethod::s_getDeviceLanguage );

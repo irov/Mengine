@@ -144,7 +144,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentPtr & _doc )
     {
-        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
+        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::createResource" );
 
         LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s' locale '%s' keep [%s]"
             , _name.c_str()
@@ -226,7 +226,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::removeResource( const ResourcePtr & _resource )
     {
-        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
+        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::removeResource" );
 
         MENGINE_ASSERTION_FATAL( _resource->getCompileReferenceCount() == 0 );
 

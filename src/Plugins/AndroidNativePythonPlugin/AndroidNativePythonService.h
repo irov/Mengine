@@ -43,7 +43,8 @@ namespace Mengine
         void activateSemaphore( const String & _name ) override;
 
     public:
-        void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) override;
+        void addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) override;
+        void removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb ) override;
 
     public:
         void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
@@ -76,7 +77,9 @@ namespace Mengine
             pybind::args args;
         };
 
-        typedef Map<Pair<ConstString, ConstString>, AndroidPythonCallbackDesc> MapAndroidCallbacks;
+        typedef Vector<AndroidPythonCallbackDesc> VectorAndroidPythonCallbacks;
+
+        typedef Map<Pair<ConstString, ConstString>, VectorAndroidPythonCallbacks> MapAndroidCallbacks;
         MapAndroidCallbacks m_callbacks;
 
         struct AndroidSemaphoreListenerDesc

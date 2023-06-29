@@ -15,7 +15,8 @@ namespace Mengine
         SERVICE_DECLARE( "AndroidNativePythonService" )
 
     public:
-        virtual void setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) = 0;
+        virtual void addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) = 0;
+        virtual void removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb ) = 0;
 
     public:
         virtual void androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;

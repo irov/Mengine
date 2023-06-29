@@ -38,6 +38,10 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_rewardedAd = rewardedAd;
 
+        m_plugin.logMessage("[Rewarded] create adUnitId: %s"
+            , adUnitId
+        );
+
         m_plugin.setState("applovin.rewarded.state." + m_rewardedAd.getAdUnitId(), "init");
 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
@@ -69,7 +73,10 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return;
         }
 
-        m_plugin.logInfo("[Rewarded] loadAd request: %d attempt: %d"
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
+        m_plugin.logInfo("[Rewarded] loadAd adUnitId: %s request: %d attempt: %d"
+            , adUnitId
             , m_enumeratorRequest
             , m_retryAttempt
         );
@@ -77,12 +84,12 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         m_requestId = m_enumeratorRequest++;
 
         this.buildEvent("mng_ad_rewarded_load")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
             .log();
 
-        m_plugin.setState("applovin.rewarded." + m_rewardedAd.getAdUnitId(), "load");
+        m_plugin.setState("applovin.rewarded." + adUnitId, "load");
 
         m_rewardedAd.loadAd();
     }
@@ -92,16 +99,19 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return false;
         }
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] canOfferRewarded ready: %b request: %d attempt: %d"
+        m_plugin.logMessage("[Rewarded] canOfferRewarded adUnitId: %s ready: %b request: %d attempt: %d"
+            , adUnitId
             , ready
             , m_requestId
             , m_retryAttempt
         );
 
         this.buildEvent("mng_ad_rewarded_offer")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
             .addParameterBoolean("ready", ready)
@@ -119,9 +129,12 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return false;
         }
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] canYouShowRewarded ready: %b request: %d attempt: %d"
+        m_plugin.logMessage("[Rewarded] canYouShowRewarded adUnitId: %s ready: %b request: %d attempt: %d"
+            , adUnitId
             , ready
             , m_requestId
             , m_retryAttempt
@@ -129,7 +142,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         if (ready == false) {
             this.buildEvent("mng_ad_rewarded_show")
-                .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+                .addParameterString("ad_unit_id", adUnitId)
                 .addParameterLong("request_id", m_requestId)
                 .addParameterLong("attempt", m_retryAttempt)
                 .addParameterBoolean("ready", false)
@@ -146,16 +159,19 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return false;
         }
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] showRewarded ready: %b request: %d attempt: %d"
+        m_plugin.logMessage("[Rewarded] showRewarded adUnitId: %s ready: %b request: %d attempt: %d"
+            , adUnitId
             , ready
             , m_requestId
             , m_retryAttempt
         );
 
         this.buildEvent("mng_ad_rewarded_show")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
             .addParameterBoolean("ready", ready)
@@ -172,22 +188,22 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logInfo("[Rewarded] onAdRequestStarted: %s request: %d attempt: %d"
+        m_plugin.logInfo("[Rewarded] onAdRequestStarted adUnitId: %s request: %d attempt: %d"
             , adUnitId
             , m_requestId
             , m_retryAttempt
         );
 
         this.buildEvent("mng_ad_rewarded_request_started")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
             .addParameterString("unit_ad", adUnitId)
             .log();
 
-        m_plugin.setState("applovin.rewarded." + m_rewardedAd.getAdUnitId(), "request_started");
+        m_plugin.setState("applovin.rewarded." + adUnitId, "request_started");
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdRequestStarted");
+        m_plugin.pythonCall("onApplovinRewardedOnAdRequestStarted", adUnitId);
     }
 
     @SuppressWarnings("deprecation")
@@ -206,6 +222,8 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onUserRewarded(MaxAd ad, MaxReward reward) {
         this.logMaxAd("Rewarded", "onUserRewarded", ad);
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         String label = reward.getLabel();
         int amount = reward.getAmount();
 
@@ -215,62 +233,68 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         );
 
         this.buildEvent("mng_ad_rewarded_user_rewarded")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .addParameterString("label", label)
             .addParameterLong("amount", amount)
             .log();
 
-        m_plugin.pythonCall("onApplovinRewardedOnUserRewarded", label, amount);
+        m_plugin.pythonCall("onApplovinRewardedOnUserRewarded", adUnitId, label, amount);
     }
 
     @Override
     public void onAdLoaded(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdLoaded", ad);
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         this.buildEvent("mng_ad_rewarded_loaded")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.rewarded." + m_rewardedAd.getAdUnitId(), "loaded." + ad.getNetworkName());
+        m_plugin.setState("applovin.rewarded." + adUnitId, "loaded." + ad.getNetworkName());
 
         m_retryAttempt = 0;
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdLoaded");
+        m_plugin.pythonCall("onApplovinRewardedOnAdLoaded", adUnitId);
     }
 
     @Override
     public void onAdDisplayed(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdDisplayed", ad);
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         this.buildEvent("mng_ad_rewarded_displayed")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.rewarded." + m_rewardedAd.getAdUnitId(), "displayed." + ad.getNetworkName());
+        m_plugin.setState("applovin.rewarded." + adUnitId, "displayed." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdDisplayed");
+        m_plugin.pythonCall("onApplovinRewardedOnAdDisplayed", adUnitId);
     }
 
     @Override
     public void onAdHidden(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdHidden", ad);
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         this.buildEvent("mng_ad_rewarded_hidden")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.rewarded." + m_rewardedAd.getAdUnitId(), "hidden." + ad.getNetworkName());
+        m_plugin.setState("applovin.rewarded." + adUnitId, "hidden." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdHidden");
+        m_plugin.pythonCall("onApplovinRewardedOnAdHidden", adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -281,15 +305,17 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdClicked(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdClicked", ad);
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         this.buildEvent("mng_ad_rewarded_clicked")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.rewarded." + m_rewardedAd.getAdUnitId(), "clicked." + ad.getNetworkName());
+        m_plugin.setState("applovin.rewarded." + adUnitId, "clicked." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdClicked");
+        m_plugin.pythonCall("onApplovinRewardedOnAdClicked", adUnitId);
     }
 
     @Override
@@ -297,7 +323,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         this.logMaxError("Rewarded", "onAdLoadFailed", error);
 
         this.buildEvent("mng_ad_rewarded_load_failed")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
             .addParameterString("unit_id", adUnitId)
@@ -305,9 +331,9 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             .addParameterLong( "error_code", error.getCode())
             .log();
 
-        m_plugin.setState("applovin.rewarded." + m_rewardedAd.getAdUnitId(), "load_failed");
+        m_plugin.setState("applovin.rewarded." + adUnitId, "load_failed");
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdLoadFailed");
+        m_plugin.pythonCall("onApplovinRewardedOnAdLoadFailed", adUnitId);
 
         m_retryAttempt++;
 
@@ -322,17 +348,19 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
         this.logMaxError("Rewarded", "onAdDisplayFailed", error);
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         this.buildEvent("mng_ad_rewarded_display_failed")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .addParameterString("error", this.getMaxErrorParams(error))
             .addParameterLong( "error_code", error.getCode())
             .log();
 
-        m_plugin.setState("applovin.rewarded." + m_rewardedAd.getAdUnitId(), "display_failed." + ad.getNetworkName());
+        m_plugin.setState("applovin.rewarded." + adUnitId, "display_failed." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdDisplayFailed");
+        m_plugin.pythonCall("onApplovinRewardedOnAdDisplayFailed", adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
             this.loadAd();
@@ -343,14 +371,16 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdRevenuePaid", ad);
 
+        String adUnitId = m_rewardedAd.getAdUnitId();
+
         this.buildEvent("mng_ad_rewarded_revenue_paid")
-            .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.onEventRevenuePaid(ad);
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdRevenuePaid");
+        m_plugin.pythonCall("onApplovinRewardedOnAdRevenuePaid", adUnitId);
     }
 }

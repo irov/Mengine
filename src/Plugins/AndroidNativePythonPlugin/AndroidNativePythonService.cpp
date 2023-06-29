@@ -255,55 +255,58 @@ namespace Mengine
             return;
         }
 
-        const AndroidPythonCallbackDesc & desc = it_found->second;
+        const VectorAndroidPythonCallbacks & callbacks = it_found->second;
 
-        uint32_t cb_args_size = m_kernel->tuple_size( desc.args );
-
-        jsize args_size = jenv->GetArrayLength( _args );
-
-        PyObject * py_args = m_kernel->tuple_new( args_size + cb_args_size );
-
-        for( jsize index = 0; index != args_size; ++index )
+        for( const AndroidPythonCallbackDesc & desc : callbacks )
         {
-            jobject obj = jenv->GetObjectArrayElement( _args, index );
+            uint32_t cb_args_size = m_kernel->tuple_size( desc.args );
 
-            PyObject * py_arg = Helper::androidNativePythonMakePyObject( m_kernel, jenv, obj, MENGINE_DOCUMENT_FACTORABLE );
+            jsize args_size = jenv->GetArrayLength( _args );
 
-            MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' invalid arg"
+            PyObject * py_args = m_kernel->tuple_new( args_size + cb_args_size );
+
+            for( jsize index = 0; index != args_size; ++index )
+            {
+                jobject obj = jenv->GetObjectArrayElement( _args, index );
+
+                PyObject * py_arg = Helper::androidNativePythonMakePyObject( m_kernel, jenv, obj, MENGINE_DOCUMENT_FACTORABLE );
+
+                MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin '%s' method '%s' invalid arg"
+                    , _plugin.c_str()
+                    , _method.c_str()
+                );
+
+                m_kernel->tuple_setitem( py_args, index, py_arg );
+
+                m_kernel->decref( py_arg );
+
+                jenv->DeleteLocalRef( obj );
+            }
+
+            const pybind::args & cb_args = desc.args;
+
+            for( uint32_t index = 0; index != cb_args_size; ++index )
+            {
+                PyObject * cb_arg = cb_args[index];
+
+                m_kernel->tuple_setitem( py_args, args_size + index, cb_arg );
+
+                m_kernel->decref( cb_arg );
+            }
+
+            const pybind::object & cb = desc.cb;
+
+            pybind::object py_result = cb.call_native( pybind::tuple( m_kernel, py_args, pybind::borrowed ) );
+
+            MENGINE_ASSERTION_FATAL( py_result != nullptr, "android plugin '%s' method '%s' invalid call"
                 , _plugin.c_str()
                 , _method.c_str()
             );
 
-            m_kernel->tuple_setitem( py_args, index, py_arg );
-
-            m_kernel->decref( py_arg );
-
-            jenv->DeleteLocalRef( obj );
+            m_kernel->decref( py_args );
         }
 
         jenv->DeleteGlobalRef( _args );
-
-        const pybind::args & cb_args = desc.args;
-
-        for( uint32_t index = 0; index != cb_args_size; ++index )
-        {
-            PyObject * cb_arg = cb_args[index];
-
-            m_kernel->tuple_setitem( py_args, args_size + index, cb_arg );
-
-            m_kernel->decref( cb_arg );
-        }
-
-        const pybind::object & cb = desc.cb;
-
-        pybind::object py_result = cb.call_native( pybind::tuple( m_kernel, py_args, pybind::borrowed ) );
-
-        MENGINE_ASSERTION_FATAL( py_result != nullptr, "android plugin '%s' method '%s' invalid call"
-            , _plugin.c_str()
-            , _method.c_str()
-        );
-
-        m_kernel->decref( py_args );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::addPlugin( const String & _name, jobject _plugin )
@@ -318,18 +321,57 @@ namespace Mengine
         m_plugins.emplace( Helper::stringizeString( _name ), _plugin );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
+    void AndroidNativePythonService::addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
     {
-        MENGINE_ASSERTION_FATAL( m_callbacks.find( Helper::makePair( _plugin, _method ) ) == m_callbacks.end(), "invalid add plugin '%s' callback '%s' [double]"
-            , _plugin.c_str()
-            , _method.c_str()
-        );
+        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Helper::makePair( _plugin, _method ) );
+
+        if( it_found == m_callbacks.end() )
+        {
+            VectorAndroidPythonCallbacks new_callbacks;
+
+            it_found = m_callbacks.emplace( Helper::makePair( Helper::makePair( _plugin, _method ), new_callbacks ) ).first;
+        }
+
+        VectorAndroidPythonCallbacks & callbacks = it_found->second;
 
         AndroidPythonCallbackDesc desc;
         desc.cb = _cb;
         desc.args = _args;
 
-        m_callbacks.emplace( Helper::makePair( _plugin, _method ), desc );
+        callbacks.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonService::removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
+    {
+        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Helper::makePair( _plugin, _method ) );
+
+        if( it_found == m_callbacks.end() )
+        {
+            LOGGER_ERROR("invalid remove android callback plugin '%s' method '%s' not found"
+                , _plugin.c_str()
+                , _method.c_str()
+            );
+
+            return;
+        }
+
+        VectorAndroidPythonCallbacks & callbacks = it_found->second;
+
+        VectorAndroidPythonCallbacks::iterator it_callback_found = Algorithm::find_if( callbacks.begin(), callbacks.end(), [_cb](const AndroidPythonCallbackDesc & desc) {
+            return desc.cb.ptr() == _cb.ptr();
+        } );
+
+        if( it_callback_found == callbacks.end() )
+        {
+            LOGGER_ERROR("invalid remove android callback plugin '%s' method '%s' not found [cb]"
+                , _plugin.c_str()
+                , _method.c_str()
+            );
+
+            return;
+        }
+
+        callbacks.erase( it_callback_found );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const

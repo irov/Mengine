@@ -17,10 +17,16 @@ namespace Mengine
     namespace Detail
     {
         ///////////////////////////////////////////////////////////////////////
-        static void AndroidNativePythonService_setAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
+        static void AndroidNativePythonService_addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
         {
             ANDROID_NATIVEPYTHON_SERVICE()
-                ->setAndroidCallback( _plugin, _method, _cb, _args );
+                ->addAndroidCallback( _plugin, _method, _cb, _args );
+        }
+        ///////////////////////////////////////////////////////////////////////
+        static void AndroidNativePythonService_removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
+        {
+            ANDROID_NATIVEPYTHON_SERVICE()
+                ->removeAndroidCallback( _plugin, _method, _cb );
         }
         ///////////////////////////////////////////////////////////////////////
         static void AndroidNativePythonService_androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args )
@@ -89,7 +95,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function_args( _kernel, "setAndroidCallback", &Detail::AndroidNativePythonService_setAndroidCallback );
+        pybind::def_function_args( _kernel, "setAndroidCallback", &Detail::AndroidNativePythonService_addAndroidCallback );
+        pybind::def_function_args( _kernel, "addAndroidCallback", &Detail::AndroidNativePythonService_addAndroidCallback );
+        pybind::def_function( _kernel, "removeAndroidCallback", &Detail::AndroidNativePythonService_removeAndroidCallback );
         pybind::def_function_args( _kernel, "androidMethod", &Detail::AndroidNativePythonService_androidMethod );
         pybind::def_function_args( _kernel, "androidBooleanMethod", &Detail::AndroidNativePythonService_androidBooleanMethod );
         pybind::def_function_args( _kernel, "androidIntegerMethod", &Detail::AndroidNativePythonService_androidIntegerMethod );

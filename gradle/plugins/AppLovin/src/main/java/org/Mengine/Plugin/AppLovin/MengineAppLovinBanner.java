@@ -61,6 +61,12 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         m_adView = adView;
 
+        m_plugin.logMessage("[Banner] create adUnitId: %s size: [%d, %d]"
+            , adUnitId
+            , size.getWidth()
+            , size.getHeight()
+        );
+
         m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "init");
 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
@@ -93,16 +99,20 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        m_plugin.logMessage("[Banner] loadAd");
+        String adUnitId = m_adView.getAdUnitId();
+
+        m_plugin.logMessage("[Banner] loadAd adUnitId: %s"
+            , adUnitId
+        );
 
         m_requestId = m_enumeratorRequest++;
 
         this.buildEvent("mng_ad_banner_load")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "load");
+        m_plugin.setState("applovin.banner." + adUnitId, "load");
 
         m_adView.loadAd();
     }
@@ -112,7 +122,10 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        m_plugin.logMessage("[Rewarded] bannerVisible %s"
+        String adUnitId = m_adView.getAdUnitId();
+
+        m_plugin.logMessage("[Rewarded] bannerVisible adUnitId: %s %s"
+            , adUnitId
             , show == true ? "SHOW" : "HIDE"
         );
 
@@ -127,79 +140,86 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logMessage("[Banner] onAdRequestStarted %s"
+        m_plugin.logMessage("[Banner] onAdRequestStarted adUnitId: %s"
             , adUnitId
         );
 
         this.buildEvent("mng_ad_banner_request_started")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("unit_id", adUnitId)
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "request_started");
+        m_plugin.setState("applovin.banner." + adUnitId, "request_started");
 
-        m_plugin.pythonCall("onApplovinBannerOnAdRequestStarted");
+        m_plugin.pythonCall("onApplovinBannerOnAdRequestStarted", adUnitId);
     }
 
     @Override
     public void onAdLoaded(MaxAd ad) {
         this.logMaxAd( "Banner","onAdLoaded", ad);
 
+        String adUnitId = m_adView.getAdUnitId();
+
         this.buildEvent("mng_ad_banner_loaded")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "loaded." + ad.getNetworkName());
+        m_plugin.setState("applovin.banner." + adUnitId, "loaded." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinBannerOnAdLoaded");
+        m_plugin.pythonCall("onApplovinBannerOnAdLoaded", adUnitId);
     }
 
     @Override
     public void onAdDisplayed(MaxAd ad) {
         this.logMaxAd("Banner", "onAdDisplayed", ad);
 
+        String adUnitId = m_adView.getAdUnitId();
+
         this.buildEvent("mng_ad_banner_displayed")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "displayed." + ad.getNetworkName());
+        m_plugin.setState("applovin.banner." + adUnitId, "displayed." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinBannerOnAdDisplayed");
+        m_plugin.pythonCall("onApplovinBannerOnAdDisplayed", adUnitId);
     }
 
     @Override
     public void onAdHidden(MaxAd ad) {
         this.logMaxAd("Banner", "onAdHidden", ad);
 
+        String adUnitId = m_adView.getAdUnitId();
+
         this.buildEvent("mng_ad_banner_hidden")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "hidden." + ad.getNetworkName());
+        m_plugin.setState("applovin.banner." + adUnitId, "hidden." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinBannerOnAdHidden");
+        m_plugin.pythonCall("onApplovinBannerOnAdHidden", adUnitId);
     }
 
     @Override
     public void onAdClicked(MaxAd ad) {
         this.logMaxAd("Banner", "onAdClicked", ad);
 
+        String adUnitId = m_adView.getAdUnitId();
+
         this.buildEvent("mng_ad_banner_clicked")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "clicked." + ad.getNetworkName());
+        m_plugin.setState("applovin.banner." + adUnitId, "clicked." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinBannerOnAdClicked");
+        m_plugin.pythonCall("onApplovinBannerOnAdClicked", adUnitId);
     }
 
     @Override
@@ -207,77 +227,84 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         this.logMaxError("Banner", "onAdLoadFailed", error);
 
         this.buildEvent("mng_ad_banner_load_failed")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("unit_id", adUnitId)
             .addParameterString("error", this.getMaxErrorParams(error))
             .addParameterLong("error_code", error.getCode())
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "load_failed");
+        m_plugin.setState("applovin.banner." + adUnitId, "load_failed");
 
-        m_plugin.pythonCall("onApplovinBannerOnAdLoadFailed");
+        m_plugin.pythonCall("onApplovinBannerOnAdLoadFailed", adUnitId);
     }
 
     @Override
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
         this.logMaxError("Banner", "onAdDisplayFailed", error);
 
+        String adUnitId = m_adView.getAdUnitId();
+
         this.buildEvent("mng_ad_banner_display_failed")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .addParameterString("error", this.getMaxErrorParams(error))
             .addParameterLong("error_code", error.getCode())
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "display_failed." + ad.getNetworkName());
+        m_plugin.setState("applovin.banner." + adUnitId, "display_failed." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinBannerOnAdDisplayFailed");
+        m_plugin.pythonCall("onApplovinBannerOnAdDisplayFailed", adUnitId);
     }
 
     @Override
     public void onAdExpanded(MaxAd ad) {
         this.logMaxAd("Banner", "onAdExpanded", ad);
 
+        String adUnitId = m_adView.getAdUnitId();
+
         this.buildEvent("mng_ad_banner_expanded")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "expanded." + ad.getNetworkName());
+        m_plugin.setState("applovin.banner." + adUnitId, "expanded." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinBannerOnAdExpanded");
+        m_plugin.pythonCall("onApplovinBannerOnAdExpanded", adUnitId);
     }
 
     @Override
     public void onAdCollapsed(MaxAd ad) {
         this.logMaxAd("Banner", "onAdCollapsed", ad);
 
+        String adUnitId = m_adView.getAdUnitId();
+
         this.buildEvent("mng_ad_banner_collapsed")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.banner." + m_adView.getAdUnitId(), "collapsed." + ad.getNetworkName());
+        m_plugin.setState("applovin.banner." + adUnitId, "collapsed." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinBannerOnAdCollapsed");
+        m_plugin.pythonCall("onApplovinBannerOnAdCollapsed", adUnitId);
     }
 
     @Override
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("Banner", "onAdRevenuePaid", ad);
 
+        String adUnitId = m_adView.getAdUnitId();
+
         this.buildEvent("mng_ad_banner_revenue_paid")
-            .addParameterString("ad_unit_id", m_adView.getAdUnitId())
+            .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.onEventRevenuePaid(ad);
 
-        m_plugin.pythonCall("onApplovinBannerOnAdRevenuePaid");
+        m_plugin.pythonCall("onApplovinBannerOnAdRevenuePaid", adUnitId);
     }
 }

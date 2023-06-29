@@ -24,6 +24,7 @@
 #include "DataflowPY.h"
 #include "DataflowPYZ.h"
 
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
@@ -927,33 +928,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb )
     {
-#ifndef MENGINE_MASTER_RELEASE
         DataflowInterfacePtr dataflowPY = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
-#endif
 
         DataflowInterfacePtr dataflowPYZ = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
 
         for( const ScriptModulePackage & pack : m_bootstrapperModules )
         {
             const FileGroupInterfacePtr & fileGroup = pack.fileGroup;
-
-#ifndef MENGINE_MASTER_RELEASE
-            fileGroup->findFiles( pack.path, "*.py", [&fileGroup, &dataflowPY, &_cb]( const FilePath & _filePath )
-            {
-                DataflowContext context;
-                context.filePath = _filePath;
-
-                if( PREFETCHER_SERVICE()
-                    ->prefetchData( fileGroup, _filePath, dataflowPY, &context, _cb ) == false )
-                {
-                    LOGGER_ERROR( "invalid prefetch data '%s'"
-                        , _filePath.c_str()
-                    );
-                }
-
-                return true;
-            } );
-#endif
 
             fileGroup->findFiles( pack.path, "*.pyz", [&fileGroup, &dataflowPYZ, &_cb]( const FilePath & _filePath )
             {
@@ -970,6 +951,27 @@ namespace Mengine
 
                 return true;
             } );
+
+            static bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", true );
+
+            if( PythonScript_AvailableSourceCode == true )
+            {
+                fileGroup->findFiles( pack.path, "*.py", [&fileGroup, &dataflowPY, &_cb]( const FilePath & _filePath )
+                {
+                    DataflowContext context;
+                    context.filePath = _filePath;
+
+                    if( PREFETCHER_SERVICE()
+                        ->prefetchData( fileGroup, _filePath, dataflowPY, &context, _cb ) == false )
+                    {
+                        LOGGER_ERROR( "invalid prefetch data '%s'"
+                            , _filePath.c_str()
+                        );
+                    }
+
+                    return true;
+                } );
+            }
         }
 
         _cb->onPrefetchPreparation();

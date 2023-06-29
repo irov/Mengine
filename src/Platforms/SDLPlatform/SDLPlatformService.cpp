@@ -2558,7 +2558,7 @@ namespace Mengine
 
         return true;
 #else
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        LOGGER_WARNING("SDLPlatformService::findFiles not support");
 
         return false;
 #endif

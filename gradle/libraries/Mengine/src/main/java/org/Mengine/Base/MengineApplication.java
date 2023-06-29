@@ -641,12 +641,25 @@ public class MengineApplication extends Application {
             return this.m_sessionId;
         });
 
-        long app_init_start_timestamp = MengineAnalytics.buildEvent("app_init_start")
+        long app_init_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_start")
             .log();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
+                String pluginName = l.getPluginName();
+
+                this.setState("application.init", pluginName);
+
+                long app_init_plugin_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_plugin_start")
+                    .addParameterString("name", pluginName)
+                    .log();
+
                 l.onAppCreate(this);
+
+                MengineAnalytics.buildEvent("mng_app_init_plugin_completed")
+                    .addParameterString("name", pluginName)
+                    .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_plugin_start_timestamp))
+                    .log();
             } catch (MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("invalid onAppCreate plugin: %s"
                     , e.getPluginName()
@@ -656,7 +669,7 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "completed");
 
-        MengineAnalytics.buildEvent("app_init_completed")
+        MengineAnalytics.buildEvent("mng_app_init_completed")
             .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_start_timestamp))
             .log();
     }

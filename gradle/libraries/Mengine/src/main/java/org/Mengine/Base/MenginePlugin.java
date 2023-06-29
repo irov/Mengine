@@ -8,7 +8,7 @@ import android.os.Bundle;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-public class MenginePlugin {
+public class MenginePlugin implements MenginePluginInterface {
     private MengineApplication m_application;
     private MengineActivity m_activity;
     private ArrayList<MenginePluginExtension> m_extensions = new ArrayList<>();

@@ -3,7 +3,7 @@ package org.Mengine.Base;
 import android.content.Context;
 import android.content.res.Configuration;
 
-public interface MenginePluginApplicationListener {
+public interface MenginePluginApplicationListener extends MenginePluginInterface {
     default void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         //Empty
     }

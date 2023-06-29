@@ -97,7 +97,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         m_requestId = m_enumeratorRequest++;
 
-        this.buildEvent("ad_banner_load")
+        this.buildEvent("mng_ad_banner_load")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .log();
@@ -131,7 +131,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             , adUnitId
         );
 
-        this.buildEvent("ad_banner_request_started")
+        this.buildEvent("mng_ad_banner_request_started")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("unit_id", adUnitId)
@@ -146,7 +146,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdLoaded(MaxAd ad) {
         this.logMaxAd( "Banner","onAdLoaded", ad);
 
-        this.buildEvent("ad_banner_loaded")
+        this.buildEvent("mng_ad_banner_loaded")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -161,7 +161,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdDisplayed(MaxAd ad) {
         this.logMaxAd("Banner", "onAdDisplayed", ad);
 
-        this.buildEvent("ad_banner_displayed")
+        this.buildEvent("mng_ad_banner_displayed")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -176,7 +176,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdHidden(MaxAd ad) {
         this.logMaxAd("Banner", "onAdHidden", ad);
 
-        this.buildEvent("ad_banner_hidden")
+        this.buildEvent("mng_ad_banner_hidden")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -191,7 +191,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdClicked(MaxAd ad) {
         this.logMaxAd("Banner", "onAdClicked", ad);
 
-        this.buildEvent("ad_banner_clicked")
+        this.buildEvent("mng_ad_banner_clicked")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -206,7 +206,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdLoadFailed(String adUnitId, MaxError error) {
         this.logMaxError("Banner", "onAdLoadFailed", error);
 
-        this.buildEvent("ad_banner_load_failed")
+        this.buildEvent("mng_ad_banner_load_failed")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("unit_id", adUnitId)
@@ -223,7 +223,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
         this.logMaxError("Banner", "onAdDisplayFailed", error);
 
-        this.buildEvent("ad_banner_display_failed")
+        this.buildEvent("mng_ad_banner_display_failed")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -240,7 +240,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdExpanded(MaxAd ad) {
         this.logMaxAd("Banner", "onAdExpanded", ad);
 
-        this.buildEvent("ad_banner_expanded")
+        this.buildEvent("mng_ad_banner_expanded")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -255,7 +255,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdCollapsed(MaxAd ad) {
         this.logMaxAd("Banner", "onAdCollapsed", ad);
 
-        this.buildEvent("ad_banner_collapsed")
+        this.buildEvent("mng_ad_banner_collapsed")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -270,7 +270,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("Banner", "onAdRevenuePaid", ad);
 
-        this.buildEvent("ad_banner_revenue_paid")
+        this.buildEvent("mng_ad_banner_revenue_paid")
             .addParameterString("ad_unit_id", m_adView.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))

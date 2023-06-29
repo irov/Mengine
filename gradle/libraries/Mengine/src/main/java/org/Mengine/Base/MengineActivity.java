@@ -241,7 +241,7 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.lifecycle", "create");
         this.setState("activity.init", "start");
 
-        long activity_init_start_timestamp = MengineAnalytics.buildEvent("activity_init_start")
+        long activity_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_start")
             .log();
 
         super.onCreate(savedInstanceState);
@@ -263,8 +263,10 @@ public class MengineActivity extends SDLActivity {
         for (MenginePlugin p : plugins) {
             p.setActivity(this);
 
-            long plugin_init_start_timestamp = MengineAnalytics.buildEvent("plugin_init_start")
-                .addParameterString("name", p.getPluginName())
+            String pluginName = p.getPluginName();
+
+            long plugin_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_plugin_start")
+                .addParameterString("name", pluginName)
                 .log();
 
             try {
@@ -277,8 +279,8 @@ public class MengineActivity extends SDLActivity {
                 this.finish();
             }
 
-            MengineAnalytics.buildEvent("plugin_init_completed")
-                .addParameterString("name", p.getPluginName())
+            MengineAnalytics.buildEvent("mng_activity_init_plugin_completed")
+                .addParameterString("name", pluginName)
                 .addParameterLong("time", MengineUtils.getDurationTimestamp(plugin_init_start_timestamp))
                 .log();
         }
@@ -299,7 +301,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.init", "completed");
 
-        MengineAnalytics.buildEvent("activity_init_completed")
+        MengineAnalytics.buildEvent("mng_activity_init_completed")
             .addParameterLong("time", MengineUtils.getDurationTimestamp(activity_init_start_timestamp))
             .log();
     }
@@ -864,7 +866,7 @@ public class MengineActivity extends SDLActivity {
                 File extraPreferencesFolder = new File(filesDir, extraPreferencesFolderName);
                 File accountFolder = new File(extraPreferencesFolder, accountFolderName);
 
-                File accountZIPFile = File.createTempFile("mengine_account_", ".zip", cacheDir);
+                File accountZIPFile = File.createTempFile("mng_account_", ".zip", cacheDir);
 
                 String packageName = context.getPackageName();
 
@@ -874,7 +876,7 @@ public class MengineActivity extends SDLActivity {
                     intent.putExtra(Intent.EXTRA_STREAM, accountZIPUri);
                 }
 
-                File logFile = File.createTempFile("mengine_log_", ".log", cacheDir);
+                File logFile = File.createTempFile("mng_log_", ".log", cacheDir);
 
                 String logFilePath = logFile.getCanonicalPath();
 

@@ -409,7 +409,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.buildEvent("fb_share_link")
+        this.buildEvent("mengine_fb_share_link")
             .addParameterString("url", link)
             .addParameterString("picture", picture)
             .addParameterString("quote", quote)
@@ -427,7 +427,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     , postId
                 );
 
-                MengineFacebookPlugin.this.buildEvent("fb_share_link_success")
+                MengineFacebookPlugin.this.buildEvent("mengine_fb_share_link_success")
                     .addParameterString("url", link)
                     .addParameterString("picture", picture)
                     .addParameterString("quote", quote)
@@ -441,7 +441,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             public void onCancel() {
                 MengineFacebookPlugin.this.logMessage("shareLink cancel");
 
-                MengineFacebookPlugin.this.buildEvent("fb_share_link_cancel")
+                MengineFacebookPlugin.this.buildEvent("mengine_fb_share_link_cancel")
                     .addParameterString("url", link)
                     .addParameterString("picture", picture)
                     .addParameterString("quote", quote)
@@ -458,7 +458,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     , error_message
                 );
 
-                MengineFacebookPlugin.this.buildEvent("fb_share_link_error")
+                MengineFacebookPlugin.this.buildEvent("mengine_fb_share_link_error")
                     .addParameterString("url", link)
                     .addParameterString("picture", picture)
                     .addParameterString("quote", quote)

@@ -76,7 +76,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_requestId = m_enumeratorRequest++;
 
-        this.buildEvent("ad_rewarded_load")
+        this.buildEvent("mng_ad_rewarded_load")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
@@ -100,7 +100,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             , m_retryAttempt
         );
 
-        this.buildEvent("ad_rewarded_offer")
+        this.buildEvent("mng_ad_rewarded_offer")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
@@ -128,7 +128,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         );
 
         if (ready == false) {
-            this.buildEvent("ad_rewarded_show")
+            this.buildEvent("mng_ad_rewarded_show")
                 .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
                 .addParameterLong("request_id", m_requestId)
                 .addParameterLong("attempt", m_retryAttempt)
@@ -154,7 +154,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             , m_retryAttempt
         );
 
-        this.buildEvent("ad_rewarded_show")
+        this.buildEvent("mng_ad_rewarded_show")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
@@ -178,7 +178,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             , m_retryAttempt
         );
 
-        this.buildEvent("ad_rewarded_request_started")
+        this.buildEvent("mng_ad_rewarded_request_started")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
@@ -214,7 +214,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             , amount
         );
 
-        this.buildEvent("ad_rewarded_user_rewarded")
+        this.buildEvent("mng_ad_rewarded_user_rewarded")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -229,7 +229,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdLoaded(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdLoaded", ad);
 
-        this.buildEvent("ad_rewarded_loaded")
+        this.buildEvent("mng_ad_rewarded_loaded")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
@@ -247,7 +247,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdDisplayed(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdDisplayed", ad);
 
-        this.buildEvent("ad_rewarded_displayed")
+        this.buildEvent("mng_ad_rewarded_displayed")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -262,7 +262,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdHidden(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdHidden", ad);
 
-        this.buildEvent("ad_rewarded_hidden")
+        this.buildEvent("mng_ad_rewarded_hidden")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -281,7 +281,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdClicked(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdClicked", ad);
 
-        this.buildEvent("ad_rewarded_clicked")
+        this.buildEvent("mng_ad_rewarded_clicked")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -296,7 +296,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdLoadFailed(String adUnitId, MaxError error) {
         this.logMaxError("Rewarded", "onAdLoadFailed", error);
 
-        this.buildEvent("ad_rewarded_load_failed")
+        this.buildEvent("mng_ad_rewarded_load_failed")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
@@ -322,7 +322,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
         this.logMaxError("Rewarded", "onAdDisplayFailed", error);
 
-        this.buildEvent("ad_rewarded_display_failed")
+        this.buildEvent("mng_ad_rewarded_display_failed")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))
@@ -343,7 +343,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("Rewarded", "onAdRevenuePaid", ad);
 
-        this.buildEvent("ad_rewarded_revenue_paid")
+        this.buildEvent("mng_ad_rewarded_revenue_paid")
             .addParameterString("ad_unit_id", m_rewardedAd.getAdUnitId())
             .addParameterLong("request_id", m_requestId)
             .addParameterString("ad", this.getMAAdParams(ad))

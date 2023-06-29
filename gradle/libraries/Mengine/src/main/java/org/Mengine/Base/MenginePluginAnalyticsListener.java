@@ -2,7 +2,7 @@ package org.Mengine.Base;
 
 import java.util.Map;
 
-public interface MenginePluginAnalyticsListener {
+public interface MenginePluginAnalyticsListener extends MenginePluginInterface {
     int EAET_CUSTOM = MengineAnalytics.EAET_CUSTOM;
     int EAET_EARN_VIRTUAL_CURRENCY = MengineAnalytics.EAET_EARN_VIRTUAL_CURRENCY;
     int EAET_SPEND_VIRTUAL_CURRENCY = MengineAnalytics.EAET_SPEND_VIRTUAL_CURRENCY;

@@ -45,34 +45,31 @@ println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
 println("\u001b[32m" + "[+] Include :app" + "\u001b[0m")
 include(":app")
 
-var ANDROID_APP_ENABLE_DELIVERY_PACKAGE = getBooleanProperty("ANDROID_APP_ENABLE_DELIVERY_PACKAGE", false)
+if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
+    val PACKAGES = extra["ANDROID_APP_DELIVERY_PACKAGES"].toString().split(",")
 
-println("ANDROID_APP_ENABLE_DELIVERY_PACKAGE: $ANDROID_APP_ENABLE_DELIVERY_PACKAGE")
+    for(PACKAGE_DESC in PACKAGES) {
+        var PACKAGE_NAME = PACKAGE_DESC.split(";").get(0)
+        var PACKAGE_PATH = PACKAGE_DESC.split(";").getOrNull(1)
 
-if (ANDROID_APP_ENABLE_DELIVERY_PACKAGE == true) {
-    if (extra.has("ANDROID_APP_DELIVERY_PACKAGE_NAME") == false) {
-        throw kotlin.Exception("Miss setup app delivery package name [ANDROID_APP_DELIVERY_PACKAGE_NAME]")
-    }
-
-    val ANDROID_APP_DELIVERY_PACKAGE_NAME = extra["ANDROID_APP_DELIVERY_PACKAGE_NAME"].toString()
-
-    println("\u001b[32m" + "[+] Include delivery: :app:$ANDROID_APP_DELIVERY_PACKAGE_NAME" + "\u001b[0m")
-
-    include(":app:$ANDROID_APP_DELIVERY_PACKAGE_NAME")
-
-    if (extra.has("ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH") == true) {
-        val ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH = extra["ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH"].toString()
-
-        println("ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH: $ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH")
-
-        val f = File(ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH)
-
-        if (f.exists() == false) {
-            println("Not exist delivery extra path [ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH]: $ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH")
-            throw kotlin.Exception("Not exist delivery directory: $ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH")
+        if (PACKAGE_PATH == null) {
+            println("\u001b[32m" + "[+] Include delivery: :app:$PACKAGE_NAME" + "\u001b[0m")
+        } else {
+            println("\u001b[32m" + "[+] Include delivery: :app:$PACKAGE_NAME extra path $PACKAGE_PATH" + "\u001b[0m")
         }
 
-        project(":app:$ANDROID_APP_DELIVERY_PACKAGE_NAME").projectDir = File(ANDROID_APP_DELIVERY_PACKAGE_EXTRA_PATH)
+        include(":app:$PACKAGE_NAME")
+
+        if (PACKAGE_PATH != null) {
+            val f = File(PACKAGE_PATH)
+
+            if (f.exists() == false) {
+                println("package $PACKAGE_NAME not exist delivery directory: $PACKAGE_PATH")
+                throw kotlin.Exception("package $PACKAGE_NAME not exist delivery directory: $PACKAGE_PATH")
+            }
+
+            project(":app:$PACKAGE_NAME").projectDir = File(PACKAGE_PATH)
+        }
     }
 }
 

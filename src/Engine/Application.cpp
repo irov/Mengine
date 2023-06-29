@@ -877,6 +877,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths )
     {
+        Timestamp mengine_initialize_game_timestamp = ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mengine_initialize_game_start" ) )
+            ->log();
+
         for( const FilePath & packagePath : _packagesPaths )
         {
             if( PACKAGE_SERVICE()
@@ -923,18 +927,14 @@ namespace Mengine
 
         m_initailizeGame = true;
 
-        Timestamp bootstrapper_initialize_game_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_initialize_game" ) )
-            ->log();
-
         if( NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME ) == false )
         {
             return false;
         }
 
         ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_initialize_game_completed" ) )
-            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( bootstrapper_initialize_game_timestamp ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mengine_initialize_game_complete" ) )
+            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_initialize_game_timestamp ) )
             ->log();
 
         return true;

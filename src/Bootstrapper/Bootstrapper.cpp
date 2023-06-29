@@ -430,6 +430,10 @@ namespace Mengine
             return false;
         }
 
+        Timestamp mengine_run_timestamp = ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mengine_run_start" ) )
+            ->log();
+
         LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
 
         if( this->createDynamicPriorityPlugins_() == false )
@@ -520,10 +524,6 @@ namespace Mengine
             return false;
         }
 
-        ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_run_frameworks" ) )
-            ->log();
-
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_FRAMEWORKS );
 
         LOGGER_INFO( "bootstrapper", "bootstrapper initialize game" );
@@ -558,7 +558,8 @@ namespace Mengine
             ->clearHistory();
 
         ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_run_complete" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mengine_run_complete" ) )
+            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_run_timestamp ) )
             ->log();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
@@ -919,8 +920,8 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_initialize_base_services" ) )
+        Timestamp mengine_initialize_services_timestamp = ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mengine_initialize_services_start" ) )
             ->log();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
@@ -1027,6 +1028,11 @@ namespace Mengine
         }
 
 #undef BOOTSTRAPPER_SERVICE_CREATE
+
+        ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mengine_initialize_services_complete" ) )
+            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_initialize_services_timestamp ) )
+            ->log();
 
         return true;
     }
@@ -1505,8 +1511,8 @@ namespace Mengine
     {
         LOGGER_INFO( "bootstrapper", "create application..." );
 
-        Timestamp bootstrapper_create_application_start_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_create_application_start" ) )
+        Timestamp mengine_create_application_timestamp = ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mengine_create_application_start" ) )
             ->log();
 
         if( SERVICE_CREATE_SAFE( Application, MENGINE_DOCUMENT_FACTORABLE ) == false )
@@ -1517,8 +1523,8 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
 
         ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "bootstrapper_create_application_completed" ) )
-            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( bootstrapper_create_application_start_timestamp ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mengine_create_application_complete" ) )
+            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_create_application_timestamp ) )
             ->log();
 
         return true;

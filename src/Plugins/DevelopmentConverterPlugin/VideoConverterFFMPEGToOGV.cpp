@@ -47,15 +47,15 @@ namespace Mengine
         full_output += m_options.outputFilePath.c_str();
 
         String quality = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "quality" ), "10" );
-        float resize = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "resize" ), 1.f );
+        String resize = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "resize" ), "None" );
 
         String resize_cmd;
-        if( mt::equal_f_1( resize ) == false )
+        if( resize != "None" )
         {
             Char buffer[256] = {"/0"};
-            MENGINE_SNPRINTF( buffer, 256, "-vf \"scale=iw*%f:ih*%f\""
-                , resize
-                , resize
+            MENGINE_SNPRINTF( buffer, 256, "-vf \"scale=iw*%s:ih*%s\""
+                , resize.c_str()
+                , resize.c_str()
             );
 
             resize_cmd = buffer;

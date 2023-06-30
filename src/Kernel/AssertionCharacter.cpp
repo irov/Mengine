@@ -47,12 +47,7 @@ namespace Mengine
             {
                 Char ch = *ch_iterator;
 
-                if( Helper::isLowerCharacterSet( ch ) == true )
-                {
-                    continue;
-                }
-
-                if( Helper::isDigitCharacterSet( ch ) == true )
+                if( Helper::isUpperCharacterSet( ch ) == false )
                 {
                     continue;
                 }
@@ -75,12 +70,7 @@ namespace Mengine
             {
                 Char ch = *ch_iterator;
 
-                if( Helper::isUpperCharacterSet( ch ) == true )
-                {
-                    continue;
-                }
-
-                if( Helper::isDigitCharacterSet( ch ) == true )
+                if( Helper::isLowerCharacterSet( ch ) == false )
                 {
                     continue;
                 }
